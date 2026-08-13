@@ -1,0 +1,94 @@
+schema_version: 1
+id: 01-plotting-and-data-workbench
+number: 1
+title: Plotting and Data Workbench
+summary: Exercise the generic renderer against linked signals, spectra, matrices, complex values, 3-D geometry, polar data, and tabular results.
+guiding_question: Can one parameter state drive every view of a numerical experiment coherently?
+status: implemented
+tags:
+  - plotting
+  - complex-data
+  - dataframe
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 4
+controls:
+  - id: tone_hz
+    type: slider
+    label: Tone frequency
+    default: 37
+    unit: Hz
+    minimum: 5
+    maximum: 180
+    step: 1
+  - id: sample_rate_hz
+    type: segmented
+    label: Sample rate
+    default: 512
+    unit: Sa/s
+    options:
+      - label: "256"
+        value: 256
+      - label: "512"
+        value: 512
+      - label: "1024"
+        value: 1024
+  - id: noise_sigma
+    type: slider
+    label: Noise σ
+    default: 0.08
+    minimum: 0
+    maximum: 0.4
+    step: 0.01
+  - id: window
+    type: select
+    label: FFT window
+    default: hann
+    options:
+      - label: Rectangular
+        value: rectangular
+      - label: Hann
+        value: hann
+      - label: Blackman
+        value: blackman
+  - id: second_tone
+    type: toggle
+    label: Add nearby second tone
+    default: true
+  - id: surface_width
+    type: slider
+    label: Surface mainlobe width
+    default: 0.26
+    minimum: 0.1
+    maximum: 0.6
+    step: 0.01
+blocks:
+  - type: markdown
+    source: lesson.md
+  - type: prediction
+    title: Link the representations
+    text: If the tone frequency changes, which views must move together and which view is only a rendering demonstration?
+    reveal: Time-domain period, complex phasor rotation, spectrum peak, spectrogram ridge, and peak table must agree. The synthetic 3-D response surface is controlled independently by its width parameter.
+  - type: controls
+  - type: metrics
+  - type: plot_grid
+    title: One signal, four representations
+    plots:
+      - time_domain
+      - spectrum
+      - iq_plane
+      - spectrogram
+  - type: plot_grid
+    title: Higher-dimensional engineering views
+    plots:
+      - response_surface
+      - polar_pattern
+  - type: table
+    title: Detected spectral peaks
+    table: spectral_peaks
+  - type: callout
+    tone: info
+    title: Portable plot contract
+    text: The course runtime returns ordinary Plotly figure JSON and dataframe-like tables. The frontend does not need subject-specific plotting code.

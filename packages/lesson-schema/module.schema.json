@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://engineering-learning.local/schema/module.schema.json",
+  "title": "Engineering Learning Module",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "id", "title", "runtime", "blocks"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+    "number": {"type": ["integer", "null"]},
+    "title": {"type": "string", "minLength": 1},
+    "summary": {"type": "string"},
+    "guiding_question": {"type": "string"},
+    "status": {"enum": ["draft", "implemented", "static"]},
+    "tags": {"type": "array", "items": {"type": "string"}},
+    "runtime": {"type": "object"},
+    "controls": {"type": "array"},
+    "blocks": {"type": "array"}
+  }
+}

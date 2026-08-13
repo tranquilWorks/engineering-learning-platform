@@ -1,0 +1,108 @@
+schema_version: 1
+id: 30-measure-range-from-echo-delay
+number: 30
+title: Measure Range from Echo Delay
+summary: Turn a round-trip delay into target range, then expose sampling and resolution limits.
+guiding_question: How does a radar turn an echo delay into a range estimate?
+status: implemented
+tags:
+  - pulsed-radar
+  - correlation
+  - ranging
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+  - id: sample_rate_mhz
+    type: slider
+    label: Sample rate
+    default: 20
+    unit: MHz
+    minimum: 5
+    maximum: 50
+    step: 1
+    description: Changes the numerical lag spacing without moving the target.
+  - id: round_trip_delay_us
+    type: slider
+    label: Round-trip delay
+    default: 6.0175
+    unit: µs
+    minimum: 1
+    maximum: 10
+    step: 0.0025
+  - id: pulse_width_us
+    type: slider
+    label: Pulse width
+    default: 1
+    unit: µs
+    minimum: 0.4
+    maximum: 2
+    step: 0.05
+  - id: noise_sigma
+    type: slider
+    label: Noise σ
+    default: 0.03
+    minimum: 0
+    maximum: 0.15
+    step: 0.005
+  - id: second_target
+    type: toggle
+    label: Add second target
+    default: false
+  - id: target_separation_us
+    type: slider
+    label: Target separation
+    default: 1
+    unit: µs
+    minimum: 0.25
+    maximum: 2.5
+    step: 0.05
+    visible_when:
+      second_target: true
+  - id: broken_formula
+    type: toggle
+    label: Use broken R = cτ formula
+    default: false
+blocks:
+  - type: markdown
+    source: lesson.md
+  - type: prediction
+    title: Predict before touching the controls
+    text: If the sample rate doubles but the physical target does not move, which displayed quantities should change?
+    reveal: The physical range stays fixed. The delay measured in samples and the range-bin spacing change.
+  - type: controls
+    title: Experiment controls
+  - type: metrics
+  - type: callout
+    tone: success
+    title: Current geometry
+    source: geometry
+  - type: plot
+    title: Pulse leaves, echo returns
+    plot: fast_time
+  - type: callout
+    tone: info
+    title: Measurement chain
+    text: Correlation estimates lag. The lag becomes time through the sample clock, then range through monostatic geometry.
+  - type: plot
+    title: Correlation turns lag into range
+    plot: correlation
+  - type: callout
+    tone: info
+    title: Peak refinement
+    source: refinement
+  - type: plot_grid
+    title: Sampling effects
+    plots:
+      - fractional_error
+      - sample_rate_ruler
+  - type: callout
+    tone: info
+    title: Current sampling ruler
+    source: sampling
+  - type: callout
+    tone: warning
+    title: Interpretation boundary
+    text: Range-bin spacing is a numerical sample-grid step. It is not automatically the waveform's physical two-target range resolution.

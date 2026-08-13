@@ -1,0 +1,65 @@
+schema_version: 1
+batch:
+  id: B000
+  title: Foundation interactive learning platform vertical slice
+  goal: Deliver a one-port professional learner UI, portable course contract, trusted numerical runtime, and representative advanced plots.
+sources:
+  requirements:
+    - contracts/engineering-learning-requirements.yaml
+    - docs/ROADMAP.md#b000--foundation-vertical-slice
+scope:
+  allowed_paths:
+    - apps/**
+    - courses/**
+    - packages/**
+    - scripts/**
+    - docs/**
+    - contracts/**
+    - .github/**
+    - .codex/**
+    - AGENTS.md
+    - README.md
+    - package.json
+    - Makefile
+    - Dockerfile
+    - compose.yaml
+    - .dockerignore
+    - .gitignore
+    - .env.example
+  forbidden_paths: []
+acceptance:
+  - Multiple courses are discovered from folders without course-specific frontend code.
+  - A module may declare static or Python runtime behavior and ordered lesson blocks.
+  - Controls update one coherent parameter mapping and stale API responses cannot overwrite newer state.
+  - The echo-ranging lesson renders live metrics and linked plots from deterministic computation.
+  - The plotting showcase exercises WebGL line data, FFT, I/Q, heatmap, 3-D surface, polar, and table outputs.
+  - Backend course/runtime/API tests pass.
+  - Course execution validation detects missing outputs and nondeterministic defaults.
+  - The production architecture exposes one port and uses read-only course mounts.
+validation:
+  local:
+    - PYTHONPATH=apps/api/src python3 scripts/validate_courses.py --execute --deterministic
+    - PYTHONPATH=apps/api/src pytest -q apps/api/tests
+    - npm run typecheck
+    - npm run build
+    - docker compose build
+risk:
+  class: moderate
+  hazards:
+    - trusted in-process Python runtime is mistaken for a hostile-code sandbox
+    - course schema becomes coupled to DSP/radar specifics
+    - plotting bundle or large JSON results degrade browser performance
+    - MATLAB visual similarity is mistaken for numerical equivalence
+  stop_conditions:
+    - implementation requires arbitrary learner code execution
+    - course content must be rewritten destructively during discovery
+    - frontend requires subject-specific logic for the vertical slice
+rollback:
+  strategy: Revert B000 commits; no persistent learner or production data exists in foundation.
+evidence:
+  output:
+    - exact validation commands and results
+    - course/module counts
+    - known environment gates
+    - residual runtime isolation risk
+  claim_boundary: Software simulation and static deployment contracts only; no production, accredited-network, MATLAB-runtime, or hardware validation is implied.

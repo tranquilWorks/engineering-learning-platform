@@ -1,0 +1,52 @@
+schema_version: 1
+product: engineering-learning-platform
+purpose: Render and execute portable interactive engineering courses as a professional self-hosted web product.
+capabilities:
+  - id: CAP-CATALOG-01
+    outcome: Discover multiple built-in or read-only mounted courses without hard-coding course identities.
+    invariants:
+      - course and module ids are unique within their scopes
+      - templates and underscore-prefixed content are excluded
+      - source and entrypoint paths cannot escape a module directory
+  - id: CAP-LESSON-01
+    outcome: Render an ordered lesson from declarative narrative, prediction, controls, metrics, plots, tables, callouts, and dividers.
+    invariants:
+      - controls are visibly labelled and keyboard accessible
+      - a static lesson does not need fake controls
+      - plots and tables are referenced by stable keys
+  - id: CAP-RUNTIME-01
+    outcome: Execute trusted scientific-Python experiment functions with validated parameters and bounded results.
+    invariants:
+      - unknown parameters are rejected
+      - arbitrary learner code is never executed
+      - result payloads conform to the shared envelope
+      - execution evidence is not described as MATLAB or hardware evidence
+  - id: CAP-PLOT-01
+    outcome: Display MATLAB-class linked numerical views through Plotly figure JSON and dataframe-like tables.
+    invariants:
+      - axes and units are present where applicable
+      - plots update from one coherent parameter state
+      - large results are rejected until artifact transport is implemented
+  - id: CAP-DEPLOY-01
+    outcome: Run the learner UI and API from one production container and one exposed port.
+    invariants:
+      - production course mounts are read-only
+      - container runs unprivileged
+      - SSO is delegated to an approved corporate proxy until a reviewed identity adapter exists
+quality:
+  deterministic_defaults: required
+  schema_versioning: required
+  responsive_ui: required
+  accessibility_review: required
+  rollback_path: required
+trust_boundary:
+  allowed:
+    - repository-controlled Python experiments
+    - approved read-only mounted course repositories
+    - static lesson and media content
+  prohibited:
+    - arbitrary browser code execution
+    - uploaded notebook execution
+    - runtime dependency installation
+    - shell interpolation from learner input
+    - direct trust of unauthenticated identity headers

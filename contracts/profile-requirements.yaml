@@ -1,0 +1,38 @@
+schema_version: 1
+profile: product-data
+source: kpbianco/portfolio-control/profiles/product-data.yaml
+required_gates:
+  - schema-validation
+  - canonical-data-validation
+  - uniqueness-and-completeness
+  - scoring-invariant-tests
+  - migration-and-rollback-tests
+  - backup-restore-smoke
+  - service-smoke-tests
+required_evidence:
+  - dataset-counts
+  - invariant-results
+  - migration-results
+  - rollback-path
+local_interpretation:
+  schema-validation:
+    - strict Pydantic manifest validation
+    - portable JSON Schema fixtures
+  canonical-data-validation:
+    - course folders remain authoritative
+    - platform never mutates mounted courses during discovery
+  uniqueness-and-completeness:
+    - duplicate course/module/control ids fail validation
+    - declared plot/table outputs exist after default execution
+  scoring-invariant-tests:
+    - reserved for assessment semantics; no hidden scoring exists in foundation
+  migration-and-rollback-tests:
+    - schema changes require fixtures and a versioned migration/rollback note
+  backup-restore-smoke:
+    - not applicable to stateless foundation; becomes mandatory before persisted learner progress
+  service-smoke-tests:
+    - health, catalog, module, and experiment API tests
+prohibited_autonomy:
+  - destructive-data-migration
+  - production-data-write
+  - merge-protected-branch
