@@ -81,7 +81,9 @@ class CourseCatalog:
                 manifest = CourseManifest.model_validate(self._read_yaml(manifest_path))
                 if manifest.id.startswith("_"):
                     continue
-                modules_dir = course_dir / manifest.modules_path
+                modules_dir = (course_dir / manifest.modules_path).resolve()
+                if course_dir.resolve() not in modules_dir.parents and modules_dir != course_dir.resolve():
+                    raise CatalogError(f"modules_path escapes course directory: {manifest.modules_path}")
                 modules: list[ModuleRecord] = []
                 if modules_dir.is_dir():
                     for module_path in sorted(modules_dir.glob("*/module.yaml")):

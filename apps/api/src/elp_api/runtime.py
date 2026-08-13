@@ -3,6 +3,7 @@ from __future__ import annotations
 import importlib.util
 import inspect
 import json
+import math
 import threading
 from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutureTimeout
 from pathlib import Path
@@ -71,14 +72,51 @@ class ExperimentRuntime:
             raise RuntimeContractError("experiment function must accept exactly one parameter mapping")
         return function
 
+
+    @staticmethod
+    def _validate_control_value(control: Any, value: Any) -> Any:
+        if control.type in {"slider", "number"}:
+            if isinstance(value, bool) or not isinstance(value, (int, float)):
+                raise RuntimeContractError(f"parameter {control.id!r} must be numeric")
+            numeric = float(value)
+            if not math.isfinite(numeric):
+                raise RuntimeContractError(f"parameter {control.id!r} must be finite")
+            assert control.minimum is not None and control.maximum is not None
+            if numeric < control.minimum or numeric > control.maximum:
+                raise RuntimeContractError(
+                    f"parameter {control.id!r} is outside [{control.minimum}, {control.maximum}]"
+                )
+            return value
+        if control.type == "toggle":
+            if not isinstance(value, bool):
+                raise RuntimeContractError(f"parameter {control.id!r} must be boolean")
+            return value
+        if control.type in {"select", "segmented"}:
+            allowed = [option.value for option in control.options]
+            if not any(type(value) is type(item) and value == item for item in allowed):
+                raise RuntimeContractError(f"parameter {control.id!r} must be one of {allowed!r}")
+            return value
+        if control.type == "button":
+            if value is not None and not isinstance(value, (str, int, float, bool)):
+                raise RuntimeContractError(f"parameter {control.id!r} must be a scalar action token")
+            return value
+        raise RuntimeContractError(f"unsupported control type {control.type!r}")
+
+    def _validated_parameters(self, manifest: Any, supplied: dict[str, Any]) -> dict[str, Any]:
+        controls = {control.id: control for control in manifest.controls}
+        unknown = set(supplied) - set(controls)
+        if unknown:
+            raise RuntimeContractError(f"unknown parameters: {sorted(unknown)}")
+        merged: dict[str, Any] = {}
+        for control in manifest.controls:
+            value = supplied.get(control.id, control.default)
+            merged[control.id] = self._validate_control_value(control, value)
+        return merged
+
     def run(self, course_id: str, module_id: str, parameters: dict[str, Any]) -> RunResult:
         _, record = self.catalog.module_record(course_id, module_id)
         manifest = record.manifest
-        defaults = {control.id: control.default for control in manifest.controls}
-        unknown = set(parameters) - set(defaults)
-        if unknown:
-            raise RuntimeContractError(f"unknown parameters: {sorted(unknown)}")
-        merged = defaults | parameters
+        merged = self._validated_parameters(manifest, parameters)
         if manifest.runtime.kind == "static":
             return RunResult(parameters=merged)
         assert manifest.runtime.entrypoint is not None

@@ -5,6 +5,7 @@ import { Markdown } from "./Markdown";
 import { Metrics } from "./Metrics";
 import { PlotPanel } from "./PlotPanel";
 import { Prediction } from "./Prediction";
+import { WidgetRenderer } from "./WidgetRenderer";
 
 interface Props {
   document: ModuleDocument;
@@ -55,6 +56,7 @@ export function BlockRenderer({ document, result, parameters, busy, onParameter,
           );
         }
         if (block.type === "table") return <DataTable key={key} title={block.title} table={block.table ? result?.tables[block.table] : undefined} />;
+        if (block.type === "widget") return <WidgetRenderer key={key} block={block} controls={document.module.controls} parameters={parameters} onParameter={onParameter} />;
         if (block.type === "callout") return <Callout key={key} block={block} result={result} />;
         return <hr key={key} className="lesson-divider" />;
       })}

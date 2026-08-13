@@ -59,6 +59,23 @@ def main() -> int:
             control_ids = [control.id for control in manifest.controls]
             if len(control_ids) != len(set(control_ids)):
                 errors.append(f"{course.id}/{summary.id}: duplicate control ids")
+            for block in manifest.blocks:
+                if block.type == "widget":
+                    if block.widget != "parameter-map":
+                        errors.append(f"{course.id}/{summary.id}: unknown widget {block.widget!r}")
+                    else:
+                        numeric = {
+                            control.id
+                            for control in manifest.controls
+                            if control.type in {"slider", "number"}
+                        }
+                        for axis in ("x_control", "y_control"):
+                            target = block.props.get(axis)
+                            if target not in numeric:
+                                errors.append(
+                                    f"{course.id}/{summary.id}: parameter-map {axis} must reference a numeric control"
+                                )
+
             if manifest.runtime.kind == "python":
                 interactive_count += 1
                 if args.execute or args.deterministic:

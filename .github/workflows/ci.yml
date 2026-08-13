@@ -18,6 +18,8 @@ jobs:
           python-version: "3.12"
       - name: Install API
         run: pip install -e 'apps/api[dev]'
+      - name: Check generated schemas
+        run: PYTHONPATH=apps/api/src python3 scripts/export_schemas.py --check
       - name: Validate course contracts and deterministic defaults
         run: PYTHONPATH=apps/api/src python3 scripts/validate_courses.py --execute --deterministic
       - name: Test API and runtime

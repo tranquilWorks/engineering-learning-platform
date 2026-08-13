@@ -21,7 +21,7 @@ export function PlotPanel({ title, spec, compact = false }: Props) {
     void import("plotly.js-dist-min")
       .then(({ default: Plotly }) => {
         if (!active) return;
-        const layout: Partial<Plotly.Layout> = {
+        const layout: Record<string, unknown> = {
           autosize: true,
           paper_bgcolor: "rgba(0,0,0,0)",
           plot_bgcolor: "rgba(0,0,0,0)",

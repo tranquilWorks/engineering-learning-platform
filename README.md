@@ -9,7 +9,7 @@ The platform is intentionally split into:
 - **lesson UI**: a React renderer for controls, predictions, metrics, plots, tables, and explanations;
 - **deployment**: one production container and one exposed HTTP port.
 
-The included `demo-radar` course contains an interactive version of **Measure Range from Echo Delay** to prove the full vertical slice.
+The included `demo-radar` course contains an interactive version of **Measure Range from Echo Delay** to prove the full vertical slice. `platform-showcase` exercises WebGL signals, FFTs, I/Q, heatmaps, a 3-D surface, a polar plot, dataframe-style tables, and direct drag manipulation.
 
 ## Experience target
 
@@ -88,7 +88,7 @@ courses/                  built-in or mounted course folders
 packages/lesson-schema/   portable course/module JSON Schemas
 docs/                     architecture, authoring, deployment, roadmap
 contracts/                product and active-batch engineering contracts
-scripts/                  validation and development helpers
+scripts/                  validation, development, and publish helpers
 ```
 
 ## Verification

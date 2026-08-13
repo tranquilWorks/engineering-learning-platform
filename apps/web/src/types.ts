@@ -35,6 +35,7 @@ export type LessonBlockType =
   | "plot_grid"
   | "table"
   | "callout"
+  | "widget"
   | "divider";
 
 export interface LessonBlock {
@@ -47,6 +48,8 @@ export interface LessonBlock {
   table?: string | null;
   tone: "info" | "success" | "warning" | "danger";
   reveal?: string | null;
+  widget?: string | null;
+  props: Record<string, unknown>;
 }
 
 export interface ModuleManifest {
@@ -98,10 +101,10 @@ export interface Metric {
 }
 
 export interface PlotSpec {
-  data: Plotly.Data[];
-  layout: Partial<Plotly.Layout>;
-  config: Partial<Plotly.Config>;
-  frames?: Plotly.Frame[];
+  data: Record<string, unknown>[];
+  layout: Record<string, unknown>;
+  config: Record<string, unknown>;
+  frames?: Record<string, unknown>[];
 }
 
 export interface TableSpec {

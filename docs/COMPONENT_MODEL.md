@@ -9,6 +9,7 @@ The platform deliberately limits the native lesson vocabulary so course authors 
 - state-dependent callout
 - divider and section title
 - optional media from module `assets/`
+- allow-listed direct-manipulation widgets such as the two-parameter drag map
 
 ## Manipulation primitives
 
@@ -52,3 +53,7 @@ blocks:
 ```
 
 A future schema revision may add draggable geometry, direct plot annotations, quizzes, code fragments, video synchronization, and parameterized diagrams. Those should extend the same ordered block model rather than turn each lesson into custom React code.
+
+## Direct-manipulation widgets
+
+The `widget` block references a platform-owned, allow-listed renderer. Course folders cannot inject arbitrary JavaScript. The foundation includes `parameter-map`, which binds an x/y drag probe to two numeric controls. Future built-ins can add vector probes, draggable geometry, matrix editors, constellation manipulators, signal-chain routing, and plot-selection tools without weakening the trust boundary.

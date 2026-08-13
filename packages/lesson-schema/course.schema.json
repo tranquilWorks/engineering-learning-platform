@@ -1,17 +1,48 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://engineering-learning.local/schema/course.schema.json",
-  "title": "Engineering Learning Course",
-  "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "id", "title"],
   "properties": {
-    "schema_version": {"const": 1},
-    "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
-    "title": {"type": "string", "minLength": 1},
-    "description": {"type": "string"},
-    "order": {"type": "integer", "default": 0},
-    "modules_path": {"type": "string", "default": "modules"},
-    "tags": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
-  }
+    "description": {
+      "default": "",
+      "title": "Description",
+      "type": "string"
+    },
+    "id": {
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "title": "Id",
+      "type": "string"
+    },
+    "modules_path": {
+      "default": "modules",
+      "title": "Modules Path",
+      "type": "string"
+    },
+    "order": {
+      "default": 0,
+      "title": "Order",
+      "type": "integer"
+    },
+    "schema_version": {
+      "default": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "tags": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Tags",
+      "type": "array"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "title"
+  ],
+  "title": "CourseManifest",
+  "type": "object"
 }

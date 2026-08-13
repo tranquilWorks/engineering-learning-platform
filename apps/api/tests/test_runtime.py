@@ -39,3 +39,14 @@ def test_plotting_showcase_returns_advanced_views(runtime: ExperimentRuntime) ->
     assert {"time_domain", "spectrum", "iq_plane", "spectrogram", "response_surface", "polar_pattern"} <= set(result.plots)
     assert "spectral_peaks" in result.tables
     assert result.tables["spectral_peaks"].rows
+
+
+def test_runtime_rejects_unknown_and_out_of_range_parameters(runtime: ExperimentRuntime) -> None:
+    from elp_api.runtime import RuntimeContractError
+
+    with pytest.raises(RuntimeContractError, match="unknown parameters"):
+        runtime.run("demo-radar", "30-measure-range-from-echo-delay", {"not_a_control": 1})
+    with pytest.raises(RuntimeContractError, match="outside"):
+        runtime.run("demo-radar", "30-measure-range-from-echo-delay", {"sample_rate_mhz": 500})
+    with pytest.raises(RuntimeContractError, match="boolean"):
+        runtime.run("demo-radar", "30-measure-range-from-echo-delay", {"second_target": "yes"})

@@ -4,6 +4,7 @@ cd "$(dirname "$0")/.."
 
 export PYTHONPATH="${PYTHONPATH:-}:apps/api/src"
 python3 -m compileall -q apps/api/src courses scripts
+python3 scripts/export_schemas.py --check
 python3 scripts/validate_courses.py --execute --deterministic
 pytest -q apps/api/tests
 

@@ -113,6 +113,7 @@ Keep controls few enough that a learner can form a hypothesis. Advanced modules 
 | `plot_grid` | Linked peer plots |
 | `table` | Dataframe-like table |
 | `callout` | Static text or dynamic `explanations[source]` |
+| `widget` | Allow-listed direct-manipulation component, configured through `widget` and `props` |
 | `divider` | Visual transition |
 
 Blocks are rendered in declared order. The course determines the pedagogy; the platform does not reorder it.
@@ -242,3 +243,22 @@ ELP_COURSE_PATHS=/path/to/my-course \
   PYTHONPATH=apps/api/src \
   python3 scripts/validate_courses.py --execute --deterministic
 ```
+
+## Module media
+
+Put module-owned images and downloadable media under `assets/`. Relative Markdown image paths such as `assets/range-geometry.svg` are rewritten to the protected module asset endpoint. Dotfiles and paths escaping the asset directory are rejected.
+
+## Widget example
+
+```yaml
+- type: widget
+  title: Drag the operating point
+  widget: parameter-map
+  props:
+    x_control: frequency_hz
+    y_control: snr_db
+    x_label: Frequency (Hz)
+    y_label: SNR (dB)
+```
+
+Only platform-registered widget IDs render. Independent course folders cannot ship executable frontend JavaScript.
