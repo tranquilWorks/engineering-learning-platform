@@ -61,6 +61,19 @@ courses/
             └── experiment.py
 ```
 
+The 12 engineering curriculum repositories are pinned as Git submodules under
+`courses/`. Clone them with the platform by using:
+
+```bash
+git clone --recurse-submodules https://github.com/kpbianco/engineering-learning-platform.git
+```
+
+For an existing checkout, initialize or refresh them with:
+
+```bash
+git submodule update --init --recursive
+```
+
 External course roots can be mounted read-only and added with:
 
 ```bash
