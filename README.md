@@ -61,7 +61,7 @@ courses/
             └── experiment.py
 ```
 
-The 12 engineering curriculum repositories are pinned as Git submodules under
+The 13 engineering curriculum repositories are pinned as Git submodules under
 `courses/`. Clone them with the platform by using:
 
 ```bash

@@ -13,6 +13,7 @@ The pinned course repositories are:
 
 - `controls-gnc-learning`
 - `distributed-realtime-learning`
+- `dsp-radar-learning`
 - `embedded-rt-hil-learning`
 - `flight-dynamics-learning`
 - `fpga-data-path-learning`
