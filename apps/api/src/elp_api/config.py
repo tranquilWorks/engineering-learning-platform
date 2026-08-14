@@ -23,7 +23,7 @@ class Settings:
     runtime_timeout_seconds: float
 
     @classmethod
-    def from_env(cls) -> "Settings":
+    def from_env(cls) -> Settings:
         course_value = os.getenv("ELP_COURSE_PATHS", "./courses")
         web_value = os.getenv("ELP_WEB_DIST")
         cors_value = os.getenv("ELP_DEV_CORS", "http://localhost:5173")

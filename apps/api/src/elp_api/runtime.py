@@ -5,10 +5,12 @@ import inspect
 import json
 import math
 import threading
-from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutureTimeout
+from collections.abc import Callable
+from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import TimeoutError as FutureTimeout
 from pathlib import Path
 from types import ModuleType
-from typing import Any, Callable
+from typing import Any
 
 from .catalog import CourseCatalog
 from .models import RunResult
@@ -62,14 +64,20 @@ class ExperimentRuntime:
                     raise RuntimeContractError(f"cannot import {relative}")
                 module = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(module)
-                self._modules = {cached: value for cached, value in self._modules.items() if cached[0] != path}
+                self._modules = {
+                    cached: value
+                    for cached, value in self._modules.items()
+                    if cached[0] != path
+                }
                 self._modules[key] = module
         function = getattr(module, function_name, None)
         if function is None or not callable(function):
             raise RuntimeContractError(f"entrypoint has no callable {function_name!r}")
         signature = inspect.signature(function)
         if len(signature.parameters) != 1:
-            raise RuntimeContractError("experiment function must accept exactly one parameter mapping")
+            raise RuntimeContractError(
+                "experiment function must accept exactly one parameter mapping"
+            )
         return function
 
 
@@ -98,7 +106,9 @@ class ExperimentRuntime:
             return value
         if control.type == "button":
             if value is not None and not isinstance(value, (str, int, float, bool)):
-                raise RuntimeContractError(f"parameter {control.id!r} must be a scalar action token")
+                raise RuntimeContractError(
+                    f"parameter {control.id!r} must be a scalar action token"
+                )
             return value
         raise RuntimeContractError(f"unsupported control type {control.type!r}")
 
