@@ -51,3 +51,18 @@ The learner experience must preserve the loop:
 - Intended delivery profile: `product-data`.
 - Human approval is required for protected-branch merge and production deployment.
 - Required evidence includes schema validation, catalog completeness, deterministic numerical results, service smoke tests, migration/rollback notes, and visual/accessibility review.
+
+<!-- BEGIN PORTFOLIO-CONTROL MANAGED -->
+## Governed agentic delivery
+
+- Product: `engineering-learning-platform`; delivery profile: `product-data`.
+- Control revision: `789d2129f0137086a6ebd784cfb000b45a8ae978`; harness version: `2`.
+- Read `contracts/profile-requirements.yaml` and the approved
+  `contracts/active-batch.yaml` before implementation.
+- Stay inside active-batch allowed paths and preserve every forbidden path.
+- Run the repository-local verification contract before claiming completion.
+- Record exact evidence and distinguish static, simulated, protocol, bench,
+  field, playtest, staging, and production validation.
+- Do not claim physical, release, deployment, or production evidence that was
+  not actually produced.
+<!-- END PORTFOLIO-CONTROL MANAGED -->

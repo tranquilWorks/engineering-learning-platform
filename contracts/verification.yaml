@@ -1,0 +1,9 @@
+schema_version: 1
+commands:
+  contract:
+    - PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_catalog.py apps/api/tests/test_runtime.py
+  quick:
+    - PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests
+  full:
+    - ./scripts/agent-verify.sh full
+evidence_boundary: These target-owned commands are structurally installed but prohibited while ELP-G-ONBOARDING-HOLD is active. Execute them only under a separately reviewed successor contract.
