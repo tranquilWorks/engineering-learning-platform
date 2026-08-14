@@ -1,14 +1,18 @@
 schema_version: 1
 batch:
-  id: B000
-  title: Foundation interactive learning platform vertical slice
-  goal: Deliver a one-port professional learner UI, portable course contract, trusted numerical runtime, and representative advanced plots.
+  id: ELP-G-ONBOARDING-HOLD
+  title: Hold implementation during Portfolio Control onboarding
+  goal: Formally close the local B000 implementation authority and prevent target work until the separately reviewed Portfolio Control plan, managed harness, pointer, and post-harness baseline gate are complete.
 sources:
   requirements:
-    - contracts/engineering-learning-requirements.yaml
-    - docs/ROADMAP.md#b000--foundation-vertical-slice
+    - docs/PORTFOLIO_CONTROL.md
+    - docs/evidence/B000-2026-08-13.md
+  baseline_commit: 940350eaed93aef00fc3cb58c9abbc78599b0735
+  baseline_role: audited_seed_provenance_only
 scope:
   allowed_paths:
+    - __read_only_no_target_writes__
+  forbidden_paths:
     - apps/**
     - courses/**
     - packages/**
@@ -17,49 +21,37 @@ scope:
     - contracts/**
     - .github/**
     - .codex/**
+    - .agents/**
     - AGENTS.md
     - README.md
     - package.json
+    - package-lock.json
     - Makefile
     - Dockerfile
     - compose.yaml
     - .dockerignore
     - .gitignore
     - .env.example
-  forbidden_paths: []
 acceptance:
-  - Multiple courses are discovered from folders without course-specific frontend code.
-  - A module may declare static or Python runtime behavior and ordered lesson blocks.
-  - Controls update one coherent parameter mapping and stale API responses cannot overwrite newer state.
-  - The echo-ranging lesson renders live metrics and linked plots from deterministic computation.
-  - The plotting showcase exercises WebGL line data, FFT, I/Q, heatmap, 3-D surface, polar, and table outputs.
-  - Backend course/runtime/API tests pass.
-  - Course execution validation detects missing outputs and nondeterministic defaults.
-  - The production architecture exposes one port and uses read-only course mounts.
+  - B000 source and retained evidence remain immutable history; this hold does not claim its previously unperformed frontend, container, browser, accessibility, corporate, MATLAB, physical, release, deployment, or production validation.
+  - No target path is writable and no target-owned implementation or validation command is authorized by this hold.
+  - Human review is required for this governance transition and for the later Portfolio Control planning, managed-harness, and pointer changes.
+  - The control-owned post-harness baseline verifier must pass before a fresh implementation contract may be materialized against the then-current exact clean target main.
 validation:
   local:
-    - PYTHONPATH=apps/api/src python3 scripts/validate_courses.py --execute --deterministic
-    - PYTHONPATH=apps/api/src pytest -q apps/api/tests
-    - npm run typecheck
-    - npm run build
-    - docker compose build
+    - git diff --check HEAD^
+    - git status --short --branch
 risk:
-  class: moderate
+  class: blocking
   hazards:
-    - trusted in-process Python runtime is mistaken for a hostile-code sandbox
-    - course schema becomes coupled to DSP/radar specifics
-    - plotting bundle or large JSON results degrade browser performance
-    - MATLAB visual similarity is mistaken for numerical equivalence
+    - the superseded B000 contract is treated as continuing implementation authority
+    - a governance hold is mistaken for product, environment, or release evidence
   stop_conditions:
-    - implementation requires arbitrary learner code execution
-    - course content must be rewritten destructively during discovery
-    - frontend requires subject-specific logic for the vertical slice
+    - any product source, course, harness, implementation, dependency, credential, release, deployment, production, MATLAB, or physical action is requested
+    - any successor is proposed before the exact merged control and target baselines are independently attested
 rollback:
-  strategy: Revert B000 commits; no persistent learner or production data exists in foundation.
+  strategy: Revert this governance-only PR under human review only if onboarding is abandoned; do not restore B000 as active implementation authority without a separately reviewed contract.
 evidence:
   output:
-    - exact validation commands and results
-    - course/module counts
-    - known environment gates
-    - residual runtime isolation risk
-  claim_boundary: Software simulation and static deployment contracts only; no production, accredited-network, MATLAB-runtime, or hardware validation is implied.
+    - human-reviewed governance-transition PR identity and exact target revision
+  claim_boundary: This contract only removes stale target implementation authority during onboarding. It proves no platform behavior, environment capability, content right, release readiness, deployment, production state, MATLAB equivalence, or physical/operational result.
