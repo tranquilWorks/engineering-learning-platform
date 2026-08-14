@@ -38,7 +38,7 @@ class ControlSpec(StrictModel):
     visible_when: dict[str, Any] | None = None
 
     @model_validator(mode="after")
-    def validate_control(self) -> "ControlSpec":
+    def validate_control(self) -> ControlSpec:
         if self.type in {"slider", "number"}:
             if self.minimum is None or self.maximum is None:
                 raise ValueError(f"{self.type} control requires minimum and maximum")
@@ -55,7 +55,11 @@ class ControlSpec(StrictModel):
         if self.type in {"select", "segmented"}:
             if not self.options:
                 raise ValueError(f"{self.type} control requires options")
-            if not any(type(self.default) is type(option.value) and self.default == option.value for option in self.options):
+            if not any(
+                type(self.default) is type(option.value)
+                and self.default == option.value
+                for option in self.options
+            ):
                 raise ValueError(f"{self.type} control default must match one option")
         return self
 
@@ -67,7 +71,7 @@ class RuntimeSpec(StrictModel):
     timeout_seconds: float | None = None
 
     @model_validator(mode="after")
-    def validate_entrypoint(self) -> "RuntimeSpec":
+    def validate_entrypoint(self) -> RuntimeSpec:
         if self.kind == "python" and not self.entrypoint:
             raise ValueError("python runtime requires an entrypoint")
         return self
@@ -98,7 +102,7 @@ class LessonBlock(StrictModel):
     props: dict[str, Any] = Field(default_factory=dict)
 
     @model_validator(mode="after")
-    def validate_block(self) -> "LessonBlock":
+    def validate_block(self) -> LessonBlock:
         if self.type == "markdown" and not (self.source or self.text):
             raise ValueError("markdown block requires source or text")
         if self.type == "prediction" and not self.text:
@@ -130,7 +134,7 @@ class ModuleManifest(StrictModel):
     tags: list[str] = Field(default_factory=list)
 
     @model_validator(mode="after")
-    def validate_identity(self) -> "ModuleManifest":
+    def validate_identity(self) -> ModuleManifest:
         ids = [control.id for control in self.controls]
         if len(ids) != len(set(ids)):
             raise ValueError("module control ids must be unique")

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable
 
 import yaml
 
@@ -45,7 +45,8 @@ class CourseRecord:
                     title=item.manifest.title,
                     summary=item.manifest.summary,
                     status=item.manifest.status,
-                    interactive=item.manifest.runtime.kind != "static" or bool(item.manifest.controls),
+                    interactive=item.manifest.runtime.kind != "static"
+                    or bool(item.manifest.controls),
                 )
                 for item in self.modules
             ],
@@ -73,7 +74,11 @@ class CourseCatalog:
         for root in self.roots:
             if not root.exists():
                 continue
-            candidates = [root / "course.yaml"] if (root / "course.yaml").is_file() else sorted(root.glob("*/course.yaml"))
+            candidates = (
+                [root / "course.yaml"]
+                if (root / "course.yaml").is_file()
+                else sorted(root.glob("*/course.yaml"))
+            )
             for manifest_path in candidates:
                 course_dir = manifest_path.parent
                 if course_dir.name.startswith("_"):
@@ -82,14 +87,25 @@ class CourseCatalog:
                 if manifest.id.startswith("_"):
                     continue
                 modules_dir = (course_dir / manifest.modules_path).resolve()
-                if course_dir.resolve() not in modules_dir.parents and modules_dir != course_dir.resolve():
-                    raise CatalogError(f"modules_path escapes course directory: {manifest.modules_path}")
+                if (
+                    course_dir.resolve() not in modules_dir.parents
+                    and modules_dir != course_dir.resolve()
+                ):
+                    raise CatalogError(
+                        f"modules_path escapes course directory: {manifest.modules_path}"
+                    )
                 modules: list[ModuleRecord] = []
                 if modules_dir.is_dir():
                     for module_path in sorted(modules_dir.glob("*/module.yaml")):
                         module = ModuleManifest.model_validate(self._read_yaml(module_path))
                         modules.append(ModuleRecord(module, module_path.parent))
-                modules.sort(key=lambda item: (item.manifest.number is None, item.manifest.number or 0, item.manifest.id))
+                modules.sort(
+                    key=lambda item: (
+                        item.manifest.number is None,
+                        item.manifest.number or 0,
+                        item.manifest.id,
+                    )
+                )
                 if manifest.id in discovered:
                     raise CatalogError(f"duplicate course id {manifest.id!r}")
                 discovered[manifest.id] = CourseRecord(manifest, course_dir, tuple(modules))

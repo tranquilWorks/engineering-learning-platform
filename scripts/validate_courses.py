@@ -14,8 +14,8 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "apps" / "api" / "src"))
 
-from elp_api.catalog import CourseCatalog  # noqa: E402
-from elp_api.runtime import ExperimentRuntime  # noqa: E402
+from elp_api.catalog import CourseCatalog
+from elp_api.runtime import ExperimentRuntime
 
 
 def stable_digest(value: Any) -> str:

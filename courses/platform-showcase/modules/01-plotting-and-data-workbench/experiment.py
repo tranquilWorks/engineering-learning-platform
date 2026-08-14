@@ -44,7 +44,9 @@ def run(parameters: dict[str, Any]) -> dict[str, Any]:
     frequencies = np.fft.rfftfreq(count, 1 / fs)
     magnitude_db = 20 * np.log10(np.maximum(np.abs(spectrum) / (count * coherent_gain / 2), 1e-10))
 
-    peak_indices, properties = signal.find_peaks(magnitude_db, height=-45, distance=max(1, int(count / fs * 5)))
+    peak_indices, _properties = signal.find_peaks(
+        magnitude_db, height=-45, distance=max(1, int(count / fs * 5))
+    )
     ordered = sorted(peak_indices, key=lambda index: magnitude_db[index], reverse=True)[:8]
     rows = [
         {

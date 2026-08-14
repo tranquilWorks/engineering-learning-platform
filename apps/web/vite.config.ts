@@ -16,9 +16,15 @@ export default defineConfig({
     chunkSizeWarningLimit: 1800,
     rollupOptions: {
       output: {
-        manualChunks: {
-          plotly: ["plotly.js-dist-min"],
-          markdown: ["react-markdown", "remark-gfm", "remark-math", "rehype-katex", "katex"],
+        manualChunks(id) {
+          if (id.includes("plotly.js-dist-min")) return "plotly";
+          if (
+            ["react-markdown", "remark-gfm", "remark-math", "rehype-katex", "katex"].some(
+              (dependency) => id.includes(`/node_modules/${dependency}/`),
+            )
+          ) {
+            return "markdown";
+          }
         },
       },
     },

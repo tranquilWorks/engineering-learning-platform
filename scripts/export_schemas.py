@@ -11,7 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "apps" / "api" / "src"))
 
-from elp_api.models import CourseManifest, ModuleManifest  # noqa: E402
+from elp_api.models import CourseManifest, ModuleManifest
 
 TARGETS = {
     ROOT / "packages" / "lesson-schema" / "course.schema.json": CourseManifest,

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -41,7 +40,8 @@ async def security_headers(request: Request, call_next):
     response.headers.setdefault(
         "Content-Security-Policy",
         "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; "
-        "img-src 'self' data: blob:; connect-src 'self'; font-src 'self' data:; worker-src 'self' blob:",
+        "img-src 'self' data: blob:; connect-src 'self'; font-src 'self' data:; "
+        "worker-src 'self' blob:",
     )
     return response
 

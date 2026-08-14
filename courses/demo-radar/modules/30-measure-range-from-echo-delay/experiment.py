@@ -51,8 +51,8 @@ def _simulate(parameters: dict[str, Any], *, noise: bool = True, delay_samples_o
     fs = float(parameters["sample_rate_mhz"]) * 1e6
     delay_us = float(parameters["round_trip_delay_us"])
     pulse_width_us = float(parameters["pulse_width_us"])
-    record_samples = max(20, int(round(CAPTURE_US * 1e-6 * fs)))
-    pulse_samples = max(1, int(round(pulse_width_us * 1e-6 * fs)))
+    record_samples = max(20, round(CAPTURE_US * 1e-6 * fs))
+    pulse_samples = max(1, round(pulse_width_us * 1e-6 * fs))
     delay_samples = delay_samples_override if delay_samples_override is not None else delay_us * 1e-6 * fs
 
     clean = _fractional_pulse(record_samples, pulse_samples, delay_samples)
