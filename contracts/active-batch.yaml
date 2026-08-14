@@ -1,8 +1,8 @@
 schema_version: 1
 batch:
   id: ELP-G-ONBOARDING-HOLD
-  title: Hold implementation during Portfolio Control onboarding
-  goal: Formally close the local B000 implementation authority and prevent target work until the separately reviewed Portfolio Control plan, managed harness, pointer, and post-harness baseline gate are complete.
+  title: Permit only bounded Portfolio Control harness onboarding
+  goal: Formally close the local B000 implementation authority and permit only the separately human-reviewed, control-pack-enumerated governance harness needed to complete Portfolio Control onboarding.
 sources:
   requirements:
     - docs/PORTFOLIO_CONTROL.md
@@ -11,18 +11,43 @@ sources:
   baseline_role: audited_seed_provenance_only
 scope:
   allowed_paths:
-    - __read_only_no_target_writes__
+    - .portfolio-harness.json
+    - AGENTS.md
+    - .gitignore
+    - .github/codex/**
+    - .agents/skills/**
+    - contracts/repo-profile.yaml
+    - contracts/profile-requirements.yaml
+    - contracts/verification.yaml
+    - docs/CURRENT_STATE.md
+    - docs/HANDOFF.md
+    - docs/evidence/README.md
+    - docs/plans/README.md
+    - docs/runbooks/README.md
+    - scripts/agent-verify.sh
+    - scripts/roadmap-autopilot.sh
   forbidden_paths:
     - apps/**
     - courses/**
     - packages/**
-    - scripts/**
-    - docs/**
-    - contracts/**
-    - .github/**
+    - scripts/dev.py
+    - scripts/validate_courses.py
+    - scripts/verify.sh
+    - docs/ARCHITECTURE.md
+    - docs/COMPONENT_MODEL.md
+    - docs/COURSE_AUTHORING.md
+    - docs/DEPLOYMENT.md
+    - docs/PORTFOLIO_CONTROL.md
+    - docs/PORTFOLIO_ONBOARDING_REQUEST.md
+    - docs/ROADMAP.md
+    - docs/SECURITY.md
+    - docs/adr/**
+    - docs/evidence/B000-2026-08-13.md
+    - docs/plans/B000-foundation.md
+    - contracts/active-batch.yaml
+    - contracts/engineering-learning-requirements.yaml
+    - .github/workflows/**
     - .codex/**
-    - .agents/**
-    - AGENTS.md
     - README.md
     - package.json
     - package-lock.json
@@ -34,7 +59,9 @@ scope:
     - .env.example
 acceptance:
   - B000 source and retained evidence remain immutable history; this hold does not claim its previously unperformed frontend, container, browser, accessibility, corporate, MATLAB, physical, release, deployment, or production validation.
-  - No target path is writable and no target-owned implementation or validation command is authorized by this hold.
+  - After the control-pack PR is human-approved and merged, one separate human-reviewed harness PR may change only the exact allowed paths, with product-pack source files restricted to approval-manifest entries and deterministic standard managed files restricted to their recorded manifest digests.
+  - No target-owned implementation, validation, package, build, test, application, or repository script command is authorized by this hold; the only executable preflight is the control-selected `git diff --check` in a disposable clone.
+  - Every target path outside the exact harness allowlist remains unwritable, including all product source, canonical courses, repository-native CI, existing contracts, existing product documentation, and existing target scripts.
   - Human review is required for this governance transition and for the later Portfolio Control planning, managed-harness, and pointer changes.
   - The control-owned post-harness baseline verifier must pass before a fresh implementation contract may be materialized against the then-current exact clean target main.
 validation:
@@ -47,11 +74,12 @@ risk:
     - the superseded B000 contract is treated as continuing implementation authority
     - a governance hold is mistaken for product, environment, or release evidence
   stop_conditions:
-    - any product source, course, harness, implementation, dependency, credential, release, deployment, production, MATLAB, or physical action is requested
+    - any target change outside the exact structural harness allowlist, any unmanifested onboarding source, or any target-owned command is requested
+    - any product source, canonical course, implementation, dependency, credential, release, deployment, production, MATLAB, or physical action is requested
     - any successor is proposed before the exact merged control and target baselines are independently attested
 rollback:
   strategy: Revert this governance-only PR under human review only if onboarding is abandoned; do not restore B000 as active implementation authority without a separately reviewed contract.
 evidence:
   output:
     - human-reviewed governance-transition PR identity and exact target revision
-  claim_boundary: This contract only removes stale target implementation authority during onboarding. It proves no platform behavior, environment capability, content right, release readiness, deployment, production state, MATLAB equivalence, or physical/operational result.
+  claim_boundary: This contract only removes stale target implementation authority and permits one bounded governance-harness PR during onboarding. It proves no platform behavior, environment capability, content right, release readiness, deployment, production state, MATLAB equivalence, or physical/operational result.
