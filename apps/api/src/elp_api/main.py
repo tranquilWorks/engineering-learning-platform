@@ -103,7 +103,12 @@ def get_module(course_id: str, module_id: str):
 @app.post("/api/v1/courses/{course_id}/modules/{module_id}/run")
 def run_module(course_id: str, module_id: str, request: RunRequest):
     try:
-        result = runtime.run(course_id, module_id, request.parameters)
+        result = runtime.run(
+            course_id,
+            module_id,
+            request.parameters,
+            expected_content_digest=request.expected_content_digest,
+        )
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except RuntimeTimeout as exc:

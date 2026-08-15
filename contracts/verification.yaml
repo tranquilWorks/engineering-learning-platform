@@ -1,9 +1,9 @@
 schema_version: 1
 commands:
   contract:
-    - PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_catalog.py apps/api/tests/test_runtime.py
+    - ./scripts/agent-verify.sh contract
   quick:
-    - PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests
+    - ./scripts/agent-verify.sh quick
   full:
     - ./scripts/agent-verify.sh full
-evidence_boundary: These target-owned commands are structurally installed but prohibited while ELP-G-ONBOARDING-HOLD is active. Execute them only under a separately reviewed successor contract.
+evidence_boundary: These commands provide repository-static, deterministic software, API protocol, and frontend build evidence for the active batch only. They do not provide hosted-CI, browser-universality, accessibility-universality, MATLAB, hardware, release, deployment, or production evidence.

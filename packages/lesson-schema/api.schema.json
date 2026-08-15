@@ -100,7 +100,11 @@
       "required": [
         "id",
         "label",
-        "type"
+        "description",
+        "unit",
+        "visible_when",
+        "type",
+        "default"
       ],
       "title": "ButtonControl",
       "type": "object"
@@ -165,9 +169,48 @@
         }
       },
       "required": [
-        "type"
+        "title",
+        "type",
+        "source",
+        "text",
+        "tone"
       ],
       "title": "CalloutBlock",
+      "type": "object"
+    },
+    "ContentRevision": {
+      "additionalProperties": false,
+      "properties": {
+        "content_digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Digest",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": 1,
+          "default": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        },
+        "source_git_commit": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{40}(?:[0-9a-f]{24})?$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Source Git Commit"
+        }
+      },
+      "required": [
+        "schema_version",
+        "content_digest",
+        "source_git_commit"
+      ],
+      "title": "ContentRevision",
       "type": "object"
     },
     "ControlOption": {
@@ -226,9 +269,59 @@
         }
       },
       "required": [
+        "title",
         "type"
       ],
       "title": "ControlsBlock",
+      "type": "object"
+    },
+    "CourseSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "modules": {
+          "items": {
+            "$ref": "#/$defs/ModuleSummary"
+          },
+          "title": "Modules",
+          "type": "array"
+        },
+        "order": {
+          "title": "Order",
+          "type": "integer"
+        },
+        "revision": {
+          "$ref": "#/$defs/ContentRevision"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "description",
+        "order",
+        "tags",
+        "modules",
+        "revision"
+      ],
+      "title": "CourseSummary",
       "type": "object"
     },
     "DividerBlock": {
@@ -295,9 +388,94 @@
         }
       },
       "required": [
-        "type"
+        "title",
+        "type",
+        "source",
+        "text"
       ],
       "title": "MarkdownBlock",
+      "type": "object"
+    },
+    "Metric": {
+      "additionalProperties": false,
+      "properties": {
+        "detail": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Detail"
+        },
+        "emphasis": {
+          "default": "normal",
+          "enum": [
+            "normal",
+            "primary",
+            "warning",
+            "danger"
+          ],
+          "title": "Emphasis",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "value",
+        "unit",
+        "detail",
+        "emphasis"
+      ],
+      "title": "Metric",
       "type": "object"
     },
     "MetricsBlock": {
@@ -323,9 +501,282 @@
         }
       },
       "required": [
+        "title",
         "type"
       ],
       "title": "MetricsBlock",
+      "type": "object"
+    },
+    "ModuleDocument": {
+      "additionalProperties": false,
+      "properties": {
+        "course": {
+          "$ref": "#/$defs/CourseSummary"
+        },
+        "default_parameters": {
+          "additionalProperties": true,
+          "title": "Default Parameters",
+          "type": "object"
+        },
+        "markdown_sources": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Markdown Sources",
+          "type": "object"
+        },
+        "module": {
+          "$ref": "#/$defs/ModuleManifest"
+        },
+        "module_revision": {
+          "$ref": "#/$defs/ContentRevision"
+        },
+        "platform_revision": {
+          "$ref": "#/$defs/PlatformRevision"
+        }
+      },
+      "required": [
+        "course",
+        "module",
+        "markdown_sources",
+        "default_parameters",
+        "module_revision",
+        "platform_revision"
+      ],
+      "title": "ModuleDocument",
+      "type": "object"
+    },
+    "ModuleManifest": {
+      "additionalProperties": false,
+      "properties": {
+        "blocks": {
+          "items": {
+            "discriminator": {
+              "mapping": {
+                "callout": "#/$defs/CalloutBlock",
+                "controls": "#/$defs/ControlsBlock",
+                "divider": "#/$defs/DividerBlock",
+                "markdown": "#/$defs/MarkdownBlock",
+                "metrics": "#/$defs/MetricsBlock",
+                "plot": "#/$defs/PlotBlock",
+                "plot_grid": "#/$defs/PlotGridBlock",
+                "prediction": "#/$defs/PredictionBlock",
+                "table": "#/$defs/TableBlock",
+                "widget": "#/$defs/WidgetBlock"
+              },
+              "propertyName": "type"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/MarkdownBlock"
+              },
+              {
+                "$ref": "#/$defs/PredictionBlock"
+              },
+              {
+                "$ref": "#/$defs/ControlsBlock"
+              },
+              {
+                "$ref": "#/$defs/MetricsBlock"
+              },
+              {
+                "$ref": "#/$defs/PlotBlock"
+              },
+              {
+                "$ref": "#/$defs/PlotGridBlock"
+              },
+              {
+                "$ref": "#/$defs/TableBlock"
+              },
+              {
+                "$ref": "#/$defs/CalloutBlock"
+              },
+              {
+                "$ref": "#/$defs/WidgetBlock"
+              },
+              {
+                "$ref": "#/$defs/DividerBlock"
+              }
+            ]
+          },
+          "title": "Blocks",
+          "type": "array"
+        },
+        "controls": {
+          "items": {
+            "discriminator": {
+              "mapping": {
+                "button": "#/$defs/ButtonControl",
+                "number": "#/$defs/NumberControl",
+                "segmented": "#/$defs/SegmentedControl",
+                "select": "#/$defs/SelectControl",
+                "slider": "#/$defs/SliderControl",
+                "toggle": "#/$defs/ToggleControl"
+              },
+              "propertyName": "type"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/SliderControl"
+              },
+              {
+                "$ref": "#/$defs/NumberControl"
+              },
+              {
+                "$ref": "#/$defs/ToggleControl"
+              },
+              {
+                "$ref": "#/$defs/SelectControl"
+              },
+              {
+                "$ref": "#/$defs/SegmentedControl"
+              },
+              {
+                "$ref": "#/$defs/ButtonControl"
+              }
+            ]
+          },
+          "title": "Controls",
+          "type": "array"
+        },
+        "guiding_question": {
+          "default": "",
+          "title": "Guiding Question",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z0-9][a-z0-9-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "number": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Number"
+        },
+        "runtime": {
+          "discriminator": {
+            "mapping": {
+              "python": "#/$defs/PythonRuntime",
+              "static": "#/$defs/StaticRuntime"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/StaticRuntime"
+            },
+            {
+              "$ref": "#/$defs/PythonRuntime"
+            }
+          ],
+          "title": "Runtime"
+        },
+        "schema_version": {
+          "const": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        },
+        "status": {
+          "default": "draft",
+          "enum": [
+            "draft",
+            "implemented",
+            "static"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "summary": {
+          "default": "",
+          "title": "Summary",
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
+        },
+        "title": {
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "id",
+        "number",
+        "title",
+        "summary",
+        "guiding_question",
+        "status",
+        "runtime",
+        "controls",
+        "blocks",
+        "tags"
+      ],
+      "title": "ModuleManifest",
+      "type": "object"
+    },
+    "ModuleSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "interactive": {
+          "title": "Interactive",
+          "type": "boolean"
+        },
+        "number": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Number"
+        },
+        "revision": {
+          "$ref": "#/$defs/ContentRevision"
+        },
+        "status": {
+          "title": "Status",
+          "type": "string"
+        },
+        "summary": {
+          "title": "Summary",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "number",
+        "title",
+        "summary",
+        "status",
+        "interactive",
+        "revision"
+      ],
+      "title": "ModuleSummary",
       "type": "object"
     },
     "NumberControl": {
@@ -439,9 +890,13 @@
       "required": [
         "id",
         "label",
+        "description",
+        "unit",
+        "visible_when",
         "default",
         "minimum",
         "maximum",
+        "step",
         "type"
       ],
       "title": "NumberControl",
@@ -480,6 +935,49 @@
       "title": "ParameterMapProps",
       "type": "object"
     },
+    "PlatformRevision": {
+      "additionalProperties": false,
+      "properties": {
+        "platform_git_commit": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{40}(?:[0-9a-f]{24})?$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Platform Git Commit"
+        },
+        "platform_version": {
+          "minLength": 1,
+          "title": "Platform Version",
+          "type": "string"
+        },
+        "runtime_content_digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Runtime Content Digest",
+          "type": "string"
+        },
+        "runtime_kind": {
+          "enum": [
+            "python-in-process",
+            "static"
+          ],
+          "title": "Runtime Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "platform_version",
+        "platform_git_commit",
+        "runtime_content_digest",
+        "runtime_kind"
+      ],
+      "title": "PlatformRevision",
+      "type": "object"
+    },
     "PlotBlock": {
       "additionalProperties": false,
       "properties": {
@@ -508,6 +1006,7 @@
         }
       },
       "required": [
+        "title",
         "type",
         "plot"
       ],
@@ -546,10 +1045,51 @@
         }
       },
       "required": [
+        "title",
         "type",
         "plots"
       ],
       "title": "PlotGridBlock",
+      "type": "object"
+    },
+    "PlotSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "config": {
+          "additionalProperties": true,
+          "title": "Config",
+          "type": "object"
+        },
+        "data": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "minItems": 1,
+          "title": "Data",
+          "type": "array"
+        },
+        "frames": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Frames",
+          "type": "array"
+        },
+        "layout": {
+          "additionalProperties": true,
+          "title": "Layout",
+          "type": "object"
+        }
+      },
+      "required": [
+        "data",
+        "layout",
+        "config",
+        "frames"
+      ],
+      "title": "PlotSpec",
       "type": "object"
     },
     "PredictionBlock": {
@@ -593,8 +1133,10 @@
         }
       },
       "required": [
+        "title",
         "type",
-        "text"
+        "text",
+        "reveal"
       ],
       "title": "PredictionBlock",
       "type": "object"
@@ -635,9 +1177,111 @@
       },
       "required": [
         "kind",
-        "entrypoint"
+        "entrypoint",
+        "trust",
+        "timeout_seconds"
       ],
       "title": "PythonRuntime",
+      "type": "object"
+    },
+    "RunRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "expected_content_digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Expected Content Digest",
+          "type": "string"
+        },
+        "parameters": {
+          "additionalProperties": true,
+          "title": "Parameters",
+          "type": "object"
+        }
+      },
+      "required": [
+        "parameters",
+        "expected_content_digest"
+      ],
+      "title": "RunRequest",
+      "type": "object"
+    },
+    "RunResult": {
+      "additionalProperties": false,
+      "properties": {
+        "course_revision": {
+          "$ref": "#/$defs/ContentRevision"
+        },
+        "diagnostics": {
+          "additionalProperties": true,
+          "title": "Diagnostics",
+          "type": "object"
+        },
+        "explanations": {
+          "patternProperties": {
+            "^[A-Za-z0-9][A-Za-z0-9_.-]*$": {
+              "type": "string"
+            }
+          },
+          "title": "Explanations",
+          "type": "object"
+        },
+        "metrics": {
+          "items": {
+            "$ref": "#/$defs/Metric"
+          },
+          "title": "Metrics",
+          "type": "array"
+        },
+        "module_revision": {
+          "$ref": "#/$defs/ContentRevision"
+        },
+        "parameters": {
+          "additionalProperties": true,
+          "title": "Parameters",
+          "type": "object"
+        },
+        "platform_revision": {
+          "$ref": "#/$defs/PlatformRevision"
+        },
+        "plots": {
+          "patternProperties": {
+            "^[A-Za-z0-9][A-Za-z0-9_.-]*$": {
+              "$ref": "#/$defs/PlotSpec"
+            }
+          },
+          "title": "Plots",
+          "type": "object"
+        },
+        "tables": {
+          "patternProperties": {
+            "^[A-Za-z0-9][A-Za-z0-9_.-]*$": {
+              "$ref": "#/$defs/TableSpec"
+            }
+          },
+          "title": "Tables",
+          "type": "object"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "parameters",
+        "metrics",
+        "plots",
+        "tables",
+        "explanations",
+        "warnings",
+        "diagnostics",
+        "course_revision",
+        "module_revision",
+        "platform_revision"
+      ],
+      "title": "RunResult",
       "type": "object"
     },
     "SegmentedControl": {
@@ -744,6 +1388,9 @@
       "required": [
         "id",
         "label",
+        "description",
+        "unit",
+        "visible_when",
         "type",
         "default",
         "options"
@@ -855,6 +1502,9 @@
       "required": [
         "id",
         "label",
+        "description",
+        "unit",
+        "visible_when",
         "type",
         "default",
         "options"
@@ -973,9 +1623,13 @@
       "required": [
         "id",
         "label",
+        "description",
+        "unit",
+        "visible_when",
         "default",
         "minimum",
         "maximum",
+        "step",
         "type"
       ],
       "title": "SliderControl",
@@ -997,6 +1651,10 @@
           "type": "string"
         }
       },
+      "required": [
+        "kind",
+        "trust"
+      ],
       "title": "StaticRuntime",
       "type": "object"
     },
@@ -1028,10 +1686,39 @@
         }
       },
       "required": [
+        "title",
         "type",
         "table"
       ],
       "title": "TableBlock",
+      "type": "object"
+    },
+    "TableSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "columns": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Columns",
+          "type": "array"
+        },
+        "rows": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Rows",
+          "type": "array"
+        }
+      },
+      "required": [
+        "columns",
+        "rows"
+      ],
+      "title": "TableSpec",
       "type": "object"
     },
     "ToggleControl": {
@@ -1117,6 +1804,9 @@
       "required": [
         "id",
         "label",
+        "description",
+        "unit",
+        "visible_when",
         "type",
         "default"
       ],
@@ -1154,6 +1844,7 @@
         }
       },
       "required": [
+        "title",
         "type",
         "widget",
         "props"
@@ -1163,177 +1854,5 @@
     }
   },
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "additionalProperties": false,
-  "properties": {
-    "blocks": {
-      "items": {
-        "discriminator": {
-          "mapping": {
-            "callout": "#/$defs/CalloutBlock",
-            "controls": "#/$defs/ControlsBlock",
-            "divider": "#/$defs/DividerBlock",
-            "markdown": "#/$defs/MarkdownBlock",
-            "metrics": "#/$defs/MetricsBlock",
-            "plot": "#/$defs/PlotBlock",
-            "plot_grid": "#/$defs/PlotGridBlock",
-            "prediction": "#/$defs/PredictionBlock",
-            "table": "#/$defs/TableBlock",
-            "widget": "#/$defs/WidgetBlock"
-          },
-          "propertyName": "type"
-        },
-        "oneOf": [
-          {
-            "$ref": "#/$defs/MarkdownBlock"
-          },
-          {
-            "$ref": "#/$defs/PredictionBlock"
-          },
-          {
-            "$ref": "#/$defs/ControlsBlock"
-          },
-          {
-            "$ref": "#/$defs/MetricsBlock"
-          },
-          {
-            "$ref": "#/$defs/PlotBlock"
-          },
-          {
-            "$ref": "#/$defs/PlotGridBlock"
-          },
-          {
-            "$ref": "#/$defs/TableBlock"
-          },
-          {
-            "$ref": "#/$defs/CalloutBlock"
-          },
-          {
-            "$ref": "#/$defs/WidgetBlock"
-          },
-          {
-            "$ref": "#/$defs/DividerBlock"
-          }
-        ]
-      },
-      "title": "Blocks",
-      "type": "array"
-    },
-    "controls": {
-      "items": {
-        "discriminator": {
-          "mapping": {
-            "button": "#/$defs/ButtonControl",
-            "number": "#/$defs/NumberControl",
-            "segmented": "#/$defs/SegmentedControl",
-            "select": "#/$defs/SelectControl",
-            "slider": "#/$defs/SliderControl",
-            "toggle": "#/$defs/ToggleControl"
-          },
-          "propertyName": "type"
-        },
-        "oneOf": [
-          {
-            "$ref": "#/$defs/SliderControl"
-          },
-          {
-            "$ref": "#/$defs/NumberControl"
-          },
-          {
-            "$ref": "#/$defs/ToggleControl"
-          },
-          {
-            "$ref": "#/$defs/SelectControl"
-          },
-          {
-            "$ref": "#/$defs/SegmentedControl"
-          },
-          {
-            "$ref": "#/$defs/ButtonControl"
-          }
-        ]
-      },
-      "title": "Controls",
-      "type": "array"
-    },
-    "guiding_question": {
-      "default": "",
-      "title": "Guiding Question",
-      "type": "string"
-    },
-    "id": {
-      "pattern": "^[a-z0-9][a-z0-9-]*$",
-      "title": "Id",
-      "type": "string"
-    },
-    "number": {
-      "anyOf": [
-        {
-          "type": "integer"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Number"
-    },
-    "runtime": {
-      "discriminator": {
-        "mapping": {
-          "python": "#/$defs/PythonRuntime",
-          "static": "#/$defs/StaticRuntime"
-        },
-        "propertyName": "kind"
-      },
-      "oneOf": [
-        {
-          "$ref": "#/$defs/StaticRuntime"
-        },
-        {
-          "$ref": "#/$defs/PythonRuntime"
-        }
-      ],
-      "title": "Runtime"
-    },
-    "schema_version": {
-      "const": 1,
-      "title": "Schema Version",
-      "type": "integer"
-    },
-    "status": {
-      "default": "draft",
-      "enum": [
-        "draft",
-        "implemented",
-        "static"
-      ],
-      "title": "Status",
-      "type": "string"
-    },
-    "summary": {
-      "default": "",
-      "title": "Summary",
-      "type": "string"
-    },
-    "tags": {
-      "items": {
-        "minLength": 1,
-        "type": "string"
-      },
-      "title": "Tags",
-      "type": "array"
-    },
-    "title": {
-      "minLength": 1,
-      "title": "Title",
-      "type": "string"
-    }
-  },
-  "required": [
-    "schema_version",
-    "id",
-    "title"
-  ],
-  "title": "ModuleManifest",
-  "type": "object"
+  "title": "Engineering Learning Platform API contract"
 }

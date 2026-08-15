@@ -6,6 +6,7 @@ import type { CourseSummary, ModuleDocument, RunResult } from "./types";
 import { AppShell } from "./components/AppShell";
 import { BlockRenderer } from "./components/BlockRenderer";
 import { Controls } from "./components/Controls";
+import { RevisionDiagnostics } from "./components/RevisionDiagnostics";
 
 function useRoute(): Route {
   const [route, setRoute] = useState<Route>(() => parseRoute());
@@ -66,6 +67,7 @@ function CoursePage({ course }: { course: CourseSummary }) {
         <p>{course.description}</p>
         <div className="tag-row">{course.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
       </header>
+      <RevisionDiagnostics label={`${course.title} course`} content={course.revision} />
       <section className="module-list-section">
         <div className="section-heading"><span className="eyebrow">Curriculum</span><h2>{course.modules.length} learning modules</h2></div>
         <div className="module-list">
@@ -108,8 +110,21 @@ function ModulePage({ courseId, moduleId }: { courseId: string; moduleId: string
     const controller = new AbortController();
     const timer = window.setTimeout(() => {
       setBusy(true); setError(null);
-      api.run(courseId, moduleId, parameters, controller.signal)
-        .then((value) => { if (sequence === runSequence.current) setResult(value); })
+      api.run(
+        courseId,
+        moduleId,
+        parameters,
+        document.module_revision.content_digest,
+        controller.signal,
+      )
+        .then((value) => {
+          if (sequence !== runSequence.current) return;
+          if (value.module_revision.content_digest !== document.module_revision.content_digest) {
+            setError("The experiment returned a stale content revision. Reload this module.");
+            return;
+          }
+          setResult(value);
+        })
         .catch((reason: unknown) => { if (!controller.signal.aborted && sequence === runSequence.current) setError(reason instanceof Error ? reason.message : "Experiment failed"); })
         .finally(() => { if (!controller.signal.aborted && sequence === runSequence.current) setBusy(false); });
     }, 110);
@@ -133,6 +148,11 @@ function ModulePage({ courseId, moduleId }: { courseId: string; moduleId: string
         </div>
         <div className="tag-row">{document.module.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
       </header>
+      <RevisionDiagnostics
+        label={`${document.module.title} module`}
+        content={result?.module_revision ?? document.module_revision}
+        platform={result?.platform_revision ?? document.platform_revision}
+      />
       {error ? <div className="runtime-error"><AlertTriangle size={17} /><span>{error}</span></div> : null}
       <div className="module-layout">
         {document.module.controls.length ? (

@@ -4,6 +4,7 @@ import importlib.util
 import inspect
 import json
 import math
+import sys
 import threading
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
@@ -12,7 +13,9 @@ from pathlib import Path
 from types import ModuleType
 from typing import Any
 
-from .catalog import CourseCatalog
+from pydantic import ValidationError
+
+from .catalog import CatalogError, CourseCatalog, ModuleRecord, platform_revision
 from .models import RunResult
 from .serialization import jsonable
 
@@ -42,10 +45,13 @@ class ExperimentRuntime:
     def __init__(self, catalog: CourseCatalog, default_timeout: float = 5.0) -> None:
         self.catalog = catalog
         self.default_timeout = default_timeout
-        self._modules: dict[tuple[Path, int], ModuleType] = {}
+        self._modules: dict[tuple[Path, str], ModuleType] = {}
         self._lock = threading.Lock()
 
-    def _load_callable(self, module_dir: Path, entrypoint: str) -> Callable[[dict[str, Any]], Any]:
+    def _load_callable(
+        self, record: ModuleRecord, entrypoint: str
+    ) -> Callable[[dict[str, Any]], Any]:
+        module_dir = record.path
         relative, separator, function_name = entrypoint.partition(":")
         if not separator or not relative.endswith(".py") or not function_name:
             raise RuntimeContractError("entrypoint must look like experiment.py:run")
@@ -54,20 +60,23 @@ class ExperimentRuntime:
             raise RuntimeContractError("entrypoint escapes module directory")
         if not path.is_file():
             raise RuntimeContractError(f"entrypoint file does not exist: {relative}")
-        key = (path, path.stat().st_mtime_ns)
+        key = (path, record.revision.content_digest)
         with self._lock:
             module = self._modules.get(key)
             if module is None:
-                name = f"elp_course_{abs(hash(key))}"
+                name = f"elp_course_{record.revision.content_digest}"
                 spec = importlib.util.spec_from_file_location(name, path)
                 if spec is None or spec.loader is None:
                     raise RuntimeContractError(f"cannot import {relative}")
                 module = importlib.util.module_from_spec(spec)
-                spec.loader.exec_module(module)
+                previous = sys.dont_write_bytecode
+                sys.dont_write_bytecode = True
+                try:
+                    spec.loader.exec_module(module)
+                finally:
+                    sys.dont_write_bytecode = previous
                 self._modules = {
-                    cached: value
-                    for cached, value in self._modules.items()
-                    if cached[0] != path
+                    cached: value for cached, value in self._modules.items() if cached[0] != path
                 }
                 self._modules[key] = module
         function = getattr(module, function_name, None)
@@ -79,7 +88,6 @@ class ExperimentRuntime:
                 "experiment function must accept exactly one parameter mapping"
             )
         return function
-
 
     @staticmethod
     def _validate_control_value(control: Any, value: Any) -> Any:
@@ -123,14 +131,36 @@ class ExperimentRuntime:
             merged[control.id] = self._validate_control_value(control, value)
         return merged
 
-    def run(self, course_id: str, module_id: str, parameters: dict[str, Any]) -> RunResult:
-        _, record = self.catalog.module_record(course_id, module_id)
+    def run(
+        self,
+        course_id: str,
+        module_id: str,
+        parameters: dict[str, Any],
+        expected_content_digest: str | None = None,
+    ) -> RunResult:
+        course, record = self.catalog.module_record(course_id, module_id)
         manifest = record.manifest
+        if (
+            expected_content_digest is not None
+            and expected_content_digest != record.revision.content_digest
+        ):
+            raise RuntimeContractError(
+                "module content revision is stale; reload the module document"
+            )
+        try:
+            record.assert_unchanged()
+        except CatalogError as exc:
+            raise RuntimeContractError(str(exc)) from exc
         merged = self._validated_parameters(manifest, parameters)
         if manifest.runtime.kind == "static":
-            return RunResult(parameters=merged)
+            return RunResult(
+                parameters=merged,
+                course_revision=course.revision,
+                module_revision=record.revision,
+                platform_revision=platform_revision("static"),
+            )
         assert manifest.runtime.entrypoint is not None
-        function = self._load_callable(record.path, manifest.runtime.entrypoint)
+        function = self._load_callable(record, manifest.runtime.entrypoint)
         timeout = manifest.runtime.timeout_seconds or self.default_timeout
         executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="elp-experiment")
         future = executor.submit(function, merged)
@@ -140,16 +170,39 @@ class ExperimentRuntime:
             future.cancel()
             executor.shutdown(wait=False, cancel_futures=True)
             raise RuntimeTimeout(f"experiment exceeded {timeout:.2f} seconds") from exc
-        except BaseException:
+        except Exception as exc:
             executor.shutdown(wait=True, cancel_futures=True)
-            raise
+            raise RuntimeContractError(f"experiment raised {type(exc).__name__}: {exc}") from exc
         else:
             executor.shutdown(wait=True)
-        safe = jsonable(raw)
+        try:
+            record.assert_unchanged()
+            safe = jsonable(raw)
+        except (CatalogError, TypeError, ValueError) as exc:
+            raise RuntimeContractError(f"experiment returned invalid data: {exc}") from exc
         try:
             json.dumps(safe, separators=(",", ":"), allow_nan=False).encode("utf-8")
         except (TypeError, ValueError) as exc:
             raise RuntimeContractError(f"experiment returned invalid data: {exc}") from exc
         if not isinstance(safe, dict):
             raise RuntimeContractError("experiment must return a mapping")
-        return RunResult.model_validate(safe | {"parameters": merged})
+        reserved = {"parameters", "course_revision", "module_revision", "platform_revision"}
+        supplied_reserved = sorted(reserved & set(safe))
+        if supplied_reserved:
+            raise RuntimeContractError(
+                f"experiment returned platform-owned fields: {supplied_reserved}"
+            )
+        try:
+            result = RunResult.model_validate(
+                safe
+                | {
+                    "parameters": merged,
+                    "course_revision": course.revision,
+                    "module_revision": record.revision,
+                    "platform_revision": platform_revision("python"),
+                }
+            )
+            self.catalog.validate_result_references(course_id, record, result)
+        except (ValidationError, CatalogError) as exc:
+            raise RuntimeContractError(f"invalid result envelope: {exc}") from exc
+        return result
