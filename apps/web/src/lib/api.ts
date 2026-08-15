@@ -43,10 +43,18 @@ export const api = {
     courseId: string,
     moduleId: string,
     parameters: Record<string, unknown>,
+    expectedContentDigest: string,
     signal?: AbortSignal,
   ) =>
     request<RunResult>(
       `/api/v1/courses/${encodeURIComponent(courseId)}/modules/${encodeURIComponent(moduleId)}/run`,
-      { method: "POST", body: JSON.stringify({ parameters }), signal },
+      {
+        method: "POST",
+        body: JSON.stringify({
+          parameters,
+          expected_content_digest: expectedContentDigest,
+        }),
+        signal,
+      },
     ),
 };

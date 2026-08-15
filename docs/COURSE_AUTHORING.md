@@ -38,6 +38,11 @@ tags: [controls, estimation, guidance]
 
 IDs are stable machine identifiers. Do not rename them to improve display copy; change `title` instead.
 
+`schema_version` is required and must be the integer `1`; booleans, strings,
+missing values, older values, and future values are rejected. Unknown fields
+are errors rather than extension points. Propose a generic platform-contract
+change before authoring a new control, block, widget, runtime, or envelope field.
+
 ## Define a module
 
 ```yaml
@@ -262,3 +267,24 @@ Put module-owned images and downloadable media under `assets/`. Relative Markdow
 ```
 
 Only platform-registered widget IDs render. Independent course folders cannot ship executable frontend JavaScript.
+
+## Revision identity
+
+Catalog and module API documents expose the exact schema version, deterministic
+content SHA-256, and source Git commit when available. Non-Git mounts explicitly
+report no Git revision. Experiment requests include the displayed module digest;
+the API rejects stale requests after a catalog reload. Results repeat course and
+module identities and add platform/runtime identities so evidence can bind the
+exact pair that ran.
+
+Validation and generation are read-only with respect to course roots. Generate
+all JSON Schema and TypeScript derivatives together with:
+
+```bash
+PYTHONPATH=apps/api/src python3 scripts/export_schemas.py
+PYTHONPATH=apps/api/src python3 scripts/export_schemas.py --check
+```
+
+The generated derivatives describe only the current executable contract and do
+not promise historical compatibility. Recovery is a reviewed Git pin or revert
+of the platform and course to their last validated pair.

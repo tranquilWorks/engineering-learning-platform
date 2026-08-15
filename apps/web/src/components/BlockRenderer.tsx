@@ -1,4 +1,4 @@
-import type { LessonBlock, ModuleDocument, RunResult } from "../types";
+import type { CalloutBlock, ModuleDocument, RunResult } from "../types";
 import { Controls } from "./Controls";
 import { DataTable } from "./DataTable";
 import { Markdown } from "./Markdown";
@@ -16,7 +16,7 @@ interface Props {
   onReset: () => void;
 }
 
-function Callout({ block, result }: { block: LessonBlock; result: RunResult | null }) {
+function Callout({ block, result }: { block: CalloutBlock; result: RunResult | null }) {
   const dynamic = block.source ? result?.explanations[block.source] : undefined;
   return (
     <section className={`callout callout-${block.tone}`}>

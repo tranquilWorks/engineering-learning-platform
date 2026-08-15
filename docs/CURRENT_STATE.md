@@ -1,5 +1,12 @@
 # Current state
 
-The foundation platform and 13 course gitlinks are retained at the merged target baseline. `ELP-G-ONBOARDING-HOLD` is the active contract, so no target-owned implementation or validation command is authorized during onboarding.
+ELP-B010-01 is the active implementation contract on a branch rooted at audited
+target baseline `60c1b68797743616d08eb1ad34ee96f98d3bc36a`. It implements the
+DR-001 strict version-one course boundary, semantic catalog promotion,
+deterministic content and source Git/null identities, runtime identity and stale
+request protection, generated JSON Schema/TypeScript drift checks, and
+read-only Git recovery fixtures.
 
-Portfolio Control onboarding must merge the control pack, this managed harness, and the registered pointer before the read-only structural baseline gate can pass.
+The 13 canonical course gitlinks and every path under `courses/` remain
+unchanged. The candidate is not merged, released, deployed, or production
+validated; hosted CI and human review remain external gates.

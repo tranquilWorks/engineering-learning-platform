@@ -27,6 +27,12 @@ The roadmap is a dependency-ordered set of bounded batches suitable for Portfoli
 - compatibility tests for version-one courses;
 - generated TypeScript types from the canonical schema.
 
+ELP-B010-01 establishes the strict current v1 boundary, semantic reference
+validation, deterministic content/Git/runtime identities, generated artifact
+drift checks, and Git pin/revert recovery fixtures. Historical readers and
+in-place migration remain intentionally absent; any later contract increment
+requires its own reviewed batch.
+
 ## B020 — Course ingestion and migration tooling
 
 **Depends on:** B010

@@ -1,84 +1,129 @@
 schema_version: 1
 batch:
-  id: ELP-G-ONBOARDING-HOLD
-  title: Permit only bounded Portfolio Control harness onboarding
-  goal: Formally close the local B000 implementation authority and permit only the separately human-reviewed, control-pack-enumerated governance harness needed to complete Portfolio Control onboarding.
+  id: ELP-B010-01
+  title: Enforce the strict v1 course contract and revision identity
+  goal: Implement the DR-001 single-version course boundary by accepting exactly schema version 1, rejecting unknown structure while preserving explicit content carriers, validating lesson-to-result references, and surfacing deterministic content plus Git and runtime revision identities without changing any canonical course repository.
 sources:
+  product: products/engineering-learning-platform/product.yaml
   requirements:
-    - docs/PORTFOLIO_CONTROL.md
-    - docs/evidence/B000-2026-08-13.md
-  baseline_commit: 940350eaed93aef00fc3cb58c9abbc78599b0735
-  baseline_role: audited_seed_provenance_only
+    - products/engineering-learning-platform/PRD.md#cap-contract-01--strict-course-contract-and-revision-identity
+    - products/engineering-learning-platform/acceptance.yaml#CAP-CONTRACT-01
+    - products/engineering-learning-platform/decisions/DR-001.md
+    - products/engineering-learning-platform/architecture.md#strict-contract-and-course-conversion
+  milestone: products/engineering-learning-platform/milestones/ELP-M1.md
+  baseline_commit: 60c1b68797743616d08eb1ad34ee96f98d3bc36a
+  accepted_baseline_anchor: 60c1b68797743616d08eb1ad34ee96f98d3bc36a
+  baseline_policy: >-
+    baseline_commit permanently identifies the audited clean pre-activation target. The implementation branch must start at exact origin/main, baseline_commit must remain its ancestor, and any committed baseline-to-origin/main delta must consist only of merged governed harness synchronization commits changing managed harness files. Before product implementation, the runner may overlay exactly `contracts/active-batch.yaml` and `contracts/repo-profile.yaml` as uncommitted activation-owned files; their contents must bind the exact merged control revision containing this contract, and they are excluded from the product-owned dirty-state and scope comparison. No committed activation successor is required. Any other uncommitted path, product-owned target movement, unexpected intervening commit or path, divergence, missing ancestry, overlay mismatch, or unmerged control revision requires replanning.
+  accepted_decision: DR-001
+  control_plane_planning_baseline: 8d8b705bb7542391f63960e8b3811cd5c8c9e490
+  control_plane_activation_policy: The runner-installed target contract and managed profile overlays must pin the exact merged control revision containing DR-001 and this contract. That revision must be an ancestor of the fetched control-plane origin/main; an unrelated or stale local checkout is not the authority. The planning revision, a working-tree-only control revision, or an unmerged commit is not activation evidence.
+  control_plane_repository: kpbianco/portfolio-control
+  control_plane_path: products/engineering-learning-platform/batches/ELP-B010-01.yaml
+  control_plane_revision: f46251f31e61d468871793a02506285c65c1ec29  # pragma: allowlist secret
+dependencies:
+  - ELP-G-PLAN-BASELINE
 scope:
   allowed_paths:
-    - .portfolio-harness.json
     - AGENTS.md
-    - .gitignore
-    - .github/codex/**
-    - .agents/skills/**
-    - contracts/repo-profile.yaml
-    - contracts/profile-requirements.yaml
+    - .agents/skills/engineering-learning-platform-delivery/SKILL.md
+    - apps/api/src/elp_api/catalog.py
+    - apps/api/src/elp_api/main.py
+    - apps/api/src/elp_api/models.py
+    - apps/api/src/elp_api/runtime.py
+    - apps/api/src/elp_api/serialization.py
+    - apps/api/tests/**
+    - apps/web/src/**
+    - contracts/active-batch.yaml
     - contracts/verification.yaml
-    - docs/CURRENT_STATE.md
-    - docs/HANDOFF.md
-    - docs/evidence/README.md
-    - docs/plans/README.md
-    - docs/runbooks/README.md
-    - scripts/agent-verify.sh
-    - scripts/roadmap-autopilot.sh
-  forbidden_paths:
-    - apps/**
-    - courses/**
-    - packages/**
-    - scripts/dev.py
-    - scripts/validate_courses.py
-    - scripts/verify.sh
     - docs/ARCHITECTURE.md
     - docs/COMPONENT_MODEL.md
     - docs/COURSE_AUTHORING.md
-    - docs/DEPLOYMENT.md
-    - docs/PORTFOLIO_CONTROL.md
-    - docs/PORTFOLIO_ONBOARDING_REQUEST.md
+    - docs/CURRENT_STATE.md
+    - docs/HANDOFF.md
     - docs/ROADMAP.md
     - docs/SECURITY.md
+    - docs/evidence/ELP-B010-01-*.md
+    - packages/lesson-schema/**
+    - scripts/agent-verify.sh
+    - scripts/export_schemas.py
+    - scripts/validate_courses.py
+  forbidden_paths:
+    - .portfolio-harness.json
+    - .github/**
+    - .codex/**
+    - courses/**
+    - contracts/engineering-learning-requirements.yaml
+    - contracts/profile-requirements.yaml
+    - contracts/repo-profile.yaml
     - docs/adr/**
     - docs/evidence/B000-2026-08-13.md
     - docs/plans/B000-foundation.md
-    - contracts/active-batch.yaml
-    - contracts/engineering-learning-requirements.yaml
-    - .github/workflows/**
-    - .codex/**
-    - README.md
+    - apps/api/pyproject.toml
+    - apps/web/package.json
+    - apps/web/package-lock.json
     - package.json
     - package-lock.json
-    - Makefile
     - Dockerfile
     - compose.yaml
+    - Makefile
     - .dockerignore
     - .env.example
+    - scripts/dev.py
 acceptance:
-  - B000 source and retained evidence remain immutable history; this hold does not claim its previously unperformed frontend, container, browser, accessibility, corporate, MATLAB, physical, release, deployment, or production validation.
-  - After the control-pack PR is human-approved and merged, one separate human-reviewed harness PR may change only the exact allowed paths, with product-pack source files restricted to approval-manifest entries and deterministic standard managed files restricted to their recorded manifest digests.
-  - No target-owned implementation, validation, package, build, test, application, or repository script command is authorized by this hold; the only executable preflight is the control-selected `git diff --check` in a disposable clone.
-  - Every target path outside the exact harness allowlist remains unwritable, including all product source, canonical courses, repository-native CI, existing contracts, existing product documentation, and existing target scripts.
-  - Human review is required for this governance transition and for the later Portfolio Control planning, managed-harness, and pointer changes.
-  - The control-owned post-harness baseline verifier must pass before a fresh implementation contract may be materialized against the then-current exact clean target main.
+  - The implementation branch starts from exact origin/main; audited baseline 60c1b68797743616d08eb1ad34ee96f98d3bc36a remains its ancestor and every committed intervening change is a merged governed harness synchronization limited to managed harness files. Before product edits the only uncommitted paths are runner-owned `contracts/active-batch.yaml` and `contracts/repo-profile.yaml` overlays whose contents bind the exact human-merged control revision containing DR-001 and this batch; that control revision is proven against fetched control origin/main rather than an unrelated stale local checkout. Product scope and cleanliness checks exclude only those exact activation overlays.
+  - CourseManifest and ModuleManifest require the integer schema_version value 1 rather than defaulting it; missing, boolean, string, zero, negative, older, and future versions fail closed with stable file- and version-aware diagnostics.
+  - Unknown structural fields fail at every typed course/module, runtime, control, lesson-block, widget-property, request, and result-envelope boundary. Markdown/text bodies and explicitly documented Plotly-compatible payload values remain content carriers, but do not permit unknown surrounding structure, undeclared renderer/control types, missing units/labels where required, or dangling plot/table/result references.
+  - The accepted renderer vocabulary remains generic and subject-independent. Course fixtures may demonstrate requirements but no DSP, radar, controls, RF, MATLAB, or other course-specific equation or semantic branch is added to platform models, API, or React components.
+  - Catalog validation computes a deterministic content digest from the exact validated course/module contract inputs, reports source Git commit identity when available, explicitly reports its absence for non-Git mounts, and exposes content, schema, and platform/runtime identities through API documents, run results, and learner-visible diagnostics.
+  - Schema and TypeScript derivatives are generated from the accepted executable contract in one deterministic command, committed, and checked for drift. They carry no independent compatibility promise and represent exactly the current platform contract.
+  - Semantic validation rejects duplicate identities, invalid conditional-control references, path escape, undeclared widgets, and missing referenced plot/table/result outputs with stable diagnostics before a course integration is accepted.
+  - No path under courses/ or any mounted/sibling course repository changes. Validation uses synthetic or existing read-only fixtures; any later dsp-radar-learning or other course retrofit requires its own course-owned branch, CI, review, and release decision.
+  - Git pin/revert fixtures demonstrate recovery to the last reviewed platform/course pair. No in-place source mutation, historical reader, compatibility window, database migration, quarantine service, release, deployment, or production mechanism is introduced or claimed.
 validation:
   local:
-    - git diff --check HEAD^
-    - git status --short --branch
+    - ./scripts/agent-verify.sh contract
+    - ./scripts/agent-verify.sh quick
+    - ./scripts/agent-verify.sh full
+    - git diff --check
+  focused_tests_to_add:
+    - Exact version-one acceptance plus missing, boolean, string, zero, negative, older, and future schema-version rejection for course and module manifests.
+    - Unknown top-level and nested structural field rejection alongside accepted Markdown/text and documented Plotly payload content-carrier fixtures.
+    - Semantic fixtures for duplicate IDs, conditional-control references, path containment, widget properties, units/labels, and declared plot/table/result references.
+    - Deterministic content digest, Git-backed revision, non-Git revision absence, runtime revision propagation, stable reload, and learner/API diagnostic tests.
+    - Generated JSON Schema and TypeScript byte-for-byte repeatability and drift rejection.
+    - Read-only source-course immutability plus Git pin/revert recovery fixtures.
+  required_ci:
+    - Existing GitHub Actions verification must run the repository-local full profile on the exact target PR commit with no course-source writes, credentials, service deployment, or production access.
+    - The target PR may merge only after exact-scope review, focused strict-contract/revision tests, full deterministic verification, generated-artifact drift checks, and the retained evidence record pass.
+  manual:
+    - A human reviews the target diff for generic platform behavior, exact DR-001 semantics, free-form content boundaries, course-repository immutability, and absence of subject-specific logic before merge.
+    - No course conversion, MATLAB comparison, browser universality, release, deployment, or production validation is authorized or required by this batch.
 risk:
-  class: blocking
+  class: high
   hazards:
-    - the superseded B000 contract is treated as continuing implementation authority
-    - a governance hold is mistaken for product, environment, or release evidence
+    - a defaulted or loosely coerced schema version silently accepts malformed or future content
+    - a free-form content carrier leaks openness into renderer/control structure and causes a broken or misleading lesson page
+    - revision identity omits a validated input or changes nondeterministically across identical content
+    - a course-specific requirement becomes hard-coded platform behavior rather than an explicit generic primitive
+    - generated Python, JSON Schema, TypeScript, API, and UI contracts drift
+    - validation or generation writes a canonical course repository
   stop_conditions:
-    - any target change outside the exact structural harness allowlist, any unmanifested onboarding source, or any target-owned command is requested
-    - any product source, canonical course, implementation, dependency, credential, release, deployment, production, MATLAB, or physical action is requested
-    - any successor is proposed before the exact merged control and target baselines are independently attested
+    - target HEAD is not exact origin/main before product edits, audited baseline 60c1b68797743616d08eb1ad34ee96f98d3bc36a is not its ancestor, a committed intervening change is not a merged governed harness synchronization or includes a non-managed path, the worktree contains any pre-implementation change outside the exact runner-owned active-contract/profile overlays, or the branch is diverged
+    - the runner-owned active contract and managed profile do not both bind the exact merged control revision containing DR-001 and this contract, that revision is not an ancestor of fetched control origin/main, or validation relies on an unrelated stale local control checkout
+    - implementation requires a field, renderer, widget, runtime, or content semantic not approved by DR-001 and the current generic contract
+    - completing the batch requires changing any course path, mounted/sibling course repository, dependency manifest/lockfile, workflow, managed harness identity, deployment file, credential, or production system
+    - strict schema, semantic-reference, generated-drift, revision-identity, read-only-source, Git recovery, quick, or full verification cannot pass
 rollback:
-  strategy: Revert this governance-only PR under human review only if onboarding is abandoned; do not restore B000 as active implementation authority without a separately reviewed contract.
+  strategy: Revert the single ELP-B010-01 target change or pin the platform to its last reviewed governed harness revision and each course to its last reviewed course revision. Preserve audited pre-activation anchor 60c1b68797743616d08eb1ad34ee96f98d3bc36a. This batch performs no in-place course/data migration and needs no bespoke runtime rollback service.
+  data_migration: none
+  course_repository_write: none
+  release_action: none
 evidence:
   output:
-    - human-reviewed governance-transition PR identity and exact target revision
-  claim_boundary: This contract only removes stale target implementation authority and permits one bounded governance-harness PR during onboarding. It proves no platform behavior, environment capability, content right, release readiness, deployment, production state, MATLAB equivalence, or physical/operational result.
+    - docs/evidence/ELP-B010-01-<date>.md
+    - exact target baseline, target candidate, merged control activation, platform/runtime revision, and fixture course Git/content identities
+    - focused strict-version, unknown-structure, explicit-content-carrier, semantic-reference, generated-drift, revision-identity, read-only-source, and Git recovery results
+    - contract, quick, full, and git diff --check commands with exit results
+    - changed and preserved invariants, acceptance mapping, residual risks, and all unperformed validation
+  claim_boundary: Repository-static and hosted-CI evidence for the exact DR-001 software contract only. It does not establish compatibility with uninspected or historical courses, a completed dsp-radar-learning conversion, MATLAB equivalence, learner effectiveness, accessibility universality, security accreditation, hardware/HIL/bench/field/real-time behavior, release, deployment, production, or permission to mutate any course repository.

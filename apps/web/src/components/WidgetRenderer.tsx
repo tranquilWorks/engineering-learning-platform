@@ -1,17 +1,17 @@
 import { useMemo, useRef } from "react";
 import { Move, Puzzle } from "lucide-react";
-import type { ControlSpec, LessonBlock } from "../types";
+import type { ControlSpec, NumberControl, SliderControl, WidgetBlock } from "../types";
 import { formatValue } from "../lib/format";
 
 interface Props {
-  block: LessonBlock;
+  block: WidgetBlock;
   controls: ControlSpec[];
   parameters: Record<string, unknown>;
   onParameter: (id: string, value: unknown) => void;
 }
 
 interface AxisBinding {
-  control: ControlSpec;
+  control: SliderControl | NumberControl;
   value: number;
   minimum: number;
   maximum: number;
@@ -20,7 +20,7 @@ interface AxisBinding {
 function binding(id: unknown, controls: ControlSpec[], parameters: Record<string, unknown>): AxisBinding | null {
   if (typeof id !== "string") return null;
   const control = controls.find((item) => item.id === id);
-  if (!control || !["slider", "number"].includes(control.type) || control.minimum == null || control.maximum == null) return null;
+  if (!control || (control.type !== "slider" && control.type !== "number")) return null;
   const value = Number(parameters[id] ?? control.default);
   return { control, value, minimum: control.minimum, maximum: control.maximum };
 }
@@ -103,6 +103,5 @@ function Unsupported({ name }: { name: string }) {
 }
 
 export function WidgetRenderer(props: Props) {
-  if (props.block.widget === "parameter-map") return <ParameterMap {...props} />;
-  return <Unsupported name={props.block.widget ?? "unspecified"} />;
+  return <ParameterMap {...props} />;
 }

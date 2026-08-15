@@ -19,21 +19,37 @@ from elp_api.runtime import ExperimentRuntime
 
 
 def stable_digest(value: Any) -> str:
-    encoded = json.dumps(value, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
+    encoded = json.dumps(
+        value, sort_keys=True, separators=(",", ":"), allow_nan=False
+    ).encode()
     return hashlib.sha256(encoded).hexdigest()
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--execute", action="store_true", help="execute each Python module with defaults")
-    parser.add_argument("--deterministic", action="store_true", help="execute each Python module twice and compare")
+    parser.add_argument(
+        "--execute",
+        action="store_true",
+        help="execute each Python module with defaults",
+    )
+    parser.add_argument(
+        "--deterministic",
+        action="store_true",
+        help="execute each Python module twice and compare",
+    )
     parser.add_argument("--json", action="store_true", dest="as_json")
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
-    roots = tuple(Path(item).resolve() for item in os.getenv("ELP_COURSE_PATHS", str(ROOT / "courses")).split(os.pathsep) if item)
+    roots = tuple(
+        Path(item).resolve()
+        for item in os.getenv("ELP_COURSE_PATHS", str(ROOT / "courses")).split(
+            os.pathsep
+        )
+        if item
+    )
     catalog = CourseCatalog(roots)
     runtime = ExperimentRuntime(catalog)
     errors: list[str] = []
@@ -52,46 +68,53 @@ def main() -> int:
             seen_ids.add(summary.id)
             if summary.number is not None:
                 if summary.number in seen_numbers:
-                    errors.append(f"{course.id}: duplicate module number {summary.number}")
+                    errors.append(
+                        f"{course.id}: duplicate module number {summary.number}"
+                    )
                 seen_numbers.add(summary.number)
             document = catalog.document(course.id, summary.id)
             manifest = document.module
             control_ids = [control.id for control in manifest.controls]
             if len(control_ids) != len(set(control_ids)):
                 errors.append(f"{course.id}/{summary.id}: duplicate control ids")
-            for block in manifest.blocks:
-                if block.type == "widget":
-                    if block.widget != "parameter-map":
-                        errors.append(f"{course.id}/{summary.id}: unknown widget {block.widget!r}")
-                    else:
-                        numeric = {
-                            control.id
-                            for control in manifest.controls
-                            if control.type in {"slider", "number"}
-                        }
-                        for axis in ("x_control", "y_control"):
-                            target = block.props.get(axis)
-                            if target not in numeric:
-                                errors.append(
-                                    f"{course.id}/{summary.id}: parameter-map {axis} must reference a numeric control"
-                                )
-
             if manifest.runtime.kind == "python":
                 interactive_count += 1
                 if args.execute or args.deterministic:
-                    first = runtime.run(course.id, summary.id, {}).model_dump(mode="json")
+                    first = runtime.run(course.id, summary.id, {}).model_dump(
+                        mode="json"
+                    )
                     for block in manifest.blocks:
-                        if block.plot and block.plot not in first["plots"]:
-                            errors.append(f"{course.id}/{summary.id}: block references missing plot {block.plot}")
-                        for plot in block.plots:
-                            if plot not in first["plots"]:
-                                errors.append(f"{course.id}/{summary.id}: block references missing plot {plot}")
-                        if block.table and block.table not in first["tables"]:
-                            errors.append(f"{course.id}/{summary.id}: block references missing table {block.table}")
+                        if block.type == "plot" and block.plot not in first["plots"]:
+                            errors.append(
+                                f"{course.id}/{summary.id}: block references missing plot {block.plot}"
+                            )
+                        if block.type == "plot_grid":
+                            for plot in block.plots:
+                                if plot in first["plots"]:
+                                    continue
+                                errors.append(
+                                    f"{course.id}/{summary.id}: block references missing plot {plot}"
+                                )
+                        if block.type == "table" and block.table not in first["tables"]:
+                            errors.append(
+                                f"{course.id}/{summary.id}: block references missing table {block.table}"
+                            )
+                        if (
+                            block.type == "callout"
+                            and block.source is not None
+                            and block.source not in first["explanations"]
+                        ):
+                            errors.append(
+                                f"{course.id}/{summary.id}: block references missing explanation {block.source}"
+                            )
                     if args.deterministic:
-                        second = runtime.run(course.id, summary.id, {}).model_dump(mode="json")
+                        second = runtime.run(course.id, summary.id, {}).model_dump(
+                            mode="json"
+                        )
                         if stable_digest(first) != stable_digest(second):
-                            errors.append(f"{course.id}/{summary.id}: default execution is not deterministic")
+                            errors.append(
+                                f"{course.id}/{summary.id}: default execution is not deterministic"
+                            )
 
     if not course_count:
         errors.append("no courses discovered")
@@ -109,7 +132,9 @@ def main() -> int:
     if args.as_json:
         print(json.dumps(report, indent=2, sort_keys=True))
     else:
-        print(f"courses={course_count} modules={module_count} interactive={interactive_count}")
+        print(
+            f"courses={course_count} modules={module_count} interactive={interactive_count}"
+        )
         for error in errors:
             print(f"ERROR: {error}")
         print(report["status"].upper())

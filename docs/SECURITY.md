@@ -14,12 +14,20 @@ This is a **trusted-content runtime**, not a multi-tenant hostile-code sandbox.
 - runtime result-size limit;
 - runtime timeout contract;
 - deterministic default validation;
+- exact content, source Git/null, and platform/runtime revision reporting;
+- stale-content rejection before trusted execution;
+- accepted-input hash checks and suppressed bytecode writes for course code;
 - no shell/subprocess interface exposed by the API;
 - read-only production course mounts;
 - unprivileged container user;
 - read-only root filesystem in Compose;
 - `no-new-privileges`;
 - security response headers and same-origin production requests.
+
+Catalog validation and execution read mounted courses without creating schema,
+generated, cache, or bytecode files in those roots. The repository verification
+wrapper redirects Python bytecode caches to a temporary directory even when the
+legacy full verification command compiles source paths.
 
 ## Known limitation
 

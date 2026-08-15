@@ -76,6 +76,13 @@ The catalog is immutable between reloads. Production deployment should treat mou
 
 ## Native course contract
 
+The platform accepts exactly integer `schema_version: 1` for both manifests. The
+field is required and is never defaulted or coerced. Course, module, runtime,
+control, block, widget, request, and result-envelope structures are closed;
+Markdown/text and the documented interiors of Plotly payloads, table cells,
+parameters, and diagnostics are explicit content carriers rather than open
+surrounding structures.
+
 ```text
 course-root/
 ├── course.yaml
@@ -104,6 +111,21 @@ course-root/
 ```
 
 The platform inserts the resolved parameter state into the response.
+
+Catalog promotion is atomic. Before a course snapshot is accepted, the catalog
+validates duplicate identities and numbers, conditional-control references,
+path containment, allow-listed widget properties, trusted entrypoint shape,
+and default-execution plot/table/explanation references. A failed reload leaves
+the preceding accepted snapshot intact.
+
+Each course and module reports a deterministic SHA-256 digest. Module digests
+frame the exact accepted `module.yaml`, referenced Markdown, and trusted
+entrypoint bytes; course digests frame `course.yaml` and the ordered module
+digests. Source Git `HEAD` is reported when the course is inside a Git worktree
+and is explicitly `null` otherwise. Runtime responses also carry the platform
+version, platform Git revision when available, runtime kind, and a digest of
+the executable API runtime sources. A run request supplies the module digest it
+was rendered from, so a reload race fails stale instead of executing silently.
 
 ## Plot interchange
 
@@ -171,6 +193,10 @@ Properties expected from production course code:
 - no global state that causes one learner's run to affect another.
 
 A thread timeout is not a hostile-code sandbox. The worker-isolation milestone moves execution to disposable subprocesses/containers with CPU, memory, filesystem, and wall-clock limits before untrusted authoring or arbitrary uploads are considered.
+
+Trusted module loading suppresses bytecode cache writes and checks the accepted
+input hashes immediately before and after execution. A changed mounted input is
+rejected until catalog reload; the platform never updates the course tree.
 
 ## MATLAB relationship
 

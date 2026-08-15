@@ -12,7 +12,9 @@ def jsonable(value: Any) -> Any:
     if value is None or isinstance(value, (str, bool, int)):
         return value
     if isinstance(value, float):
-        return value if math.isfinite(value) else None
+        if not math.isfinite(value):
+            raise ValueError("non-finite floating-point values are not valid results")
+        return value
     if isinstance(value, np.generic):
         return jsonable(value.item())
     if isinstance(value, complex):
@@ -32,9 +34,13 @@ def jsonable(value: Any) -> Any:
             "rows": [jsonable(row) for row in value.to_dict(orient="records")],
         }
     if isinstance(value, dict):
-        return {str(key): jsonable(item) for key, item in value.items()}
-    if isinstance(value, (list, tuple, set)):
+        if not all(isinstance(key, str) for key in value):
+            raise TypeError("result mappings require string keys")
+        return {key: jsonable(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
         return [jsonable(item) for item in value]
+    if isinstance(value, set):
+        raise TypeError("unordered sets are not valid deterministic results")
     if hasattr(value, "model_dump"):
         return jsonable(value.model_dump())
     raise TypeError(f"Unsupported result value: {type(value)!r}")
