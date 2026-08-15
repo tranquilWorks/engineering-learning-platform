@@ -142,7 +142,10 @@ def test_git_pin_recovers_last_reviewed_course_identity(tmp_path: Path) -> None:
     assert recovered.revision.content_digest == reviewed.revision.content_digest
 
 
-def test_generated_contracts_are_repeatable_and_drift_is_detected(tmp_path: Path) -> None:
+def test_generated_contracts_are_repeatable_and_drift_is_detected(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.syspath_prepend(str(Path(__file__).resolve().parents[3]))
     from scripts.export_schemas import drifted_paths, rendered_targets
 
     first = rendered_targets()
