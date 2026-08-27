@@ -1,0 +1,178 @@
+schema_version: 1
+course_id: controls-gnc
+item:
+  id: P18
+  number: 18
+  source_folder: modules/18-use-feedforward-and-feedback-together
+  target_module_id: 18-use-feedforward-and-feedback-together
+  target_folder: modules/18-use-feedforward-and-feedback-together
+  batch_id: ELP-GNC-P18
+  source_map_sha256: 5004e2d35d592e398579dd075faa3d0fc7eba3c48579b838f73c1826aba32360
+  source_inputs:
+  - path: modules/18-use-feedforward-and-feedback-together/README.md
+    sha256: 252e1988af6cfc5be36c3044bb7285c4d234f00654aee14fa34c6a4850d1e278
+  - path: modules/18-use-feedforward-and-feedback-together/lesson.md
+    sha256: a931af5acb2894df22523d1fb4c18fba7a1b6a74b756b6e5e5e722222cdc2273
+  - path: modules/18-use-feedforward-and-feedback-together/walkthrough.md
+    sha256: 9d6be8ccfbd11b2c5f6f19253c98a1f8943d2ac1de1a18625e7c30de3e98a71b
+  - path: modules/18-use-feedforward-and-feedback-together/checks.md
+    sha256: 29209bad99d1ab692fe5fdd6f4b7b18600554cfcc37fa1658d71228d52127235
+  - path: modules/18-use-feedforward-and-feedback-together/experiment.m
+    sha256: 7039de15f1b8c50b5a02aed3ccf681cec72aa50670f9f48d6ad06eb546b9d371
+  - path: modules/18-use-feedforward-and-feedback-together/interactive.m
+    sha256: dd5393efdea41a445981bec6d8173e094ade81bf703a03dd0fdce11cc95cb311
+  - path: modules/18-use-feedforward-and-feedback-together/lesson.m
+    sha256: 6f796c7a15e4f3aedf58a519a93bc6e4c331353caa83a5368d0cf7deb29387d5
+  - path: modules/18-use-feedforward-and-feedback-together/model.m
+    sha256: c8ca1dcd305946251b8bb888b8acd79e347c8f995351fef7c54233185cf7f059
+target:
+  content_digest: 36bd6c3c2ce1796c2f7d06f0f4838dda34074bc3ee4b1214d381c32030f46523
+  files:
+  - path: modules/18-use-feedforward-and-feedback-together/module.yaml
+    sha256: 807af52313215e36fd0ee1afe80eb5fdedf487c1fe3d03b16f4e8a1d67203fd8
+  - path: modules/18-use-feedforward-and-feedback-together/lesson.md
+    sha256: 9f243e8cc4b1e33b88d950a4a1ce9be35878745650940506b6fa992b392f4f13
+  - path: modules/18-use-feedforward-and-feedback-together/experiment.py
+    sha256: 8db7691e38a4a7e31d0207282c16781ff8e674fb8afbd8b6493d6c78a3180fe2
+content:
+  guiding_question: What inputs, observable effects, and failure modes matter when you use Feedforward
+    and Feedback Together?
+  physical_model: Separate planned acceleration from feedback correction during trajectory tracking.
+  signal_flow:
+  - Set one source-aligned lever and predict the mechanism.
+  - Evaluate the deterministic Python model.
+  - Compare the observable response with its diagnostic mechanism.
+  - Inject the source failure and verify the stated recovery.
+  equations:
+  - latex: u=u_{ff}+K_pe+K_d\dot e
+    meaning: Feedforward supplies known demand; feedback corrects mismatch.
+  - latex: u_{ff}=\ddot x_d
+    meaning: For a unit-mass model, desired acceleration is the nominal inverse input.
+  equation_order: before_toolbox_shortcuts
+  deterministic_data:
+    seed: 1601
+    constants:
+    - name: item_number
+      value: 18
+      unit: index
+    datasets:
+    - name: baseline numeric signature
+      provenance: retained_fixture
+      sha256: 0e027476c47fd81ef2295a332e53a5fdf2201de0c13e373c891d7b4fe0391858
+      unit: mixed numeric signature
+  plot_sequence:
+  - source_figure: Source baseline and sweep figures
+    target_plot_key: response
+    title: Observable response
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Response
+      unit: source units
+    interpretation: Separate planned acceleration from feedback correction during trajectory tracking.
+  - source_figure: Source diagnostic and broken-case figures
+    target_plot_key: mechanism
+    title: Mechanism and diagnostic view
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Diagnostic
+      unit: source units
+    interpretation: The broken case reverses feedforward sign, commanding acceleration away from the plan.
+  sweeps:
+  - control: feedforward_scale
+    values:
+    - 0.0
+    - 1.0
+    - 1.5
+    expected_observation: Feedforward should reduce nominal lag while feedback remains necessary for disturbance
+      rejection.
+  - control: feedback_scale
+    values:
+    - 0.0
+    - 1.0
+    - 2.0
+    expected_observation: Separate planned acceleration from feedback correction during trajectory tracking.
+  broken_case:
+    trigger: Enable broken_mode.
+    failure: The broken case reverses feedforward sign, commanding acceleration away from the plan.
+    recovery: Disable the broken case and verify inverse-model sign conventions.
+    expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
+  common_mistakes:
+  - Changing more than one lever before explaining the first delta.
+  - Treating simulated evidence as physical hardware evidence.
+  - Retuning around a broken assumption instead of identifying it.
+  completion_checklist:
+  - Explain both governing equations.
+  - Complete both one-variable sweeps.
+  - Predict and reproduce the broken case.
+  - Confirm recovery with a metric and a plot.
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3.0
+  max_samples: 30001
+  max_output_bytes: 1000000
+python_source_equivalence:
+  status: passed
+  command: ELP_GNC_ITEM=P18 python -m pytest -q apps/api/tests/test_gnc_course.py
+  seed: 1601
+  inputs:
+  - name: feedforward_scale
+    value: 1.0
+    unit: ratio
+  - name: feedback_scale
+    value: 1.0
+    unit: ratio
+  - name: broken_mode
+    value: false
+    unit: flag
+  cases:
+  - name: baseline-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/18-use-feedforward-and-feedback-together/evidence/expected-baseline.json
+      sha256: 0e027476c47fd81ef2295a332e53a5fdf2201de0c13e373c891d7b4fe0391858
+    actual:
+      path: modules/18-use-feedforward-and-feedback-together/evidence/actual-baseline.json
+      sha256: 5b988162a9646c91a4b195f4cbbb0f3f082836d05d2a998e3210716549669ccd
+    max_absolute_error: 9.992007221626409e-14
+    max_relative_error: 9.99200722162541e-14
+    passed: true
+  - name: broken-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/18-use-feedforward-and-feedback-together/evidence/expected-broken.json
+      sha256: 27caba07658bcb4b1d4c29124af8552c5118ba4b0774f3c0699a508fc2f8df59
+    actual:
+      path: modules/18-use-feedforward-and-feedback-together/evidence/actual-broken.json
+      sha256: b97d40a6add1f9ce01c3c958ef6e2378b390dade23a6c5f1c4977ff75169f889
+    max_absolute_error: 9.992007221626409e-14
+    max_relative_error: 9.99200722162541e-14
+    passed: true
+matlab_runtime_parity:
+  status: not_run
+  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
+    signatures bind the Python conversion.
+claims:
+  profile: elp-gnc-item-software-v1
+  browser_visual_review:
+    status: not_run
+    reason: Browser review is a separate integrated evidence step.
+  accessibility_review:
+    status: not_run
+    reason: Accessibility review is a separate integrated evidence step.
+  learner_effectiveness:
+    status: not_run
+    reason: Learner effectiveness requires post-release study and is not claimed.

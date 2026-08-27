@@ -1,0 +1,178 @@
+schema_version: 1
+course_id: controls-gnc
+item:
+  id: P11
+  number: 11
+  source_folder: modules/11-drive-an-actuator-into-saturation
+  target_module_id: 11-drive-an-actuator-into-saturation
+  target_folder: modules/11-drive-an-actuator-into-saturation
+  batch_id: ELP-GNC-P11
+  source_map_sha256: 5004e2d35d592e398579dd075faa3d0fc7eba3c48579b838f73c1826aba32360
+  source_inputs:
+  - path: modules/11-drive-an-actuator-into-saturation/README.md
+    sha256: c2f13ac4045fabcdbbdeed37a893f187395bfcdeab56643ff61f244f3132fc19
+  - path: modules/11-drive-an-actuator-into-saturation/lesson.md
+    sha256: 62a5058ae52e427fa030f9ed7b6af3b0ccb0db8cab00ee1526298e5257882e95
+  - path: modules/11-drive-an-actuator-into-saturation/walkthrough.md
+    sha256: 70e7965909f73a6349f0616f203a4e81dc3cbcee2222ddbafd08c18301f26ccf
+  - path: modules/11-drive-an-actuator-into-saturation/checks.md
+    sha256: 513a8ef28bbd3e4ffeaffe04ef19acbcf4db2bbf5165eec031275d7814c2c3f7
+  - path: modules/11-drive-an-actuator-into-saturation/experiment.m
+    sha256: 3877f290d3edb124b7c64689f9e3cdb81cbd4d47733884f7b8565a3415e8d820
+  - path: modules/11-drive-an-actuator-into-saturation/interactive.m
+    sha256: 6f3fc03702d59056706c787f1a09932f6a2b3fd1aa40757819f90d6c7794a7f5
+  - path: modules/11-drive-an-actuator-into-saturation/lesson.m
+    sha256: 22042820bf6933b3e28451d1f4418037d83f11740c2896dd8ee46566200db8ab
+  - path: modules/11-drive-an-actuator-into-saturation/model.m
+    sha256: 29f3f67ddc431f194030ef813f92747003f8ef4f53c055ea05531686ab8c078e
+target:
+  content_digest: 825934bf3b1e0ed2e2e699b934125502ad7a87702bbb80a23ddf459d8d809a90
+  files:
+  - path: modules/11-drive-an-actuator-into-saturation/module.yaml
+    sha256: a7303c62abac5ad7ef0a7fc5b757860993e04fadd5f8dc7e4ea35bd2dca158de
+  - path: modules/11-drive-an-actuator-into-saturation/lesson.md
+    sha256: 1a6c97e52b9d0abdb9e1c7a1bc66d1acc8c14c132a05403fcc09d1098ad6baed
+  - path: modules/11-drive-an-actuator-into-saturation/experiment.py
+    sha256: 71a772b6c3cf18160d4c818c1610912ec1be4ea639129a4a89c21706fac77ccb
+content:
+  guiding_question: What inputs, observable effects, and failure modes matter when you drive an Actuator
+    into Saturation?
+  physical_model: Show the gap between requested and physically available actuator effort.
+  signal_flow:
+  - Set one source-aligned lever and predict the mechanism.
+  - Evaluate the deterministic Python model.
+  - Compare the observable response with its diagnostic mechanism.
+  - Inject the source failure and verify the stated recovery.
+  equations:
+  - latex: u=\operatorname{clip}(K_p(r-y),-u_{max},u_{max})
+    meaning: Saturation changes the loop from linear to piecewise linear.
+  - latex: \dot y=-y+u
+    meaning: The plant cannot exceed the authority delivered by the clipped input.
+  equation_order: before_toolbox_shortcuts
+  deterministic_data:
+    seed: 1601
+    constants:
+    - name: item_number
+      value: 11
+      unit: index
+    datasets:
+    - name: baseline numeric signature
+      provenance: retained_fixture
+      sha256: 47973c9a6d767fa41ea7d072ae2dad2a620d9a83cb4926b7786fa072979a6cc3
+      unit: mixed numeric signature
+  plot_sequence:
+  - source_figure: Source baseline and sweep figures
+    target_plot_key: response
+    title: Observable response
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Response
+      unit: source units
+    interpretation: Show the gap between requested and physically available actuator effort.
+  - source_figure: Source diagnostic and broken-case figures
+    target_plot_key: mechanism
+    title: Mechanism and diagnostic view
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Diagnostic
+      unit: source units
+    interpretation: The broken case restricts a 1.5-unit request to 0.6 actuator units.
+  sweeps:
+  - control: reference
+    values:
+    - 0.5
+    - 1.5
+    - 3.0
+    expected_observation: A limit below the needed equilibrium command should create persistent tracking
+      error.
+  - control: actuator_limit
+    values:
+    - 0.5
+    - 2.0
+    - 5.0
+    expected_observation: Show the gap between requested and physically available actuator effort.
+  broken_case:
+    trigger: Enable broken_mode.
+    failure: The broken case restricts a 1.5-unit request to 0.6 actuator units.
+    recovery: Disable the broken case or reduce the command to fit available authority.
+    expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
+  common_mistakes:
+  - Changing more than one lever before explaining the first delta.
+  - Treating simulated evidence as physical hardware evidence.
+  - Retuning around a broken assumption instead of identifying it.
+  completion_checklist:
+  - Explain both governing equations.
+  - Complete both one-variable sweeps.
+  - Predict and reproduce the broken case.
+  - Confirm recovery with a metric and a plot.
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3.0
+  max_samples: 30001
+  max_output_bytes: 1000000
+python_source_equivalence:
+  status: passed
+  command: ELP_GNC_ITEM=P11 python -m pytest -q apps/api/tests/test_gnc_course.py
+  seed: 1601
+  inputs:
+  - name: reference
+    value: 1.5
+    unit: output
+  - name: actuator_limit
+    value: 2.0
+    unit: actuator
+  - name: broken_mode
+    value: false
+    unit: flag
+  cases:
+  - name: baseline-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/11-drive-an-actuator-into-saturation/evidence/expected-baseline.json
+      sha256: 47973c9a6d767fa41ea7d072ae2dad2a620d9a83cb4926b7786fa072979a6cc3
+    actual:
+      path: modules/11-drive-an-actuator-into-saturation/evidence/actual-baseline.json
+      sha256: 6cf5fa31ba995b0507b10f465759be0c946a1c385de76cd9c99c2f66c3159f3d
+    max_absolute_error: 9.992007221626409e-14
+    max_relative_error: 6.661338147750495e-14
+    passed: true
+  - name: broken-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/11-drive-an-actuator-into-saturation/evidence/expected-broken.json
+      sha256: 901b12e4d5b7fecaaf44232eed4083b886fc68276159e3563ffe5bbc886006ad
+    actual:
+      path: modules/11-drive-an-actuator-into-saturation/evidence/actual-broken.json
+      sha256: 45141f606f3161c9f29ce713e0890638041871180f43b6a0662b6e8c1871639c
+    max_absolute_error: 9.992007221626409e-14
+    max_relative_error: 6.661338147750495e-14
+    passed: true
+matlab_runtime_parity:
+  status: not_run
+  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
+    signatures bind the Python conversion.
+claims:
+  profile: elp-gnc-item-software-v1
+  browser_visual_review:
+    status: not_run
+    reason: Browser review is a separate integrated evidence step.
+  accessibility_review:
+    status: not_run
+    reason: Accessibility review is a separate integrated evidence step.
+  learner_effectiveness:
+    status: not_run
+    reason: Learner effectiveness requires post-release study and is not claimed.

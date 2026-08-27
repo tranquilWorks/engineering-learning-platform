@@ -1,0 +1,180 @@
+schema_version: 1
+course_id: controls-gnc
+item:
+  id: P20
+  number: 20
+  source_folder: modules/20-compare-nominal-and-robust-designs
+  target_module_id: 20-compare-nominal-and-robust-designs
+  target_folder: modules/20-compare-nominal-and-robust-designs
+  batch_id: ELP-GNC-P20
+  source_map_sha256: 5004e2d35d592e398579dd075faa3d0fc7eba3c48579b838f73c1826aba32360
+  source_inputs:
+  - path: modules/20-compare-nominal-and-robust-designs/README.md
+    sha256: ae62d34b8cf766bd3e80edcc7c18c880166f66ec581de4e194abf33b781f603d
+  - path: modules/20-compare-nominal-and-robust-designs/lesson.md
+    sha256: 7d25ea71bcc8eb1b2faa09a91f2e31d60bb17cda9bc5311fa5d8ce88bd907168
+  - path: modules/20-compare-nominal-and-robust-designs/walkthrough.md
+    sha256: 4fc7814c9afbd75f1531575c06d6f6f1e02c79517cf67195d05b7fe923c979de
+  - path: modules/20-compare-nominal-and-robust-designs/checks.md
+    sha256: c3ec36ae4d070a520b8e1841afed5bba0ff69eb3edf59b58caadda486306a127
+  - path: modules/20-compare-nominal-and-robust-designs/experiment.m
+    sha256: 84996f221de799d475e635aa7c07f4bf85d9193867ff59d22acaf79e47282659
+  - path: modules/20-compare-nominal-and-robust-designs/interactive.m
+    sha256: d6b93239d74da93ebb79528873cf8e3cec800a471147e680c116f4f3b8097183
+  - path: modules/20-compare-nominal-and-robust-designs/lesson.m
+    sha256: 44fec54e2080e17467261c4ffc601df9591dafb29d2b4e807203c608c53767a9
+  - path: modules/20-compare-nominal-and-robust-designs/model.m
+    sha256: e5a16705f1f2c1c911eeb79f16b49be03e3633dd6b4efd96814e116e3e1118a2
+target:
+  content_digest: 40dfc61f5abf99f6fb87255512713b3150084dfa5bb6c0661d2a4ba772af7ec9
+  files:
+  - path: modules/20-compare-nominal-and-robust-designs/module.yaml
+    sha256: 9421bb79df05fb44fcc82fd57b39db5caae27d031e4636f28c2dc3e386d7651a
+  - path: modules/20-compare-nominal-and-robust-designs/lesson.md
+    sha256: 9c7c6ee1e4b3dcb62cd668dc462abaed75b4ba27814cb0f5c82ccfdd56596b9a
+  - path: modules/20-compare-nominal-and-robust-designs/experiment.py
+    sha256: 22705c4252302335513d98696d7db8f9410c02415aee7e79ea9807e2585fa05c
+content:
+  guiding_question: What inputs, observable effects, and failure modes matter when you compare Nominal
+    and Robust Designs?
+  physical_model: Compare a nominal gain with a conservative design across the same uncertainty envelope.
+  signal_flow:
+  - Set one source-aligned lever and predict the mechanism.
+  - Evaluate the deterministic Python model.
+  - Compare the observable response with its diagnostic mechanism.
+  - Inject the source failure and verify the stated recovery.
+  equations:
+  - latex: u=K(r-v)
+    meaning: Both designs share structure; their gain is selected against different plant sets.
+  - latex: J_w=\max_{p\in\mathcal P}J(K,p)
+    meaning: The robust choice reduces worst-case error at the cost of more effort.
+  equation_order: before_toolbox_shortcuts
+  deterministic_data:
+    seed: 1601
+    constants:
+    - name: item_number
+      value: 20
+      unit: index
+    datasets:
+    - name: baseline numeric signature
+      provenance: retained_fixture
+      sha256: e807f06aec60056612b6855b255e203af65809ca584d6542e1efbc4744398493
+      unit: mixed numeric signature
+  plot_sequence:
+  - source_figure: Source baseline and sweep figures
+    target_plot_key: response
+    title: Observable response
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Response
+      unit: source units
+    interpretation: Compare a nominal gain with a conservative design across the same uncertainty envelope.
+  - source_figure: Source diagnostic and broken-case figures
+    target_plot_key: mechanism
+    title: Mechanism and diagnostic view
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Diagnostic
+      unit: source units
+    interpretation: The broken case reverses actuator sign, violating the uncertainty set both designs
+      assumed.
+  sweeps:
+  - control: actuator_gain_ratio
+    values:
+    - 0.5
+    - 1.0
+    - 1.5
+    expected_observation: The robust design should improve the difficult low-gain/high-drag corner while
+      using more command nominally.
+  - control: drag_ratio
+    values:
+    - 0.5
+    - 1.0
+    - 2.0
+    expected_observation: Compare a nominal gain with a conservative design across the same uncertainty
+      envelope.
+  broken_case:
+    trigger: Enable broken_mode.
+    failure: The broken case reverses actuator sign, violating the uncertainty set both designs assumed.
+    recovery: Disable the broken case and restore a plant inside the certified uncertainty family.
+    expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
+  common_mistakes:
+  - Changing more than one lever before explaining the first delta.
+  - Treating simulated evidence as physical hardware evidence.
+  - Retuning around a broken assumption instead of identifying it.
+  completion_checklist:
+  - Explain both governing equations.
+  - Complete both one-variable sweeps.
+  - Predict and reproduce the broken case.
+  - Confirm recovery with a metric and a plot.
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3.0
+  max_samples: 30001
+  max_output_bytes: 1000000
+python_source_equivalence:
+  status: passed
+  command: ELP_GNC_ITEM=P20 python -m pytest -q apps/api/tests/test_gnc_course.py
+  seed: 1601
+  inputs:
+  - name: actuator_gain_ratio
+    value: 1.0
+    unit: ratio
+  - name: drag_ratio
+    value: 1.0
+    unit: ratio
+  - name: broken_mode
+    value: false
+    unit: flag
+  cases:
+  - name: baseline-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/20-compare-nominal-and-robust-designs/evidence/expected-baseline.json
+      sha256: e807f06aec60056612b6855b255e203af65809ca584d6542e1efbc4744398493
+    actual:
+      path: modules/20-compare-nominal-and-robust-designs/evidence/actual-baseline.json
+      sha256: ea4132df9dc8063359236de86a9a8c2f6078c7d0ac0b433df0c11e0f74d08e31
+    max_absolute_error: 9.992007221626409e-14
+    max_relative_error: 9.99200722162541e-14
+    passed: true
+  - name: broken-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/20-compare-nominal-and-robust-designs/evidence/expected-broken.json
+      sha256: 79be175588cd865396b1f17d82f18bff28fa06c535ea26dc08d922bb452ccd5d
+    actual:
+      path: modules/20-compare-nominal-and-robust-designs/evidence/actual-broken.json
+      sha256: 584dfa90efcd6e02f14a7952c23007e9741b9fdca0e08406d9c1a90fb6890bcb
+    max_absolute_error: 9.992007221626409e-14
+    max_relative_error: 9.99200722162541e-14
+    passed: true
+matlab_runtime_parity:
+  status: not_run
+  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
+    signatures bind the Python conversion.
+claims:
+  profile: elp-gnc-item-software-v1
+  browser_visual_review:
+    status: not_run
+    reason: Browser review is a separate integrated evidence step.
+  accessibility_review:
+    status: not_run
+    reason: Accessibility review is a separate integrated evidence step.
+  learner_effectiveness:
+    status: not_run
+    reason: Learner effectiveness requires post-release study and is not claimed.

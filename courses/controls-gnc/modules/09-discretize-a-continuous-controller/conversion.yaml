@@ -1,0 +1,179 @@
+schema_version: 1
+course_id: controls-gnc
+item:
+  id: P09
+  number: 9
+  source_folder: modules/09-discretize-a-continuous-controller
+  target_module_id: 09-discretize-a-continuous-controller
+  target_folder: modules/09-discretize-a-continuous-controller
+  batch_id: ELP-GNC-P09
+  source_map_sha256: 5004e2d35d592e398579dd075faa3d0fc7eba3c48579b838f73c1826aba32360
+  source_inputs:
+  - path: modules/09-discretize-a-continuous-controller/README.md
+    sha256: 1b90f9cc2289bbae81285847ff597d16369388d2a278abd5fdccf38e1ee8f57c
+  - path: modules/09-discretize-a-continuous-controller/lesson.md
+    sha256: 2ce59226953eec901f852636bd9c39d641601be9a5b804e92472421d12884fec
+  - path: modules/09-discretize-a-continuous-controller/walkthrough.md
+    sha256: d107eb5ccae8d1e32e931a1595e8389a4715b0d222f1153bcb96a7629b3b2ffa
+  - path: modules/09-discretize-a-continuous-controller/checks.md
+    sha256: 10f4e525e90477b0cbea04f34a68330fdaebc7f8d7c2bd42af48cb187971f2ff
+  - path: modules/09-discretize-a-continuous-controller/experiment.m
+    sha256: 852a8e33537a92c1221d9cbc960b9f6ffdfc2e5d70456eb7da749ef792a8e47a
+  - path: modules/09-discretize-a-continuous-controller/interactive.m
+    sha256: 1be41b2b2c1403fec9ea8ad7b6c5e2a4e15e2795c8c039a33d0f1a6fb5a5b362
+  - path: modules/09-discretize-a-continuous-controller/lesson.m
+    sha256: 94e8ff65f2e8ad01ae882f79cdfb70a94b04aa361b3d7448e88e9ea8a137d1c4
+  - path: modules/09-discretize-a-continuous-controller/model.m
+    sha256: 3eafd5232b4dec38c1ccb34c0224d258630d0f1c0454678d72cdae01903d0803
+target:
+  content_digest: bada55ece967dd627679e2820c079562aae12e607b97d793c1045e1f730954f1
+  files:
+  - path: modules/09-discretize-a-continuous-controller/module.yaml
+    sha256: ec1d149da164c4fdf70cadfa2da65c941ab05df51ad5d8855d85440fb4e3dc5f
+  - path: modules/09-discretize-a-continuous-controller/lesson.md
+    sha256: 7089526965c76beded8633c4f4e2752735d9a31c7b0fe3e61e57d572d58a4c04
+  - path: modules/09-discretize-a-continuous-controller/experiment.py
+    sha256: 07f53505554328d66aed27853d37f239cbc99aa1f92f215292f046af91f45fa2
+content:
+  guiding_question: What inputs, observable effects, and failure modes matter when you discretize a Continuous
+    Controller?
+  physical_model: Compare a sampled PI implementation with its continuous design target.
+  signal_flow:
+  - Set one source-aligned lever and predict the mechanism.
+  - Evaluate the deterministic Python model.
+  - Compare the observable response with its diagnostic mechanism.
+  - Inject the source failure and verify the stated recovery.
+  equations:
+  - latex: y_{k+1}=e^{-T_s}y_k+(1-e^{-T_s})u_k
+    meaning: The plant uses the exact zero-order-hold transition.
+  - latex: q_{k+1}=q_k+T_s e_k
+    meaning: The integral rule introduces its own discrete dynamics.
+  equation_order: before_toolbox_shortcuts
+  deterministic_data:
+    seed: 1601
+    constants:
+    - name: item_number
+      value: 9
+      unit: index
+    datasets:
+    - name: baseline numeric signature
+      provenance: retained_fixture
+      sha256: cf6fe7a0bd2934d95747fd66edce97c2813e2a57654ec4dde724b7c271ea37d4
+      unit: mixed numeric signature
+  plot_sequence:
+  - source_figure: Source baseline and sweep figures
+    target_plot_key: response
+    title: Observable response
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Response
+      unit: source units
+    interpretation: Compare a sampled PI implementation with its continuous design target.
+  - source_figure: Source diagnostic and broken-case figures
+    target_plot_key: mechanism
+    title: Mechanism and diagnostic view
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Diagnostic
+      unit: source units
+    interpretation: The broken case combines coarse sampling with the less forgiving forward-error integral
+      update.
+  sweeps:
+  - control: sample_period_s
+    values:
+    - 0.02
+    - 0.1
+    - 0.3
+    expected_observation: A coarser sample period should move the digital response away from the continuous
+      target.
+  - control: integral_gain
+    values:
+    - 1.0
+    - 4.0
+    - 7.0
+    expected_observation: Compare a sampled PI implementation with its continuous design target.
+  broken_case:
+    trigger: Enable broken_mode.
+    failure: The broken case combines coarse sampling with the less forgiving forward-error integral update.
+    recovery: Disable the broken case and reduce the controller sample period.
+    expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
+  common_mistakes:
+  - Changing more than one lever before explaining the first delta.
+  - Treating simulated evidence as physical hardware evidence.
+  - Retuning around a broken assumption instead of identifying it.
+  completion_checklist:
+  - Explain both governing equations.
+  - Complete both one-variable sweeps.
+  - Predict and reproduce the broken case.
+  - Confirm recovery with a metric and a plot.
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3.0
+  max_samples: 30001
+  max_output_bytes: 1000000
+python_source_equivalence:
+  status: passed
+  command: ELP_GNC_ITEM=P09 python -m pytest -q apps/api/tests/test_gnc_course.py
+  seed: 1601
+  inputs:
+  - name: sample_period_s
+    value: 0.05
+    unit: s
+  - name: integral_gain
+    value: 4.0
+    unit: 1/s
+  - name: broken_mode
+    value: false
+    unit: flag
+  cases:
+  - name: baseline-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/09-discretize-a-continuous-controller/evidence/expected-baseline.json
+      sha256: cf6fe7a0bd2934d95747fd66edce97c2813e2a57654ec4dde724b7c271ea37d4
+    actual:
+      path: modules/09-discretize-a-continuous-controller/evidence/actual-baseline.json
+      sha256: 42c293de0f57e611372fa08e4b552a98b6992e3e83cb93b8a665903c3c355741
+    max_absolute_error: 1.0000333894311098e-13
+    max_relative_error: 1.0000333894311098e-13
+    passed: true
+  - name: broken-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/09-discretize-a-continuous-controller/evidence/expected-broken.json
+      sha256: 682b98e687a634f352402e55b0a076674aaa6f862f944ca14708e159b54194c9
+    actual:
+      path: modules/09-discretize-a-continuous-controller/evidence/actual-broken.json
+      sha256: fadd599426f067351f1e08819c32291631041a7bcb4161b6df70ff884eb2c6e4
+    max_absolute_error: 9.997558336749535e-14
+    max_relative_error: 9.997558336749535e-14
+    passed: true
+matlab_runtime_parity:
+  status: not_run
+  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
+    signatures bind the Python conversion.
+claims:
+  profile: elp-gnc-item-software-v1
+  browser_visual_review:
+    status: not_run
+    reason: Browser review is a separate integrated evidence step.
+  accessibility_review:
+    status: not_run
+    reason: Accessibility review is a separate integrated evidence step.
+  learner_effectiveness:
+    status: not_run
+    reason: Learner effectiveness requires post-release study and is not claimed.

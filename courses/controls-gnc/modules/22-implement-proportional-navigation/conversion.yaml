@@ -1,0 +1,180 @@
+schema_version: 1
+course_id: controls-gnc
+item:
+  id: P22
+  number: 22
+  source_folder: modules/22-implement-proportional-navigation
+  target_module_id: 22-implement-proportional-navigation
+  target_folder: modules/22-implement-proportional-navigation
+  batch_id: ELP-GNC-P22
+  source_map_sha256: 5004e2d35d592e398579dd075faa3d0fc7eba3c48579b838f73c1826aba32360
+  source_inputs:
+  - path: modules/22-implement-proportional-navigation/README.md
+    sha256: 24676101de1d68664d69beb8b03a2a7962e6f12cd9c24f18f713f0f3092e05d6
+  - path: modules/22-implement-proportional-navigation/lesson.md
+    sha256: f22732f26070dec64392050c782851f44a09e87342640a3991647879d73793ca
+  - path: modules/22-implement-proportional-navigation/walkthrough.md
+    sha256: f918eefd8967bf2d0ae4ca0b6c74236d8f84a5f0afcdb789abf28bbd55190d6c
+  - path: modules/22-implement-proportional-navigation/checks.md
+    sha256: 227fd09ea48982a1c96284ca9470a1f48d2437a5505b41bdba9b8ef41d059c72
+  - path: modules/22-implement-proportional-navigation/experiment.m
+    sha256: e6a7e952df3c591a18d1230d670a81bc297acf68034262d8668b9abc9177c97f
+  - path: modules/22-implement-proportional-navigation/interactive.m
+    sha256: 87a14791e38a177eeb865ff3584613d85af05b355228142e5670ce4bae46203f
+  - path: modules/22-implement-proportional-navigation/lesson.m
+    sha256: ad6466058bcf0b74c3a08603b98b3fdb8b6c857d18a7ff1c526562f32d058661
+  - path: modules/22-implement-proportional-navigation/model.m
+    sha256: 643e4474b87f7f669c0eaa9a6f637b9119fc8e0f90e4c545cb6e5fb40bed305a
+target:
+  content_digest: f000ae2cc7c678fc5e53b5f8a39179c7aa51f3e5fe9206da7c9454df17b85452
+  files:
+  - path: modules/22-implement-proportional-navigation/module.yaml
+    sha256: 53899722c455e794236c56d9b97032c3e2b3f26a5ca06ad7ada01d2282134e2a
+  - path: modules/22-implement-proportional-navigation/lesson.md
+    sha256: 908aadbdcc9ccf8819649068debe1d58ce298472abfeb8313e79ee8d374162f6
+  - path: modules/22-implement-proportional-navigation/experiment.py
+    sha256: 74c34cdd788db709e488755b90567a4ea55a0bbd5d94bc5e716b8bbd6f37468c
+content:
+  guiding_question: What inputs, observable effects, and failure modes matter when you implement Proportional
+    Navigation?
+  physical_model: Observe proportional navigation geometry, acceleration authority, and miss distance.
+  signal_flow:
+  - Set one source-aligned lever and predict the mechanism.
+  - Evaluate the deterministic Python model.
+  - Compare the observable response with its diagnostic mechanism.
+  - Inject the source failure and verify the stated recovery.
+  equations:
+  - latex: a_n=N V_c\dot\lambda
+    meaning: PN commands lateral acceleration from closing speed and line-of-sight rate.
+  - latex: \dot\lambda=(r_xv_y-r_yv_x)/\|r\|^2
+    meaning: LOS rotation encodes collision-course error.
+  equation_order: before_toolbox_shortcuts
+  deterministic_data:
+    seed: 1601
+    constants:
+    - name: item_number
+      value: 22
+      unit: index
+    datasets:
+    - name: baseline numeric signature
+      provenance: retained_fixture
+      sha256: 491dabf12a65da0dae96b53953dbf6ffbf4ae9d2421a6df5c954c29f0da6ed90
+      unit: mixed numeric signature
+  plot_sequence:
+  - source_figure: Source baseline and sweep figures
+    target_plot_key: response
+    title: Observable response
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Response
+      unit: source units
+    interpretation: Observe proportional navigation geometry, acceleration authority, and miss distance.
+  - source_figure: Source diagnostic and broken-case figures
+    target_plot_key: mechanism
+    title: Mechanism and diagnostic view
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Diagnostic
+      unit: source units
+    interpretation: The broken case limits lateral acceleration to 5 m/s², preventing intercept in the
+      modeled engagement.
+  sweeps:
+  - control: navigation_constant
+    values:
+    - 2.0
+    - 3.0
+    - 5.0
+    expected_observation: Insufficient lateral acceleration should leave a finite miss even with a reasonable
+      navigation constant.
+  - control: maximum_acceleration_m_s2
+    values:
+    - 20.0
+    - 80.0
+    - 120.0
+    expected_observation: Observe proportional navigation geometry, acceleration authority, and miss distance.
+  broken_case:
+    trigger: Enable broken_mode.
+    failure: The broken case limits lateral acceleration to 5 m/s², preventing intercept in the modeled
+      engagement.
+    recovery: Disable the broken case and restore the 80 m/s² authority used by the baseline.
+    expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
+  common_mistakes:
+  - Changing more than one lever before explaining the first delta.
+  - Treating simulated evidence as physical hardware evidence.
+  - Retuning around a broken assumption instead of identifying it.
+  completion_checklist:
+  - Explain both governing equations.
+  - Complete both one-variable sweeps.
+  - Predict and reproduce the broken case.
+  - Confirm recovery with a metric and a plot.
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3.0
+  max_samples: 30001
+  max_output_bytes: 1000000
+python_source_equivalence:
+  status: passed
+  command: ELP_GNC_ITEM=P22 python -m pytest -q apps/api/tests/test_gnc_course.py
+  seed: 1601
+  inputs:
+  - name: navigation_constant
+    value: 3.0
+    unit: ratio
+  - name: maximum_acceleration_m_s2
+    value: 80.0
+    unit: m/s²
+  - name: broken_mode
+    value: false
+    unit: flag
+  cases:
+  - name: baseline-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/22-implement-proportional-navigation/evidence/expected-baseline.json
+      sha256: 491dabf12a65da0dae96b53953dbf6ffbf4ae9d2421a6df5c954c29f0da6ed90
+    actual:
+      path: modules/22-implement-proportional-navigation/evidence/actual-baseline.json
+      sha256: fc3208bb86b4537e8978fbc09952c31bec7a2c6efa95a1508cedc822dd2bfe75
+    max_absolute_error: 9.992007221626409e-14
+    max_relative_error: 3.3306690738753585e-14
+    passed: true
+  - name: broken-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/22-implement-proportional-navigation/evidence/expected-broken.json
+      sha256: b491dfd4d795d84a23a8a9932c5715d93ab35778a89b35157d16d793e3c0c51b
+    actual:
+      path: modules/22-implement-proportional-navigation/evidence/actual-broken.json
+      sha256: 6034bc09c93610e533d151717311859e939bbb5b3c86dce19a4434239bf69d80
+    max_absolute_error: 9.992007221626409e-14
+    max_relative_error: 3.3306690738753585e-14
+    passed: true
+matlab_runtime_parity:
+  status: not_run
+  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
+    signatures bind the Python conversion.
+claims:
+  profile: elp-gnc-item-software-v1
+  browser_visual_review:
+    status: not_run
+    reason: Browser review is a separate integrated evidence step.
+  accessibility_review:
+    status: not_run
+    reason: Accessibility review is a separate integrated evidence step.
+  learner_effectiveness:
+    status: not_run
+    reason: Learner effectiveness requires post-release study and is not claimed.

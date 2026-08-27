@@ -1,0 +1,180 @@
+schema_version: 1
+course_id: controls-gnc
+item:
+  id: P02
+  number: 2
+  source_folder: modules/02-build-intuition-for-integrators-and-first-order-systems
+  target_module_id: 02-build-intuition-for-integrators-and-first-order-systems
+  target_folder: modules/02-build-intuition-for-integrators-and-first-order-systems
+  batch_id: ELP-GNC-P02
+  source_map_sha256: 5004e2d35d592e398579dd075faa3d0fc7eba3c48579b838f73c1826aba32360
+  source_inputs:
+  - path: modules/02-build-intuition-for-integrators-and-first-order-systems/README.md
+    sha256: f18e893b7f631eb15ccbc088f0561736fc2f34b56bd86d60e82d7607869c3ea1
+  - path: modules/02-build-intuition-for-integrators-and-first-order-systems/lesson.md
+    sha256: b11d5a07b04ff24516eabb8c51cacec961e43f8866bbb6576ec9296750196fd9
+  - path: modules/02-build-intuition-for-integrators-and-first-order-systems/walkthrough.md
+    sha256: 2d78e66ad614472581a10d1c9dff79187e6eb96f30c652b277c96b8743f31b76
+  - path: modules/02-build-intuition-for-integrators-and-first-order-systems/checks.md
+    sha256: 404a847c025f62e1ccdddc3f6c05b2df2725758db3762cb87cc9dee4576b3d1a
+  - path: modules/02-build-intuition-for-integrators-and-first-order-systems/experiment.m
+    sha256: d110f5e589a2937dc4550a0368dbc4094881b5b9dfdd81e2976533f01f353c9f
+  - path: modules/02-build-intuition-for-integrators-and-first-order-systems/interactive.m
+    sha256: ead7f9c52c1babdc0d52f0fe55af500a5626bba53d98e46b25478ef6fd786288
+  - path: modules/02-build-intuition-for-integrators-and-first-order-systems/lesson.m
+    sha256: 5de3e3832e238dadb326806130f16ca186c0615d84fcc74b59e5905e139ae1fc
+  - path: modules/02-build-intuition-for-integrators-and-first-order-systems/model.m
+    sha256: dc2b2f62bfd039133e2c7582b9014cda8f826e6dde89614947208befc19085a6
+target:
+  content_digest: 0d3361f1efb475a7aaa7a5e27d63e829b595cc14ffd1d19c718faae18add1a20
+  files:
+  - path: modules/02-build-intuition-for-integrators-and-first-order-systems/module.yaml
+    sha256: 6057ddfe555d982720a56443249b53e0b4bc8cb0c547bc5aebcb491273bd30bf
+  - path: modules/02-build-intuition-for-integrators-and-first-order-systems/lesson.md
+    sha256: 5b1117fa9214f78eeb8369333fdcfd42f2b06931be7ba1e0e623e243d33db82b
+  - path: modules/02-build-intuition-for-integrators-and-first-order-systems/experiment.py
+    sha256: 07d573742639fa63b286b41a881b49901e80fab21dc50d30a07449d0f5b060ff
+content:
+  guiding_question: What inputs, observable effects, and failure modes matter when you build Intuition
+    for Integrators and First-Order Systems?
+  physical_model: Compare accumulation with exponential memory under the same step input.
+  signal_flow:
+  - Set one source-aligned lever and predict the mechanism.
+  - Evaluate the deterministic Python model.
+  - Compare the observable response with its diagnostic mechanism.
+  - Inject the source failure and verify the stated recovery.
+  equations:
+  - latex: \dot{x}_I=u
+    meaning: An integrator accumulates area and has no finite step equilibrium.
+  - latex: \tau\dot{y}+y=Ku
+    meaning: A first-order state approaches Ku with time constant tau.
+  equation_order: before_toolbox_shortcuts
+  deterministic_data:
+    seed: 1601
+    constants:
+    - name: item_number
+      value: 2
+      unit: index
+    datasets:
+    - name: baseline numeric signature
+      provenance: retained_fixture
+      sha256: f4a3884c19df9b4811b5b1e406ddad8c2625ccf02e88c88c4349cd90df6e72a2
+      unit: mixed numeric signature
+  plot_sequence:
+  - source_figure: Source baseline and sweep figures
+    target_plot_key: response
+    title: Observable response
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Response
+      unit: source units
+    interpretation: Compare accumulation with exponential memory under the same step input.
+  - source_figure: Source diagnostic and broken-case figures
+    target_plot_key: mechanism
+    title: Mechanism and diagnostic view
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Diagnostic
+      unit: source units
+    interpretation: The broken case uses forward Euler with dt/tau greater than two, creating a discrete
+      pole outside the unit circle.
+  sweeps:
+  - control: input_amplitude
+    values:
+    - 0.5
+    - 1.0
+    - 1.5
+    expected_observation: The integrator ramp slope follows input amplitude; the first-order final value
+      does not depend on tau.
+  - control: time_constant_s
+    values:
+    - 0.5
+    - 2.0
+    - 4.0
+    expected_observation: Compare accumulation with exponential memory under the same step input.
+  broken_case:
+    trigger: Enable broken_mode.
+    failure: The broken case uses forward Euler with dt/tau greater than two, creating a discrete pole
+      outside the unit circle.
+    recovery: Disable the broken case to use the exact first-order transition.
+    expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
+  common_mistakes:
+  - Changing more than one lever before explaining the first delta.
+  - Treating simulated evidence as physical hardware evidence.
+  - Retuning around a broken assumption instead of identifying it.
+  completion_checklist:
+  - Explain both governing equations.
+  - Complete both one-variable sweeps.
+  - Predict and reproduce the broken case.
+  - Confirm recovery with a metric and a plot.
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3.0
+  max_samples: 30001
+  max_output_bytes: 1000000
+python_source_equivalence:
+  status: passed
+  command: ELP_GNC_ITEM=P02 python -m pytest -q apps/api/tests/test_gnc_course.py
+  seed: 1601
+  inputs:
+  - name: input_amplitude
+    value: 1.0
+    unit: input
+  - name: time_constant_s
+    value: 2.0
+    unit: s
+  - name: broken_mode
+    value: false
+    unit: flag
+  cases:
+  - name: baseline-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/02-build-intuition-for-integrators-and-first-order-systems/evidence/expected-baseline.json
+      sha256: f4a3884c19df9b4811b5b1e406ddad8c2625ccf02e88c88c4349cd90df6e72a2
+    actual:
+      path: modules/02-build-intuition-for-integrators-and-first-order-systems/evidence/actual-baseline.json
+      sha256: c31ab7bb58797dd13ddd2ba477cc34f6d07b24cb258088d77f27913eddea7aac
+    max_absolute_error: 9.992007221626409e-14
+    max_relative_error: 9.99200722162541e-14
+    passed: true
+  - name: broken-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/02-build-intuition-for-integrators-and-first-order-systems/evidence/expected-broken.json
+      sha256: 22d532807f027aaf2b067e904c5c987acfc152e2875ce355b49fbc718f624190
+    actual:
+      path: modules/02-build-intuition-for-integrators-and-first-order-systems/evidence/actual-broken.json
+      sha256: 887064ca660fa59b0d56285256ba408807503a76965c84e2edaf76a719e53d23
+    max_absolute_error: 9.992007221626409e-14
+    max_relative_error: 9.99200722162541e-14
+    passed: true
+matlab_runtime_parity:
+  status: not_run
+  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
+    signatures bind the Python conversion.
+claims:
+  profile: elp-gnc-item-software-v1
+  browser_visual_review:
+    status: not_run
+    reason: Browser review is a separate integrated evidence step.
+  accessibility_review:
+    status: not_run
+    reason: Accessibility review is a separate integrated evidence step.
+  learner_effectiveness:
+    status: not_run
+    reason: Learner effectiveness requires post-release study and is not claimed.

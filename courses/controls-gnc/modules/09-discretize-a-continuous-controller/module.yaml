@@ -1,0 +1,64 @@
+schema_version: 1
+id: 09-discretize-a-continuous-controller
+number: 9
+title: Discretize a Continuous Controller
+summary: Compare a sampled PI implementation with its continuous design target.
+guiding_question: What inputs, observable effects, and failure modes matter when you discretize a Continuous
+  Controller?
+status: implemented
+tags:
+- controls-gnc
+- digital-and-constrained-control
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: sample_period_s
+  type: slider
+  label: Controller sample period
+  default: 0.05
+  unit: s
+  minimum: 0.01
+  maximum: 0.5
+  step: 0.01
+- id: integral_gain
+  type: slider
+  label: Integral gain
+  default: 4.0
+  unit: 1/s
+  minimum: 0.5
+  maximum: 8.0
+  step: 0.25
+- id: broken_mode
+  type: toggle
+  label: Enable the source broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: A coarser sample period should move the digital response away from the continuous target.
+  reveal: Disable the broken case and reduce the controller sample period.
+- type: controls
+  title: Source-aligned experiment controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

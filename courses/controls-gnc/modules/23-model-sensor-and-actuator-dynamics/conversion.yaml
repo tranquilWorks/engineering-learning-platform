@@ -1,0 +1,180 @@
+schema_version: 1
+course_id: controls-gnc
+item:
+  id: P23
+  number: 23
+  source_folder: modules/23-model-sensor-and-actuator-dynamics
+  target_module_id: 23-model-sensor-and-actuator-dynamics
+  target_folder: modules/23-model-sensor-and-actuator-dynamics
+  batch_id: ELP-GNC-P23
+  source_map_sha256: 5004e2d35d592e398579dd075faa3d0fc7eba3c48579b838f73c1826aba32360
+  source_inputs:
+  - path: modules/23-model-sensor-and-actuator-dynamics/README.md
+    sha256: edc3ac41711290ec576692065c7575ed0e00139bf5d3a35ac7138a14a04ccc7b
+  - path: modules/23-model-sensor-and-actuator-dynamics/lesson.md
+    sha256: 474c7d9e76da221e5f4e1c523a659fd099cd85430ee6f934ad7339f0db261449
+  - path: modules/23-model-sensor-and-actuator-dynamics/walkthrough.md
+    sha256: 177b45e417763828a93f64828f984eb830e9effb27421e74c454a4ccee82dc0d
+  - path: modules/23-model-sensor-and-actuator-dynamics/checks.md
+    sha256: d9aec3fe589720aa9ed01e69ce36164761724f4fc0066ec9d98a2a91a975367c
+  - path: modules/23-model-sensor-and-actuator-dynamics/experiment.m
+    sha256: 832ee0f53a9a13522e74c124565157c81afcebe1b1d99ea4c371c15d153efcdc
+  - path: modules/23-model-sensor-and-actuator-dynamics/interactive.m
+    sha256: 1d1ff23a6cc7c686d0c105cb32664d1ccd76f3aa6d0af2e41031feb4df92f5ae
+  - path: modules/23-model-sensor-and-actuator-dynamics/lesson.m
+    sha256: dd0fb2e2611e3fbd5b8dd5f2d4120f6ba8bfbb8b2d693f4a8ef4a3dad8f226a7
+  - path: modules/23-model-sensor-and-actuator-dynamics/model.m
+    sha256: c0703e13c7caefeb864983be924427e806996ea08aa57bcf1e1d8530fade18a2
+target:
+  content_digest: 3c2a080909daf2c035751af0f8fe47c74c94cb9a53cf9a79eba67c751ffb4260
+  files:
+  - path: modules/23-model-sensor-and-actuator-dynamics/module.yaml
+    sha256: eee122d100c08ea7d051c58544ea5cfb854fffa579bf002a6682bd99324680ec
+  - path: modules/23-model-sensor-and-actuator-dynamics/lesson.md
+    sha256: 26036264068f1768557ba8e2f13bc29a2f1b8eaa7381b1735505b3c5e899258e
+  - path: modules/23-model-sensor-and-actuator-dynamics/experiment.py
+    sha256: b1f5e361b90f7acd6b361bfe24f1511990bee6ea26938e8947843cafde535a55
+content:
+  guiding_question: What inputs, observable effects, and failure modes matter when you model Sensor and
+    Actuator Dynamics?
+  physical_model: Separate actuator lag, sensor lag, clipping, and bias in one command chain.
+  signal_flow:
+  - Set one source-aligned lever and predict the mechanism.
+  - Evaluate the deterministic Python model.
+  - Compare the observable response with its diagnostic mechanism.
+  - Inject the source failure and verify the stated recovery.
+  equations:
+  - latex: \tau_a\dot u_a+u_a=u_c
+    meaning: The actuator filters and clips command.
+  - latex: \tau_s\dot y_s+y_s=u_a+b_s
+    meaning: The sensor adds its own lag and bias.
+  equation_order: before_toolbox_shortcuts
+  deterministic_data:
+    seed: 1601
+    constants:
+    - name: item_number
+      value: 23
+      unit: index
+    datasets:
+    - name: baseline numeric signature
+      provenance: retained_fixture
+      sha256: 298344af44ec4d2b71e1836abcd8146d14312987804b988856e80c10fd63d13e
+      unit: mixed numeric signature
+  plot_sequence:
+  - source_figure: Source baseline and sweep figures
+    target_plot_key: response
+    title: Observable response
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Response
+      unit: source units
+    interpretation: Separate actuator lag, sensor lag, clipping, and bias in one command chain.
+  - source_figure: Source diagnostic and broken-case figures
+    target_plot_key: mechanism
+    title: Mechanism and diagnostic view
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Diagnostic
+      unit: source units
+    interpretation: The broken case combines slow actuator/sensor dynamics with a command that reverses
+      every 0.1 s.
+  sweeps:
+  - control: actuator_time_constant_s
+    values:
+    - 0.05
+    - 0.2
+    - 0.8
+    expected_observation: When command reversals are faster than either bandwidth, measured output should
+      lag twice.
+  - control: sensor_time_constant_s
+    values:
+    - 0.05
+    - 0.1
+    - 0.6
+    expected_observation: Separate actuator lag, sensor lag, clipping, and bias in one command chain.
+  broken_case:
+    trigger: Enable broken_mode.
+    failure: The broken case combines slow actuator/sensor dynamics with a command that reverses every
+      0.1 s.
+    recovery: Disable the broken case and slow the command or increase component bandwidth.
+    expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
+  common_mistakes:
+  - Changing more than one lever before explaining the first delta.
+  - Treating simulated evidence as physical hardware evidence.
+  - Retuning around a broken assumption instead of identifying it.
+  completion_checklist:
+  - Explain both governing equations.
+  - Complete both one-variable sweeps.
+  - Predict and reproduce the broken case.
+  - Confirm recovery with a metric and a plot.
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3.0
+  max_samples: 30001
+  max_output_bytes: 1000000
+python_source_equivalence:
+  status: passed
+  command: ELP_GNC_ITEM=P23 python -m pytest -q apps/api/tests/test_gnc_course.py
+  seed: 1601
+  inputs:
+  - name: actuator_time_constant_s
+    value: 0.2
+    unit: s
+  - name: sensor_time_constant_s
+    value: 0.1
+    unit: s
+  - name: broken_mode
+    value: false
+    unit: flag
+  cases:
+  - name: baseline-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/23-model-sensor-and-actuator-dynamics/evidence/expected-baseline.json
+      sha256: 298344af44ec4d2b71e1836abcd8146d14312987804b988856e80c10fd63d13e
+    actual:
+      path: modules/23-model-sensor-and-actuator-dynamics/evidence/actual-baseline.json
+      sha256: 5dd95b78e650595900714853b5d491d79990bb0002ceb4e21760ee7e33b2f30e
+    max_absolute_error: 1.0000333894311098e-13
+    max_relative_error: 1.0000333894311098e-13
+    passed: true
+  - name: broken-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/23-model-sensor-and-actuator-dynamics/evidence/expected-broken.json
+      sha256: c0c3d72b0bbd830e01760cf8e625d06fffb70790c327fe1dd7ddecec78338e1d
+    actual:
+      path: modules/23-model-sensor-and-actuator-dynamics/evidence/actual-broken.json
+      sha256: 5173969edfa10803a154f03b3ef5e82efb1c81804baeabfb384c631a99e6c880
+    max_absolute_error: 1.000310945187266e-13
+    max_relative_error: 1.000310945187266e-13
+    passed: true
+matlab_runtime_parity:
+  status: not_run
+  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
+    signatures bind the Python conversion.
+claims:
+  profile: elp-gnc-item-software-v1
+  browser_visual_review:
+    status: not_run
+    reason: Browser review is a separate integrated evidence step.
+  accessibility_review:
+    status: not_run
+    reason: Accessibility review is a separate integrated evidence step.
+  learner_effectiveness:
+    status: not_run
+    reason: Learner effectiveness requires post-release study and is not claimed.

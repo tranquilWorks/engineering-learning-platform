@@ -1,0 +1,177 @@
+schema_version: 1
+course_id: controls-gnc
+item:
+  id: P05
+  number: 5
+  source_folder: modules/05-close-a-loop-with-proportional-control
+  target_module_id: 05-close-a-loop-with-proportional-control
+  target_folder: modules/05-close-a-loop-with-proportional-control
+  batch_id: ELP-GNC-P05
+  source_map_sha256: 5004e2d35d592e398579dd075faa3d0fc7eba3c48579b838f73c1826aba32360
+  source_inputs:
+  - path: modules/05-close-a-loop-with-proportional-control/README.md
+    sha256: d5d10f98647792012ee0288dfe8815ba821386052f73868dd2b04043fc686a9e
+  - path: modules/05-close-a-loop-with-proportional-control/lesson.md
+    sha256: bde7232f365ecad1904d211c0035d84f25acfd95d80d806ab159eb70abaca178
+  - path: modules/05-close-a-loop-with-proportional-control/walkthrough.md
+    sha256: cb40e3b2b20e3b883c2c5b351ae4c260cde6391306f23417755df9c443f444b5
+  - path: modules/05-close-a-loop-with-proportional-control/checks.md
+    sha256: 403494ad64917d825f4b8120986c9799115f0f7205c0d7ad2787075fc356d07b
+  - path: modules/05-close-a-loop-with-proportional-control/experiment.m
+    sha256: d492cc59e777923fdc6796fd8a00ff98d4fd50abe8feec9241725e4f31899f03
+  - path: modules/05-close-a-loop-with-proportional-control/interactive.m
+    sha256: c305918fb64a039c57faa11aadc78d8de9597d211a941bae10fd6541040636f4
+  - path: modules/05-close-a-loop-with-proportional-control/lesson.m
+    sha256: 4563cb7228764af8763e09074239aa53e446172d9e40219d1d0a1c720be778e9
+  - path: modules/05-close-a-loop-with-proportional-control/model.m
+    sha256: 30bf526bcffff28fc74ec5f925a82f5f3d69e820079bbac3388413a3c85b8386
+target:
+  content_digest: 090f29f2f0bee32283c28e66d9e1788a9fd053420db5266e46cd4fbef16897f4
+  files:
+  - path: modules/05-close-a-loop-with-proportional-control/module.yaml
+    sha256: e9766074aa9757c6e0588b5640fc85c63b11ccdc1a3701ac57df425fd23135c6
+  - path: modules/05-close-a-loop-with-proportional-control/lesson.md
+    sha256: 8e69a24e4d0c9fb0d2a8c744030d31913f30de4a86ef64563ecd17ed92e83065
+  - path: modules/05-close-a-loop-with-proportional-control/experiment.py
+    sha256: 0a8a24727336121ea72aaad1ffb3f58fc1b51f2eeb5b0959501e28c5f0614949
+content:
+  guiding_question: What inputs, observable effects, and failure modes matter when you close a Loop with
+    Proportional Control?
+  physical_model: Make proportional feedback speed/error tradeoffs and the sign of feedback visible.
+  signal_flow:
+  - Set one source-aligned lever and predict the mechanism.
+  - Evaluate the deterministic Python model.
+  - Compare the observable response with its diagnostic mechanism.
+  - Inject the source failure and verify the stated recovery.
+  equations:
+  - latex: \tau\dot y=-y+G K_p(r-y)
+    meaning: Negative feedback increases the closed-loop rate.
+  - latex: y_{ss}=GK_p r/(1+GK_p)
+    meaning: Proportional control retains a finite step error.
+  equation_order: before_toolbox_shortcuts
+  deterministic_data:
+    seed: 1601
+    constants:
+    - name: item_number
+      value: 5
+      unit: index
+    datasets:
+    - name: baseline numeric signature
+      provenance: retained_fixture
+      sha256: 7b0482e2c8e1a14ddaa92dc1d678446c13d708d846308d708df830d5a1355ffc
+      unit: mixed numeric signature
+  plot_sequence:
+  - source_figure: Source baseline and sweep figures
+    target_plot_key: response
+    title: Observable response
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Response
+      unit: source units
+    interpretation: Make proportional feedback speed/error tradeoffs and the sign of feedback visible.
+  - source_figure: Source diagnostic and broken-case figures
+    target_plot_key: mechanism
+    title: Mechanism and diagnostic view
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Diagnostic
+      unit: source units
+    interpretation: The broken toggle reverses the measurement sign, producing positive feedback.
+  sweeps:
+  - control: proportional_gain
+    values:
+    - 0.5
+    - 2.0
+    - 6.0
+    expected_observation: Gain should speed the response and reduce—but not eliminate—the step error.
+  - control: plant_time_constant_s
+    values:
+    - 0.5
+    - 1.0
+    - 3.0
+    expected_observation: Make proportional feedback speed/error tradeoffs and the sign of feedback visible.
+  broken_case:
+    trigger: Enable broken_mode.
+    failure: The broken toggle reverses the measurement sign, producing positive feedback.
+    recovery: Disable the broken case to restore subtraction at the summing junction.
+    expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
+  common_mistakes:
+  - Changing more than one lever before explaining the first delta.
+  - Treating simulated evidence as physical hardware evidence.
+  - Retuning around a broken assumption instead of identifying it.
+  completion_checklist:
+  - Explain both governing equations.
+  - Complete both one-variable sweeps.
+  - Predict and reproduce the broken case.
+  - Confirm recovery with a metric and a plot.
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3.0
+  max_samples: 30001
+  max_output_bytes: 1000000
+python_source_equivalence:
+  status: passed
+  command: ELP_GNC_ITEM=P05 python -m pytest -q apps/api/tests/test_gnc_course.py
+  seed: 1601
+  inputs:
+  - name: proportional_gain
+    value: 2.0
+    unit: gain
+  - name: plant_time_constant_s
+    value: 1.0
+    unit: s
+  - name: broken_mode
+    value: false
+    unit: flag
+  cases:
+  - name: baseline-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/05-close-a-loop-with-proportional-control/evidence/expected-baseline.json
+      sha256: 7b0482e2c8e1a14ddaa92dc1d678446c13d708d846308d708df830d5a1355ffc
+    actual:
+      path: modules/05-close-a-loop-with-proportional-control/evidence/actual-baseline.json
+      sha256: 9c99b5dca03ccf82a723ac526ec8e092082f4236f417c3349234fae83229f2f7
+    max_absolute_error: 9.992007221626409e-14
+    max_relative_error: 4.9960036108129545e-14
+    passed: true
+  - name: broken-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/05-close-a-loop-with-proportional-control/evidence/expected-broken.json
+      sha256: 3047a030124f41085297bbd9ff4333bcae2fae270c1aacddb7a9c7a3717b08c6
+    actual:
+      path: modules/05-close-a-loop-with-proportional-control/evidence/actual-broken.json
+      sha256: a4de17890988df07f8f191cebb53e03ad81b24fcf9d0e658d70b1db010f5d4a5
+    max_absolute_error: 9.992007221626409e-14
+    max_relative_error: 4.9960036108129545e-14
+    passed: true
+matlab_runtime_parity:
+  status: not_run
+  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
+    signatures bind the Python conversion.
+claims:
+  profile: elp-gnc-item-software-v1
+  browser_visual_review:
+    status: not_run
+    reason: Browser review is a separate integrated evidence step.
+  accessibility_review:
+    status: not_run
+    reason: Accessibility review is a separate integrated evidence step.
+  learner_effectiveness:
+    status: not_run
+    reason: Learner effectiveness requires post-release study and is not claimed.

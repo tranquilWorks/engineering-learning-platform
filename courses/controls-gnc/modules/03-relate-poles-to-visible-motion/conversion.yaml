@@ -1,0 +1,179 @@
+schema_version: 1
+course_id: controls-gnc
+item:
+  id: P03
+  number: 3
+  source_folder: modules/03-relate-poles-to-visible-motion
+  target_module_id: 03-relate-poles-to-visible-motion
+  target_folder: modules/03-relate-poles-to-visible-motion
+  batch_id: ELP-GNC-P03
+  source_map_sha256: 5004e2d35d592e398579dd075faa3d0fc7eba3c48579b838f73c1826aba32360
+  source_inputs:
+  - path: modules/03-relate-poles-to-visible-motion/README.md
+    sha256: 666c261f05bfe71c0bd4a0e6089a19c963336764087152c9d93ca3773fdc541c
+  - path: modules/03-relate-poles-to-visible-motion/lesson.md
+    sha256: 6afa82f6a4947617beacdd14f74c91b8d3974d30cfa8a3ade61a1a1c0f11c167
+  - path: modules/03-relate-poles-to-visible-motion/walkthrough.md
+    sha256: 8e38c89179d6920087abb7e872fad81451c13f027a1ea8749abd6911f75e340d
+  - path: modules/03-relate-poles-to-visible-motion/checks.md
+    sha256: 011c911253f09bc77490e89463c782737390a718ca6c44e550b29d67546da808
+  - path: modules/03-relate-poles-to-visible-motion/experiment.m
+    sha256: 79cc0df294d6930705f9c73fadd20dabffe1647b61a06adb6491b03fd5567ea1
+  - path: modules/03-relate-poles-to-visible-motion/interactive.m
+    sha256: a0d88fc1260c7c831b0501a4ce77f3b0365298e8d2a01fe5ff20a9697e2b8068
+  - path: modules/03-relate-poles-to-visible-motion/lesson.m
+    sha256: 4324a365f046b075fcfe824691028d3f68fb950e3b2931c388dbb2d626c61de6
+  - path: modules/03-relate-poles-to-visible-motion/model.m
+    sha256: 0b7db76072227ff9e10f4db3541046ebd55642be66b42867fbc470bc4ea4c471
+target:
+  content_digest: 4b6a796663ace2de610e5cb9953be763a3b790145a975a269502bb8a6367568b
+  files:
+  - path: modules/03-relate-poles-to-visible-motion/module.yaml
+    sha256: 40259c2be75f83c040790795451cc9a485be66c55568dd3dbdf2aade92b26548
+  - path: modules/03-relate-poles-to-visible-motion/lesson.md
+    sha256: d651dc5325ce748a0edbbf488b349f82687753e060be9d1a83bee60b5ed6ad93
+  - path: modules/03-relate-poles-to-visible-motion/experiment.py
+    sha256: 42d6b1c4ae3d1de94c53b15f06bf32dc0d8303b2b3e84690ec891a57ef5a9fad
+content:
+  guiding_question: What inputs, observable effects, and failure modes matter when you relate Poles to
+    Visible Motion?
+  physical_model: Translate complex pole location into decay, oscillation, and instability.
+  signal_flow:
+  - Set one source-aligned lever and predict the mechanism.
+  - Evaluate the deterministic Python model.
+  - Compare the observable response with its diagnostic mechanism.
+  - Inject the source failure and verify the stated recovery.
+  equations:
+  - latex: x(t)=e^{\sigma t}\cos(\omega t)
+    meaning: The real part sets the envelope and the imaginary part sets oscillation rate.
+  - latex: T=2\pi/|\omega|
+    meaning: Imaginary pole magnitude maps directly to period.
+  equation_order: before_toolbox_shortcuts
+  deterministic_data:
+    seed: 1601
+    constants:
+    - name: item_number
+      value: 3
+      unit: index
+    datasets:
+    - name: baseline numeric signature
+      provenance: retained_fixture
+      sha256: 79cd0a7b87dd97e194f1f20df12d476cd103ab9780b5a68589fb5beebc2d6338
+      unit: mixed numeric signature
+  plot_sequence:
+  - source_figure: Source baseline and sweep figures
+    target_plot_key: response
+    title: Observable response
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Response
+      unit: source units
+    interpretation: Translate complex pole location into decay, oscillation, and instability.
+  - source_figure: Source diagnostic and broken-case figures
+    target_plot_key: mechanism
+    title: Mechanism and diagnostic view
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Diagnostic
+      unit: source units
+    interpretation: The broken case reflects a stable pole into the right half-plane, turning decay into
+      exponential growth.
+  sweeps:
+  - control: pole_real_per_s
+    values:
+    - -1.0
+    - -0.5
+    - 0.2
+    expected_observation: Moving sigma right slows decay and eventually turns the envelope into growth.
+  - control: pole_imag_rad_s
+    values:
+    - 0.5
+    - 2.0
+    - 5.0
+    expected_observation: Translate complex pole location into decay, oscillation, and instability.
+  broken_case:
+    trigger: Enable broken_mode.
+    failure: The broken case reflects a stable pole into the right half-plane, turning decay into exponential
+      growth.
+    recovery: Disable the broken case and keep the real part negative.
+    expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
+  common_mistakes:
+  - Changing more than one lever before explaining the first delta.
+  - Treating simulated evidence as physical hardware evidence.
+  - Retuning around a broken assumption instead of identifying it.
+  completion_checklist:
+  - Explain both governing equations.
+  - Complete both one-variable sweeps.
+  - Predict and reproduce the broken case.
+  - Confirm recovery with a metric and a plot.
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3.0
+  max_samples: 30001
+  max_output_bytes: 1000000
+python_source_equivalence:
+  status: passed
+  command: ELP_GNC_ITEM=P03 python -m pytest -q apps/api/tests/test_gnc_course.py
+  seed: 1601
+  inputs:
+  - name: pole_real_per_s
+    value: -0.5
+    unit: 1/s
+  - name: pole_imag_rad_s
+    value: 2.0
+    unit: rad/s
+  - name: broken_mode
+    value: false
+    unit: flag
+  cases:
+  - name: baseline-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/03-relate-poles-to-visible-motion/evidence/expected-baseline.json
+      sha256: 79cd0a7b87dd97e194f1f20df12d476cd103ab9780b5a68589fb5beebc2d6338
+    actual:
+      path: modules/03-relate-poles-to-visible-motion/evidence/actual-baseline.json
+      sha256: 6268fd5833acaa0b479c3657281c1de59fd3bbd23af5533e2f5c34b849c6e804
+    max_absolute_error: 9.997558336749535e-14
+    max_relative_error: 9.997558336749535e-14
+    passed: true
+  - name: broken-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/03-relate-poles-to-visible-motion/evidence/expected-broken.json
+      sha256: 0fe783b445116fbe6f5177f49d0bf9a439584ce749116cd7caede0321c1b6c63
+    actual:
+      path: modules/03-relate-poles-to-visible-motion/evidence/actual-broken.json
+      sha256: 06ef1dd82f049d2636c9b6e6377dadc21da238357cdd5d23a683ebaa683406ed
+    max_absolute_error: 1.000310945187266e-13
+    max_relative_error: 1.000310945187266e-13
+    passed: true
+matlab_runtime_parity:
+  status: not_run
+  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
+    signatures bind the Python conversion.
+claims:
+  profile: elp-gnc-item-software-v1
+  browser_visual_review:
+    status: not_run
+    reason: Browser review is a separate integrated evidence step.
+  accessibility_review:
+    status: not_run
+    reason: Accessibility review is a separate integrated evidence step.
+  learner_effectiveness:
+    status: not_run
+    reason: Learner effectiveness requires post-release study and is not claimed.

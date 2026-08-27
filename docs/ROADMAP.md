@@ -78,6 +78,29 @@ This lane is a separately authorized direct conversion sequence. It does not
 implement or satisfy the generic B020 ingestion tooling or B030 author-preview
 milestones below.
 
+## ELP-GNC — Authorized Controls/GNC conversion lane
+
+**Depends on:** ELP-DSP-P01-P84
+
+Portfolio Control aggregate authorization `ELP-GNC-P01-P24` advances the
+read-only Controls/GNC source to
+`ffd6623ee2cf8ccd8599fffd935ef07370750fa3` and converts all 24 implemented
+lessons through ordered internal gates P01–P24. The retained target is one
+commit and one pull request, while every item preserves its own exact source
+hashes, target digest, numeric evidence, two sweeps, failure/recovery case, and
+coverage transition.
+
+The completed software candidate adds 24 native interactive modules without
+changing the generic platform or the merged DSP/Radar course. Final catalog
+shape is four courses, 110 modules, and 110 interactive modules. P24 is a
+software-only virtual HIL plant/protocol exercise; physical HIL/HWIL and timing
+claims remain outside this lane. Merge readiness still requires exact-head
+hosted backend, frontend, and container CI plus human review.
+
+This direct course-owned lane does not complete B020 ingestion tooling, B030
+author preview, B050 isolated execution, B070 MATLAB adapters, or B080 release
+readiness.
+
 ## B020 — Course ingestion and migration tooling
 
 **Depends on:** B010
@@ -160,12 +183,12 @@ milestones below.
 
 **Depends on:** B020, B030
 
-For courses outside the dedicated DSP/Radar lane, migrate representative
+For courses outside the dedicated DSP/Radar and Controls/GNC lanes, migrate representative
 modules before attempting every course:
 
-1. one controls/GNC module;
-2. one 3-D/heatmap-heavy module from another engineering course;
-3. one static/media-heavy module.
+1. one 3-D/heatmap-heavy engineering module;
+2. one static/media-heavy module;
+3. one course that stresses large data transport.
 
 Use those pilots to revise the schema and authoring workflow before bulk conversion.
 The separate ELP-DSP sequence above does not mark B020, B030, or this broader

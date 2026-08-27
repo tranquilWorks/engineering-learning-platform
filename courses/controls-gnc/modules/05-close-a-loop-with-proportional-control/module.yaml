@@ -1,0 +1,64 @@
+schema_version: 1
+id: 05-close-a-loop-with-proportional-control
+number: 5
+title: Close a Loop with Proportional Control
+summary: Make proportional feedback speed/error tradeoffs and the sign of feedback visible.
+guiding_question: What inputs, observable effects, and failure modes matter when you close a Loop with
+  Proportional Control?
+status: implemented
+tags:
+- controls-gnc
+- feedback-fundamentals
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: proportional_gain
+  type: slider
+  label: Proportional gain
+  default: 2.0
+  unit: gain
+  minimum: 0.0
+  maximum: 8.0
+  step: 0.25
+- id: plant_time_constant_s
+  type: slider
+  label: Plant time constant
+  default: 1.0
+  unit: s
+  minimum: 0.25
+  maximum: 4.0
+  step: 0.25
+- id: broken_mode
+  type: toggle
+  label: Enable the source broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Gain should speed the response and reduce—but not eliminate—the step error.
+  reveal: Disable the broken case to restore subtraction at the summing junction.
+- type: controls
+  title: Source-aligned experiment controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

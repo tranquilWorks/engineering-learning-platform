@@ -1,0 +1,178 @@
+schema_version: 1
+course_id: controls-gnc
+item:
+  id: P10
+  number: 10
+  source_folder: modules/10-expose-delay-and-sampling-limits
+  target_module_id: 10-expose-delay-and-sampling-limits
+  target_folder: modules/10-expose-delay-and-sampling-limits
+  batch_id: ELP-GNC-P10
+  source_map_sha256: 5004e2d35d592e398579dd075faa3d0fc7eba3c48579b838f73c1826aba32360
+  source_inputs:
+  - path: modules/10-expose-delay-and-sampling-limits/README.md
+    sha256: b89136315d416f07b230d2cf7dda897fe364ec61c2ef6d8d1ccc9841e785f902
+  - path: modules/10-expose-delay-and-sampling-limits/lesson.md
+    sha256: bde816939daf269bdfda09c1d4ac0db59f3707aa2426c2a5521351d8973c67a5
+  - path: modules/10-expose-delay-and-sampling-limits/walkthrough.md
+    sha256: abc8372c936950edae27f94ea3373fb8c46ebbe481b5cbb7acde5114000e2480
+  - path: modules/10-expose-delay-and-sampling-limits/checks.md
+    sha256: 3be618c01ea58af8839e2d9770f60feb0d356336babcdd5993b6dc45e5b2bd25
+  - path: modules/10-expose-delay-and-sampling-limits/experiment.m
+    sha256: 6685b9d1b06d89d8ff9468a0eeca21a90a9306ad8cc417e97491c82ca01980be
+  - path: modules/10-expose-delay-and-sampling-limits/interactive.m
+    sha256: 507e42913fa0f97c23df79dacb62f9656aa270f32469f21529310635fefd0052
+  - path: modules/10-expose-delay-and-sampling-limits/lesson.m
+    sha256: ab45ad1ae68908a063f7360b2d3eff5bc23d7d0304d7a76cda16eb6c16fef6ea
+  - path: modules/10-expose-delay-and-sampling-limits/model.m
+    sha256: 494cc454b008ec99ab397f33f9fcf6a5ece53a3e351505e4bbe268d6c745fdf9
+target:
+  content_digest: 349db3909e29ac42b5482687cb934e7317dc9580382220b97583c64848b48688
+  files:
+  - path: modules/10-expose-delay-and-sampling-limits/module.yaml
+    sha256: 7a67267afec7c444e6c66c42169f483bb6102f6c5fad63f237c17f96977de4f9
+  - path: modules/10-expose-delay-and-sampling-limits/lesson.md
+    sha256: 339608f75ba3c4ab5c86e1504aabeac02f26ebe65792b83a14547d15fc834d53
+  - path: modules/10-expose-delay-and-sampling-limits/experiment.py
+    sha256: 057ff6f69799c36fcddb39eece483d0528d0503a4c27b6cb0abbd0ae756830a2
+content:
+  guiding_question: What inputs, observable effects, and failure modes matter when you expose Delay and
+    Sampling Limits?
+  physical_model: Reveal held commands, computation latency, and sampled-data pole movement.
+  signal_flow:
+  - Set one source-aligned lever and predict the mechanism.
+  - Evaluate the deterministic Python model.
+  - Compare the observable response with its diagnostic mechanism.
+  - Inject the source failure and verify the stated recovery.
+  equations:
+  - latex: u_k=K_p(1-y_k)
+    meaning: The command is computed only at sample instants.
+  - latex: u(t)=u_{k-1}\;\text{then}\;u_k
+    meaning: Computation delay retains the previous command within each interval.
+  equation_order: before_toolbox_shortcuts
+  deterministic_data:
+    seed: 1601
+    constants:
+    - name: item_number
+      value: 10
+      unit: index
+    datasets:
+    - name: baseline numeric signature
+      provenance: retained_fixture
+      sha256: b32745b15f0dde4e6dc15c285c38483f1001318ca60f3a9861c92dea57c6101f
+      unit: mixed numeric signature
+  plot_sequence:
+  - source_figure: Source baseline and sweep figures
+    target_plot_key: response
+    title: Observable response
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Response
+      unit: source units
+    interpretation: Reveal held commands, computation latency, and sampled-data pole movement.
+  - source_figure: Source diagnostic and broken-case figures
+    target_plot_key: mechanism
+    title: Mechanism and diagnostic view
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Diagnostic
+      unit: source units
+    interpretation: The broken case uses a 0.2 s period with 90 percent computation delay.
+  sweeps:
+  - control: sample_period_s
+    values:
+    - 0.02
+    - 0.1
+    - 0.2
+    expected_observation: Sampling and delay together should increase oscillation even when the continuous
+      design is fast.
+  - control: delay_fraction
+    values:
+    - 0.0
+    - 0.5
+    - 0.9
+    expected_observation: Reveal held commands, computation latency, and sampled-data pole movement.
+  broken_case:
+    trigger: Enable broken_mode.
+    failure: The broken case uses a 0.2 s period with 90 percent computation delay.
+    recovery: Disable the broken case and schedule computation early in the sample interval.
+    expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
+  common_mistakes:
+  - Changing more than one lever before explaining the first delta.
+  - Treating simulated evidence as physical hardware evidence.
+  - Retuning around a broken assumption instead of identifying it.
+  completion_checklist:
+  - Explain both governing equations.
+  - Complete both one-variable sweeps.
+  - Predict and reproduce the broken case.
+  - Confirm recovery with a metric and a plot.
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3.0
+  max_samples: 30001
+  max_output_bytes: 1000000
+python_source_equivalence:
+  status: passed
+  command: ELP_GNC_ITEM=P10 python -m pytest -q apps/api/tests/test_gnc_course.py
+  seed: 1601
+  inputs:
+  - name: sample_period_s
+    value: 0.05
+    unit: s
+  - name: delay_fraction
+    value: 0.2
+    unit: ratio
+  - name: broken_mode
+    value: false
+    unit: flag
+  cases:
+  - name: baseline-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/10-expose-delay-and-sampling-limits/evidence/expected-baseline.json
+      sha256: b32745b15f0dde4e6dc15c285c38483f1001318ca60f3a9861c92dea57c6101f
+    actual:
+      path: modules/10-expose-delay-and-sampling-limits/evidence/actual-baseline.json
+      sha256: 1f246ee687a16b2ca6c2a9f217bcd6b5eaa3a782630fe65021ac205bf26a17f6
+    max_absolute_error: 1.0000333894311098e-13
+    max_relative_error: 1.0000333894311098e-13
+    passed: true
+  - name: broken-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/10-expose-delay-and-sampling-limits/evidence/expected-broken.json
+      sha256: c995af978f065b79408878ccbb86dc61a1543481517aef904f421e6cc4e10749
+    actual:
+      path: modules/10-expose-delay-and-sampling-limits/evidence/actual-broken.json
+      sha256: 35414e96eb82cf231db0e551420d7ec75f947d0264f8204d341ab9ae498457c9
+    max_absolute_error: 1.0000333894311098e-13
+    max_relative_error: 1.0000333894311098e-13
+    passed: true
+matlab_runtime_parity:
+  status: not_run
+  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
+    signatures bind the Python conversion.
+claims:
+  profile: elp-gnc-item-software-v1
+  browser_visual_review:
+    status: not_run
+    reason: Browser review is a separate integrated evidence step.
+  accessibility_review:
+    status: not_run
+    reason: Accessibility review is a separate integrated evidence step.
+  learner_effectiveness:
+    status: not_run
+    reason: Learner effectiveness requires post-release study and is not claimed.

@@ -1,46 +1,47 @@
 # Handoff
 
-ELP-DSP-P01-P84 converts the complete pinned 84-lesson DSP/Radar curriculum
-on one branch and is intended for one implementation commit and one pull
-request. Do not split the retained candidate into 84 target PRs or mutate the
-read-only source gitlink.
+ELP-GNC-P01-P24 converts the complete pinned 24-lesson Controls/GNC
+curriculum in one target commit and one pull request. The work was internally
+gated P01 through P24; do not split it into 24 PRs, mutate the read-only source,
+or partially publish the retained prefix.
 
 Before publishing or updating the final candidate, run in fail-fast order:
 
 ```bash
-ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning \
+ELP_GNC_SOURCE_ROOT=courses/controls-gnc-learning \
   PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src \
   python3 -B -m pytest -q \
-    apps/api/tests/test_dsp_conversion_framework.py \
-    apps/api/tests/test_dsp_course.py
+    apps/api/tests/test_gnc_conversion_framework.py \
+    apps/api/tests/test_gnc_course.py
 ./scripts/agent-verify.sh contract
 ./scripts/agent-verify.sh quick
 ./scripts/agent-verify.sh full
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src \
   python3 -B scripts/validate_courses.py --execute --deterministic --json
+.venv/bin/ruff check \
+  apps/api/tests/test_gnc_conversion_framework.py \
+  apps/api/tests/test_gnc_course.py courses/controls-gnc/modules
 git diff --check
-test -z "$(git -C courses/dsp-radar-learning status --porcelain=v1 --untracked-files=all)"
+test -z "$(git -C courses/controls-gnc-learning status --porcelain=v1 --untracked-files=all)"
 ```
 
-Expected results are 300 complete DSP/framework tests, 72 contract tests, 376
-quick/full backend tests, a passing frontend typecheck/build, 3 courses, 86
-modules, 86 interactive modules, and 84 converted coverage rows with no
-pending, blocked, or placeholder item. The source/map/schema/authoring/course
-framework hashes must remain unchanged.
+Expected GNC results are 80 source-attested tests, 24 converted rows with no
+pending/blocked/placeholder item, all 24 closed-schema conversion records, and
+4 courses / 110 modules / 110 interactive modules. Retained DSP/Radar tests
+must remain green and the generic frontend must build without course-specific
+changes.
 
-After the single commit is pushed, open one PR against `main`. GitHub Actions
-backend, frontend, and Linux/amd64 container jobs must all pass on that exact
-head. A later commit invalidates earlier hosted evidence. Resolve all review
-threads and obtain explicit human approval before merging the protected
-branch.
+Publish one commit on `agent/elp-gnc-p01-p24` and one PR against `main`.
+GitHub Actions backend, frontend, and Linux/amd64 container jobs must all pass
+on that exact head. A later commit invalidates earlier hosted evidence. Human
+approval is required before merging the protected target.
 
-Rollback before merge is to close/discard this isolated branch and return to
+Rollback before merge is to close/discard the isolated branch and return to
 the exact baseline. After merge, use a reviewed revert of the single aggregate
-implementation commit. Do not partially delete modules or rewrite the pinned
-source history.
+commit, restoring the old GNC gitlink and removing the native `controls-gnc`
+course without changing the completed DSP/Radar course.
 
-The retained software evidence establishes catalog visibility, deterministic
-trusted-Python execution, and source-bound numeric equivalence. It does not
-establish MATLAB parity, browser/accessibility acceptance, learner
-effectiveness, hostile-code isolation, physical radar performance, release,
-deployment, or production operation.
+The retained evidence establishes source-bound, deterministic trusted-Python
+software behavior. It does not establish MATLAB parity, browser/accessibility
+acceptance, learner effectiveness, hostile-code isolation, physical HIL/HWIL,
+release, deployment, or production operation.

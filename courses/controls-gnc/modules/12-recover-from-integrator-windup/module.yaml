@@ -1,0 +1,64 @@
+schema_version: 1
+id: 12-recover-from-integrator-windup
+number: 12
+title: Recover from Integrator Windup
+summary: Compare PI recovery with and without correctly signed back-calculation.
+guiding_question: What inputs, observable effects, and failure modes matter when you recover from Integrator
+  Windup?
+status: implemented
+tags:
+- controls-gnc
+- digital-and-constrained-control
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: anti_windup_gain
+  type: slider
+  label: Anti-windup gain
+  default: 0.5
+  unit: 1/s
+  minimum: 0.0
+  maximum: 4.0
+  step: 0.1
+- id: demand_duration_s
+  type: slider
+  label: High-demand duration
+  default: 3.0
+  unit: s
+  minimum: 0.5
+  maximum: 6.0
+  step: 0.25
+- id: broken_mode
+  type: toggle
+  label: Enable the source broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Correctly signed back-calculation should shorten recovery after the high demand ends.
+  reveal: Disable the broken case to feed the saturation gap back with the corrective sign.
+- type: controls
+  title: Source-aligned experiment controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery
