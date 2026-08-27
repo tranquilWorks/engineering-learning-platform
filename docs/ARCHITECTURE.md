@@ -74,6 +74,66 @@ Templates and directories beginning with `_` are ignored.
 
 The catalog is immutable between reloads. Production deployment should treat mounted courses as read-only and rebuild/reload after reviewed changes.
 
+## Pinned DSP/Radar conversion lane
+
+The DSP/Radar integration has two deliberately separate trees:
+
+```text
+courses/dsp-radar-learning/          canonical read-only source gitlink
+  curriculum/modules.json           P01-P84 identity and order
+  modules/*/{README,lesson,walkthrough,checks}.md
+  modules/*/experiment.m
+
+courses/dsp-radar/                   platform-owned native representation
+  course.yaml
+  source-map.yaml                    immutable source paths and hashes
+  conversion-manifest.yaml           immutable source-to-target mapping
+  coverage.yaml                      reviewed conversion state
+  conversion.schema.json             per-item conversion/equivalence contract
+  modules/*                          added only by later item batches
+```
+
+ELP-DSP-00 advances the source gitlink to exact source commit
+`5d73667a486df4a7b6c581e4c9406e810ed4f0f6` and establishes the derived-course
+framework. The source repository remains the subject-matter and MATLAB
+reference; platform validation and conversion never modify it. The native
+course is a separate reviewed representation, not an in-place rewrite or a
+runtime translation of the source tree.
+
+Canonical identities remain `P01` through `P84`. Each maps to one lowercase
+native module ID equal to its recorded target-folder basename and retains the
+same number, title, guiding question, and order. Conversion is strictly:
+
+```text
+ELP-DSP-00 -> ELP-DSP-P01 -> ... -> ELP-DSP-P84 -> ELP-DSP-G-PYTHON
+```
+
+Each P## batch may create exactly one complete learner module and change only
+that item's coverage state. It may not create bulk placeholders or skip a
+blocked item. The framework begins with `pending=84`, `converted=0`,
+`blocked=0`, and `placeholder=0`; therefore the DSP course can be discovered
+while containing zero learner modules. That empty catalog entry is provenance
+and planning state, not an implemented lesson or learner-readiness claim.
+
+Every converted item must contain a self-contained trusted `experiment.py`.
+This is also a revision-identity requirement: the current module content digest
+binds the direct entrypoint bytes, but does not recursively bind undeclared
+helper imports. Default execution must remain bounded because catalog promotion
+runs every Python module once before accepting a new snapshot.
+
+Conversion evidence separates three claims:
+
+1. catalog visibility means a reviewed native module exists;
+2. Python/source equivalence means named deterministic cases reproduced the
+   source experiment within recorded units and tolerances; and
+3. MATLAB runtime parity means MATLAB actually ran and met recorded tolerances.
+
+Python/source equivalence is mandatory before an item becomes `converted`.
+MATLAB parity may be `passed`, `failed`, or `not_run`; only an actual retained
+MATLAB execution can produce `passed`. Neither catalog visibility nor Python
+agreement establishes MATLAB execution, visual polish, learner effectiveness,
+accessibility universality, or physical radar validity.
+
 ## Native course contract
 
 The platform accepts exactly integer `schema_version: 1` for both manifests. The
