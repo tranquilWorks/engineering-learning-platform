@@ -20,7 +20,7 @@ if git remote get-url origin >/dev/null 2>&1; then
   exit 2
 fi
 
-args=(repo create kpbianco/engineering-learning-platform --source . --remote origin --push)
+args=(repo create tranquilWorks/engineering-learning-platform --source . --remote origin --push)
 case "$visibility" in
   public) args+=(--public) ;;
   private) args+=(--private) ;;

@@ -1,13 +1,25 @@
 # Handoff
 
-ELP-GNC-P01-P24 converts the complete pinned 24-lesson Controls/GNC
-curriculum in one target commit and one pull request. The work was internally
-gated P01 through P24; do not split it into 24 PRs, mutate the read-only source,
-or partially publish the retained prefix.
+ELP-ORG-IDENTITY normalizes the transferred GitHub repository identities in
+one target commit and one pull request. It must not import, implement, convert,
+or polish another course.
 
-Before publishing or updating the final candidate, run in fail-fast order:
+Start from exact target baseline
+`923a86ab79893bd939d88d275bdcb12a5a1ddad6`. The merged control contract is
+`373aa5f5bd1ecc63740a03cba01c3eef237bb8af`.
+
+Before publishing the candidate, run in fail-fast order:
 
 ```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src \
+  python3 -B -m pytest -q \
+    apps/api/tests/test_dsp_conversion_framework.py \
+    apps/api/tests/test_gnc_conversion_framework.py
+ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning \
+  PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src \
+  python3 -B -m pytest -q \
+    apps/api/tests/test_dsp_conversion_framework.py \
+    apps/api/tests/test_dsp_course.py
 ELP_GNC_SOURCE_ROOT=courses/controls-gnc-learning \
   PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src \
   python3 -B -m pytest -q \
@@ -18,30 +30,24 @@ ELP_GNC_SOURCE_ROOT=courses/controls-gnc-learning \
 ./scripts/agent-verify.sh full
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src \
   python3 -B scripts/validate_courses.py --execute --deterministic --json
-.venv/bin/ruff check \
-  apps/api/tests/test_gnc_conversion_framework.py \
-  apps/api/tests/test_gnc_course.py courses/controls-gnc/modules
 git diff --check
-test -z "$(git -C courses/controls-gnc-learning status --porcelain=v1 --untracked-files=all)"
+test -z "$(git diff --raw 923a86ab79893bd939d88d275bdcb12a5a1ddad6 -- courses/*-learning)"
+test -z "$(git diff --name-only 923a86ab79893bd939d88d275bdcb12a5a1ddad6 -- \
+  'courses/*/modules/*/lesson.md' \
+  'courses/*/modules/*/module.yaml' \
+  'courses/*/modules/*/experiment.py' \
+  'courses/*/modules/*/evidence/**')"
 ```
 
-Expected GNC results are 80 source-attested tests, 24 converted rows with no
-pending/blocked/placeholder item, all 24 closed-schema conversion records, and
-4 courses / 110 modules / 110 interactive modules. Retained DSP/Radar tests
-must remain green and the generic frontend must build without course-specific
-changes.
+Expected final state is 13 canonical `tranquilWorks` submodule URLs, no stale
+current `kpbianco` repository identity, unchanged gitlinks/course payloads,
+DSP/Radar 84/84, Controls/GNC 24/24, and catalog 4 / 110 / 110.
 
-Publish one commit on `agent/elp-gnc-p01-p24` and one PR against `main`.
-GitHub Actions backend, frontend, and Linux/amd64 container jobs must all pass
-on that exact head. A later commit invalidates earlier hosted evidence. Human
-approval is required before merging the protected target.
+Publish exactly one commit on `agent/elp-tranquilworks-identity` and one PR
+against `main`. Exact-head hosted backend, frontend, and Linux/amd64 container
+jobs must pass before human merge. A later commit invalidates earlier hosted
+evidence.
 
-Rollback before merge is to close/discard the isolated branch and return to
-the exact baseline. After merge, use a reviewed revert of the single aggregate
-commit, restoring the old GNC gitlink and removing the native `controls-gnc`
-course without changing the completed DSP/Radar course.
-
-The retained evidence establishes source-bound, deterministic trusted-Python
-software behavior. It does not establish MATLAB parity, browser/accessibility
-acceptance, learner effectiveness, hostile-code isolation, physical HIL/HWIL,
-release, deployment, or production operation.
+Rollback before merge is branch/PR disposal. Rollback after merge is a reviewed
+revert of the single identity-normalization commit. GitHub transfer redirects
+remain external and no source-course history is rewritten.

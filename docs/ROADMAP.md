@@ -90,16 +90,31 @@ commit and one pull request, while every item preserves its own exact source
 hashes, target digest, numeric evidence, two sweeps, failure/recovery case, and
 coverage transition.
 
-The completed software candidate adds 24 native interactive modules without
-changing the generic platform or the merged DSP/Radar course. Final catalog
-shape is four courses, 110 modules, and 110 interactive modules. P24 is a
-software-only virtual HIL plant/protocol exercise; physical HIL/HWIL and timing
-claims remain outside this lane. Merge readiness still requires exact-head
-hosted backend, frontend, and container CI plus human review.
+The completed software course merged at
+`923a86ab79893bd939d88d275bdcb12a5a1ddad6` and adds 24 native interactive
+modules without changing the generic platform or the merged DSP/Radar course.
+Final catalog shape is four courses, 110 modules, and 110 interactive modules.
+P24 is a software-only virtual HIL plant/protocol exercise; physical HIL/HWIL
+and timing claims remain outside this lane.
 
 This direct course-owned lane does not complete B020 ingestion tooling, B030
 author preview, B050 isolated execution, B070 MATLAB adapters, or B080 release
 readiness.
+
+## ELP-ORG-IDENTITY — TranquilWorks namespace normalization
+
+**Depends on:** ELP-GNC-P01-P24
+
+Normalize the post-transfer GitHub owner from `kpbianco` to
+`tranquilWorks` for Portfolio Control, Engineering Learning Platform, all 13
+submodule URLs, imported-course provenance chains, tests, current
+documentation, and retained transfer evidence.
+
+This administrative lane preserves every gitlink SHA and every course
+manifest, lesson, experiment, and expected/actual numeric evidence file.
+DSP/Radar remains 84/84, Controls/GNC remains 24/24, and the catalog remains
+4 / 110 / 110. No unfinished course is imported or implemented. After this
+lane, there is no additional active course-import authorization.
 
 ## B020 — Course ingestion and migration tooling
 

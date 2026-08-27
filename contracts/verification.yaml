@@ -1,5 +1,7 @@
 schema_version: 1
 commands:
+  identity-framework:
+    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_gnc_conversion_framework.py
   gnc-framework:
     - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_gnc_conversion_framework.py
   gnc-source-attested:
@@ -16,4 +18,4 @@ commands:
     - ./scripts/agent-verify.sh quick
   full:
     - ./scripts/agent-verify.sh full
-evidence_boundary: These commands provide repository-static, deterministic software, API protocol, frontend build, exact Controls/GNC source identity, read-only conversion-framework, Python/source-equivalence, and retained DSP regression evidence for ELP-GNC-P01-P24. The source-attested profile inspects but does not execute or modify the canonical MATLAB course. MATLAB execution or parity, browser/accessibility acceptance, learner effectiveness, physical HIL/HWIL or timing, bench, field, release, deployment, and production evidence remain separate and unperformed unless explicitly retained.
+evidence_boundary: These commands provide repository-identity, provenance-closure, repository-static, deterministic software, API protocol, frontend build, exact source identity, read-only conversion-framework, Python/source-equivalence, and retained DSP/Radar plus Controls/GNC regression evidence for ELP-ORG-IDENTITY. The source-attested profiles inspect but do not execute or modify the canonical MATLAB courses. No new course content is authorized. MATLAB execution or parity, browser/accessibility acceptance, learner effectiveness, physical HIL/HWIL or timing, bench, field, release, deployment, and production evidence remain separate and unperformed unless explicitly retained.
