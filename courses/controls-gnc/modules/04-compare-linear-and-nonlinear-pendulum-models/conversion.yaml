@@ -1,0 +1,182 @@
+schema_version: 1
+course_id: controls-gnc
+item:
+  id: P04
+  number: 4
+  source_folder: modules/04-compare-linear-and-nonlinear-pendulum-models
+  target_module_id: 04-compare-linear-and-nonlinear-pendulum-models
+  target_folder: modules/04-compare-linear-and-nonlinear-pendulum-models
+  batch_id: ELP-GNC-P04
+  source_map_sha256: 5004e2d35d592e398579dd075faa3d0fc7eba3c48579b838f73c1826aba32360
+  source_inputs:
+  - path: modules/04-compare-linear-and-nonlinear-pendulum-models/README.md
+    sha256: 640170f6a13a77ddefa1dfe8b83cbd8e00216f290e713ef1abb04b72564d9d3f
+  - path: modules/04-compare-linear-and-nonlinear-pendulum-models/lesson.md
+    sha256: bf2c79903908afb4210f81fb60cb2e5d7f5e2c76065dafa14b31d41c0c7afdf4
+  - path: modules/04-compare-linear-and-nonlinear-pendulum-models/walkthrough.md
+    sha256: 67cf557e042528e9d3671713c750cd10bbb35e08e068f2ea7ddba1430bdf2c24
+  - path: modules/04-compare-linear-and-nonlinear-pendulum-models/checks.md
+    sha256: 77cfdda8619f0a688f4ade7003f2cb8b31bf7c9b26b018072276d05475c57bbe
+  - path: modules/04-compare-linear-and-nonlinear-pendulum-models/experiment.m
+    sha256: 4c7103c4feb9690a281409a243352ef253f5a092b3a28720445760be1c405f98
+  - path: modules/04-compare-linear-and-nonlinear-pendulum-models/interactive.m
+    sha256: 412092fe3c17a59010fb64b57554ce02af106a88b7c58c07271fa523d16d667f
+  - path: modules/04-compare-linear-and-nonlinear-pendulum-models/lesson.m
+    sha256: e5f4bba499ba226547476f263bccedc4acc72860fc96bc608df695a3f7b1865a
+  - path: modules/04-compare-linear-and-nonlinear-pendulum-models/model.m
+    sha256: 90b101c9c04fed852f4cac88c0c0eb5b91f37d53181b1860b42f28414fc31c1d
+target:
+  content_digest: b3dea045171f06b52f2a5755fc852a27ca82a2492393eeafbdaf49132732854c
+  files:
+  - path: modules/04-compare-linear-and-nonlinear-pendulum-models/module.yaml
+    sha256: a76a4780ffcef3dfda3d20db364ef78e7b46c1187e62581be6c82dd8b2494866
+  - path: modules/04-compare-linear-and-nonlinear-pendulum-models/lesson.md
+    sha256: d9685aba6ca98a5ccaa0a5a8caef48f3d5c6c76a5cd2a301f65d66ad16d0a3a8
+  - path: modules/04-compare-linear-and-nonlinear-pendulum-models/experiment.py
+    sha256: b5a411ec137cfd00a1a1efdbc785ec7538d554e9744a1f43a22235cce1db0a13
+content:
+  guiding_question: What inputs, observable effects, and failure modes matter when you compare Linear
+    and Nonlinear Pendulum Models?
+  physical_model: Expose when the small-angle pendulum approximation stops representing the nonlinear
+    plant.
+  signal_flow:
+  - Set one source-aligned lever and predict the mechanism.
+  - Evaluate the deterministic Python model.
+  - Compare the observable response with its diagnostic mechanism.
+  - Inject the source failure and verify the stated recovery.
+  equations:
+  - latex: \ddot{\theta}+2\zeta\sqrt{g/L}\dot{\theta}+(g/L)\sin\theta=0
+    meaning: The nonlinear restoring torque follows sine of angle.
+  - latex: \sin\theta\approx\theta
+    meaning: The linear model is trustworthy only for small angles.
+  equation_order: before_toolbox_shortcuts
+  deterministic_data:
+    seed: 1601
+    constants:
+    - name: item_number
+      value: 4
+      unit: index
+    datasets:
+    - name: baseline numeric signature
+      provenance: retained_fixture
+      sha256: 35c339e41f69356faf2215e8476592f5cf08acfb95a2dbfae636e03d01a3a9d7
+      unit: mixed numeric signature
+  plot_sequence:
+  - source_figure: Source baseline and sweep figures
+    target_plot_key: response
+    title: Observable response
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Response
+      unit: source units
+    interpretation: Expose when the small-angle pendulum approximation stops representing the nonlinear
+      plant.
+  - source_figure: Source diagnostic and broken-case figures
+    target_plot_key: mechanism
+    title: Mechanism and diagnostic view
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Diagnostic
+      unit: source units
+    interpretation: The broken case forces a 120 degree release while interpreting the small-angle trace
+      as truth.
+  sweeps:
+  - control: initial_angle_deg
+    values:
+    - 5.0
+    - 30.0
+    - 100.0
+    expected_observation: Large release angles should lengthen the nonlinear period relative to the linear
+      prediction.
+  - control: length_m
+    values:
+    - 0.5
+    - 1.0
+    - 2.0
+    expected_observation: Expose when the small-angle pendulum approximation stops representing the nonlinear
+      plant.
+  broken_case:
+    trigger: Enable broken_mode.
+    failure: The broken case forces a 120 degree release while interpreting the small-angle trace as truth.
+    recovery: Disable the broken case or reduce the release angle until the approximation error is acceptable.
+    expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
+  common_mistakes:
+  - Changing more than one lever before explaining the first delta.
+  - Treating simulated evidence as physical hardware evidence.
+  - Retuning around a broken assumption instead of identifying it.
+  completion_checklist:
+  - Explain both governing equations.
+  - Complete both one-variable sweeps.
+  - Predict and reproduce the broken case.
+  - Confirm recovery with a metric and a plot.
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3.0
+  max_samples: 30001
+  max_output_bytes: 1000000
+python_source_equivalence:
+  status: passed
+  command: ELP_GNC_ITEM=P04 python -m pytest -q apps/api/tests/test_gnc_course.py
+  seed: 1601
+  inputs:
+  - name: initial_angle_deg
+    value: 20.0
+    unit: deg
+  - name: length_m
+    value: 1.0
+    unit: m
+  - name: broken_mode
+    value: false
+    unit: flag
+  cases:
+  - name: baseline-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/04-compare-linear-and-nonlinear-pendulum-models/evidence/expected-baseline.json
+      sha256: 35c339e41f69356faf2215e8476592f5cf08acfb95a2dbfae636e03d01a3a9d7
+    actual:
+      path: modules/04-compare-linear-and-nonlinear-pendulum-models/evidence/actual-baseline.json
+      sha256: 084e41e71f9815d9c6b247c7bfeddd965d9964c135e32fd22e627a3c720ed24c
+    max_absolute_error: 9.997558336749535e-14
+    max_relative_error: 9.997558336749535e-14
+    passed: true
+  - name: broken-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/04-compare-linear-and-nonlinear-pendulum-models/evidence/expected-broken.json
+      sha256: 4c9631007594e4b352b80a2023ecedaa97a2cd744aaeebd15bd3121178a1cf61
+    actual:
+      path: modules/04-compare-linear-and-nonlinear-pendulum-models/evidence/actual-broken.json
+      sha256: 9fe6aab793a075e80d83f7852999e1014867f56a2ee0337037f3d9636d45079e
+    max_absolute_error: 9.992007221626409e-14
+    max_relative_error: 4.7708320221950476e-14
+    passed: true
+matlab_runtime_parity:
+  status: not_run
+  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
+    signatures bind the Python conversion.
+claims:
+  profile: elp-gnc-item-software-v1
+  browser_visual_review:
+    status: not_run
+    reason: Browser review is a separate integrated evidence step.
+  accessibility_review:
+    status: not_run
+    reason: Accessibility review is a separate integrated evidence step.
+  learner_effectiveness:
+    status: not_run
+    reason: Learner effectiveness requires post-release study and is not claimed.

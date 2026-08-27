@@ -1,0 +1,178 @@
+schema_version: 1
+course_id: controls-gnc
+item:
+  id: P08
+  number: 8
+  source_folder: modules/08-reject-a-disturbance-with-feedback
+  target_module_id: 08-reject-a-disturbance-with-feedback
+  target_folder: modules/08-reject-a-disturbance-with-feedback
+  batch_id: ELP-GNC-P08
+  source_map_sha256: 5004e2d35d592e398579dd075faa3d0fc7eba3c48579b838f73c1826aba32360
+  source_inputs:
+  - path: modules/08-reject-a-disturbance-with-feedback/README.md
+    sha256: d3b0f45b905f492a83aff106c0268f94ac365451d37fd074716c194893050162
+  - path: modules/08-reject-a-disturbance-with-feedback/lesson.md
+    sha256: ce389e9b28b48f48e1a04144cef6ccf27d1ef43a6176ad2f4a9e5a4bfd3a0b5d
+  - path: modules/08-reject-a-disturbance-with-feedback/walkthrough.md
+    sha256: 4c83523762a22e1dc07c898900aa67c29161714171aaa5709ae57c08a0193e88
+  - path: modules/08-reject-a-disturbance-with-feedback/checks.md
+    sha256: 707ac066540fc460078d8b22cfdee7825d73affccabf904eeaf696e8e7940416
+  - path: modules/08-reject-a-disturbance-with-feedback/experiment.m
+    sha256: aa058edbdb2dbd9b7846798026e66e47aad6d4a23df0c9c6a5938800c93151b5
+  - path: modules/08-reject-a-disturbance-with-feedback/interactive.m
+    sha256: 15bb27dee03d662e514cb4270c6a464f0ec7c2575d6b928db97322a61c9e8f1b
+  - path: modules/08-reject-a-disturbance-with-feedback/lesson.m
+    sha256: 527fe87bf5f1c1ee1e16ea7c95b8467e99fe7b4632f6ed3635347fce298755db
+  - path: modules/08-reject-a-disturbance-with-feedback/model.m
+    sha256: bff95267e52505a22fb513477abb436ca0c9bb631f6429201479af17cc9883a3
+target:
+  content_digest: 082d8766d0c6c8bdb770f71b00f02dd2716739fd142614471ab3202065f44a86
+  files:
+  - path: modules/08-reject-a-disturbance-with-feedback/module.yaml
+    sha256: a84bfe9567d3bcc530ce01a4aee9a3f27a34ba6b3e8f981c5adc2a23ef6eb256
+  - path: modules/08-reject-a-disturbance-with-feedback/lesson.md
+    sha256: 0d12480a524882ab70b91283bf9a342967ad3b5983698a99b9048a033f70b038
+  - path: modules/08-reject-a-disturbance-with-feedback/experiment.py
+    sha256: 396e8a6042411d05c561a8fb64bf3853e1d3103824a4957e1e844a78f4423514
+content:
+  guiding_question: What inputs, observable effects, and failure modes matter when you reject a Disturbance
+    with Feedback?
+  physical_model: Separate true disturbance rejection from the cost of measurement bias.
+  signal_flow:
+  - Set one source-aligned lever and predict the mechanism.
+  - Evaluate the deterministic Python model.
+  - Compare the observable response with its diagnostic mechanism.
+  - Inject the source failure and verify the stated recovery.
+  equations:
+  - latex: \dot y=-y-K(y+b)+d
+    meaning: Feedback rejects plant disturbance but reacts to sensor bias as if it were real output.
+  - latex: '|S_d(j\omega)|=1/\sqrt{(1+K)^2+\omega^2}'
+    meaning: Rejection is strongest below loop bandwidth.
+  equation_order: before_toolbox_shortcuts
+  deterministic_data:
+    seed: 1601
+    constants:
+    - name: item_number
+      value: 8
+      unit: index
+    datasets:
+    - name: baseline numeric signature
+      provenance: retained_fixture
+      sha256: 882907fa8db807f2a857e19978ca14c918b62cc937a97ac03e4941d74d93c981
+      unit: mixed numeric signature
+  plot_sequence:
+  - source_figure: Source baseline and sweep figures
+    target_plot_key: response
+    title: Observable response
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Response
+      unit: source units
+    interpretation: Separate true disturbance rejection from the cost of measurement bias.
+  - source_figure: Source diagnostic and broken-case figures
+    target_plot_key: mechanism
+    title: Mechanism and diagnostic view
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Diagnostic
+      unit: source units
+    interpretation: The broken case injects a 0.5-unit sensor bias with no physical disturbance.
+  sweeps:
+  - control: feedback_gain
+    values:
+    - 1.0
+    - 4.0
+    - 9.0
+    expected_observation: More gain should reject a slow plant disturbance but amplify control response
+      to bias.
+  - control: disturbance_frequency_rad_s
+    values:
+    - 0.0
+    - 2.0
+    - 8.0
+    expected_observation: Separate true disturbance rejection from the cost of measurement bias.
+  broken_case:
+    trigger: Enable broken_mode.
+    failure: The broken case injects a 0.5-unit sensor bias with no physical disturbance.
+    recovery: Disable the broken case and validate/calibrate the sensor bias.
+    expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
+  common_mistakes:
+  - Changing more than one lever before explaining the first delta.
+  - Treating simulated evidence as physical hardware evidence.
+  - Retuning around a broken assumption instead of identifying it.
+  completion_checklist:
+  - Explain both governing equations.
+  - Complete both one-variable sweeps.
+  - Predict and reproduce the broken case.
+  - Confirm recovery with a metric and a plot.
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3.0
+  max_samples: 30001
+  max_output_bytes: 1000000
+python_source_equivalence:
+  status: passed
+  command: ELP_GNC_ITEM=P08 python -m pytest -q apps/api/tests/test_gnc_course.py
+  seed: 1601
+  inputs:
+  - name: feedback_gain
+    value: 4.0
+    unit: gain
+  - name: disturbance_frequency_rad_s
+    value: 0.0
+    unit: rad/s
+  - name: broken_mode
+    value: false
+    unit: flag
+  cases:
+  - name: baseline-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/08-reject-a-disturbance-with-feedback/evidence/expected-baseline.json
+      sha256: 882907fa8db807f2a857e19978ca14c918b62cc937a97ac03e4941d74d93c981
+    actual:
+      path: modules/08-reject-a-disturbance-with-feedback/evidence/actual-baseline.json
+      sha256: 34d0d1520b7cd35bfad7e40beb52c58ba43e284b6da5669a0eb8f36ccd426b2e
+    max_absolute_error: 1.0036416142611415e-13
+    max_relative_error: 2.5091040356527907e-14
+    passed: true
+  - name: broken-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/08-reject-a-disturbance-with-feedback/evidence/expected-broken.json
+      sha256: 4b4f6eba8d12027025f6f8841752ea5fbbe3e3441034623c0206d5b30b7b1858
+    actual:
+      path: modules/08-reject-a-disturbance-with-feedback/evidence/actual-broken.json
+      sha256: a1f48b1be55e923e8af648329cf689a2954caf912f6f0edcbb5176c3d784e45f
+    max_absolute_error: 1.0036416142611415e-13
+    max_relative_error: 2.5091040356527907e-14
+    passed: true
+matlab_runtime_parity:
+  status: not_run
+  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
+    signatures bind the Python conversion.
+claims:
+  profile: elp-gnc-item-software-v1
+  browser_visual_review:
+    status: not_run
+    reason: Browser review is a separate integrated evidence step.
+  accessibility_review:
+    status: not_run
+    reason: Accessibility review is a separate integrated evidence step.
+  learner_effectiveness:
+    status: not_run
+    reason: Learner effectiveness requires post-release study and is not claimed.

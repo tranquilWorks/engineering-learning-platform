@@ -1,0 +1,63 @@
+schema_version: 1
+id: 13-test-controllability
+number: 13
+title: Test Controllability
+summary: Use rank and reachability energy to distinguish weak from missing control authority.
+guiding_question: What inputs, observable effects, and failure modes matter when you test Controllability?
+status: implemented
+tags:
+- controls-gnc
+- state-space-control
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: input_gain
+  type: slider
+  label: Input gain
+  default: 1.0
+  unit: (m/s²)/cmd
+  minimum: 0.0
+  maximum: 2.0
+  step: 0.05
+- id: coupling
+  type: slider
+  label: State coupling
+  default: 1.0
+  unit: ratio
+  minimum: 0.0
+  maximum: 2.0
+  step: 0.05
+- id: broken_mode
+  type: toggle
+  label: Enable the source broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Zero coupling should make position unreachable even though rate is directly actuated.
+  reveal: Disable the broken case to restore the state-to-state path.
+- type: controls
+  title: Source-aligned experiment controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

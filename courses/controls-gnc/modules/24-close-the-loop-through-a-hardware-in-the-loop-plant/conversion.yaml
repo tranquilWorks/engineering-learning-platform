@@ -1,0 +1,183 @@
+schema_version: 1
+course_id: controls-gnc
+item:
+  id: P24
+  number: 24
+  source_folder: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant
+  target_module_id: 24-close-the-loop-through-a-hardware-in-the-loop-plant
+  target_folder: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant
+  batch_id: ELP-GNC-P24
+  source_map_sha256: 5004e2d35d592e398579dd075faa3d0fc7eba3c48579b838f73c1826aba32360
+  source_inputs:
+  - path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/README.md
+    sha256: b3a96ceb70e6d6aa1c8f4e2659e1e3ab875144b648e7ceed01fb9aee7093af61
+  - path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/lesson.md
+    sha256: e57bb185cb6ec3f039b52f635c2df564bdd467e4584d365e0a784daaf4aedfba
+  - path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/walkthrough.md
+    sha256: a3806b070a2c9568e3a932ecb326b373d0dabae46f3de75e5a4352124dc82ec6
+  - path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/checks.md
+    sha256: 7b0825444b482d09587edd3b2ad9edaa5c1529567246716474fed53b281ffe56
+  - path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/experiment.m
+    sha256: 83995f5f3c2a4b5dd1d99ba3a2bebd55493b738e47bdd058d8e19a63b522fed9
+  - path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/interactive.m
+    sha256: 496086741e4a0a6e45979a8f2547553969aae69ebe455e784b4b59bfc5626786
+  - path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/lesson.m
+    sha256: c05dc86c7ec2c595189401158bf099618f9957bdd6f1c78234f892627eddfee3
+  - path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/model.m
+    sha256: 2bdd4440ad12ed616c77e91dc71461ee4f3aeb9a5d40bd01d7ece9dd385cdf11
+target:
+  content_digest: 8fe6a6aa494e2b065bed230affd4c686a208a0c9e8fbe9424c87d615d5e3119c
+  files:
+  - path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/module.yaml
+    sha256: 487b1e3ebec4bc25b74c6087e44802239f59069efac6c53f491ab42051212de1
+  - path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/lesson.md
+    sha256: e9aa5002064d46b0c8c351254a923d18c374cb40633b12b396c70354c037d040
+  - path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/experiment.py
+    sha256: 2fe5a057f979e873eec2197bd1984bf36bf605fda1a9f4fce0c161158d6869a3
+content:
+  guiding_question: What inputs, observable effects, and failure modes matter when you close the Loop
+    Through a Hardware-in-the-Loop Plant?
+  physical_model: Close a virtual controller/plant protocol loop with latency, drops, watchdog, and cancellation.
+  signal_flow:
+  - Set one source-aligned lever and predict the mechanism.
+  - Evaluate the deterministic Python model.
+  - Compare the observable response with its diagnostic mechanism.
+  - Inject the source failure and verify the stated recovery.
+  equations:
+  - latex: u_k=K_p(r-y_k)-K_d\dot y_k
+    meaning: A sampled controller computes timestamped commands.
+  - latex: u=0\;\text{if age}>T_w
+    meaning: The virtual plant watchdog removes stale authority safely.
+  equation_order: before_toolbox_shortcuts
+  deterministic_data:
+    seed: 1601
+    constants:
+    - name: item_number
+      value: 24
+      unit: index
+    datasets:
+    - name: baseline numeric signature
+      provenance: retained_fixture
+      sha256: da593fe7fa288f2ec255bd531fbc996bd8ac39c1de13553c32a86b662ccb59e1
+      unit: mixed numeric signature
+  plot_sequence:
+  - source_figure: Source baseline and sweep figures
+    target_plot_key: response
+    title: Observable response
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Response
+      unit: source units
+    interpretation: Close a virtual controller/plant protocol loop with latency, drops, watchdog, and
+      cancellation.
+  - source_figure: Source diagnostic and broken-case figures
+    target_plot_key: mechanism
+    title: Mechanism and diagnostic view
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Diagnostic
+      unit: source units
+    interpretation: The broken case drops every second command with a 0.1 s controller period, 0.04 s
+      one-way latency, and 0.12 s watchdog.
+  sweeps:
+  - control: controller_period_s
+    values:
+    - 0.02
+    - 0.05
+    - 0.15
+    expected_observation: Latency and dropped packets should increase command age; the watchdog must fail
+      to zero rather than hold forever.
+  - control: one_way_latency_s
+    values:
+    - 0.0
+    - 0.01
+    - 0.06
+    expected_observation: Close a virtual controller/plant protocol loop with latency, drops, watchdog,
+      and cancellation.
+  broken_case:
+    trigger: Enable broken_mode.
+    failure: The broken case drops every second command with a 0.1 s controller period, 0.04 s one-way
+      latency, and 0.12 s watchdog.
+    recovery: Disable the broken case to restore fresh commands. This is a software-only virtual protocol/plant
+      lesson; it does not claim physical HIL execution.
+    expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
+  common_mistakes:
+  - Changing more than one lever before explaining the first delta.
+  - Treating simulated evidence as physical hardware evidence.
+  - Retuning around a broken assumption instead of identifying it.
+  completion_checklist:
+  - Explain both governing equations.
+  - Complete both one-variable sweeps.
+  - Predict and reproduce the broken case.
+  - Confirm recovery with a metric and a plot.
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3.0
+  max_samples: 30001
+  max_output_bytes: 1000000
+python_source_equivalence:
+  status: passed
+  command: ELP_GNC_ITEM=P24 python -m pytest -q apps/api/tests/test_gnc_course.py
+  seed: 1601
+  inputs:
+  - name: controller_period_s
+    value: 0.05
+    unit: s
+  - name: one_way_latency_s
+    value: 0.01
+    unit: s
+  - name: broken_mode
+    value: false
+    unit: flag
+  cases:
+  - name: baseline-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/evidence/expected-baseline.json
+      sha256: da593fe7fa288f2ec255bd531fbc996bd8ac39c1de13553c32a86b662ccb59e1
+    actual:
+      path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/evidence/actual-baseline.json
+      sha256: af36a062b473d1165aa25934c5af5aad505fde82362115b760578990b1698d8f
+    max_absolute_error: 1.0000333894311098e-13
+    max_relative_error: 1.0000333894311098e-13
+    passed: true
+  - name: broken-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/evidence/expected-broken.json
+      sha256: 8488ce6551b19a6df86d08d84267a5ec326d037482f6d8041e2a597207d5b851
+    actual:
+      path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/evidence/actual-broken.json
+      sha256: 128ddf7f8995c7b29a889345046b51582a68020c20a5c741bc2350e419ffb0a5
+    max_absolute_error: 1.0000333894311098e-13
+    max_relative_error: 1.0000333894311098e-13
+    passed: true
+matlab_runtime_parity:
+  status: not_run
+  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
+    signatures bind the Python conversion.
+claims:
+  profile: elp-gnc-item-software-v1
+  browser_visual_review:
+    status: not_run
+    reason: Browser review is a separate integrated evidence step.
+  accessibility_review:
+    status: not_run
+    reason: Accessibility review is a separate integrated evidence step.
+  learner_effectiveness:
+    status: not_run
+    reason: Learner effectiveness requires post-release study and is not claimed.

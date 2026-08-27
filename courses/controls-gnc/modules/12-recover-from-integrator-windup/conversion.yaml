@@ -1,0 +1,180 @@
+schema_version: 1
+course_id: controls-gnc
+item:
+  id: P12
+  number: 12
+  source_folder: modules/12-recover-from-integrator-windup
+  target_module_id: 12-recover-from-integrator-windup
+  target_folder: modules/12-recover-from-integrator-windup
+  batch_id: ELP-GNC-P12
+  source_map_sha256: 5004e2d35d592e398579dd075faa3d0fc7eba3c48579b838f73c1826aba32360
+  source_inputs:
+  - path: modules/12-recover-from-integrator-windup/README.md
+    sha256: 3b343c9286ebc32c4aa19a47444693dc318931ff45823b39f28910f7b64a00c4
+  - path: modules/12-recover-from-integrator-windup/lesson.md
+    sha256: 740fcb47ec99900420865a60da8e140bf26b8b8326315a97eb755d04d41574d2
+  - path: modules/12-recover-from-integrator-windup/walkthrough.md
+    sha256: 112b866283cc45d33aaff257d992067c3d60f67064b4808a59280b630ec6195e
+  - path: modules/12-recover-from-integrator-windup/checks.md
+    sha256: 5d795954fa15ae642e361f3bd8f50ef7a9c9564a0ab14c76985e089ba35be3fd
+  - path: modules/12-recover-from-integrator-windup/experiment.m
+    sha256: d6eb03e0c71acb5746680558fd808cb875f777c56cdededb4920929c29e9ab31
+  - path: modules/12-recover-from-integrator-windup/interactive.m
+    sha256: 3b92bdfdb0c730a2633aaf4b2d3841493f15625e768b1e5f8d5e0a04b7802e67
+  - path: modules/12-recover-from-integrator-windup/lesson.m
+    sha256: 9eddd62fd657b9f78dc9e0cd3f9cf8e64d6002cf9e6d4b23d021fabef12510a6
+  - path: modules/12-recover-from-integrator-windup/model.m
+    sha256: 42bbda3356206c8d8991def6f5ffd9f50e1d4818be4679b59ac661de63cb6265
+target:
+  content_digest: 4f2fee492d69c2e493aa8cd0a53b6f39bfd4be8232d71611c74e304fa4729aac
+  files:
+  - path: modules/12-recover-from-integrator-windup/module.yaml
+    sha256: 6fda5808030c9f659d1159e2b8250d4ef376b8f154b3d6f99864eaaf4d6e8c5c
+  - path: modules/12-recover-from-integrator-windup/lesson.md
+    sha256: 67cabcd50eb001f2acea7614f77d6b47929a0ebb57e296080aa5737e9a52ac7a
+  - path: modules/12-recover-from-integrator-windup/experiment.py
+    sha256: 443e980ea1a88e6048d4359d026ba9474bb5ccf84e88cdbaf770f21889f314b8
+content:
+  guiding_question: What inputs, observable effects, and failure modes matter when you recover from Integrator
+    Windup?
+  physical_model: Compare PI recovery with and without correctly signed back-calculation.
+  signal_flow:
+  - Set one source-aligned lever and predict the mechanism.
+  - Evaluate the deterministic Python model.
+  - Compare the observable response with its diagnostic mechanism.
+  - Inject the source failure and verify the stated recovery.
+  equations:
+  - latex: \dot q=e+K_{aw}(u_{sat}-u_{raw})
+    meaning: Back-calculation drains the integral state while clipped.
+  - latex: u_{raw}=K_pe+K_iq
+    meaning: Stored integral action delays recovery after demand changes.
+  equation_order: before_toolbox_shortcuts
+  deterministic_data:
+    seed: 1601
+    constants:
+    - name: item_number
+      value: 12
+      unit: index
+    datasets:
+    - name: baseline numeric signature
+      provenance: retained_fixture
+      sha256: 71485142896ed066e8ef86923cfeb4280c7909d6f61b3f5c0a52340280e68469
+      unit: mixed numeric signature
+  plot_sequence:
+  - source_figure: Source baseline and sweep figures
+    target_plot_key: response
+    title: Observable response
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Response
+      unit: source units
+    interpretation: Compare PI recovery with and without correctly signed back-calculation.
+  - source_figure: Source diagnostic and broken-case figures
+    target_plot_key: mechanism
+    title: Mechanism and diagnostic view
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Diagnostic
+      unit: source units
+    interpretation: The broken case reverses the back-calculation sign and drives the integrator farther
+      into windup.
+  sweeps:
+  - control: anti_windup_gain
+    values:
+    - 0.0
+    - 0.5
+    - 2.0
+    expected_observation: Correctly signed back-calculation should shorten recovery after the high demand
+      ends.
+  - control: demand_duration_s
+    values:
+    - 1.0
+    - 3.0
+    - 5.0
+    expected_observation: Compare PI recovery with and without correctly signed back-calculation.
+  broken_case:
+    trigger: Enable broken_mode.
+    failure: The broken case reverses the back-calculation sign and drives the integrator farther into
+      windup.
+    recovery: Disable the broken case to feed the saturation gap back with the corrective sign.
+    expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
+  common_mistakes:
+  - Changing more than one lever before explaining the first delta.
+  - Treating simulated evidence as physical hardware evidence.
+  - Retuning around a broken assumption instead of identifying it.
+  completion_checklist:
+  - Explain both governing equations.
+  - Complete both one-variable sweeps.
+  - Predict and reproduce the broken case.
+  - Confirm recovery with a metric and a plot.
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3.0
+  max_samples: 30001
+  max_output_bytes: 1000000
+python_source_equivalence:
+  status: passed
+  command: ELP_GNC_ITEM=P12 python -m pytest -q apps/api/tests/test_gnc_course.py
+  seed: 1601
+  inputs:
+  - name: anti_windup_gain
+    value: 0.5
+    unit: 1/s
+  - name: demand_duration_s
+    value: 3.0
+    unit: s
+  - name: broken_mode
+    value: false
+    unit: flag
+  cases:
+  - name: baseline-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/12-recover-from-integrator-windup/evidence/expected-baseline.json
+      sha256: 71485142896ed066e8ef86923cfeb4280c7909d6f61b3f5c0a52340280e68469
+    actual:
+      path: modules/12-recover-from-integrator-windup/evidence/actual-baseline.json
+      sha256: a49ec0ec5354f4fecdad5612de426586df0ea548a24943a3f1c7a2df199df1a3
+    max_absolute_error: 1.000310945187266e-13
+    max_relative_error: 1.000310945187266e-13
+    passed: true
+  - name: broken-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/12-recover-from-integrator-windup/evidence/expected-broken.json
+      sha256: 9d444213563c9a4a6100e634d5988ffcf20027e131fb6331f372c285445cc04d
+    actual:
+      path: modules/12-recover-from-integrator-windup/evidence/actual-broken.json
+      sha256: 6b6de3d925ecbcd4a39406b241f88d4cb1f393b785c465ce6540118e526cd91f
+    max_absolute_error: 1.000310945187266e-13
+    max_relative_error: 1.000310945187266e-13
+    passed: true
+matlab_runtime_parity:
+  status: not_run
+  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
+    signatures bind the Python conversion.
+claims:
+  profile: elp-gnc-item-software-v1
+  browser_visual_review:
+    status: not_run
+    reason: Browser review is a separate integrated evidence step.
+  accessibility_review:
+    status: not_run
+    reason: Accessibility review is a separate integrated evidence step.
+  learner_effectiveness:
+    status: not_run
+    reason: Learner effectiveness requires post-release study and is not claimed.

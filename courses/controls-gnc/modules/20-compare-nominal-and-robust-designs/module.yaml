@@ -1,0 +1,65 @@
+schema_version: 1
+id: 20-compare-nominal-and-robust-designs
+number: 20
+title: Compare Nominal and Robust Designs
+summary: Compare a nominal gain with a conservative design across the same uncertainty envelope.
+guiding_question: What inputs, observable effects, and failure modes matter when you compare Nominal and
+  Robust Designs?
+status: implemented
+tags:
+- controls-gnc
+- optimal-and-robust-control
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: actuator_gain_ratio
+  type: slider
+  label: Actual / nominal actuator gain
+  default: 1.0
+  unit: ratio
+  minimum: 0.5
+  maximum: 1.5
+  step: 0.05
+- id: drag_ratio
+  type: slider
+  label: Actual / nominal drag
+  default: 1.0
+  unit: ratio
+  minimum: 0.5
+  maximum: 2.0
+  step: 0.05
+- id: broken_mode
+  type: toggle
+  label: Enable the source broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: The robust design should improve the difficult low-gain/high-drag corner while using more command
+    nominally.
+  reveal: Disable the broken case and restore a plant inside the certified uncertainty family.
+- type: controls
+  title: Source-aligned experiment controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

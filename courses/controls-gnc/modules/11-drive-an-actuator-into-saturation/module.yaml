@@ -1,0 +1,64 @@
+schema_version: 1
+id: 11-drive-an-actuator-into-saturation
+number: 11
+title: Drive an Actuator into Saturation
+summary: Show the gap between requested and physically available actuator effort.
+guiding_question: What inputs, observable effects, and failure modes matter when you drive an Actuator
+  into Saturation?
+status: implemented
+tags:
+- controls-gnc
+- digital-and-constrained-control
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: reference
+  type: slider
+  label: Reference
+  default: 1.5
+  unit: output
+  minimum: 0.1
+  maximum: 4.0
+  step: 0.1
+- id: actuator_limit
+  type: slider
+  label: Actuator limit
+  default: 2.0
+  unit: actuator
+  minimum: 0.2
+  maximum: 6.0
+  step: 0.1
+- id: broken_mode
+  type: toggle
+  label: Enable the source broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: A limit below the needed equilibrium command should create persistent tracking error.
+  reveal: Disable the broken case or reduce the command to fit available authority.
+- type: controls
+  title: Source-aligned experiment controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

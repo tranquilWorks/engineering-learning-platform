@@ -1,50 +1,46 @@
 schema_version: 1
 batch:
-  id: ELP-DSP-P01-P84
-  title: Convert all 84 DSP/Radar lessons in one governed integration sweep
-  goal: Execute ELP-DSP-P01 through ELP-DSP-P84 strictly in numeric order as 84 separately validated internal item batches on one isolated target branch, then publish exactly one final target commit and one pull request containing the complete non-placeholder native Python course.
+  id: ELP-GNC-P01-P24
+  title: Convert all 24 Controls/GNC lessons in one governed integration sweep
+  goal: Advance the stale read-only Controls/GNC source pin, establish the exact 24-item platform-owned conversion framework, execute P01 through P24 strictly in numeric order as separately validated internal batches, and publish one final target commit and one pull request containing the complete non-placeholder native Python course.
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
-    - products/engineering-learning-platform/automation.json#ELP-DSP-P01..ELP-DSP-P84
+    - products/engineering-learning-platform/automation.json#ELP-GNC-P01-P24
     - products/engineering-learning-platform/CODEX_HANDOFF.md
-    - products/engineering-learning-platform/roadmap.yaml#authorized_dsp_item_conversion_lane
-    - products/engineering-learning-platform/batches/ELP-DSP-00.yaml
-    - products/engineering-learning-platform/batches/ELP-DSP-P01.yaml
-  milestone: products/engineering-learning-platform/roadmap.yaml#authorized_dsp_item_conversion_lane
-  baseline_commit: 4234782eda42a3103cf320f1eb611065128c9afa
+    - products/engineering-learning-platform/roadmap.yaml#authorized_gnc_item_conversion_lane
+    - kpbianco/controls-gnc-learning/curriculum/modules.json
+  milestone: products/engineering-learning-platform/roadmap.yaml#authorized_gnc_item_conversion_lane
+  baseline_commit: 23ecebccc574e194a0d3bc010bb87926a6217f3a
   control_plane_repository: kpbianco/portfolio-control
-  control_plane_path: products/engineering-learning-platform/batches/ELP-DSP-P01-P84.yaml
+  control_plane_path: products/engineering-learning-platform/batches/ELP-GNC-P01-P24.yaml
 dependencies:
-  - ELP-DSP-00
+  - ELP-DSP-P01-P84
 scope:
   allowed_paths:
-    - courses/dsp-radar/modules/**
-    - courses/dsp-radar/coverage.yaml
-    - apps/api/tests/test_dsp_conversion_framework.py
-    - apps/api/tests/test_dsp_course.py
+    - courses/controls-gnc-learning
+    - courses/controls-gnc/**
+    - apps/api/tests/test_gnc_conversion_framework.py
+    - apps/api/tests/test_gnc_course.py
     - contracts/active-batch.yaml
     - contracts/repo-profile.yaml
     - contracts/verification.yaml
     - docs/CURRENT_STATE.md
     - docs/HANDOFF.md
     - docs/ROADMAP.md
-    - docs/evidence/ELP-DSP-P01-P84-*.md
+    - docs/evidence/ELP-GNC-P01-P24-*.md
   forbidden_paths:
     - .gitmodules
+    - courses/controls-gnc-learning/**
+    - courses/dsp-radar/**
     - courses/dsp-radar-learning
     - courses/dsp-radar-learning/**
-    - courses/dsp-radar/course.yaml
-    - courses/dsp-radar/source-map.yaml
-    - courses/dsp-radar/conversion-manifest.yaml
-    - courses/dsp-radar/conversion.schema.json
-    - courses/dsp-radar/AUTHORING.md
+    - courses/demo-radar/**
+    - courses/platform-showcase/**
     - apps/api/src/**
     - apps/web/**
     - packages/**
     - scripts/**
-    - courses/demo-radar/**
-    - courses/platform-showcase/**
     - package.json
     - package-lock.json
     - apps/api/pyproject.toml
@@ -54,58 +50,62 @@ scope:
     - Dockerfile
     - compose.yaml
 acceptance:
-  - Before product edits, target HEAD, origin/main, and origin/HEAD are exact 4234782eda42a3103cf320f1eb611065128c9afa; the worktree and index are clean except for exact runner-owned activation overlays binding the merged control revision containing this contract. Baseline, control, dependency, or worktree drift stops implementation.
-  - The DSP gitlink remains exact mode 160000 commit 5d73667a486df4a7b6c581e4c9406e810ed4f0f6 and tree 7a3a0f9adce607e10097724c13745eace212f4e1. Its 84 folders and 420 canonical files remain byte-identical and clean before and after every internal item batch.
-  - The immutable source map, conversion manifest, conversion schema, authoring rules, and native course manifest remain byte-for-byte unchanged. The focused framework test may change only to replace foundation-only zero-module assertions with retained converted-prefix and complete-course assertions; it may not weaken source identity, closed-schema, one-item transition, placeholder, provenance, or negative-claim checks.
-  - The implementation uses one branch from the exact baseline and creates no target commit until P01 through P84 have each cleared their internal gate. The final target history contains one implementation commit and one pull request. Temporary local state and validation logs are not represented as false target merges or CI evidence.
-  - Internal item batches execute strictly P01 through P84. At internal step N, only the mapped module N is added, its own conversion record and numeric expected/actual reference data are completed, and coverage advances from an N-1 converted prefix to an N converted prefix. A failed, blocked, incomplete, or placeholder item stops the lane; no later item is authored or marked converted.
-  - Every mapped target folder contains a complete exact-v1 module.yaml, expanded lesson.md, self-contained bounded experiment.py, closed conversion.yaml, and retained numeric expected plus actual JSON evidence. No MATLAB source is copied, no TODO or empty shell exists, and no module is implemented by renaming or duplicating another lesson.
-  - Every lesson preserves its exact title and guiding question; teaches a beginner-focused physical mental model and signal flow; states the governing equations with plain-language meanings before library operations; preserves source constants, seed/data conventions, important processing/plot sequence, axes, units, expected observations, and limiting cases; and includes a concrete prediction, at least two useful one-variable sweeps, one intentional broken case with named recovery, common mistakes, and a completion/teach-back checklist.
-  - Every experiment is a source-specific Python reimplementation using only the existing dependency set, returns the generic deterministic result envelope and Plotly-compatible JSON, validates all controls before allocation, caps samples/array elements and serialized output, completes within the existing trusted-runtime limit, produces stable finite result keys for every accepted state, and performs no network, filesystem write, subprocess, dynamic install/import, eval, learner-code execution, or shared mutable state.
-  - Every conversion.yaml validates against the unchanged closed schema, binds the exact source-map digest and five canonical source hashes, lists exact target file hashes and CourseCatalog content digest, records equations/constants/plots/sweeps/broken case/mistakes/completion, declares runtime bounds, and reports Python/source equivalence passed using distinct retained expected and actual numeric paths with units, explicit tolerances, measured errors, and an exact verification command.
-  - MATLAB runtime parity is passed only when an actual identified MATLAB runtime executes; otherwise each module records not_run with a non-empty reason. Browser and accessibility results are passed or failed only with retained evidence; otherwise they remain not_run. Learner effectiveness remains not_run. None of these states may replace or weaken Python/source equivalence.
-  - The final coverage ledger contains the exact ordered P01-P84 converted prefix with total=84, pending=0, converted=84, blocked=0, and placeholder=0. Every conversion record path and target digest resolves, CourseCatalog exposes exactly 84 DSP/Radar learner modules plus the two existing modules, and all 86 modules execute their defaults deterministically.
-  - One parametrized focused test suite validates every module's source identity, manifest/lesson/result references, equations, controls, deterministic baseline, two sweeps, broken/recovery behavior, resource rejection, reference hashes/tolerances, content digest, conversion record, and catalog visibility. Each internal batch runs only its item parameter plus the reusable framework/source-attested checks before advancing; the final gate runs the complete suite.
-  - Current-state, handoff, roadmap, and retained aggregate evidence contain one row per P01-P84 internal batch with exact commands, results, source and target identities, coverage before/after, residual risks, and unperformed checks. The final claim is limited to one catalog-visible, Python-verified, source-equivalent 84-lesson software course unless additional review evidence actually exists.
+  - Before product edits, exact clean target main is 23ecebccc574e194a0d3bc010bb87926a6217f3a, tree c5ca4fcbb8017685c1b18d9189063a0cb2e2e993, and the merged control revision contains this exact contract. Baseline, control, source, dependency, index, or worktree drift stops implementation.
+  - The Controls/GNC gitlink advances only from 58c96aea9f341664d4a7430f0c0e87fce2550484 to ffd6623ee2cf8ccd8599fffd935ef07370750fa3, exact source tree 471a0afead6f44e875627e7ffe9c088c23f784db. The pinned source has exact curriculum SHA-256 8763981e20d02a88450956682b4daff9ee0d74bfed5f0ad91b08715f16aea930, 24 implemented ordered folders, and 192 canonical files whose ordered hash manifest SHA-256 is 020ab18235d933cad94aa1c19b2d107b0f3a7ef409458b64f8ed38a9f408afbe.
+  - Source inspection is read-only. No source-course file is edited, copied as MATLAB into the native course, or executed as learner code. The completed DSP/Radar course, two example courses, generic platform, schemas, dependencies, workflows, deployment, and package manifests remain byte-identical.
+  - Before P01, create one platform-owned controls-gnc course manifest, exact source map, conversion manifest, closed conversion schema, zero-converted coverage ledger, authoring rules, and reusable framework tests from the pinned source. These identity/framework files then remain immutable through P01-P24 except the coverage ledger's single ordered transition per item.
+  - Use one branch from the exact baseline and create no target commit until P01 through P24 each clear their internal gate. The final target history contains one implementation commit and one pull request.
+  - Internal item batches execute strictly P01 through P24. At step N, add only mapped native module N, its conversion record and numeric expected/actual evidence, then advance coverage from an N-1 converted prefix to N. Any failed, blocked, incomplete, placeholder, or over-budget item stops the lane.
+  - Every target module contains exact-v1 module.yaml, expanded lesson.md, a self-contained bounded experiment.py, closed conversion.yaml, and distinct retained numeric expected plus actual JSON evidence. No TODO, empty shell, renamed experiment, or semantic duplication is accepted.
+  - Every lesson preserves its exact title and guiding question; teaches the physical/state-space/signal-flow mental model; gives governing equations and symbol/unit meanings before library operations; preserves source constants, deterministic conventions, model and controller sequence, plots, expected observations and limiting cases; and includes a prediction, two useful one-variable sweeps, a named intentional failure with recovery, mistakes, and teach-back completion.
+  - Every experiment is a source-specific Python reimplementation using only existing dependencies, the generic deterministic result envelope, and Plotly-compatible JSON. It validates controls before allocation, caps state/sample sizes and output, completes within the trusted-runtime limit, emits finite stable keys, and performs no network, source write, subprocess, dynamic install/import, eval, learner-code execution, or shared mutable state.
+  - P24 models a software HIL plant/interface boundary and failure modes deterministically. Static, simulated, and hosted-container evidence must not be promoted into physical HIL/HWIL, timing-hardware, bench, field, or operational validation.
+  - Every conversion record binds the exact source-map digest and all eight canonical source hashes, exact target hashes and CourseCatalog content digest; records equations/constants/plots/sweeps/failure/recovery/mistakes/completion and runtime bounds; and reports Python/source equivalence passed only through distinct retained expected/actual numeric paths with units, explicit tolerances, measured errors, and an exact verification command.
+  - MATLAB parity is passed only if an identified licensed MATLAB runtime executes; otherwise it is not_run with a reason. Browser, accessibility, learner-effectiveness, physical HIL/HWIL, bench, field, release, deployment, and production states are passed or failed only with retained evidence and otherwise remain not_run.
+  - Final coverage is total=24, pending=0, converted=24, blocked=0, placeholder=0. Every record and digest resolves. CourseCatalog exposes exactly four courses, 110 modules, and 110 interactive modules; all defaults execute deterministically.
+  - One item-filterable parametrized suite validates every module's exact source identity, manifest/lesson/result references, equations, controls, deterministic default, two sweeps, broken/recovery behavior, invalid/resource rejection, finite serialization, retained references/tolerances, content digest, record, and catalog visibility. The reusable framework suite proves source/map/schema/file-set identity, legal ordered transitions, illegal bulk/out-of-order changes, placeholder rejection, source cleanliness, and evidence-claim boundaries.
+  - Current-state, handoff, roadmap, and aggregate evidence contain one P01-P24 row per internal gate with commands, results, exact source/target identities, coverage before/after, residual risks, and unperformed checks. The final claim is limited to one catalog-visible, Python-verified, source-equivalent 24-lesson Controls/GNC software course.
 validation:
   local:
-    - test "$(git rev-parse HEAD)" = 4234782eda42a3103cf320f1eb611065128c9afa && test "$(git rev-parse origin/main)" = 4234782eda42a3103cf320f1eb611065128c9afa && test "$(git rev-parse origin/HEAD)" = 4234782eda42a3103cf320f1eb611065128c9afa
-    - for n in $(seq -w 1 84); do PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src ELP_DSP_ITEM=P${n} python3 -B -m pytest -q apps/api/tests/test_dsp_course.py || exit 1; PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_dsp_conversion_framework.py || exit 1; done
-    - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py
+    - test "$(git rev-parse HEAD)" = 23ecebccc574e194a0d3bc010bb87926a6217f3a && test "$(git rev-parse origin/main)" = 23ecebccc574e194a0d3bc010bb87926a6217f3a && test "$(git rev-parse origin/HEAD)" = 23ecebccc574e194a0d3bc010bb87926a6217f3a
+    - test "$(git -C courses/controls-gnc-learning rev-parse HEAD)" = ffd6623ee2cf8ccd8599fffd935ef07370750fa3
+    - for n in $(seq -w 1 24); do PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src ELP_GNC_ITEM=P${n} python3 -B -m pytest -q apps/api/tests/test_gnc_course.py || exit 1; ELP_GNC_SOURCE_ROOT=courses/controls-gnc-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_gnc_conversion_framework.py || exit 1; done
+    - ELP_GNC_SOURCE_ROOT=courses/controls-gnc-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_course.py
     - ./scripts/agent-verify.sh contract
     - ./scripts/agent-verify.sh quick
     - ./scripts/agent-verify.sh full
     - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic --json
+    - .venv/bin/ruff check apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_course.py courses/controls-gnc/modules
     - git diff --check
-    - test -z "$(git -C courses/dsp-radar-learning status --porcelain=v1 --untracked-files=all)"
+    - test -z "$(git -C courses/controls-gnc-learning status --porcelain=v1 --untracked-files=all)"
   focused_tests_to_add:
-    - Add apps/api/tests/test_dsp_course.py as an 84-item, item-filterable suite driven by the immutable map and conversion records; it must exercise each module's default, two sweeps, broken/recovery case, invalid/resource inputs, finite deterministic serialization, reference equivalence, exact content digest, and catalog visibility without fetching or writing the source.
-    - Update the reusable framework test only where its ELP-DSP-00 foundation assertions assume zero converted modules. Preserve all exact source/map/schema hashes, ordered single-item transition and bulk/out-of-order rejection tests, source-attested read-only recomputation, closed conversion-record validation, and negative evidence/claim checks.
-    - Prove final catalog completeness and deterministic default execution for all 84 DSP modules and the two unchanged example modules, with no skip, xfail, count waiver, placeholder, network fetch, or source mutation.
+    - Add apps/api/tests/test_gnc_conversion_framework.py for exact source commit/tree/curriculum/192-file identity, closed 24-item map/schema/manifest/coverage, one-item transition and bulk/out-of-order rejection, placeholder absence, source cleanliness, and honest MATLAB/browser/learner/physical-HIL evidence states.
+    - Add apps/api/tests/test_gnc_course.py as a 24-item item-filterable suite exercising each source-specific default, two sweeps, broken/recovery case, invalid/resource inputs, finite deterministic serialization, numeric reference equivalence, exact content digest, conversion record, lesson contract, and catalog visibility.
+    - Prove the final catalog exposes and deterministically executes all 24 Controls/GNC modules plus the retained 84 DSP/Radar and two examples, with no skip, xfail, count waiver, placeholder, source write, or runtime/schema change.
   required_ci:
-    - The existing GitHub Actions quality workflow must pass backend, frontend, and container jobs on the exact single target PR head. Backend must discover the complete framework and 84-item tests; frontend must build the unchanged generic GUI against the complete catalog contract; container smoke must load and execute the complete course.
-    - A later target commit invalidates prior hosted results. Branch protection, unresolved review threads, source/provenance drift, failed or skipped required jobs, and every stop condition remain binding. No agent may merge a protected branch without explicit human approval.
+    - Existing GitHub Actions quality workflow passes backend, frontend, and container on the exact single PR head. Backend discovers the complete GNC framework/course tests and retained DSP tests; frontend builds the unchanged generic GUI against all 110 modules; container smoke loads and executes the complete catalog.
+    - Any later target commit invalidates hosted results. Branch protection, unresolved review threads, source/provenance drift, skipped/failed jobs, and all stop conditions remain binding. No protected branch is merged without explicit human approval.
 risk:
   class: high
   hazards:
-    - repeated scaffolding disguises placeholder or semantically duplicated lessons, or a plausible plot silently changes a source equation, sample convention, axis, unit, normalization, sign, threshold, or limiting case
-    - work advances past a failed internal item, coverage is bulk-flipped without per-item evidence, or one final commit erases the retained audit trail for the 84 internal gates
-    - expected and actual vectors are the same bytes, fabricated, nonnumeric, over tolerance, or promoted into MATLAB execution evidence
-    - one heavy default makes catalog reload, CI, or the container nondeterministic or exceeds trusted runtime/output bounds
-    - generic platform, dependency, workflow, deployment, source-course, immutable framework, or unrelated course bytes change to accommodate one item
+    - repeated scaffolding disguises placeholder or semantically duplicated control lessons, or a plausible response silently changes a source equation, sign, unit, continuous/discrete convention, saturation, estimator covariance, guidance geometry, plant/interface timing, or limiting case
+    - work advances after an internal failure, coverage is bulk-promoted, or one commit erases the retained 24-gate audit trail
+    - expected and actual vectors are identical, fabricated, nonnumeric, over tolerance, or promoted into MATLAB or physical-HIL evidence
+    - one heavy solver/default makes catalog reload, CI, or the container nondeterministic or exceeds trusted runtime/output bounds
+    - generic platform, completed DSP, dependencies, workflows, deployment, source-course bytes, or unrelated courses change to accommodate GNC
   stop_conditions:
-    - exact target/control/source identities, source cleanliness, immutable framework hashes, or dependency ancestry differ
-    - any item requires a source write, generic renderer/runtime/schema/type change, new dependency, helper-loading rule, unsupported result primitive, unbounded execution, placeholder, or non-sequential coverage transition
-    - any item cannot pass honest Python/source equivalence, its own focused internal gate, or the cumulative framework/source-attested gate before the next item begins
-    - final focused, source-attested, contract, quick, full, deterministic catalog, diff, source-cleanliness, or exact-head hosted CI validation fails, is skipped, xfailed, relabeled, or run against a different head
-    - any MATLAB, browser/accessibility, learner, security, physical, RF, HIL/HWIL, bench, field, release, deployment, credential, settings, or production claim exceeds retained evidence
+    - exact target/control/source identities, source cleanliness, generated framework hashes, or dependency ancestry differ
+    - any item requires a source write, generic renderer/runtime/schema/type change, new dependency, helper-loading rule, unsupported result primitive, unbounded solver, placeholder, semantic duplication, or non-sequential transition
+    - any item cannot pass honest Python/source equivalence, its focused gate, and the cumulative source-attested framework gate before the next begins
+    - final focused, source-attested, contract, quick, full, deterministic catalog, lint, diff, source-cleanliness, or exact-head hosted CI fails, is skipped, xfailed, relabeled, or runs against another head
+    - any MATLAB, browser/accessibility, learner, security, physical HIL/HWIL, timing, bench, field, release, deployment, credential/settings, or production claim exceeds retained evidence
 rollback:
-  strategy: Before the target PR merges, discard or close the isolated branch and return to exact target baseline 4234782eda42a3103cf320f1eb611065128c9afa; the source submodule is untouched. After merge, revert the single aggregate implementation commit under a reviewed target change, restoring the zero-converted framework and leaving canonical source history unchanged. If later work depends on the complete course, use a coordinated forward fix or revert rather than partial history rewriting.
+  strategy: Before merge, close/discard the isolated branch and return to exact target baseline 23ecebccc574e194a0d3bc010bb87926a6217f3a. After merge, revert the single aggregate implementation commit, restoring source gitlink 58c96aea9f341664d4a7430f0c0e87fce2550484 and removing the platform-owned controls-gnc course/framework while leaving the source repository and completed DSP course untouched.
 evidence:
   output:
-    - docs/evidence/ELP-DSP-P01-P84-<date>.md
-    - exact target/control/source identities plus unchanged source and immutable framework hashes
-    - one P01-P84 row per internal gate with source hashes, target hashes/content digest, coverage transition, default/two-sweep/broken-recovery/resource/determinism/equivalence results, and residual/unperformed checks
-    - complete framework, source-attested, focused, contract, quick, full, deterministic catalog, diff, source-cleanliness, and exact-head hosted-CI results
-    - one final commit identity, one target PR, rollback path, and explicit MATLAB/browser/accessibility/learner/physical/release/deployment/production dispositions
-  claim_boundary: One complete catalog-visible, Python-verified, source-equivalent 84-lesson DSP/Radar software course at the pinned source identity, delivered as one target commit and one target PR after 84 ordered internal item gates. It does not establish MATLAB comparison unless actually run, learner effectiveness, browser/accessibility acceptance unless actually reviewed, physical radar behavior, hostile-code isolation, signing, release, deployment, or production operation.
+    - docs/evidence/ELP-GNC-P01-P24-<date>.md
+    - exact target/control/source identities, source curriculum and 192-file hashes, source cleanliness, and completed-DSP immutability
+    - one P01-P24 row per internal gate with source hashes, target hashes/content digest, coverage transition, default/two-sweep/broken-recovery/resource/determinism/equivalence results, residual risks, and unperformed checks
+    - complete source-attested framework/course, contract, quick, full, deterministic catalog, lint, diff, source-cleanliness, and exact-head hosted-CI results
+    - one final target commit, one target PR, rollback path, and explicit MATLAB/browser/accessibility/learner/physical-HIL/release/deployment/production dispositions
+  claim_boundary: One complete catalog-visible, Python-verified, source-equivalent 24-lesson Controls/GNC software course at pinned source ffd6623ee2cf8ccd8599fffd935ef07370750fa3, delivered as one target commit and one PR after 24 ordered internal gates. It does not establish MATLAB comparison, learner effectiveness, browser/accessibility acceptance without retained review, physical HIL/HWIL or timing behavior, hostile-code isolation, signing, release, deployment, or production operation.

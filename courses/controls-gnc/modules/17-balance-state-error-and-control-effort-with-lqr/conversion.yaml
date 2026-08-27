@@ -1,0 +1,179 @@
+schema_version: 1
+course_id: controls-gnc
+item:
+  id: P17
+  number: 17
+  source_folder: modules/17-balance-state-error-and-control-effort-with-lqr
+  target_module_id: 17-balance-state-error-and-control-effort-with-lqr
+  target_folder: modules/17-balance-state-error-and-control-effort-with-lqr
+  batch_id: ELP-GNC-P17
+  source_map_sha256: 5004e2d35d592e398579dd075faa3d0fc7eba3c48579b838f73c1826aba32360
+  source_inputs:
+  - path: modules/17-balance-state-error-and-control-effort-with-lqr/README.md
+    sha256: 7ceeae65ac5ef08e9fc4281a719103a55b8a34e964f7c0a3841484c3a933aaec
+  - path: modules/17-balance-state-error-and-control-effort-with-lqr/lesson.md
+    sha256: 706f648bf23c6a2263e0aec2748b2aa235adb58e21e80390929fd14d10baff62
+  - path: modules/17-balance-state-error-and-control-effort-with-lqr/walkthrough.md
+    sha256: 073def6d7d402743a53e2055511a608d5dd50785bfa9f7d37a93bafef0a8a507
+  - path: modules/17-balance-state-error-and-control-effort-with-lqr/checks.md
+    sha256: 90d5eb49c69fd1f25af07c25606958caad5e818d773d026229f4cde96fedc141
+  - path: modules/17-balance-state-error-and-control-effort-with-lqr/experiment.m
+    sha256: 11581cae707b61cc5e7a8a8839708a0365dec5ee018798a2ecc6f32db653ec3b
+  - path: modules/17-balance-state-error-and-control-effort-with-lqr/interactive.m
+    sha256: a3ed3d62ba5e4ff77124b3f92041e80a3a1becc34b16d2202dc03c4b35dd6f92
+  - path: modules/17-balance-state-error-and-control-effort-with-lqr/lesson.m
+    sha256: b1821961b973430eb30e652785d1d46e7b193578a19828ddd6629152f0d57e40
+  - path: modules/17-balance-state-error-and-control-effort-with-lqr/model.m
+    sha256: 59d0301e1d84821359028b6725aa33976dc89b997bbe65fc23d5b808d089b9b3
+target:
+  content_digest: e86e1d483a66e4f5946d418ee65a3c081a8fb679bd4a355e3825e39b30c6a89c
+  files:
+  - path: modules/17-balance-state-error-and-control-effort-with-lqr/module.yaml
+    sha256: 79ab43a0f1c8a907bfd2ad9fadb505467ed7d2ba113f38ad4bbc1ddbb8628c67
+  - path: modules/17-balance-state-error-and-control-effort-with-lqr/lesson.md
+    sha256: 67456b2598b75ff632c0323d3b6c2d35e490bda37f8e1247e3ca0ac206fc7077
+  - path: modules/17-balance-state-error-and-control-effort-with-lqr/experiment.py
+    sha256: ac4a09e2e5b9d3272f39690461bb7302c3f8c83cdcb4df56d90e2dd9e10fba65
+content:
+  guiding_question: What inputs, observable effects, and failure modes matter when you balance State Error
+    and Control Effort with LQR?
+  physical_model: Trade position regulation against command effort with a discrete LQR design.
+  signal_flow:
+  - Set one source-aligned lever and predict the mechanism.
+  - Evaluate the deterministic Python model.
+  - Compare the observable response with its diagnostic mechanism.
+  - Inject the source failure and verify the stated recovery.
+  equations:
+  - latex: J=\sum(x^TQx+u^TRu)
+    meaning: The cost declares the state/effort tradeoff.
+  - latex: u_k=-Kx_k
+    meaning: Riccati feedback minimizes the declared quadratic cost.
+  equation_order: before_toolbox_shortcuts
+  deterministic_data:
+    seed: 1601
+    constants:
+    - name: item_number
+      value: 17
+      unit: index
+    datasets:
+    - name: baseline numeric signature
+      provenance: retained_fixture
+      sha256: 91ec483788d5e262abd21620dcaa118c38621b062dfc4a106ad665f306b7f1bc
+      unit: mixed numeric signature
+  plot_sequence:
+  - source_figure: Source baseline and sweep figures
+    target_plot_key: response
+    title: Observable response
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Response
+      unit: source units
+    interpretation: Trade position regulation against command effort with a discrete LQR design.
+  - source_figure: Source diagnostic and broken-case figures
+    target_plot_key: mechanism
+    title: Mechanism and diagnostic view
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Diagnostic
+      unit: source units
+    interpretation: The broken case sets actuator effectiveness to zero, so a valid design model cannot
+      move the plant.
+  sweeps:
+  - control: position_weight
+    values:
+    - 1.0
+    - 4.0
+    - 16.0
+    expected_observation: More position weight should regulate faster with a larger peak command.
+  - control: control_weight
+    values:
+    - 0.1
+    - 1.0
+    - 10.0
+    expected_observation: Trade position regulation against command effort with a discrete LQR design.
+  broken_case:
+    trigger: Enable broken_mode.
+    failure: The broken case sets actuator effectiveness to zero, so a valid design model cannot move
+      the plant.
+    recovery: Disable the broken case and verify actuator authority before applying the gain.
+    expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
+  common_mistakes:
+  - Changing more than one lever before explaining the first delta.
+  - Treating simulated evidence as physical hardware evidence.
+  - Retuning around a broken assumption instead of identifying it.
+  completion_checklist:
+  - Explain both governing equations.
+  - Complete both one-variable sweeps.
+  - Predict and reproduce the broken case.
+  - Confirm recovery with a metric and a plot.
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3.0
+  max_samples: 30001
+  max_output_bytes: 1000000
+python_source_equivalence:
+  status: passed
+  command: ELP_GNC_ITEM=P17 python -m pytest -q apps/api/tests/test_gnc_course.py
+  seed: 1601
+  inputs:
+  - name: position_weight
+    value: 4.0
+    unit: weight
+  - name: control_weight
+    value: 1.0
+    unit: weight
+  - name: broken_mode
+    value: false
+    unit: flag
+  cases:
+  - name: baseline-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/17-balance-state-error-and-control-effort-with-lqr/evidence/expected-baseline.json
+      sha256: 91ec483788d5e262abd21620dcaa118c38621b062dfc4a106ad665f306b7f1bc
+    actual:
+      path: modules/17-balance-state-error-and-control-effort-with-lqr/evidence/actual-baseline.json
+      sha256: 10007101c35f48ed166bfbfad89427c0748c6bf8373e96fb0d9f69cd3266ef20
+    max_absolute_error: 1.0036416142611415e-13
+    max_relative_error: 2.5091040356527907e-14
+    passed: true
+  - name: broken-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/17-balance-state-error-and-control-effort-with-lqr/evidence/expected-broken.json
+      sha256: 98a9e4512b2dc7f50789682774439cd917a747fcdb3111c7deb8e25d6c69ad59
+    actual:
+      path: modules/17-balance-state-error-and-control-effort-with-lqr/evidence/actual-broken.json
+      sha256: 276aff530bbe210bcd181727b30a4abd21bc70a4f9c05711b93519bfb0870c7f
+    max_absolute_error: 1.0036416142611415e-13
+    max_relative_error: 2.5091040356527907e-14
+    passed: true
+matlab_runtime_parity:
+  status: not_run
+  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
+    signatures bind the Python conversion.
+claims:
+  profile: elp-gnc-item-software-v1
+  browser_visual_review:
+    status: not_run
+    reason: Browser review is a separate integrated evidence step.
+  accessibility_review:
+    status: not_run
+    reason: Accessibility review is a separate integrated evidence step.
+  learner_effectiveness:
+    status: not_run
+    reason: Learner effectiveness requires post-release study and is not claimed.

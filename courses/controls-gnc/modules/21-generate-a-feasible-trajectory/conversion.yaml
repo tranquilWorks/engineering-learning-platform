@@ -1,0 +1,179 @@
+schema_version: 1
+course_id: controls-gnc
+item:
+  id: P21
+  number: 21
+  source_folder: modules/21-generate-a-feasible-trajectory
+  target_module_id: 21-generate-a-feasible-trajectory
+  target_folder: modules/21-generate-a-feasible-trajectory
+  batch_id: ELP-GNC-P21
+  source_map_sha256: 5004e2d35d592e398579dd075faa3d0fc7eba3c48579b838f73c1826aba32360
+  source_inputs:
+  - path: modules/21-generate-a-feasible-trajectory/README.md
+    sha256: 753a1def1539c3d2025bf39c17ec2752e338b8629f3a663dbb867c0ebe6bf916
+  - path: modules/21-generate-a-feasible-trajectory/lesson.md
+    sha256: d436c76474ab092d4a4eb32d36162d883532a38b23a3a22a88a387457b575806
+  - path: modules/21-generate-a-feasible-trajectory/walkthrough.md
+    sha256: 6a5425039ea43df13ecc7a764e414566ec09ad8be5b028c92f031e64bbdee6ae
+  - path: modules/21-generate-a-feasible-trajectory/checks.md
+    sha256: 503fed3052bfd0422a149d7a82329210f86b6329f17a09b78b56ca8503ef8a61
+  - path: modules/21-generate-a-feasible-trajectory/experiment.m
+    sha256: be1ac29c16e818a281cfe9781918f8a5a08bc8f19a66f2d58b812704f538f6b9
+  - path: modules/21-generate-a-feasible-trajectory/interactive.m
+    sha256: f88c826b655d97d7770c47f67254e5af8376ccf9d5f7cb8271321502fac26aef
+  - path: modules/21-generate-a-feasible-trajectory/lesson.m
+    sha256: dd85b50a73f059270626a84b2b58dbfebe9789abb6213c4bb8ed514921cafb2b
+  - path: modules/21-generate-a-feasible-trajectory/model.m
+    sha256: d2ef8dab467fd61a4121fd6455ef8276119336cd61542b0b9fb9affd33b61b7c
+target:
+  content_digest: 8d178b763dd42c52e482cfea2d7e9111206b0418e3322a24d317be1e56888ec1
+  files:
+  - path: modules/21-generate-a-feasible-trajectory/module.yaml
+    sha256: 3929ec423c4adbce47feb73f54d17feffc263496168d32cda96e052b96367ced
+  - path: modules/21-generate-a-feasible-trajectory/lesson.md
+    sha256: 3e88169972834b5541026dfacd8d2d396a4adc8eed140e280cd41eb1301afeee
+  - path: modules/21-generate-a-feasible-trajectory/experiment.py
+    sha256: c4ca04a46ea656e422fa10e2bac56dff255a8a0e79488d083f4c8e0b28c5d896
+content:
+  guiding_question: What inputs, observable effects, and failure modes matter when you generate a Feasible
+    Trajectory?
+  physical_model: Generate a rest-to-rest quintic and test speed/acceleration feasibility.
+  signal_flow:
+  - Set one source-aligned lever and predict the mechanism.
+  - Evaluate the deterministic Python model.
+  - Compare the observable response with its diagnostic mechanism.
+  - Inject the source failure and verify the stated recovery.
+  equations:
+  - latex: x=x_f(10s^3-15s^4+6s^5)
+    meaning: The quintic satisfies zero endpoint velocity and acceleration.
+  - latex: s=t/T
+    meaning: Duration scales velocity by 1/T and acceleration by 1/T squared.
+  equation_order: before_toolbox_shortcuts
+  deterministic_data:
+    seed: 1601
+    constants:
+    - name: item_number
+      value: 21
+      unit: index
+    datasets:
+    - name: baseline numeric signature
+      provenance: retained_fixture
+      sha256: 9614292d843643bd786b8b3e474296172403b1be9a1ca9387c8106c862207844
+      unit: mixed numeric signature
+  plot_sequence:
+  - source_figure: Source baseline and sweep figures
+    target_plot_key: response
+    title: Observable response
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Response
+      unit: source units
+    interpretation: Generate a rest-to-rest quintic and test speed/acceleration feasibility.
+  - source_figure: Source diagnostic and broken-case figures
+    target_plot_key: mechanism
+    title: Mechanism and diagnostic view
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Diagnostic
+      unit: source units
+    interpretation: The broken case forces the 20 m move into 4 s, exceeding the declared speed/acceleration
+      limits.
+  sweeps:
+  - control: target_position_m
+    values:
+    - 5.0
+    - 20.0
+    - 30.0
+    expected_observation: Shortening duration should raise peak acceleration faster than peak speed.
+  - control: move_duration_s
+    values:
+    - 4.0
+    - 8.0
+    - 14.0
+    expected_observation: Generate a rest-to-rest quintic and test speed/acceleration feasibility.
+  broken_case:
+    trigger: Enable broken_mode.
+    failure: The broken case forces the 20 m move into 4 s, exceeding the declared speed/acceleration
+      limits.
+    recovery: Disable the broken case and lengthen the move until both constraints pass.
+    expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
+  common_mistakes:
+  - Changing more than one lever before explaining the first delta.
+  - Treating simulated evidence as physical hardware evidence.
+  - Retuning around a broken assumption instead of identifying it.
+  completion_checklist:
+  - Explain both governing equations.
+  - Complete both one-variable sweeps.
+  - Predict and reproduce the broken case.
+  - Confirm recovery with a metric and a plot.
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3.0
+  max_samples: 30001
+  max_output_bytes: 1000000
+python_source_equivalence:
+  status: passed
+  command: ELP_GNC_ITEM=P21 python -m pytest -q apps/api/tests/test_gnc_course.py
+  seed: 1601
+  inputs:
+  - name: target_position_m
+    value: 20.0
+    unit: m
+  - name: move_duration_s
+    value: 8.0
+    unit: s
+  - name: broken_mode
+    value: false
+    unit: flag
+  cases:
+  - name: baseline-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/21-generate-a-feasible-trajectory/evidence/expected-baseline.json
+      sha256: 9614292d843643bd786b8b3e474296172403b1be9a1ca9387c8106c862207844
+    actual:
+      path: modules/21-generate-a-feasible-trajectory/evidence/actual-baseline.json
+      sha256: 903c70203df0aabaf90f59353e74b1df4742d93cfb44fcf12fb62e20b4449cc4
+    max_absolute_error: 9.947598300641403e-14
+    max_relative_error: 4.9737991503206765e-15
+    passed: true
+  - name: broken-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/21-generate-a-feasible-trajectory/evidence/expected-broken.json
+      sha256: 15c6af2d2b2e0de6ac4530479d5f9acc1d0a61d2f60e3f200da04c7a28066a03
+    actual:
+      path: modules/21-generate-a-feasible-trajectory/evidence/actual-broken.json
+      sha256: 1251b885928a0474b03ee3b4a9098169479fcf11f588bfb28d25c353e31a0c21
+    max_absolute_error: 9.947598300641403e-14
+    max_relative_error: 4.9737991503206765e-15
+    passed: true
+matlab_runtime_parity:
+  status: not_run
+  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
+    signatures bind the Python conversion.
+claims:
+  profile: elp-gnc-item-software-v1
+  browser_visual_review:
+    status: not_run
+    reason: Browser review is a separate integrated evidence step.
+  accessibility_review:
+    status: not_run
+    reason: Accessibility review is a separate integrated evidence step.
+  learner_effectiveness:
+    status: not_run
+    reason: Learner effectiveness requires post-release study and is not claimed.

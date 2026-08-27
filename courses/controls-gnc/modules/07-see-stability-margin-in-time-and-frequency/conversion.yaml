@@ -1,0 +1,179 @@
+schema_version: 1
+course_id: controls-gnc
+item:
+  id: P07
+  number: 7
+  source_folder: modules/07-see-stability-margin-in-time-and-frequency
+  target_module_id: 07-see-stability-margin-in-time-and-frequency
+  target_folder: modules/07-see-stability-margin-in-time-and-frequency
+  batch_id: ELP-GNC-P07
+  source_map_sha256: 5004e2d35d592e398579dd075faa3d0fc7eba3c48579b838f73c1826aba32360
+  source_inputs:
+  - path: modules/07-see-stability-margin-in-time-and-frequency/README.md
+    sha256: b0b8a2c214ecddf8a0004e3486459a0c56776881f55f4ee40ddacb25217356c6
+  - path: modules/07-see-stability-margin-in-time-and-frequency/lesson.md
+    sha256: d1bc7cc6d76fa090f5fe1db0054ebf4ea983e092d75b30c5968b87d9eef63964
+  - path: modules/07-see-stability-margin-in-time-and-frequency/walkthrough.md
+    sha256: 176193153360e6270216067c467a1d32f832024fdeea6063ae45a142c8c4fba7
+  - path: modules/07-see-stability-margin-in-time-and-frequency/checks.md
+    sha256: 1b47093923eefa7c850fbcd98fcf10fba7de04b9785e6e2fd28ec26b61f326d7
+  - path: modules/07-see-stability-margin-in-time-and-frequency/experiment.m
+    sha256: fcdc12acbeab1ac9ead60c0fe8d680dfc40e1c8356d8fde3f23eed346103e921
+  - path: modules/07-see-stability-margin-in-time-and-frequency/interactive.m
+    sha256: a1b6a9d0959f893f6a7f2fec5fa56f85637482836e4a24b09a35488f134a401e
+  - path: modules/07-see-stability-margin-in-time-and-frequency/lesson.m
+    sha256: 387c2bb679be1481fac495e646e32949aaef8548e04edbb42b816b44c0537544
+  - path: modules/07-see-stability-margin-in-time-and-frequency/model.m
+    sha256: 223a80479b0ce06e48d37b4b210260a0bf16766d9b42d2254c468b5b0769b4cd
+target:
+  content_digest: c174ec5675c9ac2ec83366136e1a83b40563e9069de4905c6b0b24bbdd47c9a5
+  files:
+  - path: modules/07-see-stability-margin-in-time-and-frequency/module.yaml
+    sha256: 8a7eed03c8d83508e6bcc1e5eb66f9c1f71331b3f173c843f41a00269382ddda
+  - path: modules/07-see-stability-margin-in-time-and-frequency/lesson.md
+    sha256: c47200bc9aa7d5421eebeb768917bfcc5707e96e336fff4985ef9d2c713edde8
+  - path: modules/07-see-stability-margin-in-time-and-frequency/experiment.py
+    sha256: 91248a3e033aaf12435c71c5d9166e0c4c565fbd4523464f5aad358864212550
+content:
+  guiding_question: What inputs, observable effects, and failure modes matter when you see Stability Margin
+    in Time and Frequency?
+  physical_model: Connect gain/phase margins to ringing and instability in the same transparent loop.
+  signal_flow:
+  - Set one source-aligned lever and predict the mechanism.
+  - Evaluate the deterministic Python model.
+  - Compare the observable response with its diagnostic mechanism.
+  - Inject the source failure and verify the stated recovery.
+  equations:
+  - latex: L(s)=K/[s(s+1)(\tau_a s+1)]
+    meaning: The actuator pole adds lag before crossover.
+  - latex: PM=180^\circ+\angle L(j\omega_c)
+    meaning: Phase margin measures distance from positive-feedback alignment.
+  equation_order: before_toolbox_shortcuts
+  deterministic_data:
+    seed: 1601
+    constants:
+    - name: item_number
+      value: 7
+      unit: index
+    datasets:
+    - name: baseline numeric signature
+      provenance: retained_fixture
+      sha256: f249e80d6546bdbf8fd87a6d947c98ff063596ec204296732a52f08ccb7b32e0
+      unit: mixed numeric signature
+  plot_sequence:
+  - source_figure: Source baseline and sweep figures
+    target_plot_key: response
+    title: Observable response
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Response
+      unit: source units
+    interpretation: Connect gain/phase margins to ringing and instability in the same transparent loop.
+  - source_figure: Source diagnostic and broken-case figures
+    target_plot_key: mechanism
+    title: Mechanism and diagnostic view
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Diagnostic
+      unit: source units
+    interpretation: The broken case keeps K=4 while exposing a 0.5 s actuator lag omitted by the optimistic
+      design.
+  sweeps:
+  - control: loop_gain
+    values:
+    - 0.5
+    - 1.0
+    - 4.0
+    expected_observation: Higher gain moves crossover upward where actuator lag removes phase margin.
+  - control: actuator_lag_s
+    values:
+    - 0.0
+    - 0.2
+    - 0.5
+    expected_observation: Connect gain/phase margins to ringing and instability in the same transparent
+      loop.
+  broken_case:
+    trigger: Enable broken_mode.
+    failure: The broken case keeps K=4 while exposing a 0.5 s actuator lag omitted by the optimistic design.
+    recovery: Disable the broken case or lower loop gain until both margins are positive.
+    expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
+  common_mistakes:
+  - Changing more than one lever before explaining the first delta.
+  - Treating simulated evidence as physical hardware evidence.
+  - Retuning around a broken assumption instead of identifying it.
+  completion_checklist:
+  - Explain both governing equations.
+  - Complete both one-variable sweeps.
+  - Predict and reproduce the broken case.
+  - Confirm recovery with a metric and a plot.
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3.0
+  max_samples: 30001
+  max_output_bytes: 1000000
+python_source_equivalence:
+  status: passed
+  command: ELP_GNC_ITEM=P07 python -m pytest -q apps/api/tests/test_gnc_course.py
+  seed: 1601
+  inputs:
+  - name: loop_gain
+    value: 1.0
+    unit: 1/s²
+  - name: actuator_lag_s
+    value: 0.2
+    unit: s
+  - name: broken_mode
+    value: false
+    unit: flag
+  cases:
+  - name: baseline-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/07-see-stability-margin-in-time-and-frequency/evidence/expected-baseline.json
+      sha256: f249e80d6546bdbf8fd87a6d947c98ff063596ec204296732a52f08ccb7b32e0
+    actual:
+      path: modules/07-see-stability-margin-in-time-and-frequency/evidence/actual-baseline.json
+      sha256: 2e668639279794826564fed54a794c475c6786bc1e3534ca53f0ba5a45ba359c
+    max_absolute_error: 9.992007221626409e-14
+    max_relative_error: 9.99200722162541e-14
+    passed: true
+  - name: broken-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/07-see-stability-margin-in-time-and-frequency/evidence/expected-broken.json
+      sha256: 3b6fc3dcb9725010d624ff040dece173b77e9314c20930b4eb7546a39ae34fdf
+    actual:
+      path: modules/07-see-stability-margin-in-time-and-frequency/evidence/actual-broken.json
+      sha256: 6c39aae237e5d213ef8b5bd2cef91a395e5c885e2c5fd26145d245dd2ac4cd51
+    max_absolute_error: 1.0036416142611415e-13
+    max_relative_error: 2.5091040356527907e-14
+    passed: true
+matlab_runtime_parity:
+  status: not_run
+  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
+    signatures bind the Python conversion.
+claims:
+  profile: elp-gnc-item-software-v1
+  browser_visual_review:
+    status: not_run
+    reason: Browser review is a separate integrated evidence step.
+  accessibility_review:
+    status: not_run
+    reason: Accessibility review is a separate integrated evidence step.
+  learner_effectiveness:
+    status: not_run
+    reason: Learner effectiveness requires post-release study and is not claimed.

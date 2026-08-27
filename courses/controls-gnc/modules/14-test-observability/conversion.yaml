@@ -1,0 +1,177 @@
+schema_version: 1
+course_id: controls-gnc
+item:
+  id: P14
+  number: 14
+  source_folder: modules/14-test-observability
+  target_module_id: 14-test-observability
+  target_folder: modules/14-test-observability
+  batch_id: ELP-GNC-P14
+  source_map_sha256: 5004e2d35d592e398579dd075faa3d0fc7eba3c48579b838f73c1826aba32360
+  source_inputs:
+  - path: modules/14-test-observability/README.md
+    sha256: b36405c91a7658e720e3f5d22682192a825f10972c89cf038c3ae8fa6339cfcd
+  - path: modules/14-test-observability/lesson.md
+    sha256: da374ee1cc0ecddc04e7965bb6d7eb66d707b467c8fda21ef7d2f6972bec195a
+  - path: modules/14-test-observability/walkthrough.md
+    sha256: 9ef15dcf91bb62f9e4a2e744ba0880b90ae8676ac379a293810e98cd981dc8bb
+  - path: modules/14-test-observability/checks.md
+    sha256: 54cd00fc7e148fcd22ed8d627a33da5c67968cf5f9950b36dd35c07484703dd7
+  - path: modules/14-test-observability/experiment.m
+    sha256: 961e2d53f7996dd6144778b9e760128066a5ea185a7593c4db5edd0957237381
+  - path: modules/14-test-observability/interactive.m
+    sha256: 455e7effc5cd1af07deef091a280715d2f015b90251f7b1816c29fe6a95529a7
+  - path: modules/14-test-observability/lesson.m
+    sha256: 1eb4229351605360bc9749dd7d20707418dae76e57286d52c2f582e4ae221723
+  - path: modules/14-test-observability/model.m
+    sha256: 6164ee7a6c9506700df113a62c50b4592d859f2efd3d89d946ecf4b341ccf791
+target:
+  content_digest: 059245210cccd4b0a45444b3140256508d307fb9fc38af6e0af90b7926154989
+  files:
+  - path: modules/14-test-observability/module.yaml
+    sha256: 026d1e067e39768d5c9fd64631b89f6cf2745f86f11dca15732427fd7dab1a16
+  - path: modules/14-test-observability/lesson.md
+    sha256: 8d98147d2748d81a21595bb1144d4b65cfcb1a09fe96fbfdeb5108dfcdeb6bf8
+  - path: modules/14-test-observability/experiment.py
+    sha256: 462b3f5b90895372be41ac483d64321b5967c784f5cb21a43c67c4850fe702c2
+content:
+  guiding_question: What inputs, observable effects, and failure modes matter when you test Observability?
+  physical_model: Use measurement history and observability conditioning to expose hidden state.
+  signal_flow:
+  - Set one source-aligned lever and predict the mechanism.
+  - Evaluate the deterministic Python model.
+  - Compare the observable response with its diagnostic mechanism.
+  - Inject the source failure and verify the stated recovery.
+  equations:
+  - latex: \mathcal O=[C;CA]
+    meaning: Full column rank lets outputs distinguish every state direction.
+  - latex: y(t)=g(x_0+v_0t)
+    meaning: Position history reveals constant rate through slope.
+  equation_order: before_toolbox_shortcuts
+  deterministic_data:
+    seed: 1601
+    constants:
+    - name: item_number
+      value: 14
+      unit: index
+    datasets:
+    - name: baseline numeric signature
+      provenance: retained_fixture
+      sha256: 914b3acbc589bc549b761ba9ff617b192b62207ebe6405085f8f9b740ebf4180
+      unit: mixed numeric signature
+  plot_sequence:
+  - source_figure: Source baseline and sweep figures
+    target_plot_key: response
+    title: Observable response
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Response
+      unit: source units
+    interpretation: Use measurement history and observability conditioning to expose hidden state.
+  - source_figure: Source diagnostic and broken-case figures
+    target_plot_key: mechanism
+    title: Mechanism and diagnostic view
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Diagnostic
+      unit: source units
+    interpretation: The broken case measures rate only, so initial position never appears in the output.
+  sweeps:
+  - control: sensor_gain
+    values:
+    - 0.25
+    - 1.0
+    - 2.0
+    expected_observation: A longer position record should improve velocity inference; a rate-only sensor
+      hides initial position.
+  - control: observation_window_s
+    values:
+    - 0.25
+    - 2.0
+    - 5.0
+    expected_observation: Use measurement history and observability conditioning to expose hidden state.
+  broken_case:
+    trigger: Enable broken_mode.
+    failure: The broken case measures rate only, so initial position never appears in the output.
+    recovery: Disable the broken case to measure position and restore full observability.
+    expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
+  common_mistakes:
+  - Changing more than one lever before explaining the first delta.
+  - Treating simulated evidence as physical hardware evidence.
+  - Retuning around a broken assumption instead of identifying it.
+  completion_checklist:
+  - Explain both governing equations.
+  - Complete both one-variable sweeps.
+  - Predict and reproduce the broken case.
+  - Confirm recovery with a metric and a plot.
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3.0
+  max_samples: 30001
+  max_output_bytes: 1000000
+python_source_equivalence:
+  status: passed
+  command: ELP_GNC_ITEM=P14 python -m pytest -q apps/api/tests/test_gnc_course.py
+  seed: 1601
+  inputs:
+  - name: sensor_gain
+    value: 1.0
+    unit: measurement/m
+  - name: observation_window_s
+    value: 2.0
+    unit: s
+  - name: broken_mode
+    value: false
+    unit: flag
+  cases:
+  - name: baseline-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/14-test-observability/evidence/expected-baseline.json
+      sha256: 914b3acbc589bc549b761ba9ff617b192b62207ebe6405085f8f9b740ebf4180
+    actual:
+      path: modules/14-test-observability/evidence/actual-baseline.json
+      sha256: 308a5678c42993a1cb2c4135ac827cfe4597b1fe713546d1198f6af5c14afa12
+    max_absolute_error: 9.992007221626409e-14
+    max_relative_error: 9.99200722162541e-14
+    passed: true
+  - name: broken-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/14-test-observability/evidence/expected-broken.json
+      sha256: e56bc822932e3784188cf48442b943cb7f35e5be8849e891a13cef64229e4a19
+    actual:
+      path: modules/14-test-observability/evidence/actual-broken.json
+      sha256: 02795143adc809580310d198379089a8bc5022265fdbc54bd1521dbb70e70cf3
+    max_absolute_error: 9.992007221626409e-14
+    max_relative_error: 9.99200722162541e-14
+    passed: true
+matlab_runtime_parity:
+  status: not_run
+  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
+    signatures bind the Python conversion.
+claims:
+  profile: elp-gnc-item-software-v1
+  browser_visual_review:
+    status: not_run
+    reason: Browser review is a separate integrated evidence step.
+  accessibility_review:
+    status: not_run
+    reason: Accessibility review is a separate integrated evidence step.
+  learner_effectiveness:
+    status: not_run
+    reason: Learner effectiveness requires post-release study and is not claimed.

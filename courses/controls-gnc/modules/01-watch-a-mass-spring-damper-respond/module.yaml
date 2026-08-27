@@ -1,0 +1,71 @@
+schema_version: 1
+id: 01-watch-a-mass-spring-damper-respond
+number: 1
+title: Watch a Mass-Spring-Damper Respond
+summary: Relate inertia, energy storage, and dissipation to a forced mechanical response.
+guiding_question: How do mass, stiffness, and damping determine visible motion?
+status: implemented
+tags:
+- controls-gnc
+- dynamic-systems
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: mass_kg
+  type: slider
+  label: Mass
+  default: 1.0
+  unit: kg
+  minimum: 0.25
+  maximum: 4.0
+  step: 0.25
+- id: damping_ns_m
+  type: slider
+  label: Damping
+  default: 0.8
+  unit: N s/m
+  minimum: 0.0
+  maximum: 5.0
+  step: 0.1
+- id: stiffness_n_m
+  type: slider
+  label: Stiffness
+  default: 4.0
+  unit: N/m
+  minimum: 0.5
+  maximum: 12.0
+  step: 0.5
+- id: broken_mode
+  type: toggle
+  label: Enable the source broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: More damping should reduce ringing without changing the static displacement F/k.
+  reveal: Disable the broken case to restore a time step that resolves the natural period.
+- type: controls
+  title: Source-aligned experiment controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

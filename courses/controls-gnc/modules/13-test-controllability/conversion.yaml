@@ -1,0 +1,178 @@
+schema_version: 1
+course_id: controls-gnc
+item:
+  id: P13
+  number: 13
+  source_folder: modules/13-test-controllability
+  target_module_id: 13-test-controllability
+  target_folder: modules/13-test-controllability
+  batch_id: ELP-GNC-P13
+  source_map_sha256: 5004e2d35d592e398579dd075faa3d0fc7eba3c48579b838f73c1826aba32360
+  source_inputs:
+  - path: modules/13-test-controllability/README.md
+    sha256: 04e1e5b6f9018a24282b0e7f1c99b1c027bf5da63da3d07e5cf4564662b09aa2
+  - path: modules/13-test-controllability/lesson.md
+    sha256: a81d2cc62cdf9c5bb4ed1d374f10808c1087540d3a2da3ce627c5a0a702ff1b2
+  - path: modules/13-test-controllability/walkthrough.md
+    sha256: 931230455fcfb3ba2dd6b99e692f5470524c76aaeb614424d058942c6e88771d
+  - path: modules/13-test-controllability/checks.md
+    sha256: e7b7a63185890c298b06be966ff9ea082b169d4d0648a09838f8390cb35049f0
+  - path: modules/13-test-controllability/experiment.m
+    sha256: fd42623070fdc56b84730f53fe606d11f4765b424b35ec2091df5763a080de6a
+  - path: modules/13-test-controllability/interactive.m
+    sha256: e88d3a538ffbd7fc780d4bad4c416bc0d6179cf1d8c605d86b5839c0c84d52eb
+  - path: modules/13-test-controllability/lesson.m
+    sha256: 7c43c52ec84cf120acd6b503bd68f53c71f66f3cd564bb4e5e8f1522497d7ca9
+  - path: modules/13-test-controllability/model.m
+    sha256: 1e6cbdfb5f99db26b29cdc1a2dd7715636cce34263bf6a485db3289ed83f1da0
+target:
+  content_digest: 68614fda76b8cf3cd5f841b796210117c9db18114ae6ad871c84d5f1fc7bf489
+  files:
+  - path: modules/13-test-controllability/module.yaml
+    sha256: d392c5ce4f1318558d9751acca52eb5748c7c41163a812bf6a21b1063cc2a8f6
+  - path: modules/13-test-controllability/lesson.md
+    sha256: e22ea776edac47256e13ceb3dcb4dbbc6472af80bf5206d7bc2971e3e1a11661
+  - path: modules/13-test-controllability/experiment.py
+    sha256: b752e38e8f926ad5263887d1d8dd2c7f15c9bc6f46e8bbc33471bd26d728713a
+content:
+  guiding_question: What inputs, observable effects, and failure modes matter when you test Controllability?
+  physical_model: Use rank and reachability energy to distinguish weak from missing control authority.
+  signal_flow:
+  - Set one source-aligned lever and predict the mechanism.
+  - Evaluate the deterministic Python model.
+  - Compare the observable response with its diagnostic mechanism.
+  - Inject the source failure and verify the stated recovery.
+  equations:
+  - latex: \mathcal C=[B\;AB]
+    meaning: Full row rank is required to reach arbitrary two-state targets.
+  - latex: W_c=\sum A^kBB^T(A^T)^k
+    meaning: The Gramian reveals how much command energy reachability costs.
+  equation_order: before_toolbox_shortcuts
+  deterministic_data:
+    seed: 1601
+    constants:
+    - name: item_number
+      value: 13
+      unit: index
+    datasets:
+    - name: baseline numeric signature
+      provenance: retained_fixture
+      sha256: bca514c05d07586acf9512a46fe72553cd148019d592b32914a3ceccfda3f99c
+      unit: mixed numeric signature
+  plot_sequence:
+  - source_figure: Source baseline and sweep figures
+    target_plot_key: response
+    title: Observable response
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Response
+      unit: source units
+    interpretation: Use rank and reachability energy to distinguish weak from missing control authority.
+  - source_figure: Source diagnostic and broken-case figures
+    target_plot_key: mechanism
+    title: Mechanism and diagnostic view
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Diagnostic
+      unit: source units
+    interpretation: The broken case removes coupling between rate and position, dropping controllability
+      rank.
+  sweeps:
+  - control: input_gain
+    values:
+    - 0.25
+    - 1.0
+    - 2.0
+    expected_observation: Zero coupling should make position unreachable even though rate is directly
+      actuated.
+  - control: coupling
+    values:
+    - 0.25
+    - 1.0
+    - 2.0
+    expected_observation: Use rank and reachability energy to distinguish weak from missing control authority.
+  broken_case:
+    trigger: Enable broken_mode.
+    failure: The broken case removes coupling between rate and position, dropping controllability rank.
+    recovery: Disable the broken case to restore the state-to-state path.
+    expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
+  common_mistakes:
+  - Changing more than one lever before explaining the first delta.
+  - Treating simulated evidence as physical hardware evidence.
+  - Retuning around a broken assumption instead of identifying it.
+  completion_checklist:
+  - Explain both governing equations.
+  - Complete both one-variable sweeps.
+  - Predict and reproduce the broken case.
+  - Confirm recovery with a metric and a plot.
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3.0
+  max_samples: 30001
+  max_output_bytes: 1000000
+python_source_equivalence:
+  status: passed
+  command: ELP_GNC_ITEM=P13 python -m pytest -q apps/api/tests/test_gnc_course.py
+  seed: 1601
+  inputs:
+  - name: input_gain
+    value: 1.0
+    unit: (m/s²)/cmd
+  - name: coupling
+    value: 1.0
+    unit: ratio
+  - name: broken_mode
+    value: false
+    unit: flag
+  cases:
+  - name: baseline-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/13-test-controllability/evidence/expected-baseline.json
+      sha256: bca514c05d07586acf9512a46fe72553cd148019d592b32914a3ceccfda3f99c
+    actual:
+      path: modules/13-test-controllability/evidence/actual-baseline.json
+      sha256: e414f2c5483bf13eccb33653f1d5cbd76789fe0cb8a91d988c6eaac528a61f69
+    max_absolute_error: 9.992007221626409e-14
+    max_relative_error: 9.99200722162541e-14
+    passed: true
+  - name: broken-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/13-test-controllability/evidence/expected-broken.json
+      sha256: da2a147b253517d52379e6eacba60ab3d99e845470e518f167f62359290c6b11
+    actual:
+      path: modules/13-test-controllability/evidence/actual-broken.json
+      sha256: 00de6a405e94bb5c6b83da5876e0b432b966958d44e6e69d65e8eff06ec0a7d3
+    max_absolute_error: 9.992007221626409e-14
+    max_relative_error: 9.99200722162541e-14
+    passed: true
+matlab_runtime_parity:
+  status: not_run
+  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
+    signatures bind the Python conversion.
+claims:
+  profile: elp-gnc-item-software-v1
+  browser_visual_review:
+    status: not_run
+    reason: Browser review is a separate integrated evidence step.
+  accessibility_review:
+    status: not_run
+    reason: Accessibility review is a separate integrated evidence step.
+  learner_effectiveness:
+    status: not_run
+    reason: Learner effectiveness requires post-release study and is not claimed.

@@ -1,0 +1,64 @@
+schema_version: 1
+id: 03-relate-poles-to-visible-motion
+number: 3
+title: Relate Poles to Visible Motion
+summary: Translate complex pole location into decay, oscillation, and instability.
+guiding_question: What inputs, observable effects, and failure modes matter when you relate Poles to Visible
+  Motion?
+status: implemented
+tags:
+- controls-gnc
+- dynamic-systems
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: pole_real_per_s
+  type: slider
+  label: Pole real part
+  default: -0.5
+  unit: 1/s
+  minimum: -2.0
+  maximum: 0.5
+  step: 0.1
+- id: pole_imag_rad_s
+  type: slider
+  label: Pole imaginary part
+  default: 2.0
+  unit: rad/s
+  minimum: 0.0
+  maximum: 6.0
+  step: 0.25
+- id: broken_mode
+  type: toggle
+  label: Enable the source broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Moving sigma right slows decay and eventually turns the envelope into growth.
+  reveal: Disable the broken case and keep the real part negative.
+- type: controls
+  title: Source-aligned experiment controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

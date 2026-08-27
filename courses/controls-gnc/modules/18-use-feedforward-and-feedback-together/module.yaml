@@ -1,0 +1,64 @@
+schema_version: 1
+id: 18-use-feedforward-and-feedback-together
+number: 18
+title: Use Feedforward and Feedback Together
+summary: Separate planned acceleration from feedback correction during trajectory tracking.
+guiding_question: What inputs, observable effects, and failure modes matter when you use Feedforward and
+  Feedback Together?
+status: implemented
+tags:
+- controls-gnc
+- optimal-and-robust-control
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: feedforward_scale
+  type: slider
+  label: Feedforward scale
+  default: 1.0
+  unit: ratio
+  minimum: 0.0
+  maximum: 1.5
+  step: 0.05
+- id: feedback_scale
+  type: slider
+  label: Feedback scale
+  default: 1.0
+  unit: ratio
+  minimum: 0.0
+  maximum: 2.0
+  step: 0.05
+- id: broken_mode
+  type: toggle
+  label: Enable the source broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Feedforward should reduce nominal lag while feedback remains necessary for disturbance rejection.
+  reveal: Disable the broken case and verify inverse-model sign conventions.
+- type: controls
+  title: Source-aligned experiment controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

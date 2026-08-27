@@ -1,0 +1,65 @@
+schema_version: 1
+id: 22-implement-proportional-navigation
+number: 22
+title: Implement Proportional Navigation
+summary: Observe proportional navigation geometry, acceleration authority, and miss distance.
+guiding_question: What inputs, observable effects, and failure modes matter when you implement Proportional
+  Navigation?
+status: implemented
+tags:
+- controls-gnc
+- guidance-and-hil
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: navigation_constant
+  type: slider
+  label: Navigation constant
+  default: 3.0
+  unit: ratio
+  minimum: 1.0
+  maximum: 6.0
+  step: 0.25
+- id: maximum_acceleration_m_s2
+  type: slider
+  label: Acceleration limit
+  default: 80.0
+  unit: m/s²
+  minimum: 5.0
+  maximum: 120.0
+  step: 5.0
+- id: broken_mode
+  type: toggle
+  label: Enable the source broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Insufficient lateral acceleration should leave a finite miss even with a reasonable navigation
+    constant.
+  reveal: Disable the broken case and restore the 80 m/s² authority used by the baseline.
+- type: controls
+  title: Source-aligned experiment controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

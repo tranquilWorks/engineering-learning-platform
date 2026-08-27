@@ -1,0 +1,179 @@
+schema_version: 1
+course_id: controls-gnc
+item:
+  id: P19
+  number: 19
+  source_folder: modules/19-measure-sensitivity-to-model-error
+  target_module_id: 19-measure-sensitivity-to-model-error
+  target_folder: modules/19-measure-sensitivity-to-model-error
+  batch_id: ELP-GNC-P19
+  source_map_sha256: 5004e2d35d592e398579dd075faa3d0fc7eba3c48579b838f73c1826aba32360
+  source_inputs:
+  - path: modules/19-measure-sensitivity-to-model-error/README.md
+    sha256: b214d25a393d04b5124223a4827e76485bef1619685659ba7037f94978416df4
+  - path: modules/19-measure-sensitivity-to-model-error/lesson.md
+    sha256: 8e6df46879d42ba5f0ffd8780c937827a7c647178ca020c4e6db8d67504c37f9
+  - path: modules/19-measure-sensitivity-to-model-error/walkthrough.md
+    sha256: bbe5381ecde39d7265442379386530566d6655c503fbb07c6c7168aeae707708
+  - path: modules/19-measure-sensitivity-to-model-error/checks.md
+    sha256: 4761f30bcf34956635207e68ea9d1d88a87b569a54f225928f1e12499e4a19ef
+  - path: modules/19-measure-sensitivity-to-model-error/experiment.m
+    sha256: f90d1db149d8dc0106a33fd8c2ddd63e597146aaff4fa5125cfc37258fdf7574
+  - path: modules/19-measure-sensitivity-to-model-error/interactive.m
+    sha256: 85b1bd6987ddd127a0dbd39025f33231aba2b64c409eb41a7ad3911624df4e08
+  - path: modules/19-measure-sensitivity-to-model-error/lesson.m
+    sha256: 2b365bb40bca01be98987d607283a79e7dc51e58892738ef42b52ffda8a0fae4
+  - path: modules/19-measure-sensitivity-to-model-error/model.m
+    sha256: 9d1246e2dfc957f23fb287b8594f9199cfb1f08168693cf6fda9c4ef11787091
+target:
+  content_digest: 4378af2bed834096e3343347014b65fd601b3c78e30031021289f425ebb305e0
+  files:
+  - path: modules/19-measure-sensitivity-to-model-error/module.yaml
+    sha256: 5983f235d9cfb76081cdeaca722980145c21551975f50eaf2ccef683fdd72e4a
+  - path: modules/19-measure-sensitivity-to-model-error/lesson.md
+    sha256: 9d566d7c3b77aa07acdca549d33d38b487e564476b6cb4be08617fe1a3d7ad79
+  - path: modules/19-measure-sensitivity-to-model-error/experiment.py
+    sha256: 5fa4b7a955a710dfaa9cdc95215a5c82bff1fd6907c195a0be728697a25ea1b0
+content:
+  guiding_question: What inputs, observable effects, and failure modes matter when you measure Sensitivity
+    to Model Error?
+  physical_model: Measure how actuator gain and drag mismatch change closed-loop speed tracking.
+  signal_flow:
+  - Set one source-aligned lever and predict the mechanism.
+  - Evaluate the deterministic Python model.
+  - Compare the observable response with its diagnostic mechanism.
+  - Inject the source failure and verify the stated recovery.
+  equations:
+  - latex: \dot v=-b_av+g_au
+    meaning: The actual plant carries uncertain drag and control effectiveness.
+  - latex: S_p=(y_a-y_n)/y_n
+    meaning: Sensitivity compares actual response with nominal prediction.
+  equation_order: before_toolbox_shortcuts
+  deterministic_data:
+    seed: 1601
+    constants:
+    - name: item_number
+      value: 19
+      unit: index
+    datasets:
+    - name: baseline numeric signature
+      provenance: retained_fixture
+      sha256: 271e5c874d821e70a70af4ef4e730d95c6f2052c6fd8299f12ba874d2d83f2e5
+      unit: mixed numeric signature
+  plot_sequence:
+  - source_figure: Source baseline and sweep figures
+    target_plot_key: response
+    title: Observable response
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Response
+      unit: source units
+    interpretation: Measure how actuator gain and drag mismatch change closed-loop speed tracking.
+  - source_figure: Source diagnostic and broken-case figures
+    target_plot_key: mechanism
+    title: Mechanism and diagnostic view
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Diagnostic
+      unit: source units
+    interpretation: The broken case reverses actuator sign, outside the modeled positive-gain uncertainty
+      family.
+  sweeps:
+  - control: actuator_gain_ratio
+    values:
+    - 0.5
+    - 1.0
+    - 1.5
+    expected_observation: Lower actuator gain and higher drag should both increase tracking error, but
+      through different mechanisms.
+  - control: drag_ratio
+    values:
+    - 0.5
+    - 1.0
+    - 2.0
+    expected_observation: Measure how actuator gain and drag mismatch change closed-loop speed tracking.
+  broken_case:
+    trigger: Enable broken_mode.
+    failure: The broken case reverses actuator sign, outside the modeled positive-gain uncertainty family.
+    recovery: Disable the broken case and validate control polarity before tuning robustness.
+    expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
+  common_mistakes:
+  - Changing more than one lever before explaining the first delta.
+  - Treating simulated evidence as physical hardware evidence.
+  - Retuning around a broken assumption instead of identifying it.
+  completion_checklist:
+  - Explain both governing equations.
+  - Complete both one-variable sweeps.
+  - Predict and reproduce the broken case.
+  - Confirm recovery with a metric and a plot.
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3.0
+  max_samples: 30001
+  max_output_bytes: 1000000
+python_source_equivalence:
+  status: passed
+  command: ELP_GNC_ITEM=P19 python -m pytest -q apps/api/tests/test_gnc_course.py
+  seed: 1601
+  inputs:
+  - name: actuator_gain_ratio
+    value: 1.0
+    unit: ratio
+  - name: drag_ratio
+    value: 1.0
+    unit: ratio
+  - name: broken_mode
+    value: false
+    unit: flag
+  cases:
+  - name: baseline-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/19-measure-sensitivity-to-model-error/evidence/expected-baseline.json
+      sha256: 271e5c874d821e70a70af4ef4e730d95c6f2052c6fd8299f12ba874d2d83f2e5
+    actual:
+      path: modules/19-measure-sensitivity-to-model-error/evidence/actual-baseline.json
+      sha256: e70c8ac8df3e33e4037c3f7946f32a770ef5f0004709427e01fbede421e9b94d
+    max_absolute_error: 9.992007221626409e-14
+    max_relative_error: 9.99200722162541e-14
+    passed: true
+  - name: broken-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/19-measure-sensitivity-to-model-error/evidence/expected-broken.json
+      sha256: c77cf25daf4190c4c93edd41b52e70981b5abd5471f33e62b2ea236f36932179
+    actual:
+      path: modules/19-measure-sensitivity-to-model-error/evidence/actual-broken.json
+      sha256: 6983c75ab2c5d39514f063862fdef7d23ad4f21f18853d8a8c1ecda7a81a760c
+    max_absolute_error: 9.992007221626409e-14
+    max_relative_error: 9.99200722162541e-14
+    passed: true
+matlab_runtime_parity:
+  status: not_run
+  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
+    signatures bind the Python conversion.
+claims:
+  profile: elp-gnc-item-software-v1
+  browser_visual_review:
+    status: not_run
+    reason: Browser review is a separate integrated evidence step.
+  accessibility_review:
+    status: not_run
+    reason: Accessibility review is a separate integrated evidence step.
+  learner_effectiveness:
+    status: not_run
+    reason: Learner effectiveness requires post-release study and is not claimed.

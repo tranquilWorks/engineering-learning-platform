@@ -1,0 +1,177 @@
+schema_version: 1
+course_id: controls-gnc
+item:
+  id: P15
+  number: 15
+  source_folder: modules/15-build-a-state-observer
+  target_module_id: 15-build-a-state-observer
+  target_folder: modules/15-build-a-state-observer
+  batch_id: ELP-GNC-P15
+  source_map_sha256: 5004e2d35d592e398579dd075faa3d0fc7eba3c48579b838f73c1826aba32360
+  source_inputs:
+  - path: modules/15-build-a-state-observer/README.md
+    sha256: f5cdd1460720fc66620146b4a95a292e214156f7f891e24b66d1796e3b10412d
+  - path: modules/15-build-a-state-observer/lesson.md
+    sha256: 6159588cb68d05406fcd520c1c079a97340e47f5e68ac16fd581d55f7b54e6fb
+  - path: modules/15-build-a-state-observer/walkthrough.md
+    sha256: a3c382f3c4ab785fbbba1ce78bafb41cfb6086d94a145267fa0e893600b8e5d4
+  - path: modules/15-build-a-state-observer/checks.md
+    sha256: c51da8496d040940494b017a1b015216af73e25d64aa52be455c042a25633066
+  - path: modules/15-build-a-state-observer/experiment.m
+    sha256: 17efec1b665638631e50db2a314ef3505f2f6903ff7a77bfabab03e2a77416b6
+  - path: modules/15-build-a-state-observer/interactive.m
+    sha256: aee5b67520547c6b6e2ab31a53e5b0c834cc211c05ee144ec93590eae9ac89f6
+  - path: modules/15-build-a-state-observer/lesson.m
+    sha256: 8e40921d5a0b0067f9ee220b09a3598d579512f767099fd4d57016ed45920150
+  - path: modules/15-build-a-state-observer/model.m
+    sha256: b93215c921dcbf2a79326e0dde6efc0562cf9e5ee8bcbe0e8e9373df0b4308f1
+target:
+  content_digest: dd72c25b8d4cec62fe67e2b575ee01e12206a0ab50a976eca96b278d559acffe
+  files:
+  - path: modules/15-build-a-state-observer/module.yaml
+    sha256: 6eb63f1287e58f28093bb36c1c3b3d758447b0d2981eade4eb281298e2688848
+  - path: modules/15-build-a-state-observer/lesson.md
+    sha256: 6a1655e414771ace09c9a35a14a7c36d21197bfe143105720903572be2fcd3d8
+  - path: modules/15-build-a-state-observer/experiment.py
+    sha256: e297e6ff160c9f750f8988154f39c92968b109d950f4aabfa292302dce3edbb4
+content:
+  guiding_question: What inputs, observable effects, and failure modes matter when you build a State Observer?
+  physical_model: Watch a Luenberger observer reconstruct position and rate from position measurements.
+  signal_flow:
+  - Set one source-aligned lever and predict the mechanism.
+  - Evaluate the deterministic Python model.
+  - Compare the observable response with its diagnostic mechanism.
+  - Inject the source failure and verify the stated recovery.
+  equations:
+  - latex: \dot{\hat x}=A\hat x+Bu+L(y-C\hat x)
+    meaning: The innovation corrects both estimated states.
+  - latex: \dot e=(A-LC)e
+    meaning: Observer poles set nominal error convergence.
+  equation_order: before_toolbox_shortcuts
+  deterministic_data:
+    seed: 1601
+    constants:
+    - name: item_number
+      value: 15
+      unit: index
+    datasets:
+    - name: baseline numeric signature
+      provenance: retained_fixture
+      sha256: 258dcc50d4071df1574d9766e08aaeae2b63fe838f951ba477c9c1bfbcc3d80e
+      unit: mixed numeric signature
+  plot_sequence:
+  - source_figure: Source baseline and sweep figures
+    target_plot_key: response
+    title: Observable response
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Response
+      unit: source units
+    interpretation: Watch a Luenberger observer reconstruct position and rate from position measurements.
+  - source_figure: Source diagnostic and broken-case figures
+    target_plot_key: mechanism
+    title: Mechanism and diagnostic view
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Diagnostic
+      unit: source units
+    interpretation: The broken case introduces a persistent 0.15 m measurement bias.
+  sweeps:
+  - control: observer_speed_per_s
+    values:
+    - 1.0
+    - 2.0
+    - 5.0
+    expected_observation: Faster poles should reduce settling time but increase sensitivity to measurement
+      contamination.
+  - control: sensor_bias_m
+    values:
+    - -0.1
+    - 0.0
+    - 0.1
+    expected_observation: Watch a Luenberger observer reconstruct position and rate from position measurements.
+  broken_case:
+    trigger: Enable broken_mode.
+    failure: The broken case introduces a persistent 0.15 m measurement bias.
+    recovery: Disable the broken case and correct the sensor bias before trusting the state estimate.
+    expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
+  common_mistakes:
+  - Changing more than one lever before explaining the first delta.
+  - Treating simulated evidence as physical hardware evidence.
+  - Retuning around a broken assumption instead of identifying it.
+  completion_checklist:
+  - Explain both governing equations.
+  - Complete both one-variable sweeps.
+  - Predict and reproduce the broken case.
+  - Confirm recovery with a metric and a plot.
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3.0
+  max_samples: 30001
+  max_output_bytes: 1000000
+python_source_equivalence:
+  status: passed
+  command: ELP_GNC_ITEM=P15 python -m pytest -q apps/api/tests/test_gnc_course.py
+  seed: 1601
+  inputs:
+  - name: observer_speed_per_s
+    value: 2.0
+    unit: 1/s
+  - name: sensor_bias_m
+    value: 0.0
+    unit: m
+  - name: broken_mode
+    value: false
+    unit: flag
+  cases:
+  - name: baseline-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/15-build-a-state-observer/evidence/expected-baseline.json
+      sha256: 258dcc50d4071df1574d9766e08aaeae2b63fe838f951ba477c9c1bfbcc3d80e
+    actual:
+      path: modules/15-build-a-state-observer/evidence/actual-baseline.json
+      sha256: 24f779c748aa07621c9d8f41357ac20b74a27fbc43435366d5fb6b08b71a0d81
+    max_absolute_error: 9.992007221626409e-14
+    max_relative_error: 4.9960036108129545e-14
+    passed: true
+  - name: broken-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/15-build-a-state-observer/evidence/expected-broken.json
+      sha256: 1368b15421745ec89f4a3db588cfc4a2aeaecf6dfcd197c92fdd0c426bacf146
+    actual:
+      path: modules/15-build-a-state-observer/evidence/actual-broken.json
+      sha256: 74915c43f5cfdcfec4ed22e4fee8e928168f0b1618b38ca036121097d4fd28c7
+    max_absolute_error: 9.992007221626409e-14
+    max_relative_error: 4.9960036108129545e-14
+    passed: true
+matlab_runtime_parity:
+  status: not_run
+  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
+    signatures bind the Python conversion.
+claims:
+  profile: elp-gnc-item-software-v1
+  browser_visual_review:
+    status: not_run
+    reason: Browser review is a separate integrated evidence step.
+  accessibility_review:
+    status: not_run
+    reason: Accessibility review is a separate integrated evidence step.
+  learner_effectiveness:
+    status: not_run
+    reason: Learner effectiveness requires post-release study and is not claimed.

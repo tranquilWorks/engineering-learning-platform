@@ -1,0 +1,181 @@
+schema_version: 1
+course_id: controls-gnc
+item:
+  id: P06
+  number: 6
+  source_folder: modules/06-tune-a-pid-by-observing-each-term
+  target_module_id: 06-tune-a-pid-by-observing-each-term
+  target_folder: modules/06-tune-a-pid-by-observing-each-term
+  batch_id: ELP-GNC-P06
+  source_map_sha256: 5004e2d35d592e398579dd075faa3d0fc7eba3c48579b838f73c1826aba32360
+  source_inputs:
+  - path: modules/06-tune-a-pid-by-observing-each-term/README.md
+    sha256: 6a95d26bfdc1108f813b399e3fe3d5e9e18c42caa487628b310e4ecf686bcc58
+  - path: modules/06-tune-a-pid-by-observing-each-term/lesson.md
+    sha256: 16c3578dfdee7ba8950e7f66fae7d1b14a470a009e7262fa83e02b079774dab3
+  - path: modules/06-tune-a-pid-by-observing-each-term/walkthrough.md
+    sha256: 72ab98b089c8e137e3ed6b7d3938fde2ba5254e986d84ee8d82ca8b533618328
+  - path: modules/06-tune-a-pid-by-observing-each-term/checks.md
+    sha256: b698d44fc1f39ab580c383bfee297e6c40c916eb67870fe6a9e392481e16e606
+  - path: modules/06-tune-a-pid-by-observing-each-term/experiment.m
+    sha256: 6e1222a03029dd900f4e9dbdff80bf896ca3f9f8abbd3a01d0ede50ae2265fa9
+  - path: modules/06-tune-a-pid-by-observing-each-term/interactive.m
+    sha256: 95b4d45d31bbde33c7e7497a5123936f7739d37e53b8380667e5be20df39a0a0
+  - path: modules/06-tune-a-pid-by-observing-each-term/lesson.m
+    sha256: 3d9beb80f2f70fd10e98c12e41056c97849ea844cf5f357abed5c18b3d6b74a8
+  - path: modules/06-tune-a-pid-by-observing-each-term/model.m
+    sha256: b75ab58810ad8aaf4070bb566c620de70431183c30e3af9f3035a844e2bbbfea
+target:
+  content_digest: 34b004d5772b1111b2145835cbc516eaf241b261c8c25f51e8a1adefe18b15ac
+  files:
+  - path: modules/06-tune-a-pid-by-observing-each-term/module.yaml
+    sha256: d9876c39a7ba306a9ae7c197e570fb17d7d853188f34f93b247d4e1e6d92be86
+  - path: modules/06-tune-a-pid-by-observing-each-term/lesson.md
+    sha256: 77cfeadb5aa5470d4b8c36af59694f424575b16b05131f1775fc98ec0872b166
+  - path: modules/06-tune-a-pid-by-observing-each-term/experiment.py
+    sha256: cbfab771db327ca5ef836c83c76c9832474088c42e4cfd11a2628be52426be64
+content:
+  guiding_question: What inputs, observable effects, and failure modes matter when you tune a PID by Observing
+    Each Term?
+  physical_model: Observe proportional, integral, and derivative actions separately on a loaded carriage.
+  signal_flow:
+  - Set one source-aligned lever and predict the mechanism.
+  - Evaluate the deterministic Python model.
+  - Compare the observable response with its diagnostic mechanism.
+  - Inject the source failure and verify the stated recovery.
+  equations:
+  - latex: u=K_pe+K_i\int e\,dt-K_d\dot{x}
+    meaning: Each term reacts to a different feature of error.
+  - latex: m\ddot{x}=u+F_{load}-b\dot{x}
+    meaning: The controller must accelerate the mass and reject load.
+  equation_order: before_toolbox_shortcuts
+  deterministic_data:
+    seed: 1601
+    constants:
+    - name: item_number
+      value: 6
+      unit: index
+    datasets:
+    - name: baseline numeric signature
+      provenance: retained_fixture
+      sha256: d6e8cd665c87be78898d0fabcefbc0311f3a2928c15a1fa1acfe05e24590fe07
+      unit: mixed numeric signature
+  plot_sequence:
+  - source_figure: Source baseline and sweep figures
+    target_plot_key: response
+    title: Observable response
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Response
+      unit: source units
+    interpretation: Observe proportional, integral, and derivative actions separately on a loaded carriage.
+  - source_figure: Source diagnostic and broken-case figures
+    target_plot_key: mechanism
+    title: Mechanism and diagnostic view
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Diagnostic
+      unit: source units
+    interpretation: The broken case applies derivative action with the wrong sign, injecting velocity
+      instead of damping it.
+  sweeps:
+  - control: integral_gain
+    values:
+    - 0.0
+    - 1.0
+    - 3.0
+    expected_observation: Integral action should remove load error; derivative action should suppress
+      overshoot.
+  - control: derivative_gain
+    values:
+    - 0.0
+    - 3.0
+    - 7.0
+    expected_observation: Observe proportional, integral, and derivative actions separately on a loaded
+      carriage.
+  broken_case:
+    trigger: Enable broken_mode.
+    failure: The broken case applies derivative action with the wrong sign, injecting velocity instead
+      of damping it.
+    recovery: Disable the broken case to restore derivative damping.
+    expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
+  common_mistakes:
+  - Changing more than one lever before explaining the first delta.
+  - Treating simulated evidence as physical hardware evidence.
+  - Retuning around a broken assumption instead of identifying it.
+  completion_checklist:
+  - Explain both governing equations.
+  - Complete both one-variable sweeps.
+  - Predict and reproduce the broken case.
+  - Confirm recovery with a metric and a plot.
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3.0
+  max_samples: 30001
+  max_output_bytes: 1000000
+python_source_equivalence:
+  status: passed
+  command: ELP_GNC_ITEM=P06 python -m pytest -q apps/api/tests/test_gnc_course.py
+  seed: 1601
+  inputs:
+  - name: integral_gain
+    value: 1.0
+    unit: 1/s
+  - name: derivative_gain
+    value: 3.0
+    unit: s
+  - name: broken_mode
+    value: false
+    unit: flag
+  cases:
+  - name: baseline-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/06-tune-a-pid-by-observing-each-term/evidence/expected-baseline.json
+      sha256: d6e8cd665c87be78898d0fabcefbc0311f3a2928c15a1fa1acfe05e24590fe07
+    actual:
+      path: modules/06-tune-a-pid-by-observing-each-term/evidence/actual-baseline.json
+      sha256: d0de489cf93160289ab359f5abd455666ad9c34ca6c78968d18da5195117123f
+    max_absolute_error: 9.992007221626409e-14
+    max_relative_error: 9.99200722162541e-14
+    passed: true
+  - name: broken-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/06-tune-a-pid-by-observing-each-term/evidence/expected-broken.json
+      sha256: 25649b12be882a5d0841bc921a8c3648814439d33193469954e5d1176d37f1cb
+    actual:
+      path: modules/06-tune-a-pid-by-observing-each-term/evidence/actual-broken.json
+      sha256: badda503a5bff66ec0fcd6e4f142743cd4b6ebbd30e12f4cf08d8facfa7f7e5c
+    max_absolute_error: 9.992007221626409e-14
+    max_relative_error: 9.99200722162541e-14
+    passed: true
+matlab_runtime_parity:
+  status: not_run
+  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
+    signatures bind the Python conversion.
+claims:
+  profile: elp-gnc-item-software-v1
+  browser_visual_review:
+    status: not_run
+    reason: Browser review is a separate integrated evidence step.
+  accessibility_review:
+    status: not_run
+    reason: Accessibility review is a separate integrated evidence step.
+  learner_effectiveness:
+    status: not_run
+    reason: Learner effectiveness requires post-release study and is not claimed.

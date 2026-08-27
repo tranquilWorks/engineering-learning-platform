@@ -1,0 +1,64 @@
+schema_version: 1
+id: 17-balance-state-error-and-control-effort-with-lqr
+number: 17
+title: Balance State Error and Control Effort with LQR
+summary: Trade position regulation against command effort with a discrete LQR design.
+guiding_question: What inputs, observable effects, and failure modes matter when you balance State Error
+  and Control Effort with LQR?
+status: implemented
+tags:
+- controls-gnc
+- optimal-and-robust-control
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: position_weight
+  type: slider
+  label: Position-error weight
+  default: 4.0
+  unit: weight
+  minimum: 0.25
+  maximum: 25.0
+  step: 0.25
+- id: control_weight
+  type: slider
+  label: Control-effort weight
+  default: 1.0
+  unit: weight
+  minimum: 0.05
+  maximum: 20.0
+  step: 0.05
+- id: broken_mode
+  type: toggle
+  label: Enable the source broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: More position weight should regulate faster with a larger peak command.
+  reveal: Disable the broken case and verify actuator authority before applying the gain.
+- type: controls
+  title: Source-aligned experiment controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

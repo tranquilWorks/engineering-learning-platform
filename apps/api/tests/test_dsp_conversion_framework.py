@@ -81,7 +81,7 @@ SUPPORTED_SCHEMA_KEYWORDS = {
 IMAGE_SUFFIXES = {".gif", ".jpeg", ".jpg", ".png", ".svg", ".webp"}
 
 EXPECTED_GITLINKS = {
-    "courses/controls-gnc-learning": "58c96aea9f341664d4a7430f0c0e87fce2550484",
+    "courses/controls-gnc-learning": "ffd6623ee2cf8ccd8599fffd935ef07370750fa3",
     "courses/distributed-realtime-learning": "97f455503e6d2ae65a87b31968bae4c32d2f7bc3",
     "courses/dsp-radar-learning": EXPECTED_SOURCE_COMMIT,
     "courses/embedded-rt-hil-learning": "0ab836efcace36158687a467f64225bd5cff8177",
@@ -1794,12 +1794,15 @@ def test_native_catalog_accepts_converted_dsp_prefix_without_regressing_examples
     assert course.modules_path == "modules"
     catalog = CourseCatalog([ROOT / "courses"])
     summaries = {item.id: item for item in catalog.summaries()}
-    assert set(summaries) == {"platform-showcase", "demo-radar", "dsp-radar"}
+    assert {"platform-showcase", "demo-radar", "dsp-radar"} <= set(summaries)
     converted = _load_yaml(COVERAGE_PATH)["summary"]["converted"]
     assert len(summaries["dsp-radar"].modules) == converted
-    assert sum(len(item.modules) for item in summaries.values()) == 2 + converted
-    assert sum(module.interactive for item in summaries.values() for module in item.modules) == (
-        2 + converted
+    assert len(summaries["demo-radar"].modules) == 1
+    assert len(summaries["platform-showcase"].modules) == 1
+    assert all(
+        module.interactive
+        for course_id in ("demo-radar", "platform-showcase", "dsp-radar")
+        for module in summaries[course_id].modules
     )
     runtime = ExperimentRuntime(catalog)
     for course_id, module_id in (

@@ -1,0 +1,178 @@
+schema_version: 1
+course_id: controls-gnc
+item:
+  id: P16
+  number: 16
+  source_folder: modules/16-fuse-noisy-sensors-with-a-kalman-filter
+  target_module_id: 16-fuse-noisy-sensors-with-a-kalman-filter
+  target_folder: modules/16-fuse-noisy-sensors-with-a-kalman-filter
+  batch_id: ELP-GNC-P16
+  source_map_sha256: 5004e2d35d592e398579dd075faa3d0fc7eba3c48579b838f73c1826aba32360
+  source_inputs:
+  - path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/README.md
+    sha256: 9f69c13b09e76018a98998c7d21b680d858e6712a5c7b9adf6ee9e33d322c23e
+  - path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/lesson.md
+    sha256: 98f689a4743878c5f934eb822c44a23ab2dccc05ee72d289093f21d8afdc685c
+  - path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/walkthrough.md
+    sha256: f13801ab04be9e87aac7119dbe2fb6cae76d6b40e004ab1be40e50b6bc3debc0
+  - path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/checks.md
+    sha256: de88be9553fa77bd301243eaa1bd659686fac253f5439ee44b1a679c6dc6c308
+  - path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/experiment.m
+    sha256: 438e6e0cbdc95086692c1be7724f6358c109f35dd3b12f9d8a12e283d41f7fa1
+  - path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/interactive.m
+    sha256: 85c494c5f115cda49b280918faa930de1f22ba3ea7a50c461708c540611a470a
+  - path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/lesson.m
+    sha256: 6b547fff40fbf201832807d0ee168b718efad0b33c09171b50d791733b1c9083
+  - path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/model.m
+    sha256: 4179689c7da9893c2cd9436192d064687e980c995163734385e1844db830052b
+target:
+  content_digest: 378cd569bfbc3798af889750df8aab33ece887eb2718ed801c028fb43689be79
+  files:
+  - path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/module.yaml
+    sha256: dc00515cdab713c810151546aa361eb4518b34ea312d426504ccddbe6d56b1d9
+  - path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/lesson.md
+    sha256: 68fa932a87e6a57d348a61cc87770409804bb7d91590f7ed53007076fb74f534
+  - path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/experiment.py
+    sha256: 847f93871956cab31f004baa7eef7a2413a459519c4b90a9f69a3900b0619b69
+content:
+  guiding_question: What inputs, observable effects, and failure modes matter when you fuse Noisy Sensors
+    with a Kalman Filter?
+  physical_model: Fuse noisy position samples with a deterministic constant-velocity Kalman filter.
+  signal_flow:
+  - Set one source-aligned lever and predict the mechanism.
+  - Evaluate the deterministic Python model.
+  - Compare the observable response with its diagnostic mechanism.
+  - Inject the source failure and verify the stated recovery.
+  equations:
+  - latex: K_k=P^-C^T(CP^-C^T+R)^{-1}
+    meaning: Kalman gain balances predicted and measured uncertainty.
+  - latex: P^+=(I-KC)P^-
+    meaning: The covariance update records information gained from the sensor.
+  equation_order: before_toolbox_shortcuts
+  deterministic_data:
+    seed: 1601
+    constants:
+    - name: item_number
+      value: 16
+      unit: index
+    datasets:
+    - name: baseline numeric signature
+      provenance: retained_fixture
+      sha256: c2d888f522c290eea7dd6aae9910a23858e048e9b2b7172956036bab1368ba1d
+      unit: mixed numeric signature
+  plot_sequence:
+  - source_figure: Source baseline and sweep figures
+    target_plot_key: response
+    title: Observable response
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Response
+      unit: source units
+    interpretation: Fuse noisy position samples with a deterministic constant-velocity Kalman filter.
+  - source_figure: Source diagnostic and broken-case figures
+    target_plot_key: mechanism
+    title: Mechanism and diagnostic view
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Diagnostic
+      unit: source units
+    interpretation: The broken case injects one unvalidated 4 m position outlier.
+  sweeps:
+  - control: assumed_sensor_noise_m
+    values:
+    - 0.15
+    - 0.35
+    - 0.8
+    expected_observation: Assuming noisier measurements should smooth the estimate but slow its response
+      to real motion changes.
+  - control: assumed_process_noise_m_s2
+    values:
+    - 0.02
+    - 0.08
+    - 0.3
+    expected_observation: Fuse noisy position samples with a deterministic constant-velocity Kalman filter.
+  broken_case:
+    trigger: Enable broken_mode.
+    failure: The broken case injects one unvalidated 4 m position outlier.
+    recovery: Disable the broken case; in production, gate innovations before applying the update.
+    expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
+  common_mistakes:
+  - Changing more than one lever before explaining the first delta.
+  - Treating simulated evidence as physical hardware evidence.
+  - Retuning around a broken assumption instead of identifying it.
+  completion_checklist:
+  - Explain both governing equations.
+  - Complete both one-variable sweeps.
+  - Predict and reproduce the broken case.
+  - Confirm recovery with a metric and a plot.
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3.0
+  max_samples: 30001
+  max_output_bytes: 1000000
+python_source_equivalence:
+  status: passed
+  command: ELP_GNC_ITEM=P16 python -m pytest -q apps/api/tests/test_gnc_course.py
+  seed: 1601
+  inputs:
+  - name: assumed_sensor_noise_m
+    value: 0.35
+    unit: m
+  - name: assumed_process_noise_m_s2
+    value: 0.08
+    unit: m/s²
+  - name: broken_mode
+    value: false
+    unit: flag
+  cases:
+  - name: baseline-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/evidence/expected-baseline.json
+      sha256: c2d888f522c290eea7dd6aae9910a23858e048e9b2b7172956036bab1368ba1d
+    actual:
+      path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/evidence/actual-baseline.json
+      sha256: 8a4848fef816d30b7a61294b88b3973da6a7cf0dfae8d2b9f5cfc5dc678dc141
+    max_absolute_error: 9.997558336749535e-14
+    max_relative_error: 9.997558336749535e-14
+    passed: true
+  - name: broken-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/evidence/expected-broken.json
+      sha256: 0d77dc9eef7838295a288490e41a135907fb3782e38a4dd17ede3d21733b2082
+    actual:
+      path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/evidence/actual-broken.json
+      sha256: 6776c9fe2a1eee26c268d30f641f6c6b028e85f748e3818ab9b27690efd494c5
+    max_absolute_error: 9.997558336749535e-14
+    max_relative_error: 9.997558336749535e-14
+    passed: true
+matlab_runtime_parity:
+  status: not_run
+  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
+    signatures bind the Python conversion.
+claims:
+  profile: elp-gnc-item-software-v1
+  browser_visual_review:
+    status: not_run
+    reason: Browser review is a separate integrated evidence step.
+  accessibility_review:
+    status: not_run
+    reason: Accessibility review is a separate integrated evidence step.
+  learner_effectiveness:
+    status: not_run
+    reason: Learner effectiveness requires post-release study and is not claimed.

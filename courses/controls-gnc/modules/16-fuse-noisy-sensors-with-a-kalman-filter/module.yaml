@@ -1,0 +1,65 @@
+schema_version: 1
+id: 16-fuse-noisy-sensors-with-a-kalman-filter
+number: 16
+title: Fuse Noisy Sensors with a Kalman Filter
+summary: Fuse noisy position samples with a deterministic constant-velocity Kalman filter.
+guiding_question: What inputs, observable effects, and failure modes matter when you fuse Noisy Sensors
+  with a Kalman Filter?
+status: implemented
+tags:
+- controls-gnc
+- state-space-control
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: assumed_sensor_noise_m
+  type: slider
+  label: Assumed position noise
+  default: 0.35
+  unit: m
+  minimum: 0.1
+  maximum: 0.9
+  step: 0.05
+- id: assumed_process_noise_m_s2
+  type: slider
+  label: Assumed acceleration noise
+  default: 0.08
+  unit: m/s²
+  minimum: 0.01
+  maximum: 0.5
+  step: 0.01
+- id: broken_mode
+  type: toggle
+  label: Enable the source broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Assuming noisier measurements should smooth the estimate but slow its response to real motion
+    changes.
+  reveal: Disable the broken case; in production, gate innovations before applying the update.
+- type: controls
+  title: Source-aligned experiment controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

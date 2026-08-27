@@ -1,12 +1,14 @@
 schema_version: 1
 commands:
-  dsp-framework:
-    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_dsp_conversion_framework.py
-  dsp-source-attested:
-    - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_dsp_conversion_framework.py
-  dsp-course:
-    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_dsp_course.py
-  dsp-course-source-attested:
+  gnc-framework:
+    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_gnc_conversion_framework.py
+  gnc-source-attested:
+    - ELP_GNC_SOURCE_ROOT=courses/controls-gnc-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_gnc_conversion_framework.py
+  gnc-course:
+    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_gnc_course.py
+  gnc-course-source-attested:
+    - ELP_GNC_SOURCE_ROOT=courses/controls-gnc-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_course.py
+  dsp-regression:
     - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py
   contract:
     - ./scripts/agent-verify.sh contract
@@ -14,4 +16,4 @@ commands:
     - ./scripts/agent-verify.sh quick
   full:
     - ./scripts/agent-verify.sh full
-evidence_boundary: These commands provide repository-static, deterministic software, API protocol, frontend build, exact DSP source identity, read-only conversion-framework, and Python/source-equivalence evidence for the P01-P84 aggregate batch. The source-attested profile inspects but does not execute or modify the canonical DSP course. MATLAB execution or parity, browser or accessibility acceptance, learner effectiveness, hardware, release, deployment, and production evidence remain separate and unperformed unless explicitly retained.
+evidence_boundary: These commands provide repository-static, deterministic software, API protocol, frontend build, exact Controls/GNC source identity, read-only conversion-framework, Python/source-equivalence, and retained DSP regression evidence for ELP-GNC-P01-P24. The source-attested profile inspects but does not execute or modify the canonical MATLAB course. MATLAB execution or parity, browser/accessibility acceptance, learner effectiveness, physical HIL/HWIL or timing, bench, field, release, deployment, and production evidence remain separate and unperformed unless explicitly retained.

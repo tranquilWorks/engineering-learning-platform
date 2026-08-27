@@ -1,0 +1,64 @@
+schema_version: 1
+id: 21-generate-a-feasible-trajectory
+number: 21
+title: Generate a Feasible Trajectory
+summary: Generate a rest-to-rest quintic and test speed/acceleration feasibility.
+guiding_question: What inputs, observable effects, and failure modes matter when you generate a Feasible
+  Trajectory?
+status: implemented
+tags:
+- controls-gnc
+- guidance-and-hil
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: target_position_m
+  type: slider
+  label: Target position
+  default: 20.0
+  unit: m
+  minimum: -30.0
+  maximum: 30.0
+  step: 1.0
+- id: move_duration_s
+  type: slider
+  label: Move duration
+  default: 8.0
+  unit: s
+  minimum: 2.0
+  maximum: 20.0
+  step: 0.25
+- id: broken_mode
+  type: toggle
+  label: Enable the source broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Shortening duration should raise peak acceleration faster than peak speed.
+  reveal: Disable the broken case and lengthen the move until both constraints pass.
+- type: controls
+  title: Source-aligned experiment controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

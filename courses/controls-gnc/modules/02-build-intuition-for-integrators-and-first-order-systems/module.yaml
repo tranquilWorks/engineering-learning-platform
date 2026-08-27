@@ -1,0 +1,65 @@
+schema_version: 1
+id: 02-build-intuition-for-integrators-and-first-order-systems
+number: 2
+title: Build Intuition for Integrators and First-Order Systems
+summary: Compare accumulation with exponential memory under the same step input.
+guiding_question: What inputs, observable effects, and failure modes matter when you build Intuition for
+  Integrators and First-Order Systems?
+status: implemented
+tags:
+- controls-gnc
+- dynamic-systems
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: input_amplitude
+  type: slider
+  label: Step amplitude
+  default: 1.0
+  unit: input
+  minimum: -2.0
+  maximum: 2.0
+  step: 0.25
+- id: time_constant_s
+  type: slider
+  label: First-order time constant
+  default: 2.0
+  unit: s
+  minimum: 0.25
+  maximum: 5.0
+  step: 0.25
+- id: broken_mode
+  type: toggle
+  label: Enable the source broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: The integrator ramp slope follows input amplitude; the first-order final value does not depend
+    on tau.
+  reveal: Disable the broken case to use the exact first-order transition.
+- type: controls
+  title: Source-aligned experiment controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

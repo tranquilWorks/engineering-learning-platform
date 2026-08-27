@@ -1,0 +1,182 @@
+schema_version: 1
+course_id: controls-gnc
+item:
+  id: P01
+  number: 1
+  source_folder: modules/01-watch-a-mass-spring-damper-respond
+  target_module_id: 01-watch-a-mass-spring-damper-respond
+  target_folder: modules/01-watch-a-mass-spring-damper-respond
+  batch_id: ELP-GNC-P01
+  source_map_sha256: 5004e2d35d592e398579dd075faa3d0fc7eba3c48579b838f73c1826aba32360
+  source_inputs:
+  - path: modules/01-watch-a-mass-spring-damper-respond/README.md
+    sha256: 84ef608a1dea7b1566af0866be4f344a2b94e62b2b704647d0d3a4a4af3fa94e
+  - path: modules/01-watch-a-mass-spring-damper-respond/lesson.md
+    sha256: 7a53f3c8b79659666c59111b3b75a12e3d6577afdabf157ac796f1e1d55c657d
+  - path: modules/01-watch-a-mass-spring-damper-respond/walkthrough.md
+    sha256: 75fe3b2702a5748401649449569c6aeb0f04a6e0d664ff68da55f7699dd4eef7
+  - path: modules/01-watch-a-mass-spring-damper-respond/checks.md
+    sha256: d98e5d02c732ee14d2f177da30469f1948870147748ee438707e55e4aa9e363f
+  - path: modules/01-watch-a-mass-spring-damper-respond/experiment.m
+    sha256: 7614cf6ae63b0885948ab0db34ba0f7ad60ea32faae18da83a8333190d35d442
+  - path: modules/01-watch-a-mass-spring-damper-respond/interactive.m
+    sha256: 5f656031c480901b57ca444c3fb499d4e75763186144e7638c15c227f05ca050
+  - path: modules/01-watch-a-mass-spring-damper-respond/lesson.m
+    sha256: 6ff15208982df05beb7f0e85c25c166690233268f053a9b748663197fe4ee835
+  - path: modules/01-watch-a-mass-spring-damper-respond/model.m
+    sha256: d820c6e74cf73aafb66220a5ac89873f575fd9a80983a21a0ccb7cedb5b329a8
+target:
+  content_digest: a4e2de872ee951c3ecf03299d8e5a3db846c678821465383023db3ca05d557ca
+  files:
+  - path: modules/01-watch-a-mass-spring-damper-respond/module.yaml
+    sha256: e94c069d7e7b59cf68f645171ba837576d5637015eb2dfb04560a0976f876322
+  - path: modules/01-watch-a-mass-spring-damper-respond/lesson.md
+    sha256: bf1ec8673af04aed46c2c1f872298417f6e10d82592edbc76fa17ead1692f924
+  - path: modules/01-watch-a-mass-spring-damper-respond/experiment.py
+    sha256: aa52d7632e8d7c67ff6a1c178655d6a05046d3e7789f15757f19e94c35744217
+content:
+  guiding_question: How do mass, stiffness, and damping determine visible motion?
+  physical_model: Relate inertia, energy storage, and dissipation to a forced mechanical response.
+  signal_flow:
+  - Set one source-aligned lever and predict the mechanism.
+  - Evaluate the deterministic Python model.
+  - Compare the observable response with its diagnostic mechanism.
+  - Inject the source failure and verify the stated recovery.
+  equations:
+  - latex: m\ddot{x}+c\dot{x}+kx=F
+    meaning: Force divides among inertia, damping, and spring reaction.
+  - latex: \omega_n=\sqrt{k/m},\quad\zeta=c/(2\sqrt{km})
+    meaning: Natural frequency and damping ratio predict the visible motion.
+  equation_order: before_toolbox_shortcuts
+  deterministic_data:
+    seed: 1601
+    constants:
+    - name: item_number
+      value: 1
+      unit: index
+    datasets:
+    - name: baseline numeric signature
+      provenance: retained_fixture
+      sha256: cc30b63741eac8e0406fd3dc3a3f743d4c0e4e2d4b00bd9dbf8e55cfd819a1ea
+      unit: mixed numeric signature
+  plot_sequence:
+  - source_figure: Source baseline and sweep figures
+    target_plot_key: response
+    title: Observable response
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Response
+      unit: source units
+    interpretation: Relate inertia, energy storage, and dissipation to a forced mechanical response.
+  - source_figure: Source diagnostic and broken-case figures
+    target_plot_key: mechanism
+    title: Mechanism and diagnostic view
+    axes:
+    - role: x
+      label: Independent variable
+      unit: source units
+    - role: y
+      label: Diagnostic
+      unit: source units
+    interpretation: The broken case uses an explicit integration step too large for the fastest mode,
+      so numerical energy grows even though the physical system is damped.
+  sweeps:
+  - control: damping_ns_m
+    values:
+    - 0.2
+    - 0.8
+    - 2.5
+    expected_observation: More damping should reduce ringing without changing the static displacement
+      F/k.
+  - control: stiffness_n_m
+    values:
+    - 1.0
+    - 4.0
+    - 10.0
+    expected_observation: Relate inertia, energy storage, and dissipation to a forced mechanical response.
+  broken_case:
+    trigger: Enable broken_mode.
+    failure: The broken case uses an explicit integration step too large for the fastest mode, so numerical
+      energy grows even though the physical system is damped.
+    recovery: Disable the broken case to restore a time step that resolves the natural period.
+    expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
+  common_mistakes:
+  - Changing more than one lever before explaining the first delta.
+  - Treating simulated evidence as physical hardware evidence.
+  - Retuning around a broken assumption instead of identifying it.
+  completion_checklist:
+  - Explain both governing equations.
+  - Complete both one-variable sweeps.
+  - Predict and reproduce the broken case.
+  - Confirm recovery with a metric and a plot.
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3.0
+  max_samples: 30001
+  max_output_bytes: 1000000
+python_source_equivalence:
+  status: passed
+  command: ELP_GNC_ITEM=P01 python -m pytest -q apps/api/tests/test_gnc_course.py
+  seed: 1601
+  inputs:
+  - name: mass_kg
+    value: 1.0
+    unit: kg
+  - name: damping_ns_m
+    value: 0.8
+    unit: N s/m
+  - name: stiffness_n_m
+    value: 4.0
+    unit: N/m
+  - name: broken_mode
+    value: false
+    unit: flag
+  cases:
+  - name: baseline-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/01-watch-a-mass-spring-damper-respond/evidence/expected-baseline.json
+      sha256: cc30b63741eac8e0406fd3dc3a3f743d4c0e4e2d4b00bd9dbf8e55cfd819a1ea
+    actual:
+      path: modules/01-watch-a-mass-spring-damper-respond/evidence/actual-baseline.json
+      sha256: b5abe2cc42fcb1af8dbf46127d447fcfd7ac6e4c2dc3a81e331d7203820c5051
+    max_absolute_error: 9.992007221626409e-14
+    max_relative_error: 4.9960036108129545e-14
+    passed: true
+  - name: broken-numeric-signature
+    units: mixed numeric signature
+    tolerance:
+      absolute: 1.0e-09
+      relative: 1.0e-09
+    expected:
+      path: modules/01-watch-a-mass-spring-damper-respond/evidence/expected-broken.json
+      sha256: 7c8a6e2cd5a5cb4cc57f57a17a5c2c7ed2900743d3f9ef361a2ddf47d81c315e
+    actual:
+      path: modules/01-watch-a-mass-spring-damper-respond/evidence/actual-broken.json
+      sha256: 900c5075a71b1eecf45cb9219557514d2b0d90498e8d1997c345bf6c0dbc3403
+    max_absolute_error: 9.992007221626409e-14
+    max_relative_error: 4.9960036108129545e-14
+    passed: true
+matlab_runtime_parity:
+  status: not_run
+  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
+    signatures bind the Python conversion.
+claims:
+  profile: elp-gnc-item-software-v1
+  browser_visual_review:
+    status: not_run
+    reason: Browser review is a separate integrated evidence step.
+  accessibility_review:
+    status: not_run
+    reason: Accessibility review is a separate integrated evidence step.
+  learner_effectiveness:
+    status: not_run
+    reason: Learner effectiveness requires post-release study and is not claimed.
