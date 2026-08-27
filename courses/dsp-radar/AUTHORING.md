@@ -2,7 +2,7 @@
 
 This directory is the platform-owned Python learner course derived from the
 read-only canonical source repository
-`kpbianco/dsp-radar_learning@5d73667a486df4a7b6c581e4c9406e810ed4f0f6`.
+`tranquilWorks/dsp-radar_learning@5d73667a486df4a7b6c581e4c9406e810ed4f0f6`.
 The source repository remains the subject-matter and MATLAB reference. This
 directory owns only the reviewed Engineering Learning Platform representation.
 

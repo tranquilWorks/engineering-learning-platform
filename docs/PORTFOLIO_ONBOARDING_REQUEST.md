@@ -1,6 +1,6 @@
 # Portfolio Control Intake: Engineering Learning Platform
 
-Create and govern `kpbianco/engineering-learning-platform` as a `product-data` repository.
+Create and govern `tranquilWorks/engineering-learning-platform` as a `product-data` repository.
 
 ## Intent
 

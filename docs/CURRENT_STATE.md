@@ -1,32 +1,29 @@
 # Current state
 
-ELP-GNC-P01-P24 is a complete local aggregate candidate on
-`agent/elp-gnc-p01-p24`, based on exact merged target commit
-`23ecebccc574e194a0d3bc010bb87926a6217f3a` and authorized by the merged
-Portfolio Control contract at `3941c76fa2d7601719c39454d42495b87480f8ad`.
+ELP-ORG-IDENTITY is the sole active target batch on
+`agent/elp-tranquilworks-identity`, based on exact post-GNC target main
+`923a86ab79893bd939d88d275bdcb12a5a1ddad6` (tree
+`ebb16887a492d4327d0fbda4b58e933ed5645dfa`) and authorized by Portfolio
+Control merge `373aa5f5bd1ecc63740a03cba01c3eef237bb8af`.
 
-The read-only Controls/GNC gitlink advances to exact source commit
-`ffd6623ee2cf8ccd8599fffd935ef07370750fa3`, tree
-`471a0afead6f44e875627e7ffe9c088c23f784db`. Its 24 ordered module folders,
-192 canonical files, and source verification remain clean and unchanged.
+The platform, Portfolio Control, and all 13 embedded source-course repositories
+now use the canonical `tranquilWorks` GitHub organization identity. The
+migration changes repository names and URLs plus the two mechanically derived
+source-map digest chains. Every gitlink SHA and every course manifest, lesson,
+experiment, and expected/actual numeric evidence file remains unchanged.
 
-All 24 lessons now have native, catalog-visible Python modules. Each lesson
-retains its exact title and guiding question, expands the source teaching
-material, exposes two useful live sweeps, reproduces a named failure, explains
-recovery, and returns deterministic Plotly-compatible results. Coverage is
-`converted=24`, `pending=0`, `blocked=0`, and `placeholder=0`.
+DSP/Radar remains complete at 84 converted modules. Controls/GNC remains
+complete at 24 converted modules. Coverage remains zero pending, blocked, or
+placeholder entries, and the catalog remains four courses, 110 modules, and
+110 interactive modules. No unfinished course is imported or modified by this
+batch.
 
-The catalog now contains four courses and 110 interactive modules: 24
-Controls/GNC modules, the merged 84-module DSP/Radar course, and the two
-unchanged example modules. The complete source-attested GNC suite passes 80
-tests, including all 24 closed conversion records and deterministic defaults.
-Repository-wide contract, quick, full, catalog, lint, and frontend results are
-retained in the aggregate evidence document. Container verification remains a
-required hosted-CI check.
+Required evidence is the exact 13-repository URL matrix, zero stale current
+`kpbianco` repository identities, unchanged gitlinks and course payloads,
+closed DSP/GNC provenance digests, complete local verification, and exact-head
+hosted backend/frontend/container CI.
 
-P24 is a software-only virtual controller/plant protocol simulation. MATLAB
-runtime parity, browser visual review, accessibility review, learner
-effectiveness, physical HIL/HWIL or timing, bench/field behavior, release,
-deployment, and production operation remain `not_run` or unclaimed. Hosted
-backend, frontend, and container CI must pass on the exact one-commit PR head
-before merge readiness.
+The claim boundary is repository identity and provenance normalization only.
+It does not establish new course content, MATLAB parity, browser/accessibility
+acceptance, learner effectiveness, physical HIL/HWIL, release, deployment,
+credentials/settings, or production operation.

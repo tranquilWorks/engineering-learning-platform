@@ -39,7 +39,7 @@ def _sha256(path: Path) -> str:
 def test_gnc_framework_source_identity_and_exact_map() -> None:
     source_map = _yaml(COURSE_ROOT / "source-map.yaml")
     source = source_map["source"]
-    assert source["repository"] == "kpbianco/controls-gnc-learning"
+    assert source["repository"] == "tranquilWorks/controls-gnc-learning"
     assert source["commit"] == EXPECTED_SOURCE_COMMIT
     assert source["tree"] == EXPECTED_SOURCE_TREE
     assert source["curriculum"] == {

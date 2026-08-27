@@ -65,7 +65,7 @@ The 13 engineering curriculum repositories are pinned as Git submodules under
 `courses/`. Clone them with the platform by using:
 
 ```bash
-git clone --recurse-submodules https://github.com/kpbianco/engineering-learning-platform.git
+git clone --recurse-submodules https://github.com/tranquilWorks/engineering-learning-platform.git
 ```
 
 For an existing checkout, initialize or refresh them with:
@@ -117,6 +117,6 @@ npm run build
 
 ## Portfolio Control
 
-This repository is designed for onboarding to `kpbianco/portfolio-control` with the `product-data` profile. Product-specific rules live in `AGENTS.md`; machine-readable requirements and the first bounded batch are in `contracts/`.
+This repository is designed for onboarding to `tranquilWorks/portfolio-control` with the `product-data` profile. Product-specific rules live in `AGENTS.md`; machine-readable requirements and the first bounded batch are in `contracts/`.
 
 The generated Portfolio Control overlay is delivered beside this repository in `engineering-learning-platform-portfolio-control/`.

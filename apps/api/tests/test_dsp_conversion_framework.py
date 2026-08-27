@@ -28,21 +28,21 @@ COVERAGE_PATH = COURSE_ROOT / "coverage.yaml"
 CONVERSION_SCHEMA_PATH = COURSE_ROOT / "conversion.schema.json"
 AUTHORING_PATH = COURSE_ROOT / "AUTHORING.md"
 
-EXPECTED_SOURCE_REPOSITORY = "kpbianco/dsp-radar_learning"
+EXPECTED_SOURCE_REPOSITORY = "tranquilWorks/dsp-radar_learning"
 EXPECTED_SOURCE_COMMIT = "5d73667a486df4a7b6c581e4c9406e810ed4f0f6"
 EXPECTED_SOURCE_TREE = "7a3a0f9adce607e10097724c13745eace212f4e1"
 EXPECTED_CURRICULUM_SHA256 = "0b92e76efc1f72930fab730145326315219ab3813b8cbf17d32a33f507a4974f"
 EXPECTED_FILE_SET_SHA256 = "c2511015b195a48bd847bd1f1cdeed92384a10eddf0b23e755590af4fb66ddca"
-EXPECTED_SOURCE_MAP_SHA256 = "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05"
+EXPECTED_SOURCE_MAP_SHA256 = "5b2751769cf70d7c4faad148fecd2db16e7995982122777fa012bfbda7850bf5"
 EXPECTED_CONVERSION_MANIFEST_SHA256 = (
-    "a6b7699ddb8b3a5b9e099fd382a555c3e7ea8345bb88fcdee4f054c1e636e193"
+    "1244c6dea11ea11b880e0f26d54ce81dea42ea1ab4981d4d5180c440eb7890a4"
 )
 EXPECTED_COURSE_SHA256 = "9950220969a64e5c7faed96ae1f8a2395339c7dbd292a9471c89001a2a5d0228"
 EXPECTED_CONVERSION_SCHEMA_SHA256 = (
     "8d728f2158c95944ff7ee3ba599bfdddb91e937099d94c8b601c2a43bd1ea73f"
 )
-EXPECTED_AUTHORING_SHA256 = "77b1d9497c085aad3fd2f3ff1f45113344420408f05893e4c23d2c68a7d64721"
-EXPECTED_GITMODULES_SHA256 = "acbd5f8bfe9675bc25216b8494570dff4ceecd7f5553a60b4618db99f3ea442f"
+EXPECTED_AUTHORING_SHA256 = "e4eb5b356791e480e82306c079961d91a4e4dc5cd1466fc23317a8915b32b8db"
+EXPECTED_GITMODULES_SHA256 = "a2739650b61500f05b3331fa69f1a4c417f244b5aa55b06d25aac68fb352c792"
 EXPECTED_PHASE_COUNTS = {1: 10, 2: 10, 3: 8, 4: 14, 5: 10, 6: 8, 7: 8, 8: 6, 9: 10}
 REQUIRED_SOURCE_FILES = ("README.md", "lesson.md", "walkthrough.md", "checks.md", "experiment.m")
 HEX_64 = re.compile(r"^[0-9a-f]{64}$")
@@ -1844,7 +1844,7 @@ def test_framework_loading_and_serialization_are_deterministic_and_read_only() -
 def test_exact_gitlink_and_gitmodules_identity() -> None:
     assert _sha256(ROOT / ".gitmodules") == EXPECTED_GITMODULES_SHA256
     gitmodules = (ROOT / ".gitmodules").read_text(encoding="utf-8")
-    assert "url = https://github.com/kpbianco/dsp-radar_learning.git" in gitmodules
+    assert "url = https://github.com/tranquilWorks/dsp-radar_learning.git" in gitmodules
     assert 'submodule "courses/dsp-radar-learning"' in gitmodules
 
     staged: dict[str, str] = {}
