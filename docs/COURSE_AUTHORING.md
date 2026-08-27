@@ -232,6 +232,83 @@ When revising existing course modules for this platform, add:
 - optional images/video under `assets/` with captions and alt text;
 - a migration evidence note specifying what is equivalent, approximate, or not yet implemented.
 
+## DSP/Radar item conversion
+
+The DSP/Radar course uses a governed, one-item conversion lane rather than a
+bulk importer. Its canonical source is the read-only
+`courses/dsp-radar-learning` gitlink at
+`5d73667a486df4a7b6c581e4c9406e810ed4f0f6`; its platform-owned native course
+is `courses/dsp-radar`. The complete normative procedure is in
+`courses/dsp-radar/AUTHORING.md`.
+
+ELP-DSP-00 creates only the source map, conversion manifest, coverage ledger,
+closed conversion schema, and an empty native course. It starts at 84 pending
+and zero converted items. It does not create a learner module, copy MATLAB, or
+claim that any of the 84 lessons is visible or Pythonized.
+
+Successor batches run in this fixed order:
+
+```text
+ELP-DSP-P01 -> ELP-DSP-P02 -> ... -> ELP-DSP-P84
+```
+
+Each batch creates exactly one mapped module and may advance only that item from
+`pending` to `converted`. A blocked item stops the ordered lane. Do not create
+empty manifests, TODO lessons, copied-source shells, or other placeholders to
+make catalog coverage appear complete.
+
+For one item, preserve the source identity and precedence:
+
+1. `README.md` fixes the experiment, goal, and completion condition.
+2. `lesson.md` fixes the concept, physical model, equations, limiting cases,
+   and common mistakes.
+3. `walkthrough.md` fixes the learner sequence, expected observations, two or
+   more useful sweeps, broken case, and recovery.
+4. `checks.md` fixes observation, prediction, interpretation, and teach-back
+   checks.
+5. `experiment.m` fixes constants, deterministic data, operations, important
+   plot order and labels, assertions, and resource guards.
+
+Canonical source identity remains uppercase `P##`. The lowercase native module
+ID is the basename of the target folder recorded in the immutable conversion
+manifest. The native manifest must retain the same module number, title,
+guiding question, and curriculum order.
+
+A converted module is a complete native lesson, not merely a catalog row. It
+requires an exact-v1 `module.yaml`, a concise learner-facing `lesson.md`, a
+self-contained bounded `experiment.py`, and a closed `conversion.yaml`. Its
+lesson blocks must implement the concept-to-prediction-to-manipulation loop,
+stable result references, labeled controls, unit-bearing plots, immediate
+interpretation, two useful one-variable sweeps, one intentional failure and
+recovery, common mistakes, and a completion/teach-back check.
+
+The Python entrypoint must be self-contained because current revision identity
+binds the direct entrypoint but not undeclared imported helpers. It must use
+fixed seeds where applicable, reject invalid or excessive inputs before
+allocation, declare resource bounds, return finite deterministic values, and
+keep its default run suitable for catalog promotion.
+
+`conversion.yaml` must record passing named Python/source-equivalence cases
+with exact inputs, units, expected and actual identities, tolerances, measured
+errors, and commands. This is independent numerical evidence derived from the
+pinned source contract; it is not proof that MATLAB ran. MATLAB runtime parity
+is reported separately as `passed`, `failed`, or `not_run`, and `passed`
+requires retained evidence from an actual identified MATLAB runtime.
+
+Use precise readiness language:
+
+- **mapped**: present in the immutable 84-item inventory;
+- **catalog-visible**: a real native module manifest exists;
+- **converted**: the complete Python lesson and required equivalence evidence
+  pass;
+- **browser-reviewed** or **accessibility-reviewed**: the named manual review
+  actually occurred; and
+- **MATLAB-parity passed**: the recorded MATLAB comparison actually ran.
+
+None of these states implies the next. The final aggregate Python gate reviews
+all 84 converted items, browser/accessibility results, residual numerical
+differences, and every explicit MATLAB `not_run` or `failed` record.
+
 ## Validation
 
 ```bash

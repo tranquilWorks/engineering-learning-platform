@@ -33,6 +33,40 @@ drift checks, and Git pin/revert recovery fixtures. Historical readers and
 in-place migration remain intentionally absent; any later contract increment
 requires its own reviewed batch.
 
+## ELP-DSP — Authorized item-by-item DSP/Radar conversion lane
+
+**Depends on:** ELP-B010-01
+
+This direct, course-owned lane converts the pinned 84-item DSP/Radar source
+without modifying it and without adding DSP-specific behavior to the generic
+platform:
+
+1. `ELP-DSP-00` pins source commit
+   `5d73667a486df4a7b6c581e4c9406e810ed4f0f6`, records the immutable P01-P84
+   mapping, and creates the empty native course plus conversion/evidence
+   framework.
+2. `ELP-DSP-P01` through `ELP-DSP-P84` each create exactly one complete native
+   learner module, self-contained Python runtime, and passing source-equivalence
+   record in numeric order.
+3. `ELP-DSP-G-PYTHON` reviews the complete course, all equivalence and residual
+   numerical records, browser/accessibility evidence, and every MATLAB
+   `not_run` or `failed` result before any aggregate readiness claim.
+
+ELP-DSP-00 establishes 84 pending, zero converted, zero blocked, and zero
+placeholders. Its framework catalog is three courses,
+two implemented modules, and two interactive modules because the discovered
+DSP course is still empty. It does not deliver, display, or claim any converted
+DSP lesson.
+
+A blocked item stops the ordered lane. No batch may skip forward, combine
+items, create bulk placeholders, mutate the pinned source, or infer MATLAB,
+learner, release, deployment, production, or physical-radar evidence from a
+Python conversion.
+
+This lane is a separately authorized direct conversion sequence. It does not
+implement or satisfy the generic B020 ingestion tooling or B030 author-preview
+milestones below.
+
 ## B020 — Course ingestion and migration tooling
 
 **Depends on:** B010
@@ -115,12 +149,13 @@ requires its own reviewed batch.
 
 **Depends on:** B020, B030
 
-Migrate representative modules before attempting every course:
+For courses outside the dedicated DSP/Radar lane, migrate representative
+modules before attempting every course:
 
-1. DSP/radar P03 aliasing;
-2. DSP/radar P30 echo ranging;
-3. one 3-D/heatmap-heavy advanced radar module;
-4. one controls/GNC module;
-5. one static/media-heavy module.
+1. one controls/GNC module;
+2. one 3-D/heatmap-heavy module from another engineering course;
+3. one static/media-heavy module.
 
 Use those pilots to revise the schema and authoring workflow before bulk conversion.
+The separate ELP-DSP sequence above does not mark B020, B030, or this broader
+cross-course migration milestone complete.

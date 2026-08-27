@@ -1,0 +1,836 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://engineering-learning-platform.local/schemas/dsp-radar-conversion-v1.json",
+  "title": "DSP/Radar source-to-Python conversion record",
+  "description": "A closed, source-bound evidence record for exactly one converted DSP/Radar learner module.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "course_id",
+    "item",
+    "target",
+    "content",
+    "runtime",
+    "python_source_equivalence",
+    "matlab_runtime_parity",
+    "claims"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "course_id": {
+      "const": "dsp-radar"
+    },
+    "item": {
+      "$ref": "#/$defs/itemIdentity"
+    },
+    "target": {
+      "$ref": "#/$defs/targetIdentity"
+    },
+    "content": {
+      "$ref": "#/$defs/contentFidelity"
+    },
+    "runtime": {
+      "$ref": "#/$defs/pythonRuntime"
+    },
+    "python_source_equivalence": {
+      "$ref": "#/$defs/pythonSourceEquivalence"
+    },
+    "matlab_runtime_parity": {
+      "$ref": "#/$defs/matlabRuntimeParity"
+    },
+    "claims": {
+      "$ref": "#/$defs/claims"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "normalizedPath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*//)[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*$"
+    },
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "fileIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/normalizedPath"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "itemIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "number",
+        "source_folder",
+        "target_module_id",
+        "target_folder",
+        "batch_id",
+        "source_map_sha256",
+        "source_inputs"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^P(?:0[1-9]|[1-7][0-9]|8[0-4])$"
+        },
+        "number": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 84
+        },
+        "source_folder": {
+          "$ref": "#/$defs/normalizedPath"
+        },
+        "target_module_id": {
+          "type": "string",
+          "pattern": "^(?:0[1-9]|[1-7][0-9]|8[0-4])-[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "target_folder": {
+          "$ref": "#/$defs/normalizedPath"
+        },
+        "batch_id": {
+          "type": "string",
+          "pattern": "^ELP-DSP-P(?:0[1-9]|[1-7][0-9]|8[0-4])$"
+        },
+        "source_map_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "source_inputs": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/fileIdentity"
+          }
+        }
+      }
+    },
+    "targetIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "content_digest",
+        "files"
+      ],
+      "properties": {
+        "content_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "files": {
+          "type": "array",
+          "minItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/fileIdentity"
+          }
+        }
+      }
+    },
+    "equation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "latex",
+        "meaning"
+      ],
+      "properties": {
+        "latex": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "meaning": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "constant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "value",
+        "unit"
+      ],
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "value": {
+          "type": [
+            "number",
+            "integer",
+            "string",
+            "boolean"
+          ]
+        },
+        "unit": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "plot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_figure",
+        "target_plot_key",
+        "title",
+        "axes",
+        "interpretation"
+      ],
+      "properties": {
+        "source_figure": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "target_plot_key": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]*$"
+        },
+        "title": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "axes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/axis"
+          }
+        },
+        "interpretation": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "axis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "label",
+        "unit"
+      ],
+      "properties": {
+        "role": {
+          "enum": [
+            "x",
+            "y",
+            "z",
+            "color",
+            "range",
+            "angle",
+            "radius"
+          ]
+        },
+        "label": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "unit": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "dataset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "provenance",
+        "sha256",
+        "unit"
+      ],
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "provenance": {
+          "enum": [
+            "generated",
+            "retained_fixture",
+            "source_constant"
+          ]
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "unit": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "sweep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "control",
+        "values",
+        "expected_observation"
+      ],
+      "properties": {
+        "control": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "values": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "type": [
+              "number",
+              "integer",
+              "string",
+              "boolean"
+            ]
+          }
+        },
+        "expected_observation": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "brokenCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "trigger",
+        "failure",
+        "recovery",
+        "expected_observation"
+      ],
+      "properties": {
+        "trigger": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "failure": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "recovery": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "expected_observation": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "contentFidelity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "guiding_question",
+        "physical_model",
+        "signal_flow",
+        "equations",
+        "equation_order",
+        "deterministic_data",
+        "plot_sequence",
+        "sweeps",
+        "broken_case",
+        "common_mistakes",
+        "completion_checklist"
+      ],
+      "properties": {
+        "guiding_question": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "physical_model": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "signal_flow": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          }
+        },
+        "equations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/equation"
+          }
+        },
+        "equation_order": {
+          "const": "before_toolbox_shortcuts"
+        },
+        "deterministic_data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "seed",
+            "constants",
+            "datasets"
+          ],
+          "properties": {
+            "seed": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "constants": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/constant"
+              }
+            },
+            "datasets": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/dataset"
+              }
+            }
+          }
+        },
+        "plot_sequence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/plot"
+          }
+        },
+        "sweeps": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/sweep"
+          }
+        },
+        "broken_case": {
+          "$ref": "#/$defs/brokenCase"
+        },
+        "common_mistakes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          }
+        },
+        "completion_checklist": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          }
+        }
+      }
+    },
+    "pythonRuntime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "entrypoint",
+        "trust",
+        "timeout_seconds",
+        "max_samples",
+        "max_output_bytes"
+      ],
+      "properties": {
+        "kind": {
+          "const": "python"
+        },
+        "entrypoint": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]+\\.py:[A-Za-z_][A-Za-z0-9_]*$"
+        },
+        "trust": {
+          "const": "local-trusted"
+        },
+        "timeout_seconds": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 60
+        },
+        "max_samples": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_output_bytes": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "tolerance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "absolute",
+        "relative"
+      ],
+      "properties": {
+        "absolute": {
+          "type": "number",
+          "minimum": 0
+        },
+        "relative": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "equivalenceCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "units",
+        "tolerance",
+        "expected",
+        "actual",
+        "max_absolute_error",
+        "max_relative_error",
+        "passed"
+      ],
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "units": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "tolerance": {
+          "$ref": "#/$defs/tolerance"
+        },
+        "expected": {
+          "$ref": "#/$defs/fileIdentity"
+        },
+        "actual": {
+          "$ref": "#/$defs/fileIdentity"
+        },
+        "max_absolute_error": {
+          "type": "number",
+          "minimum": 0
+        },
+        "max_relative_error": {
+          "type": "number",
+          "minimum": 0
+        },
+        "passed": {
+          "const": true
+        }
+      }
+    },
+    "equivalenceInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "value",
+        "unit"
+      ],
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "value": {
+          "oneOf": [
+            {
+              "type": [
+                "number",
+                "integer",
+                "string",
+                "boolean"
+              ]
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": [
+                  "number",
+                  "integer",
+                  "string",
+                  "boolean"
+                ]
+              }
+            }
+          ]
+        },
+        "unit": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "pythonSourceEquivalence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "command",
+        "seed",
+        "inputs",
+        "cases"
+      ],
+      "properties": {
+        "status": {
+          "const": "passed"
+        },
+        "command": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "seed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/equivalenceInput"
+          }
+        },
+        "cases": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/equivalenceCase"
+          }
+        }
+      }
+    },
+    "matlabPassed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "runtime",
+        "version",
+        "toolboxes",
+        "command",
+        "seed",
+        "inputs",
+        "cases",
+        "evidence"
+      ],
+      "properties": {
+        "status": {
+          "const": "passed"
+        },
+        "runtime": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "version": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "toolboxes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          }
+        },
+        "command": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "seed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/equivalenceInput"
+          }
+        },
+        "cases": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/equivalenceCase"
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/fileIdentity"
+          }
+        }
+      }
+    },
+    "matlabFailed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "runtime",
+        "version",
+        "toolboxes",
+        "command",
+        "seed",
+        "inputs",
+        "reason",
+        "evidence"
+      ],
+      "properties": {
+        "status": {
+          "const": "failed"
+        },
+        "runtime": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "version": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "toolboxes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          }
+        },
+        "command": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "seed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/equivalenceInput"
+          }
+        },
+        "reason": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/fileIdentity"
+          }
+        }
+      }
+    },
+    "matlabNotRun": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "reason"
+      ],
+      "properties": {
+        "status": {
+          "const": "not_run"
+        },
+        "reason": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "matlabRuntimeParity": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/matlabPassed"
+        },
+        {
+          "$ref": "#/$defs/matlabFailed"
+        },
+        {
+          "$ref": "#/$defs/matlabNotRun"
+        }
+      ]
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "profile",
+        "browser_visual_review",
+        "accessibility_review",
+        "learner_effectiveness"
+      ],
+      "properties": {
+        "profile": {
+          "const": "elp-dsp-item-software-v1"
+        },
+        "browser_visual_review": {
+          "$ref": "#/$defs/reviewStatus"
+        },
+        "accessibility_review": {
+          "$ref": "#/$defs/reviewStatus"
+        },
+        "learner_effectiveness": {
+          "$ref": "#/$defs/reviewNotRun"
+        }
+      }
+    },
+    "reviewPerformed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "summary",
+        "evidence"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "passed",
+            "failed"
+          ]
+        },
+        "summary": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/fileIdentity"
+          }
+        }
+      }
+    },
+    "reviewNotRun": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "reason"
+      ],
+      "properties": {
+        "status": {
+          "const": "not_run"
+        },
+        "reason": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "reviewStatus": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/reviewPerformed"
+        },
+        {
+          "$ref": "#/$defs/reviewNotRun"
+        }
+      ]
+    }
+  }
+}
