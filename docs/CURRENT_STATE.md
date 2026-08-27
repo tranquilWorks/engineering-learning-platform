@@ -1,28 +1,30 @@
 # Current state
 
-ELP-B010-01 is merged on `main`, and its exact-head GitHub Actions verification
-passed. Main commit `8019d1798ea771f1f466e24c9983549ec1d6c127` is the audited
-baseline for ELP-DSP-00.
+ELP-DSP-P01-P84 is an unmerged aggregate candidate on
+`agent/elp-dsp-p01-p84`, based on exact target commit
+`4234782eda42a3103cf320f1eb611065128c9afa` and authorized by Portfolio
+Control merge `8bf0d8e7a6563fe88246925b44e2bddc77a457fe`.
 
-ELP-DSP-00 implementation is in progress. It pins the read-only canonical
-DSP/Radar source at commit `5d73667a486df4a7b6c581e4c9406e810ed4f0f6`
-and establishes a platform-owned conversion framework. The framework state is
-`pending=84`, `converted=0`, `blocked=0`, and `placeholder=0`. No native DSP
-learner module, Python experiment, or converted lesson is claimed by this
-batch.
+The pinned read-only DSP/Radar source remains commit
+`5d73667a486df4a7b6c581e4c9406e810ed4f0f6`, tree
+`7a3a0f9adce607e10097724c13745eace212f4e1`. Its 84 module folders and 420
+canonical files are unchanged.
 
-The current framework catalog contains three courses, two implemented modules,
-and two interactive modules. The DSP course is the third course but currently
-has zero modules; its presence proves discovery of the empty native course,
-not 84 visible lessons or learner readiness.
+All 84 mapped lessons now have native, catalog-visible Python modules. Each
+target folder contains a strict module manifest, expanded learner lesson,
+bounded deterministic experiment, closed source-conversion record, and
+distinct expected/actual numeric evidence. Coverage is `converted=84`,
+`pending=0`, `blocked=0`, and `placeholder=0`.
 
-The conversion lane is sequential and one item per batch:
-`ELP-DSP-P01` through `ELP-DSP-P84`, followed by the aggregate
-`ELP-DSP-G-PYTHON` gate. P01 is the first pending item; later items cannot skip
-ahead.
+The native catalog contains three courses and 86 interactive modules: 84
+DSP/Radar modules plus the two unchanged example modules. The complete
+source-attested DSP suite passed 300 tests; the repository contract and quick
+suites passed 72 and 376 tests; deterministic execution passed for all 86
+modules; and frontend typecheck/build passed through the full verifier.
 
-ELP-DSP-00 remains a candidate until its exact PR head passes the required
-hosted jobs and the governed merge completes. A branch, commit, pull request, or
-green build alone is not merge, release, deployment, or production evidence.
-Consult the retained ELP-DSP-00 evidence record for the exact candidate and
-hosted-CI state rather than inferring it from this current-state summary.
+Local container verification is not claimed because Docker is unavailable in
+the authoring environment. Browser visual review, accessibility review, MATLAB
+runtime parity, and learner effectiveness remain `not_run`. Hosted backend,
+frontend, and container CI must pass on the exact final PR head before this
+candidate is merge-ready. This state is not merge, release, deployment, or
+production evidence.

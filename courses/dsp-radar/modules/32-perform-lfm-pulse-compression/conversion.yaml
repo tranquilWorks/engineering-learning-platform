@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P32",
+    "number": 32,
+    "source_folder": "modules/32-perform-lfm-pulse-compression",
+    "target_module_id": "32-perform-lfm-pulse-compression",
+    "target_folder": "modules/32-perform-lfm-pulse-compression",
+    "batch_id": "ELP-DSP-P32",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/32-perform-lfm-pulse-compression/README.md",
+        "sha256": "5eb2a9151882b003d67bc135a11e8a8fdb2413fd975e80d7aa7286075eb364e7"
+      },
+      {
+        "path": "modules/32-perform-lfm-pulse-compression/lesson.md",
+        "sha256": "30271a26cb388e0311d42fde5d6ac487aeca5949f3f740a3d79e01045973605c"
+      },
+      {
+        "path": "modules/32-perform-lfm-pulse-compression/walkthrough.md",
+        "sha256": "d1b0edf609c30299fe3525bf7b4c362e007917919e0acacd88a4006062fb813b"
+      },
+      {
+        "path": "modules/32-perform-lfm-pulse-compression/checks.md",
+        "sha256": "16d038a88758eeb6a2ac7b7012ac72aa43af23a3b72abaf267f01389bf3cc666"
+      },
+      {
+        "path": "modules/32-perform-lfm-pulse-compression/experiment.m",
+        "sha256": "9ca4dc0e72e273b056741f4e107a84955d20af2392824b3a6dbebbaa7b6fa823"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "0e27dfc59ca0a31348c6a9fac54c4ed698b49302ab0b76a9569bbb26861ceace",
+    "files": [
+      {
+        "path": "modules/32-perform-lfm-pulse-compression/experiment.py",
+        "sha256": "f1a568916c8076d06908800f4aca90b9be14aed537d7346081345a521ed47317"
+      },
+      {
+        "path": "modules/32-perform-lfm-pulse-compression/lesson.md",
+        "sha256": "39616ebf70803439514e16784c02645574c7cd07c2f4bbd049361326d86e8d01"
+      },
+      {
+        "path": "modules/32-perform-lfm-pulse-compression/module.yaml",
+        "sha256": "5f828dfe9279846f8cfb80f4371479f3e7b471567ff49e8b629f66c293ea65e7"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How can a long energetic pulse achieve short-pulse range resolution?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary chirp bandwidth while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "s(t)=\\exp\\left(j\\pi k(t-T/2)^2\\right),\\qquad k=\\frac{B}{T},",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "h[m]=s^*[N-1-m],\\qquad y[n]=\\sum_m x[m]h[n-m].",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "R[n]=\\frac{c}{2F_s}\\left(n-(N-1)\\right).",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 3201,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "7e00d629a26056da5620ce56ed8b70acdc6507a9e72d07787f960ca6c295541f",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "722b0169913f9db15c65b3cac951d70401360f2912d05079bfcd7460fdf90f35",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P32 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Perform LFM Pulse Compression guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P32 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Perform LFM Pulse Compression guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P32 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Perform LFM Pulse Compression guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P32 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Perform LFM Pulse Compression guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing chirp bandwidth moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P32 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 3201,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/32-perform-lfm-pulse-compression/evidence/expected-baseline.json",
+          "sha256": "7e00d629a26056da5620ce56ed8b70acdc6507a9e72d07787f960ca6c295541f"
+        },
+        "actual": {
+          "path": "modules/32-perform-lfm-pulse-compression/evidence/actual-baseline.json",
+          "sha256": "e5ff59939a2c7b9bcb2c942b538a546580b80a0d9246e6598e6024d622e39a71"
+        },
+        "max_absolute_error": 4.444777879086814e-13,
+        "max_relative_error": 4.444777879086814e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/32-perform-lfm-pulse-compression/evidence/expected-broken.json",
+          "sha256": "722b0169913f9db15c65b3cac951d70401360f2912d05079bfcd7460fdf90f35"
+        },
+        "actual": {
+          "path": "modules/32-perform-lfm-pulse-compression/evidence/actual-broken.json",
+          "sha256": "6435e1d47b64162a9b22af7188c192ed9878e163809eb8da132b9f8aa50214be"
+        },
+        "max_absolute_error": 4.444777879086814e-13,
+        "max_relative_error": 4.444777879086814e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

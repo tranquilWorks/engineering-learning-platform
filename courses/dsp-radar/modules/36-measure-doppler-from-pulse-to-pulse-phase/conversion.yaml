@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P36",
+    "number": 36,
+    "source_folder": "modules/36-measure-doppler-from-pulse-to-pulse-phase",
+    "target_module_id": "36-measure-doppler-from-pulse-to-pulse-phase",
+    "target_folder": "modules/36-measure-doppler-from-pulse-to-pulse-phase",
+    "batch_id": "ELP-DSP-P36",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/36-measure-doppler-from-pulse-to-pulse-phase/README.md",
+        "sha256": "aefe06f67317eefc4ed79ed17497c6951e82eabe3980ebed490aeb938ca94502"
+      },
+      {
+        "path": "modules/36-measure-doppler-from-pulse-to-pulse-phase/lesson.md",
+        "sha256": "9dd6a637c908e581ab871fa13692f45082814912f5f50f330f83925a4a5ec17f"
+      },
+      {
+        "path": "modules/36-measure-doppler-from-pulse-to-pulse-phase/walkthrough.md",
+        "sha256": "d03352ad964443697ddf986f17dc3e3781174105dc043ae616605f77aed930ce"
+      },
+      {
+        "path": "modules/36-measure-doppler-from-pulse-to-pulse-phase/checks.md",
+        "sha256": "1ecd2a411d3acd2a1d784a0823643b40c057e05e1b1a448568ec3853b4bd4a4e"
+      },
+      {
+        "path": "modules/36-measure-doppler-from-pulse-to-pulse-phase/experiment.m",
+        "sha256": "87fb905726be19b3c88c25874054653623aa06974ae9ef14435a8af16910f404"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "13fda7a22f3d38160af953f3a9dc3e6a0d61b1dd9d8622bf000fec2bf0502b5a",
+    "files": [
+      {
+        "path": "modules/36-measure-doppler-from-pulse-to-pulse-phase/experiment.py",
+        "sha256": "0ac85cc45dc936a5dc247d67b45c2568b87a24a0aec97805ebfcdde208c1c065"
+      },
+      {
+        "path": "modules/36-measure-doppler-from-pulse-to-pulse-phase/lesson.md",
+        "sha256": "101c922cdcc61dce6a45cb781911e4d6fa78b484bdde58f56212409d4612ffd3"
+      },
+      {
+        "path": "modules/36-measure-doppler-from-pulse-to-pulse-phase/module.yaml",
+        "sha256": "8a7a302d87a0da9e550b9750c1eea4246c8dc379d8c09bc43027120456a1d409"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How does target velocity create coherent phase progression across pulses?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary radial velocity while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 3601,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "08a40229e7dd5c90f13057ae2b294d43421f90c0c292843ab94210f398790c27",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "ccf65a318b5f6e4cb9ff70ae0fc0df4db3d23f492221e25851e391170a2abc2e",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P36 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Measure Doppler from Pulse-to-Pulse Phase guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P36 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Measure Doppler from Pulse-to-Pulse Phase guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P36 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Measure Doppler from Pulse-to-Pulse Phase guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P36 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Measure Doppler from Pulse-to-Pulse Phase guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing radial velocity moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P36 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 3601,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/36-measure-doppler-from-pulse-to-pulse-phase/evidence/expected-baseline.json",
+          "sha256": "08a40229e7dd5c90f13057ae2b294d43421f90c0c292843ab94210f398790c27"
+        },
+        "actual": {
+          "path": "modules/36-measure-doppler-from-pulse-to-pulse-phase/evidence/actual-baseline.json",
+          "sha256": "a891ddfe9b3c472626396c05b3d4c85743fb88c3e7657dcce64e52f660494eff"
+        },
+        "max_absolute_error": 3.1748215167937133e-13,
+        "max_relative_error": 3.1748215167937133e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/36-measure-doppler-from-pulse-to-pulse-phase/evidence/expected-broken.json",
+          "sha256": "ccf65a318b5f6e4cb9ff70ae0fc0df4db3d23f492221e25851e391170a2abc2e"
+        },
+        "actual": {
+          "path": "modules/36-measure-doppler-from-pulse-to-pulse-phase/evidence/actual-broken.json",
+          "sha256": "a0afcbf4afe2b4182422989b326bc789389b7f119a4242cd1efe2685ca1fbbce"
+        },
+        "max_absolute_error": 4.1722181265413383e-13,
+        "max_relative_error": 4.1722181265413383e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

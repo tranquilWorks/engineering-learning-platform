@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P40",
+    "number": 40,
+    "source_folder": "modules/40-compare-coherent-and-noncoherent-integration",
+    "target_module_id": "40-compare-coherent-and-noncoherent-integration",
+    "target_folder": "modules/40-compare-coherent-and-noncoherent-integration",
+    "batch_id": "ELP-DSP-P40",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/40-compare-coherent-and-noncoherent-integration/README.md",
+        "sha256": "60f0d136794503c7a110a328c7e58775a16298b9246054014c3b01a58e044731"
+      },
+      {
+        "path": "modules/40-compare-coherent-and-noncoherent-integration/lesson.md",
+        "sha256": "07ea7c2b2fc1ae2f50f5b0d9f737fcff09b0b01c7b6cb29cd99b96d6ce459bbf"
+      },
+      {
+        "path": "modules/40-compare-coherent-and-noncoherent-integration/walkthrough.md",
+        "sha256": "390a68332c5e049c65258e852860083bd768675fabd4a553bb328be8478868b0"
+      },
+      {
+        "path": "modules/40-compare-coherent-and-noncoherent-integration/checks.md",
+        "sha256": "e7b78136f60df9014d4424d1b5347b15bc3ef30e550dcd503672827aadd80f5a"
+      },
+      {
+        "path": "modules/40-compare-coherent-and-noncoherent-integration/experiment.m",
+        "sha256": "693e3b407478f2862439048fb21fd55fd59252f8e18e2b1d597e8f32e42f8f26"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "3434ca1d266a7787a23fb391588b14144b1300bdb709dbe3fd129195fa966f2a",
+    "files": [
+      {
+        "path": "modules/40-compare-coherent-and-noncoherent-integration/experiment.py",
+        "sha256": "b3e16224d2e2c6b7185d87c0d4df70f8ce63826ad556d5b03a956ecdddd6a0e6"
+      },
+      {
+        "path": "modules/40-compare-coherent-and-noncoherent-integration/lesson.md",
+        "sha256": "49dd556a6df45eaa3edf1900afb9b85738834429b31b569f9845892289047416"
+      },
+      {
+        "path": "modules/40-compare-coherent-and-noncoherent-integration/module.yaml",
+        "sha256": "9fbf4db3fd440938ce153eb3741e99d9abc45e292d0bc488c9f411bf1792fa5d"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "When should pulse phases be added and when should magnitudes be added?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary pulse count while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "x_n=Ae^{j(\\phi_n+\\epsilon_n)}+w_n,",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "z_c=\\sum_{n=0}^{N-1}x_ne^{-j\\phi_n}.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "\\rho=\\frac{A^2}{\\sigma_w^2}, \\qquad \\mathrm{SNR}_{c,\\mathrm{out}}=N\\rho.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 4001,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "40124e63ceed00abbd5229967b5e7c64b13c2a4f67e1ae4a6152d84481c20c29",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "15dd5eb63234663c67aa4bdd4294771a77fe2d19009a810f78d8eb5487f42007",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P40 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Compare Coherent and Noncoherent Integration guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P40 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Compare Coherent and Noncoherent Integration guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P40 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Compare Coherent and Noncoherent Integration guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P40 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Compare Coherent and Noncoherent Integration guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing pulse count moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P40 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 4001,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/40-compare-coherent-and-noncoherent-integration/evidence/expected-baseline.json",
+          "sha256": "40124e63ceed00abbd5229967b5e7c64b13c2a4f67e1ae4a6152d84481c20c29"
+        },
+        "actual": {
+          "path": "modules/40-compare-coherent-and-noncoherent-integration/evidence/actual-baseline.json",
+          "sha256": "c35a8d0c68e0f6d409bec8c3526a4dcf36b20c35a098c8609585f67dfac90208"
+        },
+        "max_absolute_error": 4.399258735077183e-13,
+        "max_relative_error": 4.399258735077183e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/40-compare-coherent-and-noncoherent-integration/evidence/expected-broken.json",
+          "sha256": "15dd5eb63234663c67aa4bdd4294771a77fe2d19009a810f78d8eb5487f42007"
+        },
+        "actual": {
+          "path": "modules/40-compare-coherent-and-noncoherent-integration/evidence/actual-broken.json",
+          "sha256": "0972ba13dc47fd756f4972183b71fb47f23da5d4f20332a2c7b9c284f4caddd8"
+        },
+        "max_absolute_error": 4.3991893461381437e-13,
+        "max_relative_error": 4.3991893461381437e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P74",
+    "number": 74,
+    "source_folder": "modules/74-create-a-micro-doppler-spectrogram",
+    "target_module_id": "74-create-a-micro-doppler-spectrogram",
+    "target_folder": "modules/74-create-a-micro-doppler-spectrogram",
+    "batch_id": "ELP-DSP-P74",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/74-create-a-micro-doppler-spectrogram/README.md",
+        "sha256": "2a5f590acfa3e6f462179265090b68351ebedf72692f5d00a59744651b9c1932"
+      },
+      {
+        "path": "modules/74-create-a-micro-doppler-spectrogram/lesson.md",
+        "sha256": "0cb2ea7bac25b42ac436c011190389dd8adf7bac0d2236796e3e3b4e0aa6f167"
+      },
+      {
+        "path": "modules/74-create-a-micro-doppler-spectrogram/walkthrough.md",
+        "sha256": "a19cd0f14c025127d76d301781779271ce59e496e961567144da64205f0f0358"
+      },
+      {
+        "path": "modules/74-create-a-micro-doppler-spectrogram/checks.md",
+        "sha256": "5a9bfeeb5bace74e8003b05167867817c6eea35ca9aba3aa4cd6b1806e1c9511"
+      },
+      {
+        "path": "modules/74-create-a-micro-doppler-spectrogram/experiment.m",
+        "sha256": "64a6ba3ba380e871aef473c2c7d9c064dd48185fe73458b09ff891c2b48025d4"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "ad5e8196114ac911dafe12dba953b399035211deab5adf92063d3f759bd2332d",
+    "files": [
+      {
+        "path": "modules/74-create-a-micro-doppler-spectrogram/experiment.py",
+        "sha256": "1017f86b5432afe8fe9875dc51b30ffba921494208f75c2a248e7271835f66f4"
+      },
+      {
+        "path": "modules/74-create-a-micro-doppler-spectrogram/lesson.md",
+        "sha256": "5fe45c67e7c79ef232b6d8cf53d9e1afcf5688ff803bef3c4c3692b23d80908c"
+      },
+      {
+        "path": "modules/74-create-a-micro-doppler-spectrogram/module.yaml",
+        "sha256": "24a298563bbbaec224834b1ca03f7fb371e45df3bf521023d004a562ed84ea31"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How do rotating or swinging target parts produce time-varying Doppler around bulk motion?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary micro motion rate while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 1074,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "d1a983bb602de661e33614656920be023f7b0856079082a6fa6657732ba17833",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "da7d3b5d682d26ae3f4ab65a1a9a94843bbf79c419d87321fc37dfa89465abd1",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P74 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range or time bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Create a Micro-Doppler Spectrogram guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P74 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range or time bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Create a Micro-Doppler Spectrogram guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P74 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range or time bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Create a Micro-Doppler Spectrogram guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P74 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range or time bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Create a Micro-Doppler Spectrogram guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing micro motion rate moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P74 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 1074,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/74-create-a-micro-doppler-spectrogram/evidence/expected-baseline.json",
+          "sha256": "d1a983bb602de661e33614656920be023f7b0856079082a6fa6657732ba17833"
+        },
+        "actual": {
+          "path": "modules/74-create-a-micro-doppler-spectrogram/evidence/actual-baseline.json",
+          "sha256": "bc21434a3065e366f9929c091b4024d7f5dd542d7f6d1b012afd9e632955bebd"
+        },
+        "max_absolute_error": 2.5079938126282286e-13,
+        "max_relative_error": 2.5079938126282286e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/74-create-a-micro-doppler-spectrogram/evidence/expected-broken.json",
+          "sha256": "da7d3b5d682d26ae3f4ab65a1a9a94843bbf79c419d87321fc37dfa89465abd1"
+        },
+        "actual": {
+          "path": "modules/74-create-a-micro-doppler-spectrogram/evidence/actual-broken.json",
+          "sha256": "1397046305f6fc7998612cd5794ecdf3a05d1ee42c4ba79bbf425e9388f9516f"
+        },
+        "max_absolute_error": 3.24462678946702e-13,
+        "max_relative_error": 3.24462678946702e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

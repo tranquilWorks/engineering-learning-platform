@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P23",
+    "number": 23,
+    "source_folder": "modules/23-build-bpsk-and-qpsk-constellation-intuition",
+    "target_module_id": "23-build-bpsk-and-qpsk-constellation-intuition",
+    "target_folder": "modules/23-build-bpsk-and-qpsk-constellation-intuition",
+    "batch_id": "ELP-DSP-P23",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/23-build-bpsk-and-qpsk-constellation-intuition/README.md",
+        "sha256": "22cde60dea7fa0840d7bffc8926463670c5c849f22bb9026a1170a48f06dc749"
+      },
+      {
+        "path": "modules/23-build-bpsk-and-qpsk-constellation-intuition/lesson.md",
+        "sha256": "fad965263aebba1c56cb93cd6b3357675648713fd56738be7939a74f851159b0"
+      },
+      {
+        "path": "modules/23-build-bpsk-and-qpsk-constellation-intuition/walkthrough.md",
+        "sha256": "f5fa81c844db0facc88e77e17d5b521b86833da5085979cbe58468658a94b02a"
+      },
+      {
+        "path": "modules/23-build-bpsk-and-qpsk-constellation-intuition/checks.md",
+        "sha256": "6fc87ad41a6b630bf636fbdcfbd19471b411c061fe2e9705d068f00e10adebd7"
+      },
+      {
+        "path": "modules/23-build-bpsk-and-qpsk-constellation-intuition/experiment.m",
+        "sha256": "561d57b2ff78967010e38c390b7a33bd5241c4bdb98788815bca6a6168344a45"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "208c836c86cee14bf15f12d940c39945b3692888b48065cdc9435ca88902cf61",
+    "files": [
+      {
+        "path": "modules/23-build-bpsk-and-qpsk-constellation-intuition/experiment.py",
+        "sha256": "1d9f33bfce859e1ebc98d9fad4c2708c015372f6637aa6e3dcae67886947e7b9"
+      },
+      {
+        "path": "modules/23-build-bpsk-and-qpsk-constellation-intuition/lesson.md",
+        "sha256": "79117c9dceb16f9b4ad3ce4fa7950faf3a0d177f89f90d7d04d9d77d3a334fc4"
+      },
+      {
+        "path": "modules/23-build-bpsk-and-qpsk-constellation-intuition/module.yaml",
+        "sha256": "c0d1ac2714c808f551ea44b8711e139069e73b305affae03954bd70ee262f86d"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "What do symbols, phase states, and decision regions look like in IQ?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary constellation order while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 1023,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "94f4305bb542655114b124bc0a674cd967bf1dc3509d09d5a585855ee4c0a4d4",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "17da0de81254a207c55681f21176ae619df993dcb58f91cd353574758ce2d7dd",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P23 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "symbol or time index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized signal",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build BPSK and QPSK Constellation Intuition guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P23 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "symbol or time index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized signal",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build BPSK and QPSK Constellation Intuition guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P23 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "symbol or time index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized signal",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build BPSK and QPSK Constellation Intuition guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P23 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "symbol or time index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized signal",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build BPSK and QPSK Constellation Intuition guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing constellation order moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P23 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 1023,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/23-build-bpsk-and-qpsk-constellation-intuition/evidence/expected-baseline.json",
+          "sha256": "94f4305bb542655114b124bc0a674cd967bf1dc3509d09d5a585855ee4c0a4d4"
+        },
+        "actual": {
+          "path": "modules/23-build-bpsk-and-qpsk-constellation-intuition/evidence/actual-baseline.json",
+          "sha256": "63064fa5b13cc09b8c976774ba3153686cdd816218775a50ec83a1713a09d8a0"
+        },
+        "max_absolute_error": 4.866662628444374e-13,
+        "max_relative_error": 4.866662628444374e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/23-build-bpsk-and-qpsk-constellation-intuition/evidence/expected-broken.json",
+          "sha256": "17da0de81254a207c55681f21176ae619df993dcb58f91cd353574758ce2d7dd"
+        },
+        "actual": {
+          "path": "modules/23-build-bpsk-and-qpsk-constellation-intuition/evidence/actual-broken.json",
+          "sha256": "149011c2174ef3ee20b42bd03fe43f678fdbbbc45a73d8622c2cfa352ec04181"
+        },
+        "max_absolute_error": 4.866662628444374e-13,
+        "max_relative_error": 4.866662628444374e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

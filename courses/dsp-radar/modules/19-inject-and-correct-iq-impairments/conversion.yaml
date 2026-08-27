@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P19",
+    "number": 19,
+    "source_folder": "modules/19-inject-and-correct-iq-impairments",
+    "target_module_id": "19-inject-and-correct-iq-impairments",
+    "target_folder": "modules/19-inject-and-correct-iq-impairments",
+    "batch_id": "ELP-DSP-P19",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/19-inject-and-correct-iq-impairments/README.md",
+        "sha256": "7f61fa4a8867d3f2a5b0d31612809b44330e97cbebb2f952d878b4720f73183f"
+      },
+      {
+        "path": "modules/19-inject-and-correct-iq-impairments/lesson.md",
+        "sha256": "7987a652bb89e9502560344130083a39a892393c349db0090522ba0505f20410"
+      },
+      {
+        "path": "modules/19-inject-and-correct-iq-impairments/walkthrough.md",
+        "sha256": "4db3e15def4ecbc8de4b41db584d9dded8036b403f231483ca8c63063009e7f0"
+      },
+      {
+        "path": "modules/19-inject-and-correct-iq-impairments/checks.md",
+        "sha256": "e671d719c8da658713815d6c1df82766858115ea6d8d16ba52a636ca177fcb24"
+      },
+      {
+        "path": "modules/19-inject-and-correct-iq-impairments/experiment.m",
+        "sha256": "0e62d2c385f953f3e09c83f0e23ce939ef6453a545f3a968e8852f88121bc862"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "3028d1500caf6df44f898b4d767f153dd73b365cc38dda3845c029c64562de4c",
+    "files": [
+      {
+        "path": "modules/19-inject-and-correct-iq-impairments/experiment.py",
+        "sha256": "87d8cc638554d6b45af230900249d83a8dfcfcb57e68d083c6b59dd77a527fc2"
+      },
+      {
+        "path": "modules/19-inject-and-correct-iq-impairments/lesson.md",
+        "sha256": "416e7458a31a1bef46fc5694f08000cbc188a3c626872c8549f75a47f13f87ff"
+      },
+      {
+        "path": "modules/19-inject-and-correct-iq-impairments/module.yaml",
+        "sha256": "002de115c43048842e4fa0d0a6dc69ba4225a3c396c4375b987d16b2c6232c14"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How do DC offset, gain mismatch, and quadrature error change an IQ spectrum?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary IQ gain mismatch while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "z[n]=I[n]+jQ[n]=A e^{j\\theta[n]},\\qquad \\theta[n]=2\\pi f_0 n/f_s+\\theta_0.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "I_r[n]=g_I I[n]+d_I,",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "Q_r[n]=g_Q\\big(Q[n]\\cos\\phi+I[n]\\sin\\phi\\big)+d_Q.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 1019,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "973589b78457ddcb5800b225cddd119e768f40c05b5042985c9144b0d7192739",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "5df06ba747bc887d0d80c5f2bee21a4015edc7191497c725de81225687491bf0",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P19 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "normalized frequency",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "spectral magnitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Inject and Correct IQ Impairments guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P19 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "normalized frequency",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "spectral magnitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Inject and Correct IQ Impairments guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P19 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "normalized frequency",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "spectral magnitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Inject and Correct IQ Impairments guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P19 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "normalized frequency",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "spectral magnitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Inject and Correct IQ Impairments guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing IQ gain mismatch moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P19 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 1019,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/19-inject-and-correct-iq-impairments/evidence/expected-baseline.json",
+          "sha256": "973589b78457ddcb5800b225cddd119e768f40c05b5042985c9144b0d7192739"
+        },
+        "actual": {
+          "path": "modules/19-inject-and-correct-iq-impairments/evidence/actual-baseline.json",
+          "sha256": "ed34be871a19d8ce0f237b90d7cf79ce7acab22915095a3fba5c733d08e23d89"
+        },
+        "max_absolute_error": 2.5521945667961177e-13,
+        "max_relative_error": 2.5521945667961177e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/19-inject-and-correct-iq-impairments/evidence/expected-broken.json",
+          "sha256": "5df06ba747bc887d0d80c5f2bee21a4015edc7191497c725de81225687491bf0"
+        },
+        "actual": {
+          "path": "modules/19-inject-and-correct-iq-impairments/evidence/actual-broken.json",
+          "sha256": "3868f26cec43a75549f3a3a904ef0a6897a98b37b450b78472e334ca8dff6007"
+        },
+        "max_absolute_error": 4.996003610813204e-13,
+        "max_relative_error": 4.996003610813204e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P68",
+    "number": 68,
+    "source_folder": "modules/68-build-an-introductory-stap-clutter-ridge-experiment",
+    "target_module_id": "68-build-an-introductory-stap-clutter-ridge-experiment",
+    "target_folder": "modules/68-build-an-introductory-stap-clutter-ridge-experiment",
+    "batch_id": "ELP-DSP-P68",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/68-build-an-introductory-stap-clutter-ridge-experiment/README.md",
+        "sha256": "39dca2a580f3fc8448190c71ed0acd6956c278936bfb5c01f75d02e83461a821"
+      },
+      {
+        "path": "modules/68-build-an-introductory-stap-clutter-ridge-experiment/lesson.md",
+        "sha256": "6c713a1b562f60fed434c0805fb6f9cbfe8d134817e5ebe8f0e2208c7c663edb"
+      },
+      {
+        "path": "modules/68-build-an-introductory-stap-clutter-ridge-experiment/walkthrough.md",
+        "sha256": "ee8ac07c43cc6ad80290809d26e11388d2e5f6caa3cc71084e97a74aeffb8537"
+      },
+      {
+        "path": "modules/68-build-an-introductory-stap-clutter-ridge-experiment/checks.md",
+        "sha256": "7781dfe641713cb037a2bd002f5215162421948f4bc4883e639fdd82e7396529"
+      },
+      {
+        "path": "modules/68-build-an-introductory-stap-clutter-ridge-experiment/experiment.m",
+        "sha256": "6f2ad2d5c3c00ce114f0b2f16e8f61b96def01f6f4292f715757de74bf1d908c"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "5500dcf38b7c678c7b23816106f342e7f5c641e587108aff37af259d23871920",
+    "files": [
+      {
+        "path": "modules/68-build-an-introductory-stap-clutter-ridge-experiment/experiment.py",
+        "sha256": "8b9d7655c6c65b2d021b26015201873e9eeed4afaa39292111a1926ba5f18740"
+      },
+      {
+        "path": "modules/68-build-an-introductory-stap-clutter-ridge-experiment/lesson.md",
+        "sha256": "2104c8e36750674baf67381d641c0af011b2c2b24bd4bc5a56cba78cbae9e930"
+      },
+      {
+        "path": "modules/68-build-an-introductory-stap-clutter-ridge-experiment/module.yaml",
+        "sha256": "ffcb463d28f7448e12cf308e992b2950cc2fd0cc5c4ba284cf49006f7ad32acd"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How can space and slow time be processed together to suppress moving-platform clutter?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary clutter ridge slope while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 1068,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "11abb6fd26370a86672757f72a430a3a1211fef2004af2454bb85e19c81cd960",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "7c378193e88569d74e8f17a5a3bc0f67f7cc96c6296a3e56e0a4dca820785fdf",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P68 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "look angle (deg)",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized power",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build an Introductory STAP Clutter-Ridge Experiment guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P68 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "look angle (deg)",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized power",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build an Introductory STAP Clutter-Ridge Experiment guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P68 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "look angle (deg)",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized power",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build an Introductory STAP Clutter-Ridge Experiment guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P68 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "look angle (deg)",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized power",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build an Introductory STAP Clutter-Ridge Experiment guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing clutter ridge slope moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P68 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 1068,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/68-build-an-introductory-stap-clutter-ridge-experiment/evidence/expected-baseline.json",
+          "sha256": "11abb6fd26370a86672757f72a430a3a1211fef2004af2454bb85e19c81cd960"
+        },
+        "actual": {
+          "path": "modules/68-build-an-introductory-stap-clutter-ridge-experiment/evidence/actual-baseline.json",
+          "sha256": "d619d43b79b1727f5b78460d0263fffb41f19cdc5efe9ac008d48bcb8ad37c55"
+        },
+        "max_absolute_error": 4.3837156127324306e-13,
+        "max_relative_error": 4.3837156127324306e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/68-build-an-introductory-stap-clutter-ridge-experiment/evidence/expected-broken.json",
+          "sha256": "7c378193e88569d74e8f17a5a3bc0f67f7cc96c6296a3e56e0a4dca820785fdf"
+        },
+        "actual": {
+          "path": "modules/68-build-an-introductory-stap-clutter-ridge-experiment/evidence/actual-broken.json",
+          "sha256": "34fae69d15b17de7bc596bfce6bd74dc6a3da31f46aa195d65dae37ea2f6beb5"
+        },
+        "max_absolute_error": 4.880540416252188e-13,
+        "max_relative_error": 4.880540416252188e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P82",
+    "number": 82,
+    "source_folder": "modules/82-build-a-passive-radar-cross-ambiguity-experiment",
+    "target_module_id": "82-build-a-passive-radar-cross-ambiguity-experiment",
+    "target_folder": "modules/82-build-a-passive-radar-cross-ambiguity-experiment",
+    "batch_id": "ELP-DSP-P82",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/82-build-a-passive-radar-cross-ambiguity-experiment/README.md",
+        "sha256": "6694cc5da21c78d37de55b4488eb709b92d4dfc175bafedf8de90eb0c44b87ae"
+      },
+      {
+        "path": "modules/82-build-a-passive-radar-cross-ambiguity-experiment/lesson.md",
+        "sha256": "bbadc0c6c3c1691f0f482e0236a752c5a08e21f535c8f32d89c36f0ed38e910b"
+      },
+      {
+        "path": "modules/82-build-a-passive-radar-cross-ambiguity-experiment/walkthrough.md",
+        "sha256": "310cea3b9008648549d74961efd03a1a64dd403ffc1b538fa99b18d7df425c13"
+      },
+      {
+        "path": "modules/82-build-a-passive-radar-cross-ambiguity-experiment/checks.md",
+        "sha256": "3f1367f8727f73f7869b762a2c95121fd59e772cc10426f820d35e9c4270527c"
+      },
+      {
+        "path": "modules/82-build-a-passive-radar-cross-ambiguity-experiment/experiment.m",
+        "sha256": "71e12cf130b7ab9c51fb5feec8d0d6f7076d5fabfd76282c83cf98792c5195d6"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "a25a784f54fcd047cf93d1554fc33446777ae2d118f4cf3333530faa5cbf55f6",
+    "files": [
+      {
+        "path": "modules/82-build-a-passive-radar-cross-ambiguity-experiment/experiment.py",
+        "sha256": "c38e05c37a6617871a7d12b454f6bb7331da487636380602ca1718c1987e30a5"
+      },
+      {
+        "path": "modules/82-build-a-passive-radar-cross-ambiguity-experiment/lesson.md",
+        "sha256": "1ddeb7a25f266864f3b150cab283fd10191a43102568ccc577b8f464106b1c06"
+      },
+      {
+        "path": "modules/82-build-a-passive-radar-cross-ambiguity-experiment/module.yaml",
+        "sha256": "b99960c57f43eeb2610b6782bb88eae1f5c7f3c4040b6571726ab5b2d2dc2b7a"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How can a known broadcast-like reference reveal delayed Doppler-shifted echoes without transmitting?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary echo delay while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "q[n] = \\operatorname{normalize}\\{r[n] + \\eta_q[n]\\}.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "y[n] = a_0r[n] + a_mr[n-d_m] + a_tr[n-d_t]e^{j2\\pi f_t n/f_s} + \\eta_y[n].",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "\\chi(d,f) = \\frac{\\left|\\sum_{n=0}^{N-1} y[n]q^*[n-d]e^{-j2\\pi fn/f_s}\\right|} {\\sqrt{\\sum_n|y[n]|^2\\sum_n|q[n-d]|^2}},",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 1082,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "c282fc425ef66ba1df04b91c11a2a554e96dff802d510a3eb4d2557ead762929",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "ae28f511f9543dd6a7d070c190fd1a8864793d3da4b9eab9f3ba665571396146",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P82 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range/cross-range coordinate",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized intensity",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build a Passive Radar Cross-Ambiguity Experiment guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P82 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range/cross-range coordinate",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized intensity",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build a Passive Radar Cross-Ambiguity Experiment guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P82 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range/cross-range coordinate",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized intensity",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build a Passive Radar Cross-Ambiguity Experiment guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P82 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range/cross-range coordinate",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized intensity",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build a Passive Radar Cross-Ambiguity Experiment guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing echo delay moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P82 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 1082,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/82-build-a-passive-radar-cross-ambiguity-experiment/evidence/expected-baseline.json",
+          "sha256": "c282fc425ef66ba1df04b91c11a2a554e96dff802d510a3eb4d2557ead762929"
+        },
+        "actual": {
+          "path": "modules/82-build-a-passive-radar-cross-ambiguity-experiment/evidence/actual-baseline.json",
+          "sha256": "257146939e9abc53a58606b9b454a67f66fa6e9a194676f06543990f8b33d3e7"
+        },
+        "max_absolute_error": 2.7333690866271354e-13,
+        "max_relative_error": 2.7333690866271354e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/82-build-a-passive-radar-cross-ambiguity-experiment/evidence/expected-broken.json",
+          "sha256": "ae28f511f9543dd6a7d070c190fd1a8864793d3da4b9eab9f3ba665571396146"
+        },
+        "actual": {
+          "path": "modules/82-build-a-passive-radar-cross-ambiguity-experiment/evidence/actual-broken.json",
+          "sha256": "bf4af1cc6ad9fc102e68d5c9978c1e58c0be297c76235c22f637bca2fb60b593"
+        },
+        "max_absolute_error": 3.975986206938842e-13,
+        "max_relative_error": 3.975986206938842e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

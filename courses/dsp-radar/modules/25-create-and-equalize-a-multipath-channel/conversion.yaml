@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P25",
+    "number": 25,
+    "source_folder": "modules/25-create-and-equalize-a-multipath-channel",
+    "target_module_id": "25-create-and-equalize-a-multipath-channel",
+    "target_folder": "modules/25-create-and-equalize-a-multipath-channel",
+    "batch_id": "ELP-DSP-P25",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/25-create-and-equalize-a-multipath-channel/README.md",
+        "sha256": "1de4c0d6e1918b47214004be7dc2f6fee64caf01e583a060a66beef81ab9378d"
+      },
+      {
+        "path": "modules/25-create-and-equalize-a-multipath-channel/lesson.md",
+        "sha256": "30bab647ff6430039d5c3febf1fc25e4b274166cb01e24c04b806ce9d9621bdf"
+      },
+      {
+        "path": "modules/25-create-and-equalize-a-multipath-channel/walkthrough.md",
+        "sha256": "b6ff3cd9997cf24c0d54256673c0006f275758014d4d30f7038eb5bae029f673"
+      },
+      {
+        "path": "modules/25-create-and-equalize-a-multipath-channel/checks.md",
+        "sha256": "a3e605d0b4a7f79b8e7a1f2eac57e5d34975128da28df5f0bdd394d67fa1625a"
+      },
+      {
+        "path": "modules/25-create-and-equalize-a-multipath-channel/experiment.m",
+        "sha256": "3aece5f09ef60b5723648fbdd18fb82f0ddde9c40d295d98695b8b39abb549ac"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "be88e6a79a95915efe9d9cf9acf3bbb7c13650956a6efaf2045553ef82501c25",
+    "files": [
+      {
+        "path": "modules/25-create-and-equalize-a-multipath-channel/experiment.py",
+        "sha256": "69b5d0be1c6862a925f7758edf85aabe26c8fd22ba0ee8a72a8c97465a8e9a6b"
+      },
+      {
+        "path": "modules/25-create-and-equalize-a-multipath-channel/lesson.md",
+        "sha256": "4e5ccd96a973aaf41cc05d95a871d86180f6b22d135538b5ad304fc2cde565c3"
+      },
+      {
+        "path": "modules/25-create-and-equalize-a-multipath-channel/module.yaml",
+        "sha256": "7c9cf5ffb536b1663f73d4c47dd3562b57010470ffd9faa8552f8eda80b9e8a7"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How do delayed copies distort symbols even when noise is small?",
+    "physical_model": "A receiver rarely sees only the direct path. Reflections from buildings, terrain, cables, or impedance discontinuities arrive later and with changed amplitude and phase. A short discrete channel is \\[ h[n]=\\sum_{p=0}^{P-1} a_p\\,\\delta[n-d_p], \\qquad r[n]=s[n]*h[n]+v[n]. \\] Each coefficient `a_p` is a complex path gain and each `d_p` is a delay. The convolution says that the receiver adds shifted copies of the pulse-shaped waveform. P07 introduced this echo-addition view; here the copies extend into neighboring QPSK decisions.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary multipath delay while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "h[n]=\\sum_{p=0}^{P-1} a_p\\,\\delta[n-d_p], \\qquad r[n]=s[n]*h[n]+v[n].",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "y[k]=h_0x[k]+h_1x[k-1]+h_2x[k-2]+n[k].",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "H(e^{j\\omega})=\\sum_p h_p e^{-j\\omega d_p}.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 1025,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "3976bc8042c7395e0d37e5a3f8f3f29789e2c4cbf7e42d39342b6c927531154f",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "00330cd1383235448ce1d6da05db43ed3490b4aca748d5bebbfd4a98840c191e",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P25 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "symbol or time index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized signal",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Create and Equalize a Multipath Channel guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P25 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "symbol or time index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized signal",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Create and Equalize a Multipath Channel guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P25 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "symbol or time index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized signal",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Create and Equalize a Multipath Channel guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P25 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "symbol or time index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized signal",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Create and Equalize a Multipath Channel guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing multipath delay moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P25 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 1025,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/25-create-and-equalize-a-multipath-channel/evidence/expected-baseline.json",
+          "sha256": "3976bc8042c7395e0d37e5a3f8f3f29789e2c4cbf7e42d39342b6c927531154f"
+        },
+        "actual": {
+          "path": "modules/25-create-and-equalize-a-multipath-channel/evidence/actual-baseline.json",
+          "sha256": "6453ac8ac816414120b852c64d695a81b0c5a0537c1fe8afd207683b0afb66c5"
+        },
+        "max_absolute_error": 3.745892485085278e-13,
+        "max_relative_error": 3.745892485085278e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/25-create-and-equalize-a-multipath-channel/evidence/expected-broken.json",
+          "sha256": "00330cd1383235448ce1d6da05db43ed3490b4aca748d5bebbfd4a98840c191e"
+        },
+        "actual": {
+          "path": "modules/25-create-and-equalize-a-multipath-channel/evidence/actual-broken.json",
+          "sha256": "8226f241c0a307168f7c351ece55b7996f5e0c3faac47c166312890789d912e6"
+        },
+        "max_absolute_error": 3.745892485085278e-13,
+        "max_relative_error": 3.745892485085278e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

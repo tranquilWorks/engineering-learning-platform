@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P61",
+    "number": 61,
+    "source_folder": "modules/61-see-phase-steering-in-a-uniform-linear-array",
+    "target_module_id": "61-see-phase-steering-in-a-uniform-linear-array",
+    "target_folder": "modules/61-see-phase-steering-in-a-uniform-linear-array",
+    "batch_id": "ELP-DSP-P61",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/61-see-phase-steering-in-a-uniform-linear-array/README.md",
+        "sha256": "0c48f7d315042c8ffe1ddbc4cf15cd2b084a6607d7ecd118da4374844055a516"
+      },
+      {
+        "path": "modules/61-see-phase-steering-in-a-uniform-linear-array/lesson.md",
+        "sha256": "e05903137417f1f4feb8eb0a967d76e6b51be675105dabcb1cd650927c941697"
+      },
+      {
+        "path": "modules/61-see-phase-steering-in-a-uniform-linear-array/walkthrough.md",
+        "sha256": "d76f007e29b11c1fbe0fa427d7474ca397c2705b265da3e8f1d27db638b20e82"
+      },
+      {
+        "path": "modules/61-see-phase-steering-in-a-uniform-linear-array/checks.md",
+        "sha256": "b40625099fba57405ecc33cc964da612edf88fbc5cb99aa5cb3e9cdada7a5131"
+      },
+      {
+        "path": "modules/61-see-phase-steering-in-a-uniform-linear-array/experiment.m",
+        "sha256": "30bd5232bafcb03e13a5f2ddafbc034ef9cdd8a84c46d34d6d745b7f35876b12"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "7b3e931328e2d6e5396a3ac7d6892d5598946e5cf6099d9a759983c27014f81f",
+    "files": [
+      {
+        "path": "modules/61-see-phase-steering-in-a-uniform-linear-array/experiment.py",
+        "sha256": "751c7f180a07f1a7e5642796d948a0386e06524059b91e71c0972ca1d60c9469"
+      },
+      {
+        "path": "modules/61-see-phase-steering-in-a-uniform-linear-array/lesson.md",
+        "sha256": "081be32d87fda1536a7b6fe386c804ff701acf6b9c89f55bee26c9b2c70ee237"
+      },
+      {
+        "path": "modules/61-see-phase-steering-in-a-uniform-linear-array/module.yaml",
+        "sha256": "a8443527b8a7d787a87c6617d5a81543634b8d8f973468dcc0f5c8e86cb3cfa6"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How does a direction of arrival become a phase slope across sensors?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary arrival angle while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 1061,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "8d532654bbe79b43e45c452c150d69c0584dbf9ba41e483abc2c388d1c924219",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "0a0b227e26d7b75dcd523573e1cd9ef0ae80df50e1b4c11961ab15dddd98224e",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P61 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "look angle (deg)",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized power",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the See Phase Steering in a Uniform Linear Array guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P61 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "look angle (deg)",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized power",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the See Phase Steering in a Uniform Linear Array guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P61 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "look angle (deg)",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized power",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the See Phase Steering in a Uniform Linear Array guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P61 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "look angle (deg)",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized power",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the See Phase Steering in a Uniform Linear Array guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing arrival angle moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P61 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 1061,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/61-see-phase-steering-in-a-uniform-linear-array/evidence/expected-baseline.json",
+          "sha256": "8d532654bbe79b43e45c452c150d69c0584dbf9ba41e483abc2c388d1c924219"
+        },
+        "actual": {
+          "path": "modules/61-see-phase-steering-in-a-uniform-linear-array/evidence/actual-baseline.json",
+          "sha256": "97cbfea9e29c427a3566e059d58432c919f543cabf3d6c505cca59bc3c6e2e78"
+        },
+        "max_absolute_error": 4.27158308724529e-13,
+        "max_relative_error": 4.27158308724529e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/61-see-phase-steering-in-a-uniform-linear-array/evidence/expected-broken.json",
+          "sha256": "0a0b227e26d7b75dcd523573e1cd9ef0ae80df50e1b4c11961ab15dddd98224e"
+        },
+        "actual": {
+          "path": "modules/61-see-phase-steering-in-a-uniform-linear-array/evidence/actual-broken.json",
+          "sha256": "8e9af1891c8b90b20055fa6b3e12dc5498d0037048a888dec6e8866dc1543762"
+        },
+        "max_absolute_error": 3.4466873799487985e-13,
+        "max_relative_error": 3.4466873799487985e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

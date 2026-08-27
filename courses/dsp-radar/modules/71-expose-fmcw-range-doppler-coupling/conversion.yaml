@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P71",
+    "number": 71,
+    "source_folder": "modules/71-expose-fmcw-range-doppler-coupling",
+    "target_module_id": "71-expose-fmcw-range-doppler-coupling",
+    "target_folder": "modules/71-expose-fmcw-range-doppler-coupling",
+    "batch_id": "ELP-DSP-P71",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/71-expose-fmcw-range-doppler-coupling/README.md",
+        "sha256": "356b1e85c4624aa7c36872d38f597175e6c5134944b4f643eded1db3fd743377"
+      },
+      {
+        "path": "modules/71-expose-fmcw-range-doppler-coupling/lesson.md",
+        "sha256": "55ba61830d20a9c2550ebc5b13e14c2039ed9fb06e77fe2f18f9f77a01ceb42c"
+      },
+      {
+        "path": "modules/71-expose-fmcw-range-doppler-coupling/walkthrough.md",
+        "sha256": "830a19ae4ed2b6c67a10fadc32f2c0089b953a78d85e75f9a88d6bee30be1e4f"
+      },
+      {
+        "path": "modules/71-expose-fmcw-range-doppler-coupling/checks.md",
+        "sha256": "96800d3392f101e0a0f9ef97326fa81157984341d93bee85a071c54577c3a52e"
+      },
+      {
+        "path": "modules/71-expose-fmcw-range-doppler-coupling/experiment.m",
+        "sha256": "2d2f17f591f8589325688255d9e6379d16647fe818dd450b6599188ad05334af"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "440f5676f5626c40a443f6dae37aaff9aa27ddb2d62ef37b16cbf3c32e0b16fe",
+    "files": [
+      {
+        "path": "modules/71-expose-fmcw-range-doppler-coupling/experiment.py",
+        "sha256": "01fa4869fb78b06f4282bf3532c9b4ec2f41cc7a1b27829d92689194ed831342"
+      },
+      {
+        "path": "modules/71-expose-fmcw-range-doppler-coupling/lesson.md",
+        "sha256": "49f64a95eb41df636cd18b7a91e7698c749f330c0b3536eb4f1634c6a5aa6b1f"
+      },
+      {
+        "path": "modules/71-expose-fmcw-range-doppler-coupling/module.yaml",
+        "sha256": "ac3fb1bc2c22fc146a0ce769893bf0a7b72659b18e1b2ae3ebfd33dd157e0b44"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "Why can target motion bias the range estimated from one chirp?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary chirp slope while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 1071,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "debc5b1d5f8de1e1e3d7404ad2301ddcd9cacb211d096a55a13df5864d4afdec",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "eca6166b9ee3a42a789300a305c2a607713ece21ee6dc78f7248e098ca94ab4f",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P71 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range or time bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Expose FMCW Range-Doppler Coupling guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P71 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range or time bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Expose FMCW Range-Doppler Coupling guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P71 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range or time bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Expose FMCW Range-Doppler Coupling guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P71 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range or time bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Expose FMCW Range-Doppler Coupling guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing chirp slope moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P71 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 1071,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/71-expose-fmcw-range-doppler-coupling/evidence/expected-baseline.json",
+          "sha256": "debc5b1d5f8de1e1e3d7404ad2301ddcd9cacb211d096a55a13df5864d4afdec"
+        },
+        "actual": {
+          "path": "modules/71-expose-fmcw-range-doppler-coupling/evidence/actual-baseline.json",
+          "sha256": "fe3e7670d5098c0c7ae5c8a67da31f6c51aff5e787d59f5627d670d88e4fff81"
+        },
+        "max_absolute_error": 4.579669976578771e-13,
+        "max_relative_error": 4.579669976578771e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/71-expose-fmcw-range-doppler-coupling/evidence/expected-broken.json",
+          "sha256": "eca6166b9ee3a42a789300a305c2a607713ece21ee6dc78f7248e098ca94ab4f"
+        },
+        "actual": {
+          "path": "modules/71-expose-fmcw-range-doppler-coupling/evidence/actual-broken.json",
+          "sha256": "8dfb2db0753188bde45742b52535f9faeb7faef1e3c10233ab8145ca605d0bec"
+        },
+        "max_absolute_error": 4.579669976578771e-13,
+        "max_relative_error": 4.579669976578771e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

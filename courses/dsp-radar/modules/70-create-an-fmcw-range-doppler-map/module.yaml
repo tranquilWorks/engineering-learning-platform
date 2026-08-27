@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "id": "70-create-an-fmcw-range-doppler-map",
+  "number": 70,
+  "title": "Create an FMCW Range-Doppler Map",
+  "summary": "Explore create an fmcw range-doppler map with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "guiding_question": "How do fast-time beat frequency and chirp-to-chirp phase separate range and velocity?",
+  "status": "implemented",
+  "tags": [
+    "dsp-radar",
+    "phase-8",
+    "target-velocity"
+  ],
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0
+  },
+  "controls": [
+    {
+      "id": "primary_scale",
+      "type": "slider",
+      "label": "Target Velocity",
+      "default": 1.0,
+      "unit": "\u00d7 baseline",
+      "minimum": 0.5,
+      "maximum": 1.5,
+      "step": 0.1,
+      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+    },
+    {
+      "id": "secondary_scale",
+      "type": "slider",
+      "label": "Secondary stress",
+      "default": 0.25,
+      "unit": "normalized",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "step": 0.05,
+      "description": "Introduces the secondary effect identified in the pinned source lesson."
+    },
+    {
+      "id": "noise_db",
+      "type": "slider",
+      "label": "Deterministic noise level",
+      "default": -28.0,
+      "unit": "dB",
+      "minimum": -40.0,
+      "maximum": 10.0,
+      "step": 1.0
+    },
+    {
+      "id": "broken_mode",
+      "type": "toggle",
+      "label": "Violate the central model assumption",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "markdown",
+      "source": "lesson.md"
+    },
+    {
+      "type": "prediction",
+      "title": "Predict before running",
+      "text": "Before changing target velocity, predict which feature moves and which feature should remain invariant.",
+      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+    },
+    {
+      "type": "controls",
+      "title": "Source-bound experiment controls"
+    },
+    {
+      "type": "metrics"
+    },
+    {
+      "type": "plot_grid",
+      "title": "Model and response",
+      "plots": [
+        "model_view",
+        "response_view"
+      ]
+    },
+    {
+      "type": "plot",
+      "title": "One-variable sweeps",
+      "plot": "parameter_sweeps"
+    },
+    {
+      "type": "plot",
+      "title": "Broken case and recovery",
+      "plot": "broken_case"
+    },
+    {
+      "type": "callout",
+      "tone": "info",
+      "title": "Observation",
+      "source": "observation"
+    },
+    {
+      "type": "callout",
+      "tone": "warning",
+      "title": "Broken interpretation",
+      "source": "broken"
+    },
+    {
+      "type": "callout",
+      "tone": "success",
+      "title": "Recovery",
+      "source": "recovery"
+    }
+  ]
+}

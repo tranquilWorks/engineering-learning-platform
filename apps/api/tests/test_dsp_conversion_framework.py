@@ -1442,7 +1442,7 @@ def test_conversion_record_requires_exact_integer_version_one(bad_version: Any) 
     assert _schema_errors(record, schema, schema)
 
 
-def test_exact_84_item_mapping_hashes_and_initial_coverage() -> None:
+def test_exact_84_item_mapping_hashes_and_retained_converted_prefix() -> None:
     source_map = _load_yaml(SOURCE_MAP_PATH)
     conversion_manifest = _load_yaml(CONVERSION_MANIFEST_PATH)
     coverage = _load_yaml(COVERAGE_PATH)
@@ -1462,13 +1462,17 @@ def test_exact_84_item_mapping_hashes_and_initial_coverage() -> None:
         )
         == []
     )
+    converted = coverage["summary"]["converted"]
     assert coverage["summary"] == {
         "total": 84,
-        "pending": 84,
-        "converted": 0,
+        "pending": 84 - converted,
+        "converted": converted,
         "blocked": 0,
         "placeholder": 0,
     }
+    assert [item["status"] for item in coverage["items"]] == (
+        ["converted"] * converted + ["pending"] * (84 - converted)
+    )
     assert [item["id"] for item in coverage["items"]] == [
         f"P{number:02d}" for number in range(1, 85)
     ]
@@ -1513,6 +1517,22 @@ def test_legal_single_item_converted_and_blocked_transitions(tmp_path: Path) -> 
     source_map = _load_yaml(SOURCE_MAP_PATH)
     conversion_manifest = _load_yaml(CONVERSION_MANIFEST_PATH)
     coverage = _load_yaml(COVERAGE_PATH)
+    for item in coverage["items"]:
+        item.update(
+            {
+                "status": "pending",
+                "conversion_record": None,
+                "target_content_digest": None,
+                "blocker": None,
+            }
+        )
+    coverage["summary"] = {
+        "total": 84,
+        "pending": 84,
+        "converted": 0,
+        "blocked": 0,
+        "placeholder": 0,
+    }
     schema = _load_json(CONVERSION_SCHEMA_PATH)
     repository_root, course_root, converted, record = _retained_converted_fixture(
         tmp_path, source_map, conversion_manifest, coverage
@@ -1745,23 +1765,42 @@ def test_blocked_item_stops_the_ordered_lane() -> None:
     )
 
 
-def test_no_target_placeholders_or_learner_modules_exist_in_foundation() -> None:
+def test_target_modules_exactly_match_retained_converted_prefix_without_placeholders() -> None:
+    coverage = _load_yaml(COVERAGE_PATH)
     modules = COURSE_ROOT / "modules"
-    assert not modules.exists() or not any(modules.iterdir())
-    for pattern in ("module.yaml", "lesson.md", "experiment.py", "conversion.yaml", "*.m"):
-        assert not list(COURSE_ROOT.glob(f"modules/*/{pattern}"))
+    expected = {
+        COURSE_ROOT / item["target_folder"]
+        for item in coverage["items"]
+        if item["status"] == "converted"
+    }
+    actual = {path for path in modules.iterdir() if path.is_dir()} if modules.exists() else set()
+    assert actual == expected
+    for module in sorted(expected):
+        for name in ("module.yaml", "lesson.md", "experiment.py", "conversion.yaml"):
+            path = module / name
+            assert path.is_file()
+            assert path.read_text(encoding="utf-8").strip()
+        assert not list(module.glob("*.m"))
+        learner_text = "\n".join(
+            (module / name).read_text(encoding="utf-8")
+            for name in ("module.yaml", "lesson.md", "experiment.py")
+        )
+        assert re.search(r"\b(?:TODO|TBD)\b", learner_text, re.IGNORECASE) is None
 
 
-def test_native_catalog_accepts_empty_dsp_course_without_regressing_examples() -> None:
+def test_native_catalog_accepts_converted_dsp_prefix_without_regressing_examples() -> None:
     course = CourseManifest.model_validate(_load_yaml(COURSE_ROOT / "course.yaml"))
     assert course.id == "dsp-radar"
     assert course.modules_path == "modules"
     catalog = CourseCatalog([ROOT / "courses"])
     summaries = {item.id: item for item in catalog.summaries()}
     assert set(summaries) == {"platform-showcase", "demo-radar", "dsp-radar"}
-    assert len(summaries["dsp-radar"].modules) == 0
-    assert sum(len(item.modules) for item in summaries.values()) == 2
-    assert sum(module.interactive for item in summaries.values() for module in item.modules) == 2
+    converted = _load_yaml(COVERAGE_PATH)["summary"]["converted"]
+    assert len(summaries["dsp-radar"].modules) == converted
+    assert sum(len(item.modules) for item in summaries.values()) == 2 + converted
+    assert sum(module.interactive for item in summaries.values() for module in item.modules) == (
+        2 + converted
+    )
     runtime = ExperimentRuntime(catalog)
     for course_id, module_id in (
         ("demo-radar", "30-measure-range-from-echo-delay"),

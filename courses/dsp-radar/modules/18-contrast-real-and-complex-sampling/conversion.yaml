@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P18",
+    "number": 18,
+    "source_folder": "modules/18-contrast-real-and-complex-sampling",
+    "target_module_id": "18-contrast-real-and-complex-sampling",
+    "target_folder": "modules/18-contrast-real-and-complex-sampling",
+    "batch_id": "ELP-DSP-P18",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/18-contrast-real-and-complex-sampling/README.md",
+        "sha256": "2aa000224075dd803f7ec1e43cd15292f83cd20fb122323b3b1ea69e2ddef427"
+      },
+      {
+        "path": "modules/18-contrast-real-and-complex-sampling/lesson.md",
+        "sha256": "00ac0cbc27e9c8f4a344d65469bdcee4352fb8415695cd85b40c85e2adbcddb0"
+      },
+      {
+        "path": "modules/18-contrast-real-and-complex-sampling/walkthrough.md",
+        "sha256": "c18bce25d590a26d442d072d40414cc7f89d0dd83fb90942904584a0890d52a8"
+      },
+      {
+        "path": "modules/18-contrast-real-and-complex-sampling/checks.md",
+        "sha256": "b29022ef22181b382d598d5f48da6846c1d4eb79c1b6b17ccc809e3f9c1608ec"
+      },
+      {
+        "path": "modules/18-contrast-real-and-complex-sampling/experiment.m",
+        "sha256": "fae08a32c4ef12823e23b3d072460c8f4e64624d543fbddb6d2c8aa9c08ca14b"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "5ed4f9ccb63d9cc1c0dc0a4a4fdc39613f52551245de9cd7bfd8a481ae1b72a8",
+    "files": [
+      {
+        "path": "modules/18-contrast-real-and-complex-sampling/experiment.py",
+        "sha256": "cd53be0f9db35a93a2d4b41a461f898fcf417c52cf3473bede6af1e8ace08624"
+      },
+      {
+        "path": "modules/18-contrast-real-and-complex-sampling/lesson.md",
+        "sha256": "026ca7f2ed7606fc1a1bda1a3e82e53c982cab3957d2062af3ed7ae257c28128"
+      },
+      {
+        "path": "modules/18-contrast-real-and-complex-sampling/module.yaml",
+        "sha256": "dc3c480d740f22695215e60532873b344a55aa9cb794a33d0732279cc9d86ddd"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "Why can complex samples distinguish positive and negative frequencies?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary signed frequency while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "z_+[n]=A e^{j(2\\pi f_0 n/f_s+\\phi)},\\qquad z_-[n]=A e^{-j(2\\pi f_0 n/f_s+\\phi)}=z_+^*[n].",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "\\Re\\{z_+[n]\\}=\\Re\\{z_-[n]\\} =A\\cos(2\\pi f_0 n/f_s+\\phi).",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "x_U(t)=A e^{j[2\\pi(f_{LO}+\\Delta)t+\\phi]},\\qquad x_L(t)=A e^{j[2\\pi(f_{LO}-\\Delta)t-\\phi]}.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 1018,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "7192078f04ddaa5d742e0309b2645344d39f5a02b457573d5c2f641c6536c536",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "333a1b9ce7bc44a21344597c3b4692b6b51a79d9e2145de36bd83754a6e4a4e5",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P18 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "normalized frequency",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "spectral magnitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Contrast Real and Complex Sampling guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P18 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "normalized frequency",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "spectral magnitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Contrast Real and Complex Sampling guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P18 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "normalized frequency",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "spectral magnitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Contrast Real and Complex Sampling guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P18 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "normalized frequency",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "spectral magnitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Contrast Real and Complex Sampling guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing signed frequency moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P18 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 1018,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/18-contrast-real-and-complex-sampling/evidence/expected-baseline.json",
+          "sha256": "7192078f04ddaa5d742e0309b2645344d39f5a02b457573d5c2f641c6536c536"
+        },
+        "actual": {
+          "path": "modules/18-contrast-real-and-complex-sampling/evidence/actual-baseline.json",
+          "sha256": "63630143184311b21bb3b7113db0d77468b431a92901dcc964837b61157c2898"
+        },
+        "max_absolute_error": 3.9076381019853557e-13,
+        "max_relative_error": 3.9076381019853557e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/18-contrast-real-and-complex-sampling/evidence/expected-broken.json",
+          "sha256": "333a1b9ce7bc44a21344597c3b4692b6b51a79d9e2145de36bd83754a6e4a4e5"
+        },
+        "actual": {
+          "path": "modules/18-contrast-real-and-complex-sampling/evidence/actual-broken.json",
+          "sha256": "8d9d06cb2edc9bb9daf6f4e023913e9c146d4318686de82e4d911c5bbf428e26"
+        },
+        "max_absolute_error": 2.4213964167074664e-13,
+        "max_relative_error": 2.4213964167074664e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P38",
+    "number": 38,
+    "source_folder": "modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller",
+    "target_module_id": "38-implement-a-two-pulse-and-three-pulse-mti-canceller",
+    "target_folder": "modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller",
+    "batch_id": "ELP-DSP-P38",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller/README.md",
+        "sha256": "0b80e0bf53a4a7c94f044381269b178570ef57214dd3a3a9fe116a495b8f1029"
+      },
+      {
+        "path": "modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller/lesson.md",
+        "sha256": "81b44405fa014c0db59eee55f928841bce89fd03ffb51831d671584d4a7aa5f9"
+      },
+      {
+        "path": "modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller/walkthrough.md",
+        "sha256": "da3bbacefa50fdca1529f6d8df23669fab951524b1f6b558d666a7aad0b9d4cb"
+      },
+      {
+        "path": "modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller/checks.md",
+        "sha256": "4cc2a68ca45411ebbee89614df7de8fe12354436f145209c99d606f4e4f57e45"
+      },
+      {
+        "path": "modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller/experiment.m",
+        "sha256": "46666d2f0b50e0a2407f8043d95798f4325db9c866a1b687404ffbaaab15ef41"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "a62b1fb2d7e8bc1694d98df2c3db6a117fc370b6a742dae79edebc4069b5cc4e",
+    "files": [
+      {
+        "path": "modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller/experiment.py",
+        "sha256": "d07eedcacac01490cff735271dec6d1a6169ee3810187037238e266234364f10"
+      },
+      {
+        "path": "modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller/lesson.md",
+        "sha256": "5c1f27712bf932b2f678cd09e2b385723bc9a4b6280590e36122df27588fdbc6"
+      },
+      {
+        "path": "modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller/module.yaml",
+        "sha256": "e6991a317523c4ccc5cfe3216484a6012bde87306057d4f16a65b12bab79fd18"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How do simple delay-line cancellers remove stationary clutter?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary clutter Doppler while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 3801,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "e11275ca99695ff043bce70029de016d2f80a7367a64ef991bad7e4b8165a89a",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "b7c2c38f8736b4006697f8d80349f706d4ba3091003b58e8e8d1287440fefa59",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P38 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Implement a Two-Pulse and Three-Pulse MTI Canceller guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P38 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Implement a Two-Pulse and Three-Pulse MTI Canceller guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P38 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Implement a Two-Pulse and Three-Pulse MTI Canceller guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P38 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Implement a Two-Pulse and Three-Pulse MTI Canceller guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing clutter Doppler moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P38 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 3801,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller/evidence/expected-baseline.json",
+          "sha256": "e11275ca99695ff043bce70029de016d2f80a7367a64ef991bad7e4b8165a89a"
+        },
+        "actual": {
+          "path": "modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller/evidence/actual-baseline.json",
+          "sha256": "41c99f0e399e7b3331ce3be1508026fb9569c194ec6798b76fbdd474ea5c9630"
+        },
+        "max_absolute_error": 3.625502675852488e-13,
+        "max_relative_error": 3.625502675852488e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller/evidence/expected-broken.json",
+          "sha256": "b7c2c38f8736b4006697f8d80349f706d4ba3091003b58e8e8d1287440fefa59"
+        },
+        "actual": {
+          "path": "modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller/evidence/actual-broken.json",
+          "sha256": "91dd1c4892843a1d4c9122aa0035141ea3f6c5d47e651b3495d50d28486da52d"
+        },
+        "max_absolute_error": 2.360334150353083e-13,
+        "max_relative_error": 2.360334150353083e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

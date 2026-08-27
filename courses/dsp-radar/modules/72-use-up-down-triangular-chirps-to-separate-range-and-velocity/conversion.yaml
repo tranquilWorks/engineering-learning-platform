@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P72",
+    "number": 72,
+    "source_folder": "modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity",
+    "target_module_id": "72-use-up-down-triangular-chirps-to-separate-range-and-velocity",
+    "target_folder": "modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity",
+    "batch_id": "ELP-DSP-P72",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity/README.md",
+        "sha256": "1e92455b3b639424337e3d2961600851667a2834d944ea8c08be5918b1916508"
+      },
+      {
+        "path": "modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity/lesson.md",
+        "sha256": "bad8b8da038eb71bad947ff8c7fb67caf07f8516997471b18c3073be702d39d8"
+      },
+      {
+        "path": "modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity/walkthrough.md",
+        "sha256": "d2e87d7471aafb4c7f47133b51c8c52d1ffd6e1e01d88ee6f07cd13b5d06394b"
+      },
+      {
+        "path": "modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity/checks.md",
+        "sha256": "a89f2c5dd2cbb6df8daa854858b0e48a17a37f45c1f21033da2e50e418bb01e3"
+      },
+      {
+        "path": "modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity/experiment.m",
+        "sha256": "65e314c98ec5e95f4cc3a3ff4b1ba04fb4a65c56704a55e7b2fb044af53aab94"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "8127a4806e39ddc359c8bb74e1331b7213669f6d47ca7422ad6bd305f21c39c6",
+    "files": [
+      {
+        "path": "modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity/experiment.py",
+        "sha256": "ab8e5ef761d767a4445d7dd5776167c7d554fcb75c4515fbfd3d68e6c0f7a789"
+      },
+      {
+        "path": "modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity/lesson.md",
+        "sha256": "0edc83618607fa4dbc8c8eed96c486f3c45a66fb4bccdaf5932877ff033b7315"
+      },
+      {
+        "path": "modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity/module.yaml",
+        "sha256": "213356993b8350671cce310bc5a13c3e2c37f9fe5192a300e9888d54f38fd0cd"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How can opposite chirp slopes disentangle delay and Doppler?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary triangular slope while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 1072,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "a69db3e7eb3ad29ef190f9217219a64553349f6caca302228bbacf970f3b3b91",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "e1f0fd5e35beeb06f95d2e0aeade074a34d945e68bdd76b853fba244c4bde1be",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P72 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range or time bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Use Up/Down Triangular Chirps to Separate Range and Velocity guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P72 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range or time bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Use Up/Down Triangular Chirps to Separate Range and Velocity guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P72 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range or time bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Use Up/Down Triangular Chirps to Separate Range and Velocity guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P72 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range or time bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Use Up/Down Triangular Chirps to Separate Range and Velocity guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing triangular slope moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P72 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 1072,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity/evidence/expected-baseline.json",
+          "sha256": "a69db3e7eb3ad29ef190f9217219a64553349f6caca302228bbacf970f3b3b91"
+        },
+        "actual": {
+          "path": "modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity/evidence/actual-baseline.json",
+          "sha256": "30aad8b04be2fda0ad3a7f304fda5f289db488f57a60ad1874295b2edb4669e7"
+        },
+        "max_absolute_error": 3.297362383136715e-13,
+        "max_relative_error": 3.297362383136715e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity/evidence/expected-broken.json",
+          "sha256": "e1f0fd5e35beeb06f95d2e0aeade074a34d945e68bdd76b853fba244c4bde1be"
+        },
+        "actual": {
+          "path": "modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity/evidence/actual-broken.json",
+          "sha256": "294f7592939142e34747155db44da2576a96611b57e5e0ffdd87883c1737e2b5"
+        },
+        "max_absolute_error": 3.297362383136715e-13,
+        "max_relative_error": 3.297362383136715e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

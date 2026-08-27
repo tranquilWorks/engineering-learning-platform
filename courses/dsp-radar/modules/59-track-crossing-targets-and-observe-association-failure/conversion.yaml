@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P59",
+    "number": 59,
+    "source_folder": "modules/59-track-crossing-targets-and-observe-association-failure",
+    "target_module_id": "59-track-crossing-targets-and-observe-association-failure",
+    "target_folder": "modules/59-track-crossing-targets-and-observe-association-failure",
+    "batch_id": "ELP-DSP-P59",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/59-track-crossing-targets-and-observe-association-failure/README.md",
+        "sha256": "8d1feb80fc7d04488ac97bbce9895b5e3e6a590851c76ef3c9a4e56c5e759aba"
+      },
+      {
+        "path": "modules/59-track-crossing-targets-and-observe-association-failure/lesson.md",
+        "sha256": "05607e51d628eba1d524431a7ca7e5a2bd89a65e89349e7a58b2dd566577c579"
+      },
+      {
+        "path": "modules/59-track-crossing-targets-and-observe-association-failure/walkthrough.md",
+        "sha256": "b2b7733ef31396bf9618135145c0940c12f8973781c1aad1922ef7b61846a340"
+      },
+      {
+        "path": "modules/59-track-crossing-targets-and-observe-association-failure/checks.md",
+        "sha256": "723257765a4230a162bbe974305005cf25da6f3249ede500ce61fc2073729b6c"
+      },
+      {
+        "path": "modules/59-track-crossing-targets-and-observe-association-failure/experiment.m",
+        "sha256": "e6a0da9552820850ff92112289c5c63a5093b0f8d04720aeb3aeb562f88fa670"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "229b7f079154b17848c9cacaac160ddbdda7df2c95c5d44079fd9d9a575a2978",
+    "files": [
+      {
+        "path": "modules/59-track-crossing-targets-and-observe-association-failure/experiment.py",
+        "sha256": "11e142070ce6ab9057bf7095a6d38904cf8db4f8da25aa118c4d6445e7838df7"
+      },
+      {
+        "path": "modules/59-track-crossing-targets-and-observe-association-failure/lesson.md",
+        "sha256": "55ef04d4c144989d47cfe9129cbe19c0548d5754198c18fe21090a81198f30ec"
+      },
+      {
+        "path": "modules/59-track-crossing-targets-and-observe-association-failure/module.yaml",
+        "sha256": "995d2f3f2bdb9ebccbdab1cb810742dd3461b785fa32b04e6abf99d4269de226"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "Why do simple nearest-neighbor trackers swap identities?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary crossing separation while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 1059,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "59a86f20d7520f1587fde2f090c8c9f199221a22464b2f17a32d793e79d8dc02",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "1d778aef58549b51f364c26bccc2aef4d3e315850b47f6b7800af56a27f24fa3",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P59 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "time step",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "position / innovation",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Track Crossing Targets and Observe Association Failure guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P59 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "time step",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "position / innovation",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Track Crossing Targets and Observe Association Failure guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P59 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "time step",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "position / innovation",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Track Crossing Targets and Observe Association Failure guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P59 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "time step",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "position / innovation",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Track Crossing Targets and Observe Association Failure guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing crossing separation moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P59 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 1059,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/59-track-crossing-targets-and-observe-association-failure/evidence/expected-baseline.json",
+          "sha256": "59a86f20d7520f1587fde2f090c8c9f199221a22464b2f17a32d793e79d8dc02"
+        },
+        "actual": {
+          "path": "modules/59-track-crossing-targets-and-observe-association-failure/evidence/actual-baseline.json",
+          "sha256": "ed741b72da5a3ceda9644df3aa09825ce2636f15820e5630c47c43d6d46532fd"
+        },
+        "max_absolute_error": 3.5349501104064984e-13,
+        "max_relative_error": 3.143041382713818e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/59-track-crossing-targets-and-observe-association-failure/evidence/expected-broken.json",
+          "sha256": "1d778aef58549b51f364c26bccc2aef4d3e315850b47f6b7800af56a27f24fa3"
+        },
+        "actual": {
+          "path": "modules/59-track-crossing-targets-and-observe-association-failure/evidence/actual-broken.json",
+          "sha256": "23e92c0b7a36b96cf81871124e758daeb00f109f0b0c8769a580eb85e7cae92c"
+        },
+        "max_absolute_error": 4.982680934517703e-13,
+        "max_relative_error": 7.91545705495869e-14,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

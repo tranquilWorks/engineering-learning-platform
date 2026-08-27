@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P54",
+    "number": 54,
+    "source_folder": "modules/54-build-an-alpha-beta-tracker",
+    "target_module_id": "54-build-an-alpha-beta-tracker",
+    "target_folder": "modules/54-build-an-alpha-beta-tracker",
+    "batch_id": "ELP-DSP-P54",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/54-build-an-alpha-beta-tracker/README.md",
+        "sha256": "300b5aedc3e3d4d1c33b127590bc9148c498ab3f54f1c14859c97666fd79d855"
+      },
+      {
+        "path": "modules/54-build-an-alpha-beta-tracker/lesson.md",
+        "sha256": "b8ee004afc7d898979e85c9bec9a31bae9f9fa27f05fddc67d878d55214bac39"
+      },
+      {
+        "path": "modules/54-build-an-alpha-beta-tracker/walkthrough.md",
+        "sha256": "59b7fff463e59840632140ed6e9bda001e671f652a54e03ded312ed83380ad80"
+      },
+      {
+        "path": "modules/54-build-an-alpha-beta-tracker/checks.md",
+        "sha256": "8b3e526e595731b2e327d87d8439601c472906a5154348b68fd358bbad98b552"
+      },
+      {
+        "path": "modules/54-build-an-alpha-beta-tracker/experiment.m",
+        "sha256": "81f527660af2043ed31aefd3143303a6480f5f73d48d37735cddcdb3ea2f99db"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "1442931a3608e4da3c18b20b0beddd54263b376f1597c8900f7d535ee8dea097",
+    "files": [
+      {
+        "path": "modules/54-build-an-alpha-beta-tracker/experiment.py",
+        "sha256": "587c88642f7a2b6cb2eba50ce6c62531a1a91a7e620d5a24ec41f456f628e6f2"
+      },
+      {
+        "path": "modules/54-build-an-alpha-beta-tracker/lesson.md",
+        "sha256": "36cc7611437e3a2c516eafb049178161ddaa6cda97a71d8d37276874179adb3c"
+      },
+      {
+        "path": "modules/54-build-an-alpha-beta-tracker/module.yaml",
+        "sha256": "479f0d82ffe900c0a8effbaa7798721a70d80557b53665c9cafd495eb72a66d6"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How can a simple predictor smooth noisy position while following constant velocity?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary alpha gain while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 5401,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "4ae9db62cfb7049d4c641e734522d9ec5ce1cf1b683a0c2b6488fe9d7078407d",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "ce995575165217767805fb364ff81ee99fafa9e817e9c488c7378c72dfbf8f07",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P54 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "time step",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "position / innovation",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build an Alpha-Beta Tracker guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P54 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "time step",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "position / innovation",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build an Alpha-Beta Tracker guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P54 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "time step",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "position / innovation",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build an Alpha-Beta Tracker guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P54 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "time step",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "position / innovation",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build an Alpha-Beta Tracker guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing alpha gain moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P54 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 5401,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/54-build-an-alpha-beta-tracker/evidence/expected-baseline.json",
+          "sha256": "4ae9db62cfb7049d4c641e734522d9ec5ce1cf1b683a0c2b6488fe9d7078407d"
+        },
+        "actual": {
+          "path": "modules/54-build-an-alpha-beta-tracker/evidence/actual-baseline.json",
+          "sha256": "8179818aad32e7b3b834db3e7896d35d19acc81853ee140a582e690606d44e66"
+        },
+        "max_absolute_error": 4.4231285301066237e-13,
+        "max_relative_error": 3.5754732508053166e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/54-build-an-alpha-beta-tracker/evidence/expected-broken.json",
+          "sha256": "ce995575165217767805fb364ff81ee99fafa9e817e9c488c7378c72dfbf8f07"
+        },
+        "actual": {
+          "path": "modules/54-build-an-alpha-beta-tracker/evidence/actual-broken.json",
+          "sha256": "5d9a4e504abcd17519ce44d177d34923c06a83bd384cf587bafaf0ac49f7a5ea"
+        },
+        "max_absolute_error": 4.4231285301066237e-13,
+        "max_relative_error": 5.150209784203959e-14,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

@@ -1,183 +1,111 @@
 schema_version: 1
 batch:
-  id: ELP-DSP-00
-  title: Pin the complete DSP source and establish the item-by-item conversion framework
-  goal: Pin the read-only canonical DSP/Radar source at its complete 84-item revision and establish a platform-owned, fail-closed conversion framework that fixes every source-to-target identity, measures conversion coverage without creating placeholder learner pages, and makes Python/source equivalence mandatory while representing unavailable MATLAB runtime parity honestly.
+  id: ELP-DSP-P01-P84
+  title: Convert all 84 DSP/Radar lessons in one governed integration sweep
+  goal: Execute ELP-DSP-P01 through ELP-DSP-P84 strictly in numeric order as 84 separately validated internal item batches on one isolated target branch, then publish exactly one final target commit and one pull request containing the complete non-placeholder native Python course.
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
-    - products/engineering-learning-platform/automation.json#ELP-DSP-00
+    - products/engineering-learning-platform/automation.json#ELP-DSP-P01..ELP-DSP-P84
     - products/engineering-learning-platform/CODEX_HANDOFF.md
-    - products/engineering-learning-platform/PRD.md#cap-catalog-01--read-only-course-catalog
-    - products/engineering-learning-platform/PRD.md#cap-contract-01--strict-course-contract-and-revision-identity
-    - products/engineering-learning-platform/PRD.md#cap-author-01--inspection-and-controlled-scaffolding
-    - products/engineering-learning-platform/acceptance.yaml#CAP-CATALOG-01
-    - products/engineering-learning-platform/acceptance.yaml#CAP-AUTHOR-01
-    - products/engineering-learning-platform/decisions/DR-001.md
-  milestone: products/engineering-learning-platform/roadmap.yaml#authorized-dsp-item-conversion-lane
-  baseline_commit: 8019d1798ea771f1f466e24c9983549ec1d6c127
+    - products/engineering-learning-platform/roadmap.yaml#authorized_dsp_item_conversion_lane
+    - products/engineering-learning-platform/batches/ELP-DSP-00.yaml
+    - products/engineering-learning-platform/batches/ELP-DSP-P01.yaml
+  milestone: products/engineering-learning-platform/roadmap.yaml#authorized_dsp_item_conversion_lane
+  baseline_commit: 4234782eda42a3103cf320f1eb611065128c9afa
   control_plane_repository: kpbianco/portfolio-control
-  control_plane_path: products/engineering-learning-platform/batches/ELP-DSP-00.yaml
-  source_course_repository: kpbianco/dsp-radar_learning
-  source_course_previous_gitlink: 203c3738a88070bd43a93d969b6991a195bb6e27
-  source_course_commit: 5d73667a486df4a7b6c581e4c9406e810ed4f0f6
-  source_course_tree: 7a3a0f9adce607e10097724c13745eace212f4e1
-  source_curriculum_sha256: 0b92e76efc1f72930fab730145326315219ab3813b8cbf17d32a33f507a4974f
-  source_module_file_set_sha256: c2511015b195a48bd847bd1f1cdeed92384a10eddf0b23e755590af4fb66ddca
+  control_plane_path: products/engineering-learning-platform/batches/ELP-DSP-P01-P84.yaml
 dependencies:
-  - ELP-B010-01
+  - ELP-DSP-00
 scope:
   allowed_paths:
-    - courses/dsp-radar-learning
-    - courses/dsp-radar/AUTHORING.md
-    - courses/dsp-radar/course.yaml
-    - courses/dsp-radar/conversion-manifest.yaml
-    - courses/dsp-radar/conversion.schema.json
+    - courses/dsp-radar/modules/**
     - courses/dsp-radar/coverage.yaml
-    - courses/dsp-radar/source-map.yaml
     - apps/api/tests/test_dsp_conversion_framework.py
+    - apps/api/tests/test_dsp_course.py
     - contracts/active-batch.yaml
     - contracts/repo-profile.yaml
     - contracts/verification.yaml
-    - docs/ARCHITECTURE.md
-    - docs/COURSE_AUTHORING.md
     - docs/CURRENT_STATE.md
     - docs/HANDOFF.md
     - docs/ROADMAP.md
-    - docs/evidence/ELP-DSP-00-*.md
+    - docs/evidence/ELP-DSP-P01-P84-*.md
   forbidden_paths:
     - .gitmodules
+    - courses/dsp-radar-learning
     - courses/dsp-radar-learning/**
-    - courses/dsp-radar/modules/**
-    - courses/README.md
-    - courses/_template/**
-    - courses/demo-radar/**
-    - courses/platform-showcase/**
-    - courses/controls-gnc-learning
-    - courses/controls-gnc-learning/**
-    - courses/distributed-realtime-learning
-    - courses/distributed-realtime-learning/**
-    - courses/embedded-rt-hil-learning
-    - courses/embedded-rt-hil-learning/**
-    - courses/flight-dynamics-learning
-    - courses/flight-dynamics-learning/**
-    - courses/fpga-data-path-learning
-    - courses/fpga-data-path-learning/**
-    - courses/hwil-systems-learning
-    - courses/hwil-systems-learning/**
-    - courses/numerical-optimization-learning
-    - courses/numerical-optimization-learning/**
-    - courses/reliability-fdir-learning
-    - courses/reliability-fdir-learning/**
-    - courses/rf-lab-learning
-    - courses/rf-lab-learning/**
-    - courses/robotics-autonomy-learning
-    - courses/robotics-autonomy-learning/**
-    - courses/stats-estimation-learning
-    - courses/stats-estimation-learning/**
-    - courses/vehicle-dynamics-learning
-    - courses/vehicle-dynamics-learning/**
+    - courses/dsp-radar/course.yaml
+    - courses/dsp-radar/source-map.yaml
+    - courses/dsp-radar/conversion-manifest.yaml
+    - courses/dsp-radar/conversion.schema.json
+    - courses/dsp-radar/AUTHORING.md
     - apps/api/src/**
     - apps/web/**
     - packages/**
     - scripts/**
-    - .portfolio-harness.json
-    - .github/**
-    - .codex/**
-    - .agents/**
-    - AGENTS.md
-    - README.md
-    - contracts/engineering-learning-requirements.yaml
-    - contracts/profile-requirements.yaml
-    - docs/COMPONENT_MODEL.md
-    - docs/DEPLOYMENT.md
-    - docs/PORTFOLIO_CONTROL.md
-    - docs/PORTFOLIO_ONBOARDING_REQUEST.md
-    - docs/SECURITY.md
-    - docs/adr/**
-    - docs/evidence/B000-2026-08-13.md
-    - docs/evidence/ELP-B010-01-2026-08-15.md
-    - docs/plans/**
+    - courses/demo-radar/**
+    - courses/platform-showcase/**
     - package.json
     - package-lock.json
     - apps/api/pyproject.toml
     - apps/web/package.json
     - apps/web/package-lock.json
+    - .github/**
     - Dockerfile
     - compose.yaml
-    - Makefile
-    - .dockerignore
-    - .env.example
-    - .gitignore
 acceptance:
-  - Before product edits, target HEAD, origin/main, and origin/HEAD are all exact baseline 8019d1798ea771f1f466e24c9983549ec1d6c127; the worktree and index are clean except for runner-owned activation overlays at contracts/active-batch.yaml and contracts/repo-profile.yaml, and those overlays bind the exact merged control revision containing this contract. Baseline drift, another uncommitted path, a stale/unmerged control revision, or a semantic mismatch in the activated contract stops implementation.
-  - The only gitlink delta is courses/dsp-radar-learning changing in mode 160000 from 203c3738a88070bd43a93d969b6991a195bb6e27 to exact 5d73667a486df4a7b6c581e4c9406e810ed4f0f6. The .gitmodules bytes, URL https://github.com/kpbianco/dsp-radar_learning.git, branch declaration main, and the other twelve course gitlinks remain byte-for-byte unchanged.
-  - The pinned source resolves to tree 7a3a0f9adce607e10097724c13745eace212f4e1 and curriculum/modules.json SHA-256 0b92e76efc1f72930fab730145326315219ab3813b8cbf17d32a33f507a4974f. Its manifest contains exactly P01 through P84 once each, numbers 1 through 84 in order, all status implemented, and nine phase counts 10, 10, 8, 14, 10, 8, 8, 6, and 10. Exactly 84 mapped source folders each contain the five required canonical inputs README.md, lesson.md, walkthrough.md, checks.md, and experiment.m; SHA-256 of the LF-terminated `sha256sum` records in C-locale relative-path order is c2511015b195a48bd847bd1f1cdeed92384a10eddf0b23e755590af4fb66ddca. No native source course.yaml or module.yaml is invented or expected.
-  - Source inspection and source-attested tests run against a detached exact 5d73667a486df4a7b6c581e4c9406e810ed4f0f6 checkout or the exact initialized gitlink. A before/after inventory of tracked path, mode, Git blob identity, and SHA-256 is identical; source status is clean; no source file, source contract, retained evidence, Git ref, configuration, generated file, cache, bytecode, learner state, or submodule metadata is changed by the platform batch.
-  - courses/dsp-radar/course.yaml is a valid exact-version-one native CourseManifest with stable id dsp-radar and modules_path modules. A separate closed, deterministically ordered conversion manifest enumerates exactly the same 84 P## identities, source folders, target module folders, titles, guiding questions, phases, and sequential ELP-DSP-P## batch identities without copying a learner page or claiming conversion completion.
-  - The immutable source map records the exact source repository, commit, tree, curriculum digest, every P## identity and folder, and the path plus SHA-256 of all five canonical inputs per item. Tests reject an omitted, duplicated, reordered, renamed, out-of-root, wrong-commit, wrong-folder, wrong-file-set, or wrong-hash record. Later P## batches may not modify the source map or stable conversion-manifest fields; a source revision change requires a new reviewed pin/reconciliation batch.
-  - The coverage ledger contains exactly 84 unique ordered entries and initially reports pending=84, converted=0, blocked=0, placeholder=0. Stable item/source/target/batch keys are bound to the immutable source-map digest; no item is marked converted and no courses/dsp-radar/modules/* learner module directory, module.yaml, lesson.md, experiment.py, copied MATLAB file, empty shell, TODO page, or bulk placeholder is created by ELP-DSP-00.
-  - The course-owned conversion/parity schema is exact-versioned, closed to unknown fields, deterministic, and requires each later item record to bind the source map and target content identities; preserve the guiding question, beginner-focused physical meaning and signal flow, equations before toolbox shortcuts, constants and deterministic seed/data, important source plot order and labels, expected observations, at least two useful sweeps, one intentionally broken case with recovery, common mistakes, and a completion checklist; declare runtime kind and resource bounds; and retain named Python/source-equivalence cases, units, tolerances, expected values/digests, and results.
-  - The parity schema distinguishes required Python/source equivalence from optional MATLAB runtime/visual parity. Python/source equivalence cannot be absent, skipped, weakened, or satisfied by screenshots. MATLAB status is one of passed, failed, or not_run; passed requires the exact runtime/version/toolboxes, command, inputs, tolerances, outputs, and retained evidence, while not_run requires a reason and must never be rendered or counted as passed. No MATLAB installation, license, or runtime execution is required by this batch.
-  - courses/dsp-radar/AUTHORING.md is the normative successor-batch rulebook. It fixes source precedence and read-only handling; exact P## order and one-item scope; permitted coverage transition; required page, runtime, deterministic-data, plot, sweep, broken-case, mistake, completion, and parity content; evidence and claim vocabulary; rollback; and escalation when the source cannot be reproduced within the current generic contract. It cannot authorize a source write, another item, a generic platform extension, or an evidence promotion.
-  - Reusable focused tests validate duplicate-key rejection, exact schema versions, closed fields, path containment, all 84 identities/counts/mappings/hashes, immutable-field drift, legal single-item future coverage transitions, illegal bulk/out-of-order/converted-without-record transitions, conversion-record completeness, deterministic serialization, source read-only behavior when the source checkout is supplied, exact gitlink identity, and negative parity/claim cases. Tests use synthetic mutations and the committed ledgers; they neither fetch nor write the source course.
-  - The current generic Python/API/React contract and generated lesson schemas/types do not change. DSP/Radar equations, source-specific validation, and conversion logic remain course-owned under courses/dsp-radar or test-owned in the single focused test file; no subject identity or behavior is added to apps/api/src, apps/web, packages/lesson-schema, existing courses, or another course gitlink.
-  - Target current-state, handoff, roadmap, architecture, and authoring documentation describe the pinned-source/derived-platform ownership split, the zero-converted framework state, the one-item-per-batch rule, rollback, and evidence boundary without claiming an implemented learner page. The retained ELP-DSP-00 evidence names every command/result, exact revision and count, changed/preserved invariant, residual risk, manual/environment gate, and unperformed validation.
-  - Product-data profile gates report schema validation, canonical-source immutability, 84-item uniqueness/completeness, no hidden scoring, no data migration, Git pin/revert recovery, stateless backup/restore not applicable, and existing service smoke results explicitly. The final catalog validation observes three courses, two implemented modules, and two interactive modules; the empty DSP catalog entry is framework state, not an 84-page or learner-readiness claim.
+  - Before product edits, target HEAD, origin/main, and origin/HEAD are exact 4234782eda42a3103cf320f1eb611065128c9afa; the worktree and index are clean except for exact runner-owned activation overlays binding the merged control revision containing this contract. Baseline, control, dependency, or worktree drift stops implementation.
+  - The DSP gitlink remains exact mode 160000 commit 5d73667a486df4a7b6c581e4c9406e810ed4f0f6 and tree 7a3a0f9adce607e10097724c13745eace212f4e1. Its 84 folders and 420 canonical files remain byte-identical and clean before and after every internal item batch.
+  - The immutable source map, conversion manifest, conversion schema, authoring rules, and native course manifest remain byte-for-byte unchanged. The focused framework test may change only to replace foundation-only zero-module assertions with retained converted-prefix and complete-course assertions; it may not weaken source identity, closed-schema, one-item transition, placeholder, provenance, or negative-claim checks.
+  - The implementation uses one branch from the exact baseline and creates no target commit until P01 through P84 have each cleared their internal gate. The final target history contains one implementation commit and one pull request. Temporary local state and validation logs are not represented as false target merges or CI evidence.
+  - Internal item batches execute strictly P01 through P84. At internal step N, only the mapped module N is added, its own conversion record and numeric expected/actual reference data are completed, and coverage advances from an N-1 converted prefix to an N converted prefix. A failed, blocked, incomplete, or placeholder item stops the lane; no later item is authored or marked converted.
+  - Every mapped target folder contains a complete exact-v1 module.yaml, expanded lesson.md, self-contained bounded experiment.py, closed conversion.yaml, and retained numeric expected plus actual JSON evidence. No MATLAB source is copied, no TODO or empty shell exists, and no module is implemented by renaming or duplicating another lesson.
+  - Every lesson preserves its exact title and guiding question; teaches a beginner-focused physical mental model and signal flow; states the governing equations with plain-language meanings before library operations; preserves source constants, seed/data conventions, important processing/plot sequence, axes, units, expected observations, and limiting cases; and includes a concrete prediction, at least two useful one-variable sweeps, one intentional broken case with named recovery, common mistakes, and a completion/teach-back checklist.
+  - Every experiment is a source-specific Python reimplementation using only the existing dependency set, returns the generic deterministic result envelope and Plotly-compatible JSON, validates all controls before allocation, caps samples/array elements and serialized output, completes within the existing trusted-runtime limit, produces stable finite result keys for every accepted state, and performs no network, filesystem write, subprocess, dynamic install/import, eval, learner-code execution, or shared mutable state.
+  - Every conversion.yaml validates against the unchanged closed schema, binds the exact source-map digest and five canonical source hashes, lists exact target file hashes and CourseCatalog content digest, records equations/constants/plots/sweeps/broken case/mistakes/completion, declares runtime bounds, and reports Python/source equivalence passed using distinct retained expected and actual numeric paths with units, explicit tolerances, measured errors, and an exact verification command.
+  - MATLAB runtime parity is passed only when an actual identified MATLAB runtime executes; otherwise each module records not_run with a non-empty reason. Browser and accessibility results are passed or failed only with retained evidence; otherwise they remain not_run. Learner effectiveness remains not_run. None of these states may replace or weaken Python/source equivalence.
+  - The final coverage ledger contains the exact ordered P01-P84 converted prefix with total=84, pending=0, converted=84, blocked=0, and placeholder=0. Every conversion record path and target digest resolves, CourseCatalog exposes exactly 84 DSP/Radar learner modules plus the two existing modules, and all 86 modules execute their defaults deterministically.
+  - One parametrized focused test suite validates every module's source identity, manifest/lesson/result references, equations, controls, deterministic baseline, two sweeps, broken/recovery behavior, resource rejection, reference hashes/tolerances, content digest, conversion record, and catalog visibility. Each internal batch runs only its item parameter plus the reusable framework/source-attested checks before advancing; the final gate runs the complete suite.
+  - Current-state, handoff, roadmap, and retained aggregate evidence contain one row per P01-P84 internal batch with exact commands, results, source and target identities, coverage before/after, residual risks, and unperformed checks. The final claim is limited to one catalog-visible, Python-verified, source-equivalent 84-lesson software course unless additional review evidence actually exists.
 validation:
   local:
-    - test "$(git rev-parse HEAD)" = 8019d1798ea771f1f466e24c9983549ec1d6c127 && test "$(git rev-parse origin/main)" = 8019d1798ea771f1f466e24c9983549ec1d6c127 && test "$(git rev-parse origin/HEAD)" = 8019d1798ea771f1f466e24c9983549ec1d6c127
-    - test "$(git ls-tree HEAD courses/dsp-radar-learning | awk '{print $1":"$3}')" = 160000:203c3738a88070bd43a93d969b6991a195bb6e27
-    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_dsp_conversion_framework.py
-    - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_dsp_conversion_framework.py
+    - test "$(git rev-parse HEAD)" = 4234782eda42a3103cf320f1eb611065128c9afa && test "$(git rev-parse origin/main)" = 4234782eda42a3103cf320f1eb611065128c9afa && test "$(git rev-parse origin/HEAD)" = 4234782eda42a3103cf320f1eb611065128c9afa
+    - for n in $(seq -w 1 84); do PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src ELP_DSP_ITEM=P${n} python3 -B -m pytest -q apps/api/tests/test_dsp_course.py || exit 1; PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_dsp_conversion_framework.py || exit 1; done
+    - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py
     - ./scripts/agent-verify.sh contract
     - ./scripts/agent-verify.sh quick
     - ./scripts/agent-verify.sh full
     - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic --json
     - git diff --check
-    - git diff --submodule=log 8019d1798ea771f1f466e24c9983549ec1d6c127 -- courses/dsp-radar-learning
+    - test -z "$(git -C courses/dsp-radar-learning status --porcelain=v1 --untracked-files=all)"
   focused_tests_to_add:
-    - Add apps/api/tests/test_dsp_conversion_framework.py with always-on repository fixtures for the exact gitlink, native course manifest, closed conversion schema, deterministic 84-item conversion manifest/source map/coverage ledger, immutable fields, legal one-item transition, and negative duplicate/gap/order/path/hash/placeholder/parity claims.
-    - Add a source-attested mode selected only by ELP_DSP_SOURCE_ROOT that requires an existing clean exact source checkout, recomputes the exact commit/tree/curriculum and 420-file inventory, snapshots source bytes/modes/status before and after validation, and fails rather than skipping when the variable is supplied but the source is missing, dirty, wrong, or mutated.
-    - Prove the native catalog accepts the new exact-v1 dsp-radar course with zero learner modules while existing demo-radar and platform-showcase documents/default executions remain unchanged and deterministic.
+    - Add apps/api/tests/test_dsp_course.py as an 84-item, item-filterable suite driven by the immutable map and conversion records; it must exercise each module's default, two sweeps, broken/recovery case, invalid/resource inputs, finite deterministic serialization, reference equivalence, exact content digest, and catalog visibility without fetching or writing the source.
+    - Update the reusable framework test only where its ELP-DSP-00 foundation assertions assume zero converted modules. Preserve all exact source/map/schema hashes, ordered single-item transition and bulk/out-of-order rejection tests, source-attested read-only recomputation, closed conversion-record validation, and negative evidence/claim checks.
+    - Prove final catalog completeness and deterministic default execution for all 84 DSP modules and the two unchanged example modules, with no skip, xfail, count waiver, placeholder, network fetch, or source mutation.
   required_ci:
-    - The existing GitHub Actions quality workflow must pass backend, frontend, and container jobs on the exact target PR head. The backend job must discover and pass the new always-on framework tests without a network fetch, skip, xfail, count waiver, source mutation, or weakened existing test; source-attested recomputation remains separately retained local evidence because the current workflow does not initialize course submodules.
-    - PFSPAM automatic merge authority applies only to the exact clean PR head after required checks pass and no review thread, branch-protection gate, source/provenance mismatch, scope exception, or stop condition remains. A later commit invalidates prior CI and must rerun all required checks.
-  manual:
-    - Standing owner direction dated 2026-08-21 authorizes exact-head CI-green software-only DSP conversion and defers intermediate human content review to ELP-DSP-G-PYTHON; it does not authorize an implementing agent to bypass branch protection, resolve an ownership/licensing conflict, or merge when a required human gate or unresolved review exists.
-    - A reviewer at the final aggregate gate must inspect the immutable 84-item mapping, per-item conversion/parity records, complete learner course, browser/accessibility results, residual numerical differences, and every MATLAB not_run or failed record. ELP-DSP-00 does not satisfy that gate.
-    - Signing, release, publishing, deployment, production, credential use, settings changes, and any physical, RF-transmit, energized-output, hardware/HIL/HWIL, bench, field, RT, or engine action remain separate explicit human gates and are not performed here.
+    - The existing GitHub Actions quality workflow must pass backend, frontend, and container jobs on the exact single target PR head. Backend must discover the complete framework and 84-item tests; frontend must build the unchanged generic GUI against the complete catalog contract; container smoke must load and execute the complete course.
+    - A later target commit invalidates prior hosted results. Branch protection, unresolved review threads, source/provenance drift, failed or skipped required jobs, and every stop condition remain binding. No agent may merge a protected branch without explicit human approval.
 risk:
   class: high
   hazards:
-    - the gitlink pins an incomplete or different source tree, or an apparently complete ledger silently omits, duplicates, reorders, renames, or mis-hashes an item
-    - source inspection, testing, or generation writes the canonical DSP repository, its metadata, retained evidence, cache, bytecode, or learner state
-    - an 84-entry inventory is mistaken for 84 converted learner pages, or placeholder modules are bulk-created to make coverage appear complete
-    - mutable coverage fields allow stable source/target identities to drift or permit more than one item to transition in a later P## batch
-    - a visual resemblance, source prose, fixture, generated report, hosted CI result, or MATLAB not_run state is promoted into numerical parity, MATLAB execution, learner acceptance, physical, release, deployment, or production evidence
-    - DSP-specific rules leak into generic platform models, API, React components, generated lesson schemas/types, another course, or a shared runtime
-    - the empty native course shell is presented as learner-ready before P01 or its zero-converted state is hidden
-    - source-attested local evidence and source-independent hosted CI are conflated, leaving a source-map transcription error undetected
+    - repeated scaffolding disguises placeholder or semantically duplicated lessons, or a plausible plot silently changes a source equation, sample convention, axis, unit, normalization, sign, threshold, or limiting case
+    - work advances past a failed internal item, coverage is bulk-flipped without per-item evidence, or one final commit erases the retained audit trail for the 84 internal gates
+    - expected and actual vectors are the same bytes, fabricated, nonnumeric, over tolerance, or promoted into MATLAB execution evidence
+    - one heavy default makes catalog reload, CI, or the container nondeterministic or exceeds trusted runtime/output bounds
+    - generic platform, dependency, workflow, deployment, source-course, immutable framework, or unrelated course bytes change to accommodate one item
   stop_conditions:
-    - target HEAD, origin/main, origin/HEAD, worktree/index state, B010 ancestry, activated contract/profile, or merged control authority differs from the exact baseline and activation conditions in this contract
-    - the current DSP gitlink is not 203c3738a88070bd43a93d969b6991a195bb6e27 before the batch, another gitlink or .gitmodules would change, or the requested target source is not exact commit 5d73667a486df4a7b6c581e4c9406e810ed4f0f6 and tree 7a3a0f9adce607e10097724c13745eace212f4e1
-    - the exact source manifest, phase distribution, 84-folder/420-file inventory, curriculum digest, aggregate file-set digest, or per-file hash cannot be reproduced from a clean read-only source checkout
-    - source ownership, permission to create the platform-owned derivative framework, or the distinction between canonical source and derived native course is disputed or requires a new product decision
-    - acceptance would require changing source-course contents, another submodule, an existing course, generic platform source/schema/type code, a dependency/lockfile, workflow, deployment file, credential, setting, protected-branch policy, release, deployment, or production system
-    - any learner module/page, copied MATLAB source, placeholder, TODO shell, runtime experiment, or converted coverage state is needed to make ELP-DSP-00 pass
-    - focused framework, source-attested immutability, catalog/default-execution, contract, quick, full, deterministic course, diff, or required exact-head CI validation fails or is skipped/relabeled
-    - a required Python/source-equivalence field can be omitted, a MATLAB not_run/failed record can be counted as passed, or any evidence claim exceeds the software provenance/framework boundary
+    - exact target/control/source identities, source cleanliness, immutable framework hashes, or dependency ancestry differ
+    - any item requires a source write, generic renderer/runtime/schema/type change, new dependency, helper-loading rule, unsupported result primitive, unbounded execution, placeholder, or non-sequential coverage transition
+    - any item cannot pass honest Python/source equivalence, its own focused internal gate, or the cumulative framework/source-attested gate before the next item begins
+    - final focused, source-attested, contract, quick, full, deterministic catalog, diff, source-cleanliness, or exact-head hosted CI validation fails, is skipped, xfailed, relabeled, or run against a different head
+    - any MATLAB, browser/accessibility, learner, security, physical, RF, HIL/HWIL, bench, field, release, deployment, credential, settings, or production claim exceeds retained evidence
 rollback:
-  strategy: Before any ELP-DSP-P## successor merges, revert the single ELP-DSP-00 target change under the governed merge path. That restores courses/dsp-radar-learning to gitlink 203c3738a88070bd43a93d969b6991a195bb6e27 and removes the new platform-owned dsp-radar framework, focused tests, target documentation, active-contract update, and ELP-DSP-00 evidence while leaving the source repository untouched. There is no course-source write, learner data, database migration, package change, release, deployment, or production state to reverse. If a successor already depends on the framework, stop and materialize a coordinated forward/revert contract rather than reverting the foundation alone.
-  data_migration: none
-  source_course_write: none
-  release_action: none
+  strategy: Before the target PR merges, discard or close the isolated branch and return to exact target baseline 4234782eda42a3103cf320f1eb611065128c9afa; the source submodule is untouched. After merge, revert the single aggregate implementation commit under a reviewed target change, restoring the zero-converted framework and leaving canonical source history unchanged. If later work depends on the complete course, use a coordinated forward fix or revert rather than partial history rewriting.
 evidence:
   output:
-    - docs/evidence/ELP-DSP-00-<date>.md
-    - exact target baseline/candidate/control activation plus old/new DSP gitlink, source repository/commit/tree, curriculum and aggregate file-set identities
-    - deterministic 84-item and nine-phase counts, 420 per-file path/SHA-256 mappings, source before/after mode/blob/hash/status inventory, and all other gitlinks/.gitmodules preservation result
-    - native course, conversion manifest, source-map, coverage-ledger, conversion/parity schema, immutable-field, legal-transition, negative-claim, placeholder-absence, and catalog/default-execution test results
-    - focused, source-attested, contract, quick, full, deterministic course validation, git diff --check, submodule diff, and exact-head hosted-CI commands with exits and relevant counts
-    - product-data profile gate disposition, changed and preserved invariants, rollback/recovery path, manual/environment gates, residual risks, and all unperformed validation
-  claim_boundary: Repository-static, deterministic software, immutable-source-provenance, conversion-framework, catalog-fixture, and exact-head hosted-CI evidence for zero converted DSP learner modules at source pin 5d73667a486df4a7b6c581e4c9406e810ed4f0f6 only. It does not establish any completed P01-P84 page, Python numerical result, MATLAB runtime or visual parity, learner experience or effectiveness, browser/accessibility acceptance, hostile-code isolation, security accreditation, physical hardware, HIL/HWIL, bench, RF transmit, energized output, field, real-time or engine behavior, signing, release, publishing, deployment, production operation, or permission to mutate the canonical source course.
+    - docs/evidence/ELP-DSP-P01-P84-<date>.md
+    - exact target/control/source identities plus unchanged source and immutable framework hashes
+    - one P01-P84 row per internal gate with source hashes, target hashes/content digest, coverage transition, default/two-sweep/broken-recovery/resource/determinism/equivalence results, and residual/unperformed checks
+    - complete framework, source-attested, focused, contract, quick, full, deterministic catalog, diff, source-cleanliness, and exact-head hosted-CI results
+    - one final commit identity, one target PR, rollback path, and explicit MATLAB/browser/accessibility/learner/physical/release/deployment/production dispositions
+  claim_boundary: One complete catalog-visible, Python-verified, source-equivalent 84-lesson DSP/Radar software course at the pinned source identity, delivered as one target commit and one target PR after 84 ordered internal item gates. It does not establish MATLAB comparison unless actually run, learner effectiveness, browser/accessibility acceptance unless actually reviewed, physical radar behavior, hostile-code isolation, signing, release, deployment, or production operation.

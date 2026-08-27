@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P03",
+    "number": 3,
+    "source_folder": "modules/03-make-aliasing-visually-obvious",
+    "target_module_id": "03-make-aliasing-visually-obvious",
+    "target_folder": "modules/03-make-aliasing-visually-obvious",
+    "batch_id": "ELP-DSP-P03",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/03-make-aliasing-visually-obvious/README.md",
+        "sha256": "55e8691cafb853a1b246295895e49e33a0dbfe554900a6f4499f33119e423502"
+      },
+      {
+        "path": "modules/03-make-aliasing-visually-obvious/lesson.md",
+        "sha256": "fe626a293ba30ee892c6f0df0c4c223f196d45983e0cdf45c9629924b8869817"
+      },
+      {
+        "path": "modules/03-make-aliasing-visually-obvious/walkthrough.md",
+        "sha256": "9d4e91dfa926250f43199a62adf6d0523001a3b8b496d17280490164ffaa89e7"
+      },
+      {
+        "path": "modules/03-make-aliasing-visually-obvious/checks.md",
+        "sha256": "5edde67f795d4989a6f477a07f3a04fe7396c6ca110f8c1601989f1ae73387b4"
+      },
+      {
+        "path": "modules/03-make-aliasing-visually-obvious/experiment.m",
+        "sha256": "998c7688507c3a5d2a77cf35b87ce120412c2dfd1937d94e2ce1190dc0fe3a26"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "4356c1aa07775df81a5dc7d2c94ea9b1f2d6d4f0b9baca09252a0b3b90a733ed",
+    "files": [
+      {
+        "path": "modules/03-make-aliasing-visually-obvious/experiment.py",
+        "sha256": "c8e07304dc37f1a0f48b3393d9f5c3f2159fe57776d7c616f418db4168177170"
+      },
+      {
+        "path": "modules/03-make-aliasing-visually-obvious/lesson.md",
+        "sha256": "4e6c5b0c572e3047d06e24b8cb107fc74acec1cf8fcd727197fc21847ad9c09b"
+      },
+      {
+        "path": "modules/03-make-aliasing-visually-obvious/module.yaml",
+        "sha256": "76469c626dd4db88ec73d266dd517be859966b202069800c96fe470f750df171"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "Why does a high-frequency tone appear as a lower-frequency tone after sampling?",
+    "physical_model": "A sampler is a clock that records one amplitude every `1/fs` seconds. It does not count the oscillations that occur between clock ticks. If two continuous tones land on the same amplitude at every tick, the stored sequence cannot tell which tone was present. P02 established that samples are timed measurements rather than a continuous line. P03 follows that consequence into frequency: a continuous tone can make several whole turns between measurements without leaving evidence of those extra turns.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary tone frequency while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "x[n] = A\\cos\\left(2\\pi \\frac{f_{in}}{f_s}n+\\phi\\right).",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "k=\\operatorname{round}(f_{in}/f_s),\\qquad f_{fold}=f_{in}-k f_s.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "f_{apparent}=|f_{fold}|.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 303,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "70bbac4525c8a0bdf1ae0fa41b2fc0f4a0970af0b1627fce71c846430ede3dec",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "a14107469a84f615bc7b8c9dbbcf17e01d8e36b367cc5ae791165b98f3582aaf",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P03 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "sample index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized amplitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Make Aliasing Visually Obvious guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P03 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "sample index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized amplitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Make Aliasing Visually Obvious guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P03 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "sample index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized amplitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Make Aliasing Visually Obvious guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P03 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "sample index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized amplitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Make Aliasing Visually Obvious guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing tone frequency moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P03 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 303,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/03-make-aliasing-visually-obvious/evidence/expected-baseline.json",
+          "sha256": "70bbac4525c8a0bdf1ae0fa41b2fc0f4a0970af0b1627fce71c846430ede3dec"
+        },
+        "actual": {
+          "path": "modules/03-make-aliasing-visually-obvious/evidence/actual-baseline.json",
+          "sha256": "40862931ca91d7183f3425939ac9b2e89ba1491835ec685795c909a9cf99f935"
+        },
+        "max_absolute_error": 4.2627013030482885e-13,
+        "max_relative_error": 4.2627013030482885e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/03-make-aliasing-visually-obvious/evidence/expected-broken.json",
+          "sha256": "a14107469a84f615bc7b8c9dbbcf17e01d8e36b367cc5ae791165b98f3582aaf"
+        },
+        "actual": {
+          "path": "modules/03-make-aliasing-visually-obvious/evidence/actual-broken.json",
+          "sha256": "5392219ae55c911f11f3b76af9fef82f493707946779a221e487ee561957d6c6"
+        },
+        "max_absolute_error": 4.2627013030482885e-13,
+        "max_relative_error": 4.2627013030482885e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

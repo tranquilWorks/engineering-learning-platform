@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P63",
+    "number": 63,
+    "source_folder": "modules/63-implement-conventional-delay-and-sum-beamforming",
+    "target_module_id": "63-implement-conventional-delay-and-sum-beamforming",
+    "target_folder": "modules/63-implement-conventional-delay-and-sum-beamforming",
+    "batch_id": "ELP-DSP-P63",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/63-implement-conventional-delay-and-sum-beamforming/README.md",
+        "sha256": "06ad45c7d87b9288b591b34ef9c7a155b22175367b641e2c20f857fd3c085d9a"
+      },
+      {
+        "path": "modules/63-implement-conventional-delay-and-sum-beamforming/lesson.md",
+        "sha256": "1e782faed7b17ec0936c2329ece5b34a1aacf61c15bcc0d42121a6cf23c33862"
+      },
+      {
+        "path": "modules/63-implement-conventional-delay-and-sum-beamforming/walkthrough.md",
+        "sha256": "0604f6169c9ccbc717bccbb666e6044b10bd1449b49f585ba3768c3ee14b8c38"
+      },
+      {
+        "path": "modules/63-implement-conventional-delay-and-sum-beamforming/checks.md",
+        "sha256": "4b6faa36ce7d7bd5d9715b7a4b9431da8f3c4bdc2aa76e86921cfb10c18ed15b"
+      },
+      {
+        "path": "modules/63-implement-conventional-delay-and-sum-beamforming/experiment.m",
+        "sha256": "773c7c150421c61782e83e671823e11ed476e30e50269d7019dc58289ada0eea"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "07a17b7ec9237b8c891bf030242271eac5cc93a98c916b6e8d611860f2eb432d",
+    "files": [
+      {
+        "path": "modules/63-implement-conventional-delay-and-sum-beamforming/experiment.py",
+        "sha256": "a6a4b925e238308c68524697cf783d0c12b15eab24c3e377bca14b591fd06594"
+      },
+      {
+        "path": "modules/63-implement-conventional-delay-and-sum-beamforming/lesson.md",
+        "sha256": "c93047f6fe0d47a3f3f9eafcd37d84470c21c30dc8d45283e9ad2becb18d4ea5"
+      },
+      {
+        "path": "modules/63-implement-conventional-delay-and-sum-beamforming/module.yaml",
+        "sha256": "afd9b0e5fd9474e3e6c833ee3be23607a88dc7745a41ceaa222034e1209c0bb8"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How does steering align one direction and misalign others?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary steering angle while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 1063,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "9452cda40634d4b12977164fd4953ee45c359a74b6e3f8869eb4e6acc5bc3bf8",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "818a1db2caa7deea8ef6a1041cde8a45636cb836a4df50774cb50344b452c81e",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P63 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "look angle (deg)",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized power",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Implement Conventional Delay-and-Sum Beamforming guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P63 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "look angle (deg)",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized power",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Implement Conventional Delay-and-Sum Beamforming guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P63 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "look angle (deg)",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized power",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Implement Conventional Delay-and-Sum Beamforming guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P63 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "look angle (deg)",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized power",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Implement Conventional Delay-and-Sum Beamforming guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing steering angle moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P63 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 1063,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/63-implement-conventional-delay-and-sum-beamforming/evidence/expected-baseline.json",
+          "sha256": "9452cda40634d4b12977164fd4953ee45c359a74b6e3f8869eb4e6acc5bc3bf8"
+        },
+        "actual": {
+          "path": "modules/63-implement-conventional-delay-and-sum-beamforming/evidence/actual-baseline.json",
+          "sha256": "5738e8627ddb42dd0b3860ef76186fa08a23e85a91a641363ebf85c6a3759c40"
+        },
+        "max_absolute_error": 3.772537837676282e-13,
+        "max_relative_error": 3.772537837676282e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/63-implement-conventional-delay-and-sum-beamforming/evidence/expected-broken.json",
+          "sha256": "818a1db2caa7deea8ef6a1041cde8a45636cb836a4df50774cb50344b452c81e"
+        },
+        "actual": {
+          "path": "modules/63-implement-conventional-delay-and-sum-beamforming/evidence/actual-broken.json",
+          "sha256": "fefe3dd170e19fb807ab2502fd988a6f3fa2199bd1da2e0a41239509f2820dec"
+        },
+        "max_absolute_error": 3.6426417437951386e-13,
+        "max_relative_error": 3.6426417437951386e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

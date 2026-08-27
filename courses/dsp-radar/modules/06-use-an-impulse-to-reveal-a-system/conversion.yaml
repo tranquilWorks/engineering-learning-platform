@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P06",
+    "number": 6,
+    "source_folder": "modules/06-use-an-impulse-to-reveal-a-system",
+    "target_module_id": "06-use-an-impulse-to-reveal-a-system",
+    "target_folder": "modules/06-use-an-impulse-to-reveal-a-system",
+    "batch_id": "ELP-DSP-P06",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/06-use-an-impulse-to-reveal-a-system/README.md",
+        "sha256": "6a2f473d101e464040a10ad04d937d251888bed05cef91389e3ef247501a1059"
+      },
+      {
+        "path": "modules/06-use-an-impulse-to-reveal-a-system/lesson.md",
+        "sha256": "6dd62802ee4e291ac02273d0fc6dbd2898ee5454e8ed45af0a14842bc52649c5"
+      },
+      {
+        "path": "modules/06-use-an-impulse-to-reveal-a-system/walkthrough.md",
+        "sha256": "accfba35d40b6b714db3e57b0e8f5d4d61b3a9305ac09bdb88b8d9e5620e4494"
+      },
+      {
+        "path": "modules/06-use-an-impulse-to-reveal-a-system/checks.md",
+        "sha256": "b181e85a0370cffb7715b4b402ec7d67c37a10633ffc6517e7108442ea53b27c"
+      },
+      {
+        "path": "modules/06-use-an-impulse-to-reveal-a-system/experiment.m",
+        "sha256": "3706a8779079d6e05edd0cbf9b7bf854ce7c234cc0a2f1cc70bf99cdaa29221c"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "0a66a396edfa693b751ebeccc4d6bf6d7e2d8da66d73465d2de26367dc4d08dc",
+    "files": [
+      {
+        "path": "modules/06-use-an-impulse-to-reveal-a-system/experiment.py",
+        "sha256": "0bdb41f6f21cc25773a31383a8bf7c4de46bb67ef194d6352ba8b6ce2c871be0"
+      },
+      {
+        "path": "modules/06-use-an-impulse-to-reveal-a-system/lesson.md",
+        "sha256": "550254210aeb016e251f137e9c851f3869ab714d713317087ebc173dbc039c60"
+      },
+      {
+        "path": "modules/06-use-an-impulse-to-reveal-a-system/module.yaml",
+        "sha256": "e66e25189cd09eb87b5c1d5753e3a5bb9c28b4cceeb45b6bf9d589cae1c0ded2"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "Why does an impulse response describe an LTI system?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary impulse width while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 606,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "f3f48be4bdebb3b26686f059e536af703140de2c47317e5818ff7adb9c577521",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "804fa4ca54c17bc7415250902f621f2e2b257d9a195b91f8fc13741025b5d17c",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P06 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "sample index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized amplitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Use an Impulse to Reveal a System guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P06 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "sample index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized amplitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Use an Impulse to Reveal a System guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P06 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "sample index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized amplitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Use an Impulse to Reveal a System guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P06 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "sample index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized amplitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Use an Impulse to Reveal a System guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing impulse width moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P06 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 606,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/06-use-an-impulse-to-reveal-a-system/evidence/expected-baseline.json",
+          "sha256": "f3f48be4bdebb3b26686f059e536af703140de2c47317e5818ff7adb9c577521"
+        },
+        "actual": {
+          "path": "modules/06-use-an-impulse-to-reveal-a-system/evidence/actual-baseline.json",
+          "sha256": "81d74a8c8a9f58c7432ed91c624c6e0d951f4008f54401b207e83f045160fdea"
+        },
+        "max_absolute_error": 4.456088276150183e-13,
+        "max_relative_error": 4.456088276150183e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/06-use-an-impulse-to-reveal-a-system/evidence/expected-broken.json",
+          "sha256": "804fa4ca54c17bc7415250902f621f2e2b257d9a195b91f8fc13741025b5d17c"
+        },
+        "actual": {
+          "path": "modules/06-use-an-impulse-to-reveal-a-system/evidence/actual-broken.json",
+          "sha256": "db918907064af4b1d8f103371df9d2e069be488685f797494d3743a0cf721376"
+        },
+        "max_absolute_error": 4.456018887211144e-13,
+        "max_relative_error": 4.456018887211144e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

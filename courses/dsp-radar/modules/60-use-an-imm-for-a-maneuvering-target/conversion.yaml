@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P60",
+    "number": 60,
+    "source_folder": "modules/60-use-an-imm-for-a-maneuvering-target",
+    "target_module_id": "60-use-an-imm-for-a-maneuvering-target",
+    "target_folder": "modules/60-use-an-imm-for-a-maneuvering-target",
+    "batch_id": "ELP-DSP-P60",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/60-use-an-imm-for-a-maneuvering-target/README.md",
+        "sha256": "8869eca9f8f52a028e909d5d4b141f9b6b8ebbf4f99a77c110a948be2c2de3f9"
+      },
+      {
+        "path": "modules/60-use-an-imm-for-a-maneuvering-target/lesson.md",
+        "sha256": "e9967b4d786eeda0f66818badab3be0dec6ac10b76b40863162939a357abef22"
+      },
+      {
+        "path": "modules/60-use-an-imm-for-a-maneuvering-target/walkthrough.md",
+        "sha256": "c64088b77e9fdf14517b4147b58d1a63922e33b701b09a025fca90d33f491e53"
+      },
+      {
+        "path": "modules/60-use-an-imm-for-a-maneuvering-target/checks.md",
+        "sha256": "c9ab571b79ab8bc322e703db38b6c5f68e60b652b98be1ebdeabc4e6b72540b1"
+      },
+      {
+        "path": "modules/60-use-an-imm-for-a-maneuvering-target/experiment.m",
+        "sha256": "c3eb0134055ed33e7731bb90cbad537223004036bff6a90274f2bfd604c70a14"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "ad402d1b5e31a9767dfc351078caca9929e5f7ee82da4cbe0fa145f5a601bc7e",
+    "files": [
+      {
+        "path": "modules/60-use-an-imm-for-a-maneuvering-target/experiment.py",
+        "sha256": "d4dbb5a6803c780135f9daaf0b9e2f4b28862d9c13a57c52928e695133677f4b"
+      },
+      {
+        "path": "modules/60-use-an-imm-for-a-maneuvering-target/lesson.md",
+        "sha256": "fd511b2302695d7f18e0dabbf10b73eb64ed6443973e1325bd4f9252026efeb7"
+      },
+      {
+        "path": "modules/60-use-an-imm-for-a-maneuvering-target/module.yaml",
+        "sha256": "dbc3cc1f99b1cd8cab0db9ae7716f75be7d7b03af9d2a7296eee57b0fb25db28"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How can a tracker adapt when the target alternates between straight motion and maneuvers?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary mode transition rate while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 1060,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "20f85812319304d8c37d0c64517f6ee0609bc10779574861732e0d1b3fac22e4",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "7f8812e8fdef9ceb9ebdb63beb88679c21714c068b72f7114bbef3ccff99b38b",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P60 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "time step",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "position / innovation",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Use an IMM for a Maneuvering Target guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P60 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "time step",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "position / innovation",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Use an IMM for a Maneuvering Target guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P60 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "time step",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "position / innovation",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Use an IMM for a Maneuvering Target guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P60 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "time step",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "position / innovation",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Use an IMM for a Maneuvering Target guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing mode transition rate moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P60 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 1060,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/60-use-an-imm-for-a-maneuvering-target/evidence/expected-baseline.json",
+          "sha256": "20f85812319304d8c37d0c64517f6ee0609bc10779574861732e0d1b3fac22e4"
+        },
+        "actual": {
+          "path": "modules/60-use-an-imm-for-a-maneuvering-target/evidence/actual-baseline.json",
+          "sha256": "1ed2e3445db9f3ebddd3c19591b2cf98f9b856863c725ae6157f934dcab64ab4"
+        },
+        "max_absolute_error": 4.209410597866281e-13,
+        "max_relative_error": 4.209410597866281e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/60-use-an-imm-for-a-maneuvering-target/evidence/expected-broken.json",
+          "sha256": "7f8812e8fdef9ceb9ebdb63beb88679c21714c068b72f7114bbef3ccff99b38b"
+        },
+        "actual": {
+          "path": "modules/60-use-an-imm-for-a-maneuvering-target/evidence/actual-broken.json",
+          "sha256": "0e8beeba843955633f414ac85ce5ef02f596155fabb2c3154f37cfc9f0d600a8"
+        },
+        "max_absolute_error": 3.241851231905457e-13,
+        "max_relative_error": 1.0113748530158967e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

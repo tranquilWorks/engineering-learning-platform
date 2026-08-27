@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P10",
+    "number": 10,
+    "source_folder": "modules/10-decimate-and-interpolate-without-creating-artifacts",
+    "target_module_id": "10-decimate-and-interpolate-without-creating-artifacts",
+    "target_folder": "modules/10-decimate-and-interpolate-without-creating-artifacts",
+    "batch_id": "ELP-DSP-P10",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/10-decimate-and-interpolate-without-creating-artifacts/README.md",
+        "sha256": "25495a91bac736349ad7aee12e04e9296260a68a50333a90f5aedabc6350cfa0"
+      },
+      {
+        "path": "modules/10-decimate-and-interpolate-without-creating-artifacts/lesson.md",
+        "sha256": "a969a3759d1c725b7673afa23cb02093d08382a60fbf27a12d50f4a0e92aaeee"
+      },
+      {
+        "path": "modules/10-decimate-and-interpolate-without-creating-artifacts/walkthrough.md",
+        "sha256": "333dc33ed1c797c8d45c8fac5dfc6ecc9b7223b66cc9ac0f7d45b641bdcd0dd2"
+      },
+      {
+        "path": "modules/10-decimate-and-interpolate-without-creating-artifacts/checks.md",
+        "sha256": "5641e0efdb05d1c011ee442b8685456346e2eff1e546d4d20bcb54c80fd09148"
+      },
+      {
+        "path": "modules/10-decimate-and-interpolate-without-creating-artifacts/experiment.m",
+        "sha256": "e1c923490e0e664212afb44e0c4fa63b1fa9288110766382cb26019a5f376e55"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "aa8511b2ef67ac4802ff7b6a13a4e767d2d0e9e4c2cef4637e835a5e75f15688",
+    "files": [
+      {
+        "path": "modules/10-decimate-and-interpolate-without-creating-artifacts/experiment.py",
+        "sha256": "eeea74dfbe084e1a43e42d8b89394ea082a74b35d7962fb4dc122860f9bb1a90"
+      },
+      {
+        "path": "modules/10-decimate-and-interpolate-without-creating-artifacts/lesson.md",
+        "sha256": "881cc3f9edc1f6d355c52abe13b3bc2ea74461417187e0b7e74aa98607b2be49"
+      },
+      {
+        "path": "modules/10-decimate-and-interpolate-without-creating-artifacts/module.yaml",
+        "sha256": "dcfe0c40717cbb97fe5ce0d2e9e676eeb697189bee4250f51a682171ff135618"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "Why must filtering accompany sample-rate changes?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary rate change factor while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "f_{N,\\mathrm{new}}=\\frac{F_s/M}{2}.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "y_{\\text{naive}}[m]=x[mM], \\qquad y_{\\text{proper}}[m]=\\sum_k h_{AA}[k]x[mM-k].",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "f_{alias}=|420-1(600)|=180\\ \\text{Hz}.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 1010,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "fcb758db7e34dff8a2d96067574f03c16c467725fe41845e052de872bc6b91eb",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "c0242b117cf781db30a61314c231d12aea810ac0996c2ad3ac960f43d0da318b",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P10 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "sample index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized amplitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Decimate and Interpolate Without Creating Artifacts guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P10 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "sample index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized amplitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Decimate and Interpolate Without Creating Artifacts guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P10 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "sample index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized amplitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Decimate and Interpolate Without Creating Artifacts guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P10 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "sample index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized amplitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Decimate and Interpolate Without Creating Artifacts guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing rate change factor moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P10 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 1010,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/10-decimate-and-interpolate-without-creating-artifacts/evidence/expected-baseline.json",
+          "sha256": "fcb758db7e34dff8a2d96067574f03c16c467725fe41845e052de872bc6b91eb"
+        },
+        "actual": {
+          "path": "modules/10-decimate-and-interpolate-without-creating-artifacts/evidence/actual-baseline.json",
+          "sha256": "396bcbad0ac0eb6f6113c83fd662dd763920ab8a242dd7dbe2537c52ca7f684a"
+        },
+        "max_absolute_error": 3.631539513548887e-13,
+        "max_relative_error": 3.631539513548887e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/10-decimate-and-interpolate-without-creating-artifacts/evidence/expected-broken.json",
+          "sha256": "c0242b117cf781db30a61314c231d12aea810ac0996c2ad3ac960f43d0da318b"
+        },
+        "actual": {
+          "path": "modules/10-decimate-and-interpolate-without-creating-artifacts/evidence/actual-broken.json",
+          "sha256": "c663138fcbbc6b84bc8fa637f1ca415b77ffc93d0622622b400ff1ef248c2c91"
+        },
+        "max_absolute_error": 3.631539513548887e-13,
+        "max_relative_error": 3.631539513548887e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

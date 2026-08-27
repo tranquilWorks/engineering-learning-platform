@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P62",
+    "number": 62,
+    "source_folder": "modules/62-plot-array-factor-beamwidth-and-grating-lobes",
+    "target_module_id": "62-plot-array-factor-beamwidth-and-grating-lobes",
+    "target_folder": "modules/62-plot-array-factor-beamwidth-and-grating-lobes",
+    "batch_id": "ELP-DSP-P62",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/62-plot-array-factor-beamwidth-and-grating-lobes/README.md",
+        "sha256": "dd2284a47f97d389443bf569653c8e067b1ef7fd80d26356717c747dc7579203"
+      },
+      {
+        "path": "modules/62-plot-array-factor-beamwidth-and-grating-lobes/lesson.md",
+        "sha256": "e7308893fa4158c41b0a899384899f0e3d5c09faa1286dec698bd4b4e3bea54f"
+      },
+      {
+        "path": "modules/62-plot-array-factor-beamwidth-and-grating-lobes/walkthrough.md",
+        "sha256": "6636e91379afd6cd9361f3d7f83cbb35b44a7ffa980b185a12b06b14119e032f"
+      },
+      {
+        "path": "modules/62-plot-array-factor-beamwidth-and-grating-lobes/checks.md",
+        "sha256": "be9f2bbc80bff257d62fb090641d21bd2536318b3253fbac6a0b0f96bffdca99"
+      },
+      {
+        "path": "modules/62-plot-array-factor-beamwidth-and-grating-lobes/experiment.m",
+        "sha256": "f8bb6508e8373883428a854043971846ab9bf691af80e9a9a722788e85170b5d"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "a383e808a644871f1333db45529ed61eac3162bcfe210ffae75cfe0c83e885a5",
+    "files": [
+      {
+        "path": "modules/62-plot-array-factor-beamwidth-and-grating-lobes/experiment.py",
+        "sha256": "64a1d9871d925824dca844f5ed218312e9818de8fa493634faff76c0d1661e01"
+      },
+      {
+        "path": "modules/62-plot-array-factor-beamwidth-and-grating-lobes/lesson.md",
+        "sha256": "7220a50fb9197ec93e3fa16d8a1d74f0033b27b31a1ac2654a18015a00555f78"
+      },
+      {
+        "path": "modules/62-plot-array-factor-beamwidth-and-grating-lobes/module.yaml",
+        "sha256": "f09d2929f1113ea44f9f022ae4b6d4261d4029381d36099e9ecfda2f349f801f"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How do aperture size and element spacing shape a beam pattern?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary element spacing while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 1062,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "d6ea5c140b99a8aee3f145c73a2ee9bf594bf32e6722d79e03bad721118a6329",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "4d583e2ce5cc3222ec19c6f191ae9035a8fba04aae89225bbcfab9a87dac84b1",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P62 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "look angle (deg)",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized power",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Plot Array Factor, Beamwidth, and Grating Lobes guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P62 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "look angle (deg)",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized power",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Plot Array Factor, Beamwidth, and Grating Lobes guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P62 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "look angle (deg)",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized power",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Plot Array Factor, Beamwidth, and Grating Lobes guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P62 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "look angle (deg)",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized power",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Plot Array Factor, Beamwidth, and Grating Lobes guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing element spacing moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P62 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 1062,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/62-plot-array-factor-beamwidth-and-grating-lobes/evidence/expected-baseline.json",
+          "sha256": "d6ea5c140b99a8aee3f145c73a2ee9bf594bf32e6722d79e03bad721118a6329"
+        },
+        "actual": {
+          "path": "modules/62-plot-array-factor-beamwidth-and-grating-lobes/evidence/actual-baseline.json",
+          "sha256": "9b23b4853e18469001acb80ae3df5211662a3c208c0c587e79d72b5f996e3911"
+        },
+        "max_absolute_error": 4.0445424787094453e-13,
+        "max_relative_error": 4.0445424787094453e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/62-plot-array-factor-beamwidth-and-grating-lobes/evidence/expected-broken.json",
+          "sha256": "4d583e2ce5cc3222ec19c6f191ae9035a8fba04aae89225bbcfab9a87dac84b1"
+        },
+        "actual": {
+          "path": "modules/62-plot-array-factor-beamwidth-and-grating-lobes/evidence/actual-broken.json",
+          "sha256": "38f712f7d38032aaa18d49a96ec72e32f9218fdf5aff7e6de13e37d8ee56f461"
+        },
+        "max_absolute_error": 4.197753256107717e-13,
+        "max_relative_error": 4.197753256107717e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

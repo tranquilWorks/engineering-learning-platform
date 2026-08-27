@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P20",
+    "number": 20,
+    "source_folder": "modules/20-estimate-tone-frequency-and-phase-from-noisy-samples",
+    "target_module_id": "20-estimate-tone-frequency-and-phase-from-noisy-samples",
+    "target_folder": "modules/20-estimate-tone-frequency-and-phase-from-noisy-samples",
+    "batch_id": "ELP-DSP-P20",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/20-estimate-tone-frequency-and-phase-from-noisy-samples/README.md",
+        "sha256": "8368e45d2ebfe891ee6f6ecb9799259437342a826b7a7682ecd9d50f654bb9d5"
+      },
+      {
+        "path": "modules/20-estimate-tone-frequency-and-phase-from-noisy-samples/lesson.md",
+        "sha256": "ce8842705e87a3910c1c8defc62b7fb931cfa5cf58f257940b6758d88b3e2c01"
+      },
+      {
+        "path": "modules/20-estimate-tone-frequency-and-phase-from-noisy-samples/walkthrough.md",
+        "sha256": "8b546c5fdba2f59f06e3c811c2d8d62c209e84b759b13c4a726e131758751701"
+      },
+      {
+        "path": "modules/20-estimate-tone-frequency-and-phase-from-noisy-samples/checks.md",
+        "sha256": "4aec9d7224c5b9fbdc23111fd0208e225a766a091687a67049a09db7d4b3bb58"
+      },
+      {
+        "path": "modules/20-estimate-tone-frequency-and-phase-from-noisy-samples/experiment.m",
+        "sha256": "c10a72a1cd05afc78009513b5641e6c0814572157d141238d72e360cf5d5d5de"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "8c4e85a1844cac6a79ae0f675b736b9b03e8f88f1e45c1ebb5cab7634da31edc",
+    "files": [
+      {
+        "path": "modules/20-estimate-tone-frequency-and-phase-from-noisy-samples/experiment.py",
+        "sha256": "b5d5ebaa37e0153ca536127866a25d9fb9ff71853251db2f049329c9535ed137"
+      },
+      {
+        "path": "modules/20-estimate-tone-frequency-and-phase-from-noisy-samples/lesson.md",
+        "sha256": "eb6116b2faf53a0c393ba33dd54ec8a7f8188da33d33ddd93304ea4923f7cddf"
+      },
+      {
+        "path": "modules/20-estimate-tone-frequency-and-phase-from-noisy-samples/module.yaml",
+        "sha256": "da5d7fa7c5d8f9c5d1e57a70f48f381934284b131e816e580835e3af53237770"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How accurately can frequency and phase be estimated from a finite noisy record?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary record SNR while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "x[n] = A e^{j(2\\pi f_0 n/f_s + \\phi_0)} + w[n],\\quad n=0,\\ldots,N-1,",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "\\hat f_{\\rm bin}=k_{\\max}\\frac{f_s}{N}.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "\\delta=\\frac{1}{2}\\frac{L_{-1}-L_{+1}} {L_{-1}-2L_0+L_{+1}},\\qquad \\hat f_{\\rm int}=(k_{\\max}+\\delta)\\frac{f_s}{N}.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 1020,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "8ae88eb2b2d9892f10847b3a0b86c335bdd83ef9ccefa9f44de959c1bcaea0de",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "671e32f032ae8401dd2f346a87c3be49008690027a85d686c87461472dfec7b3",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P20 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "normalized frequency",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "spectral magnitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Estimate Tone Frequency and Phase from Noisy Samples guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P20 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "normalized frequency",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "spectral magnitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Estimate Tone Frequency and Phase from Noisy Samples guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P20 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "normalized frequency",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "spectral magnitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Estimate Tone Frequency and Phase from Noisy Samples guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P20 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "normalized frequency",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "spectral magnitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Estimate Tone Frequency and Phase from Noisy Samples guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing record SNR moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P20 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 1020,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/20-estimate-tone-frequency-and-phase-from-noisy-samples/evidence/expected-baseline.json",
+          "sha256": "8ae88eb2b2d9892f10847b3a0b86c335bdd83ef9ccefa9f44de959c1bcaea0de"
+        },
+        "actual": {
+          "path": "modules/20-estimate-tone-frequency-and-phase-from-noisy-samples/evidence/actual-baseline.json",
+          "sha256": "5863e80828363aa17faf716f0addba01ec2ced0ff5df0b4552748429ca586185"
+        },
+        "max_absolute_error": 4.4924133857371373e-13,
+        "max_relative_error": 4.4924133857371373e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/20-estimate-tone-frequency-and-phase-from-noisy-samples/evidence/expected-broken.json",
+          "sha256": "671e32f032ae8401dd2f346a87c3be49008690027a85d686c87461472dfec7b3"
+        },
+        "actual": {
+          "path": "modules/20-estimate-tone-frequency-and-phase-from-noisy-samples/evidence/actual-broken.json",
+          "sha256": "9b31eef45e1ddfcc0625c0fbef83e2ffedc7c2049c445a779024cb37e98efb4c"
+        },
+        "max_absolute_error": 4.645173135031655e-13,
+        "max_relative_error": 4.645173135031655e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

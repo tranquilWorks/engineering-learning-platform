@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P73",
+    "number": 73,
+    "source_folder": "modules/73-build-a-tdm-mimo-virtual-array",
+    "target_module_id": "73-build-a-tdm-mimo-virtual-array",
+    "target_folder": "modules/73-build-a-tdm-mimo-virtual-array",
+    "batch_id": "ELP-DSP-P73",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/73-build-a-tdm-mimo-virtual-array/README.md",
+        "sha256": "313e0166add86c41a0f5f65dfa106bb6b1d18c5c9fb1628e87cf23fa1253630b"
+      },
+      {
+        "path": "modules/73-build-a-tdm-mimo-virtual-array/lesson.md",
+        "sha256": "c06e9844d34de3fc7d51aa7b621cd06a74ed72ad7ef7087d49daf33c486d8960"
+      },
+      {
+        "path": "modules/73-build-a-tdm-mimo-virtual-array/walkthrough.md",
+        "sha256": "c11121f42ec15eff314b821a2be85319aa2164b04ac9e84c3f062ad17dbbd5aa"
+      },
+      {
+        "path": "modules/73-build-a-tdm-mimo-virtual-array/checks.md",
+        "sha256": "4c39fc6cfabda8518d48bb7eeca61846994b0e01611b644171547141819f2a89"
+      },
+      {
+        "path": "modules/73-build-a-tdm-mimo-virtual-array/experiment.m",
+        "sha256": "3184110b38ea0cb082507bd0ca49be7f219f82a544c811f11ecee0345c992fcf"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "f487da472f026df33159088b0e7659670fbc70f158cdd218dc866efd69d4f7f9",
+    "files": [
+      {
+        "path": "modules/73-build-a-tdm-mimo-virtual-array/experiment.py",
+        "sha256": "74c3f269bc332af8456b47c847c55f4854e2cd3b3b49b6d612b8a4460e821b66"
+      },
+      {
+        "path": "modules/73-build-a-tdm-mimo-virtual-array/lesson.md",
+        "sha256": "5378bfe23af499e7c5ce567e5f48dab39ebfdc1885ff12a3ce4577b398c4b2bf"
+      },
+      {
+        "path": "modules/73-build-a-tdm-mimo-virtual-array/module.yaml",
+        "sha256": "1a565dd17d8f452c676621bf08483d11714b97eb878c9ba2c438c65c34d299ca"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How do multiple transmit and receive channels create more spatial samples?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary virtual element count while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 1073,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "27d42aabffc68ebc061eeb839413a4a4eb138f250ec016d182913c79c529eee8",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "ce671691ff8570236328c14b822fad2ab4404bcea0fc9945187a5b95d5f6f1f3",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P73 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range or time bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build a TDM-MIMO Virtual Array guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P73 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range or time bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build a TDM-MIMO Virtual Array guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P73 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range or time bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build a TDM-MIMO Virtual Array guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P73 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range or time bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build a TDM-MIMO Virtual Array guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing virtual element count moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P73 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 1073,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/73-build-a-tdm-mimo-virtual-array/evidence/expected-baseline.json",
+          "sha256": "27d42aabffc68ebc061eeb839413a4a4eb138f250ec016d182913c79c529eee8"
+        },
+        "actual": {
+          "path": "modules/73-build-a-tdm-mimo-virtual-array/evidence/actual-baseline.json",
+          "sha256": "cae014156f20dd38de450b5dcda13330b229ffc9b4c15fdb2a06782609744fa1"
+        },
+        "max_absolute_error": 2.737809978725636e-13,
+        "max_relative_error": 2.737809978725636e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/73-build-a-tdm-mimo-virtual-array/evidence/expected-broken.json",
+          "sha256": "ce671691ff8570236328c14b822fad2ab4404bcea0fc9945187a5b95d5f6f1f3"
+        },
+        "actual": {
+          "path": "modules/73-build-a-tdm-mimo-virtual-array/evidence/actual-broken.json",
+          "sha256": "7f57bc494757248205493e168b66d14a828ec1bb9cd1b719239c72aae04b5a1a"
+        },
+        "max_absolute_error": 2.737809978725636e-13,
+        "max_relative_error": 2.737809978725636e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

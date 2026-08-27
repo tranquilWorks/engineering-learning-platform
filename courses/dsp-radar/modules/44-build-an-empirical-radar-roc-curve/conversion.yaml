@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P44",
+    "number": 44,
+    "source_folder": "modules/44-build-an-empirical-radar-roc-curve",
+    "target_module_id": "44-build-an-empirical-radar-roc-curve",
+    "target_folder": "modules/44-build-an-empirical-radar-roc-curve",
+    "batch_id": "ELP-DSP-P44",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/44-build-an-empirical-radar-roc-curve/README.md",
+        "sha256": "f401e3047b95cf754c92db63edce86ee105c47ce7c48b6cc2c5561c3e56caa1b"
+      },
+      {
+        "path": "modules/44-build-an-empirical-radar-roc-curve/lesson.md",
+        "sha256": "c7f007d146d558fc5262577b2d1cafedd61778214b840792751bc737eab2623b"
+      },
+      {
+        "path": "modules/44-build-an-empirical-radar-roc-curve/walkthrough.md",
+        "sha256": "96f40359cc162d4d9d8bcd97c3dd29595d358c5db6c1ddb2e05f3ae7e47986fa"
+      },
+      {
+        "path": "modules/44-build-an-empirical-radar-roc-curve/checks.md",
+        "sha256": "07aae4b20e4fc9dc08830bf9d5611c1b9d0274f69f684b2687c55534d990e338"
+      },
+      {
+        "path": "modules/44-build-an-empirical-radar-roc-curve/experiment.m",
+        "sha256": "d48d0c02f242d92719a742c905e754e3d5f0b53280285ea0da9d16f83c320ff0"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "9b427cbbd50ec5effd59eeb7e2e7aead04a27980c827176a1e50455b9731e5ce",
+    "files": [
+      {
+        "path": "modules/44-build-an-empirical-radar-roc-curve/experiment.py",
+        "sha256": "502c14c7339c5d1f8c7ce1cccf22b1b6d3d77575deece8494b970756f6febadf"
+      },
+      {
+        "path": "modules/44-build-an-empirical-radar-roc-curve/lesson.md",
+        "sha256": "79805c792312e309747c18186e12f2759ddd289bffd10b3aac5e6097ab67973e"
+      },
+      {
+        "path": "modules/44-build-an-empirical-radar-roc-curve/module.yaml",
+        "sha256": "2760759a983e03b0c73b70dbf8c9eaa9bc53aff9891071d234efc4d1a82a11d9"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How does threshold choice trade probability of detection against false alarm?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary detection threshold while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "H_0:\\;\\mathbf r=\\mathbf n, \\qquad H_1:\\;\\mathbf r=A\\mathbf s+\\mathbf n.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "u=\\frac{\\mathbf s^T\\mathbf r}{\\sigma\\sqrt{\\mathbf s^T\\mathbf s}}.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "u\\mid H_0\\sim\\mathcal N(0,1),\\qquad u\\mid H_1\\sim\\mathcal N(d',1),",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 4401,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "5ee2e6bb6d8613e8510f1c80a713428ed925ed4c392ef6914cc3e17c9e5f5230",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "47c313c51141ece2018662b0598a9be8cf32ef7bc6318799dfb1a242d4993a88",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P44 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "cell index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "power / threshold",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build an Empirical Radar ROC Curve guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P44 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "cell index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "power / threshold",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build an Empirical Radar ROC Curve guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P44 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "cell index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "power / threshold",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build an Empirical Radar ROC Curve guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P44 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "cell index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "power / threshold",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build an Empirical Radar ROC Curve guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing detection threshold moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P44 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 4401,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/44-build-an-empirical-radar-roc-curve/evidence/expected-baseline.json",
+          "sha256": "5ee2e6bb6d8613e8510f1c80a713428ed925ed4c392ef6914cc3e17c9e5f5230"
+        },
+        "actual": {
+          "path": "modules/44-build-an-empirical-radar-roc-curve/evidence/actual-baseline.json",
+          "sha256": "ddead290579be5fc40f60150b0bc11623359d12420c830e7f666e52df3f07802"
+        },
+        "max_absolute_error": 1.8464396678297135e-13,
+        "max_relative_error": 1.8464396678297135e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/44-build-an-empirical-radar-roc-curve/evidence/expected-broken.json",
+          "sha256": "47c313c51141ece2018662b0598a9be8cf32ef7bc6318799dfb1a242d4993a88"
+        },
+        "actual": {
+          "path": "modules/44-build-an-empirical-radar-roc-curve/evidence/actual-broken.json",
+          "sha256": "13821665508827efa9a1089fb98a7c48654095b2369f8a504d624b6e73e26181"
+        },
+        "max_absolute_error": 1.925681836212334e-13,
+        "max_relative_error": 1.925681836212334e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

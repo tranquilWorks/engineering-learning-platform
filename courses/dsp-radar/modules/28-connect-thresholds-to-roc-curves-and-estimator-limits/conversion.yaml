@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P28",
+    "number": 28,
+    "source_folder": "modules/28-connect-thresholds-to-roc-curves-and-estimator-limits",
+    "target_module_id": "28-connect-thresholds-to-roc-curves-and-estimator-limits",
+    "target_folder": "modules/28-connect-thresholds-to-roc-curves-and-estimator-limits",
+    "batch_id": "ELP-DSP-P28",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/28-connect-thresholds-to-roc-curves-and-estimator-limits/README.md",
+        "sha256": "e541283fdaf8ab9907f2f24e92cf9b8d99b57abc5d0f8e971a5a60054fa76013"
+      },
+      {
+        "path": "modules/28-connect-thresholds-to-roc-curves-and-estimator-limits/lesson.md",
+        "sha256": "37f2e9f7905eeadc17e47aad66976ed5b51d1e87fdb183ac95868360f9450983"
+      },
+      {
+        "path": "modules/28-connect-thresholds-to-roc-curves-and-estimator-limits/walkthrough.md",
+        "sha256": "4e7654bf62371ac05b286b11107851c36d8f6a28d9fde0323435fb39f7541d36"
+      },
+      {
+        "path": "modules/28-connect-thresholds-to-roc-curves-and-estimator-limits/checks.md",
+        "sha256": "c05ebaa5c9d8e032e29cad45ba02b2e5798721336d269e1ff13a764291ac98c5"
+      },
+      {
+        "path": "modules/28-connect-thresholds-to-roc-curves-and-estimator-limits/experiment.m",
+        "sha256": "bc4e7b2654ffa36618ddbd2648e585aba63dca0147faa0bf5a9deaea7a505a51"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "12881a23c7ad06443a46a2b0c866c9abe4d0e75805f632aee423c0d3d0671532",
+    "files": [
+      {
+        "path": "modules/28-connect-thresholds-to-roc-curves-and-estimator-limits/experiment.py",
+        "sha256": "128e8512351db6682e2a94b905dedfc832d9a6407b397af480a17764790a50aa"
+      },
+      {
+        "path": "modules/28-connect-thresholds-to-roc-curves-and-estimator-limits/lesson.md",
+        "sha256": "447d3ee144f43bc0b8e0e43e7ee2e4b71a6851a047bac753346dadb21ed6340c"
+      },
+      {
+        "path": "modules/28-connect-thresholds-to-roc-curves-and-estimator-limits/module.yaml",
+        "sha256": "454c5c774421ceace1a6a0efa1df9a94e3eb110573f8c5cda9a2b204c84759d0"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How do false alarms, detections, bias, variance, and theoretical bounds relate?",
+    "physical_model": "A receiver knows the shape and timing of a real pulse `s`, but it does not know whether that pulse is present in a record. It compares two hypotheses: \\[ H_0:\\;\\mathbf r=\\mathbf n,\\qquad H_1:\\;\\mathbf r=A\\mathbf s+\\mathbf n, \\] where each noise sample is independent Gaussian with mean zero and variance \\(\\sigma^2\\). This module uses real noise, so \\(\\sigma^2\\) is explicitly the variance of one real sample. The matched filter reduces each record to \\[ u=\\frac{\\mathbf s^T\\mathbf r}{\\sigma\\sqrt{\\mathbf s^T\\mathbf s}}. \\] Under \\(H_0\\), \\(u\\) has mean zero and variance one. Under \\(H_1\\), it still has variance one but its mean is \\[ d'=\\frac{A\\sqrt{\\mathbf s^T\\mathbf s}}{\\sigma}=\\sqrt{\\mathrm{SNR}_{MF}}, \\] where the final equality uses this experiment's known positive signal polarity (A>0). For an allowed signed amplitude, the more general relation is (d'=\\operatorname{sign}(A)\\sqrt{\\mathrm{SNR}_{MF}}). The pulse samples add coherently in the numerator; independent noise adds in power. That is why signal energy, observation duration, and SNR separate the two distributions.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary decision threshold while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "H_0:\\;\\mathbf r=\\mathbf n,\\qquad H_1:\\;\\mathbf r=A\\mathbf s+\\mathbf n,",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "u=\\frac{\\mathbf s^T\\mathbf r}{\\sigma\\sqrt{\\mathbf s^T\\mathbf s}}.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "d'=\\frac{A\\sqrt{\\mathbf s^T\\mathbf s}}{\\sigma}=\\sqrt{\\mathrm{SNR}_{MF}},",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 2801,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "ffe1acf1f9302d2019ced5dd6321ea4362e21b1c9416e307d17a3d80d8088915",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "e0243dcf7f54ffa10cc297a77f1ae14ca8bac825f5cf2903ca9e731fe18642f9",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P28 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "symbol or time index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized signal",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Connect Thresholds to ROC Curves and Estimator Limits guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P28 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "symbol or time index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized signal",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Connect Thresholds to ROC Curves and Estimator Limits guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P28 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "symbol or time index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized signal",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Connect Thresholds to ROC Curves and Estimator Limits guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P28 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "symbol or time index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized signal",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Connect Thresholds to ROC Curves and Estimator Limits guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing decision threshold moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P28 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 2801,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/28-connect-thresholds-to-roc-curves-and-estimator-limits/evidence/expected-baseline.json",
+          "sha256": "ffe1acf1f9302d2019ced5dd6321ea4362e21b1c9416e307d17a3d80d8088915"
+        },
+        "actual": {
+          "path": "modules/28-connect-thresholds-to-roc-curves-and-estimator-limits/evidence/actual-baseline.json",
+          "sha256": "b7ccc702871add0a23ce7b000f212fe0e63273965a88b07bef32f97329561433"
+        },
+        "max_absolute_error": 4.338751580235112e-13,
+        "max_relative_error": 4.338751580235112e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/28-connect-thresholds-to-roc-curves-and-estimator-limits/evidence/expected-broken.json",
+          "sha256": "e0243dcf7f54ffa10cc297a77f1ae14ca8bac825f5cf2903ca9e731fe18642f9"
+        },
+        "actual": {
+          "path": "modules/28-connect-thresholds-to-roc-curves-and-estimator-limits/evidence/actual-broken.json",
+          "sha256": "e720bbe2f8c8ec87f540aca983fc88ee412bdb1c3e040c0d8565d380574fa023"
+        },
+        "max_absolute_error": 4.338751580235112e-13,
+        "max_relative_error": 4.338751580235112e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

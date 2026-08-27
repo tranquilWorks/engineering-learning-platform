@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P52",
+    "number": 52,
+    "source_folder": "modules/52-validate-cfar-pfa-by-monte-carlo",
+    "target_module_id": "52-validate-cfar-pfa-by-monte-carlo",
+    "target_folder": "modules/52-validate-cfar-pfa-by-monte-carlo",
+    "batch_id": "ELP-DSP-P52",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/52-validate-cfar-pfa-by-monte-carlo/README.md",
+        "sha256": "e6f6e685cb45b28799c36d988a524ed819b8f78039dfc4dd9df77f861cefb866"
+      },
+      {
+        "path": "modules/52-validate-cfar-pfa-by-monte-carlo/lesson.md",
+        "sha256": "bfe17c46cbce399c3d02f461845ce4ba5f27ab353fcb7983b8bcbdd514f00488"
+      },
+      {
+        "path": "modules/52-validate-cfar-pfa-by-monte-carlo/walkthrough.md",
+        "sha256": "b02416e34b411ddb5dc1c32beb48440c69ab771f4ebb6bd5f1bf1794dcd307ed"
+      },
+      {
+        "path": "modules/52-validate-cfar-pfa-by-monte-carlo/checks.md",
+        "sha256": "3df65feac827d4c74d7c24f55095d585591289b4c6bfad5eaf6db03e13401957"
+      },
+      {
+        "path": "modules/52-validate-cfar-pfa-by-monte-carlo/experiment.m",
+        "sha256": "52f8985d24d54b20841dfd337d0faf2d1581823394c4df7974d3d3738baf3ed7"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "b650ba36895d4b9f127e6f76165a1ddfa31522e0b44adeadad995dabb809001c",
+    "files": [
+      {
+        "path": "modules/52-validate-cfar-pfa-by-monte-carlo/experiment.py",
+        "sha256": "255d042d86d30904de5b2f5e69441c13e0eb6cb9e408349e80bc1c2a45b55355"
+      },
+      {
+        "path": "modules/52-validate-cfar-pfa-by-monte-carlo/lesson.md",
+        "sha256": "7265e8ac25eea9738bc95b2e7f486a99d44b4b085a83d62348232f417b3070e4"
+      },
+      {
+        "path": "modules/52-validate-cfar-pfa-by-monte-carlo/module.yaml",
+        "sha256": "c0b4d732ca7f9014293f6a98ef03b70ade75516c5841818010cf41aa7f9bb06b"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "Does the implemented detector actually achieve the requested false-alarm probability?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary Monte Carlo trials while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 5201,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "f350c814b85c14fc87eb90fbb264dada02a02c7c0b1a1127f167c12f513db590",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "f9037b36af01a62da74654c67630ff4ef3d7eac4dbe4d16b5ea26cc9bf157b17",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P52 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "cell index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "power / threshold",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Validate CFAR Pfa by Monte Carlo guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P52 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "cell index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "power / threshold",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Validate CFAR Pfa by Monte Carlo guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P52 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "cell index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "power / threshold",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Validate CFAR Pfa by Monte Carlo guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P52 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "cell index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "power / threshold",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Validate CFAR Pfa by Monte Carlo guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing Monte Carlo trials moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P52 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 5201,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/52-validate-cfar-pfa-by-monte-carlo/evidence/expected-baseline.json",
+          "sha256": "f350c814b85c14fc87eb90fbb264dada02a02c7c0b1a1127f167c12f513db590"
+        },
+        "actual": {
+          "path": "modules/52-validate-cfar-pfa-by-monte-carlo/evidence/actual-baseline.json",
+          "sha256": "325bbdc83a71f0fc387ff7b2d06ee8659649d60321be9994fd31679a81c11faf"
+        },
+        "max_absolute_error": 1.5482060078397808e-13,
+        "max_relative_error": 1.5482060078397808e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/52-validate-cfar-pfa-by-monte-carlo/evidence/expected-broken.json",
+          "sha256": "f9037b36af01a62da74654c67630ff4ef3d7eac4dbe4d16b5ea26cc9bf157b17"
+        },
+        "actual": {
+          "path": "modules/52-validate-cfar-pfa-by-monte-carlo/evidence/actual-broken.json",
+          "sha256": "8c67fd7a67cf6b3227e210d18b819d13cb1831029c0f4d3d5af2c4104812d404"
+        },
+        "max_absolute_error": 4.596323321948148e-13,
+        "max_relative_error": 4.596323321948148e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}
