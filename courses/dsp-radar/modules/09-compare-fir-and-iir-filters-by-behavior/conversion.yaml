@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P09",
+    "number": 9,
+    "source_folder": "modules/09-compare-fir-and-iir-filters-by-behavior",
+    "target_module_id": "09-compare-fir-and-iir-filters-by-behavior",
+    "target_folder": "modules/09-compare-fir-and-iir-filters-by-behavior",
+    "batch_id": "ELP-DSP-P09",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/09-compare-fir-and-iir-filters-by-behavior/README.md",
+        "sha256": "62feed61bef866e019a18d7697b3b018d131a086458532cf11df73f4d703446d"
+      },
+      {
+        "path": "modules/09-compare-fir-and-iir-filters-by-behavior/lesson.md",
+        "sha256": "11891eeb39449e17218b7814b9a6b4e69b809cf16f5a6446ac34abe32a4769c5"
+      },
+      {
+        "path": "modules/09-compare-fir-and-iir-filters-by-behavior/walkthrough.md",
+        "sha256": "16483e8b1154fa8345095984b19d14b180e1fdac155afb7936fb46c7e9e0f08a"
+      },
+      {
+        "path": "modules/09-compare-fir-and-iir-filters-by-behavior/checks.md",
+        "sha256": "cb2ffb2487cb187efd71d34dad26289e2beef87f12aa7415b11f6afc98f9d3f4"
+      },
+      {
+        "path": "modules/09-compare-fir-and-iir-filters-by-behavior/experiment.m",
+        "sha256": "73555b5609b286b37ffa2abd3a4ce46968680ccc96e41bacea63e9764b1fdee2"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "f711e4fb4593e7d53686f5989824b17ea944ef6efd414c7e9ed8c0f0b079ece2",
+    "files": [
+      {
+        "path": "modules/09-compare-fir-and-iir-filters-by-behavior/experiment.py",
+        "sha256": "28bff0a82f0a0ed87b65d41b6ea53e3abe50edc685af355fa09b12d4c83cfd2a"
+      },
+      {
+        "path": "modules/09-compare-fir-and-iir-filters-by-behavior/lesson.md",
+        "sha256": "f16c93ddf03a00027b912aae6899a1a4e02cccb096fd46314d07e2d3c5ef146c"
+      },
+      {
+        "path": "modules/09-compare-fir-and-iir-filters-by-behavior/module.yaml",
+        "sha256": "1f3b4d5e0e7803bd6f0e1b8b20bef34c57b37f1e6deaf424ba0bb67f540a66c9"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How can two filters with similar magnitude response behave differently in time and phase?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary filter order while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 909,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "a4d0fa237502c6338ce0c433403ca972714f47a2994e1391f4f1461205699c8e",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "77b5fc1e79a306224f4a6428a0244811f221ccee66da049f0f4d684b5c6245b5",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P09 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "sample index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized amplitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Compare FIR and IIR Filters by Behavior guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P09 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "sample index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized amplitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Compare FIR and IIR Filters by Behavior guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P09 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "sample index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized amplitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Compare FIR and IIR Filters by Behavior guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P09 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "sample index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized amplitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Compare FIR and IIR Filters by Behavior guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing filter order moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P09 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 909,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/09-compare-fir-and-iir-filters-by-behavior/evidence/expected-baseline.json",
+          "sha256": "a4d0fa237502c6338ce0c433403ca972714f47a2994e1391f4f1461205699c8e"
+        },
+        "actual": {
+          "path": "modules/09-compare-fir-and-iir-filters-by-behavior/evidence/actual-baseline.json",
+          "sha256": "85c9130ab8dbd953a85048e787207911aff2c8abb2096a37165c6b0d76494f30"
+        },
+        "max_absolute_error": 4.422504029655272e-13,
+        "max_relative_error": 4.422504029655272e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/09-compare-fir-and-iir-filters-by-behavior/evidence/expected-broken.json",
+          "sha256": "77b5fc1e79a306224f4a6428a0244811f221ccee66da049f0f4d684b5c6245b5"
+        },
+        "actual": {
+          "path": "modules/09-compare-fir-and-iir-filters-by-behavior/evidence/actual-broken.json",
+          "sha256": "ee1a93adec2a1e662d9c74affa80642d19084f108e07a824814dfa06ce9a4d86"
+        },
+        "max_absolute_error": 4.2377212849942225e-13,
+        "max_relative_error": 4.2377212849942225e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

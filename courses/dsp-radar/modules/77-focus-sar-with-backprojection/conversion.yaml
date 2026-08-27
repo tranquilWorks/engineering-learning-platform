@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P77",
+    "number": 77,
+    "source_folder": "modules/77-focus-sar-with-backprojection",
+    "target_module_id": "77-focus-sar-with-backprojection",
+    "target_folder": "modules/77-focus-sar-with-backprojection",
+    "batch_id": "ELP-DSP-P77",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/77-focus-sar-with-backprojection/README.md",
+        "sha256": "ce9e14aba3165e0ae0b2940e2160ce9260d1c513be639813cde2240d6dcdd7c9"
+      },
+      {
+        "path": "modules/77-focus-sar-with-backprojection/lesson.md",
+        "sha256": "042d7ee37003459ff409169898ecf63503b044410520b222796a9968dc578742"
+      },
+      {
+        "path": "modules/77-focus-sar-with-backprojection/walkthrough.md",
+        "sha256": "decd82680b14466b234ad2b5bdbf958361b83c03bc0bf0c0bfc6fd83ad676930"
+      },
+      {
+        "path": "modules/77-focus-sar-with-backprojection/checks.md",
+        "sha256": "04553cea218378eb1ecb41db81834441c5bf64643c6a2b2a4f5453603c94cc77"
+      },
+      {
+        "path": "modules/77-focus-sar-with-backprojection/experiment.m",
+        "sha256": "04250a01196bfa4785b4b0853b72462a347584beed366bacf4dd7d537ef73ada"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "467015f8f1e742a22cc4693168fb4715ed64849743e5a7c70129a658be492997",
+    "files": [
+      {
+        "path": "modules/77-focus-sar-with-backprojection/experiment.py",
+        "sha256": "1e3da1155c3fd0b83b93de173f4d743bb005d98ad1cd7614dde7a5d1c6b69d9b"
+      },
+      {
+        "path": "modules/77-focus-sar-with-backprojection/lesson.md",
+        "sha256": "c8637bc7ab5344e1e7f7dfb63dd4097b7b3bc6f10ae6e498d3ad17525d381e74"
+      },
+      {
+        "path": "modules/77-focus-sar-with-backprojection/module.yaml",
+        "sha256": "7e73c946c21978803b341aaff59bf5b1f3572130111731f88876116a3cc4e6df"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How does compensating the correct path length focus a point in an image?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary focus range while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 1077,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "5eceb4477bbed525609a8b9eaf87452a7904d30d9966c038aacd8b4574c21685",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "16031b82be9c6cfaa1888e6fe1f9a0ac08e47294b4fc65828b00cc9e847c0a9d",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P77 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range/cross-range coordinate",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized intensity",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Focus SAR with Backprojection guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P77 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range/cross-range coordinate",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized intensity",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Focus SAR with Backprojection guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P77 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range/cross-range coordinate",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized intensity",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Focus SAR with Backprojection guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P77 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range/cross-range coordinate",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized intensity",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Focus SAR with Backprojection guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing focus range moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P77 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 1077,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/77-focus-sar-with-backprojection/evidence/expected-baseline.json",
+          "sha256": "5eceb4477bbed525609a8b9eaf87452a7904d30d9966c038aacd8b4574c21685"
+        },
+        "actual": {
+          "path": "modules/77-focus-sar-with-backprojection/evidence/actual-baseline.json",
+          "sha256": "5b65a89e15c3a9f3fca35895a58b70a3277039488125ba580af3e83df744d63c"
+        },
+        "max_absolute_error": 4.853895063661184e-13,
+        "max_relative_error": 4.853895063661184e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/77-focus-sar-with-backprojection/evidence/expected-broken.json",
+          "sha256": "16031b82be9c6cfaa1888e6fe1f9a0ac08e47294b4fc65828b00cc9e847c0a9d"
+        },
+        "actual": {
+          "path": "modules/77-focus-sar-with-backprojection/evidence/actual-broken.json",
+          "sha256": "fc2ef81259ee0945a75c23f30d6aca1f46cfe4a8934d38669133178683fe9c33"
+        },
+        "max_absolute_error": 4.407030296249559e-13,
+        "max_relative_error": 4.407030296249559e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

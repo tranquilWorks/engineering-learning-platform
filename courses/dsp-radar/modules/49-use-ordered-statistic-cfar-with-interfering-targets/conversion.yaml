@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P49",
+    "number": 49,
+    "source_folder": "modules/49-use-ordered-statistic-cfar-with-interfering-targets",
+    "target_module_id": "49-use-ordered-statistic-cfar-with-interfering-targets",
+    "target_folder": "modules/49-use-ordered-statistic-cfar-with-interfering-targets",
+    "batch_id": "ELP-DSP-P49",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/49-use-ordered-statistic-cfar-with-interfering-targets/README.md",
+        "sha256": "7e08ecdb02c8b249dbf890f99a60bac015fbf2d33dc50ce8481fff82aafaf69d"
+      },
+      {
+        "path": "modules/49-use-ordered-statistic-cfar-with-interfering-targets/lesson.md",
+        "sha256": "c943a06d404a56ed6ceeb5c2f038ba2c7c0af7cb88dfc9670bf7ab6bfd5c0416"
+      },
+      {
+        "path": "modules/49-use-ordered-statistic-cfar-with-interfering-targets/walkthrough.md",
+        "sha256": "b8381f2030e34cef62a440c62cfc531a19bba98e6a5eb164dca788ead5a8e31b"
+      },
+      {
+        "path": "modules/49-use-ordered-statistic-cfar-with-interfering-targets/checks.md",
+        "sha256": "ea4e29db591e5c8a8caac6aeb17d44fa52870a42bcedac7102badcdd02a7a8b4"
+      },
+      {
+        "path": "modules/49-use-ordered-statistic-cfar-with-interfering-targets/experiment.m",
+        "sha256": "af95d37ab46ec2354fb99a8bee433edd4f842357f9b24f21843579c2b28d71b2"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "742fac769eae762ffab631ef12fa8df0be5d38d8bf4dc3721d538f33115e8e6a",
+    "files": [
+      {
+        "path": "modules/49-use-ordered-statistic-cfar-with-interfering-targets/experiment.py",
+        "sha256": "efe9435facbfb632f46ef683600e612d544fa3b54fc745eec81b5f795bbca926"
+      },
+      {
+        "path": "modules/49-use-ordered-statistic-cfar-with-interfering-targets/lesson.md",
+        "sha256": "9f96136f9476929481aae77827cbb22a186d9d72aa819b852f22e3c8bb15a798"
+      },
+      {
+        "path": "modules/49-use-ordered-statistic-cfar-with-interfering-targets/module.yaml",
+        "sha256": "1d3b4cf15cd238913fb01d907fccfacc17ef694057fe5c8d54d44ce705271170"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How can CFAR resist several contaminated training cells?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary OS CFAR rank while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 4901,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "fd2ecfe5df370462928a29d551a2388fb5f1fe5f32c256d6436a918a6a997dfc",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "19f2140af2e041fd208cea1fbd5f05f6b196c1bd41b8a702f03d1112235c8f9a",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P49 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "cell index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "power / threshold",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Use Ordered-Statistic CFAR with Interfering Targets guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P49 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "cell index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "power / threshold",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Use Ordered-Statistic CFAR with Interfering Targets guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P49 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "cell index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "power / threshold",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Use Ordered-Statistic CFAR with Interfering Targets guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P49 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "cell index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "power / threshold",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Use Ordered-Statistic CFAR with Interfering Targets guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing OS CFAR rank moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P49 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 4901,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/49-use-ordered-statistic-cfar-with-interfering-targets/evidence/expected-baseline.json",
+          "sha256": "fd2ecfe5df370462928a29d551a2388fb5f1fe5f32c256d6436a918a6a997dfc"
+        },
+        "actual": {
+          "path": "modules/49-use-ordered-statistic-cfar-with-interfering-targets/evidence/actual-baseline.json",
+          "sha256": "defe6ec64881d1b31814739ff6b98990277f9d5f618a323bd7bf2f0d71e01437"
+        },
+        "max_absolute_error": 2.2926105458509483e-13,
+        "max_relative_error": 2.2926105458509483e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/49-use-ordered-statistic-cfar-with-interfering-targets/evidence/expected-broken.json",
+          "sha256": "19f2140af2e041fd208cea1fbd5f05f6b196c1bd41b8a702f03d1112235c8f9a"
+        },
+        "actual": {
+          "path": "modules/49-use-ordered-statistic-cfar-with-interfering-targets/evidence/actual-broken.json",
+          "sha256": "42d20462f8a91454c54372fb29863acdb97492d21a1d727833a1ececb95204ce"
+        },
+        "max_absolute_error": 3.5582647939236267e-13,
+        "max_relative_error": 3.5582647939236267e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

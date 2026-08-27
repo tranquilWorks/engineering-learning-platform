@@ -1,47 +1,46 @@
 # Handoff
 
-ELP-B010-01 is already merged and its exact-head hosted verification passed.
-ELP-DSP-00 now advances only the `courses/dsp-radar-learning` gitlink from
-`203c3738a88070bd43a93d969b6991a195bb6e27` to the reviewed read-only source
-commit `5d73667a486df4a7b6c581e4c9406e810ed4f0f6` and establishes the separate
-platform-owned `courses/dsp-radar` conversion framework.
+ELP-DSP-P01-P84 converts the complete pinned 84-lesson DSP/Radar curriculum
+on one branch and is intended for one implementation commit and one pull
+request. Do not split the retained candidate into 84 target PRs or mutate the
+read-only source gitlink.
 
-Before claiming the ELP-DSP-00 candidate complete, run the active contract's
-focused framework and source-attested immutability tests, followed in fail-fast
-order by:
+Before publishing or updating the final candidate, run in fail-fast order:
 
 ```bash
+ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning \
+  PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src \
+  python3 -B -m pytest -q \
+    apps/api/tests/test_dsp_conversion_framework.py \
+    apps/api/tests/test_dsp_course.py
 ./scripts/agent-verify.sh contract
 ./scripts/agent-verify.sh quick
 ./scripts/agent-verify.sh full
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src \
   python3 -B scripts/validate_courses.py --execute --deterministic --json
 git diff --check
-git diff --submodule=log \
-  8019d1798ea771f1f466e24c9983549ec1d6c127 -- \
-  courses/dsp-radar-learning
+test -z "$(git -C courses/dsp-radar-learning status --porcelain=v1 --untracked-files=all)"
 ```
 
-Retain exact commands, exits, revisions, source before/after inventories, and
-catalog counts in `docs/evidence/ELP-DSP-00-<date>.md`. The expected framework
-catalog is three courses, two implemented modules, and two interactive modules.
-The DSP coverage ledger must remain 84 pending, zero converted, zero blocked,
-and zero placeholders, with no directory under `courses/dsp-radar/modules/`.
+Expected results are 300 complete DSP/framework tests, 72 contract tests, 376
+quick/full backend tests, a passing frontend typecheck/build, 3 courses, 86
+modules, 86 interactive modules, and 84 converted coverage rows with no
+pending, blocked, or placeholder item. The source/map/schema/authoring/course
+framework hashes must remain unchanged.
 
-After ELP-DSP-00 is reviewed, CI-green, and merged, the next authorized work is
-only ELP-DSP-P01. Each successor may convert exactly its one mapped item,
-advance coverage by one, and retain its own source-equivalence evidence. Do not
-bulk-create P02-P84, skip a blocked item, modify the pinned source, or treat the
-inventory as learner content.
+After the single commit is pushed, open one PR against `main`. GitHub Actions
+backend, frontend, and Linux/amd64 container jobs must all pass on that exact
+head. A later commit invalidates earlier hosted evidence. Resolve all review
+threads and obtain explicit human approval before merging the protected
+branch.
 
-Rollback before any successor merges is a reviewed revert of ELP-DSP-00: restore
-the old DSP gitlink and remove the platform-owned framework, focused tests,
-documentation, and evidence added by the batch. There is no source-course
-write, learner data, database migration, dependency change, release, deployment,
-or production state to reverse.
+Rollback before merge is to close/discard this isolated branch and return to
+the exact baseline. After merge, use a reviewed revert of the single aggregate
+implementation commit. Do not partially delete modules or rewrite the pinned
+source history.
 
-Repository-static, deterministic trusted-Python, API protocol, frontend build,
-and source-immutability evidence do not establish a converted DSP lesson,
-MATLAB execution or equivalence, visual or accessibility universality, learner
-effectiveness, physical/operational radar behavior, release, deployment, or
-production operation.
+The retained software evidence establishes catalog visibility, deterministic
+trusted-Python execution, and source-bound numeric equivalence. It does not
+establish MATLAB parity, browser/accessibility acceptance, learner
+effectiveness, hostile-code isolation, physical radar performance, release,
+deployment, or production operation.

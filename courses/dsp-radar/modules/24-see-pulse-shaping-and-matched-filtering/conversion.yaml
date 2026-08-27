@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P24",
+    "number": 24,
+    "source_folder": "modules/24-see-pulse-shaping-and-matched-filtering",
+    "target_module_id": "24-see-pulse-shaping-and-matched-filtering",
+    "target_folder": "modules/24-see-pulse-shaping-and-matched-filtering",
+    "batch_id": "ELP-DSP-P24",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/24-see-pulse-shaping-and-matched-filtering/README.md",
+        "sha256": "183387470ac22169c14c8f5f4b82438f2ea02bda455c26dcdd96fa74c234cdc7"
+      },
+      {
+        "path": "modules/24-see-pulse-shaping-and-matched-filtering/lesson.md",
+        "sha256": "e8bb2b5c9796a76466771e2b5f3c70c41ad10ffbe78b2e0f48ce72cb398e628b"
+      },
+      {
+        "path": "modules/24-see-pulse-shaping-and-matched-filtering/walkthrough.md",
+        "sha256": "e6d9a507224d14f5faa56ebc6339c71f380b373117d7ec292d9e82227148a58a"
+      },
+      {
+        "path": "modules/24-see-pulse-shaping-and-matched-filtering/checks.md",
+        "sha256": "9a6f82fedabc72d9bb9f00a2f337b0259d922f91c0fce0fa886e5bfae7fa609d"
+      },
+      {
+        "path": "modules/24-see-pulse-shaping-and-matched-filtering/experiment.m",
+        "sha256": "160813e51df61350499f9ca34a1c03c0b6107f3116b7df50976a3a5c735d086e"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "7fedd7bb7f279317f9fa8c97523bf832d571617eb7526b1b2659fa07a51dc452",
+    "files": [
+      {
+        "path": "modules/24-see-pulse-shaping-and-matched-filtering/experiment.py",
+        "sha256": "8dac526a02bfe323c7364148b2de471ad9b02567fd4021e3310fd68874a31a75"
+      },
+      {
+        "path": "modules/24-see-pulse-shaping-and-matched-filtering/lesson.md",
+        "sha256": "417a4d9e909e978769117debee02d200b92a8875a9512ae0fc95bb803e034df3"
+      },
+      {
+        "path": "modules/24-see-pulse-shaping-and-matched-filtering/module.yaml",
+        "sha256": "063a68b0f2ef7c2e2d871b562d51c1895d76ed669da980e6c392a1ea7d2ba540"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "Why are symbols filtered before transmission and again at reception?",
+    "physical_model": "A QPSK symbol is one desired I/Q point per symbol interval. A transmitter cannot send isolated mathematical points, so it launches a pulse for every symbol. Those shifted pulses add to make a continuous complex-envelope waveform. Pulse shaping chooses how that waveform occupies time and frequency. A rectangular pulse changes abruptly at symbol boundaries. It is compact in time, but its sinc-shaped spectrum has slowly decaying sidelobes. A root-raised-cosine (RRC) pulse spreads smoothly across several symbols. Its roll-off parameter trades occupied bandwidth for a gentler time response. The neighboring RRC pulses visibly overlap. Overlap is not automatically intersymbol interference (ISI): what matters is the combined response at the receiver's decision times.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary pulse shape rolloff while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "a_k = \\frac{I_k+jQ_k}{\\sqrt{2}}, \\qquad I_k,Q_k\\in\\{-1,+1\\}.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "s[n] = \\sum_k a_k p[n-kN_s],",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "h_\\text{MF}[n] = p^*[L-1-n].",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 1024,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "262da7cad2365c53f634f3bd17b82f5f3ba2739cc1cc7839dc607c2165b16e57",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "83e5b991eeee6ae3da2b6ac3c7472dec7b213fd3eeb72576af4defb638f2abd7",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P24 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "symbol or time index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized signal",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the See Pulse Shaping and Matched Filtering guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P24 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "symbol or time index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized signal",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the See Pulse Shaping and Matched Filtering guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P24 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "symbol or time index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized signal",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the See Pulse Shaping and Matched Filtering guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P24 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "symbol or time index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized signal",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the See Pulse Shaping and Matched Filtering guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing pulse shape rolloff moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P24 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 1024,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/24-see-pulse-shaping-and-matched-filtering/evidence/expected-baseline.json",
+          "sha256": "262da7cad2365c53f634f3bd17b82f5f3ba2739cc1cc7839dc607c2165b16e57"
+        },
+        "actual": {
+          "path": "modules/24-see-pulse-shaping-and-matched-filtering/evidence/actual-baseline.json",
+          "sha256": "c763fb1810f454fae7b759c43276efa5bc1c73a686ca4bb1ab64aa5c37641eba"
+        },
+        "max_absolute_error": 4.5154505134981093e-13,
+        "max_relative_error": 4.5154505134981093e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/24-see-pulse-shaping-and-matched-filtering/evidence/expected-broken.json",
+          "sha256": "83e5b991eeee6ae3da2b6ac3c7472dec7b213fd3eeb72576af4defb638f2abd7"
+        },
+        "actual": {
+          "path": "modules/24-see-pulse-shaping-and-matched-filtering/evidence/actual-broken.json",
+          "sha256": "ad8b451dada5513ec515eb63c25dc6ae1c45299238a660e600801f0aee83f47f"
+        },
+        "max_absolute_error": 4.5153811245590703e-13,
+        "max_relative_error": 4.5153811245590703e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

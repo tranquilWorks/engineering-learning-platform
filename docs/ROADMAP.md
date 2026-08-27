@@ -45,9 +45,12 @@ platform:
    `5d73667a486df4a7b6c581e4c9406e810ed4f0f6`, records the immutable P01-P84
    mapping, and creates the empty native course plus conversion/evidence
    framework.
-2. `ELP-DSP-P01` through `ELP-DSP-P84` each create exactly one complete native
+2. `ELP-DSP-P01` through `ELP-DSP-P84` create exactly one complete native
    learner module, self-contained Python runtime, and passing source-equivalence
-   record in numeric order.
+   record in numeric order. Portfolio Control aggregate authorization
+   `ELP-DSP-P01-P84` permits those 84 internal gates to be integrated as one
+   target commit and one pull request; the ordered evidence and stop conditions
+   remain unchanged.
 3. `ELP-DSP-G-PYTHON` reviews the complete course, all equivalence and residual
    numerical records, browser/accessibility evidence, and every MATLAB
    `not_run` or `failed` result before any aggregate readiness claim.
@@ -57,6 +60,14 @@ placeholders. Its framework catalog is three courses,
 two implemented modules, and two interactive modules because the discovered
 DSP course is still empty. It does not deliver, display, or claim any converted
 DSP lesson.
+
+The ELP-DSP-P01-P84 aggregate candidate has completed the ordered software
+conversion with 84 converted, zero pending, zero blocked, and zero placeholders.
+Its catalog has 84 DSP/Radar modules plus the two existing platform modules.
+Merge readiness remains conditional on exact-head hosted backend, frontend,
+and container CI plus human review; MATLAB, browser/accessibility, learner,
+physical-radar, release, deployment, and production claims remain outside the
+software evidence boundary.
 
 A blocked item stops the ordered lane. No batch may skip forward, combine
 items, create bulk placeholders, mutate the pinned source, or infer MATLAB,

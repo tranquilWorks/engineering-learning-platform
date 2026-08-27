@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P30",
+    "number": 30,
+    "source_folder": "modules/30-measure-range-from-echo-delay",
+    "target_module_id": "30-measure-range-from-echo-delay",
+    "target_folder": "modules/30-measure-range-from-echo-delay",
+    "batch_id": "ELP-DSP-P30",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/30-measure-range-from-echo-delay/README.md",
+        "sha256": "f36c27ffab92e78e2ebb43965b86f8704408484e3006d9cb5af4ae07eb91a5fe"
+      },
+      {
+        "path": "modules/30-measure-range-from-echo-delay/lesson.md",
+        "sha256": "694673c7206cb59d288d1a98340f511c2e8f6da37d8699486f5d5ac4ffd6f365"
+      },
+      {
+        "path": "modules/30-measure-range-from-echo-delay/walkthrough.md",
+        "sha256": "8eb5f7ab7b6d84969bcb7cd8c2552d423a3316df81d29e9c7dd30cdfb04dad28"
+      },
+      {
+        "path": "modules/30-measure-range-from-echo-delay/checks.md",
+        "sha256": "189bda22f3e782d6523f31eb58927ed418faf12261fa02ee868f08c25ea9c8db"
+      },
+      {
+        "path": "modules/30-measure-range-from-echo-delay/experiment.m",
+        "sha256": "4fb757d939bc5de266a31c63d46db809165755de517b4e7e5eb9738eb3cc8c73"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "329e55b6a8c54410f278f64ee186c893508965786837d6a495cd2b5bf1152336",
+    "files": [
+      {
+        "path": "modules/30-measure-range-from-echo-delay/experiment.py",
+        "sha256": "745da1dfb180eb3754a552668b7f15bfdc5eeabc382a082b1652ea93a6c5593e"
+      },
+      {
+        "path": "modules/30-measure-range-from-echo-delay/lesson.md",
+        "sha256": "6f13d7eed2a92f783f8fbbd622a2ec762512f31c2eafbf7fcb0528aa9416cef6"
+      },
+      {
+        "path": "modules/30-measure-range-from-echo-delay/module.yaml",
+        "sha256": "f01a563178113d64d1d77ad49d851bfca41a52ddbf0d02fbfe98ceddd1d9cce9"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How does round-trip delay become target range?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary echo delay while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "2R=c\\tau, \\qquad R=\\frac{c\\tau}{2}.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "r_{xs}[\\ell]=\\sum_m x[\\ell+m]s^*[m].",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "\\hat\\tau=\\frac{\\hat\\ell}{f_s}, \\qquad \\hat R=\\frac{c\\hat\\ell}{2f_s}.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 3001,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "883691589653f0f98df9a264fdb7c98312b5ca6774e5a75d7bcd1d3fb0a5f904",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "603a1f3ef50e3abc2adefba7e83979d5a566576bb0e41ceb929b1c33e0b5f4c8",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P30 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Measure Range from Echo Delay guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P30 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Measure Range from Echo Delay guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P30 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Measure Range from Echo Delay guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P30 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Measure Range from Echo Delay guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing echo delay moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P30 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 3001,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/30-measure-range-from-echo-delay/evidence/expected-baseline.json",
+          "sha256": "883691589653f0f98df9a264fdb7c98312b5ca6774e5a75d7bcd1d3fb0a5f904"
+        },
+        "actual": {
+          "path": "modules/30-measure-range-from-echo-delay/evidence/actual-baseline.json",
+          "sha256": "d0f08675e205e193e87e2072920fa80e2b44b789da06137e673dc7db146815ea"
+        },
+        "max_absolute_error": 4.3759440515600545e-13,
+        "max_relative_error": 4.3759440515600545e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/30-measure-range-from-echo-delay/evidence/expected-broken.json",
+          "sha256": "603a1f3ef50e3abc2adefba7e83979d5a566576bb0e41ceb929b1c33e0b5f4c8"
+        },
+        "actual": {
+          "path": "modules/30-measure-range-from-echo-delay/evidence/actual-broken.json",
+          "sha256": "72f7e69ae8a664d845456b817fddfe26e8dbef62089ff12a76543e8a5a9d376e"
+        },
+        "max_absolute_error": 4.794498131843739e-13,
+        "max_relative_error": 4.794498131843739e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

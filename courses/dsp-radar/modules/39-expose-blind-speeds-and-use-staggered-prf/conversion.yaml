@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P39",
+    "number": 39,
+    "source_folder": "modules/39-expose-blind-speeds-and-use-staggered-prf",
+    "target_module_id": "39-expose-blind-speeds-and-use-staggered-prf",
+    "target_folder": "modules/39-expose-blind-speeds-and-use-staggered-prf",
+    "batch_id": "ELP-DSP-P39",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/39-expose-blind-speeds-and-use-staggered-prf/README.md",
+        "sha256": "56a92cfaf1006d6eed6dc6e16af8b12e00c41367927965d8684c65ab4a01685a"
+      },
+      {
+        "path": "modules/39-expose-blind-speeds-and-use-staggered-prf/lesson.md",
+        "sha256": "973490bb93d64af76741e44acc27e67e82f86123ef742dcc69cc2b79aa1b519f"
+      },
+      {
+        "path": "modules/39-expose-blind-speeds-and-use-staggered-prf/walkthrough.md",
+        "sha256": "931fb3641747fdd0dd3f1c2a2bb676d70b70f1e549321eee6ac88c77f1535f01"
+      },
+      {
+        "path": "modules/39-expose-blind-speeds-and-use-staggered-prf/checks.md",
+        "sha256": "4daa6e61a7de564abb104e63252b5f48f083882f4a5889282e24dc082c5607bd"
+      },
+      {
+        "path": "modules/39-expose-blind-speeds-and-use-staggered-prf/experiment.m",
+        "sha256": "f2ceb840a9488522525d1077ffe19e270e10f397879c5462385acd8e5290b0c2"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "2b82278c305db6a5e04d7777eec8df35bdebcf1a339db1ab042f164b581d548e",
+    "files": [
+      {
+        "path": "modules/39-expose-blind-speeds-and-use-staggered-prf/experiment.py",
+        "sha256": "3184633e0ef3ce35aef71ed96713e1f5ccdfb807c091e733da6d89b301103b3f"
+      },
+      {
+        "path": "modules/39-expose-blind-speeds-and-use-staggered-prf/lesson.md",
+        "sha256": "ae3839992f76e287937a8269c9a0796138aaadb5687ba28ef8403b921e3e120b"
+      },
+      {
+        "path": "modules/39-expose-blind-speeds-and-use-staggered-prf/module.yaml",
+        "sha256": "f428b465ffb31da51663db4792b267436c95e768609d0a0607098981311f60e8"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "Why can a moving target vanish in an MTI radar?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary target velocity while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "f_d=\\frac{2v}{\\lambda}.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "\\Delta\\phi=2\\pi\\frac{f_d}{f_r}.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "y[n]=x[n]-x[n-1].",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 3901,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "764fcd84a6b1ca709d00f8cfd279da1e9a9e9e64b162144f02a545c11272c855",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "e616fbf0d7aa55c94627688ee90024ec34045d8283b3d33fada2ce7fc677458b",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P39 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Expose Blind Speeds and Use Staggered PRF guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P39 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Expose Blind Speeds and Use Staggered PRF guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P39 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Expose Blind Speeds and Use Staggered PRF guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P39 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Expose Blind Speeds and Use Staggered PRF guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing target velocity moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P39 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 3901,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/39-expose-blind-speeds-and-use-staggered-prf/evidence/expected-baseline.json",
+          "sha256": "764fcd84a6b1ca709d00f8cfd279da1e9a9e9e64b162144f02a545c11272c855"
+        },
+        "actual": {
+          "path": "modules/39-expose-blind-speeds-and-use-staggered-prf/evidence/actual-baseline.json",
+          "sha256": "a36b660929e5b8361e3853448b9958573d27fee8d0df928f418fb592f45fa1b8"
+        },
+        "max_absolute_error": 2.948197241892103e-13,
+        "max_relative_error": 2.948197241892103e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/39-expose-blind-speeds-and-use-staggered-prf/evidence/expected-broken.json",
+          "sha256": "e616fbf0d7aa55c94627688ee90024ec34045d8283b3d33fada2ce7fc677458b"
+        },
+        "actual": {
+          "path": "modules/39-expose-blind-speeds-and-use-staggered-prf/evidence/actual-broken.json",
+          "sha256": "03c8322e3a1b5019042ffda689668433e817a7928ba38482e82a1a3d69d0e4bb"
+        },
+        "max_absolute_error": 2.948197241892103e-13,
+        "max_relative_error": 2.948197241892103e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

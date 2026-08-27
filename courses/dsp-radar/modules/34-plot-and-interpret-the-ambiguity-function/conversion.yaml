@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P34",
+    "number": 34,
+    "source_folder": "modules/34-plot-and-interpret-the-ambiguity-function",
+    "target_module_id": "34-plot-and-interpret-the-ambiguity-function",
+    "target_folder": "modules/34-plot-and-interpret-the-ambiguity-function",
+    "batch_id": "ELP-DSP-P34",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/34-plot-and-interpret-the-ambiguity-function/README.md",
+        "sha256": "aed331f737526b25072f57bfba31595cd9e361160e8dcaabf60de63dbf41ece5"
+      },
+      {
+        "path": "modules/34-plot-and-interpret-the-ambiguity-function/lesson.md",
+        "sha256": "197a32cdfdb89095ca6522b8fba21f9dc64d0319256b4357c8a3fbf96f07a952"
+      },
+      {
+        "path": "modules/34-plot-and-interpret-the-ambiguity-function/walkthrough.md",
+        "sha256": "0ba739f310e8dbc317a120e31af8e9e45745739733d6e41268ac8ca4d2eb3a50"
+      },
+      {
+        "path": "modules/34-plot-and-interpret-the-ambiguity-function/checks.md",
+        "sha256": "b457290ba4b34308fa75dc836a11c900338e77f1784a8bd17d852fa7a37462ef"
+      },
+      {
+        "path": "modules/34-plot-and-interpret-the-ambiguity-function/experiment.m",
+        "sha256": "7e0b7c7035f7f597ad0673d653cb6e150a4c874dfa314a025ab078579dda9373"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "9aa10258a28bb2ef6c6a70884876add213a056e10ea5d26e1e4c84e9e97d9554",
+    "files": [
+      {
+        "path": "modules/34-plot-and-interpret-the-ambiguity-function/experiment.py",
+        "sha256": "144d851eaa57319f381f359b150c0ab4d721821884abc83eda4a8ee1e8581ccf"
+      },
+      {
+        "path": "modules/34-plot-and-interpret-the-ambiguity-function/lesson.md",
+        "sha256": "0d1d6d5dc94cd2490f07a656ae70310d056e576d5f9f31b7e2207df6b8132704"
+      },
+      {
+        "path": "modules/34-plot-and-interpret-the-ambiguity-function/module.yaml",
+        "sha256": "2509409a64cbb401920eaf7b4480fc1379f42ea436eabe18fe0da092fd8b22b8"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How does a waveform respond to simultaneous delay and Doppler mismatch?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary delay Doppler mismatch while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "\\chi(\\tau,\\nu)=\\int s(t)s^*(t-\\tau)e^{-j2\\pi\\nu t}\\,dt.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "\\chi[k,\\nu]=\\sum_n s[n]s^*[n-k]e^{-j2\\pi\\nu n/F_s}.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "s(t)=e^{j\\pi Kt^2}, \\qquad K=B/T,",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 3401,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "84564f4398686e02a722950da0c71d3027ae3e9999210467535a0becaed8bdcb",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "9e419f7099116f31cecfab11cd7a7b32944c9b52c407cbdff6fd91faaa55b18b",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P34 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Plot and Interpret the Ambiguity Function guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P34 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Plot and Interpret the Ambiguity Function guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P34 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Plot and Interpret the Ambiguity Function guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P34 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Plot and Interpret the Ambiguity Function guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing delay Doppler mismatch moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P34 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 3401,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/34-plot-and-interpret-the-ambiguity-function/evidence/expected-baseline.json",
+          "sha256": "84564f4398686e02a722950da0c71d3027ae3e9999210467535a0becaed8bdcb"
+        },
+        "actual": {
+          "path": "modules/34-plot-and-interpret-the-ambiguity-function/evidence/actual-baseline.json",
+          "sha256": "8b5972234bcc289d0e6a5d1bd3abf2d76035f270607540c567d79a64b442f0ec"
+        },
+        "max_absolute_error": 1.9595436384634013e-13,
+        "max_relative_error": 1.9595436384634013e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/34-plot-and-interpret-the-ambiguity-function/evidence/expected-broken.json",
+          "sha256": "9e419f7099116f31cecfab11cd7a7b32944c9b52c407cbdff6fd91faaa55b18b"
+        },
+        "actual": {
+          "path": "modules/34-plot-and-interpret-the-ambiguity-function/evidence/actual-broken.json",
+          "sha256": "9320bc8c8c497b45688eecd9978ff3de7cd74e21404b84e8ab299bcff970ed42"
+        },
+        "max_absolute_error": 1.9595436384634013e-13,
+        "max_relative_error": 1.9595436384634013e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

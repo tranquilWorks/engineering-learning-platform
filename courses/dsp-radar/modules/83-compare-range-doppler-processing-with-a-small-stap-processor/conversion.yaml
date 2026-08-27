@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P83",
+    "number": 83,
+    "source_folder": "modules/83-compare-range-doppler-processing-with-a-small-stap-processor",
+    "target_module_id": "83-compare-range-doppler-processing-with-a-small-stap-processor",
+    "target_folder": "modules/83-compare-range-doppler-processing-with-a-small-stap-processor",
+    "batch_id": "ELP-DSP-P83",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/83-compare-range-doppler-processing-with-a-small-stap-processor/README.md",
+        "sha256": "d9e436720f111bf7907921d344efbed07b9db6a5efb214989d48d3ccfd89fff4"
+      },
+      {
+        "path": "modules/83-compare-range-doppler-processing-with-a-small-stap-processor/lesson.md",
+        "sha256": "52090683f1ab020887d7d5b85197742b20f88b7495bd3ed396dafaf5b503ed41"
+      },
+      {
+        "path": "modules/83-compare-range-doppler-processing-with-a-small-stap-processor/walkthrough.md",
+        "sha256": "b9e689fc76ed8869b6c04c8ebe7a046b1aec9eb7cb2a34339c40fc80e86edb6c"
+      },
+      {
+        "path": "modules/83-compare-range-doppler-processing-with-a-small-stap-processor/checks.md",
+        "sha256": "f0d9116612efa70d1383d10ea36641a54b924113d834e7dd6c30ea0a0b49d397"
+      },
+      {
+        "path": "modules/83-compare-range-doppler-processing-with-a-small-stap-processor/experiment.m",
+        "sha256": "b1bf1f270e5b57d6a8567bbeea9a57883a3dcc9f0033914cd38dcbf3b42dc86e"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "c167a458d7dd7b3390fae7a36d4c3d9d503f834797a9603654489275cfa265dc",
+    "files": [
+      {
+        "path": "modules/83-compare-range-doppler-processing-with-a-small-stap-processor/experiment.py",
+        "sha256": "b04bc7426480aa89ca2b5ba0a6fc85780b234264b458271117fc7ec6b36c7eed"
+      },
+      {
+        "path": "modules/83-compare-range-doppler-processing-with-a-small-stap-processor/lesson.md",
+        "sha256": "dde264d29837d5669e9078f0839d6407a541f4634331991352cbe9bbb4d40ebb"
+      },
+      {
+        "path": "modules/83-compare-range-doppler-processing-with-a-small-stap-processor/module.yaml",
+        "sha256": "e734e30f5a88d8358fbef8ea995cebbed2fc1b9b35b1169cf4b80a1e40ec8956"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "When is Doppler filtering alone insufficient against clutter?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary clutter coupling while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "\\mathbf{x}_r = \\operatorname{vec}(\\mathbf{X}_r) \\in \\mathbb{C}^{MN}, \\qquad M=4,\\quad N=8.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "\\mathbf{s}(\\theta,\\nu) = \\mathbf{d}(\\nu)\\otimes\\mathbf{a}(\\theta),",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "a_m(\\theta)=e^{j2\\pi(d/\\lambda)m\\sin\\theta},\\qquad d_n(\\nu)=e^{j2\\pi n\\nu}.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 1083,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "a38b8ccbd3f7302461450b3fa03353c78fa4183e13b8b2ec3868195b0c0a2316",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "5217cf5697bc59e4bb5f719dedb6dd1e9129627048b90a8831a51886b7271b9c",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P83 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range/cross-range coordinate",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized intensity",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Compare Range-Doppler Processing with a Small STAP Processor guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P83 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range/cross-range coordinate",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized intensity",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Compare Range-Doppler Processing with a Small STAP Processor guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P83 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range/cross-range coordinate",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized intensity",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Compare Range-Doppler Processing with a Small STAP Processor guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P83 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range/cross-range coordinate",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized intensity",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Compare Range-Doppler Processing with a Small STAP Processor guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing clutter coupling moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P83 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 1083,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/83-compare-range-doppler-processing-with-a-small-stap-processor/evidence/expected-baseline.json",
+          "sha256": "a38b8ccbd3f7302461450b3fa03353c78fa4183e13b8b2ec3868195b0c0a2316"
+        },
+        "actual": {
+          "path": "modules/83-compare-range-doppler-processing-with-a-small-stap-processor/evidence/actual-baseline.json",
+          "sha256": "7781fd2f534b317ff78b1b0edff6aceda233b7746395ee0b40c9cd436824f033"
+        },
+        "max_absolute_error": 4.647948692593218e-13,
+        "max_relative_error": 4.647948692593218e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/83-compare-range-doppler-processing-with-a-small-stap-processor/evidence/expected-broken.json",
+          "sha256": "5217cf5697bc59e4bb5f719dedb6dd1e9129627048b90a8831a51886b7271b9c"
+        },
+        "actual": {
+          "path": "modules/83-compare-range-doppler-processing-with-a-small-stap-processor/evidence/actual-broken.json",
+          "sha256": "cba96963e62d5155f550a311e1132c1edac79035f6c729bf84d1f272ca32b6ae"
+        },
+        "max_absolute_error": 4.0170644588499727e-13,
+        "max_relative_error": 4.0170644588499727e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

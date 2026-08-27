@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P04",
+    "number": 4,
+    "source_folder": "modules/04-quantize-a-signal-and-hear-see-the-error",
+    "target_module_id": "04-quantize-a-signal-and-hear-see-the-error",
+    "target_folder": "modules/04-quantize-a-signal-and-hear-see-the-error",
+    "batch_id": "ELP-DSP-P04",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/04-quantize-a-signal-and-hear-see-the-error/README.md",
+        "sha256": "c4cd234df4830b1c809f2718cd0572ebb6932b2a5fa8538c4f8c489b4ef4b1a6"
+      },
+      {
+        "path": "modules/04-quantize-a-signal-and-hear-see-the-error/lesson.md",
+        "sha256": "c4c10a0bd02e2b3ebcce3df2cf2e508625664d21872a20ef4a96ffe33052db57"
+      },
+      {
+        "path": "modules/04-quantize-a-signal-and-hear-see-the-error/walkthrough.md",
+        "sha256": "5c2db9fd4fab3cc6839384c2ad44afebe5a8d2f4e542acc55c44079c9a5b13c6"
+      },
+      {
+        "path": "modules/04-quantize-a-signal-and-hear-see-the-error/checks.md",
+        "sha256": "d9933b865d38fe24e8389a467317452e25d23b205cccce0b1502c782be4b1cb6"
+      },
+      {
+        "path": "modules/04-quantize-a-signal-and-hear-see-the-error/experiment.m",
+        "sha256": "2b6ed5fcea8e6df6464b05e65c7e5e4c9e1b861de4cc6f2979f83819abfda816"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "b064e0504d81c928a7d49a543a3f2a7cccc671c1f3be56644db26fc541ed68a9",
+    "files": [
+      {
+        "path": "modules/04-quantize-a-signal-and-hear-see-the-error/experiment.py",
+        "sha256": "38aabd6fa2e8bdaef3e57c9481a513d1659d7558a380125ac7479af48d9e701b"
+      },
+      {
+        "path": "modules/04-quantize-a-signal-and-hear-see-the-error/lesson.md",
+        "sha256": "f5cbf616970aef7fd7ad8ca93e616d149aa2741cd9e0451b570fd42bdda3a024"
+      },
+      {
+        "path": "modules/04-quantize-a-signal-and-hear-see-the-error/module.yaml",
+        "sha256": "ad717e56f20ea822908ca38aa6b3616db30da8456b35440f5327977ed0e691d4"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How do ADC bit depth and full-scale range change the measurement?",
+    "physical_model": "P02 treated samples as measurements taken at discrete times, and P03 showed that the timing choice can make frequencies ambiguous. P04 keeps those sample times fixed and asks a different question: how precisely can each stored sample describe voltage? Imagine a ruler whose marks are voltage bins. More ADC bits add more marks inside the same input range. A wider full-scale range spaces the marks farther apart. A signal that uses only a small part of the ruler touches few marks even if many are available. A signal beyond the ruler is not measured more coarsely\u2014it is cut off at the end, which is clipping.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary ADC bit depth while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "L=2^B",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "\\Delta=\\frac{2V_{FS}}{2^B}.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "c=\\left\\lfloor\\frac{x+V_{FS}}{\\Delta}\\right\\rfloor, \\qquad 0\\le c\\le L-1,",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 404,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "906884549243b2bd2bf9e926d0ea3bcab5ce23235417a9f24b4946151eb5d8d9",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "aca75035dda622bc91e72383e331dfd773716680f718f527d1f6500eb26d603c",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P04 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "sample index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized amplitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Quantize a Signal and Hear/See the Error guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P04 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "sample index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized amplitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Quantize a Signal and Hear/See the Error guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P04 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "sample index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized amplitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Quantize a Signal and Hear/See the Error guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P04 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "sample index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized amplitude",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Quantize a Signal and Hear/See the Error guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing ADC bit depth moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P04 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 404,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/04-quantize-a-signal-and-hear-see-the-error/evidence/expected-baseline.json",
+          "sha256": "906884549243b2bd2bf9e926d0ea3bcab5ce23235417a9f24b4946151eb5d8d9"
+        },
+        "actual": {
+          "path": "modules/04-quantize-a-signal-and-hear-see-the-error/evidence/actual-baseline.json",
+          "sha256": "9fa8b3e338c48203457a2822c99d7eeae39d7130444df4516c8a9bbb1984a0f4"
+        },
+        "max_absolute_error": 3.5810243659284424e-13,
+        "max_relative_error": 3.5810243659284424e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/04-quantize-a-signal-and-hear-see-the-error/evidence/expected-broken.json",
+          "sha256": "aca75035dda622bc91e72383e331dfd773716680f718f527d1f6500eb26d603c"
+        },
+        "actual": {
+          "path": "modules/04-quantize-a-signal-and-hear-see-the-error/evidence/actual-broken.json",
+          "sha256": "eba83c1cc630258d0becb6e0aa55d6fafff9a05018de13bbe1ba82f9d272e601"
+        },
+        "max_absolute_error": 3.5810243659284424e-13,
+        "max_relative_error": 3.5810243659284424e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

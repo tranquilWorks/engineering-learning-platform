@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P21",
+    "number": 21,
+    "source_folder": "modules/21-visualize-am-as-carrier-and-sidebands",
+    "target_module_id": "21-visualize-am-as-carrier-and-sidebands",
+    "target_folder": "modules/21-visualize-am-as-carrier-and-sidebands",
+    "batch_id": "ELP-DSP-P21",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/21-visualize-am-as-carrier-and-sidebands/README.md",
+        "sha256": "f83f5b5ee17a2560253c76db7609d95c002df1e9341e273c79ee3e53c3625e65"
+      },
+      {
+        "path": "modules/21-visualize-am-as-carrier-and-sidebands/lesson.md",
+        "sha256": "29594e23276710eea0386c3fb18d3c95c8b4d87c0151af73601ab873dc71a693"
+      },
+      {
+        "path": "modules/21-visualize-am-as-carrier-and-sidebands/walkthrough.md",
+        "sha256": "8a00affa1112a70c517318ff978016d142548f169bfcd2fafd9b799f972fd65c"
+      },
+      {
+        "path": "modules/21-visualize-am-as-carrier-and-sidebands/checks.md",
+        "sha256": "1b06180777aac70c10397d3484761d312077850f93fa415b59fbdd762139da7d"
+      },
+      {
+        "path": "modules/21-visualize-am-as-carrier-and-sidebands/experiment.m",
+        "sha256": "4c7df1fe3087cfd83a5cd4a567cee075d7ec61e6783c57547951f16b308b8074"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "3ff39f189b030cc8fdc438c39770b8a8cb6d07e0a1d488bca23b855c24f7dff5",
+    "files": [
+      {
+        "path": "modules/21-visualize-am-as-carrier-and-sidebands/experiment.py",
+        "sha256": "33a213f7df9093c360747340546b2c0ea773f70f8abbfb7c77ba85df272fc992"
+      },
+      {
+        "path": "modules/21-visualize-am-as-carrier-and-sidebands/lesson.md",
+        "sha256": "cae756a21a743bb895a4510d26bf71dc0137d670d8c40c916f512433abe98943"
+      },
+      {
+        "path": "modules/21-visualize-am-as-carrier-and-sidebands/module.yaml",
+        "sha256": "a7621ac84e80067ef6df75cbfb2f5264f0ca6600ac68a51e1ae3f3044e4d006c"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How does a baseband waveform create RF sidebands?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary AM modulation index while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "s(t)=A_c[1+\\mu m(t)]\\cos(2\\pi f_c t),",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "s(t)=A_c\\cos(2\\pi f_c t) +\\frac{A_c\\mu}{2}\\cos[2\\pi(f_c+f_m)t] +\\frac{A_c\\mu}{2}\\cos[2\\pi(f_c-f_m)t].",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "m(t)=a_1\\cos(2\\pi f_1t)+a_2\\cos(2\\pi f_2t),",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 1021,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "23c0f39919330e833ed1c98de2df157648b71e38360fc03b18d3f95aad1fbe9e",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "bc3b986c3597b0988ca7e34d91cc49e40a72bb9a91ec3d182513686a3459b09c",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P21 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "symbol or time index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized signal",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Visualize AM as Carrier and Sidebands guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P21 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "symbol or time index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized signal",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Visualize AM as Carrier and Sidebands guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P21 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "symbol or time index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized signal",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Visualize AM as Carrier and Sidebands guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P21 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "symbol or time index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized signal",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Visualize AM as Carrier and Sidebands guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing AM modulation index moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P21 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 1021,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/21-visualize-am-as-carrier-and-sidebands/evidence/expected-baseline.json",
+          "sha256": "23c0f39919330e833ed1c98de2df157648b71e38360fc03b18d3f95aad1fbe9e"
+        },
+        "actual": {
+          "path": "modules/21-visualize-am-as-carrier-and-sidebands/evidence/actual-baseline.json",
+          "sha256": "6c0c61c625e7ab6c1c99494da23ea42d9f6971bf2ff5a0c12efd5aa944729e2e"
+        },
+        "max_absolute_error": 4.837102940413729e-13,
+        "max_relative_error": 4.837102940413729e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/21-visualize-am-as-carrier-and-sidebands/evidence/expected-broken.json",
+          "sha256": "bc3b986c3597b0988ca7e34d91cc49e40a72bb9a91ec3d182513686a3459b09c"
+        },
+        "actual": {
+          "path": "modules/21-visualize-am-as-carrier-and-sidebands/evidence/actual-broken.json",
+          "sha256": "e1d08d5b420e70edeb2a2b3d9a1ae3b3ceb6b681c0ec45752bae4b00e7899771"
+        },
+        "max_absolute_error": 4.837137634883248e-13,
+        "max_relative_error": 4.837137634883248e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

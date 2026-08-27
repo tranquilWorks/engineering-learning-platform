@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P37",
+    "number": 37,
+    "source_folder": "modules/37-build-a-pulse-doppler-data-matrix",
+    "target_module_id": "37-build-a-pulse-doppler-data-matrix",
+    "target_folder": "modules/37-build-a-pulse-doppler-data-matrix",
+    "batch_id": "ELP-DSP-P37",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/37-build-a-pulse-doppler-data-matrix/README.md",
+        "sha256": "7d4029348cbfacbe68b22ece388e1137eaa134c1070ca82e1d249aa821acab0b"
+      },
+      {
+        "path": "modules/37-build-a-pulse-doppler-data-matrix/lesson.md",
+        "sha256": "7e47c55010c1bbc78fa30c3498c9b97d68deb8f67d923fe08b158488255a4449"
+      },
+      {
+        "path": "modules/37-build-a-pulse-doppler-data-matrix/walkthrough.md",
+        "sha256": "ae5fdad59fdba0dc96d28589d554ebd9f098ed621082ec54d414d80ff43f5c80"
+      },
+      {
+        "path": "modules/37-build-a-pulse-doppler-data-matrix/checks.md",
+        "sha256": "9e4b1ab76e925a36fc6435343f50a1d24e045e72459b3a13c66e5136e97bc8db"
+      },
+      {
+        "path": "modules/37-build-a-pulse-doppler-data-matrix/experiment.m",
+        "sha256": "9f0e1a95817f9ab061c5c1de0b735641e5581bd598d0e99fbe3de60b15b3e104"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "99ce6cc74f11dbb4ee7687226c82dc9e15b8fb5bb5bf118a005517c04217b970",
+    "files": [
+      {
+        "path": "modules/37-build-a-pulse-doppler-data-matrix/experiment.py",
+        "sha256": "d81a5af2cbe4355c14b6653610b1c6ef7c8e93b7fd926f43fc1645d0345a8634"
+      },
+      {
+        "path": "modules/37-build-a-pulse-doppler-data-matrix/lesson.md",
+        "sha256": "3f4649145ac335a1c4ca690d233bc391a03fd7e83cc634f414a443c3dd08c579"
+      },
+      {
+        "path": "modules/37-build-a-pulse-doppler-data-matrix/module.yaml",
+        "sha256": "199afc594aa345f907571cc023663c89c700267bd8e9cd3afb46fa1378ac3614"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "What are fast time and slow time in a radar data block?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary fast time range while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 3701,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "d1f0668dcd08c1b71cfa3395ac44e493268cc051184d33108fa87b6cda33f922",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "b0477da01af46455712c93269937b826223d7da0fc8a243deddd71d343670a27",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P37 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build a Pulse-Doppler Data Matrix guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P37 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build a Pulse-Doppler Data Matrix guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P37 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build a Pulse-Doppler Data Matrix guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P37 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build a Pulse-Doppler Data Matrix guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing fast time range moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P37 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 3701,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/37-build-a-pulse-doppler-data-matrix/evidence/expected-baseline.json",
+          "sha256": "d1f0668dcd08c1b71cfa3395ac44e493268cc051184d33108fa87b6cda33f922"
+        },
+        "actual": {
+          "path": "modules/37-build-a-pulse-doppler-data-matrix/evidence/actual-baseline.json",
+          "sha256": "1687558ad2cd059509dcfd4deb43e9122e85f0a3925780ea8d77ad56ea7b39ec"
+        },
+        "max_absolute_error": 3.5745018056587696e-13,
+        "max_relative_error": 3.5745018056587696e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/37-build-a-pulse-doppler-data-matrix/evidence/expected-broken.json",
+          "sha256": "b0477da01af46455712c93269937b826223d7da0fc8a243deddd71d343670a27"
+        },
+        "actual": {
+          "path": "modules/37-build-a-pulse-doppler-data-matrix/evidence/actual-broken.json",
+          "sha256": "247b83c4602730d42e89a406a4672f1289c681e745f23806fdffd7ea95539c50"
+        },
+        "max_absolute_error": 3.1845359682591834e-13,
+        "max_relative_error": 3.1845359682591834e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

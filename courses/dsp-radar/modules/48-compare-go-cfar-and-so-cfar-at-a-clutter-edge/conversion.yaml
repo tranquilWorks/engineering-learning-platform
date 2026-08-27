@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P48",
+    "number": 48,
+    "source_folder": "modules/48-compare-go-cfar-and-so-cfar-at-a-clutter-edge",
+    "target_module_id": "48-compare-go-cfar-and-so-cfar-at-a-clutter-edge",
+    "target_folder": "modules/48-compare-go-cfar-and-so-cfar-at-a-clutter-edge",
+    "batch_id": "ELP-DSP-P48",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/48-compare-go-cfar-and-so-cfar-at-a-clutter-edge/README.md",
+        "sha256": "2463ac7e326b1c0195a64eb9f3bc660adafd636657724b4100c5ce8a34ec253f"
+      },
+      {
+        "path": "modules/48-compare-go-cfar-and-so-cfar-at-a-clutter-edge/lesson.md",
+        "sha256": "59c2764e50c8c8e44f07a8b392815020f43d05b9673566154c4945d865bcef91"
+      },
+      {
+        "path": "modules/48-compare-go-cfar-and-so-cfar-at-a-clutter-edge/walkthrough.md",
+        "sha256": "9b03efe35262399280e712fcf8b70f3eb1e6775779c55f8995c092d7c8726c48"
+      },
+      {
+        "path": "modules/48-compare-go-cfar-and-so-cfar-at-a-clutter-edge/checks.md",
+        "sha256": "6d70506b922895fef27713c27ad90ea1658e81031a35b9739d7ab2297c578871"
+      },
+      {
+        "path": "modules/48-compare-go-cfar-and-so-cfar-at-a-clutter-edge/experiment.m",
+        "sha256": "9037b94e49c087e3be0746d6f8b754b7f1c33ff29bf17df133e59abd8cede967"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "ccb681e4a02356890b6bfd383623e88ce8158a9bdfbbd833f532d6fecd3e95e6",
+    "files": [
+      {
+        "path": "modules/48-compare-go-cfar-and-so-cfar-at-a-clutter-edge/experiment.py",
+        "sha256": "7dd11ac8fb4860f2e8f900cc1c6f5873b512bac9980d7547bce3a38e32d3ed0b"
+      },
+      {
+        "path": "modules/48-compare-go-cfar-and-so-cfar-at-a-clutter-edge/lesson.md",
+        "sha256": "a25e3e5677afad0b35b40af38a3d21219ac1044c505593c71b4bb68c4163cde4"
+      },
+      {
+        "path": "modules/48-compare-go-cfar-and-so-cfar-at-a-clutter-edge/module.yaml",
+        "sha256": "aa9cd359697e0f2173bfe86cb81f5ae2caae5251953128cebc573f6a3d49af98"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "Which side of a changing background should control the threshold?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary clutter edge ratio while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 4801,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "d21721e3b10de4eab0ba104c840f45ab0ab0396bb07122c53198d17d08842985",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "cbb684ef2078f04f7e34fc33411cb591530004e0e354459d60b0727011a1df35",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P48 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "cell index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "power / threshold",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Compare GO-CFAR and SO-CFAR at a Clutter Edge guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P48 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "cell index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "power / threshold",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Compare GO-CFAR and SO-CFAR at a Clutter Edge guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P48 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "cell index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "power / threshold",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Compare GO-CFAR and SO-CFAR at a Clutter Edge guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P48 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "cell index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "power / threshold",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Compare GO-CFAR and SO-CFAR at a Clutter Edge guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing clutter edge ratio moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P48 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 4801,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/48-compare-go-cfar-and-so-cfar-at-a-clutter-edge/evidence/expected-baseline.json",
+          "sha256": "d21721e3b10de4eab0ba104c840f45ab0ab0396bb07122c53198d17d08842985"
+        },
+        "actual": {
+          "path": "modules/48-compare-go-cfar-and-so-cfar-at-a-clutter-edge/evidence/actual-baseline.json",
+          "sha256": "e885d84afb8c142af05aebba3eb5ecbc19d07f5dc18686cf35ffe064e9c97e06"
+        },
+        "max_absolute_error": 4.742872761198669e-13,
+        "max_relative_error": 4.742872761198669e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/48-compare-go-cfar-and-so-cfar-at-a-clutter-edge/evidence/expected-broken.json",
+          "sha256": "cbb684ef2078f04f7e34fc33411cb591530004e0e354459d60b0727011a1df35"
+        },
+        "actual": {
+          "path": "modules/48-compare-go-cfar-and-so-cfar-at-a-clutter-edge/evidence/actual-broken.json",
+          "sha256": "09fdd9bc509a5fb2ecb49f84f885441a306b38bd1eaa52e38da4ec58e5d3852c"
+        },
+        "max_absolute_error": 2.3947510641164627e-13,
+        "max_relative_error": 2.3947510641164627e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

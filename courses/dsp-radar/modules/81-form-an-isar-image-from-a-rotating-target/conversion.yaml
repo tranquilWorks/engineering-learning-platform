@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P81",
+    "number": 81,
+    "source_folder": "modules/81-form-an-isar-image-from-a-rotating-target",
+    "target_module_id": "81-form-an-isar-image-from-a-rotating-target",
+    "target_folder": "modules/81-form-an-isar-image-from-a-rotating-target",
+    "batch_id": "ELP-DSP-P81",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/81-form-an-isar-image-from-a-rotating-target/README.md",
+        "sha256": "75375e72b08f4289f652ca4c876c17f65c494220531948bad65e17b65e82a624"
+      },
+      {
+        "path": "modules/81-form-an-isar-image-from-a-rotating-target/lesson.md",
+        "sha256": "f638bbc6379226feedf0c474c263cd2155a73dae75e2ec561048525fb0005c6e"
+      },
+      {
+        "path": "modules/81-form-an-isar-image-from-a-rotating-target/walkthrough.md",
+        "sha256": "ff917ee85aa43a8450c7bf9183a0a63755324a54f1ec619fe5210c696b964728"
+      },
+      {
+        "path": "modules/81-form-an-isar-image-from-a-rotating-target/checks.md",
+        "sha256": "367a01972d2283769547177ed2073eeee47193f322fbc11719d6ca8275ae217f"
+      },
+      {
+        "path": "modules/81-form-an-isar-image-from-a-rotating-target/experiment.m",
+        "sha256": "11b01307fd97e87d570cba210faa85a0a00fe36288213f04af29cfddaafea701"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "f37be30a9cb5f5fac1408d74edaed6016d4e65bbb4fd7e75f26e12c26b5c8cfd",
+    "files": [
+      {
+        "path": "modules/81-form-an-isar-image-from-a-rotating-target/experiment.py",
+        "sha256": "aee6e720dff629bd82d55f76432d24e33a31974616ba7e022211a0f7764bdfc8"
+      },
+      {
+        "path": "modules/81-form-an-isar-image-from-a-rotating-target/lesson.md",
+        "sha256": "6a3b5751229d7daf76d65b685173d6267e34d57483a142e6d3ee7d6f6a99e795"
+      },
+      {
+        "path": "modules/81-form-an-isar-image-from-a-rotating-target/module.yaml",
+        "sha256": "acad824a76fefd0274072171c6808c1d59e8b232071c3f20ac86c23498d1c44a"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How does target rotation create synthetic aperture when the radar is stationary?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary rotation rate while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 1081,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "90b2f9c4d1b12cfdc0d510d76b4c7c93d59de258124de43ee8e74d1faac63562",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "cb6797e1ee042ae05601f012a24e8ef63c9915cb0cee35633cdade808e3f6c2b",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P81 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range/cross-range coordinate",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized intensity",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Form an ISAR Image from a Rotating Target guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P81 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range/cross-range coordinate",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized intensity",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Form an ISAR Image from a Rotating Target guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P81 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range/cross-range coordinate",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized intensity",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Form an ISAR Image from a Rotating Target guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P81 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range/cross-range coordinate",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized intensity",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Form an ISAR Image from a Rotating Target guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing rotation rate moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P81 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 1081,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/81-form-an-isar-image-from-a-rotating-target/evidence/expected-baseline.json",
+          "sha256": "90b2f9c4d1b12cfdc0d510d76b4c7c93d59de258124de43ee8e74d1faac63562"
+        },
+        "actual": {
+          "path": "modules/81-form-an-isar-image-from-a-rotating-target/evidence/actual-baseline.json",
+          "sha256": "727800bf5a59afe310a1a15a02251073b794f7e49e7222969c6523a554bf79f0"
+        },
+        "max_absolute_error": 4.318767565791859e-13,
+        "max_relative_error": 4.318767565791859e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/81-form-an-isar-image-from-a-rotating-target/evidence/expected-broken.json",
+          "sha256": "cb6797e1ee042ae05601f012a24e8ef63c9915cb0cee35633cdade808e3f6c2b"
+        },
+        "actual": {
+          "path": "modules/81-form-an-isar-image-from-a-rotating-target/evidence/actual-broken.json",
+          "sha256": "f5354b03ea09b1abad8cb2901280447bd4740d66ac4dcd9f3edd385fe4db32a3"
+        },
+        "max_absolute_error": 3.888001032237298e-13,
+        "max_relative_error": 3.888001032237298e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

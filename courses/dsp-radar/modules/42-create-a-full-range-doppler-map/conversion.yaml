@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P42",
+    "number": 42,
+    "source_folder": "modules/42-create-a-full-range-doppler-map",
+    "target_module_id": "42-create-a-full-range-doppler-map",
+    "target_folder": "modules/42-create-a-full-range-doppler-map",
+    "batch_id": "ELP-DSP-P42",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/42-create-a-full-range-doppler-map/README.md",
+        "sha256": "23f2e1f7561d62dbc00030d22270cd39a14e451e02a102bd3be4667488c8461b"
+      },
+      {
+        "path": "modules/42-create-a-full-range-doppler-map/lesson.md",
+        "sha256": "a9cc3867eb1d29c578d64813a2ab1bb7f61000fa16c701b96fb03931ef354595"
+      },
+      {
+        "path": "modules/42-create-a-full-range-doppler-map/walkthrough.md",
+        "sha256": "66ea3dfc2c04e56566e62db1b30a51c695931b98de7d96e07d9e216f2bb0fc82"
+      },
+      {
+        "path": "modules/42-create-a-full-range-doppler-map/checks.md",
+        "sha256": "ef366d70c335fb2bb5aa3d85ee13e33d71a108efceda61cd14c629d8a287b83c"
+      },
+      {
+        "path": "modules/42-create-a-full-range-doppler-map/experiment.m",
+        "sha256": "431787804633600635c31dced4e349077669bd32679f78e02d91fdf8f6398ff7"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "f34f3b1b0571eca465e17dd447f15586935908fe1096ec68cf86d274ec685fcf",
+    "files": [
+      {
+        "path": "modules/42-create-a-full-range-doppler-map/experiment.py",
+        "sha256": "7915a2c584cbfa58df122117eb59c6054274015054076cd54edd3e456f2b45bf"
+      },
+      {
+        "path": "modules/42-create-a-full-range-doppler-map/lesson.md",
+        "sha256": "82970c8c63cab526f36d9ca10c0ba6cf44545b369d3d46a0893fad4aa38e9799"
+      },
+      {
+        "path": "modules/42-create-a-full-range-doppler-map/module.yaml",
+        "sha256": "65d093ba1c15e0ff8f1800c5231f397f986e24e40cf22af7bcc0a21ceb322456"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How do matched filtering and slow-time FFT combine to separate targets?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary target velocity while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "x[r,p].",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "x_q[r,p]=a_q\\,s[r-d_q]\\exp\\!\\left(j\\phi_q+j2\\pi f_{d,q}\\frac{p}{f_{PRF}}\\right),",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "R_q=\\frac{c\\,d_q}{2F_s},\\qquad f_{d,q}=\\frac{2v_q}{\\lambda}.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 4201,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "1f36714193fce18ac668780a997a638924ca015aa4f2562308ad2e5158a22469",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "50a52d770d9e1acb87b37f7046288ff1e714f54c454d7f39407064de29e1f4fc",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P42 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Create a Full Range-Doppler Map guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P42 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Create a Full Range-Doppler Map guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P42 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Create a Full Range-Doppler Map guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P42 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Create a Full Range-Doppler Map guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing target velocity moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P42 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 4201,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/42-create-a-full-range-doppler-map/evidence/expected-baseline.json",
+          "sha256": "1f36714193fce18ac668780a997a638924ca015aa4f2562308ad2e5158a22469"
+        },
+        "actual": {
+          "path": "modules/42-create-a-full-range-doppler-map/evidence/actual-baseline.json",
+          "sha256": "4dd16480baaa46328a149a182f159426db6b6aef6bebe7f0acf4998c72cc5deb"
+        },
+        "max_absolute_error": 4.713104906350907e-13,
+        "max_relative_error": 4.713104906350907e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/42-create-a-full-range-doppler-map/evidence/expected-broken.json",
+          "sha256": "50a52d770d9e1acb87b37f7046288ff1e714f54c454d7f39407064de29e1f4fc"
+        },
+        "actual": {
+          "path": "modules/42-create-a-full-range-doppler-map/evidence/actual-broken.json",
+          "sha256": "c87e226e7e9943f7e88fdba2594fff5e2b61fd0fd3810b8c86648ae108453fc8"
+        },
+        "max_absolute_error": 4.713104906350907e-13,
+        "max_relative_error": 4.713104906350907e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

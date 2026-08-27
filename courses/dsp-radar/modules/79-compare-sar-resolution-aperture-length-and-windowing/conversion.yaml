@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P79",
+    "number": 79,
+    "source_folder": "modules/79-compare-sar-resolution-aperture-length-and-windowing",
+    "target_module_id": "79-compare-sar-resolution-aperture-length-and-windowing",
+    "target_folder": "modules/79-compare-sar-resolution-aperture-length-and-windowing",
+    "batch_id": "ELP-DSP-P79",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/79-compare-sar-resolution-aperture-length-and-windowing/README.md",
+        "sha256": "2413e5f680efe3a1c1ed94cf91aed23b527eceed760fd0e9647f6bb19598af51"
+      },
+      {
+        "path": "modules/79-compare-sar-resolution-aperture-length-and-windowing/lesson.md",
+        "sha256": "7b1470a1563661ae14de5c71134685c6f157a82c88d6bd5d66acce70de403a4b"
+      },
+      {
+        "path": "modules/79-compare-sar-resolution-aperture-length-and-windowing/walkthrough.md",
+        "sha256": "89a1f83a218f39447ca68e3189e6b4949a5f97a0ae2cb0bdbca6b7081aca2215"
+      },
+      {
+        "path": "modules/79-compare-sar-resolution-aperture-length-and-windowing/checks.md",
+        "sha256": "85824d4110b5e4b6eeade55e2ba5a5af9b0e2660334f0ae3e7925710bca929c6"
+      },
+      {
+        "path": "modules/79-compare-sar-resolution-aperture-length-and-windowing/experiment.m",
+        "sha256": "403848b377c17baafe8059649bb814902ad26ac271e983f5fd76bf5f63a29043"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "37836d2be1d95e6531333f8414d2e8519261a2cef818a5a23af0f8c70ce2baa9",
+    "files": [
+      {
+        "path": "modules/79-compare-sar-resolution-aperture-length-and-windowing/experiment.py",
+        "sha256": "0b5f193a6cedf32a3afa447f292aca3addd60e6507d1d63bddde1feb373e7f03"
+      },
+      {
+        "path": "modules/79-compare-sar-resolution-aperture-length-and-windowing/lesson.md",
+        "sha256": "76bb4728bc0394895b35db78d0a6cb0d7791c38647b6220541a49e90391a1378"
+      },
+      {
+        "path": "modules/79-compare-sar-resolution-aperture-length-and-windowing/module.yaml",
+        "sha256": "d350b3016d9ef88abafd21c7a8807d454b597437800aae82f00214926d971df8"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "What controls range and cross-range resolution and sidelobes?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary aperture length while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 1079,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "7e80fc241ecd905ab86eb7bbe01a0be7874f8a093944b02a640fc0f720cd82c6",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "19d2498d492973f9c7dbf5b59a1599332d64cbe31d5132b04dc56e1580724b23",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P79 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range/cross-range coordinate",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized intensity",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Compare SAR Resolution, Aperture Length, and Windowing guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P79 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range/cross-range coordinate",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized intensity",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Compare SAR Resolution, Aperture Length, and Windowing guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P79 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range/cross-range coordinate",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized intensity",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Compare SAR Resolution, Aperture Length, and Windowing guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P79 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range/cross-range coordinate",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized intensity",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Compare SAR Resolution, Aperture Length, and Windowing guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing aperture length moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P79 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 1079,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/79-compare-sar-resolution-aperture-length-and-windowing/evidence/expected-baseline.json",
+          "sha256": "7e80fc241ecd905ab86eb7bbe01a0be7874f8a093944b02a640fc0f720cd82c6"
+        },
+        "actual": {
+          "path": "modules/79-compare-sar-resolution-aperture-length-and-windowing/evidence/actual-baseline.json",
+          "sha256": "d447d408082acf1163cec5eda623acfce132678c3dfd1bdc21166fb6f1b6e670"
+        },
+        "max_absolute_error": 3.5128150388530344e-13,
+        "max_relative_error": 3.5128150388530344e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/79-compare-sar-resolution-aperture-length-and-windowing/evidence/expected-broken.json",
+          "sha256": "19d2498d492973f9c7dbf5b59a1599332d64cbe31d5132b04dc56e1580724b23"
+        },
+        "actual": {
+          "path": "modules/79-compare-sar-resolution-aperture-length-and-windowing/evidence/actual-broken.json",
+          "sha256": "1eec0cd3fe6c352515346ceec0a911ae9211af3fc00f34968f87c9ebdcebec64"
+        },
+        "max_absolute_error": 3.039235529911366e-13,
+        "max_relative_error": 3.039235529911366e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P65",
+    "number": 65,
+    "source_folder": "modules/65-use-mvdr-capon-adaptive-beamforming",
+    "target_module_id": "65-use-mvdr-capon-adaptive-beamforming",
+    "target_folder": "modules/65-use-mvdr-capon-adaptive-beamforming",
+    "batch_id": "ELP-DSP-P65",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/65-use-mvdr-capon-adaptive-beamforming/README.md",
+        "sha256": "2e260f66825453db0d85cee80bd102849eef437d7662b673d3dfeeac9c420b4d"
+      },
+      {
+        "path": "modules/65-use-mvdr-capon-adaptive-beamforming/lesson.md",
+        "sha256": "aeef718bcb6105ac837cd9ddf56faea1018d709ee4639f1f7d950f40c8846fef"
+      },
+      {
+        "path": "modules/65-use-mvdr-capon-adaptive-beamforming/walkthrough.md",
+        "sha256": "291e43ea5341bb5af49ce1164515b80ac43283b32233545ad8564655d4192954"
+      },
+      {
+        "path": "modules/65-use-mvdr-capon-adaptive-beamforming/checks.md",
+        "sha256": "09081742a217168eadf7a0ca17f444c5baed134ae05107a0acaa5178ee3f4947"
+      },
+      {
+        "path": "modules/65-use-mvdr-capon-adaptive-beamforming/experiment.m",
+        "sha256": "2835edade9cec258106c9205200a1fa81c9b2e574e5194e4992439c8d753eaec"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "405172176a8da83a0cffb5b8ffdfd252ee968f7f5889a3d4c1874614f7f94614",
+    "files": [
+      {
+        "path": "modules/65-use-mvdr-capon-adaptive-beamforming/experiment.py",
+        "sha256": "ef809e5ff6cdcbf59de863e3e3ca25742a0fab7a69e4c9d978317bf6af9dc76c"
+      },
+      {
+        "path": "modules/65-use-mvdr-capon-adaptive-beamforming/lesson.md",
+        "sha256": "5ce1f0c9058a9e92e5cbcfff6a5047701cbc1f46c37120120056ed8b0b53649c"
+      },
+      {
+        "path": "modules/65-use-mvdr-capon-adaptive-beamforming/module.yaml",
+        "sha256": "8d36ba08f80db965fb1a76c87ea15322ba703ece738c9f0432bd13998bfe332f"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How can a beamformer place data-dependent nulls on interference?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary interference angle while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 1065,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "6308dc34e8235355b63d3cd20fbb6745e01eacb25df0b405d94755f88bf4a947",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "71835ad2acce38f695e12f7d9040019a9fca1cf03f49908d291195104a52d7c5",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P65 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "look angle (deg)",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized power",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Use MVDR/Capon Adaptive Beamforming guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P65 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "look angle (deg)",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized power",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Use MVDR/Capon Adaptive Beamforming guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P65 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "look angle (deg)",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized power",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Use MVDR/Capon Adaptive Beamforming guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P65 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "look angle (deg)",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized power",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Use MVDR/Capon Adaptive Beamforming guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing interference angle moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P65 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 1065,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/65-use-mvdr-capon-adaptive-beamforming/evidence/expected-baseline.json",
+          "sha256": "6308dc34e8235355b63d3cd20fbb6745e01eacb25df0b405d94755f88bf4a947"
+        },
+        "actual": {
+          "path": "modules/65-use-mvdr-capon-adaptive-beamforming/evidence/actual-baseline.json",
+          "sha256": "00aa031e0e72f8932ad6cfee78f5dc9b82c23eeacd1e40d131374c98e8f791ab"
+        },
+        "max_absolute_error": 2.0516921495072893e-13,
+        "max_relative_error": 2.0516921495072893e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/65-use-mvdr-capon-adaptive-beamforming/evidence/expected-broken.json",
+          "sha256": "71835ad2acce38f695e12f7d9040019a9fca1cf03f49908d291195104a52d7c5"
+        },
+        "actual": {
+          "path": "modules/65-use-mvdr-capon-adaptive-beamforming/evidence/actual-broken.json",
+          "sha256": "3a21cdf3e59435e6f3d1655e40c2fca79f9b8c8978828be9f3ac3245d102dcb6"
+        },
+        "max_absolute_error": 4.577727086285677e-13,
+        "max_relative_error": 4.577727086285677e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

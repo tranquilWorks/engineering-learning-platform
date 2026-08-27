@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P78",
+    "number": 78,
+    "source_folder": "modules/78-observe-and-correct-range-cell-migration",
+    "target_module_id": "78-observe-and-correct-range-cell-migration",
+    "target_folder": "modules/78-observe-and-correct-range-cell-migration",
+    "batch_id": "ELP-DSP-P78",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/78-observe-and-correct-range-cell-migration/README.md",
+        "sha256": "7a927fb049a41738e83476ede547e7cf62853de858f96f6de7275e117b9557a7"
+      },
+      {
+        "path": "modules/78-observe-and-correct-range-cell-migration/lesson.md",
+        "sha256": "02df0b701da067f824dec3d6e8c4f5f5f3277317f3df9de89642da763d8195bf"
+      },
+      {
+        "path": "modules/78-observe-and-correct-range-cell-migration/walkthrough.md",
+        "sha256": "b0f1541e866cd66ff4c6599f7358598b3f55e6153129e7a2342944e6e35ec226"
+      },
+      {
+        "path": "modules/78-observe-and-correct-range-cell-migration/checks.md",
+        "sha256": "16337c0ac26c54ee0ee286709b376162bf43fbc382825b462f4062504844a9dd"
+      },
+      {
+        "path": "modules/78-observe-and-correct-range-cell-migration/experiment.m",
+        "sha256": "4d779590b5f5448e87b19874b61686ad300191693b26d723d1ed2aed6c44e6c3"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "8706e3670e53495fc1ed975e5379fffbe99157d8cbd5862be8ec06ada6ead570",
+    "files": [
+      {
+        "path": "modules/78-observe-and-correct-range-cell-migration/experiment.py",
+        "sha256": "2a8209539071e5778ea4308bceb22488dbd1c720d77951b2f42b6447e0a7b9de"
+      },
+      {
+        "path": "modules/78-observe-and-correct-range-cell-migration/lesson.md",
+        "sha256": "a4e99555deacd8635c2367d87a16bf3d3ba33abe93d8db4cad90497565930b2a"
+      },
+      {
+        "path": "modules/78-observe-and-correct-range-cell-migration/module.yaml",
+        "sha256": "969042a8c3cb2f6040a4c985ae31d0df86e80268acdd4fa7bd4f5cb46b2b2cff"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "Why does a target move through range bins during a long synthetic aperture?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary migration span while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 1078,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "aaaadaf3fce11bd226771bb8ced2f55c5ebea6d460bba8e8774cec25dcda270d",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "bd5f7c5972d12816b4b403cbf2cf267477a09e2d605bdb11779118f6309d739e",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P78 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range/cross-range coordinate",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized intensity",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Observe and Correct Range-Cell Migration guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P78 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range/cross-range coordinate",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized intensity",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Observe and Correct Range-Cell Migration guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P78 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range/cross-range coordinate",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized intensity",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Observe and Correct Range-Cell Migration guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P78 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range/cross-range coordinate",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized intensity",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Observe and Correct Range-Cell Migration guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing migration span moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P78 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 1078,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/78-observe-and-correct-range-cell-migration/evidence/expected-baseline.json",
+          "sha256": "aaaadaf3fce11bd226771bb8ced2f55c5ebea6d460bba8e8774cec25dcda270d"
+        },
+        "actual": {
+          "path": "modules/78-observe-and-correct-range-cell-migration/evidence/actual-baseline.json",
+          "sha256": "b81d9231cc469b61295b8cd9d960c6d02a150b01398788039bc90304edaee6b7"
+        },
+        "max_absolute_error": 4.815037257799304e-13,
+        "max_relative_error": 4.815037257799304e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/78-observe-and-correct-range-cell-migration/evidence/expected-broken.json",
+          "sha256": "bd5f7c5972d12816b4b403cbf2cf267477a09e2d605bdb11779118f6309d739e"
+        },
+        "actual": {
+          "path": "modules/78-observe-and-correct-range-cell-migration/evidence/actual-broken.json",
+          "sha256": "c842a0ab40509bc0aefe4e1e80d25d8a9ec1f780071e86575b8b38c6f2479db8"
+        },
+        "max_absolute_error": 4.815037257799304e-13,
+        "max_relative_error": 4.815037257799304e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

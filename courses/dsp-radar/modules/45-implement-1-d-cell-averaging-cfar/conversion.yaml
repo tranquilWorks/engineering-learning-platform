@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P45",
+    "number": 45,
+    "source_folder": "modules/45-implement-1-d-cell-averaging-cfar",
+    "target_module_id": "45-implement-1-d-cell-averaging-cfar",
+    "target_folder": "modules/45-implement-1-d-cell-averaging-cfar",
+    "batch_id": "ELP-DSP-P45",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/45-implement-1-d-cell-averaging-cfar/README.md",
+        "sha256": "5d715a229bd2ad3c6a261ce5e10c17ceeb60d43a2c26457ca2c3c23d5e6a0e64"
+      },
+      {
+        "path": "modules/45-implement-1-d-cell-averaging-cfar/lesson.md",
+        "sha256": "22e4cb8117c5b32af273ff358e1183608c3afbc8ab794d6f29b0dfdb2c6d1074"
+      },
+      {
+        "path": "modules/45-implement-1-d-cell-averaging-cfar/walkthrough.md",
+        "sha256": "4db42e647bf03a1ae0bb69db9f3cea7ec04913c47b1d72f6e1d7cd6dbd969cb8"
+      },
+      {
+        "path": "modules/45-implement-1-d-cell-averaging-cfar/checks.md",
+        "sha256": "47087b20e5e400af00c6061caab2da9c625b8c47b8e6cb8c217736745f4f5781"
+      },
+      {
+        "path": "modules/45-implement-1-d-cell-averaging-cfar/experiment.m",
+        "sha256": "b627a15a26623f46669ad930c3a556c239555ec758d1286f31d1b4ed31bba437"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "47db7ce7dc174903479c8092462b75853ce660858cd1e637505d1f155eef6570",
+    "files": [
+      {
+        "path": "modules/45-implement-1-d-cell-averaging-cfar/experiment.py",
+        "sha256": "ee39eb5d5854806f661e5e91bec08fd9823fddcb3e3742e4bc66a8bce045da18"
+      },
+      {
+        "path": "modules/45-implement-1-d-cell-averaging-cfar/lesson.md",
+        "sha256": "df92de0fc5fbdd7c4b953b376bac805deac910fd397fc4f380b1ccef8e42e2c1"
+      },
+      {
+        "path": "modules/45-implement-1-d-cell-averaging-cfar/module.yaml",
+        "sha256": "4948b0912823f2835880670f3a0e52ce15eaf1f8a0224b92a60e84088a3351b4"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How can the threshold adapt to the local noise level?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary CFAR Pfa while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 4501,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "0e0e9f8f3615ab8be51e0f45d03d33015f0e193037223c236a30b5614259436a",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "c1a2f55e419d6ec3fb67444a635c5b339cf245c6b8ed5f6fa50c2a416722ec1b",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P45 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "cell index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "power / threshold",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Implement 1-D Cell-Averaging CFAR guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P45 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "cell index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "power / threshold",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Implement 1-D Cell-Averaging CFAR guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P45 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "cell index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "power / threshold",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Implement 1-D Cell-Averaging CFAR guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P45 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "cell index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "power / threshold",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Implement 1-D Cell-Averaging CFAR guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing CFAR Pfa moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P45 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 4501,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/45-implement-1-d-cell-averaging-cfar/evidence/expected-baseline.json",
+          "sha256": "0e0e9f8f3615ab8be51e0f45d03d33015f0e193037223c236a30b5614259436a"
+        },
+        "actual": {
+          "path": "modules/45-implement-1-d-cell-averaging-cfar/evidence/actual-baseline.json",
+          "sha256": "86efe7396e4c1e3af51c891b52cc8698636e61044cc4c7788f74a7e1a27f7e09"
+        },
+        "max_absolute_error": 2.6204038938715257e-13,
+        "max_relative_error": 2.6204038938715257e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/45-implement-1-d-cell-averaging-cfar/evidence/expected-broken.json",
+          "sha256": "c1a2f55e419d6ec3fb67444a635c5b339cf245c6b8ed5f6fa50c2a416722ec1b"
+        },
+        "actual": {
+          "path": "modules/45-implement-1-d-cell-averaging-cfar/evidence/actual-broken.json",
+          "sha256": "9790c8c788f4bd8aefb290fcdfdc01f91a3f736dacdedfd075d29d1653424df0"
+        },
+        "max_absolute_error": 3.3661962106634746e-13,
+        "max_relative_error": 3.3661962106634746e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

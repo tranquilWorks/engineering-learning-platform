@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P53",
+    "number": 53,
+    "source_folder": "modules/53-group-detection-cells-into-target-reports",
+    "target_module_id": "53-group-detection-cells-into-target-reports",
+    "target_folder": "modules/53-group-detection-cells-into-target-reports",
+    "batch_id": "ELP-DSP-P53",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/53-group-detection-cells-into-target-reports/README.md",
+        "sha256": "741004c598985496af37e5f67f06e9e4fc0dc5f5c22446aa020af3c45aa425ec"
+      },
+      {
+        "path": "modules/53-group-detection-cells-into-target-reports/lesson.md",
+        "sha256": "bed72898979bcc02983dd3289acd18667a70c2cc7506d7ebadacee972769191b"
+      },
+      {
+        "path": "modules/53-group-detection-cells-into-target-reports/walkthrough.md",
+        "sha256": "d230a3233f998cb9a17ac7146b3a29f445291192306b006367c22ceb74af1903"
+      },
+      {
+        "path": "modules/53-group-detection-cells-into-target-reports/checks.md",
+        "sha256": "54c70827d2229c4124a1de5db36493e1147f6a8417632b34004eb2aaaeb096a4"
+      },
+      {
+        "path": "modules/53-group-detection-cells-into-target-reports/experiment.m",
+        "sha256": "d232593bb146e3b98fcc5c8cbf57a6160fb53b89ba919097e7256f6a544630ff"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "c17fa233cb9e21126b4b34b331823ef42a143c1cf5b766e27abd3da92a9c8ece",
+    "files": [
+      {
+        "path": "modules/53-group-detection-cells-into-target-reports/experiment.py",
+        "sha256": "2533b2352278358d5c316b62c8afcffe8e6c24587646707d2abe4bb93989ae61"
+      },
+      {
+        "path": "modules/53-group-detection-cells-into-target-reports/lesson.md",
+        "sha256": "3cb4f01c943673c45539c1aa7f3ce8eca7cbca116003f0deb3f853811293cec8"
+      },
+      {
+        "path": "modules/53-group-detection-cells-into-target-reports/module.yaml",
+        "sha256": "defdeec54dbda7c220492c2d5bbf4121eafb0afd4b3e90261498af4accc90bea"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How do several threshold-crossing cells become one physical detection?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary grouping radius while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 5301,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "79ecdbd71dd139482cfc3df5ecf7c1916640504a47a5a640fb11d1f6af87a148",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "2a3686e9cc0fb38a5db12cf9b86d63f404b9f71e26460225a33e0e7536ecd104",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P53 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "time step",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "position / innovation",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Group Detection Cells into Target Reports guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P53 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "time step",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "position / innovation",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Group Detection Cells into Target Reports guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P53 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "time step",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "position / innovation",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Group Detection Cells into Target Reports guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P53 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "time step",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "position / innovation",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Group Detection Cells into Target Reports guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing grouping radius moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P53 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 5301,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/53-group-detection-cells-into-target-reports/evidence/expected-baseline.json",
+          "sha256": "79ecdbd71dd139482cfc3df5ecf7c1916640504a47a5a640fb11d1f6af87a148"
+        },
+        "actual": {
+          "path": "modules/53-group-detection-cells-into-target-reports/evidence/actual-baseline.json",
+          "sha256": "0f6d7fdb93666d31e098457760c290d26389548def16331bbe7d8fe82d12fa03"
+        },
+        "max_absolute_error": 4.1389114358025836e-13,
+        "max_relative_error": 1.5193402091995267e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/53-group-detection-cells-into-target-reports/evidence/expected-broken.json",
+          "sha256": "2a3686e9cc0fb38a5db12cf9b86d63f404b9f71e26460225a33e0e7536ecd104"
+        },
+        "actual": {
+          "path": "modules/53-group-detection-cells-into-target-reports/evidence/actual-broken.json",
+          "sha256": "37ebd51f0f734cc654ca379cefc4618711cbfc9a855c5a2e19d010563d4d6184"
+        },
+        "max_absolute_error": 4.1389114358025836e-13,
+        "max_relative_error": 1.3510457562420626e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

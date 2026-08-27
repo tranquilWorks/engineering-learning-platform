@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P84",
+    "number": 84,
+    "source_folder": "modules/84-run-the-end-to-end-radar-processing-capstone",
+    "target_module_id": "84-run-the-end-to-end-radar-processing-capstone",
+    "target_folder": "modules/84-run-the-end-to-end-radar-processing-capstone",
+    "batch_id": "ELP-DSP-P84",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/84-run-the-end-to-end-radar-processing-capstone/README.md",
+        "sha256": "d2a8df1d1a41b4cb3e508adef2304a0342221b13e9f511959d52501283ac04c2"
+      },
+      {
+        "path": "modules/84-run-the-end-to-end-radar-processing-capstone/lesson.md",
+        "sha256": "50d8e3edbad66a80760f96660f34a1ce3edfce9506950da7e8285cf917dedaf8"
+      },
+      {
+        "path": "modules/84-run-the-end-to-end-radar-processing-capstone/walkthrough.md",
+        "sha256": "5e852317e3abbf6eb26ef201b99e53c12823834780cc7592cee5660d07099544"
+      },
+      {
+        "path": "modules/84-run-the-end-to-end-radar-processing-capstone/checks.md",
+        "sha256": "715b18b0babbb57273f58ce49210fa143babb5fc1e30a7e55dd90051bc39a8d4"
+      },
+      {
+        "path": "modules/84-run-the-end-to-end-radar-processing-capstone/experiment.m",
+        "sha256": "4c28d453511caa0cc0ee14abe96e7aa6910b4456ece654675286f98fc82c8767"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "217eaa33137be18d1b17b8663980385930c5d7e27530fef29063184fd29afc2e",
+    "files": [
+      {
+        "path": "modules/84-run-the-end-to-end-radar-processing-capstone/experiment.py",
+        "sha256": "2bbbf11c1a83b99f87166db6576b97d07a943e788f746fb4aba6e30dd64b0f49"
+      },
+      {
+        "path": "modules/84-run-the-end-to-end-radar-processing-capstone/lesson.md",
+        "sha256": "c961796ec942bc49a2ce82309e90389ed280f50109e5390c6af6205c1824c541"
+      },
+      {
+        "path": "modules/84-run-the-end-to-end-radar-processing-capstone/module.yaml",
+        "sha256": "0b6f86320f5fe39c180c570329c9315326bb5a7ba445cef2264cd7bf9bc30d1f"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "Can I trace a target from waveform generation through detection and tracking without treating any stage as a black box?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary target SNR while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "s(t)=\\exp\\{j\\pi (B/T)t^2\\},\\qquad |t|<T/2.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "\\Delta v=\\frac{\\lambda\\,PRF}{2N_p}.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "z=y+\\epsilon y^*+d.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 1084,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "dbe3afd3dd236eb54ed9e92988ceba9707f1fb91a79b9cf280af55f8d0c8a34c",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "3b60ba9d04230bfd18425910899020eb722d3e507e8a5d8f7d4a1e5dc9ae1ba7",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P84 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range/cross-range coordinate",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized intensity",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Run the End-to-End Radar Processing Capstone guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P84 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range/cross-range coordinate",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized intensity",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Run the End-to-End Radar Processing Capstone guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P84 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range/cross-range coordinate",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized intensity",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Run the End-to-End Radar Processing Capstone guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P84 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range/cross-range coordinate",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized intensity",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Run the End-to-End Radar Processing Capstone guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing target SNR moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P84 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 1084,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/84-run-the-end-to-end-radar-processing-capstone/evidence/expected-baseline.json",
+          "sha256": "dbe3afd3dd236eb54ed9e92988ceba9707f1fb91a79b9cf280af55f8d0c8a34c"
+        },
+        "actual": {
+          "path": "modules/84-run-the-end-to-end-radar-processing-capstone/evidence/actual-baseline.json",
+          "sha256": "6a091aecf5c87e0a1568d33f163100f568987d51dcefe5d043dfaa8183507373"
+        },
+        "max_absolute_error": 4.2234271635521736e-13,
+        "max_relative_error": 4.2234271635521736e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/84-run-the-end-to-end-radar-processing-capstone/evidence/expected-broken.json",
+          "sha256": "3b60ba9d04230bfd18425910899020eb722d3e507e8a5d8f7d4a1e5dc9ae1ba7"
+        },
+        "actual": {
+          "path": "modules/84-run-the-end-to-end-radar-processing-capstone/evidence/actual-broken.json",
+          "sha256": "b8591bd1726403d944975ec4e62509375a633adb20f73554299447a25a50b5bb"
+        },
+        "max_absolute_error": 3.9623859748871837e-13,
+        "max_relative_error": 3.9623859748871837e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

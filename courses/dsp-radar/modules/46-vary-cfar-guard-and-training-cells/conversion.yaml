@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P46",
+    "number": 46,
+    "source_folder": "modules/46-vary-cfar-guard-and-training-cells",
+    "target_module_id": "46-vary-cfar-guard-and-training-cells",
+    "target_folder": "modules/46-vary-cfar-guard-and-training-cells",
+    "batch_id": "ELP-DSP-P46",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/46-vary-cfar-guard-and-training-cells/README.md",
+        "sha256": "d6224b1c8144d75558fd0bce56d25ffde2295b79e0bb5b1ca06d10087695e5ea"
+      },
+      {
+        "path": "modules/46-vary-cfar-guard-and-training-cells/lesson.md",
+        "sha256": "9b8e2be0efe638927885e2da369f0a57303825e67c03e5cdfa292bbdff0dd37c"
+      },
+      {
+        "path": "modules/46-vary-cfar-guard-and-training-cells/walkthrough.md",
+        "sha256": "7bcbe74ecef4cabcdc47cd2fd37027ede1103624ac27976b64c2523ba7b6995a"
+      },
+      {
+        "path": "modules/46-vary-cfar-guard-and-training-cells/checks.md",
+        "sha256": "f94d8734cec241ae270792014549e5041e3c075969432d91829556b11c6a6f31"
+      },
+      {
+        "path": "modules/46-vary-cfar-guard-and-training-cells/experiment.m",
+        "sha256": "1011cfc62c8d97242b9c31292d8d8ee855a3b9f8f52d851ac8f253d204babd08"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "4d10c2da4beb4220eb1e07823f1ec61ee26d58e1ac35597cdad6a65d915c86af",
+    "files": [
+      {
+        "path": "modules/46-vary-cfar-guard-and-training-cells/experiment.py",
+        "sha256": "07e8c08aa4f237a536e5e98e753914c21e8d9cb4c65f347f21f9796e6c0078ff"
+      },
+      {
+        "path": "modules/46-vary-cfar-guard-and-training-cells/lesson.md",
+        "sha256": "25208d14a05a2af048fa1f1d3e98ff97ea0e55754948a7e167128ce7055ff805"
+      },
+      {
+        "path": "modules/46-vary-cfar-guard-and-training-cells/module.yaml",
+        "sha256": "c8b5eb81d6cac7c22f86a0ac4df24e650c7aac27dad9819fff6b8dff0a05adbd"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "What happens when the CFAR reference window is too small, too large, or contaminated?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary CFAR guard width while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 4601,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "ebf1642c3ecc48cb93a5d9ad0bdf63d3087f91b0db76eb00bcf0d86c2e21b660",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "7526fbf0a3179649bb7f586f0bdb2f7d407ce74ae76536596db68d9c1e827865",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P46 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "cell index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "power / threshold",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Vary CFAR Guard and Training Cells guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P46 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "cell index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "power / threshold",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Vary CFAR Guard and Training Cells guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P46 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "cell index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "power / threshold",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Vary CFAR Guard and Training Cells guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P46 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "cell index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "power / threshold",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Vary CFAR Guard and Training Cells guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing CFAR guard width moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P46 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 4601,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/46-vary-cfar-guard-and-training-cells/evidence/expected-baseline.json",
+          "sha256": "ebf1642c3ecc48cb93a5d9ad0bdf63d3087f91b0db76eb00bcf0d86c2e21b660"
+        },
+        "actual": {
+          "path": "modules/46-vary-cfar-guard-and-training-cells/evidence/actual-baseline.json",
+          "sha256": "ed752f8786a09d050b754e6ec949b46372808dcf5606fff117d66e215ab18d46"
+        },
+        "max_absolute_error": 4.24091317619002e-13,
+        "max_relative_error": 4.24091317619002e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/46-vary-cfar-guard-and-training-cells/evidence/expected-broken.json",
+          "sha256": "7526fbf0a3179649bb7f586f0bdb2f7d407ce74ae76536596db68d9c1e827865"
+        },
+        "actual": {
+          "path": "modules/46-vary-cfar-guard-and-training-cells/evidence/actual-broken.json",
+          "sha256": "dd8e0b2e152dae8e50f8fae067eb3a1857bd27e7604b6cc8bf8a079cd3cfc5a8"
+        },
+        "max_absolute_error": 1.709743457922741e-13,
+        "max_relative_error": 1.709743457922741e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

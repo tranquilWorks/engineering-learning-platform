@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P29",
+    "number": 29,
+    "source_folder": "modules/29-build-a-radar-power-budget-experiment",
+    "target_module_id": "29-build-a-radar-power-budget-experiment",
+    "target_folder": "modules/29-build-a-radar-power-budget-experiment",
+    "batch_id": "ELP-DSP-P29",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/29-build-a-radar-power-budget-experiment/README.md",
+        "sha256": "c76851dfc1f29add959ff97ca7c8d2b959e0c3ed7c65176f120a031634f8c02c"
+      },
+      {
+        "path": "modules/29-build-a-radar-power-budget-experiment/lesson.md",
+        "sha256": "d8f45c7246e22a1d4e820c0a9ed716aa91e21704208510e2ae6dbab37df94774"
+      },
+      {
+        "path": "modules/29-build-a-radar-power-budget-experiment/walkthrough.md",
+        "sha256": "90335a78137ce731fc1cc7aa06f4a65bc4092127cee3e9a57935798bfb204f0b"
+      },
+      {
+        "path": "modules/29-build-a-radar-power-budget-experiment/checks.md",
+        "sha256": "b9129078c0380142e37682792b8b2e4159c56624d8d3612acbd0bff7f4e855e8"
+      },
+      {
+        "path": "modules/29-build-a-radar-power-budget-experiment/experiment.m",
+        "sha256": "402f22512446289035d50e547092cff32964c6092870a8903ca2b343497e204d"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "4bad782cedf55503231c9c0aa09e881fead1774157bbd21f57e32d58326ed08a",
+    "files": [
+      {
+        "path": "modules/29-build-a-radar-power-budget-experiment/experiment.py",
+        "sha256": "fa46eddab9c2aafe4d705655f1281144cbc7fc11892e26f0a9ad13d2a68c37ef"
+      },
+      {
+        "path": "modules/29-build-a-radar-power-budget-experiment/lesson.md",
+        "sha256": "5c075098dcbfeaac1fd9c8df920f0e90658a95881debc8ee4f6dc89ce5e58bf8"
+      },
+      {
+        "path": "modules/29-build-a-radar-power-budget-experiment/module.yaml",
+        "sha256": "7d64477cf6d05c27e5adf1de2f0c3da69cae2aadb0d228c86d89e273d043e9a2"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How quickly does received echo power fall with range?",
+    "physical_model": "A monostatic radar uses the same site to transmit and receive. Its pulse spreads out on the trip to the target, the target redirects only a fraction described by its radar cross section (RCS), and the echo spreads out again on the trip home. Those two geometric spreading trips are why range appears to the fourth power, not the second: \\[ P_r(R)=\\frac{P_t G_t G_r \\lambda^2 \\sigma} {(4\\pi)^3 R^4 L}. \\] Here `P_t` and `P_r` are transmit and received power in watts, `G_t` and `G_r` are dimensionless power gains, `lambda` is wavelength in metres, `sigma` is RCS in square metres, `R` is range in metres, and `L` is a dimensionless loss factor greater than or equal to one. The experiment converts gains and losses from dB to linear ratios before applying this equation. It then converts watts to dBW with `10 log10(P/1 W)` and to dBm by adding 30 dB. This is a power-budget model, not a waveform or range-estimation model. P30 will turn round-trip delay into measured range; P29 asks whether an echo at a stated range is strong enough to clear an illustrative receiver threshold.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary target range while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "P_r(R)=\\frac{P_t G_t G_r \\lambda^2 \\sigma} {(4\\pi)^3 R^4 L}.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "\\frac{P_r(2R)}{P_r(R)}=\\frac{1}{2^4}=\\frac{1}{16}.",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "N=kTBF,",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 2901,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "52c13b6e3ab4bff9997fb4194476ad96fdd12b7fb9f184c90528056af802b08d",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "df63b4674ec9cc45f7a666f8f83744acd1cea503b2e7672154aaf59e328c2dcd",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P29 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build a Radar Power-Budget Experiment guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P29 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build a Radar Power-Budget Experiment guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P29 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build a Radar Power-Budget Experiment guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P29 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "range bin",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized response",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build a Radar Power-Budget Experiment guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing target range moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P29 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 2901,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/29-build-a-radar-power-budget-experiment/evidence/expected-baseline.json",
+          "sha256": "52c13b6e3ab4bff9997fb4194476ad96fdd12b7fb9f184c90528056af802b08d"
+        },
+        "actual": {
+          "path": "modules/29-build-a-radar-power-budget-experiment/evidence/actual-baseline.json",
+          "sha256": "5bf5682797da10546ea41699bcf38a4e0cd2e4f43d4c75ea00f5008997bef97d"
+        },
+        "max_absolute_error": 3.154629335533343e-13,
+        "max_relative_error": 3.154629335533343e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/29-build-a-radar-power-budget-experiment/evidence/expected-broken.json",
+          "sha256": "df63b4674ec9cc45f7a666f8f83744acd1cea503b2e7672154aaf59e328c2dcd"
+        },
+        "actual": {
+          "path": "modules/29-build-a-radar-power-budget-experiment/evidence/actual-broken.json",
+          "sha256": "5c00922f35d2eb9a8a4f24c886c73b2f93b2787ef0fcbffe1257fb497fcf9883"
+        },
+        "max_absolute_error": 3.154559946594304e-13,
+        "max_relative_error": 3.154559946594304e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

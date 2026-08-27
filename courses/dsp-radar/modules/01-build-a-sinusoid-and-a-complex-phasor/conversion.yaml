@@ -1,0 +1,220 @@
+schema_version: 1
+course_id: dsp-radar
+item:
+  id: P01
+  number: 1
+  source_folder: modules/01-build-a-sinusoid-and-a-complex-phasor
+  target_module_id: 01-build-a-sinusoid-and-a-complex-phasor
+  target_folder: modules/01-build-a-sinusoid-and-a-complex-phasor
+  batch_id: ELP-DSP-P01
+  source_map_sha256: dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05
+  source_inputs:
+    - path: modules/01-build-a-sinusoid-and-a-complex-phasor/README.md
+      sha256: c3d51379490c50af34566cacbcd87ffff43b262b574fd372b0ae654dfcda98fd
+    - path: modules/01-build-a-sinusoid-and-a-complex-phasor/lesson.md
+      sha256: 9e67b50d398ac5b7cff745a2e996c5747a956eda930f5f48444860e20179996d
+    - path: modules/01-build-a-sinusoid-and-a-complex-phasor/walkthrough.md
+      sha256: e353e35d3f94d07e2d58fc0ec7d51d0d3e829dfda727c5fbf4dbb632bacec7e9
+    - path: modules/01-build-a-sinusoid-and-a-complex-phasor/checks.md
+      sha256: 93c0b9f68a30f5c5fc805d0b1086b4e57aa0b8c99236ea80de17a559db6a7104
+    - path: modules/01-build-a-sinusoid-and-a-complex-phasor/experiment.m
+      sha256: 9389da332cf4bfd9554dd7ebc55bbdadb3aa48ace1cce040001dafd422c4286c
+target:
+  content_digest: 453f07066f53b72fc6b54469f1dc46f03132ebeb48e60463444412942219f20d
+  files:
+    - path: modules/01-build-a-sinusoid-and-a-complex-phasor/module.yaml
+      sha256: 729a835bebc37bcf25eb2fdcdab6eeb9f2fe3411698bd869f561a2e28c79440c
+    - path: modules/01-build-a-sinusoid-and-a-complex-phasor/lesson.md
+      sha256: edec7fb4925e2714e132641007692c2bbcb3ab5f24455330e70cedcfcbdcf366
+    - path: modules/01-build-a-sinusoid-and-a-complex-phasor/experiment.py
+      sha256: 029f08a4138f0b5fabbf7cb1702dbb41cc368fd424cec226dfb8931b3def2485
+content:
+  guiding_question: How do amplitude, frequency, and phase appear in time and in the complex plane?
+  physical_model: A real sinusoid is the in-phase projection of a constant-radius complex phasor whose angular position advances by a signed phase increment at every sample.
+  signal_flow:
+    - Set amplitude, signed frequency, initial phase, sample rate, and record duration.
+    - Form the sample times and phase law before evaluating the complex exponential.
+    - Project the phasor onto I to obtain the real cosine while retaining Q to expose rotation.
+    - Compare adequate sampling with the deliberately aliased 5 Hz at 8 Sa/s record.
+  equations:
+    - latex: z[n]=A e^{j(2\pi f n/F_s+\phi)}
+      meaning: The sampled complex phasor has radius A and signed angular advance 2 pi f divided by Fs.
+    - latex: x[n]=\operatorname{Re}\{z[n]\}=A\cos(2\pi f n/F_s+\phi)
+      meaning: The real sinusoid is exactly the I-axis projection of the complex signal.
+    - latex: f_a=f-kF_s,\quad |f_a|\le F_s/2
+      meaning: Sampling folds frequencies by integer multiples of the sample rate into the Nyquist interval.
+  equation_order: before_toolbox_shortcuts
+  deterministic_data:
+    seed: 84
+    constants:
+      - name: baseline_amplitude
+        value: 1.0
+        unit: a.u.
+      - name: baseline_frequency
+        value: 5.0
+        unit: Hz
+      - name: baseline_phase
+        value: 0.5235987755982988
+        unit: rad
+      - name: baseline_sample_rate
+        value: 200.0
+        unit: Sa/s
+      - name: sample_ceiling
+        value: 5000
+        unit: samples
+    datasets:
+      - name: independent baseline signature
+        provenance: retained_fixture
+        sha256: f54c84c4e48b54fe02e4063411462e16177c44de70fc548d570a98080110e72f
+        unit: mixed numeric signature
+      - name: independent alias signature
+        provenance: retained_fixture
+        sha256: 1531ef97da427a49c737d6d848074c9319a154fa0ec0cb48af7d4ae38e800885
+        unit: mixed numeric signature
+  plot_sequence:
+    - source_figure: Figure 1 time-domain sinusoid and sampled points
+      target_plot_key: time_projection
+      title: Real cosine is the I-axis projection
+      axes:
+        - role: x
+          label: Time
+          unit: s
+        - role: y
+          label: Amplitude
+          unit: a.u.
+      interpretation: I matches the cosine exactly while Q supplies the component hidden by a real-only view.
+    - source_figure: Figure 2 complex-plane phasor trajectory
+      target_plot_key: iq_trajectory
+      title: Ordered IQ trajectory
+      axes:
+        - role: x
+          label: In-phase I
+          unit: a.u.
+        - role: y
+          label: Quadrature Q
+          unit: a.u.
+      interpretation: Amplitude sets radius, phase sets the starting point, and frequency sets signed rotation.
+    - source_figure: Figure 3 positive and negative frequency comparison
+      target_plot_key: rotation_direction
+      title: Signed complex frequency
+      axes:
+        - role: x
+          label: In-phase I
+          unit: a.u.
+        - role: y
+          label: Quadrature Q
+          unit: a.u.
+      interpretation: Positive and negative frequencies trace the same circle in opposite ordered directions.
+    - source_figure: Figures 4 through 6 amplitude phase and frequency sweeps
+      target_plot_key: parameter_sweeps
+      title: Isolated parameter effects
+      axes:
+        - role: x
+          label: Case index
+          unit: index
+        - role: y
+          label: Normalized observation
+          unit: normalized
+      interpretation: The three sweeps isolate radius, starting angle, and rotation count rather than conflating them.
+    - source_figure: Figure 7 aliasing demonstration
+      target_plot_key: alias_comparison
+      title: True waveform and sampled alias
+      axes:
+        - role: x
+          label: Time
+          unit: s
+        - role: y
+          label: Amplitude
+          unit: a.u.
+      interpretation: The 5 Hz and apparent 3 Hz cosines disagree between samples but are indistinguishable at the 8 Sa/s sample instants.
+  sweeps:
+    - control: amplitude
+      values: [0.5, 1.0, 1.5]
+      expected_observation: Time-domain peak and IQ radius scale together without changing phase or cycle count.
+    - control: phase_rad
+      values: [0.0, 0.7853981633974483, 1.5707963267948966]
+      expected_observation: The initial I/Q coordinate moves around the circle without changing radius or rotation rate.
+    - control: frequency_hz
+      values: [2.5, 5.0, 10.0]
+      expected_observation: Cycle count and phase step scale with frequency while the amplitude remains fixed.
+  broken_case:
+    trigger: Enable the forced 5 Hz at 8 Sa/s alias mode.
+    failure: The samples admit a 3 Hz cosine explanation because 5 Hz lies above the 4 Hz Nyquist boundary.
+    recovery: Disable alias mode and restore 200 Sa/s, giving 40 samples per cycle.
+    expected_observation: The apparent-frequency ambiguity disappears and the ordered phasor shows five well-resolved rotations.
+  common_mistakes:
+    - Treating Q as an extra physical tone instead of the orthogonal coordinate of the same complex signal.
+    - Assuming a negative frequency means negative amplitude rather than reversed complex-plane rotation.
+    - Checking only sample count instead of the sample rate relative to the highest signal frequency.
+  completion_checklist:
+    - Explain how amplitude, phase, and signed frequency appear in both the time and IQ plots.
+    - Derive the baseline initial I and Q values from A equals one and phase equals pi over six.
+    - Predict the 3 Hz apparent alias before enabling the broken case.
+    - State why raising the sample rate recovers interpretability rather than reconstructing information from an already ambiguous record.
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3.0
+  max_samples: 5000
+  max_output_bytes: 1000000
+python_source_equivalence:
+  status: passed
+  command: python -m pytest -q apps/api/tests/test_dsp_course.py -k P01
+  seed: 84
+  inputs:
+    - name: amplitude
+      value: 1.0
+      unit: a.u.
+    - name: frequency
+      value: 5.0
+      unit: Hz
+    - name: phase
+      value: 0.5235987755982988
+      unit: rad
+    - name: sample_rate
+      value: 200.0
+      unit: Sa/s
+  cases:
+    - name: baseline-phasor-signature
+      units: mixed numeric signature
+      tolerance:
+        absolute: 1.0e-12
+        relative: 1.0e-12
+      expected:
+        path: modules/01-build-a-sinusoid-and-a-complex-phasor/evidence/expected-baseline.json
+        sha256: f54c84c4e48b54fe02e4063411462e16177c44de70fc548d570a98080110e72f
+      actual:
+        path: modules/01-build-a-sinusoid-and-a-complex-phasor/evidence/actual-baseline.json
+        sha256: ccc12a18855cac7868ed791d8ae7a7b765fdbd3f2356f04878aafa6264793155
+      max_absolute_error: 2.220446049250313e-16
+      max_relative_error: 2.220446049250313e-16
+      passed: true
+    - name: aliased-sample-signature
+      units: mixed numeric signature
+      tolerance:
+        absolute: 1.0e-12
+        relative: 1.0e-12
+      expected:
+        path: modules/01-build-a-sinusoid-and-a-complex-phasor/evidence/expected-alias.json
+        sha256: 1531ef97da427a49c737d6d848074c9319a154fa0ec0cb48af7d4ae38e800885
+      actual:
+        path: modules/01-build-a-sinusoid-and-a-complex-phasor/evidence/actual-alias.json
+        sha256: cdbc6c5c3e7a032314d15da51c0a76602a4efcdff7af9d31641ddd84fda829fd
+      max_absolute_error: 2.831068712794149e-15
+      max_relative_error: 2.831068712794149e-15
+      passed: true
+matlab_runtime_parity:
+  status: not_run
+  reason: A licensed MATLAB runtime is not available in the target verification environment; equivalence is bound to independently derived source equations and retained numeric evidence.
+claims:
+  profile: elp-dsp-item-software-v1
+  browser_visual_review:
+    status: not_run
+    reason: Browser review is deferred until the complete 84-module catalog is available in one integrated sweep.
+  accessibility_review:
+    status: not_run
+    reason: Accessibility review is deferred until the complete 84-module catalog is available in one integrated sweep.
+  learner_effectiveness:
+    status: not_run
+    reason: Learner effectiveness requires post-release study and is not claimed by this software conversion.

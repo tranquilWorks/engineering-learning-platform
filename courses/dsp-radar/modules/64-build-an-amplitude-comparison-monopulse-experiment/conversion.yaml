@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P64",
+    "number": 64,
+    "source_folder": "modules/64-build-an-amplitude-comparison-monopulse-experiment",
+    "target_module_id": "64-build-an-amplitude-comparison-monopulse-experiment",
+    "target_folder": "modules/64-build-an-amplitude-comparison-monopulse-experiment",
+    "batch_id": "ELP-DSP-P64",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/64-build-an-amplitude-comparison-monopulse-experiment/README.md",
+        "sha256": "75fbcdb976a2b3fdd879cacbf470b0fd7225022a79e933cc5def3ff251f97635"
+      },
+      {
+        "path": "modules/64-build-an-amplitude-comparison-monopulse-experiment/lesson.md",
+        "sha256": "c5c6d8b16b774cf26baef2d650964f96429f42391dd7481df4f143452f5c7da1"
+      },
+      {
+        "path": "modules/64-build-an-amplitude-comparison-monopulse-experiment/walkthrough.md",
+        "sha256": "f2370877f62e968dccaaeffcddf3378d4ec803e27c3a4043a2b73cbce65982f3"
+      },
+      {
+        "path": "modules/64-build-an-amplitude-comparison-monopulse-experiment/checks.md",
+        "sha256": "40d118eb1c921bf6a7b7b4f4c1625a4faf3b7bb4d817d199167f13217b0d8be9"
+      },
+      {
+        "path": "modules/64-build-an-amplitude-comparison-monopulse-experiment/experiment.m",
+        "sha256": "c8b6bb9b6bcbdc6f4b817462de2b5a3a8cf9a0191cf22143da3f3d15ad0bf35a"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "1eff4902f540079d50514e06dee94cf0cf140adbcdf74f3039302381c6c1483f",
+    "files": [
+      {
+        "path": "modules/64-build-an-amplitude-comparison-monopulse-experiment/experiment.py",
+        "sha256": "00b7cb1485cb8a048ea5f4a539fe3f1503b0b6a751673709dfd1d874142191f6"
+      },
+      {
+        "path": "modules/64-build-an-amplitude-comparison-monopulse-experiment/lesson.md",
+        "sha256": "44c1c4be87426c6b26806fe060c546475f1ddd0277f2fcfabe69fea1dd426aec"
+      },
+      {
+        "path": "modules/64-build-an-amplitude-comparison-monopulse-experiment/module.yaml",
+        "sha256": "3d36586eca1a8732f5227a902797524557408930e30c6e1b72c5a5e888eeed8b"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "How can sum and difference beams estimate small angle error around boresight?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary angle error while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "y=\\mathcal{H}(x)",
+        "meaning": "The processing stage maps an input measurement into an observable output."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 1064,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "951eaa8a6c6cf1dada5025ec5add2ec1e8fff91e7f54cbc98c51b05d9cf15fd4",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "36b884362a8de862ab41415072c6304362c5c89779d0a13002ac4b53458ec88c",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P64 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "look angle (deg)",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized power",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build an Amplitude-Comparison Monopulse Experiment guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P64 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "look angle (deg)",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized power",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build an Amplitude-Comparison Monopulse Experiment guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P64 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "look angle (deg)",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized power",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build an Amplitude-Comparison Monopulse Experiment guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P64 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "look angle (deg)",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "normalized power",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Build an Amplitude-Comparison Monopulse Experiment guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing angle error moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P64 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 1064,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/64-build-an-amplitude-comparison-monopulse-experiment/evidence/expected-baseline.json",
+          "sha256": "951eaa8a6c6cf1dada5025ec5add2ec1e8fff91e7f54cbc98c51b05d9cf15fd4"
+        },
+        "actual": {
+          "path": "modules/64-build-an-amplitude-comparison-monopulse-experiment/evidence/actual-baseline.json",
+          "sha256": "e94a8636a0b7424cf23e72e0d567cff20d804eacfc278d8e8e6580e80ab569b7"
+        },
+        "max_absolute_error": 2.819411371035585e-13,
+        "max_relative_error": 2.819411371035585e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/64-build-an-amplitude-comparison-monopulse-experiment/evidence/expected-broken.json",
+          "sha256": "36b884362a8de862ab41415072c6304362c5c89779d0a13002ac4b53458ec88c"
+        },
+        "actual": {
+          "path": "modules/64-build-an-amplitude-comparison-monopulse-experiment/evidence/actual-broken.json",
+          "sha256": "5bf42bbff6684b75557c92d1c45f2f3212c41a15636e80aff19b0e0222bdf76c"
+        },
+        "max_absolute_error": 4.551914400963142e-13,
+        "max_relative_error": 4.551914400963142e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}

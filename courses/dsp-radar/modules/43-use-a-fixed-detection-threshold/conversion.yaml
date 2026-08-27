@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "course_id": "dsp-radar",
+  "item": {
+    "id": "P43",
+    "number": 43,
+    "source_folder": "modules/43-use-a-fixed-detection-threshold",
+    "target_module_id": "43-use-a-fixed-detection-threshold",
+    "target_folder": "modules/43-use-a-fixed-detection-threshold",
+    "batch_id": "ELP-DSP-P43",
+    "source_map_sha256": "dc46c37e2f1e8701127a504200c7a4fd9f84a9da5d7f2064474195eec7cb0e05",
+    "source_inputs": [
+      {
+        "path": "modules/43-use-a-fixed-detection-threshold/README.md",
+        "sha256": "13d1bc70eee502efaff897ed46a8f41393f736955c85be1d3b9f37680c6888bb"
+      },
+      {
+        "path": "modules/43-use-a-fixed-detection-threshold/lesson.md",
+        "sha256": "909c15c2b0224cd8f588cb8317795f779433edc1e70ba4055e1840c4ba191fa5"
+      },
+      {
+        "path": "modules/43-use-a-fixed-detection-threshold/walkthrough.md",
+        "sha256": "35d6abe1ae9e92b8fc0f07e98c19b06d50581b5e38c64b71cd20e242debc1408"
+      },
+      {
+        "path": "modules/43-use-a-fixed-detection-threshold/checks.md",
+        "sha256": "1c5a487dbf1489242fc1f5b2d94bdbbc11e1b5b6f5e8297e6c21975e590404a9"
+      },
+      {
+        "path": "modules/43-use-a-fixed-detection-threshold/experiment.m",
+        "sha256": "5cafd63d27db815c7e3e5e79c5415f53b3f190b608fb7d1ab275e4aa35051493"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "41071087398799f187dae77abe4098151d676311aa729792000b260d63a69792",
+    "files": [
+      {
+        "path": "modules/43-use-a-fixed-detection-threshold/experiment.py",
+        "sha256": "fad0e50eba580108c252fc77ab2ae50abcc61f7480683c69bff3996d24bd94be"
+      },
+      {
+        "path": "modules/43-use-a-fixed-detection-threshold/lesson.md",
+        "sha256": "37a2bafd934c1f2f2db93b0d96cbefa0269ff5042e7676112985ded3f981e50f"
+      },
+      {
+        "path": "modules/43-use-a-fixed-detection-threshold/module.yaml",
+        "sha256": "9c908403657ab9c7094ce4842abe2a13ec833ceee58a7e0bdbdf8c939fbcaa8c"
+      }
+    ]
+  },
+  "content": {
+    "guiding_question": "Why does a threshold that works in one noise level fail in another?",
+    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "signal_flow": [
+      "Start from the pinned source baseline and governing equations.",
+      "Vary fixed threshold while holding secondary stress fixed.",
+      "Process the bounded deterministic measurement into the response view.",
+      "Violate one central assumption, interpret the failure, and restore the baseline."
+    ],
+    "equations": [
+      {
+        "latex": "x \\mathop{\\gtrless}_{H_0}^{H_1} \\gamma,",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "H_0: x=n, \\qquad H_1: x=A+n, \\qquad n\\sim\\mathcal{N}(0,\\sigma^2).",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      },
+      {
+        "latex": "P_{FA}=Q\\!\\left(\\frac{\\gamma}{\\sigma}\\right), \\qquad P_D=Q\\!\\left(\\frac{\\gamma-A}{\\sigma}\\right),",
+        "meaning": "Pinned source equation used to interpret the experiment response."
+      }
+    ],
+    "equation_order": "before_toolbox_shortcuts",
+    "deterministic_data": {
+      "seed": 4301,
+      "constants": [
+        {
+          "name": "primary_baseline_scale",
+          "value": 1.0,
+          "unit": "ratio"
+        },
+        {
+          "name": "secondary_baseline_stress",
+          "value": 0.25,
+          "unit": "normalized"
+        },
+        {
+          "name": "point_ceiling",
+          "value": 512,
+          "unit": "points"
+        }
+      ],
+      "datasets": [
+        {
+          "name": "independent baseline signature",
+          "provenance": "retained_fixture",
+          "sha256": "1ef881111c14e71e9cfb343898172b3933efa619fe8e1a4ff7b9dd6c21011206",
+          "unit": "mixed numeric signature"
+        },
+        {
+          "name": "independent broken-case signature",
+          "provenance": "retained_fixture",
+          "sha256": "c40454fbd6fa768c11ab2667a2c83e4448ff5815b832bf19087f4f70ea080acf",
+          "unit": "mixed numeric signature"
+        }
+      ]
+    },
+    "plot_sequence": [
+      {
+        "source_figure": "Pinned P43 source processing/plot sequence",
+        "target_plot_key": "model_view",
+        "title": "Physical model and measurements",
+        "axes": [
+          {
+            "role": "x",
+            "label": "cell index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "power / threshold",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Use a Fixed Detection Threshold guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P43 source processing/plot sequence",
+        "target_plot_key": "response_view",
+        "title": "Processed response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "cell index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "power / threshold",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Use a Fixed Detection Threshold guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P43 source processing/plot sequence",
+        "target_plot_key": "parameter_sweeps",
+        "title": "One-variable sweeps",
+        "axes": [
+          {
+            "role": "x",
+            "label": "cell index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "power / threshold",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Use a Fixed Detection Threshold guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      },
+      {
+        "source_figure": "Pinned P43 source processing/plot sequence",
+        "target_plot_key": "broken_case",
+        "title": "Broken assumption and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "cell index",
+            "unit": "source units"
+          },
+          {
+            "role": "y",
+            "label": "power / threshold",
+            "unit": "normalized"
+          }
+        ],
+        "interpretation": "This view answers the Use a Fixed Detection Threshold guiding question while preserving the source sign, normalization, and finite-record interpretation."
+      }
+    ],
+    "sweeps": [
+      {
+        "control": "primary_scale",
+        "values": [
+          0.6,
+          1.0,
+          1.4
+        ],
+        "expected_observation": "Changing fixed threshold moves the source-specific response while secondary stress remains fixed."
+      },
+      {
+        "control": "secondary_scale",
+        "values": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+      }
+    ],
+    "broken_case": {
+      "trigger": "Enable the central-assumption failure toggle.",
+      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
+      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
+      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+    },
+    "common_mistakes": [
+      "Changing two controls at once.",
+      "Ignoring sign, units, normalization, or finite-record effects.",
+      "Treating a plotted connection or processing artifact as an additional measurement."
+    ],
+    "completion_checklist": [
+      "Answer the exact guiding question.",
+      "Explain a governing equation in plain language.",
+      "Predict and verify both one-variable sweeps.",
+      "Name the broken assumption and demonstrate recovery."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0,
+    "max_samples": 512,
+    "max_output_bytes": 1000000
+  },
+  "python_source_equivalence": {
+    "status": "passed",
+    "command": "ELP_DSP_ITEM=P43 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "seed": 4301,
+    "inputs": [
+      {
+        "name": "primary_scale",
+        "value": 1.0,
+        "unit": "ratio"
+      },
+      {
+        "name": "secondary_scale",
+        "value": 0.25,
+        "unit": "normalized"
+      }
+    ],
+    "cases": [
+      {
+        "name": "baseline-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/43-use-a-fixed-detection-threshold/evidence/expected-baseline.json",
+          "sha256": "1ef881111c14e71e9cfb343898172b3933efa619fe8e1a4ff7b9dd6c21011206"
+        },
+        "actual": {
+          "path": "modules/43-use-a-fixed-detection-threshold/evidence/actual-baseline.json",
+          "sha256": "e6d8012d3c1833c0d5a3d172f8425ea4ffe7e84e716a7429d399e3b15f046f13"
+        },
+        "max_absolute_error": 4.020117572167692e-13,
+        "max_relative_error": 4.020117572167692e-13,
+        "passed": true
+      },
+      {
+        "name": "broken-source-signature",
+        "units": "mixed numeric signature",
+        "tolerance": {
+          "absolute": 1.1e-09,
+          "relative": 1.1e-09
+        },
+        "expected": {
+          "path": "modules/43-use-a-fixed-detection-threshold/evidence/expected-broken.json",
+          "sha256": "c40454fbd6fa768c11ab2667a2c83e4448ff5815b832bf19087f4f70ea080acf"
+        },
+        "actual": {
+          "path": "modules/43-use-a-fixed-detection-threshold/evidence/actual-broken.json",
+          "sha256": "73a612d59d8e3190b6f21d239c57a7d6c4486adf4a8ae14c1c311ceb47e008ba"
+        },
+        "max_absolute_error": 3.155253835984695e-13,
+        "max_relative_error": 3.155253835984695e-13,
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+  },
+  "claims": {
+    "profile": "elp-dsp-item-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+    }
+  }
+}
