@@ -1,0 +1,186 @@
+{
+  "schema_version": 1,
+  "course_id": "robotics-autonomy",
+  "item": {
+    "id": "P06",
+    "number": 6,
+    "source_folder": "modules/06-close-a-wheel-speed-loop",
+    "target_module_id": "06-close-a-wheel-speed-loop",
+    "target_folder": "modules/06-close-a-wheel-speed-loop",
+    "batch_id": "ELP-ROB-P01-P10",
+    "design_basis": "native_python_design",
+    "source_map_sha256": "6e2de2c7a4f1eb3992da157d0aeb4d562a0542af8860f030a6a608526c6ba723",
+    "source_inputs": [
+      {
+        "path": "modules/06-close-a-wheel-speed-loop/README.md",
+        "sha256": "9f33f7661933c4403ac292b16cd2cca4e24fce83a0a0ce6f46ff989a3a4e4307"
+      },
+      {
+        "path": "modules/06-close-a-wheel-speed-loop/checks.md",
+        "sha256": "0007b40b351527e440b3f871cf8dafaefc39028b732def1fd67dccfbcb830cd7"
+      },
+      {
+        "path": "modules/06-close-a-wheel-speed-loop/experiment.m",
+        "sha256": "60611df6c98561315e80828775ffd24e92b488704b6155efcc84c8efa22001c2"
+      },
+      {
+        "path": "modules/06-close-a-wheel-speed-loop/lesson.m",
+        "sha256": "4ce93028bf454911dd71ac54a4ab7a6750cfc23b8b518ccf33d1235d0e434125"
+      },
+      {
+        "path": "modules/06-close-a-wheel-speed-loop/lesson.md",
+        "sha256": "2f8466233bd1105d3d700dcf681edcef505dbcb767969709d3c5ebbe4ca01310"
+      },
+      {
+        "path": "modules/06-close-a-wheel-speed-loop/walkthrough.md",
+        "sha256": "1d099b81f1eb3352bc1058ccae980fcd108810939da206b175e6c39896bf42b6"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "a89383d4023ca99df406409346d815f406132b32cc4cb97f94868853c5fd8e9f",
+    "files": [
+      {
+        "path": "modules/06-close-a-wheel-speed-loop/experiment.py",
+        "sha256": "0d763394c7b5f764c521ee17cac6ec5b677abd9bb8fee278424a6e0ab4c82666"
+      },
+      {
+        "path": "modules/06-close-a-wheel-speed-loop/lesson.md",
+        "sha256": "f807d8145c95daf3f00dd92b9968eafe98029903d0492594c9a247e52303bd97"
+      },
+      {
+        "path": "modules/06-close-a-wheel-speed-loop/module.yaml",
+        "sha256": "158ed4b27b6fa6b980d0acd8b8a26d04086a55aa65dd33e68af911f232975a65"
+      }
+    ]
+  },
+  "learning": {
+    "guiding_question": "What inputs, observable effects, and failure modes matter when you close a Wheel-Speed Loop?",
+    "equations": [
+      {
+        "latex": "u_k=K_p e_k+K_i I_k",
+        "meaning": "PI control combines current and accumulated error."
+      },
+      {
+        "latex": "I_(k+1)=I_k+T_s e_k",
+        "meaning": "The discrete integral must include sample time."
+      }
+    ],
+    "coordinate_and_sign_convention": "Error is command minus measurement; positive voltage creates positive wheel speed.",
+    "units": [
+      "speed: rad/s",
+      "voltage: V",
+      "integral error: rad",
+      "sample time: s"
+    ],
+    "sweeps": [
+      {
+        "control": "kp_v_per_rad_s",
+        "values": [
+          0.5,
+          1.5,
+          3.5
+        ],
+        "expected_observation": "Proportional gain changes the first correction."
+      },
+      {
+        "control": "ki_v_per_rad",
+        "values": [
+          0.5,
+          4,
+          10
+        ],
+        "expected_observation": "Integral gain changes residual error and saturation."
+      }
+    ],
+    "broken_case": {
+      "name": "Unscaled discrete integrator",
+      "trigger": "Set broken_mode true.",
+      "failure": "Error is accumulated without multiplying by the 10 ms sample interval.",
+      "recovery": "Set broken_mode false and restore sample scaling plus anti-windup."
+    },
+    "limiting_cases": [
+      "Zero command and zero state remain zero.",
+      "With Ki=0, proportional control may retain steady error."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "timeout_seconds": 3,
+    "max_samples": 401,
+    "max_output_bytes": 1000000
+  },
+  "python_verification": {
+    "status": "passed",
+    "basis": "native_python_reference",
+    "reference_method": "Separately formulated sampled PI and saturated-plant recurrence.",
+    "oracle_file": "reference_cases.py",
+    "oracle_independence": "The reference module imports no production experiment and evaluates a closed-form, invariant, continuous-time, or separately formulated recurrence.",
+    "cases": [
+      {
+        "name": "baseline",
+        "expected": {
+          "path": "modules/06-close-a-wheel-speed-loop/evidence/expected-baseline.json",
+          "sha256": "dd06f18f860f28d0b156231dccb1a83db95dc5deb3633526cfdba4e034af5644"
+        },
+        "actual": {
+          "path": "modules/06-close-a-wheel-speed-loop/evidence/actual-baseline.json",
+          "sha256": "87c0bb8d77e30b268823e0bdccf621b401cb00033c21fc7f93ffe5da9d4c5bb0"
+        },
+        "max_absolute_error": 0,
+        "max_relative_error": 0,
+        "tolerance": {
+        "absolute": 1.0e-10,
+        "relative": 1.0e-10
+        },
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "expected": {
+          "path": "modules/06-close-a-wheel-speed-loop/evidence/expected-broken.json",
+          "sha256": "474ffa7f16e6029d936f9801dc36cba9e8cbea762abc50be1fdbbb365ad0ef54"
+        },
+        "actual": {
+          "path": "modules/06-close-a-wheel-speed-loop/evidence/actual-broken.json",
+          "sha256": "ae32fffda15bedb63fe0a4af6117dbe451ba9dfe5f9a1d20c74014e2bfa5dcaf"
+        },
+        "max_absolute_error": 0,
+        "max_relative_error": 0,
+        "tolerance": {
+        "absolute": 1.0e-10,
+        "relative": 1.0e-10
+        },
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "The pinned source item is a non-runnable scaffold and no licensed MATLAB runtime executed; native Python correctness is independently verified without a MATLAB parity claim."
+  },
+  "claims": {
+    "profile": "elp-robotics-native-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Browser visual review is a separate integrated evidence step."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Accessibility review is a separate integrated evidence step."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study."
+    },
+    "physical_system_validation": {
+      "status": "not_run",
+      "reason": "No physical robot, motor, encoder, IMU, bench, HIL, or field system executed."
+    },
+    "release_and_production": {
+      "status": "not_run",
+      "reason": "No release, deployment, credential, setting, or production operation occurred."
+    }
+  }
+}

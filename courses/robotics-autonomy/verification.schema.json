@@ -1,0 +1,473 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://engineering-learning-platform.local/schemas/robotics-verification-v1.json",
+  "title": "Robotics and Autonomy native lesson verification record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "course_id",
+    "item",
+    "target",
+    "learning",
+    "runtime",
+    "python_verification",
+    "matlab_runtime_parity",
+    "claims"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "course_id": {
+      "const": "robotics-autonomy"
+    },
+    "item": {
+      "$ref": "#/$defs/item"
+    },
+    "target": {
+      "$ref": "#/$defs/target"
+    },
+    "learning": {
+      "$ref": "#/$defs/learning"
+    },
+    "runtime": {
+      "$ref": "#/$defs/runtime"
+    },
+    "python_verification": {
+      "$ref": "#/$defs/pythonVerification"
+    },
+    "matlab_runtime_parity": {
+      "$ref": "#/$defs/notRun"
+    },
+    "claims": {
+      "$ref": "#/$defs/claims"
+    }
+  },
+  "$defs": {
+    "sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\\\.{1,2}(?:/|$))(?!.*//)[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*$"
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1
+    },
+    "file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/path"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha"
+        }
+      }
+    },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "number",
+        "source_folder",
+        "target_module_id",
+        "target_folder",
+        "batch_id",
+        "design_basis",
+        "source_map_sha256",
+        "source_inputs"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^P(?:0[1-9]|10)$"
+        },
+        "number": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "source_folder": {
+          "$ref": "#/$defs/path"
+        },
+        "target_module_id": {
+          "type": "string",
+          "pattern": "^(?:0[1-9]|10)-[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "target_folder": {
+          "$ref": "#/$defs/path"
+        },
+        "batch_id": {
+          "const": "ELP-ROB-P01-P10"
+        },
+        "design_basis": {
+          "enum": [
+            "implemented_source_design",
+            "native_python_design"
+          ]
+        },
+        "source_map_sha256": {
+          "$ref": "#/$defs/sha"
+        },
+        "source_inputs": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 9,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/file"
+          }
+        }
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "content_digest",
+        "files"
+      ],
+      "properties": {
+        "content_digest": {
+          "$ref": "#/$defs/sha"
+        },
+        "files": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/file"
+          }
+        }
+      }
+    },
+    "equation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "latex",
+        "meaning"
+      ],
+      "properties": {
+        "latex": {
+          "$ref": "#/$defs/text"
+        },
+        "meaning": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "sweep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "control",
+        "values",
+        "expected_observation"
+      ],
+      "properties": {
+        "control": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "values": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "number"
+          }
+        },
+        "expected_observation": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "broken": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "trigger",
+        "failure",
+        "recovery"
+      ],
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/text"
+        },
+        "trigger": {
+          "$ref": "#/$defs/text"
+        },
+        "failure": {
+          "$ref": "#/$defs/text"
+        },
+        "recovery": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "learning": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "guiding_question",
+        "equations",
+        "coordinate_and_sign_convention",
+        "units",
+        "sweeps",
+        "broken_case",
+        "limiting_cases"
+      ],
+      "properties": {
+        "guiding_question": {
+          "$ref": "#/$defs/text"
+        },
+        "equations": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/equation"
+          }
+        },
+        "coordinate_and_sign_convention": {
+          "$ref": "#/$defs/text"
+        },
+        "units": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "sweeps": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "$ref": "#/$defs/sweep"
+          }
+        },
+        "broken_case": {
+          "$ref": "#/$defs/broken"
+        },
+        "limiting_cases": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        }
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "entrypoint",
+        "timeout_seconds",
+        "max_samples",
+        "max_output_bytes"
+      ],
+      "properties": {
+        "kind": {
+          "const": "python"
+        },
+        "entrypoint": {
+          "const": "experiment.py:run"
+        },
+        "timeout_seconds": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 3
+        },
+        "max_samples": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12001
+        },
+        "max_output_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000
+        }
+      }
+    },
+    "tolerance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "absolute",
+        "relative"
+      ],
+      "properties": {
+        "absolute": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "relative": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/path"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha"
+        }
+      }
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "expected",
+        "actual",
+        "tolerance",
+        "max_absolute_error",
+        "max_relative_error",
+        "passed"
+      ],
+      "properties": {
+        "name": {
+          "enum": [
+            "baseline",
+            "broken"
+          ]
+        },
+        "expected": {
+          "$ref": "#/$defs/evidence"
+        },
+        "actual": {
+          "$ref": "#/$defs/evidence"
+        },
+        "tolerance": {
+          "$ref": "#/$defs/tolerance"
+        },
+        "max_absolute_error": {
+          "type": "number",
+          "minimum": 0
+        },
+        "max_relative_error": {
+          "type": "number",
+          "minimum": 0
+        },
+        "passed": {
+          "const": true
+        }
+      }
+    },
+    "pythonVerification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "basis",
+        "reference_method",
+        "oracle_file",
+        "oracle_independence",
+        "cases"
+      ],
+      "properties": {
+        "status": {
+          "const": "passed"
+        },
+        "basis": {
+          "enum": [
+            "source_design",
+            "native_python_reference"
+          ]
+        },
+        "reference_method": {
+          "$ref": "#/$defs/text"
+        },
+        "oracle_file": {
+          "const": "reference_cases.py"
+        },
+        "oracle_independence": {
+          "$ref": "#/$defs/text"
+        },
+        "cases": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "$ref": "#/$defs/case"
+          }
+        }
+      }
+    },
+    "notRun": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "reason"
+      ],
+      "properties": {
+        "status": {
+          "const": "not_run"
+        },
+        "reason": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "profile",
+        "browser_visual_review",
+        "accessibility_review",
+        "learner_effectiveness",
+        "physical_system_validation",
+        "release_and_production"
+      ],
+      "properties": {
+        "profile": {
+          "const": "elp-robotics-native-software-v1"
+        },
+        "browser_visual_review": {
+          "$ref": "#/$defs/notRun"
+        },
+        "accessibility_review": {
+          "$ref": "#/$defs/notRun"
+        },
+        "learner_effectiveness": {
+          "$ref": "#/$defs/notRun"
+        },
+        "physical_system_validation": {
+          "$ref": "#/$defs/notRun"
+        },
+        "release_and_production": {
+          "$ref": "#/$defs/notRun"
+        }
+      }
+    }
+  }
+}

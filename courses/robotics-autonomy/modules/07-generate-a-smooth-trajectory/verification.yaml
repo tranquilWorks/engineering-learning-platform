@@ -1,0 +1,186 @@
+{
+  "schema_version": 1,
+  "course_id": "robotics-autonomy",
+  "item": {
+    "id": "P07",
+    "number": 7,
+    "source_folder": "modules/07-generate-a-smooth-trajectory",
+    "target_module_id": "07-generate-a-smooth-trajectory",
+    "target_folder": "modules/07-generate-a-smooth-trajectory",
+    "batch_id": "ELP-ROB-P01-P10",
+    "design_basis": "native_python_design",
+    "source_map_sha256": "6e2de2c7a4f1eb3992da157d0aeb4d562a0542af8860f030a6a608526c6ba723",
+    "source_inputs": [
+      {
+        "path": "modules/07-generate-a-smooth-trajectory/README.md",
+        "sha256": "64d63100e9f50f25548f364357ff42aee2fe57b70f7b510314fbf1b14837558e"
+      },
+      {
+        "path": "modules/07-generate-a-smooth-trajectory/checks.md",
+        "sha256": "c66512b1da0d298129b9f9ddad9161dda94182faefd93ce4a6bc193a29da343a"
+      },
+      {
+        "path": "modules/07-generate-a-smooth-trajectory/experiment.m",
+        "sha256": "042ccd2824bc18994ea56ff6610de3ff1fcec0012cf0a7ded2e8d8d218285c00"
+      },
+      {
+        "path": "modules/07-generate-a-smooth-trajectory/lesson.m",
+        "sha256": "60efd74863ebadaaa6276b7d3badb92057e028b67b6989f66060afe7e99c2d2c"
+      },
+      {
+        "path": "modules/07-generate-a-smooth-trajectory/lesson.md",
+        "sha256": "1339a806f031f8bb677b9fb8a4e351744abe835c3594b025cdb8da5e7dc1b7ca"
+      },
+      {
+        "path": "modules/07-generate-a-smooth-trajectory/walkthrough.md",
+        "sha256": "e208d1c42edf133a989ff86278e3d00d522d261f32bfccb9bbe9f1a4755c9358"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "b382915eb9fa2ef81596c0f22716e8d354e516ec75d187f908ed4b697ea4e9a7",
+    "files": [
+      {
+        "path": "modules/07-generate-a-smooth-trajectory/experiment.py",
+        "sha256": "a6847dce897949843db8aa144cd0daeeefea7be843c012d065cf6b13dbd35ec7"
+      },
+      {
+        "path": "modules/07-generate-a-smooth-trajectory/lesson.md",
+        "sha256": "412b6681eb88c43d304b2ce0be0cbb0d55cfeb94e7d61b0e72084dd9f5840844"
+      },
+      {
+        "path": "modules/07-generate-a-smooth-trajectory/module.yaml",
+        "sha256": "38be27cfbe8a9520a62ea4138294607f30e4794ad195b0173af57489c4905261"
+      }
+    ]
+  },
+  "learning": {
+    "guiding_question": "What inputs, observable effects, and failure modes matter when you generate a Smooth Trajectory?",
+    "equations": [
+      {
+        "latex": "s(tau)=10tau^3-15tau^4+6tau^5",
+        "meaning": "Quintic progress satisfies rest-to-rest endpoint constraints."
+      },
+      {
+        "latex": "x=Ds, dx/dt=(D/T)s', d2x/dt2=(D/T^2)s''",
+        "meaning": "Distance and time scale derivatives predictably."
+      }
+    ],
+    "coordinate_and_sign_convention": "Positive one-dimensional motion uses normalized time tau=t/T in [0,1].",
+    "units": [
+      "position: m",
+      "velocity: m/s",
+      "acceleration: m/s^2",
+      "jerk: m/s^3"
+    ],
+    "sweeps": [
+      {
+        "control": "distance_m",
+        "values": [
+          0.5,
+          2,
+          4
+        ],
+        "expected_observation": "All dimensional outputs scale with distance."
+      },
+      {
+        "control": "duration_s",
+        "values": [
+          1.5,
+          4,
+          8
+        ],
+        "expected_observation": "Velocity scales as 1/T and acceleration as 1/T^2."
+      }
+    ],
+    "broken_case": {
+      "name": "Insufficient endpoint constraints",
+      "trigger": "Set broken_mode true.",
+      "failure": "A cubic profile leaves nonzero endpoint acceleration.",
+      "recovery": "Set broken_mode false and restore the quintic polynomial."
+    },
+    "limiting_cases": [
+      "Start and finish velocity are zero.",
+      "Start and finish acceleration are zero only for the quintic."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "timeout_seconds": 3,
+    "max_samples": 501,
+    "max_output_bytes": 1000000
+  },
+  "python_verification": {
+    "status": "passed",
+    "basis": "native_python_reference",
+    "reference_method": "Independent symbolic polynomial derivative evaluation.",
+    "oracle_file": "reference_cases.py",
+    "oracle_independence": "The reference module imports no production experiment and evaluates a closed-form, invariant, continuous-time, or separately formulated recurrence.",
+    "cases": [
+      {
+        "name": "baseline",
+        "expected": {
+          "path": "modules/07-generate-a-smooth-trajectory/evidence/expected-baseline.json",
+          "sha256": "3ca68bdad7245b0ee3ac59128263b6088ab0b245bd63709622fa1e0f003cc327"
+        },
+        "actual": {
+          "path": "modules/07-generate-a-smooth-trajectory/evidence/actual-baseline.json",
+          "sha256": "ac53b1200a5475c40aab1d5416c0bcd0b5e85dd251a975e938472e00d9ca8947"
+        },
+        "max_absolute_error": 0,
+        "max_relative_error": 0,
+        "tolerance": {
+        "absolute": 1.0e-10,
+        "relative": 1.0e-10
+        },
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "expected": {
+          "path": "modules/07-generate-a-smooth-trajectory/evidence/expected-broken.json",
+          "sha256": "7ed3d85d3a84407052c83a3bfd239bf2c5b3d8f5cac74a831b4933113c8ea630"
+        },
+        "actual": {
+          "path": "modules/07-generate-a-smooth-trajectory/evidence/actual-broken.json",
+          "sha256": "4b036a86ad2d6b639d1352e099c99e0a8fb218878c571dfa20b2cadd21dfd475"
+        },
+        "max_absolute_error": 0,
+        "max_relative_error": 0,
+        "tolerance": {
+        "absolute": 1.0e-10,
+        "relative": 1.0e-10
+        },
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "The pinned source item is a non-runnable scaffold and no licensed MATLAB runtime executed; native Python correctness is independently verified without a MATLAB parity claim."
+  },
+  "claims": {
+    "profile": "elp-robotics-native-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Browser visual review is a separate integrated evidence step."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Accessibility review is a separate integrated evidence step."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study."
+    },
+    "physical_system_validation": {
+      "status": "not_run",
+      "reason": "No physical robot, motor, encoder, IMU, bench, HIL, or field system executed."
+    },
+    "release_and_production": {
+      "status": "not_run",
+      "reason": "No release, deployment, credential, setting, or production operation occurred."
+    }
+  }
+}

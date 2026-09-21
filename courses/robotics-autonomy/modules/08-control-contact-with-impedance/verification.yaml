@@ -1,0 +1,186 @@
+{
+  "schema_version": 1,
+  "course_id": "robotics-autonomy",
+  "item": {
+    "id": "P08",
+    "number": 8,
+    "source_folder": "modules/08-control-contact-with-impedance",
+    "target_module_id": "08-control-contact-with-impedance",
+    "target_folder": "modules/08-control-contact-with-impedance",
+    "batch_id": "ELP-ROB-P01-P10",
+    "design_basis": "native_python_design",
+    "source_map_sha256": "6e2de2c7a4f1eb3992da157d0aeb4d562a0542af8860f030a6a608526c6ba723",
+    "source_inputs": [
+      {
+        "path": "modules/08-control-contact-with-impedance/README.md",
+        "sha256": "9e7cf6545007ea32df12bc29c584709a2eb60c69abe53ccb852d415a909cb347"
+      },
+      {
+        "path": "modules/08-control-contact-with-impedance/checks.md",
+        "sha256": "527616e8fdee8f0e58d2200f7abe8f93eca4d6b7403e7f5381e7379e1a1cd517"
+      },
+      {
+        "path": "modules/08-control-contact-with-impedance/experiment.m",
+        "sha256": "bd8e92fedca24f7e82da8afe6d8d387056944abbdbbcb357afc2d934dc4a037b"
+      },
+      {
+        "path": "modules/08-control-contact-with-impedance/lesson.m",
+        "sha256": "2a8d96fccc395b72e7cec1c159c7d4e47df9f0390458326b0d3d974c604df7ea"
+      },
+      {
+        "path": "modules/08-control-contact-with-impedance/lesson.md",
+        "sha256": "46ac70ef82e1dc8d1c2c7416949dda07f9daa609ee0e9f081b886cc8740a9296"
+      },
+      {
+        "path": "modules/08-control-contact-with-impedance/walkthrough.md",
+        "sha256": "137ce74df643ce47dbec32cebe55406fbfe0436fe4fc795fd43bdf90a7495b3c"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "331d2a8d7ba64397ea9342dd1ee3929f1a4cedaff63b7b11cb45c75c25d9193a",
+    "files": [
+      {
+        "path": "modules/08-control-contact-with-impedance/experiment.py",
+        "sha256": "cbe56e5273104aca3edb3af732858b1dc8e7b5074da4cc9c1b401725f3bf1365"
+      },
+      {
+        "path": "modules/08-control-contact-with-impedance/lesson.md",
+        "sha256": "306fd3f8eb3752ff0ddc24823ec257595d183830c1e6da597918df528bb25e3b"
+      },
+      {
+        "path": "modules/08-control-contact-with-impedance/module.yaml",
+        "sha256": "46658739da5b2922d832887e654dc00c826eca523f5512f363c8b84161ea3556"
+      }
+    ]
+  },
+  "learning": {
+    "guiding_question": "What inputs, observable effects, and failure modes matter when you control Contact with Impedance?",
+    "equations": [
+      {
+        "latex": "m x_ddot=K(x_d-x)-B x_dot-F_c",
+        "meaning": "Virtual impedance drives penetration against contact."
+      },
+      {
+        "latex": "F_c=K_e max(x,0)",
+        "meaning": "The unilateral wall opposes positive penetration."
+      }
+    ],
+    "coordinate_and_sign_convention": "Positive x enters the wall; reported force is a positive magnitude but enters dynamics with a negative sign.",
+    "units": [
+      "penetration: mm in UI, m internally",
+      "stiffness: N/m",
+      "damping: N s/m",
+      "contact force: N"
+    ],
+    "sweeps": [
+      {
+        "control": "stiffness_n_m",
+        "values": [
+          75,
+          200,
+          600
+        ],
+        "expected_observation": "Stiffness changes static sharing with the wall."
+      },
+      {
+        "control": "damping_ns_m",
+        "values": [
+          4,
+          20,
+          60
+        ],
+        "expected_observation": "Damping changes transient settling but not static balance."
+      }
+    ],
+    "broken_case": {
+      "name": "Disconnected wall reaction",
+      "trigger": "Set broken_mode true.",
+      "failure": "The wall reaction is removed from dynamics and force reporting.",
+      "recovery": "Set broken_mode false and reconnect the opposing contact force."
+    },
+    "limiting_cases": [
+      "Zero desired penetration keeps the zero state.",
+      "Static controller force equals wall force."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "timeout_seconds": 3,
+    "max_samples": 1501,
+    "max_output_bytes": 1000000
+  },
+  "python_verification": {
+    "status": "passed",
+    "basis": "native_python_reference",
+    "reference_method": "Independent continuous-time eigensolution and static force balance.",
+    "oracle_file": "reference_cases.py",
+    "oracle_independence": "The reference module imports no production experiment and evaluates a closed-form, invariant, continuous-time, or separately formulated recurrence.",
+    "cases": [
+      {
+        "name": "baseline",
+        "expected": {
+          "path": "modules/08-control-contact-with-impedance/evidence/expected-baseline.json",
+          "sha256": "4103412150452ca38e6f79db79ef22c06b263fa592d4ce39ee0eb445f857087a"
+        },
+        "actual": {
+          "path": "modules/08-control-contact-with-impedance/evidence/actual-baseline.json",
+          "sha256": "520bc95a39e3150e3222899c95cdf4159a34cc25f404d187892861b484646590"
+        },
+        "max_absolute_error": 0.001467061920441548,
+        "max_relative_error": 0.001467061920441548,
+        "tolerance": {
+          "absolute": 0.002,
+          "relative": 0.002
+        },
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "expected": {
+          "path": "modules/08-control-contact-with-impedance/evidence/expected-broken.json",
+          "sha256": "adff97b7c4e9b6214a46bf540aa4bbdef314fdda148925115f702e5801d691c0"
+        },
+        "actual": {
+          "path": "modules/08-control-contact-with-impedance/evidence/actual-broken.json",
+          "sha256": "a1438b503ab2e382d3f4763e6205f3c67addd66ad5c60527e8ca0100f4b41403"
+        },
+        "max_absolute_error": 2.4641588325380326e-8,
+        "max_relative_error": 2.4641588249052493e-8,
+        "tolerance": {
+          "absolute": 0.002,
+          "relative": 0.002
+        },
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "The pinned source item is a non-runnable scaffold and no licensed MATLAB runtime executed; native Python correctness is independently verified without a MATLAB parity claim."
+  },
+  "claims": {
+    "profile": "elp-robotics-native-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Browser visual review is a separate integrated evidence step."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Accessibility review is a separate integrated evidence step."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study."
+    },
+    "physical_system_validation": {
+      "status": "not_run",
+      "reason": "No physical robot, motor, encoder, IMU, bench, HIL, or field system executed."
+    },
+    "release_and_production": {
+      "status": "not_run",
+      "reason": "No release, deployment, credential, setting, or production operation occurred."
+    }
+  }
+}

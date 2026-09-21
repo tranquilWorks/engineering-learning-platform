@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "course_id": "robotics-autonomy",
+  "item": {
+    "id": "P02",
+    "number": 2,
+    "source_folder": "modules/02-transform-coordinates-between-frames",
+    "target_module_id": "02-transform-coordinates-between-frames",
+    "target_folder": "modules/02-transform-coordinates-between-frames",
+    "batch_id": "ELP-ROB-P01-P10",
+    "design_basis": "native_python_design",
+    "source_map_sha256": "6e2de2c7a4f1eb3992da157d0aeb4d562a0542af8860f030a6a608526c6ba723",
+    "source_inputs": [
+      {
+        "path": "modules/02-transform-coordinates-between-frames/README.md",
+        "sha256": "57eee528d214a254dd8d72b80bc1ab9da9f123504a8e1763fe40d4f228c587de"
+      },
+      {
+        "path": "modules/02-transform-coordinates-between-frames/checks.md",
+        "sha256": "237e03d37926a88c0d75a5e91c00e3ffff263a8dd6023360bd6b1110f2289eb8"
+      },
+      {
+        "path": "modules/02-transform-coordinates-between-frames/experiment.m",
+        "sha256": "ada51dbfff4b2088169e06962ff1672b7ad08a4df7574b7c65d97e3a500a9011"
+      },
+      {
+        "path": "modules/02-transform-coordinates-between-frames/lesson.m",
+        "sha256": "4cfe7afd5788353d7f41338a0bfbebca9107220694710badbda794772e3e1394"
+      },
+      {
+        "path": "modules/02-transform-coordinates-between-frames/lesson.md",
+        "sha256": "5ef8cb2ded737853aab8e8ea1733e557cf9cb2596c70f07477acb5bec207ca4f"
+      },
+      {
+        "path": "modules/02-transform-coordinates-between-frames/walkthrough.md",
+        "sha256": "af893eddfa6d4c1e8755ffc924277257ac56b806900dc5d4d35050944e2436b2"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "afcd3639c348152584fcfd3d92c73105e760925d33f0b48c2023909e8d2797e4",
+    "files": [
+      {
+        "path": "modules/02-transform-coordinates-between-frames/experiment.py",
+        "sha256": "90103367bea9e2da35c3b145133ded797a5d97667506cf856cba2f28863885a2"
+      },
+      {
+        "path": "modules/02-transform-coordinates-between-frames/lesson.md",
+        "sha256": "9a727b52cba64197e62e542b8e27c5c00d92e06ab9eb6eabdd89dc24cdaed3d9"
+      },
+      {
+        "path": "modules/02-transform-coordinates-between-frames/module.yaml",
+        "sha256": "c7f17d11d8d23c60f416b5d73a94594a5d1abdb423f0a8e1117bce8e0e41e1e2"
+      }
+    ]
+  },
+  "learning": {
+    "guiding_question": "What inputs, observable effects, and failure modes matter when you transform Coordinates Between Frames?",
+    "equations": [
+      {
+        "latex": "p_W=R(theta)p_B+t_WB",
+        "meaning": "Rotate in the body frame, then translate in the world frame."
+      },
+      {
+        "latex": "p_B=R(theta)^T(p_W-t_WB)",
+        "meaning": "The inverse subtracts translation before transposed rotation."
+      }
+    ],
+    "coordinate_and_sign_convention": "Right-handed x-y frames use positive counterclockwise heading; degrees are converted to radians.",
+    "units": [
+      "position: m",
+      "heading control: deg",
+      "trigonometric angle: rad"
+    ],
+    "sweeps": [
+      {
+        "control": "heading_deg",
+        "values": [
+          -90,
+          30,
+          120
+        ],
+        "expected_observation": "The point rotates around the robot origin."
+      },
+      {
+        "control": "point_x_m",
+        "values": [
+          -1,
+          1.2,
+          2.5
+        ],
+        "expected_observation": "The vector length from robot origin is preserved."
+      }
+    ],
+    "broken_case": {
+      "name": "Rotation-sign mismatch",
+      "trigger": "Set broken_mode true.",
+      "failure": "Forward rotation uses the opposite sign from the inverse.",
+      "recovery": "Set broken_mode false and use the declared rotation in both directions."
+    },
+    "limiting_cases": [
+      "Zero heading reduces to translation.",
+      "Forward then inverse transformation recovers the input point."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "timeout_seconds": 3,
+    "max_samples": 361,
+    "max_output_bytes": 1000000
+  },
+  "python_verification": {
+    "status": "passed",
+    "basis": "native_python_reference",
+    "reference_method": "Independent SE(2) matrix calculation and round-trip invariant.",
+    "oracle_file": "reference_cases.py",
+    "oracle_independence": "The reference module imports no production experiment and evaluates a closed-form, invariant, continuous-time, or separately formulated recurrence.",
+    "cases": [
+      {
+        "name": "baseline",
+        "expected": {
+          "path": "modules/02-transform-coordinates-between-frames/evidence/expected-baseline.json",
+          "sha256": "6b15608e12c7019cafc9919c154b9bb8c1e1e9b78e238b36ff0ca9e146236549"
+        },
+        "actual": {
+          "path": "modules/02-transform-coordinates-between-frames/evidence/actual-baseline.json",
+          "sha256": "50712b358ffd56c2dcd6e7f0b7c87ccdecb729ed682cd87ce1852987acbb489d"
+        },
+        "max_absolute_error": 0,
+        "max_relative_error": 0,
+        "tolerance": {
+        "absolute": 1.0e-10,
+        "relative": 1.0e-10
+        },
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "expected": {
+          "path": "modules/02-transform-coordinates-between-frames/evidence/expected-broken.json",
+          "sha256": "7b10314e0a8d54228cd4a24c3e1e022c9263a2bfc49db0b46a2cd911733a2ba1"
+        },
+        "actual": {
+          "path": "modules/02-transform-coordinates-between-frames/evidence/actual-broken.json",
+          "sha256": "9a8ca7decb412ee5e973713542c04ec7bce5b4bd1727e41ebbb7d351c111e4e1"
+        },
+        "max_absolute_error": 0,
+        "max_relative_error": 0,
+        "tolerance": {
+        "absolute": 1.0e-10,
+        "relative": 1.0e-10
+        },
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "The pinned source item is a non-runnable scaffold and no licensed MATLAB runtime executed; native Python correctness is independently verified without a MATLAB parity claim."
+  },
+  "claims": {
+    "profile": "elp-robotics-native-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Browser visual review is a separate integrated evidence step."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Accessibility review is a separate integrated evidence step."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study."
+    },
+    "physical_system_validation": {
+      "status": "not_run",
+      "reason": "No physical robot, motor, encoder, IMU, bench, HIL, or field system executed."
+    },
+    "release_and_production": {
+      "status": "not_run",
+      "reason": "No release, deployment, credential, setting, or production operation occurred."
+    }
+  }
+}

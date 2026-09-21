@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "course_id": "robotics-autonomy",
+  "item": {
+    "id": "P03",
+    "number": 3,
+    "source_folder": "modules/03-compute-arm-forward-kinematics",
+    "target_module_id": "03-compute-arm-forward-kinematics",
+    "target_folder": "modules/03-compute-arm-forward-kinematics",
+    "batch_id": "ELP-ROB-P01-P10",
+    "design_basis": "native_python_design",
+    "source_map_sha256": "6e2de2c7a4f1eb3992da157d0aeb4d562a0542af8860f030a6a608526c6ba723",
+    "source_inputs": [
+      {
+        "path": "modules/03-compute-arm-forward-kinematics/README.md",
+        "sha256": "8dcc5787b3a458c9c475ed25b7b20ac18a5adf1c7fa2d4111c4e081a6ba25ca0"
+      },
+      {
+        "path": "modules/03-compute-arm-forward-kinematics/checks.md",
+        "sha256": "48c34a7e3baea01c6c1b8da1fb97c3da36038d13b4f62924093a836a269e6a6f"
+      },
+      {
+        "path": "modules/03-compute-arm-forward-kinematics/experiment.m",
+        "sha256": "a41387a9b023055f7cc00f4476392c694efaef64258a5398e5e7f6baf07b879d"
+      },
+      {
+        "path": "modules/03-compute-arm-forward-kinematics/lesson.m",
+        "sha256": "114268098c95d0c4118b0678c4c714dd4a073f6b310841fcd25f20c48793251c"
+      },
+      {
+        "path": "modules/03-compute-arm-forward-kinematics/lesson.md",
+        "sha256": "45dd9c256a4a5f3ed3978fd0bae36a03192834610024a75b9f2f1687e52cf806"
+      },
+      {
+        "path": "modules/03-compute-arm-forward-kinematics/walkthrough.md",
+        "sha256": "8ece4e34ff601be774473dfc69762987e0ab5d8358c5fa5156b8fae7dc4f05a5"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "19a5833a6d47d3aeb34af2d69f1a0bf40ae63672b90fca4cb485dbee6edcbdf8",
+    "files": [
+      {
+        "path": "modules/03-compute-arm-forward-kinematics/experiment.py",
+        "sha256": "567a3ce1a31eba016599243320ff0f41d69aae7750d3cb333148989dd3978ec1"
+      },
+      {
+        "path": "modules/03-compute-arm-forward-kinematics/lesson.md",
+        "sha256": "96fef330f767cfb575de42397c5949f4e23f2286298cafb657c174d7f37d5f92"
+      },
+      {
+        "path": "modules/03-compute-arm-forward-kinematics/module.yaml",
+        "sha256": "3ae081abb04e1ac5eeddbee69949068ee4a78c2cb4b1f85f78d23bc9517e1f11"
+      }
+    ]
+  },
+  "learning": {
+    "guiding_question": "What inputs, observable effects, and failure modes matter when you compute Arm Forward Kinematics?",
+    "equations": [
+      {
+        "latex": "p_e=L_1[cos(q_1),sin(q_1)]",
+        "meaning": "Link 1 locates the elbow."
+      },
+      {
+        "latex": "p_t=p_e+L_2[cos(q_1+q_2),sin(q_1+q_2)]",
+        "meaning": "Serial rotations accumulate at the tool."
+      }
+    ],
+    "coordinate_and_sign_convention": "Base +x is right, +y is up, and both relative joint angles are positive counterclockwise.",
+    "units": [
+      "joint controls: deg",
+      "trigonometric angles: rad",
+      "link and endpoint coordinates: m"
+    ],
+    "sweeps": [
+      {
+        "control": "joint1_deg",
+        "values": [
+          -60,
+          35,
+          120
+        ],
+        "expected_observation": "The whole arm rotates about the base."
+      },
+      {
+        "control": "joint2_deg",
+        "values": [
+          -120,
+          -45,
+          60
+        ],
+        "expected_observation": "The tool circles a fixed elbow."
+      }
+    ],
+    "broken_case": {
+      "name": "Absolute second-joint angle",
+      "trigger": "Set broken_mode true.",
+      "failure": "Link 2 uses q2 instead of q1+q2.",
+      "recovery": "Set broken_mode false and accumulate upstream joint angles."
+    },
+    "limiting_cases": [
+      "Zero joint angles fully extend the arm on +x.",
+      "Tool radius never exceeds L1+L2."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "timeout_seconds": 3,
+    "max_samples": 361,
+    "max_output_bytes": 1000000
+  },
+  "python_verification": {
+    "status": "passed",
+    "basis": "native_python_reference",
+    "reference_method": "Independent closed-form planar forward-kinematics calculation.",
+    "oracle_file": "reference_cases.py",
+    "oracle_independence": "The reference module imports no production experiment and evaluates a closed-form, invariant, continuous-time, or separately formulated recurrence.",
+    "cases": [
+      {
+        "name": "baseline",
+        "expected": {
+          "path": "modules/03-compute-arm-forward-kinematics/evidence/expected-baseline.json",
+          "sha256": "7fe0682e5def737eeecf6ed83386255f65ecfb61098a9aabb10acbb0d0902c57"
+        },
+        "actual": {
+          "path": "modules/03-compute-arm-forward-kinematics/evidence/actual-baseline.json",
+          "sha256": "64f5c3fc59673409127a5d627fe47d46d86b1d5c02f1dc3ab92926d666b6a0b5"
+        },
+        "max_absolute_error": 0,
+        "max_relative_error": 0,
+        "tolerance": {
+        "absolute": 1.0e-10,
+        "relative": 1.0e-10
+        },
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "expected": {
+          "path": "modules/03-compute-arm-forward-kinematics/evidence/expected-broken.json",
+          "sha256": "d6d82800767635dfb0302c6e1a03c0d9412b4b6142a7c78d2f86ef35ea87c854"
+        },
+        "actual": {
+          "path": "modules/03-compute-arm-forward-kinematics/evidence/actual-broken.json",
+          "sha256": "aba4beccaa2dbf0a670d1990ee62bba4e169cf0000bdd10270a4cb7f24383be6"
+        },
+        "max_absolute_error": 0,
+        "max_relative_error": 0,
+        "tolerance": {
+        "absolute": 1.0e-10,
+        "relative": 1.0e-10
+        },
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "The pinned source item is a non-runnable scaffold and no licensed MATLAB runtime executed; native Python correctness is independently verified without a MATLAB parity claim."
+  },
+  "claims": {
+    "profile": "elp-robotics-native-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Browser visual review is a separate integrated evidence step."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Accessibility review is a separate integrated evidence step."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study."
+    },
+    "physical_system_validation": {
+      "status": "not_run",
+      "reason": "No physical robot, motor, encoder, IMU, bench, HIL, or field system executed."
+    },
+    "release_and_production": {
+      "status": "not_run",
+      "reason": "No release, deployment, credential, setting, or production operation occurred."
+    }
+  }
+}

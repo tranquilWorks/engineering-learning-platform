@@ -1,0 +1,186 @@
+{
+  "schema_version": 1,
+  "course_id": "robotics-autonomy",
+  "item": {
+    "id": "P05",
+    "number": 5,
+    "source_folder": "modules/05-model-a-dc-motor-and-geartrain",
+    "target_module_id": "05-model-a-dc-motor-and-geartrain",
+    "target_folder": "modules/05-model-a-dc-motor-and-geartrain",
+    "batch_id": "ELP-ROB-P01-P10",
+    "design_basis": "native_python_design",
+    "source_map_sha256": "6e2de2c7a4f1eb3992da157d0aeb4d562a0542af8860f030a6a608526c6ba723",
+    "source_inputs": [
+      {
+        "path": "modules/05-model-a-dc-motor-and-geartrain/README.md",
+        "sha256": "ed46621d8dc99b6829b7e14d1b33282e13aaec703bea12d371441d16e2f404c7"
+      },
+      {
+        "path": "modules/05-model-a-dc-motor-and-geartrain/checks.md",
+        "sha256": "e48804edcfda65dc82fb3bdaf50ecb17e9c0547492a8edce79677f2de13dc936"
+      },
+      {
+        "path": "modules/05-model-a-dc-motor-and-geartrain/experiment.m",
+        "sha256": "69ee5d5da64eaa4a1ad76f3186341b8292952fcfe007a8b61e6a450b4dcd45ae"
+      },
+      {
+        "path": "modules/05-model-a-dc-motor-and-geartrain/lesson.m",
+        "sha256": "796a6d0bdeee6621ab4eb7529f2e5cec6f4ea02cd3925aec1607a84e6e62aa03"
+      },
+      {
+        "path": "modules/05-model-a-dc-motor-and-geartrain/lesson.md",
+        "sha256": "4705e1f4f91ecd6543e4eed03506cf4bb17f9efc293db9d75e8b9693c0a9bce2"
+      },
+      {
+        "path": "modules/05-model-a-dc-motor-and-geartrain/walkthrough.md",
+        "sha256": "2d52b26165be721da51207609ec1a290ec9c7de199e361e12cc534dbe37a9562"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "326c0c31712871bfbd75c05207580158b05eb914d18a6165d768fa172b17aa66",
+    "files": [
+      {
+        "path": "modules/05-model-a-dc-motor-and-geartrain/experiment.py",
+        "sha256": "cc17ada75da61d6f5b88de0bd5b892d9ee13e1f0b8556e2e7542b2886b0d3c00"
+      },
+      {
+        "path": "modules/05-model-a-dc-motor-and-geartrain/lesson.md",
+        "sha256": "62aa9c56f94c63105b407babf4beb16537f34653250e22a82b2b66ff9c6127b1"
+      },
+      {
+        "path": "modules/05-model-a-dc-motor-and-geartrain/module.yaml",
+        "sha256": "aa533e3f3ec94febf91e2ff90a9079b7d23387895558d36fd8e0a1bfb1ff2201"
+      }
+    ]
+  },
+  "learning": {
+    "guiding_question": "What inputs, observable effects, and failure modes matter when you model a DC Motor and Geartrain?",
+    "equations": [
+      {
+        "latex": "L di/dt=V-Ri-K_e omega_m",
+        "meaning": "Voltage balances resistance, inductance, and back EMF."
+      },
+      {
+        "latex": "J_eq d omega_m/dt=K_t i-b omega_m-tau_L/N",
+        "meaning": "Motor torque accelerates reflected inertia and load."
+      }
+    ],
+    "coordinate_and_sign_convention": "Positive voltage, current, speed, and output direction agree; load torque opposes motion.",
+    "units": [
+      "voltage: V",
+      "current: A",
+      "speed: rad/s",
+      "torque: N m"
+    ],
+    "sweeps": [
+      {
+        "control": "voltage_v",
+        "values": [
+          6,
+          12,
+          18
+        ],
+        "expected_observation": "Voltage changes current transient and steady speed."
+      },
+      {
+        "control": "gear_ratio",
+        "values": [
+          5,
+          20,
+          40
+        ],
+        "expected_observation": "Reduction trades output speed for torque and reflection."
+      }
+    ],
+    "broken_case": {
+      "name": "Missing back EMF",
+      "trigger": "Set broken_mode true.",
+      "failure": "The speed-proportional generated voltage is removed.",
+      "recovery": "Set broken_mode false and restore K_e omega_m."
+    },
+    "limiting_cases": [
+      "Initial back EMF is zero at rest.",
+      "Steady electrical and mechanical derivatives approach zero."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "timeout_seconds": 3,
+    "max_samples": 2001,
+    "max_output_bytes": 1000000
+  },
+  "python_verification": {
+    "status": "passed",
+    "basis": "native_python_reference",
+    "reference_method": "Independent continuous-time eigensolution and analytic steady balance.",
+    "oracle_file": "reference_cases.py",
+    "oracle_independence": "The reference module imports no production experiment and evaluates a closed-form, invariant, continuous-time, or separately formulated recurrence.",
+    "cases": [
+      {
+        "name": "baseline",
+        "expected": {
+          "path": "modules/05-model-a-dc-motor-and-geartrain/evidence/expected-baseline.json",
+          "sha256": "1718835d43b8290ce044a9a9a649619f59f3bff020e6ec3ff21dec05c21d0e44"
+        },
+        "actual": {
+          "path": "modules/05-model-a-dc-motor-and-geartrain/evidence/actual-baseline.json",
+          "sha256": "2b34f6c366a120c3c8b3ab68b551e62ede814a52d228cd80f3d1d4b2639323d2"
+        },
+        "max_absolute_error": 0.02564542988783103,
+        "max_relative_error": 0.002285148974922569,
+        "tolerance": {
+          "absolute": 0.03,
+          "relative": 0.003
+        },
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "expected": {
+          "path": "modules/05-model-a-dc-motor-and-geartrain/evidence/expected-broken.json",
+          "sha256": "5f50fa014a4567fe6ad5058dd1a267cf653d7b3fca7d22a047cac137cf1160b2"
+        },
+        "actual": {
+          "path": "modules/05-model-a-dc-motor-and-geartrain/evidence/actual-broken.json",
+          "sha256": "20e34c4d1d479957b6796d670937fd1e44e44bdd0b68961f39b0464ccdad87ab"
+        },
+        "max_absolute_error": 0.0026732007071395003,
+        "max_relative_error": 0.00023800268352083638,
+        "tolerance": {
+          "absolute": 0.03,
+          "relative": 0.003
+        },
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "The pinned source item is a non-runnable scaffold and no licensed MATLAB runtime executed; native Python correctness is independently verified without a MATLAB parity claim."
+  },
+  "claims": {
+    "profile": "elp-robotics-native-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Browser visual review is a separate integrated evidence step."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Accessibility review is a separate integrated evidence step."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study."
+    },
+    "physical_system_validation": {
+      "status": "not_run",
+      "reason": "No physical robot, motor, encoder, IMU, bench, HIL, or field system executed."
+    },
+    "release_and_production": {
+      "status": "not_run",
+      "reason": "No release, deployment, credential, setting, or production operation occurred."
+    }
+  }
+}

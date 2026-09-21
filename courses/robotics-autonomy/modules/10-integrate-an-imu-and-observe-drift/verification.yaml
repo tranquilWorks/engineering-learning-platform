@@ -1,0 +1,186 @@
+{
+  "schema_version": 1,
+  "course_id": "robotics-autonomy",
+  "item": {
+    "id": "P10",
+    "number": 10,
+    "source_folder": "modules/10-integrate-an-imu-and-observe-drift",
+    "target_module_id": "10-integrate-an-imu-and-observe-drift",
+    "target_folder": "modules/10-integrate-an-imu-and-observe-drift",
+    "batch_id": "ELP-ROB-P01-P10",
+    "design_basis": "native_python_design",
+    "source_map_sha256": "6e2de2c7a4f1eb3992da157d0aeb4d562a0542af8860f030a6a608526c6ba723",
+    "source_inputs": [
+      {
+        "path": "modules/10-integrate-an-imu-and-observe-drift/README.md",
+        "sha256": "f554d2cdb97e5a6c26eb25a81ca1a7a18b9b85bca9d168f07b1aed50cb19c618"
+      },
+      {
+        "path": "modules/10-integrate-an-imu-and-observe-drift/checks.md",
+        "sha256": "9abddd16bb17597bd0704bf9fdf111961cce456debd75ff1fb9d1e5881f0210d"
+      },
+      {
+        "path": "modules/10-integrate-an-imu-and-observe-drift/experiment.m",
+        "sha256": "2e82faf90cf69f5f82eaac190b27ff89ad6a3dc0c486fb35567dcb5b3db8e137"
+      },
+      {
+        "path": "modules/10-integrate-an-imu-and-observe-drift/lesson.m",
+        "sha256": "856dc76798576c9147f4f06bb6b02336b9ff548bcc11eae979eb12797534d8b0"
+      },
+      {
+        "path": "modules/10-integrate-an-imu-and-observe-drift/lesson.md",
+        "sha256": "94be7412eb52d3931bf8a41b676ae3dd965224f95734b33f1b3ec2cd28b55d0c"
+      },
+      {
+        "path": "modules/10-integrate-an-imu-and-observe-drift/walkthrough.md",
+        "sha256": "f8cc3235115552c512cd08c79588cc0582384615a899b79a5e3815e9f6b12dc0"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "957cb9aa6ff503558d77e0f57ad6d31be933d675cdf141729c65117edc29a11f",
+    "files": [
+      {
+        "path": "modules/10-integrate-an-imu-and-observe-drift/experiment.py",
+        "sha256": "fd6acc1a686fff81c6f90292894e69c0aa4bf359b33d57cffaaa110b01a52536"
+      },
+      {
+        "path": "modules/10-integrate-an-imu-and-observe-drift/lesson.md",
+        "sha256": "ab5898c139bb0dfde3c0ce1006110c0fcd23537770734c484b4fd3c10495d900"
+      },
+      {
+        "path": "modules/10-integrate-an-imu-and-observe-drift/module.yaml",
+        "sha256": "3c00d9b11f0275080d9ff3875a7bc1c6d87b20116636fe9bf0c947e6af9b1bd5"
+      }
+    ]
+  },
+  "learning": {
+    "guiding_question": "What inputs, observable effects, and failure modes matter when you integrate an IMU and Observe Drift?",
+    "equations": [
+      {
+        "latex": "delta theta=b_g t",
+        "meaning": "Gyro bias integrates to linear angle drift."
+      },
+      {
+        "latex": "delta p=(1/2)b_a t^2",
+        "meaning": "Acceleration bias integrates twice to quadratic position drift."
+      }
+    ],
+    "coordinate_and_sign_convention": "The stationary platform uses positive sensor bias as positive state drift; degrees/s are converted to radians/s.",
+    "units": [
+      "gyro bias: deg/s control, rad/s internal",
+      "acceleration bias: m/s^2",
+      "velocity drift: m/s",
+      "position drift: m"
+    ],
+    "sweeps": [
+      {
+        "control": "gyro_bias_deg_s",
+        "values": [
+          0,
+          0.2,
+          1
+        ],
+        "expected_observation": "Angle drift scales linearly with gyro bias."
+      },
+      {
+        "control": "accel_bias_m_s2",
+        "values": [
+          0,
+          0.03,
+          0.1
+        ],
+        "expected_observation": "Velocity is linear and position quadratic in time."
+      }
+    ],
+    "broken_case": {
+      "name": "Degree/radian unit mismatch",
+      "trigger": "Set broken_mode true.",
+      "failure": "A degree-per-second number is integrated as radians per second.",
+      "recovery": "Set broken_mode false and convert angular-rate units."
+    },
+    "limiting_cases": [
+      "Zero biases keep every drift state at zero.",
+      "Doubling duration quadruples position drift."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "timeout_seconds": 3,
+    "max_samples": 3001,
+    "max_output_bytes": 1000000
+  },
+  "python_verification": {
+    "status": "passed",
+    "basis": "native_python_reference",
+    "reference_method": "Independent closed-form constant-bias integration.",
+    "oracle_file": "reference_cases.py",
+    "oracle_independence": "The reference module imports no production experiment and evaluates a closed-form, invariant, continuous-time, or separately formulated recurrence.",
+    "cases": [
+      {
+        "name": "baseline",
+        "expected": {
+          "path": "modules/10-integrate-an-imu-and-observe-drift/evidence/expected-baseline.json",
+          "sha256": "97b103f61003c5aec2ebd6461ba8a755964671950795f1c8d5cfedbed4699531"
+        },
+        "actual": {
+          "path": "modules/10-integrate-an-imu-and-observe-drift/evidence/actual-baseline.json",
+          "sha256": "e8b5752bd4acf215457018d04c0f895eb0292dca7446da60a7d7f5e638511661"
+        },
+        "max_absolute_error": 3.5704772471945034e-13,
+        "max_relative_error": 5.950795411990484e-14,
+        "tolerance": {
+        "absolute": 1.0e-9,
+        "relative": 1.0e-9
+        },
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "expected": {
+          "path": "modules/10-integrate-an-imu-and-observe-drift/evidence/expected-broken.json",
+          "sha256": "8a7d3bd3278ac0c0c9731b8e2da83205a3812bc6dadbc22c1a6e7a762c61f5ed"
+        },
+        "actual": {
+          "path": "modules/10-integrate-an-imu-and-observe-drift/evidence/actual-broken.json",
+          "sha256": "a17e15c4715aedd4f0703f67a86e17affba3d3cc5d4b06c02938b97eef0dc6cb"
+        },
+        "max_absolute_error": 2.5124791136477143e-11,
+        "max_relative_error": 7.442566275163864e-14,
+        "tolerance": {
+        "absolute": 1.0e-9,
+        "relative": 1.0e-9
+        },
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "The pinned source item is a non-runnable scaffold and no licensed MATLAB runtime executed; native Python correctness is independently verified without a MATLAB parity claim."
+  },
+  "claims": {
+    "profile": "elp-robotics-native-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Browser visual review is a separate integrated evidence step."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Accessibility review is a separate integrated evidence step."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study."
+    },
+    "physical_system_validation": {
+      "status": "not_run",
+      "reason": "No physical robot, motor, encoder, IMU, bench, HIL, or field system executed."
+    },
+    "release_and_production": {
+      "status": "not_run",
+      "reason": "No release, deployment, credential, setting, or production operation occurred."
+    }
+  }
+}

@@ -1,0 +1,84 @@
+schema_version: 1
+id: 04-solve-inverse-kinematics
+number: 4
+title: Solve Inverse Kinematics
+summary: Solve both geometric branches of planar two-link inverse kinematics and expose reachability.
+guiding_question: What inputs, observable effects, and failure modes matter when you solve Inverse Kinematics?
+status: implemented
+tags:
+- robotics-autonomy
+- kinematics
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: target_x_m
+  type: slider
+  label: Target x
+  default: 1
+  unit: m
+  minimum: -1.5
+  maximum: 1.5
+  step: 0.05
+- id: target_y_m
+  type: slider
+  label: Target y
+  default: 0.4
+  unit: m
+  minimum: -1.5
+  maximum: 1.5
+  step: 0.05
+- id: link1_m
+  type: slider
+  label: Link 1 length
+  default: 0.8
+  unit: m
+  minimum: 0.2
+  maximum: 1.2
+  step: 0.05
+- id: link2_m
+  type: slider
+  label: Link 2 length
+  default: 0.7
+  unit: m
+  minimum: 0.2
+  maximum: 1.2
+  step: 0.05
+- id: elbow_up
+  type: toggle
+  label: Use elbow-up branch
+  default: false
+- id: broken_mode
+  type: toggle
+  label: Omit shoulder correction
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: A reachable target generally has two mirror-image elbow branches with the same tool position.
+  reveal: Disable the omitted-shoulder-correction mode and include the link-triangle angle in the shoulder solution.
+- type: controls
+  title: Live model controls
+- type: metrics
+- type: plot_grid
+  title: Physical response and diagnostic
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery
+

@@ -1,0 +1,88 @@
+schema_version: 1
+id: 01-drive-a-differential-robot-with-wheel-speeds
+number: 1
+title: Drive a Differential Robot with Wheel Speeds
+summary: Combine wheel speeds into forward speed and yaw rate, then integrate the exact planar arc.
+guiding_question: How do left and right wheel speeds determine a differential-drive robot's path?
+status: implemented
+tags:
+- robotics-autonomy
+- kinematics
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: left_wheel_rad_s
+  type: slider
+  label: Left wheel speed
+  default: 6
+  unit: rad/s
+  minimum: -15
+  maximum: 15
+  step: 0.5
+- id: right_wheel_rad_s
+  type: slider
+  label: Right wheel speed
+  default: 9
+  unit: rad/s
+  minimum: -15
+  maximum: 15
+  step: 0.5
+- id: wheel_radius_m
+  type: slider
+  label: Wheel radius
+  default: 0.08
+  unit: m
+  minimum: 0.02
+  maximum: 0.25
+  step: 0.01
+- id: track_width_m
+  type: slider
+  label: Track width
+  default: 0.35
+  unit: m
+  minimum: 0.15
+  maximum: 1
+  step: 0.05
+- id: duration_s
+  type: slider
+  label: Duration
+  default: 8
+  unit: s
+  minimum: 1
+  maximum: 20
+  step: 1
+- id: broken_mode
+  type: toggle
+  label: Decouple translation from heading
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Equal wheel speeds make a straight line; increasing the right-minus-left speed bends the path counterclockwise.
+  reveal: Disable the decoupled-translation mode so the instantaneous heading rotates the velocity vector.
+- type: controls
+  title: Live model controls
+- type: metrics
+- type: plot_grid
+  title: Physical response and diagnostic
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery
+

@@ -1,0 +1,186 @@
+{
+  "schema_version": 1,
+  "course_id": "robotics-autonomy",
+  "item": {
+    "id": "P09",
+    "number": 9,
+    "source_folder": "modules/09-measure-motion-with-encoders",
+    "target_module_id": "09-measure-motion-with-encoders",
+    "target_folder": "modules/09-measure-motion-with-encoders",
+    "batch_id": "ELP-ROB-P01-P10",
+    "design_basis": "native_python_design",
+    "source_map_sha256": "6e2de2c7a4f1eb3992da157d0aeb4d562a0542af8860f030a6a608526c6ba723",
+    "source_inputs": [
+      {
+        "path": "modules/09-measure-motion-with-encoders/README.md",
+        "sha256": "728c35967d7017a01bb3a5200a32fa3c9cdcda388b5460e73288afaacb63768f"
+      },
+      {
+        "path": "modules/09-measure-motion-with-encoders/checks.md",
+        "sha256": "89234da91ff4f2440b53b7f0388a7b984523b63884e5b663a191dfce40891204"
+      },
+      {
+        "path": "modules/09-measure-motion-with-encoders/experiment.m",
+        "sha256": "706a1efbe28cebcaa685ccc72c9af38d80596208e3b323e65e28a167df2c9c56"
+      },
+      {
+        "path": "modules/09-measure-motion-with-encoders/lesson.m",
+        "sha256": "0f10de7e57977b43a47d432ef778c1425ca562c1be31f0992895ce5b709addd1"
+      },
+      {
+        "path": "modules/09-measure-motion-with-encoders/lesson.md",
+        "sha256": "c53738be80f6e373f2e7d8e8a8ddc53be9f53b842730b11dc3d932a25bb6e5f4"
+      },
+      {
+        "path": "modules/09-measure-motion-with-encoders/walkthrough.md",
+        "sha256": "4a635e1ea359e2fef2f7cd5fef4f7ae2b6693d3b61b0e55aded041733bb797a2"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "e8f28594d2187409db8e51a470f3f792a6f25fce9f7a7208e9dfae02101298b2",
+    "files": [
+      {
+        "path": "modules/09-measure-motion-with-encoders/experiment.py",
+        "sha256": "4a148ccf481f890aee6f338410ed515d6998f38c7471ff2bd9f8e1a07ae46b1e"
+      },
+      {
+        "path": "modules/09-measure-motion-with-encoders/lesson.md",
+        "sha256": "94470a52a82ec2608d8c06837d5cfc29ea9a1d0db2858c18fa62cb4cce0b9c9f"
+      },
+      {
+        "path": "modules/09-measure-motion-with-encoders/module.yaml",
+        "sha256": "86a9486d52385ddac11fdbade4349d9cd209eaa5529b4a085ef34c4dacd63f06"
+      }
+    ]
+  },
+  "learning": {
+    "guiding_question": "What inputs, observable effects, and failure modes matter when you measure Motion with Encoders?",
+    "equations": [
+      {
+        "latex": "C_k=round(4N theta_k/(2pi))",
+        "meaning": "Quadrature yields four edges per encoder line."
+      },
+      {
+        "latex": "theta_hat=2pi C_k/(4N)",
+        "meaning": "Count scaling reconstructs quantized angle."
+      }
+    ],
+    "coordinate_and_sign_convention": "Positive shaft rotation increases count; the UI value is lines/rev and decoding explicitly applies x4.",
+    "units": [
+      "encoder resolution: lines/rev",
+      "count: integer edge",
+      "angle: rad",
+      "speed: rpm control and rad/s result"
+    ],
+    "sweeps": [
+      {
+        "control": "counts_per_rev",
+        "values": [
+          128,
+          1024,
+          4096
+        ],
+        "expected_observation": "Resolution changes quantization error."
+      },
+      {
+        "control": "sample_rate_hz",
+        "values": [
+          10,
+          50,
+          200
+        ],
+        "expected_observation": "Count increments per sample change speed steps."
+      }
+    ],
+    "broken_case": {
+      "name": "Missing quadrature factor",
+      "trigger": "Set broken_mode true.",
+      "failure": "Edge counts are divided by lines rather than four times lines.",
+      "recovery": "Set broken_mode false and decode x4 quadrature edges."
+    },
+    "limiting_cases": [
+      "Zero speed yields constant counts.",
+      "Angle error is bounded by half a decoded count."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "timeout_seconds": 3,
+    "max_samples": 1001,
+    "max_output_bytes": 1000000
+  },
+  "python_verification": {
+    "status": "passed",
+    "basis": "native_python_reference",
+    "reference_method": "Independent integer count equation and analytic quantization bound.",
+    "oracle_file": "reference_cases.py",
+    "oracle_independence": "The reference module imports no production experiment and evaluates a closed-form, invariant, continuous-time, or separately formulated recurrence.",
+    "cases": [
+      {
+        "name": "baseline",
+        "expected": {
+          "path": "modules/09-measure-motion-with-encoders/evidence/expected-baseline.json",
+          "sha256": "0fa57a3af5c29e2c06746ebec1265f899df9d49c6fd9a29d09f5f74b9cd05b79"
+        },
+        "actual": {
+          "path": "modules/09-measure-motion-with-encoders/evidence/actual-baseline.json",
+          "sha256": "b15b72f26e1a139a4521a71294431333a30d83682c38895ec9c6f9591cf13ce1"
+        },
+        "max_absolute_error": 0,
+        "max_relative_error": 0,
+        "tolerance": {
+        "absolute": 1.0e-10,
+        "relative": 1.0e-10
+        },
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "expected": {
+          "path": "modules/09-measure-motion-with-encoders/evidence/expected-broken.json",
+          "sha256": "f775f509c5412ddc122372fc077000346f9b704c20355933bc3b8ab0f053462a"
+        },
+        "actual": {
+          "path": "modules/09-measure-motion-with-encoders/evidence/actual-broken.json",
+          "sha256": "5a95fd0cf336a8784d826089bdff50053ecc2495cf590496f94e16f5fd9a2ccf"
+        },
+        "max_absolute_error": 0,
+        "max_relative_error": 0,
+        "tolerance": {
+        "absolute": 1.0e-10,
+        "relative": 1.0e-10
+        },
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "The pinned source item is a non-runnable scaffold and no licensed MATLAB runtime executed; native Python correctness is independently verified without a MATLAB parity claim."
+  },
+  "claims": {
+    "profile": "elp-robotics-native-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Browser visual review is a separate integrated evidence step."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Accessibility review is a separate integrated evidence step."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study."
+    },
+    "physical_system_validation": {
+      "status": "not_run",
+      "reason": "No physical robot, motor, encoder, IMU, bench, HIL, or field system executed."
+    },
+    "release_and_production": {
+      "status": "not_run",
+      "reason": "No release, deployment, credential, setting, or production operation occurred."
+    }
+  }
+}

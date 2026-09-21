@@ -1,0 +1,72 @@
+schema_version: 1
+id: 05-model-a-dc-motor-and-geartrain
+number: 5
+title: Model a DC Motor and Geartrain
+summary: Connect motor electrical dynamics, back EMF, torque, reflected load, and gear reduction.
+guiding_question: What inputs, observable effects, and failure modes matter when you model a DC Motor and Geartrain?
+status: implemented
+tags:
+- robotics-autonomy
+- dynamics-and-actuation
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: voltage_v
+  type: slider
+  label: Applied voltage
+  default: 12
+  unit: V
+  minimum: 0
+  maximum: 24
+  step: 0.5
+- id: gear_ratio
+  type: slider
+  label: Reduction ratio
+  default: 20
+  unit: ratio
+  minimum: 1
+  maximum: 50
+  step: 1
+- id: load_torque_nm
+  type: slider
+  label: Output load torque
+  default: 0.2
+  unit: N m
+  minimum: 0
+  maximum: 1
+  step: 0.05
+- id: broken_mode
+  type: toggle
+  label: Remove back EMF
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Increasing voltage raises speed, while increasing reduction lowers output speed and reduces the motor-side load torque.
+  reveal: Disable the no-back-EMF mode so generated voltage opposes applied voltage as speed rises.
+- type: controls
+  title: Live model controls
+- type: metrics
+- type: plot_grid
+  title: Physical response and diagnostic
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery
+

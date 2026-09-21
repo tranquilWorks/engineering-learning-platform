@@ -113,8 +113,31 @@ documentation, and retained transfer evidence.
 This administrative lane preserves every gitlink SHA and every course
 manifest, lesson, experiment, and expected/actual numeric evidence file.
 DSP/Radar remains 84/84, Controls/GNC remains 24/24, and the catalog remains
-4 / 110 / 110. No unfinished course is imported or implemented. After this
-lane, there is no additional active course-import authorization.
+4 / 110 / 110. No unfinished course is imported or implemented by this
+administrative lane. The later Robotics authorization below is separate.
+
+## ELP-ROB — Authorized Robotics P01-P10 native Python lane
+
+**Depends on:** ELP-ORG-IDENTITY
+
+Portfolio Control batch `ELP-ROB-P01-P10` keeps the pinned
+`robotics-autonomy-learning` source gitlink read-only at
+`f8807640258f1a6c1c77f1dcc9e61734551c585b` and adds a separate
+platform-owned `robotics-autonomy` course.
+
+P01 retains and independently checks the implemented differential-drive source
+design. P02-P10 retain their curriculum IDs, titles, questions, prerequisite
+order, and source scaffold hashes, but their math and experiments are new
+Python-first designs because the source items are non-runnable scaffolds.
+NumPy supplies bounded calculations and Plotly JSON supplies the browser plots.
+Independent analytic, invariant, continuous-time, or separately formulated
+references check baseline and broken cases without importing production
+experiments.
+
+This batch ends at Robotics coverage 10 authored / 14 remaining / 0 blocked /
+0 placeholders and catalog 5 / 120 / 120. MATLAB runtime parity stays
+`not_run`; no browser/accessibility, learner, physical robot/HIL, bench, field,
+release, deployment, credential/settings, or production result is claimed.
 
 ## B020 — Course ingestion and migration tooling
 
