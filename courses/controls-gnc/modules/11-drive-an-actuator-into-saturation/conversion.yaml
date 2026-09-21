@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 course_id: controls-gnc
 item:
   id: P11
@@ -26,17 +26,16 @@ item:
   - path: modules/11-drive-an-actuator-into-saturation/model.m
     sha256: 29f3f67ddc431f194030ef813f92747003f8ef4f53c055ea05531686ab8c078e
 target:
-  content_digest: 825934bf3b1e0ed2e2e699b934125502ad7a87702bbb80a23ddf459d8d809a90
+  content_digest: b01724408b1a045d2da4fc566134fe887ac1e66322da9ec35777875321ca8410
   files:
   - path: modules/11-drive-an-actuator-into-saturation/module.yaml
     sha256: a7303c62abac5ad7ef0a7fc5b757860993e04fadd5f8dc7e4ea35bd2dca158de
   - path: modules/11-drive-an-actuator-into-saturation/lesson.md
-    sha256: 1a6c97e52b9d0abdb9e1c7a1bc66d1acc8c14c132a05403fcc09d1098ad6baed
+    sha256: d113327ee946f88a2c32bf40498e206eefebcc93f8fde2d3d6fdebd51982efe7
   - path: modules/11-drive-an-actuator-into-saturation/experiment.py
-    sha256: 71a772b6c3cf18160d4c818c1610912ec1be4ea639129a4a89c21706fac77ccb
+    sha256: 447c4d5b3e5f8dbdf36bfa55a7418941b7936f80d956bea9bae29a12c9061b5c
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you drive an Actuator
-    into Saturation?
+  guiding_question: What inputs, observable effects, and failure modes matter when you drive an Actuator into Saturation?
   physical_model: Show the gap between requested and physically available actuator effort.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
@@ -56,41 +55,40 @@ content:
       value: 11
       unit: index
     datasets:
-    - name: baseline numeric signature
-      provenance: retained_fixture
-      sha256: 47973c9a6d767fa41ea7d072ae2dad2a620d9a83cb4926b7786fa072979a6cc3
-      unit: mixed numeric signature
+    - name: five-scenario independent reference signatures (expected-independent.json)
+      provenance: independent_reference
+      sha256: 52892d4c950d00655ced8331a5a4e0ad35ca5837f7983c1881bc70e2a6eff45e
+      unit: ordered mixed SI signature; fields and units are embedded in the evidence file
   plot_sequence:
-  - source_figure: Source baseline and sweep figures
+  - source_figure: Pinned MATLAB source intent mapped to platform response view
     target_plot_key: response
-    title: Observable response
+    title: Actuator-limited plant response
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Response
-      unit: source units
-    interpretation: Show the gap between requested and physically available actuator effort.
-  - source_figure: Source diagnostic and broken-case figures
+      label: Normalized plant output
+      unit: ratio
+    interpretation: applied authority clips whenever requested authority exceeds its limit
+  - source_figure: Pinned MATLAB source intent mapped to platform mechanism view
     target_plot_key: mechanism
-    title: Mechanism and diagnostic view
+    title: Requested versus applied actuator command
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Diagnostic
-      unit: source units
-    interpretation: The broken case restricts a 1.5-unit request to 0.6 actuator units.
+      label: Normalized actuator command
+      unit: ratio
+    interpretation: requested and applied command separate for a large fraction of the run
   sweeps:
   - control: reference
     values:
     - 0.5
     - 1.5
     - 3.0
-    expected_observation: A limit below the needed equilibrium command should create persistent tracking
-      error.
+    expected_observation: A limit below the needed equilibrium command should create persistent tracking error.
   - control: actuator_limit
     values:
     - 0.5
@@ -132,39 +130,137 @@ python_source_equivalence:
   - name: broken_mode
     value: false
     unit: flag
+  reference_origin:
+    derived_from_production_output: false
+    formulation: Continuous clipped first-order plant integration
+    imports_production_entrypoint: false
+    independent: true
+    package:
+      path: reference_cases.py
+      sha256: 975fe4772642993eeda6cfa33487192de0ae526b4f12ab2523d3f100ca994c8d
+    perturbs_production_output: false
+    type: closed_form
+  production_origin:
+    derived_from_production_output: true
+    formulation: Direct capture of diagnostics.signature from experiment.py:run
+    imports_production_entrypoint: true
+    independent: false
+    package:
+      path: modules/11-drive-an-actuator-into-saturation/experiment.py
+      sha256: 447c4d5b3e5f8dbdf36bfa55a7418941b7936f80d956bea9bae29a12c9061b5c
+    perturbs_production_output: false
+    type: production_entrypoint
   cases:
-  - name: baseline-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/11-drive-an-actuator-into-saturation/evidence/expected-baseline.json
-      sha256: 47973c9a6d767fa41ea7d072ae2dad2a620d9a83cb4926b7786fa072979a6cc3
-    actual:
-      path: modules/11-drive-an-actuator-into-saturation/evidence/actual-baseline.json
-      sha256: 6cf5fa31ba995b0507b10f465759be0c946a1c385de76cd9c99c2f66c3159f3d
-    max_absolute_error: 9.992007221626409e-14
-    max_relative_error: 6.661338147750495e-14
+  - name: baseline-independent-reference-vs-production
+    scenario: baseline
+    evidence_key: baseline
+    parameters:
+      actuator_limit: 2.0
+      broken_mode: false
+      reference: 1.5
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: &id001
+      absolute: 0.015
+      relative: 0.015
+    expected: &id002
+      path: modules/11-drive-an-actuator-into-saturation/evidence/expected-independent.json
+      sha256: 52892d4c950d00655ced8331a5a4e0ad35ca5837f7983c1881bc70e2a6eff45e
+    actual: &id003
+      path: modules/11-drive-an-actuator-into-saturation/evidence/actual-production.json
+      sha256: 6b8fc0e30b0eed1e382f456d3e918bcb13ddf530e7e1d3330b3ae64b60865684
+    comparison_scale: 6.0
+    allowed_absolute_error: 0.09
+    max_absolute_error: 0.0016638935108153063
+    max_relative_error: 0.0016638935108153063
+    teaching_invariant:
+      description: applied authority clips whenever requested authority exceeds its limit
+      reference_passed: true
+      production_passed: true
     passed: true
-  - name: broken-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/11-drive-an-actuator-into-saturation/evidence/expected-broken.json
-      sha256: 901b12e4d5b7fecaaf44232eed4083b886fc68276159e3563ffe5bbc886006ad
-    actual:
-      path: modules/11-drive-an-actuator-into-saturation/evidence/actual-broken.json
-      sha256: 45141f606f3161c9f29ce713e0890638041871180f43b6a0662b6e8c1871639c
-    max_absolute_error: 9.992007221626409e-14
-    max_relative_error: 6.661338147750495e-14
+  - name: sweep-1-independent-reference-vs-production
+    scenario: sweep_1
+    evidence_key: sweep_1
+    parameters:
+      actuator_limit: 2.0
+      broken_mode: false
+      reference: 3.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 12.0
+    allowed_absolute_error: 0.18
+    max_absolute_error: 0.00014748577449674727
+    max_relative_error: 7.392066713966443e-05
+    teaching_invariant:
+      description: applied authority clips whenever requested authority exceeds its limit
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: sweep-2-independent-reference-vs-production
+    scenario: sweep_2
+    evidence_key: sweep_2
+    parameters:
+      actuator_limit: 5.0
+      broken_mode: false
+      reference: 1.5
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 6.0
+    allowed_absolute_error: 0.09
+    max_absolute_error: 1.1826095658307167e-12
+    max_relative_error: 9.855079715256408e-13
+    teaching_invariant:
+      description: applied authority clips whenever requested authority exceeds its limit
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: broken-independent-reference-vs-production
+    scenario: broken
+    evidence_key: broken
+    parameters:
+      actuator_limit: 2.0
+      broken_mode: true
+      reference: 1.5
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 6.0
+    allowed_absolute_error: 0.09
+    max_absolute_error: 4.424573236738727e-05
+    max_relative_error: 4.424573236738727e-05
+    teaching_invariant:
+      description: applied authority clips whenever requested authority exceeds its limit
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: recovery-independent-reference-vs-production
+    scenario: recovery
+    evidence_key: recovery
+    parameters:
+      actuator_limit: 2.0
+      broken_mode: false
+      reference: 1.5
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 6.0
+    allowed_absolute_error: 0.09
+    max_absolute_error: 0.0016638935108153063
+    max_relative_error: 0.0016638935108153063
+    teaching_invariant:
+      description: applied authority clips whenever requested authority exceeds its limit
+      reference_passed: true
+      production_passed: true
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
-    signatures bind the Python conversion.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
+    constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:
@@ -176,3 +272,15 @@ claims:
   learner_effectiveness:
     status: not_run
     reason: Learner effectiveness requires post-release study and is not claimed.
+fidelity:
+  batch_id: ELP-GNC-FIDELITY-P01-P24
+  item_id: P11
+  map:
+    path: fidelity-map.yaml
+    sha256: 0607e8f0908f32e1cded19c7daa550a3ff40d788372e6927e2cfc364c633f4b4
+  schema:
+    path: fidelity-map.schema.json
+    sha256: 256f1e1298b80812ce35a26eeb750917ffc1ea10cc25e9da8363d9524da102a0
+  source_model:
+    path: modules/11-drive-an-actuator-into-saturation/model.m
+    sha256: 29f3f67ddc431f194030ef813f92747003f8ef4f53c055ea05531686ab8c078e

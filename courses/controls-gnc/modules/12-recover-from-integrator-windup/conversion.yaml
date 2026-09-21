@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 course_id: controls-gnc
 item:
   id: P12
@@ -26,17 +26,16 @@ item:
   - path: modules/12-recover-from-integrator-windup/model.m
     sha256: 42bbda3356206c8d8991def6f5ffd9f50e1d4818be4679b59ac661de63cb6265
 target:
-  content_digest: 4f2fee492d69c2e493aa8cd0a53b6f39bfd4be8232d71611c74e304fa4729aac
+  content_digest: 945de391c73635b08e3579ebd4c69e99be555da1c030da28dcc60bd2d71c8fb4
   files:
   - path: modules/12-recover-from-integrator-windup/module.yaml
     sha256: 6fda5808030c9f659d1159e2b8250d4ef376b8f154b3d6f99864eaaf4d6e8c5c
   - path: modules/12-recover-from-integrator-windup/lesson.md
-    sha256: 67cabcd50eb001f2acea7614f77d6b47929a0ebb57e296080aa5737e9a52ac7a
+    sha256: 79a6c2176a14280dd08a5a3899f2fa50a5a34ed59419b3761eaf9e6d7f3d3bb1
   - path: modules/12-recover-from-integrator-windup/experiment.py
-    sha256: 443e980ea1a88e6048d4359d026ba9474bb5ccf84e88cdbaf770f21889f314b8
+    sha256: d6ebeeb180a0e76e8b1a623dfd0f8b656fb730e81ed8e8e7720503ed6ec236a0
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you recover from Integrator
-    Windup?
+  guiding_question: What inputs, observable effects, and failure modes matter when you recover from Integrator Windup?
   physical_model: Compare PI recovery with and without correctly signed back-calculation.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
@@ -56,42 +55,43 @@ content:
       value: 12
       unit: index
     datasets:
-    - name: baseline numeric signature
-      provenance: retained_fixture
-      sha256: 71485142896ed066e8ef86923cfeb4280c7909d6f61b3f5c0a52340280e68469
-      unit: mixed numeric signature
+    - name: five-scenario independent reference signatures (expected-independent.json)
+      provenance: independent_reference
+      sha256: a97867f60e06d104454e06cde74175e0bb794bb5162c6b184f6ba48930bd6ee8
+      unit: ordered mixed SI signature; fields and units are embedded in the evidence file
   plot_sequence:
-  - source_figure: Source baseline and sweep figures
+  - source_figure: Pinned MATLAB source intent mapped to platform response view
     target_plot_key: response
-    title: Observable response
+    title: Anti-windup recovery response
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Response
-      unit: source units
-    interpretation: Compare PI recovery with and without correctly signed back-calculation.
-  - source_figure: Source diagnostic and broken-case figures
+      label: Normalized plant output
+      unit: ratio
+    interpretation: anti-windup recovery metrics remain finite and nonnegative
+  - source_figure: Pinned MATLAB source intent mapped to platform mechanism view
     target_plot_key: mechanism
-    title: Mechanism and diagnostic view
+    title: Saturation gap and controller memory
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Diagnostic
-      unit: source units
-    interpretation: The broken case reverses the back-calculation sign and drives the integrator farther
-      into windup.
+      label: Normalized actuator command
+      unit: ratio
+    - role: y
+      label: Integral state
+      unit: ratio·s
+    interpretation: the integral state grows and post-demand recovery degrades
   sweeps:
   - control: anti_windup_gain
     values:
     - 0.0
     - 0.5
     - 2.0
-    expected_observation: Correctly signed back-calculation should shorten recovery after the high demand
-      ends.
+    expected_observation: Correctly signed back-calculation should shorten recovery after the high demand ends.
   - control: demand_duration_s
     values:
     - 1.0
@@ -100,8 +100,7 @@ content:
     expected_observation: Compare PI recovery with and without correctly signed back-calculation.
   broken_case:
     trigger: Enable broken_mode.
-    failure: The broken case reverses the back-calculation sign and drives the integrator farther into
-      windup.
+    failure: The broken case reverses the back-calculation sign and drives the integrator farther into windup.
     recovery: Disable the broken case to feed the saturation gap back with the corrective sign.
     expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
   common_mistakes:
@@ -134,39 +133,137 @@ python_source_equivalence:
   - name: broken_mode
     value: false
     unit: flag
+  reference_origin:
+    derived_from_production_output: false
+    formulation: High-accuracy continuous anti-windup state integration
+    imports_production_entrypoint: false
+    independent: true
+    package:
+      path: reference_cases.py
+      sha256: 975fe4772642993eeda6cfa33487192de0ae526b4f12ab2523d3f100ca994c8d
+    perturbs_production_output: false
+    type: separately_formulated_numerical
+  production_origin:
+    derived_from_production_output: true
+    formulation: Direct capture of diagnostics.signature from experiment.py:run
+    imports_production_entrypoint: true
+    independent: false
+    package:
+      path: modules/12-recover-from-integrator-windup/experiment.py
+      sha256: d6ebeeb180a0e76e8b1a623dfd0f8b656fb730e81ed8e8e7720503ed6ec236a0
+    perturbs_production_output: false
+    type: production_entrypoint
   cases:
-  - name: baseline-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/12-recover-from-integrator-windup/evidence/expected-baseline.json
-      sha256: 71485142896ed066e8ef86923cfeb4280c7909d6f61b3f5c0a52340280e68469
-    actual:
-      path: modules/12-recover-from-integrator-windup/evidence/actual-baseline.json
-      sha256: a49ec0ec5354f4fecdad5612de426586df0ea548a24943a3f1c7a2df199df1a3
-    max_absolute_error: 1.000310945187266e-13
-    max_relative_error: 1.000310945187266e-13
+  - name: baseline-independent-reference-vs-production
+    scenario: baseline
+    evidence_key: baseline
+    parameters:
+      anti_windup_gain: 0.5
+      broken_mode: false
+      demand_duration_s: 3.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: &id001
+      absolute: 0.02
+      relative: 0.02
+    expected: &id002
+      path: modules/12-recover-from-integrator-windup/evidence/expected-independent.json
+      sha256: a97867f60e06d104454e06cde74175e0bb794bb5162c6b184f6ba48930bd6ee8
+    actual: &id003
+      path: modules/12-recover-from-integrator-windup/evidence/actual-production.json
+      sha256: 84bedbbb498ef28333d3c554e52f241ec0f6f630a9fad2ca810999de5c9c659d
+    comparison_scale: 3.0
+    allowed_absolute_error: 0.06
+    max_absolute_error: 0.0039043462200221146
+    max_relative_error: 0.002912982247348561
+    teaching_invariant:
+      description: anti-windup recovery metrics remain finite and nonnegative
+      reference_passed: true
+      production_passed: true
     passed: true
-  - name: broken-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/12-recover-from-integrator-windup/evidence/expected-broken.json
-      sha256: 9d444213563c9a4a6100e634d5988ffcf20027e131fb6331f372c285445cc04d
-    actual:
-      path: modules/12-recover-from-integrator-windup/evidence/actual-broken.json
-      sha256: 6b6de3d925ecbcd4a39406b241f88d4cb1f393b785c465ce6540118e526cd91f
-    max_absolute_error: 1.000310945187266e-13
-    max_relative_error: 1.000310945187266e-13
+  - name: sweep-1-independent-reference-vs-production
+    scenario: sweep_1
+    evidence_key: sweep_1
+    parameters:
+      anti_windup_gain: 2.0
+      broken_mode: false
+      demand_duration_s: 3.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 3.0
+    allowed_absolute_error: 0.06
+    max_absolute_error: 0.005518768733090651
+    max_relative_error: 0.004805735799558435
+    teaching_invariant:
+      description: anti-windup recovery metrics remain finite and nonnegative
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: sweep-2-independent-reference-vs-production
+    scenario: sweep_2
+    evidence_key: sweep_2
+    parameters:
+      anti_windup_gain: 0.5
+      broken_mode: false
+      demand_duration_s: 5.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 5.0
+    allowed_absolute_error: 0.1
+    max_absolute_error: 0.004321048529357441
+    max_relative_error: 0.003137902673575198
+    teaching_invariant:
+      description: anti-windup recovery metrics remain finite and nonnegative
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: broken-independent-reference-vs-production
+    scenario: broken
+    evidence_key: broken
+    parameters:
+      anti_windup_gain: 0.5
+      broken_mode: true
+      demand_duration_s: 3.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 318.96910991442746
+    allowed_absolute_error: 6.37938219828855
+    max_absolute_error: 5.087219722804548
+    max_relative_error: 0.015948941651965417
+    teaching_invariant:
+      description: anti-windup recovery metrics remain finite and nonnegative
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: recovery-independent-reference-vs-production
+    scenario: recovery
+    evidence_key: recovery
+    parameters:
+      anti_windup_gain: 0.5
+      broken_mode: false
+      demand_duration_s: 3.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 3.0
+    allowed_absolute_error: 0.06
+    max_absolute_error: 0.0039043462200221146
+    max_relative_error: 0.002912982247348561
+    teaching_invariant:
+      description: anti-windup recovery metrics remain finite and nonnegative
+      reference_passed: true
+      production_passed: true
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
-    signatures bind the Python conversion.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
+    constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:
@@ -178,3 +275,15 @@ claims:
   learner_effectiveness:
     status: not_run
     reason: Learner effectiveness requires post-release study and is not claimed.
+fidelity:
+  batch_id: ELP-GNC-FIDELITY-P01-P24
+  item_id: P12
+  map:
+    path: fidelity-map.yaml
+    sha256: 0607e8f0908f32e1cded19c7daa550a3ff40d788372e6927e2cfc364c633f4b4
+  schema:
+    path: fidelity-map.schema.json
+    sha256: 256f1e1298b80812ce35a26eeb750917ffc1ea10cc25e9da8363d9524da102a0
+  source_model:
+    path: modules/12-recover-from-integrator-windup/model.m
+    sha256: 42bbda3356206c8d8991def6f5ffd9f50e1d4818be4679b59ac661de63cb6265

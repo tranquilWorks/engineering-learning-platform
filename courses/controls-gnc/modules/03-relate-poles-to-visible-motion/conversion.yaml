@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 course_id: controls-gnc
 item:
   id: P03
@@ -26,17 +26,16 @@ item:
   - path: modules/03-relate-poles-to-visible-motion/model.m
     sha256: 0b7db76072227ff9e10f4db3541046ebd55642be66b42867fbc470bc4ea4c471
 target:
-  content_digest: 4b6a796663ace2de610e5cb9953be763a3b790145a975a269502bb8a6367568b
+  content_digest: d15139b1ab9e3bcaaa358c1e1dad67f682cb228fc690f9a8ccbf743ffd5cef7f
   files:
   - path: modules/03-relate-poles-to-visible-motion/module.yaml
     sha256: 40259c2be75f83c040790795451cc9a485be66c55568dd3dbdf2aade92b26548
   - path: modules/03-relate-poles-to-visible-motion/lesson.md
-    sha256: d651dc5325ce748a0edbbf488b349f82687753e060be9d1a83bee60b5ed6ad93
+    sha256: 9969f90146b51d7ef5c93e30d94baca29f7fd4d6efe5af9fd755993739ca0d50
   - path: modules/03-relate-poles-to-visible-motion/experiment.py
-    sha256: 42d6b1c4ae3d1de94c53b15f06bf32dc0d8303b2b3e84690ec891a57ef5a9fad
+    sha256: c2ffa8c2f2245d8ddf12ac625be87857cdb7226809971a8bf266e4ef132089a0
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you relate Poles to
-    Visible Motion?
+  guiding_question: What inputs, observable effects, and failure modes matter when you relate Poles to Visible Motion?
   physical_model: Translate complex pole location into decay, oscillation, and instability.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
@@ -56,34 +55,39 @@ content:
       value: 3
       unit: index
     datasets:
-    - name: baseline numeric signature
-      provenance: retained_fixture
-      sha256: 79cd0a7b87dd97e194f1f20df12d476cd103ab9780b5a68589fb5beebc2d6338
-      unit: mixed numeric signature
+    - name: five-scenario independent reference signatures (expected-independent.json)
+      provenance: independent_reference
+      sha256: f061283203d1d98e15bb3555a3c37b8f9e17c0e7a45ebf9c71e6b3cb8a639168
+      unit: ordered mixed SI signature; fields and units are embedded in the evidence file
   plot_sequence:
-  - source_figure: Source baseline and sweep figures
+  - source_figure: Pinned MATLAB source intent mapped to platform response view
     target_plot_key: response
-    title: Observable response
+    title: Mode response and exponential envelope
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Response
-      unit: source units
-    interpretation: Translate complex pole location into decay, oscillation, and instability.
-  - source_figure: Source diagnostic and broken-case figures
+      label: Modal amplitude
+      unit: ratio
+    interpretation: real pole sign controls decay or growth and imaginary part fixes period
+  - source_figure: Pinned MATLAB source intent mapped to platform mechanism view
     target_plot_key: mechanism
-    title: Mechanism and diagnostic view
+    title: Phase portrait and pole location
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Modal amplitude
+      unit: ratio
     - role: y
-      label: Diagnostic
-      unit: source units
-    interpretation: The broken case reflects a stable pole into the right half-plane, turning decay into
-      exponential growth.
+      label: Modal rate
+      unit: 1/s
+    - role: x
+      label: Real pole part
+      unit: 1/s
+    - role: y
+      label: Imaginary pole part
+      unit: rad/s
+    interpretation: the modal envelope grows
   sweeps:
   - control: pole_real_per_s
     values:
@@ -99,8 +103,7 @@ content:
     expected_observation: Translate complex pole location into decay, oscillation, and instability.
   broken_case:
     trigger: Enable broken_mode.
-    failure: The broken case reflects a stable pole into the right half-plane, turning decay into exponential
-      growth.
+    failure: The broken case reflects a stable pole into the right half-plane, turning decay into exponential growth.
     recovery: Disable the broken case and keep the real part negative.
     expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
   common_mistakes:
@@ -133,39 +136,137 @@ python_source_equivalence:
   - name: broken_mode
     value: false
     unit: flag
+  reference_origin:
+    derived_from_production_output: false
+    formulation: Complex-pole exponential envelope and phase relation
+    imports_production_entrypoint: false
+    independent: true
+    package:
+      path: reference_cases.py
+      sha256: 975fe4772642993eeda6cfa33487192de0ae526b4f12ab2523d3f100ca994c8d
+    perturbs_production_output: false
+    type: closed_form
+  production_origin:
+    derived_from_production_output: true
+    formulation: Direct capture of diagnostics.signature from experiment.py:run
+    imports_production_entrypoint: true
+    independent: false
+    package:
+      path: modules/03-relate-poles-to-visible-motion/experiment.py
+      sha256: c2ffa8c2f2245d8ddf12ac625be87857cdb7226809971a8bf266e4ef132089a0
+    perturbs_production_output: false
+    type: production_entrypoint
   cases:
-  - name: baseline-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/03-relate-poles-to-visible-motion/evidence/expected-baseline.json
-      sha256: 79cd0a7b87dd97e194f1f20df12d476cd103ab9780b5a68589fb5beebc2d6338
-    actual:
-      path: modules/03-relate-poles-to-visible-motion/evidence/actual-baseline.json
-      sha256: 6268fd5833acaa0b479c3657281c1de59fd3bbd23af5533e2f5c34b849c6e804
-    max_absolute_error: 9.997558336749535e-14
-    max_relative_error: 9.997558336749535e-14
+  - name: baseline-independent-reference-vs-production
+    scenario: baseline
+    evidence_key: baseline
+    parameters:
+      broken_mode: false
+      pole_imag_rad_s: 2.0
+      pole_real_per_s: -0.5
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: &id001
+      absolute: 1.0e-10
+      relative: 1.0e-10
+    expected: &id002
+      path: modules/03-relate-poles-to-visible-motion/evidence/expected-independent.json
+      sha256: f061283203d1d98e15bb3555a3c37b8f9e17c0e7a45ebf9c71e6b3cb8a639168
+    actual: &id003
+      path: modules/03-relate-poles-to-visible-motion/evidence/actual-production.json
+      sha256: 77d44866b4ebbff8735854c280262a2fe636253dddbe5360bd9f1083dacea3f1
+    comparison_scale: 3.141592653589793
+    allowed_absolute_error: 3.1415926535897934e-10
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: real pole sign controls decay or growth and imaginary part fixes period
+      reference_passed: true
+      production_passed: true
     passed: true
-  - name: broken-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/03-relate-poles-to-visible-motion/evidence/expected-broken.json
-      sha256: 0fe783b445116fbe6f5177f49d0bf9a439584ce749116cd7caede0321c1b6c63
-    actual:
-      path: modules/03-relate-poles-to-visible-motion/evidence/actual-broken.json
-      sha256: 06ef1dd82f049d2636c9b6e6377dadc21da238357cdd5d23a683ebaa683406ed
-    max_absolute_error: 1.000310945187266e-13
-    max_relative_error: 1.000310945187266e-13
+  - name: sweep-1-independent-reference-vs-production
+    scenario: sweep_1
+    evidence_key: sweep_1
+    parameters:
+      broken_mode: false
+      pole_imag_rad_s: 2.0
+      pole_real_per_s: 0.2
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 9.061616334372037
+    allowed_absolute_error: 9.061616334372037e-10
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: real pole sign controls decay or growth and imaginary part fixes period
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: sweep-2-independent-reference-vs-production
+    scenario: sweep_2
+    evidence_key: sweep_2
+    parameters:
+      broken_mode: false
+      pole_imag_rad_s: 5.0
+      pole_real_per_s: -0.5
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 5.0
+    allowed_absolute_error: 5.0e-10
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: real pole sign controls decay or growth and imaginary part fixes period
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: broken-independent-reference-vs-production
+    scenario: broken
+    evidence_key: broken
+    parameters:
+      broken_mode: true
+      pole_imag_rad_s: 2.0
+      pole_real_per_s: -0.5
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 251.8192392724068
+    allowed_absolute_error: 2.5181923927240683e-08
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: real pole sign controls decay or growth and imaginary part fixes period
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: recovery-independent-reference-vs-production
+    scenario: recovery
+    evidence_key: recovery
+    parameters:
+      broken_mode: false
+      pole_imag_rad_s: 2.0
+      pole_real_per_s: -0.5
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 3.141592653589793
+    allowed_absolute_error: 3.1415926535897934e-10
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: real pole sign controls decay or growth and imaginary part fixes period
+      reference_passed: true
+      production_passed: true
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
-    signatures bind the Python conversion.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
+    constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:
@@ -177,3 +278,15 @@ claims:
   learner_effectiveness:
     status: not_run
     reason: Learner effectiveness requires post-release study and is not claimed.
+fidelity:
+  batch_id: ELP-GNC-FIDELITY-P01-P24
+  item_id: P03
+  map:
+    path: fidelity-map.yaml
+    sha256: 0607e8f0908f32e1cded19c7daa550a3ff40d788372e6927e2cfc364c633f4b4
+  schema:
+    path: fidelity-map.schema.json
+    sha256: 256f1e1298b80812ce35a26eeb750917ffc1ea10cc25e9da8363d9524da102a0
+  source_model:
+    path: modules/03-relate-poles-to-visible-motion/model.m
+    sha256: 0b7db76072227ff9e10f4db3541046ebd55642be66b42867fbc470bc4ea4c471

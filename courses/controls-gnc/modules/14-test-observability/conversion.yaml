@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 course_id: controls-gnc
 item:
   id: P14
@@ -26,14 +26,14 @@ item:
   - path: modules/14-test-observability/model.m
     sha256: 6164ee7a6c9506700df113a62c50b4592d859f2efd3d89d946ecf4b341ccf791
 target:
-  content_digest: 059245210cccd4b0a45444b3140256508d307fb9fc38af6e0af90b7926154989
+  content_digest: 0e574e80a78ed66b0e976c90d998f4559cb5036c0fa386bdeb13ed0df273f63e
   files:
   - path: modules/14-test-observability/module.yaml
     sha256: 026d1e067e39768d5c9fd64631b89f6cf2745f86f11dca15732427fd7dab1a16
   - path: modules/14-test-observability/lesson.md
-    sha256: 8d98147d2748d81a21595bb1144d4b65cfcb1a09fe96fbfdeb5108dfcdeb6bf8
+    sha256: c8e1765af388ce5c6e8a78d0e693a2aed03f3d91f534e5a0a6ae3196ba51895b
   - path: modules/14-test-observability/experiment.py
-    sha256: 462b3f5b90895372be41ac483d64321b5967c784f5cb21a43c67c4850fe702c2
+    sha256: 5c6ee792c6411a1e913b154025c829c3def9331b05fd1af06169cbb5dd1d634c
 content:
   guiding_question: What inputs, observable effects, and failure modes matter when you test Observability?
   physical_model: Use measurement history and observability conditioning to expose hidden state.
@@ -55,41 +55,47 @@ content:
       value: 14
       unit: index
     datasets:
-    - name: baseline numeric signature
-      provenance: retained_fixture
-      sha256: 914b3acbc589bc549b761ba9ff617b192b62207ebe6405085f8f9b740ebf4180
-      unit: mixed numeric signature
+    - name: five-scenario independent reference signatures (expected-independent.json)
+      provenance: independent_reference
+      sha256: 925c55c25ac27ca8ef70eafde8ad71039b16048f12f358c9897680f60c8d8f55
+      unit: ordered mixed SI signature; fields and units are embedded in the evidence file
   plot_sequence:
-  - source_figure: Source baseline and sweep figures
+  - source_figure: Pinned MATLAB source intent mapped to platform response view
     target_plot_key: response
-    title: Observable response
+    title: Measurement history and position truth
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Response
-      unit: source units
-    interpretation: Use measurement history and observability conditioning to expose hidden state.
-  - source_figure: Source diagnostic and broken-case figures
+      label: Position-equivalent measurement
+      unit: m
+    interpretation: rate-only sensing removes one observable direction
+  - source_figure: Pinned MATLAB source intent mapped to platform mechanism view
     target_plot_key: mechanism
-    title: Mechanism and diagnostic view
+    title: Observability conditioning and reconstructed rate
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Ordered direction
+      unit: index
     - role: y
-      label: Diagnostic
-      unit: source units
-    interpretation: The broken case measures rate only, so initial position never appears in the output.
+      label: Observability singular value
+      unit: measurement/state
+    - role: x
+      label: Time
+      unit: s
+    - role: y
+      label: Reconstructed rate
+      unit: m/s
+    interpretation: observability rank drops from two to one
   sweeps:
   - control: sensor_gain
     values:
     - 0.25
     - 1.0
     - 2.0
-    expected_observation: A longer position record should improve velocity inference; a rate-only sensor
-      hides initial position.
+    expected_observation: A longer position record should improve velocity inference; a rate-only sensor hides initial
+      position.
   - control: observation_window_s
     values:
     - 0.25
@@ -131,39 +137,137 @@ python_source_equivalence:
   - name: broken_mode
     value: false
     unit: flag
+  reference_origin:
+    derived_from_production_output: false
+    formulation: Direct observability matrix and least-squares reconstruction
+    imports_production_entrypoint: false
+    independent: true
+    package:
+      path: reference_cases.py
+      sha256: 975fe4772642993eeda6cfa33487192de0ae526b4f12ab2523d3f100ca994c8d
+    perturbs_production_output: false
+    type: closed_form
+  production_origin:
+    derived_from_production_output: true
+    formulation: Direct capture of diagnostics.signature from experiment.py:run
+    imports_production_entrypoint: true
+    independent: false
+    package:
+      path: modules/14-test-observability/experiment.py
+      sha256: 5c6ee792c6411a1e913b154025c829c3def9331b05fd1af06169cbb5dd1d634c
+    perturbs_production_output: false
+    type: production_entrypoint
   cases:
-  - name: baseline-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/14-test-observability/evidence/expected-baseline.json
-      sha256: 914b3acbc589bc549b761ba9ff617b192b62207ebe6405085f8f9b740ebf4180
-    actual:
-      path: modules/14-test-observability/evidence/actual-baseline.json
-      sha256: 308a5678c42993a1cb2c4135ac827cfe4597b1fe713546d1198f6af5c14afa12
-    max_absolute_error: 9.992007221626409e-14
-    max_relative_error: 9.99200722162541e-14
+  - name: baseline-independent-reference-vs-production
+    scenario: baseline
+    evidence_key: baseline
+    parameters:
+      broken_mode: false
+      observation_window_s: 2.0
+      sensor_gain: 1.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: &id001
+      absolute: 1.0e-12
+      relative: 1.0e-12
+    expected: &id002
+      path: modules/14-test-observability/evidence/expected-independent.json
+      sha256: 925c55c25ac27ca8ef70eafde8ad71039b16048f12f358c9897680f60c8d8f55
+    actual: &id003
+      path: modules/14-test-observability/evidence/actual-production.json
+      sha256: ce15fa141720767039f588caaf22d44dea4ccb186dff5ab8ce93ff1fa11a6a67
+    comparison_scale: 2.0
+    allowed_absolute_error: 2.0e-12
+    max_absolute_error: 1.1102230246251565e-16
+    max_relative_error: 1.1102230246251565e-16
+    teaching_invariant:
+      description: rate-only sensing removes one observable direction
+      reference_passed: true
+      production_passed: true
     passed: true
-  - name: broken-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/14-test-observability/evidence/expected-broken.json
-      sha256: e56bc822932e3784188cf48442b943cb7f35e5be8849e891a13cef64229e4a19
-    actual:
-      path: modules/14-test-observability/evidence/actual-broken.json
-      sha256: 02795143adc809580310d198379089a8bc5022265fdbc54bd1521dbb70e70cf3
-    max_absolute_error: 9.992007221626409e-14
-    max_relative_error: 9.99200722162541e-14
+  - name: sweep-1-independent-reference-vs-production
+    scenario: sweep_1
+    evidence_key: sweep_1
+    parameters:
+      broken_mode: false
+      observation_window_s: 2.0
+      sensor_gain: 2.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 2.4
+    allowed_absolute_error: 2.4e-12
+    max_absolute_error: 1.1102230246251565e-16
+    max_relative_error: 1.1102230246251565e-16
+    teaching_invariant:
+      description: rate-only sensing removes one observable direction
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: sweep-2-independent-reference-vs-production
+    scenario: sweep_2
+    evidence_key: sweep_2
+    parameters:
+      broken_mode: false
+      observation_window_s: 5.0
+      sensor_gain: 1.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 5.0
+    allowed_absolute_error: 5.0e-12
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: rate-only sensing removes one observable direction
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: broken-independent-reference-vs-production
+    scenario: broken
+    evidence_key: broken
+    parameters:
+      broken_mode: true
+      observation_window_s: 2.0
+      sensor_gain: 1.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 2.0
+    allowed_absolute_error: 2.0e-12
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: rate-only sensing removes one observable direction
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: recovery-independent-reference-vs-production
+    scenario: recovery
+    evidence_key: recovery
+    parameters:
+      broken_mode: false
+      observation_window_s: 2.0
+      sensor_gain: 1.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 2.0
+    allowed_absolute_error: 2.0e-12
+    max_absolute_error: 1.1102230246251565e-16
+    max_relative_error: 1.1102230246251565e-16
+    teaching_invariant:
+      description: rate-only sensing removes one observable direction
+      reference_passed: true
+      production_passed: true
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
-    signatures bind the Python conversion.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
+    constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:
@@ -175,3 +279,15 @@ claims:
   learner_effectiveness:
     status: not_run
     reason: Learner effectiveness requires post-release study and is not claimed.
+fidelity:
+  batch_id: ELP-GNC-FIDELITY-P01-P24
+  item_id: P14
+  map:
+    path: fidelity-map.yaml
+    sha256: 0607e8f0908f32e1cded19c7daa550a3ff40d788372e6927e2cfc364c633f4b4
+  schema:
+    path: fidelity-map.schema.json
+    sha256: 256f1e1298b80812ce35a26eeb750917ffc1ea10cc25e9da8363d9524da102a0
+  source_model:
+    path: modules/14-test-observability/model.m
+    sha256: 6164ee7a6c9506700df113a62c50b4592d859f2efd3d89d946ecf4b341ccf791

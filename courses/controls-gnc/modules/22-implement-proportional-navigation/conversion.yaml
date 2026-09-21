@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 course_id: controls-gnc
 item:
   id: P22
@@ -26,17 +26,16 @@ item:
   - path: modules/22-implement-proportional-navigation/model.m
     sha256: 643e4474b87f7f669c0eaa9a6f637b9119fc8e0f90e4c545cb6e5fb40bed305a
 target:
-  content_digest: f000ae2cc7c678fc5e53b5f8a39179c7aa51f3e5fe9206da7c9454df17b85452
+  content_digest: ce5cf4260ca62e66c66ecae34d6bf2a267015edc3e51a68d1cbb085b7a78a59f
   files:
   - path: modules/22-implement-proportional-navigation/module.yaml
     sha256: 53899722c455e794236c56d9b97032c3e2b3f26a5ca06ad7ada01d2282134e2a
   - path: modules/22-implement-proportional-navigation/lesson.md
-    sha256: 908aadbdcc9ccf8819649068debe1d58ce298472abfeb8313e79ee8d374162f6
+    sha256: 067c293a9155df12f72f65bc2e6f2b4e40e0b64fb8bc0e1915197ec6c07abfda
   - path: modules/22-implement-proportional-navigation/experiment.py
-    sha256: 74c34cdd788db709e488755b90567a4ea55a0bbd5d94bc5e716b8bbd6f37468c
+    sha256: 90ff9ad594ae2b50e1615ed80e8ca8508f704aca8e4fe8c77cb490e044a5dc80
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you implement Proportional
-    Navigation?
+  guiding_question: What inputs, observable effects, and failure modes matter when you implement Proportional Navigation?
   physical_model: Observe proportional navigation geometry, acceleration authority, and miss distance.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
@@ -56,42 +55,44 @@ content:
       value: 22
       unit: index
     datasets:
-    - name: baseline numeric signature
-      provenance: retained_fixture
-      sha256: 491dabf12a65da0dae96b53953dbf6ffbf4ae9d2421a6df5c954c29f0da6ed90
-      unit: mixed numeric signature
+    - name: five-scenario independent reference signatures (expected-independent.json)
+      provenance: independent_reference
+      sha256: 3602b21b87ef702fe69dcaad76b0bd419ce2e18f314b2be5bbdcf5db524d4286
+      unit: ordered mixed SI signature; fields and units are embedded in the evidence file
   plot_sequence:
-  - source_figure: Source baseline and sweep figures
+  - source_figure: Pinned MATLAB source intent mapped to platform response view
     target_plot_key: response
-    title: Observable response
+    title: Proportional-navigation engagement geometry
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Response
-      unit: source units
-    interpretation: Observe proportional navigation geometry, acceleration authority, and miss distance.
-  - source_figure: Source diagnostic and broken-case figures
+      label: Range
+      unit: m
+    - role: y
+      label: Line-of-sight angle
+      unit: deg
+    interpretation: PN acceleration respects the declared saturation
+  - source_figure: Pinned MATLAB source intent mapped to platform mechanism view
     target_plot_key: mechanism
-    title: Mechanism and diagnostic view
+    title: Lateral-acceleration authority
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Diagnostic
-      unit: source units
-    interpretation: The broken case limits lateral acceleration to 5 m/s², preventing intercept in the
-      modeled engagement.
+      label: Lateral acceleration
+      unit: m/s²
+    interpretation: the acceleration clips and the modeled engagement misses
   sweeps:
   - control: navigation_constant
     values:
     - 2.0
     - 3.0
     - 5.0
-    expected_observation: Insufficient lateral acceleration should leave a finite miss even with a reasonable
-      navigation constant.
+    expected_observation: Insufficient lateral acceleration should leave a finite miss even with a reasonable navigation
+      constant.
   - control: maximum_acceleration_m_s2
     values:
     - 20.0
@@ -100,8 +101,7 @@ content:
     expected_observation: Observe proportional navigation geometry, acceleration authority, and miss distance.
   broken_case:
     trigger: Enable broken_mode.
-    failure: The broken case limits lateral acceleration to 5 m/s², preventing intercept in the modeled
-      engagement.
+    failure: The broken case limits lateral acceleration to 5 m/s², preventing intercept in the modeled engagement.
     recovery: Disable the broken case and restore the 80 m/s² authority used by the baseline.
     expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
   common_mistakes:
@@ -134,39 +134,137 @@ python_source_equivalence:
   - name: broken_mode
     value: false
     unit: flag
+  reference_origin:
+    derived_from_production_output: false
+    formulation: Complex-plane proportional-navigation geometry recurrence
+    imports_production_entrypoint: false
+    independent: true
+    package:
+      path: reference_cases.py
+      sha256: 975fe4772642993eeda6cfa33487192de0ae526b4f12ab2523d3f100ca994c8d
+    perturbs_production_output: false
+    type: alternative_algorithm
+  production_origin:
+    derived_from_production_output: true
+    formulation: Direct capture of diagnostics.signature from experiment.py:run
+    imports_production_entrypoint: true
+    independent: false
+    package:
+      path: modules/22-implement-proportional-navigation/experiment.py
+      sha256: 90ff9ad594ae2b50e1615ed80e8ca8508f704aca8e4fe8c77cb490e044a5dc80
+    perturbs_production_output: false
+    type: production_entrypoint
   cases:
-  - name: baseline-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/22-implement-proportional-navigation/evidence/expected-baseline.json
-      sha256: 491dabf12a65da0dae96b53953dbf6ffbf4ae9d2421a6df5c954c29f0da6ed90
-    actual:
-      path: modules/22-implement-proportional-navigation/evidence/actual-baseline.json
-      sha256: fc3208bb86b4537e8978fbc09952c31bec7a2c6efa95a1508cedc822dd2bfe75
-    max_absolute_error: 9.992007221626409e-14
-    max_relative_error: 3.3306690738753585e-14
+  - name: baseline-independent-reference-vs-production
+    scenario: baseline
+    evidence_key: baseline
+    parameters:
+      broken_mode: false
+      maximum_acceleration_m_s2: 80.0
+      navigation_constant: 3.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: &id001
+      absolute: 1.0e-08
+      relative: 1.0e-08
+    expected: &id002
+      path: modules/22-implement-proportional-navigation/evidence/expected-independent.json
+      sha256: 3602b21b87ef702fe69dcaad76b0bd419ce2e18f314b2be5bbdcf5db524d4286
+    actual: &id003
+      path: modules/22-implement-proportional-navigation/evidence/actual-production.json
+      sha256: 1acf63ebf2ee338241fd201bc1abb9c5b32ea30cecf9d99b1623891f0d3cf313
+    comparison_scale: 80.0
+    allowed_absolute_error: 8.0e-07
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: PN acceleration respects the declared saturation
+      reference_passed: true
+      production_passed: true
     passed: true
-  - name: broken-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/22-implement-proportional-navigation/evidence/expected-broken.json
-      sha256: b491dfd4d795d84a23a8a9932c5715d93ab35778a89b35157d16d793e3c0c51b
-    actual:
-      path: modules/22-implement-proportional-navigation/evidence/actual-broken.json
-      sha256: 6034bc09c93610e533d151717311859e939bbb5b3c86dce19a4434239bf69d80
-    max_absolute_error: 9.992007221626409e-14
-    max_relative_error: 3.3306690738753585e-14
+  - name: sweep-1-independent-reference-vs-production
+    scenario: sweep_1
+    evidence_key: sweep_1
+    parameters:
+      broken_mode: false
+      maximum_acceleration_m_s2: 80.0
+      navigation_constant: 5.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 80.0
+    allowed_absolute_error: 8.0e-07
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: PN acceleration respects the declared saturation
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: sweep-2-independent-reference-vs-production
+    scenario: sweep_2
+    evidence_key: sweep_2
+    parameters:
+      broken_mode: false
+      maximum_acceleration_m_s2: 120.0
+      navigation_constant: 3.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 120.0
+    allowed_absolute_error: 1.2e-06
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: PN acceleration respects the declared saturation
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: broken-independent-reference-vs-production
+    scenario: broken
+    evidence_key: broken
+    parameters:
+      broken_mode: true
+      maximum_acceleration_m_s2: 80.0
+      navigation_constant: 3.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 109.79232754275507
+    allowed_absolute_error: 1.0979232754275508e-06
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: PN acceleration respects the declared saturation
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: recovery-independent-reference-vs-production
+    scenario: recovery
+    evidence_key: recovery
+    parameters:
+      broken_mode: false
+      maximum_acceleration_m_s2: 80.0
+      navigation_constant: 3.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 80.0
+    allowed_absolute_error: 8.0e-07
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: PN acceleration respects the declared saturation
+      reference_passed: true
+      production_passed: true
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
-    signatures bind the Python conversion.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
+    constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:
@@ -178,3 +276,15 @@ claims:
   learner_effectiveness:
     status: not_run
     reason: Learner effectiveness requires post-release study and is not claimed.
+fidelity:
+  batch_id: ELP-GNC-FIDELITY-P01-P24
+  item_id: P22
+  map:
+    path: fidelity-map.yaml
+    sha256: 0607e8f0908f32e1cded19c7daa550a3ff40d788372e6927e2cfc364c633f4b4
+  schema:
+    path: fidelity-map.schema.json
+    sha256: 256f1e1298b80812ce35a26eeb750917ffc1ea10cc25e9da8363d9524da102a0
+  source_model:
+    path: modules/22-implement-proportional-navigation/model.m
+    sha256: 643e4474b87f7f669c0eaa9a6f637b9119fc8e0f90e4c545cb6e5fb40bed305a

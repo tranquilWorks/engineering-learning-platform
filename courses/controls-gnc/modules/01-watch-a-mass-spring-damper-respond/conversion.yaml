@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 course_id: controls-gnc
 item:
   id: P01
@@ -26,14 +26,14 @@ item:
   - path: modules/01-watch-a-mass-spring-damper-respond/model.m
     sha256: d820c6e74cf73aafb66220a5ac89873f575fd9a80983a21a0ccb7cedb5b329a8
 target:
-  content_digest: a4e2de872ee951c3ecf03299d8e5a3db846c678821465383023db3ca05d557ca
+  content_digest: 5d581bce4a5f6e939e4e8d5247be1c99024a5c08ee88c0a03c2934499f55f3e7
   files:
   - path: modules/01-watch-a-mass-spring-damper-respond/module.yaml
     sha256: e94c069d7e7b59cf68f645171ba837576d5637015eb2dfb04560a0976f876322
   - path: modules/01-watch-a-mass-spring-damper-respond/lesson.md
-    sha256: bf1ec8673af04aed46c2c1f872298417f6e10d82592edbc76fa17ead1692f924
+    sha256: 1507f2149eb2afc031e0246e5e6c4b283e7eea96f8928d4b7187c12392f6418d
   - path: modules/01-watch-a-mass-spring-damper-respond/experiment.py
-    sha256: aa52d7632e8d7c67ff6a1c178655d6a05046d3e7789f15757f19e94c35744217
+    sha256: 42c6d3fccdaa412c200360817cefce6909b0c30b2ccb8b4498d454ce3efb509a
 content:
   guiding_question: How do mass, stiffness, and damping determine visible motion?
   physical_model: Relate inertia, energy storage, and dissipation to a forced mechanical response.
@@ -55,42 +55,46 @@ content:
       value: 1
       unit: index
     datasets:
-    - name: baseline numeric signature
-      provenance: retained_fixture
-      sha256: cc30b63741eac8e0406fd3dc3a3f743d4c0e4e2d4b00bd9dbf8e55cfd819a1ea
-      unit: mixed numeric signature
+    - name: five-scenario independent reference signatures (expected-independent.json)
+      provenance: independent_reference
+      sha256: 1130e90931120c2e5919f50878e604855d34ba99759686fca4744d409d319edb
+      unit: ordered mixed SI signature; fields and units are embedded in the evidence file
   plot_sequence:
-  - source_figure: Source baseline and sweep figures
+  - source_figure: Pinned MATLAB source intent mapped to platform response view
     target_plot_key: response
-    title: Observable response
+    title: Mass–spring–damper displacement
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Response
-      unit: source units
-    interpretation: Relate inertia, energy storage, and dissipation to a forced mechanical response.
-  - source_figure: Source diagnostic and broken-case figures
+      label: Position
+      unit: m
+    interpretation: natural frequency and damping are physical; broken integration exposes energy growth
+  - source_figure: Pinned MATLAB source intent mapped to platform mechanism view
     target_plot_key: mechanism
-    title: Mechanism and diagnostic view
+    title: Phase state and mechanical energy
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Position
+      unit: m
     - role: y
-      label: Diagnostic
-      unit: source units
-    interpretation: The broken case uses an explicit integration step too large for the fastest mode,
-      so numerical energy grows even though the physical system is damped.
+      label: Velocity
+      unit: m/s
+    - role: x
+      label: Time
+      unit: s
+    - role: y
+      label: Mechanical energy
+      unit: J
+    interpretation: final numerical energy grows instead of decaying
   sweeps:
   - control: damping_ns_m
     values:
     - 0.2
     - 0.8
     - 2.5
-    expected_observation: More damping should reduce ringing without changing the static displacement
-      F/k.
+    expected_observation: More damping should reduce ringing without changing the static displacement F/k.
   - control: stiffness_n_m
     values:
     - 1.0
@@ -99,8 +103,8 @@ content:
     expected_observation: Relate inertia, energy storage, and dissipation to a forced mechanical response.
   broken_case:
     trigger: Enable broken_mode.
-    failure: The broken case uses an explicit integration step too large for the fastest mode, so numerical
-      energy grows even though the physical system is damped.
+    failure: The broken case uses an explicit integration step too large for the fastest mode, so numerical energy
+      grows even though the physical system is damped.
     recovery: Disable the broken case to restore a time step that resolves the natural period.
     expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
   common_mistakes:
@@ -136,39 +140,142 @@ python_source_equivalence:
   - name: broken_mode
     value: false
     unit: flag
+  reference_origin:
+    derived_from_production_output: false
+    formulation: Affine semi-implicit state-transition recurrence
+    imports_production_entrypoint: false
+    independent: true
+    package:
+      path: reference_cases.py
+      sha256: 975fe4772642993eeda6cfa33487192de0ae526b4f12ab2523d3f100ca994c8d
+    perturbs_production_output: false
+    type: alternative_algorithm
+  production_origin:
+    derived_from_production_output: true
+    formulation: Direct capture of diagnostics.signature from experiment.py:run
+    imports_production_entrypoint: true
+    independent: false
+    package:
+      path: modules/01-watch-a-mass-spring-damper-respond/experiment.py
+      sha256: 42c6d3fccdaa412c200360817cefce6909b0c30b2ccb8b4498d454ce3efb509a
+    perturbs_production_output: false
+    type: production_entrypoint
   cases:
-  - name: baseline-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/01-watch-a-mass-spring-damper-respond/evidence/expected-baseline.json
-      sha256: cc30b63741eac8e0406fd3dc3a3f743d4c0e4e2d4b00bd9dbf8e55cfd819a1ea
-    actual:
-      path: modules/01-watch-a-mass-spring-damper-respond/evidence/actual-baseline.json
-      sha256: b5abe2cc42fcb1af8dbf46127d447fcfd7ac6e4c2dc3a81e331d7203820c5051
-    max_absolute_error: 9.992007221626409e-14
-    max_relative_error: 4.9960036108129545e-14
+  - name: baseline-independent-reference-vs-production
+    scenario: baseline
+    evidence_key: baseline
+    parameters:
+      broken_mode: false
+      damping_ns_m: 0.8
+      mass_kg: 1.0
+      stiffness_n_m: 4.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: &id001
+      absolute: 1.0e-10
+      relative: 1.0e-10
+    expected: &id002
+      path: modules/01-watch-a-mass-spring-damper-respond/evidence/expected-independent.json
+      sha256: 1130e90931120c2e5919f50878e604855d34ba99759686fca4744d409d319edb
+    actual: &id003
+      path: modules/01-watch-a-mass-spring-damper-respond/evidence/actual-production.json
+      sha256: 85e9d2d2f4318494a77397e69c411e48b0c3514c14255229825342461a75d37a
+    comparison_scale: 2.0
+    allowed_absolute_error: 2.0e-10
+    max_absolute_error: 2.220446049250313e-16
+    max_relative_error: 2.220446049250313e-16
+    teaching_invariant:
+      description: natural frequency and damping are physical; broken integration exposes energy growth
+      reference_passed: true
+      production_passed: true
     passed: true
-  - name: broken-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/01-watch-a-mass-spring-damper-respond/evidence/expected-broken.json
-      sha256: 7c8a6e2cd5a5cb4cc57f57a17a5c2c7ed2900743d3f9ef361a2ddf47d81c315e
-    actual:
-      path: modules/01-watch-a-mass-spring-damper-respond/evidence/actual-broken.json
-      sha256: 900c5075a71b1eecf45cb9219557514d2b0d90498e8d1997c345bf6c0dbc3403
-    max_absolute_error: 9.992007221626409e-14
-    max_relative_error: 4.9960036108129545e-14
+  - name: sweep-1-independent-reference-vs-production
+    scenario: sweep_1
+    evidence_key: sweep_1
+    parameters:
+      broken_mode: false
+      damping_ns_m: 2.5
+      mass_kg: 1.0
+      stiffness_n_m: 4.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 2.0
+    allowed_absolute_error: 2.0e-10
+    max_absolute_error: 2.498001805406602e-16
+    max_relative_error: 2.498001805406602e-16
+    teaching_invariant:
+      description: natural frequency and damping are physical; broken integration exposes energy growth
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: sweep-2-independent-reference-vs-production
+    scenario: sweep_2
+    evidence_key: sweep_2
+    parameters:
+      broken_mode: false
+      damping_ns_m: 0.8
+      mass_kg: 1.0
+      stiffness_n_m: 10.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 3.1622776601683795
+    allowed_absolute_error: 3.1622776601683795e-10
+    max_absolute_error: 3.0531133177191805e-16
+    max_relative_error: 3.0531133177191805e-16
+    teaching_invariant:
+      description: natural frequency and damping are physical; broken integration exposes energy growth
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: broken-independent-reference-vs-production
+    scenario: broken
+    evidence_key: broken
+    parameters:
+      broken_mode: true
+      damping_ns_m: 0.8
+      mass_kg: 1.0
+      stiffness_n_m: 4.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 3243991.2908524293
+    allowed_absolute_error: 0.00032439912908524294
+    max_absolute_error: 2.3283064365386963e-09
+    max_relative_error: 7.177289418452424e-16
+    teaching_invariant:
+      description: natural frequency and damping are physical; broken integration exposes energy growth
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: recovery-independent-reference-vs-production
+    scenario: recovery
+    evidence_key: recovery
+    parameters:
+      broken_mode: false
+      damping_ns_m: 0.8
+      mass_kg: 1.0
+      stiffness_n_m: 4.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 2.0
+    allowed_absolute_error: 2.0e-10
+    max_absolute_error: 2.220446049250313e-16
+    max_relative_error: 2.220446049250313e-16
+    teaching_invariant:
+      description: natural frequency and damping are physical; broken integration exposes energy growth
+      reference_passed: true
+      production_passed: true
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
-    signatures bind the Python conversion.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
+    constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:
@@ -180,3 +287,15 @@ claims:
   learner_effectiveness:
     status: not_run
     reason: Learner effectiveness requires post-release study and is not claimed.
+fidelity:
+  batch_id: ELP-GNC-FIDELITY-P01-P24
+  item_id: P01
+  map:
+    path: fidelity-map.yaml
+    sha256: 0607e8f0908f32e1cded19c7daa550a3ff40d788372e6927e2cfc364c633f4b4
+  schema:
+    path: fidelity-map.schema.json
+    sha256: 256f1e1298b80812ce35a26eeb750917ffc1ea10cc25e9da8363d9524da102a0
+  source_model:
+    path: modules/01-watch-a-mass-spring-damper-respond/model.m
+    sha256: d820c6e74cf73aafb66220a5ac89873f575fd9a80983a21a0ccb7cedb5b329a8

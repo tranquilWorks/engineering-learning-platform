@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 course_id: controls-gnc
 item:
   id: P08
@@ -26,17 +26,17 @@ item:
   - path: modules/08-reject-a-disturbance-with-feedback/model.m
     sha256: bff95267e52505a22fb513477abb436ca0c9bb631f6429201479af17cc9883a3
 target:
-  content_digest: 082d8766d0c6c8bdb770f71b00f02dd2716739fd142614471ab3202065f44a86
+  content_digest: 1a66fe744c2635b33aba184419f19274144622e91fa5fc15f3bb68979af7fcc6
   files:
   - path: modules/08-reject-a-disturbance-with-feedback/module.yaml
     sha256: a84bfe9567d3bcc530ce01a4aee9a3f27a34ba6b3e8f981c5adc2a23ef6eb256
   - path: modules/08-reject-a-disturbance-with-feedback/lesson.md
-    sha256: 0d12480a524882ab70b91283bf9a342967ad3b5983698a99b9048a033f70b038
+    sha256: f9a0fdfa80c65011a7a2c166e5d37279089c4117053b2474a73852823e269417
   - path: modules/08-reject-a-disturbance-with-feedback/experiment.py
-    sha256: 396e8a6042411d05c561a8fb64bf3853e1d3103824a4957e1e844a78f4423514
+    sha256: 979113506af91350c0563c4660c852c42e799d3f85038df6589e4ee0225c0a09
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you reject a Disturbance
-    with Feedback?
+  guiding_question: What inputs, observable effects, and failure modes matter when you reject a Disturbance with
+    Feedback?
   physical_model: Separate true disturbance rejection from the cost of measurement bias.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
@@ -56,41 +56,46 @@ content:
       value: 8
       unit: index
     datasets:
-    - name: baseline numeric signature
-      provenance: retained_fixture
-      sha256: 882907fa8db807f2a857e19978ca14c918b62cc937a97ac03e4941d74d93c981
-      unit: mixed numeric signature
+    - name: five-scenario independent reference signatures (expected-independent.json)
+      provenance: independent_reference
+      sha256: 2542d20a9ca54940146b92ed31b5103f554b84dba641ee77e8c818fd4be35e01
+      unit: ordered mixed SI signature; fields and units are embedded in the evidence file
   plot_sequence:
-  - source_figure: Source baseline and sweep figures
+  - source_figure: Pinned MATLAB source intent mapped to platform response view
     target_plot_key: response
-    title: Observable response
+    title: Disturbance rejection response
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Response
-      unit: source units
-    interpretation: Separate true disturbance rejection from the cost of measurement bias.
-  - source_figure: Source diagnostic and broken-case figures
+      label: Plant disturbance
+      unit: normalized input
+    - role: y
+      label: True output
+      unit: normalized output
+    interpretation: sensitivity attenuation matches the closed-loop frequency relation
+  - source_figure: Pinned MATLAB source intent mapped to platform mechanism view
     target_plot_key: mechanism
-    title: Mechanism and diagnostic view
+    title: Measurement and feedback command
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Diagnostic
-      unit: source units
-    interpretation: The broken case injects a 0.5-unit sensor bias with no physical disturbance.
+      label: Measured output
+      unit: normalized output
+    - role: y
+      label: Control command
+      unit: normalized input
+    interpretation: feedback reacts to sensor bias and creates costly true motion
   sweeps:
   - control: feedback_gain
     values:
     - 1.0
     - 4.0
     - 9.0
-    expected_observation: More gain should reject a slow plant disturbance but amplify control response
-      to bias.
+    expected_observation: More gain should reject a slow plant disturbance but amplify control response to bias.
   - control: disturbance_frequency_rad_s
     values:
     - 0.0
@@ -132,39 +137,137 @@ python_source_equivalence:
   - name: broken_mode
     value: false
     unit: flag
+  reference_origin:
+    derived_from_production_output: false
+    formulation: Closed-loop scalar recurrence with analytic sensitivity
+    imports_production_entrypoint: false
+    independent: true
+    package:
+      path: reference_cases.py
+      sha256: 975fe4772642993eeda6cfa33487192de0ae526b4f12ab2523d3f100ca994c8d
+    perturbs_production_output: false
+    type: alternative_algorithm
+  production_origin:
+    derived_from_production_output: true
+    formulation: Direct capture of diagnostics.signature from experiment.py:run
+    imports_production_entrypoint: true
+    independent: false
+    package:
+      path: modules/08-reject-a-disturbance-with-feedback/experiment.py
+      sha256: 979113506af91350c0563c4660c852c42e799d3f85038df6589e4ee0225c0a09
+    perturbs_production_output: false
+    type: production_entrypoint
   cases:
-  - name: baseline-numeric-signature
-    units: mixed numeric signature
-    tolerance:
+  - name: baseline-independent-reference-vs-production
+    scenario: baseline
+    evidence_key: baseline
+    parameters:
+      broken_mode: false
+      disturbance_frequency_rad_s: 0.0
+      feedback_gain: 4.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: &id001
       absolute: 1.0e-09
       relative: 1.0e-09
-    expected:
-      path: modules/08-reject-a-disturbance-with-feedback/evidence/expected-baseline.json
-      sha256: 882907fa8db807f2a857e19978ca14c918b62cc937a97ac03e4941d74d93c981
-    actual:
-      path: modules/08-reject-a-disturbance-with-feedback/evidence/actual-baseline.json
-      sha256: 34d0d1520b7cd35bfad7e40beb52c58ba43e284b6da5669a0eb8f36ccd426b2e
-    max_absolute_error: 1.0036416142611415e-13
-    max_relative_error: 2.5091040356527907e-14
+    expected: &id002
+      path: modules/08-reject-a-disturbance-with-feedback/evidence/expected-independent.json
+      sha256: 2542d20a9ca54940146b92ed31b5103f554b84dba641ee77e8c818fd4be35e01
+    actual: &id003
+      path: modules/08-reject-a-disturbance-with-feedback/evidence/actual-production.json
+      sha256: c05b8f2d7d87f0192c69f13021c817d60c5fa9e03ea8b7089d7a3e2d2d998714
+    comparison_scale: 4.0
+    allowed_absolute_error: 4.0e-09
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: sensitivity attenuation matches the closed-loop frequency relation
+      reference_passed: true
+      production_passed: true
     passed: true
-  - name: broken-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/08-reject-a-disturbance-with-feedback/evidence/expected-broken.json
-      sha256: 4b4f6eba8d12027025f6f8841752ea5fbbe3e3441034623c0206d5b30b7b1858
-    actual:
-      path: modules/08-reject-a-disturbance-with-feedback/evidence/actual-broken.json
-      sha256: a1f48b1be55e923e8af648329cf689a2954caf912f6f0edcbb5176c3d784e45f
-    max_absolute_error: 1.0036416142611415e-13
-    max_relative_error: 2.5091040356527907e-14
+  - name: sweep-1-independent-reference-vs-production
+    scenario: sweep_1
+    evidence_key: sweep_1
+    parameters:
+      broken_mode: false
+      disturbance_frequency_rad_s: 0.0
+      feedback_gain: 9.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 9.0
+    allowed_absolute_error: 9.000000000000001e-09
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: sensitivity attenuation matches the closed-loop frequency relation
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: sweep-2-independent-reference-vs-production
+    scenario: sweep_2
+    evidence_key: sweep_2
+    parameters:
+      broken_mode: false
+      disturbance_frequency_rad_s: 8.0
+      feedback_gain: 4.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 8.0
+    allowed_absolute_error: 8.0e-09
+    max_absolute_error: 2.220446049250313e-16
+    max_relative_error: 2.220446049250313e-16
+    teaching_invariant:
+      description: sensitivity attenuation matches the closed-loop frequency relation
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: broken-independent-reference-vs-production
+    scenario: broken
+    evidence_key: broken
+    parameters:
+      broken_mode: true
+      disturbance_frequency_rad_s: 0.0
+      feedback_gain: 4.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 4.0
+    allowed_absolute_error: 4.0e-09
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: sensitivity attenuation matches the closed-loop frequency relation
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: recovery-independent-reference-vs-production
+    scenario: recovery
+    evidence_key: recovery
+    parameters:
+      broken_mode: false
+      disturbance_frequency_rad_s: 0.0
+      feedback_gain: 4.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 4.0
+    allowed_absolute_error: 4.0e-09
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: sensitivity attenuation matches the closed-loop frequency relation
+      reference_passed: true
+      production_passed: true
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
-    signatures bind the Python conversion.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
+    constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:
@@ -176,3 +279,15 @@ claims:
   learner_effectiveness:
     status: not_run
     reason: Learner effectiveness requires post-release study and is not claimed.
+fidelity:
+  batch_id: ELP-GNC-FIDELITY-P01-P24
+  item_id: P08
+  map:
+    path: fidelity-map.yaml
+    sha256: 0607e8f0908f32e1cded19c7daa550a3ff40d788372e6927e2cfc364c633f4b4
+  schema:
+    path: fidelity-map.schema.json
+    sha256: 256f1e1298b80812ce35a26eeb750917ffc1ea10cc25e9da8363d9524da102a0
+  source_model:
+    path: modules/08-reject-a-disturbance-with-feedback/model.m
+    sha256: bff95267e52505a22fb513477abb436ca0c9bb631f6429201479af17cc9883a3

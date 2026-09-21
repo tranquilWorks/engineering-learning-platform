@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 course_id: controls-gnc
 item:
   id: P06
@@ -26,17 +26,17 @@ item:
   - path: modules/06-tune-a-pid-by-observing-each-term/model.m
     sha256: b75ab58810ad8aaf4070bb566c620de70431183c30e3af9f3035a844e2bbbfea
 target:
-  content_digest: 34b004d5772b1111b2145835cbc516eaf241b261c8c25f51e8a1adefe18b15ac
+  content_digest: 23ea0f25a0c7c4d975959e6072be08553f9c56f8e8700202abd25d87939a0c30
   files:
   - path: modules/06-tune-a-pid-by-observing-each-term/module.yaml
     sha256: d9876c39a7ba306a9ae7c197e570fb17d7d853188f34f93b247d4e1e6d92be86
   - path: modules/06-tune-a-pid-by-observing-each-term/lesson.md
-    sha256: 77cfeadb5aa5470d4b8c36af59694f424575b16b05131f1775fc98ec0872b166
+    sha256: 806956fb2d7e2028af0af31b3bba8c5db2c0abf70dca0c8c2583775c3b6bb05f
   - path: modules/06-tune-a-pid-by-observing-each-term/experiment.py
-    sha256: cbfab771db327ca5ef836c83c76c9832474088c42e4cfd11a2628be52426be64
+    sha256: 900a3dc5752074b8bbf69dfcabe1e3572c99b073422ad3c6047baa68ca550e56
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you tune a PID by Observing
-    Each Term?
+  guiding_question: What inputs, observable effects, and failure modes matter when you tune a PID by Observing Each
+    Term?
   physical_model: Observe proportional, integral, and derivative actions separately on a loaded carriage.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
@@ -56,53 +56,50 @@ content:
       value: 6
       unit: index
     datasets:
-    - name: baseline numeric signature
-      provenance: retained_fixture
-      sha256: d6e8cd665c87be78898d0fabcefbc0311f3a2928c15a1fa1acfe05e24590fe07
-      unit: mixed numeric signature
+    - name: five-scenario independent reference signatures (expected-independent.json)
+      provenance: independent_reference
+      sha256: bc32db1cbbd84329fdfb5c4265b6226f46eaea655131692263a6506b2d1761ba
+      unit: ordered mixed SI signature; fields and units are embedded in the evidence file
   plot_sequence:
-  - source_figure: Source baseline and sweep figures
+  - source_figure: Pinned MATLAB source intent mapped to platform response view
     target_plot_key: response
-    title: Observable response
+    title: PID position response
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Response
-      unit: source units
-    interpretation: Observe proportional, integral, and derivative actions separately on a loaded carriage.
-  - source_figure: Source diagnostic and broken-case figures
+      label: Position
+      unit: m
+    interpretation: correct derivative feedback dissipates rather than injects energy
+  - source_figure: Pinned MATLAB source intent mapped to platform mechanism view
     target_plot_key: mechanism
-    title: Mechanism and diagnostic view
+    title: PID command decomposition
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Diagnostic
-      unit: source units
-    interpretation: The broken case applies derivative action with the wrong sign, injecting velocity
-      instead of damping it.
+      label: Force contribution
+      unit: N
+    interpretation: derivative action injects energy and command magnitude grows
   sweeps:
   - control: integral_gain
     values:
     - 0.0
     - 1.0
     - 3.0
-    expected_observation: Integral action should remove load error; derivative action should suppress
-      overshoot.
+    expected_observation: Integral action should remove load error; derivative action should suppress overshoot.
   - control: derivative_gain
     values:
     - 0.0
     - 3.0
     - 7.0
-    expected_observation: Observe proportional, integral, and derivative actions separately on a loaded
-      carriage.
+    expected_observation: Observe proportional, integral, and derivative actions separately on a loaded carriage.
   broken_case:
     trigger: Enable broken_mode.
-    failure: The broken case applies derivative action with the wrong sign, injecting velocity instead
-      of damping it.
+    failure: The broken case applies derivative action with the wrong sign, injecting velocity instead of damping
+      it.
     recovery: Disable the broken case to restore derivative damping.
     expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
   common_mistakes:
@@ -135,39 +132,137 @@ python_source_equivalence:
   - name: broken_mode
     value: false
     unit: flag
+  reference_origin:
+    derived_from_production_output: false
+    formulation: Augmented affine PID state-transition recurrence
+    imports_production_entrypoint: false
+    independent: true
+    package:
+      path: reference_cases.py
+      sha256: 975fe4772642993eeda6cfa33487192de0ae526b4f12ab2523d3f100ca994c8d
+    perturbs_production_output: false
+    type: alternative_algorithm
+  production_origin:
+    derived_from_production_output: true
+    formulation: Direct capture of diagnostics.signature from experiment.py:run
+    imports_production_entrypoint: true
+    independent: false
+    package:
+      path: modules/06-tune-a-pid-by-observing-each-term/experiment.py
+      sha256: 900a3dc5752074b8bbf69dfcabe1e3572c99b073422ad3c6047baa68ca550e56
+    perturbs_production_output: false
+    type: production_entrypoint
   cases:
-  - name: baseline-numeric-signature
-    units: mixed numeric signature
-    tolerance:
+  - name: baseline-independent-reference-vs-production
+    scenario: baseline
+    evidence_key: baseline
+    parameters:
+      broken_mode: false
+      derivative_gain: 3.0
+      integral_gain: 1.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: &id001
       absolute: 1.0e-09
       relative: 1.0e-09
-    expected:
-      path: modules/06-tune-a-pid-by-observing-each-term/evidence/expected-baseline.json
-      sha256: d6e8cd665c87be78898d0fabcefbc0311f3a2928c15a1fa1acfe05e24590fe07
-    actual:
-      path: modules/06-tune-a-pid-by-observing-each-term/evidence/actual-baseline.json
-      sha256: d0de489cf93160289ab359f5abd455666ad9c34ca6c78968d18da5195117123f
-    max_absolute_error: 9.992007221626409e-14
-    max_relative_error: 9.99200722162541e-14
+    expected: &id002
+      path: modules/06-tune-a-pid-by-observing-each-term/evidence/expected-independent.json
+      sha256: bc32db1cbbd84329fdfb5c4265b6226f46eaea655131692263a6506b2d1761ba
+    actual: &id003
+      path: modules/06-tune-a-pid-by-observing-each-term/evidence/actual-production.json
+      sha256: fbb41d16dbf62d413a3bea0d8a3f2abd57f52606389eb32858d892c477d18725
+    comparison_scale: 4.0
+    allowed_absolute_error: 4.0e-09
+    max_absolute_error: 3.9968028886505635e-15
+    max_relative_error: 3.996718577082041e-15
+    teaching_invariant:
+      description: correct derivative feedback dissipates rather than injects energy
+      reference_passed: true
+      production_passed: true
     passed: true
-  - name: broken-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/06-tune-a-pid-by-observing-each-term/evidence/expected-broken.json
-      sha256: 25649b12be882a5d0841bc921a8c3648814439d33193469954e5d1176d37f1cb
-    actual:
-      path: modules/06-tune-a-pid-by-observing-each-term/evidence/actual-broken.json
-      sha256: badda503a5bff66ec0fcd6e4f142743cd4b6ebbd30e12f4cf08d8facfa7f7e5c
-    max_absolute_error: 9.992007221626409e-14
-    max_relative_error: 9.99200722162541e-14
+  - name: sweep-1-independent-reference-vs-production
+    scenario: sweep_1
+    evidence_key: sweep_1
+    parameters:
+      broken_mode: false
+      derivative_gain: 3.0
+      integral_gain: 3.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 4.0
+    allowed_absolute_error: 4.0e-09
+    max_absolute_error: 9.992007221626409e-16
+    max_relative_error: 9.992007221626409e-16
+    teaching_invariant:
+      description: correct derivative feedback dissipates rather than injects energy
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: sweep-2-independent-reference-vs-production
+    scenario: sweep_2
+    evidence_key: sweep_2
+    parameters:
+      broken_mode: false
+      derivative_gain: 7.0
+      integral_gain: 1.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 7.0
+    allowed_absolute_error: 7.000000000000001e-09
+    max_absolute_error: 2.220446049250313e-15
+    max_relative_error: 1.991556158807383e-15
+    teaching_invariant:
+      description: correct derivative feedback dissipates rather than injects energy
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: broken-independent-reference-vs-production
+    scenario: broken
+    evidence_key: broken
+    parameters:
+      broken_mode: true
+      derivative_gain: 3.0
+      integral_gain: 1.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 5658042455129.244
+    allowed_absolute_error: 5658.042455129244
+    max_absolute_error: 0.3662109375
+    max_relative_error: 2.0969124707341674e-12
+    teaching_invariant:
+      description: correct derivative feedback dissipates rather than injects energy
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: recovery-independent-reference-vs-production
+    scenario: recovery
+    evidence_key: recovery
+    parameters:
+      broken_mode: false
+      derivative_gain: 3.0
+      integral_gain: 1.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 4.0
+    allowed_absolute_error: 4.0e-09
+    max_absolute_error: 3.9968028886505635e-15
+    max_relative_error: 3.996718577082041e-15
+    teaching_invariant:
+      description: correct derivative feedback dissipates rather than injects energy
+      reference_passed: true
+      production_passed: true
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
-    signatures bind the Python conversion.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
+    constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:
@@ -179,3 +274,15 @@ claims:
   learner_effectiveness:
     status: not_run
     reason: Learner effectiveness requires post-release study and is not claimed.
+fidelity:
+  batch_id: ELP-GNC-FIDELITY-P01-P24
+  item_id: P06
+  map:
+    path: fidelity-map.yaml
+    sha256: 0607e8f0908f32e1cded19c7daa550a3ff40d788372e6927e2cfc364c633f4b4
+  schema:
+    path: fidelity-map.schema.json
+    sha256: 256f1e1298b80812ce35a26eeb750917ffc1ea10cc25e9da8363d9524da102a0
+  source_model:
+    path: modules/06-tune-a-pid-by-observing-each-term/model.m
+    sha256: b75ab58810ad8aaf4070bb566c620de70431183c30e3af9f3035a844e2bbbfea

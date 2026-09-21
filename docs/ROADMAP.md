@@ -156,11 +156,30 @@ independently originated evidence. The six-stage and nine-dimension review is
 defined in `docs/COURSE_CALIBER.md` and projected in
 `docs/course-caliber-status.yaml`.
 
-The audit creates no child implementation under this batch. Controls/GNC
-fidelity (#438), Controls/GNC expansion (#439), Robotics expansion (#440), and
-DSP/Radar fidelity (#441) remain separately authorized work. Vehicle Dynamics
-stays queued and unimplemented until its reviewed map, replayable GR86 CAN/BLE
-fixtures, and a separate at-most-ten-lesson batch are ready.
+The audit itself created no child implementation. Controls/GNC fidelity (#438)
+is completed by the separately authorized remediation below. Controls/GNC
+expansion (#439), Robotics expansion (#440), and DSP/Radar fidelity (#441)
+remain separately owned work. Vehicle Dynamics stays queued and unimplemented
+until its reviewed map, replayable GR86 CAN/BLE fixtures, and a separate
+at-most-ten-lesson batch are ready.
+
+## ELP-GNC-FIDELITY — Controls/GNC P01-P24 remediation
+
+**Depends on:** ELP-COURSE-CALIBER-00
+
+Issue #438 repairs the existing 24-item Controls/GNC implementation without
+adding curriculum. Every item retains exact source identity, a semantic map,
+two one-variable sweeps, a named broken/recovery path, limiting cases, explicit
+omissions, domain-specific axes, and five independently originated numerical
+comparisons. P01 uses the pinned source's explicit-Euler failure step; P24 uses
+two timestamped transport directions and source-ordered same-tick delivery.
+
+Controls/GNC advances to `numerically_verified: passed` at a deterministic
+software-only boundary. Curriculum coverage and capstone integration remain
+partial, learner validation remains unperformed, and issue #439 is the sole
+owner of later Controls/GNC expansion. The batch does not execute MATLAB,
+validate browser accessibility or learners, operate physical HIL, or authorize
+release, deployment, credentials/settings, or production use.
 
 ## B020 — Course ingestion and migration tooling
 

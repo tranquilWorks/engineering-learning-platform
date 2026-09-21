@@ -9,7 +9,7 @@ or learner outcomes.
 The authoritative machine-readable projection is
 [`course-caliber-status.yaml`](course-caliber-status.yaml). It implements
 Portfolio Control standard `ELP-COURSE-CALIBER-1` at merged control revision
-`f6745e44f459a52431b81a3f953c8f2e03cbe45e`.
+`0038f6ed725ae2fc7b3eb6647e9621a2ad23db34`.
 
 ## Six separately evidenced stages
 
@@ -59,12 +59,13 @@ but they are not independent correctness oracles.
 | Course | Inventory | Highest unblocked stage | Required follow-up |
 | --- | ---: | --- | --- |
 | DSP/Radar | 84 source / 84 platform / 84 interactive | `platform_converted` | #441: replace the P02-P84 generic execution structure and independently reverify it |
-| Controls/GNC | 24 / 24 / 24 | `platform_converted` | #438: repair fidelity/evidence; #439: expand against the reviewed map |
+| Controls/GNC | 24 / 24 / 24 | `numerically_verified` | #439: expand against the reviewed competency map and add cumulative integration |
 | Robotics and Autonomy | 24 / 24 / 24 | `numerically_verified` | #440: fill competency gaps and add a traced cumulative capstone |
 
-No reviewed course is marked `curriculum_covered: passed` at target audit
-baseline `39aed41de4e3c84fc00c3b8546c5488e253b6be2`. Issues #438 through #441 are
-owned follow-up work, not changes implemented by this gate.
+No reviewed course is marked `curriculum_covered: passed` at the Controls/GNC
+remediation baseline `1506591946ec8e96fe3201e8893b8ad851a1685a`. Issue #438
+has repaired P01-P24 fidelity and independent software evidence. Issues #439,
+#440, and #441 remain separately owned expansion or remediation work.
 
 Vehicle Dynamics remains queued and unimplemented. It may proceed only after
 this gate is projected, its reviewed competency map is valid, replayable GR86

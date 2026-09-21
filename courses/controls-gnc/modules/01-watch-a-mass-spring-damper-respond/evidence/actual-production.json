@@ -1,0 +1,121 @@
+{
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "broken_mode": false,
+        "damping_ns_m": 0.8,
+        "mass_kg": 1.0,
+        "stiffness_n_m": 4.0
+      },
+      "signature": [
+        2.0,
+        0.2,
+        0.25039454895651436,
+        0.3814802711043593,
+        0.1254033815488487
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "broken_mode": true,
+        "damping_ns_m": 0.8,
+        "mass_kg": 1.0,
+        "stiffness_n_m": 4.0
+      },
+      "signature": [
+        2.0,
+        0.2,
+        1135.8553790463998,
+        1135.8553790463998,
+        3243991.290852427
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "broken_mode": false,
+        "damping_ns_m": 0.8,
+        "mass_kg": 1.0,
+        "stiffness_n_m": 4.0
+      },
+      "signature": [
+        2.0,
+        0.2,
+        0.25039454895651436,
+        0.3814802711043593,
+        0.1254033815488487
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "broken_mode": false,
+        "damping_ns_m": 2.5,
+        "mass_kg": 1.0,
+        "stiffness_n_m": 4.0
+      },
+      "signature": [
+        2.0,
+        0.625,
+        0.24999994060104774,
+        0.2696871621654301,
+        0.12499994060105486
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "broken_mode": false,
+        "damping_ns_m": 0.8,
+        "mass_kg": 1.0,
+        "stiffness_n_m": 10.0
+      },
+      "signature": [
+        3.1622776601683795,
+        0.12649110640673517,
+        0.09919115967287394,
+        0.16693973250452698,
+        0.049194432037810765
+      ]
+    }
+  },
+  "course_id": "controls-gnc",
+  "item_id": "P01",
+  "origin": {
+    "derived_from_production_output": true,
+    "formulation": "Direct capture of diagnostics.signature from experiment.py:run",
+    "imports_production_entrypoint": true,
+    "independent": false,
+    "package": {
+      "path": "modules/01-watch-a-mass-spring-damper-respond/experiment.py",
+      "sha256": "42c6d3fccdaa412c200360817cefce6909b0c30b2ccb8b4498d454ce3efb509a"
+    },
+    "perturbs_production_output": false,
+    "type": "production_entrypoint"
+  },
+  "schema_version": 1,
+  "signature_fields": [
+    {
+      "index": 0,
+      "name": "natural_frequency",
+      "unit": "rad/s"
+    },
+    {
+      "index": 1,
+      "name": "damping_ratio",
+      "unit": "ratio"
+    },
+    {
+      "index": 2,
+      "name": "final_position",
+      "unit": "m"
+    },
+    {
+      "index": 3,
+      "name": "peak_position",
+      "unit": "m"
+    },
+    {
+      "index": 4,
+      "name": "final_energy",
+      "unit": "J"
+    }
+  ]
+}

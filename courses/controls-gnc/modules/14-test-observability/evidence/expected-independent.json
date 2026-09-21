@@ -1,0 +1,126 @@
+{
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "broken_mode": false,
+        "observation_window_s": 2.0,
+        "sensor_gain": 1.0
+      },
+      "signature": [
+        1.0,
+        2.0,
+        0.0,
+        2.0,
+        0.6000000000000001,
+        1.2
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "broken_mode": true,
+        "observation_window_s": 2.0,
+        "sensor_gain": 1.0
+      },
+      "signature": [
+        1.0,
+        2.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "broken_mode": false,
+        "observation_window_s": 2.0,
+        "sensor_gain": 1.0
+      },
+      "signature": [
+        1.0,
+        2.0,
+        0.0,
+        2.0,
+        0.6000000000000001,
+        1.2
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "broken_mode": false,
+        "observation_window_s": 2.0,
+        "sensor_gain": 2.0
+      },
+      "signature": [
+        2.0,
+        2.0,
+        0.0,
+        2.0,
+        0.6000000000000001,
+        2.4
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "broken_mode": false,
+        "observation_window_s": 5.0,
+        "sensor_gain": 1.0
+      },
+      "signature": [
+        1.0,
+        5.0,
+        0.0,
+        2.0,
+        0.6000000000000001,
+        3.0
+      ]
+    }
+  },
+  "course_id": "controls-gnc",
+  "item_id": "P14",
+  "origin": {
+    "derived_from_production_output": false,
+    "formulation": "Direct observability matrix and least-squares reconstruction",
+    "imports_production_entrypoint": false,
+    "independent": true,
+    "package": {
+      "path": "reference_cases.py",
+      "sha256": "975fe4772642993eeda6cfa33487192de0ae526b4f12ab2523d3f100ca994c8d"
+    },
+    "perturbs_production_output": false,
+    "type": "closed_form"
+  },
+  "schema_version": 1,
+  "signature_fields": [
+    {
+      "index": 0,
+      "name": "sensor_gain",
+      "unit": "ratio"
+    },
+    {
+      "index": 1,
+      "name": "observation_window",
+      "unit": "s"
+    },
+    {
+      "index": 2,
+      "name": "rate_only",
+      "unit": "flag"
+    },
+    {
+      "index": 3,
+      "name": "observability_rank",
+      "unit": "states"
+    },
+    {
+      "index": 4,
+      "name": "inferred_rate",
+      "unit": "m/s"
+    },
+    {
+      "index": 5,
+      "name": "measurement_span",
+      "unit": "m"
+    }
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "broken_mode": false,
+        "pole_imag_rad_s": 2.0,
+        "pole_real_per_s": -0.5
+      },
+      "signature": [
+        -0.5,
+        2.0,
+        3.141592653589793,
+        0.0010514346377327565,
+        1.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "broken_mode": true,
+        "pole_imag_rad_s": 2.0,
+        "pole_real_per_s": -0.5
+      },
+      "signature": [
+        0.5,
+        2.0,
+        3.141592653589793,
+        171.12602515491074,
+        251.8192392724068
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "broken_mode": false,
+        "pole_imag_rad_s": 2.0,
+        "pole_real_per_s": -0.5
+      },
+      "signature": [
+        -0.5,
+        2.0,
+        3.141592653589793,
+        0.0010514346377327565,
+        1.0
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "broken_mode": false,
+        "pole_imag_rad_s": 2.0,
+        "pole_real_per_s": 0.2
+      },
+      "signature": [
+        0.2,
+        2.0,
+        3.141592653589793,
+        4.675800014841187,
+        9.061616334372037
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "broken_mode": false,
+        "pole_imag_rad_s": 5.0,
+        "pole_real_per_s": -0.5
+      },
+      "signature": [
+        -0.5,
+        5.0,
+        1.2566370614359172,
+        -0.0023607957482893625,
+        1.0
+      ]
+    }
+  },
+  "course_id": "controls-gnc",
+  "item_id": "P03",
+  "origin": {
+    "derived_from_production_output": true,
+    "formulation": "Direct capture of diagnostics.signature from experiment.py:run",
+    "imports_production_entrypoint": true,
+    "independent": false,
+    "package": {
+      "path": "modules/03-relate-poles-to-visible-motion/experiment.py",
+      "sha256": "c2ffa8c2f2245d8ddf12ac625be87857cdb7226809971a8bf266e4ef132089a0"
+    },
+    "perturbs_production_output": false,
+    "type": "production_entrypoint"
+  },
+  "schema_version": 1,
+  "signature_fields": [
+    {
+      "index": 0,
+      "name": "real_pole_part",
+      "unit": "1/s"
+    },
+    {
+      "index": 1,
+      "name": "imaginary_pole_part",
+      "unit": "rad/s"
+    },
+    {
+      "index": 2,
+      "name": "period",
+      "unit": "s"
+    },
+    {
+      "index": 3,
+      "name": "final_modal_amplitude",
+      "unit": "ratio"
+    },
+    {
+      "index": 4,
+      "name": "peak_modal_amplitude",
+      "unit": "ratio"
+    }
+  ]
+}

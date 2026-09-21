@@ -2,7 +2,7 @@
 
 **Guiding question:** What inputs, observable effects, and failure modes matter when you build a State Observer?
 
-Watch a Luenberger observer reconstruct position and rate from position measurements. This native lab preserves the source experiment while making the levers, diagnostics, and recovery available directly in the learning platform.
+Watch a Luenberger observer reconstruct position and rate from position measurements. This native lab preserves the source teaching objective in a bounded Python model; the course fidelity record names behavior that is intentionally not exposed in the platform.
 
 ## Predict before running
 

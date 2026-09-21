@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 course_id: controls-gnc
 item:
   id: P23
@@ -26,17 +26,17 @@ item:
   - path: modules/23-model-sensor-and-actuator-dynamics/model.m
     sha256: c0703e13c7caefeb864983be924427e806996ea08aa57bcf1e1d8530fade18a2
 target:
-  content_digest: 3c2a080909daf2c035751af0f8fe47c74c94cb9a53cf9a79eba67c751ffb4260
+  content_digest: b1bbcfc9e64f110ae439eea0c64e33038d7ed42c7abd1709c2f4715860c2e0aa
   files:
   - path: modules/23-model-sensor-and-actuator-dynamics/module.yaml
     sha256: eee122d100c08ea7d051c58544ea5cfb854fffa579bf002a6682bd99324680ec
   - path: modules/23-model-sensor-and-actuator-dynamics/lesson.md
-    sha256: 26036264068f1768557ba8e2f13bc29a2f1b8eaa7381b1735505b3c5e899258e
+    sha256: f60df94ea8a65cb07c87e362ac0b2188f8ca939f3b5413acee271629d6e48373
   - path: modules/23-model-sensor-and-actuator-dynamics/experiment.py
-    sha256: b1f5e361b90f7acd6b361bfe24f1511990bee6ea26938e8947843cafde535a55
+    sha256: 3f2edba2c6384712ee6d0e95456d9cf204beb8af7930eb008158e5943bbda258
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you model Sensor and
-    Actuator Dynamics?
+  guiding_question: What inputs, observable effects, and failure modes matter when you model Sensor and Actuator
+    Dynamics?
   physical_model: Separate actuator lag, sensor lag, clipping, and bias in one command chain.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
@@ -56,42 +56,40 @@ content:
       value: 23
       unit: index
     datasets:
-    - name: baseline numeric signature
-      provenance: retained_fixture
-      sha256: 298344af44ec4d2b71e1836abcd8146d14312987804b988856e80c10fd63d13e
-      unit: mixed numeric signature
+    - name: five-scenario independent reference signatures (expected-independent.json)
+      provenance: independent_reference
+      sha256: 5c04d03c4c93b37ac221a081186c1502f850cfe47f65f01681876c6b1eb76d9c
+      unit: ordered mixed SI signature; fields and units are embedded in the evidence file
   plot_sequence:
-  - source_figure: Source baseline and sweep figures
+  - source_figure: Pinned MATLAB source intent mapped to platform response view
     target_plot_key: response
-    title: Observable response
+    title: Actuator and sensor acceleration dynamics
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Response
-      unit: source units
-    interpretation: Separate actuator lag, sensor lag, clipping, and bias in one command chain.
-  - source_figure: Source diagnostic and broken-case figures
+      label: Acceleration
+      unit: m/s²
+    interpretation: positive first-order time constants create finite cascaded lag
+  - source_figure: Pinned MATLAB source intent mapped to platform mechanism view
     target_plot_key: mechanism
-    title: Mechanism and diagnostic view
+    title: Actuator and sensor lag errors
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Diagnostic
-      unit: source units
-    interpretation: The broken case combines slow actuator/sensor dynamics with a command that reverses
-      every 0.1 s.
+      label: Acceleration error
+      unit: m/s²
+    interpretation: the measured acceleration cannot follow rapid command reversals
   sweeps:
   - control: actuator_time_constant_s
     values:
     - 0.05
     - 0.2
     - 0.8
-    expected_observation: When command reversals are faster than either bandwidth, measured output should
-      lag twice.
+    expected_observation: When command reversals are faster than either bandwidth, measured output should lag twice.
   - control: sensor_time_constant_s
     values:
     - 0.05
@@ -100,8 +98,7 @@ content:
     expected_observation: Separate actuator lag, sensor lag, clipping, and bias in one command chain.
   broken_case:
     trigger: Enable broken_mode.
-    failure: The broken case combines slow actuator/sensor dynamics with a command that reverses every
-      0.1 s.
+    failure: The broken case combines slow actuator/sensor dynamics with a command that reverses every 0.1 s.
     recovery: Disable the broken case and slow the command or increase component bandwidth.
     expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
   common_mistakes:
@@ -134,39 +131,137 @@ python_source_equivalence:
   - name: broken_mode
     value: false
     unit: flag
+  reference_origin:
+    derived_from_production_output: false
+    formulation: Independent convolution/IIR realization of actuator and sensor lags
+    imports_production_entrypoint: false
+    independent: true
+    package:
+      path: reference_cases.py
+      sha256: 975fe4772642993eeda6cfa33487192de0ae526b4f12ab2523d3f100ca994c8d
+    perturbs_production_output: false
+    type: alternative_algorithm
+  production_origin:
+    derived_from_production_output: true
+    formulation: Direct capture of diagnostics.signature from experiment.py:run
+    imports_production_entrypoint: true
+    independent: false
+    package:
+      path: modules/23-model-sensor-and-actuator-dynamics/experiment.py
+      sha256: 3f2edba2c6384712ee6d0e95456d9cf204beb8af7930eb008158e5943bbda258
+    perturbs_production_output: false
+    type: production_entrypoint
   cases:
-  - name: baseline-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/23-model-sensor-and-actuator-dynamics/evidence/expected-baseline.json
-      sha256: 298344af44ec4d2b71e1836abcd8146d14312987804b988856e80c10fd63d13e
-    actual:
-      path: modules/23-model-sensor-and-actuator-dynamics/evidence/actual-baseline.json
-      sha256: 5dd95b78e650595900714853b5d491d79990bb0002ceb4e21760ee7e33b2f30e
-    max_absolute_error: 1.0000333894311098e-13
-    max_relative_error: 1.0000333894311098e-13
+  - name: baseline-independent-reference-vs-production
+    scenario: baseline
+    evidence_key: baseline
+    parameters:
+      actuator_time_constant_s: 0.2
+      broken_mode: false
+      sensor_time_constant_s: 0.1
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: &id001
+      absolute: 1.0e-10
+      relative: 1.0e-10
+    expected: &id002
+      path: modules/23-model-sensor-and-actuator-dynamics/evidence/expected-independent.json
+      sha256: 5c04d03c4c93b37ac221a081186c1502f850cfe47f65f01681876c6b1eb76d9c
+    actual: &id003
+      path: modules/23-model-sensor-and-actuator-dynamics/evidence/actual-production.json
+      sha256: 6b5222ca9b1893caf0dfcbc3a145ce68a0107ec6f5ecc6dd5bc8cda014412575
+    comparison_scale: 19.998184085251903
+    allowed_absolute_error: 1.9998184085251903e-09
+    max_absolute_error: 1.7763568394002505e-14
+    max_relative_error: 8.883438669389854e-16
+    teaching_invariant:
+      description: positive first-order time constants create finite cascaded lag
+      reference_passed: true
+      production_passed: true
     passed: true
-  - name: broken-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/23-model-sensor-and-actuator-dynamics/evidence/expected-broken.json
-      sha256: c0c3d72b0bbd830e01760cf8e625d06fffb70790c327fe1dd7ddecec78338e1d
-    actual:
-      path: modules/23-model-sensor-and-actuator-dynamics/evidence/actual-broken.json
-      sha256: 5173969edfa10803a154f03b3ef5e82efb1c81804baeabfb384c631a99e6c880
-    max_absolute_error: 1.000310945187266e-13
-    max_relative_error: 1.000310945187266e-13
+  - name: sweep-1-independent-reference-vs-production
+    scenario: sweep_1
+    evidence_key: sweep_1
+    parameters:
+      actuator_time_constant_s: 0.8
+      broken_mode: false
+      sensor_time_constant_s: 0.1
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 16.97188035220239
+    allowed_absolute_error: 1.6971880352202392e-09
+    max_absolute_error: 2.1316282072803006e-14
+    max_relative_error: 1.2911736681726974e-15
+    teaching_invariant:
+      description: positive first-order time constants create finite cascaded lag
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: sweep-2-independent-reference-vs-production
+    scenario: sweep_2
+    evidence_key: sweep_2
+    parameters:
+      actuator_time_constant_s: 0.2
+      broken_mode: false
+      sensor_time_constant_s: 0.6
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 19.998184085251903
+    allowed_absolute_error: 1.9998184085251903e-09
+    max_absolute_error: 1.7763568394002505e-14
+    max_relative_error: 8.882590698373776e-16
+    teaching_invariant:
+      description: positive first-order time constants create finite cascaded lag
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: broken-independent-reference-vs-production
+    scenario: broken
+    evidence_key: broken
+    parameters:
+      actuator_time_constant_s: 0.2
+      broken_mode: true
+      sensor_time_constant_s: 0.1
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 20.038935862980523
+    allowed_absolute_error: 2.0038935862980523e-09
+    max_absolute_error: 3.608224830031759e-16
+    max_relative_error: 3.608224830031759e-16
+    teaching_invariant:
+      description: positive first-order time constants create finite cascaded lag
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: recovery-independent-reference-vs-production
+    scenario: recovery
+    evidence_key: recovery
+    parameters:
+      actuator_time_constant_s: 0.2
+      broken_mode: false
+      sensor_time_constant_s: 0.1
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 19.998184085251903
+    allowed_absolute_error: 1.9998184085251903e-09
+    max_absolute_error: 1.7763568394002505e-14
+    max_relative_error: 8.883438669389854e-16
+    teaching_invariant:
+      description: positive first-order time constants create finite cascaded lag
+      reference_passed: true
+      production_passed: true
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
-    signatures bind the Python conversion.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
+    constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:
@@ -178,3 +273,15 @@ claims:
   learner_effectiveness:
     status: not_run
     reason: Learner effectiveness requires post-release study and is not claimed.
+fidelity:
+  batch_id: ELP-GNC-FIDELITY-P01-P24
+  item_id: P23
+  map:
+    path: fidelity-map.yaml
+    sha256: 0607e8f0908f32e1cded19c7daa550a3ff40d788372e6927e2cfc364c633f4b4
+  schema:
+    path: fidelity-map.schema.json
+    sha256: 256f1e1298b80812ce35a26eeb750917ffc1ea10cc25e9da8363d9524da102a0
+  source_model:
+    path: modules/23-model-sensor-and-actuator-dynamics/model.m
+    sha256: c0703e13c7caefeb864983be924427e806996ea08aa57bcf1e1d8530fade18a2

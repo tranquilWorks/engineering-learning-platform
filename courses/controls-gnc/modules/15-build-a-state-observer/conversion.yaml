@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 course_id: controls-gnc
 item:
   id: P15
@@ -26,14 +26,14 @@ item:
   - path: modules/15-build-a-state-observer/model.m
     sha256: b93215c921dcbf2a79326e0dde6efc0562cf9e5ee8bcbe0e8e9373df0b4308f1
 target:
-  content_digest: dd72c25b8d4cec62fe67e2b575ee01e12206a0ab50a976eca96b278d559acffe
+  content_digest: 53ec280c0576e43dfcb83a3b3cfc13baf577d4ab7bc09a608ba75b984fac8945
   files:
   - path: modules/15-build-a-state-observer/module.yaml
     sha256: 6eb63f1287e58f28093bb36c1c3b3d758447b0d2981eade4eb281298e2688848
   - path: modules/15-build-a-state-observer/lesson.md
-    sha256: 6a1655e414771ace09c9a35a14a7c36d21197bfe143105720903572be2fcd3d8
+    sha256: 19a555210e5bafd0f51df9a22eebe7d84141b97112deb87e0fea2fd8c58f3419
   - path: modules/15-build-a-state-observer/experiment.py
-    sha256: e297e6ff160c9f750f8988154f39c92968b109d950f4aabfa292302dce3edbb4
+    sha256: 3cc4d7ce8210c273cbaf9dee2bc33de2004a8528177dd2fda306ec372c25100b
 content:
   guiding_question: What inputs, observable effects, and failure modes matter when you build a State Observer?
   physical_model: Watch a Luenberger observer reconstruct position and rate from position measurements.
@@ -55,41 +55,43 @@ content:
       value: 15
       unit: index
     datasets:
-    - name: baseline numeric signature
-      provenance: retained_fixture
-      sha256: 258dcc50d4071df1574d9766e08aaeae2b63fe838f951ba477c9c1bfbcc3d80e
-      unit: mixed numeric signature
+    - name: five-scenario independent reference signatures (expected-independent.json)
+      provenance: independent_reference
+      sha256: f37a32d109208d8c91f2d75ed141f28d80bf12a0fdcc6fb31c33093cf860ef2f
+      unit: ordered mixed SI signature; fields and units are embedded in the evidence file
   plot_sequence:
-  - source_figure: Source baseline and sweep figures
+  - source_figure: Pinned MATLAB source intent mapped to platform response view
     target_plot_key: response
-    title: Observable response
+    title: True and observed position
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Response
-      unit: source units
-    interpretation: Watch a Luenberger observer reconstruct position and rate from position measurements.
-  - source_figure: Source diagnostic and broken-case figures
+      label: Position
+      unit: m
+    interpretation: observer error converges to the bias-consistent equilibrium
+  - source_figure: Pinned MATLAB source intent mapped to platform mechanism view
     target_plot_key: mechanism
-    title: Mechanism and diagnostic view
+    title: Observer error components
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Diagnostic
-      unit: source units
-    interpretation: The broken case introduces a persistent 0.15 m measurement bias.
+      label: Position error
+      unit: m
+    - role: y
+      label: Rate error
+      unit: m/s
+    interpretation: the observer converges to a bias-driven error
   sweeps:
   - control: observer_speed_per_s
     values:
     - 1.0
     - 2.0
     - 5.0
-    expected_observation: Faster poles should reduce settling time but increase sensitivity to measurement
-      contamination.
+    expected_observation: Faster poles should reduce settling time but increase sensitivity to measurement contamination.
   - control: sensor_bias_m
     values:
     - -0.1
@@ -131,39 +133,137 @@ python_source_equivalence:
   - name: broken_mode
     value: false
     unit: flag
+  reference_origin:
+    derived_from_production_output: false
+    formulation: Exact affine observer-error transition from a matrix exponential
+    imports_production_entrypoint: false
+    independent: true
+    package:
+      path: reference_cases.py
+      sha256: 975fe4772642993eeda6cfa33487192de0ae526b4f12ab2523d3f100ca994c8d
+    perturbs_production_output: false
+    type: closed_form
+  production_origin:
+    derived_from_production_output: true
+    formulation: Direct capture of diagnostics.signature from experiment.py:run
+    imports_production_entrypoint: true
+    independent: false
+    package:
+      path: modules/15-build-a-state-observer/experiment.py
+      sha256: 3cc4d7ce8210c273cbaf9dee2bc33de2004a8528177dd2fda306ec372c25100b
+    perturbs_production_output: false
+    type: production_entrypoint
   cases:
-  - name: baseline-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/15-build-a-state-observer/evidence/expected-baseline.json
-      sha256: 258dcc50d4071df1574d9766e08aaeae2b63fe838f951ba477c9c1bfbcc3d80e
-    actual:
-      path: modules/15-build-a-state-observer/evidence/actual-baseline.json
-      sha256: 24f779c748aa07621c9d8f41357ac20b74a27fbc43435366d5fb6b08b71a0d81
-    max_absolute_error: 9.992007221626409e-14
-    max_relative_error: 4.9960036108129545e-14
+  - name: baseline-independent-reference-vs-production
+    scenario: baseline
+    evidence_key: baseline
+    parameters:
+      broken_mode: false
+      observer_speed_per_s: 2.0
+      sensor_bias_m: 0.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: &id001
+      absolute: 0.02
+      relative: 0.02
+    expected: &id002
+      path: modules/15-build-a-state-observer/evidence/expected-independent.json
+      sha256: f37a32d109208d8c91f2d75ed141f28d80bf12a0fdcc6fb31c33093cf860ef2f
+    actual: &id003
+      path: modules/15-build-a-state-observer/evidence/actual-production.json
+      sha256: 0f3aa2108adec6fc5bc6c3e146b72c12e5aa86b79743a77c96306b59175369b1
+    comparison_scale: 2.0
+    allowed_absolute_error: 0.04
+    max_absolute_error: 0.0007156513829677247
+    max_relative_error: 0.0007156513829677247
+    teaching_invariant:
+      description: observer error converges to the bias-consistent equilibrium
+      reference_passed: true
+      production_passed: true
     passed: true
-  - name: broken-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/15-build-a-state-observer/evidence/expected-broken.json
-      sha256: 1368b15421745ec89f4a3db588cfc4a2aeaecf6dfcd197c92fdd0c426bacf146
-    actual:
-      path: modules/15-build-a-state-observer/evidence/actual-broken.json
-      sha256: 74915c43f5cfdcfec4ed22e4fee8e928168f0b1618b38ca036121097d4fd28c7
-    max_absolute_error: 9.992007221626409e-14
-    max_relative_error: 4.9960036108129545e-14
+  - name: sweep-1-independent-reference-vs-production
+    scenario: sweep_1
+    evidence_key: sweep_1
+    parameters:
+      broken_mode: false
+      observer_speed_per_s: 5.0
+      sensor_bias_m: 0.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 5.0
+    allowed_absolute_error: 0.1
+    max_absolute_error: 0.0016163441151116065
+    max_relative_error: 0.0016163441151116065
+    teaching_invariant:
+      description: observer error converges to the bias-consistent equilibrium
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: sweep-2-independent-reference-vs-production
+    scenario: sweep_2
+    evidence_key: sweep_2
+    parameters:
+      broken_mode: false
+      observer_speed_per_s: 2.0
+      sensor_bias_m: 0.1
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 2.0
+    allowed_absolute_error: 0.04
+    max_absolute_error: 0.00010093457738832856
+    max_relative_error: 0.00010093457738832856
+    teaching_invariant:
+      description: observer error converges to the bias-consistent equilibrium
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: broken-independent-reference-vs-production
+    scenario: broken
+    evidence_key: broken
+    parameters:
+      broken_mode: true
+      observer_speed_per_s: 2.0
+      sensor_bias_m: 0.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 2.0
+    allowed_absolute_error: 0.04
+    max_absolute_error: 0.0003978700663334611
+    max_relative_error: 0.0003978700663334611
+    teaching_invariant:
+      description: observer error converges to the bias-consistent equilibrium
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: recovery-independent-reference-vs-production
+    scenario: recovery
+    evidence_key: recovery
+    parameters:
+      broken_mode: false
+      observer_speed_per_s: 2.0
+      sensor_bias_m: 0.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 2.0
+    allowed_absolute_error: 0.04
+    max_absolute_error: 0.0007156513829677247
+    max_relative_error: 0.0007156513829677247
+    teaching_invariant:
+      description: observer error converges to the bias-consistent equilibrium
+      reference_passed: true
+      production_passed: true
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
-    signatures bind the Python conversion.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
+    constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:
@@ -175,3 +275,15 @@ claims:
   learner_effectiveness:
     status: not_run
     reason: Learner effectiveness requires post-release study and is not claimed.
+fidelity:
+  batch_id: ELP-GNC-FIDELITY-P01-P24
+  item_id: P15
+  map:
+    path: fidelity-map.yaml
+    sha256: 0607e8f0908f32e1cded19c7daa550a3ff40d788372e6927e2cfc364c633f4b4
+  schema:
+    path: fidelity-map.schema.json
+    sha256: 256f1e1298b80812ce35a26eeb750917ffc1ea10cc25e9da8363d9524da102a0
+  source_model:
+    path: modules/15-build-a-state-observer/model.m
+    sha256: b93215c921dcbf2a79326e0dde6efc0562cf9e5ee8bcbe0e8e9373df0b4308f1

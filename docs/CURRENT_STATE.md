@@ -1,38 +1,30 @@
 # Current state
 
-`ELP-COURSE-CALIBER-00` is the active governance batch. It starts from exact
-Engineering Learning Platform baseline
-`39aed41de4e3c84fc00c3b8546c5488e253b6be2` (tree
-`648c193722e8d356b7520ba064e23e884d25d36c`) and projects Portfolio Control
-merge `f6745e44f459a52431b81a3f953c8f2e03cbe45e` without changing course,
-runtime, UI, dependency, workflow, or deployment files.
+`ELP-GNC-FIDELITY-P01-P24` is the active remediation batch. It starts from
+exact Engineering Learning Platform baseline
+`1506591946ec8e96fe3201e8893b8ad851a1685a` (tree
+`cff72df08f1c37655e912ca1c24f90e27222f6e3`) and Portfolio Control merge
+`0038f6ed725ae2fc7b3eb6647e9621a2ad23db34`.
+
+Controls/GNC retains the immutable source pin
+`ffd6623ee2cf8ccd8599fffd935ef07370750fa3` and the exact P01-P24 inventory.
+Each item now has a closed semantic map, domain-specific plot axes, explicit
+source omissions, and independently generated baseline, two one-variable
+sweeps, broken, and recovery evidence. P01's source failure convention and
+P24's two-way packet/event order were repaired. P20 is described narrowly as
+a two-fixed-gain comparison; it does not claim general robust synthesis.
+
+The course-caliber projection now records Controls/GNC as `source_authored:
+passed`, `platform_converted: passed`, and `numerically_verified: passed` at a
+deterministic software-only boundary. `curriculum_covered` and
+`capstone_integrated` remain `partial`; `learner_validated` remains `not_run`.
+Issue #439 is the sole owner of Controls/GNC competency mapping and expansion.
 
 The catalog remains five courses, 134 modules, and 134 interactive modules.
-Those counts describe implementation inventory, not curriculum completeness.
-The ordered course-caliber states are `source_authored`,
-`platform_converted`, `numerically_verified`, `curriculum_covered`,
-`capstone_integrated`, and `learner_validated`; every state requires its own
-evidence and limitations.
+Those counts are implementation inventory, not curriculum completeness.
+DSP/Radar issue #441 and Robotics issue #440 remain untouched. Vehicle
+Dynamics remains queued and unimplemented under its existing hold.
 
-At this audit baseline:
-
-- DSP/Radar is source-authored and platform-converted, but numerical fidelity,
-  curriculum coverage, and capstone integration are blocked by the generic
-  P02-P84 execution structure. Issue #441 owns remediation.
-- Controls/GNC is source-authored and platform-converted, but its fixtures do
-  not establish independent numerical evidence. Curriculum and capstone
-  coverage are partial. Issues #438 and #439 own repair and expansion.
-- Robotics and Autonomy is platform-converted and independently verified at
-  the software level. Source authorship, curriculum coverage, and capstone
-  integration remain partial. Issue #440 owns expansion.
-- No reviewed course has passed `curriculum_covered` or `learner_validated`.
-
-Vehicle Dynamics remains queued and unimplemented. It is blocked until the
-course-caliber gate is projected, a reviewed schema-valid competency map
-exists, replayable GR86 CAN/BLE fixtures have provenance, and a separate
-coherent batch of at most ten lessons is authorized.
-
-The authoritative projection is `docs/course-caliber-status.yaml`. This batch
-does not implement #438 through #441 and does not claim MATLAB runtime,
-browser/accessibility, learner, physical hardware/HIL, bench, field, release,
-deployment, credentials/settings, or production evidence.
+No licensed MATLAB runtime, browser/accessibility acceptance, learner study,
+physical hardware/HIL, bench, field, release, deployment, credentials/settings,
+or production validation is claimed.

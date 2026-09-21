@@ -96,8 +96,8 @@ def test_status_has_closed_top_level_shape_and_exact_standard_identity() -> None
         "id": "ELP-COURSE-CALIBER-1",
         "effective_date": "2026-09-21",
         "control_repository": "tranquilWorks/portfolio-control",
-        "control_revision": "f6745e44f459a52431b81a3f953c8f2e03cbe45e",
-        "audit_baseline": "39aed41de4e3c84fc00c3b8546c5488e253b6be2",
+        "control_revision": "0038f6ed725ae2fc7b3eb6647e9621a2ad23db34",
+        "audit_baseline": "1506591946ec8e96fe3201e8893b8ad851a1685a",
     }
     assert status["count_semantics"] == (
         "implementation_inventory_not_curriculum_completeness"
@@ -152,8 +152,20 @@ def test_follow_up_ownership_is_exact_and_remains_unimplemented_here() -> None:
     reviews = _review_by_id(_status())
     assert reviews["dsp-radar"]["disposition"] == "remediate"
     assert reviews["dsp-radar"]["follow_up_issues"] == [441]
-    assert reviews["controls-gnc"]["disposition"] == "remediate"
-    assert reviews["controls-gnc"]["follow_up_issues"] == [438, 439]
+    assert reviews["controls-gnc"]["disposition"] == "expand"
+    assert reviews["controls-gnc"]["follow_up_issues"] == [439]
+    assert reviews["controls-gnc"]["maturity"]["numerically_verified"]["status"] == (
+        "passed"
+    )
+    assert reviews["controls-gnc"]["maturity"]["curriculum_covered"]["status"] == (
+        "partial"
+    )
+    assert reviews["controls-gnc"]["maturity"]["capstone_integrated"]["status"] == (
+        "partial"
+    )
+    assert reviews["controls-gnc"]["maturity"]["learner_validated"]["status"] == (
+        "not_run"
+    )
     assert reviews["robotics-autonomy"]["disposition"] == "expand"
     assert reviews["robotics-autonomy"]["follow_up_issues"] == [440]
 

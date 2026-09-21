@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 course_id: controls-gnc
 item:
   id: P07
@@ -26,17 +26,17 @@ item:
   - path: modules/07-see-stability-margin-in-time-and-frequency/model.m
     sha256: 223a80479b0ce06e48d37b4b210260a0bf16766d9b42d2254c468b5b0769b4cd
 target:
-  content_digest: c174ec5675c9ac2ec83366136e1a83b40563e9069de4905c6b0b24bbdd47c9a5
+  content_digest: d6ccd544c08e20df1522a54721704058cbfc46067fc1283c319d1fd57ade18d2
   files:
   - path: modules/07-see-stability-margin-in-time-and-frequency/module.yaml
     sha256: 8a7eed03c8d83508e6bcc1e5eb66f9c1f71331b3f173c843f41a00269382ddda
   - path: modules/07-see-stability-margin-in-time-and-frequency/lesson.md
-    sha256: c47200bc9aa7d5421eebeb768917bfcc5707e96e336fff4985ef9d2c713edde8
+    sha256: 8adac0326fc971cdf8216676fbff6101057a2c7bdd4fd968977df31a84702bde
   - path: modules/07-see-stability-margin-in-time-and-frequency/experiment.py
-    sha256: 91248a3e033aaf12435c71c5d9166e0c4c565fbd4523464f5aad358864212550
+    sha256: 5dbce8506f1767303314b317620bfc1882fd875832fcd354603cb6326f84431a
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you see Stability Margin
-    in Time and Frequency?
+  guiding_question: What inputs, observable effects, and failure modes matter when you see Stability Margin in Time
+    and Frequency?
   physical_model: Connect gain/phase margins to ringing and instability in the same transparent loop.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
@@ -56,34 +56,36 @@ content:
       value: 7
       unit: index
     datasets:
-    - name: baseline numeric signature
-      provenance: retained_fixture
-      sha256: f249e80d6546bdbf8fd87a6d947c98ff063596ec204296732a52f08ccb7b32e0
-      unit: mixed numeric signature
+    - name: five-scenario independent reference signatures (expected-independent.json)
+      provenance: independent_reference
+      sha256: 8570e8bfea9419368210e9f4e4337b2018d95527efa528df9ea440a0cbf03443
+      unit: ordered mixed SI signature; fields and units are embedded in the evidence file
   plot_sequence:
-  - source_figure: Source baseline and sweep figures
+  - source_figure: Pinned MATLAB source intent mapped to platform response view
     target_plot_key: response
-    title: Observable response
+    title: Closed-loop stability-margin response
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Response
-      unit: source units
-    interpretation: Connect gain/phase margins to ringing and instability in the same transparent loop.
-  - source_figure: Source diagnostic and broken-case figures
+      label: Normalized plant output
+      unit: ratio
+    interpretation: actuator lag reduces phase reserve
+  - source_figure: Pinned MATLAB source intent mapped to platform mechanism view
     target_plot_key: mechanism
-    title: Mechanism and diagnostic view
+    title: Open-loop frequency response
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Angular frequency
+      unit: rad/s
     - role: y
-      label: Diagnostic
-      unit: source units
-    interpretation: The broken case keeps K=4 while exposing a 0.5 s actuator lag omitted by the optimistic
-      design.
+      label: Magnitude
+      unit: dB
+    - role: y
+      label: Phase
+      unit: deg
+    interpretation: phase reserve becomes negative and the time response rings
   sweeps:
   - control: loop_gain
     values:
@@ -96,8 +98,7 @@ content:
     - 0.0
     - 0.2
     - 0.5
-    expected_observation: Connect gain/phase margins to ringing and instability in the same transparent
-      loop.
+    expected_observation: Connect gain/phase margins to ringing and instability in the same transparent loop.
   broken_case:
     trigger: Enable broken_mode.
     failure: The broken case keeps K=4 while exposing a 0.5 s actuator lag omitted by the optimistic design.
@@ -133,39 +134,137 @@ python_source_equivalence:
   - name: broken_mode
     value: false
     unit: flag
+  reference_origin:
+    derived_from_production_output: false
+    formulation: Affine plant recurrence plus root-solved frequency crossover
+    imports_production_entrypoint: false
+    independent: true
+    package:
+      path: reference_cases.py
+      sha256: 975fe4772642993eeda6cfa33487192de0ae526b4f12ab2523d3f100ca994c8d
+    perturbs_production_output: false
+    type: alternative_algorithm
+  production_origin:
+    derived_from_production_output: true
+    formulation: Direct capture of diagnostics.signature from experiment.py:run
+    imports_production_entrypoint: true
+    independent: false
+    package:
+      path: modules/07-see-stability-margin-in-time-and-frequency/experiment.py
+      sha256: 5dbce8506f1767303314b317620bfc1882fd875832fcd354603cb6326f84431a
+    perturbs_production_output: false
+    type: production_entrypoint
   cases:
-  - name: baseline-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/07-see-stability-margin-in-time-and-frequency/evidence/expected-baseline.json
-      sha256: f249e80d6546bdbf8fd87a6d947c98ff063596ec204296732a52f08ccb7b32e0
-    actual:
-      path: modules/07-see-stability-margin-in-time-and-frequency/evidence/actual-baseline.json
-      sha256: 2e668639279794826564fed54a794c475c6786bc1e3534ca53f0ba5a45ba359c
-    max_absolute_error: 9.992007221626409e-14
-    max_relative_error: 9.99200722162541e-14
+  - name: baseline-independent-reference-vs-production
+    scenario: baseline
+    evidence_key: baseline
+    parameters:
+      actuator_lag_s: 0.2
+      broken_mode: false
+      loop_gain: 1.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: &id001
+      absolute: 0.5
+      relative: 0.07
+    expected: &id002
+      path: modules/07-see-stability-margin-in-time-and-frequency/evidence/expected-independent.json
+      sha256: 8570e8bfea9419368210e9f4e4337b2018d95527efa528df9ea440a0cbf03443
+    actual: &id003
+      path: modules/07-see-stability-margin-in-time-and-frequency/evidence/actual-production.json
+      sha256: 0e01e1b1f9b2cb7646b0b2b15236f976c19099a32657c598bf50c416110c9578
+    comparison_scale: 43.66593735906406
+    allowed_absolute_error: 3.0566156151344845
+    max_absolute_error: 0.45609205169452594
+    max_relative_error: 0.01044503059545226
+    teaching_invariant:
+      description: actuator lag reduces phase reserve
+      reference_passed: true
+      production_passed: true
     passed: true
-  - name: broken-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/07-see-stability-margin-in-time-and-frequency/evidence/expected-broken.json
-      sha256: 3b6fc3dcb9725010d624ff040dece173b77e9314c20930b4eb7546a39ae34fdf
-    actual:
-      path: modules/07-see-stability-margin-in-time-and-frequency/evidence/actual-broken.json
-      sha256: 6c39aae237e5d213ef8b5bd2cef91a395e5c885e2c5fd26145d245dd2ac4cd51
-    max_absolute_error: 1.0036416142611415e-13
-    max_relative_error: 2.5091040356527907e-14
+  - name: sweep-1-independent-reference-vs-production
+    scenario: sweep_1
+    evidence_key: sweep_1
+    parameters:
+      actuator_lag_s: 0.2
+      broken_mode: false
+      loop_gain: 4.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 8.909475211644349
+    allowed_absolute_error: 0.6236632648151045
+    max_absolute_error: 0.20265200089528435
+    max_relative_error: 0.02274567200438762
+    teaching_invariant:
+      description: actuator lag reduces phase reserve
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: sweep-2-independent-reference-vs-production
+    scenario: sweep_2
+    evidence_key: sweep_2
+    parameters:
+      actuator_lag_s: 0.5
+      broken_mode: false
+      loop_gain: 1.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 32.8033585941468
+    allowed_absolute_error: 2.2962351015902764
+    max_absolute_error: 0.19026154637236914
+    max_relative_error: 0.005800062997400457
+    teaching_invariant:
+      description: actuator lag reduces phase reserve
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: broken-independent-reference-vs-production
+    scenario: broken
+    evidence_key: broken
+    parameters:
+      actuator_lag_s: 0.2
+      broken_mode: true
+      loop_gain: 1.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 7.5179960776938515
+    allowed_absolute_error: 0.5262597254385697
+    max_absolute_error: 0.46335677265025765
+    max_relative_error: 0.06163301601407493
+    teaching_invariant:
+      description: actuator lag reduces phase reserve
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: recovery-independent-reference-vs-production
+    scenario: recovery
+    evidence_key: recovery
+    parameters:
+      actuator_lag_s: 0.2
+      broken_mode: false
+      loop_gain: 1.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 43.66593735906406
+    allowed_absolute_error: 3.0566156151344845
+    max_absolute_error: 0.45609205169452594
+    max_relative_error: 0.01044503059545226
+    teaching_invariant:
+      description: actuator lag reduces phase reserve
+      reference_passed: true
+      production_passed: true
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
-    signatures bind the Python conversion.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
+    constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:
@@ -177,3 +276,15 @@ claims:
   learner_effectiveness:
     status: not_run
     reason: Learner effectiveness requires post-release study and is not claimed.
+fidelity:
+  batch_id: ELP-GNC-FIDELITY-P01-P24
+  item_id: P07
+  map:
+    path: fidelity-map.yaml
+    sha256: 0607e8f0908f32e1cded19c7daa550a3ff40d788372e6927e2cfc364c633f4b4
+  schema:
+    path: fidelity-map.schema.json
+    sha256: 256f1e1298b80812ce35a26eeb750917ffc1ea10cc25e9da8363d9524da102a0
+  source_model:
+    path: modules/07-see-stability-margin-in-time-and-frequency/model.m
+    sha256: 223a80479b0ce06e48d37b4b210260a0bf16766d9b42d2254c468b5b0769b4cd
