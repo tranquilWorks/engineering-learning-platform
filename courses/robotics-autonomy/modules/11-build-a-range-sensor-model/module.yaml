@@ -1,0 +1,79 @@
+schema_version: 1
+id: 11-build-a-range-sensor-model
+number: 11
+title: Build a Range Sensor Model
+summary: Separate ray geometry, bounded sensor noise, and saturation so range residuals have a physical interpretation.
+guiding_question: What inputs, observable effects, and failure modes matter when you build a Range Sensor Model?
+status: implemented
+tags:
+- robotics-autonomy
+- sensing-and-calibration
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: wall_distance_m
+  type: slider
+  label: Perpendicular wall distance
+  default: 3
+  unit: m
+  minimum: 0.5
+  maximum: 7
+  step: 0.25
+- id: beam_angle_deg
+  type: slider
+  label: Beam angle from wall normal
+  default: 20
+  unit: deg
+  minimum: -60
+  maximum: 60
+  step: 5
+- id: noise_std_m
+  type: slider
+  label: Range-noise standard deviation
+  default: 0.02
+  unit: m
+  minimum: 0
+  maximum: 0.2
+  step: 0.01
+- id: max_range_m
+  type: slider
+  label: Sensor maximum range
+  default: 8
+  unit: m
+  minimum: 2
+  maximum: 12
+  step: 0.5
+- id: broken_mode
+  type: toggle
+  label: Ignore beam-angle geometry
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Tilting a ray away from the wall normal increases its intersection range by one over cosine, even though the perpendicular wall distance is unchanged.
+  reveal: Restore the ray-plane geometry and distinguish model residual from random sensor noise.
+- type: controls
+  title: Live model controls
+- type: metrics
+- type: plot_grid
+  title: Measurement evidence and geometric mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

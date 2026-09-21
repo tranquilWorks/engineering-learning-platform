@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "course_id": "robotics-autonomy",
+  "item": {
+    "id": "P11",
+    "number": 11,
+    "source_folder": "modules/11-build-a-range-sensor-model",
+    "target_module_id": "11-build-a-range-sensor-model",
+    "target_folder": "modules/11-build-a-range-sensor-model",
+    "batch_id": "ELP-ROB-P01-P24",
+    "design_basis": "native_python_design",
+    "source_map_sha256": "6e2de2c7a4f1eb3992da157d0aeb4d562a0542af8860f030a6a608526c6ba723",
+    "source_inputs": [
+      {
+        "path": "modules/11-build-a-range-sensor-model/README.md",
+        "sha256": "e0daa16a228e879cb13d7563d2674addb1278ee4e3473e195cca741f9b0247b8"
+      },
+      {
+        "path": "modules/11-build-a-range-sensor-model/checks.md",
+        "sha256": "84c841458210c64fac71164f010d32ccbf104688e699d2b24a8fe398dab34baa"
+      },
+      {
+        "path": "modules/11-build-a-range-sensor-model/experiment.m",
+        "sha256": "6020150d9b43316732212a6ba6c22eca6369bf50bd00bcfe8e6a08037b20e2bb"
+      },
+      {
+        "path": "modules/11-build-a-range-sensor-model/lesson.m",
+        "sha256": "3a225822a9a71eae62a9108a369a5f7d8a4c4bd6a09d044e8bb7ce4020917e54"
+      },
+      {
+        "path": "modules/11-build-a-range-sensor-model/lesson.md",
+        "sha256": "2f938b8ab54a7c69cc8c59330ef5b6dcf223176cc98c7888f80470624301f69e"
+      },
+      {
+        "path": "modules/11-build-a-range-sensor-model/walkthrough.md",
+        "sha256": "4d01bc066d968630de731c8a21da916bc4ad38b18f3458da8695a6edc2f75fba"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "c8e0982af418906cd796f2e70e7ef5538586d984b038e82196c3e864c2d605cc",
+    "files": [
+      {
+        "path": "modules/11-build-a-range-sensor-model/experiment.py",
+        "sha256": "d39d8ddf53318b95bd4442a90dc2ae627ebba758529ced57b8eb92932948e9ba"
+      },
+      {
+        "path": "modules/11-build-a-range-sensor-model/lesson.md",
+        "sha256": "61ed01ead5052c24a0e49c102999b1a27c07426b95643407b52f74cbc9e0beaa"
+      },
+      {
+        "path": "modules/11-build-a-range-sensor-model/module.yaml",
+        "sha256": "9968be195b3e0719f9f06c11230818da5d1582d28b31f82f8d397dd611acbf12"
+      }
+    ]
+  },
+  "learning": {
+    "guiding_question": "What inputs, observable effects, and failure modes matter when you build a Range Sensor Model?",
+    "equations": [
+      {
+        "latex": "r=d/cos(theta)",
+        "meaning": "A planar-wall ray range grows with beam angle from the surface normal."
+      },
+      {
+        "latex": "z=clip(r+n,0,r_max)",
+        "meaning": "Noise and saturation act after geometry."
+      }
+    ],
+    "coordinate_and_sign_convention": "The sensor is at the origin, +x follows the wall normal, and positive beam angle is counterclockwise.",
+    "units": [
+      "distance and range: m",
+      "beam angle: deg control, rad internal",
+      "noise: m"
+    ],
+    "sweeps": [
+      {
+        "control": "beam_angle_deg",
+        "values": [
+          0,
+          30,
+          60
+        ],
+        "expected_observation": "Slant range follows the secant curve."
+      },
+      {
+        "control": "noise_std_m",
+        "values": [
+          0,
+          0.02,
+          0.2
+        ],
+        "expected_observation": "Residual RMS grows while geometric bias remains identifiable."
+      }
+    ],
+    "broken_case": {
+      "name": "Normal-incidence shortcut",
+      "trigger": "Set broken_mode true.",
+      "failure": "The model substitutes perpendicular distance for oblique slant range.",
+      "recovery": "Set broken_mode false and intersect the ray with the wall."
+    },
+    "limiting_cases": [
+      "At zero angle, slant and perpendicular distance are equal.",
+      "Near ninety degrees, ideal range diverges and a finite sensor saturates."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "timeout_seconds": 3,
+    "max_samples": 101,
+    "max_output_bytes": 1000000
+  },
+  "python_verification": {
+    "status": "passed",
+    "basis": "native_python_reference",
+    "reference_method": "Closed-form ray-plane intersection with an independently normalized deterministic noise sequence.",
+    "oracle_file": "reference_cases.py",
+    "oracle_independence": "The reference module imports no production experiment and evaluates a closed-form, invariant, alternative-algorithm, or separately formulated numerical recurrence.",
+    "cases": [
+      {
+        "name": "baseline",
+        "expected": {
+          "path": "modules/11-build-a-range-sensor-model/evidence/expected-baseline.json",
+          "sha256": "ac3f39dba38240a737e9a6bf45a12f8cd7b661156d10fb5bf6d672f5e76b1316"
+        },
+        "actual": {
+          "path": "modules/11-build-a-range-sensor-model/evidence/actual-baseline.json",
+          "sha256": "2256144c400425a051578c7b87b09b934780006bd1a2a9972cbc510f47e3509e"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "tolerance": {
+          "absolute": 1.0e-10,
+          "relative": 1.0e-10
+        },
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "expected": {
+          "path": "modules/11-build-a-range-sensor-model/evidence/expected-broken.json",
+          "sha256": "f6782440fe95170f0bd71713511dd8bd45aeaf47a553401cc791699e33930f63"
+        },
+        "actual": {
+          "path": "modules/11-build-a-range-sensor-model/evidence/actual-broken.json",
+          "sha256": "27dfec0f11dd1eeb4dc67caaf83e59a186e4a22bb1b091ce6b4f137f4b9e647d"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "tolerance": {
+          "absolute": 1.0e-10,
+          "relative": 1.0e-10
+        },
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "The pinned source item is a non-runnable scaffold and no licensed MATLAB runtime executed; native Python correctness is independently verified without a MATLAB parity claim."
+  },
+  "claims": {
+    "profile": "elp-robotics-native-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Browser visual review is a separate integrated evidence step."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Accessibility review is a separate integrated evidence step."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study."
+    },
+    "physical_system_validation": {
+      "status": "not_run",
+      "reason": "No physical robot, sensor, motor, bench, HIL, or field system executed."
+    },
+    "release_and_production": {
+      "status": "not_run",
+      "reason": "No release, deployment, credential, setting, or production operation occurred."
+    }
+  }
+}

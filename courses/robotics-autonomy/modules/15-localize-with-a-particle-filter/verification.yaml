@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "course_id": "robotics-autonomy",
+  "item": {
+    "id": "P15",
+    "number": 15,
+    "source_folder": "modules/15-localize-with-a-particle-filter",
+    "target_module_id": "15-localize-with-a-particle-filter",
+    "target_folder": "modules/15-localize-with-a-particle-filter",
+    "batch_id": "ELP-ROB-P01-P24",
+    "design_basis": "native_python_design",
+    "source_map_sha256": "6e2de2c7a4f1eb3992da157d0aeb4d562a0542af8860f030a6a608526c6ba723",
+    "source_inputs": [
+      {
+        "path": "modules/15-localize-with-a-particle-filter/README.md",
+        "sha256": "a31bc89ecbb98b1b657fde3b1929970a2cced99c221bcfd0299970708557536e"
+      },
+      {
+        "path": "modules/15-localize-with-a-particle-filter/checks.md",
+        "sha256": "7ba3c90855ff4a60a066353fb548f584b84ef1911cd22f98cbcf8bc765756aa5"
+      },
+      {
+        "path": "modules/15-localize-with-a-particle-filter/experiment.m",
+        "sha256": "746cf5365025ee9e34ca59aefeb2f93176a8460c6ba1cd9f257e7f00389fde0a"
+      },
+      {
+        "path": "modules/15-localize-with-a-particle-filter/lesson.m",
+        "sha256": "afefd11a0348650804b0bc4619a361725df01230f5908575f8826c2defa324ad"
+      },
+      {
+        "path": "modules/15-localize-with-a-particle-filter/lesson.md",
+        "sha256": "3ba71015b5a02f70579448abff46007e2a1d8e4862502fe261d2da7cb259a6d6"
+      },
+      {
+        "path": "modules/15-localize-with-a-particle-filter/walkthrough.md",
+        "sha256": "a955f91bd784c8f69f8c375c3f856fbca399c3f14f9d764d61695be8e0cc5066"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "5fafe2489a29ff79cf64ce829a90a789d9c84b0407f93c78fd5f195f5d359aa1",
+    "files": [
+      {
+        "path": "modules/15-localize-with-a-particle-filter/experiment.py",
+        "sha256": "94007a9304130934fd3b656b2c4056b007381052f7a98134f57c8f5cb91cada2"
+      },
+      {
+        "path": "modules/15-localize-with-a-particle-filter/lesson.md",
+        "sha256": "930ad88fbec1f77c65de6db65643202eb58214011e68a7633df08fc8ac3d4edb"
+      },
+      {
+        "path": "modules/15-localize-with-a-particle-filter/module.yaml",
+        "sha256": "81e713f4000cbf38d883456ac51ec7df143e6d2a85772b5a21f84ae6fbca818c"
+      }
+    ]
+  },
+  "learning": {
+    "guiding_question": "What inputs, observable effects, and failure modes matter when you localize with a Particle Filter?",
+    "equations": [
+      {
+        "latex": "w_i proportional to p(z|x_i)",
+        "meaning": "Measurement likelihood reweights particle hypotheses."
+      },
+      {
+        "latex": "N_eff=1/sum(w_i^2)",
+        "meaning": "Effective sample size reports weight concentration."
+      }
+    ],
+    "coordinate_and_sign_convention": "Position increases around a 20 m cyclic corridor and wraps at 20 m; landmark distance uses the shorter wrapped arc.",
+    "units": [
+      "position and noise: m",
+      "weights and ESS fraction: dimensionless",
+      "particle count: particles"
+    ],
+    "sweeps": [
+      {
+        "control": "particle_count",
+        "values": [
+          100,
+          400,
+          1000
+        ],
+        "expected_observation": "Higher count reduces sampling granularity without repairing model bias."
+      },
+      {
+        "control": "sensor_noise_m",
+        "values": [
+          0.1,
+          0.4,
+          1.5
+        ],
+        "expected_observation": "Narrow likelihoods concentrate weights and reduce ESS."
+      }
+    ],
+    "broken_case": {
+      "name": "Non-cyclic landmark range",
+      "trigger": "Set broken_mode true.",
+      "failure": "The likelihood uses straight coordinate distance at the wrap boundary.",
+      "recovery": "Set broken_mode false and evaluate measurement distance on the cyclic state manifold."
+    },
+    "limiting_cases": [
+      "Infinite sensor noise approaches uniform weighting.",
+      "Zero motion noise preserves deterministic particle offsets between resampling events."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "timeout_seconds": 3,
+    "max_samples": 1000,
+    "max_output_bytes": 1000000
+  },
+  "python_verification": {
+    "status": "passed",
+    "basis": "native_python_reference",
+    "reference_method": "Separately formulated deterministic bootstrap-filter recurrence with cyclic statistics.",
+    "oracle_file": "reference_cases.py",
+    "oracle_independence": "The reference module imports no production experiment and evaluates a closed-form, invariant, alternative-algorithm, or separately formulated numerical recurrence.",
+    "cases": [
+      {
+        "name": "baseline",
+        "expected": {
+          "path": "modules/15-localize-with-a-particle-filter/evidence/expected-baseline.json",
+          "sha256": "6677d1fa809175eb8bb5e5c5215cc11199727ea4a394add7111947aa70af84a9"
+        },
+        "actual": {
+          "path": "modules/15-localize-with-a-particle-filter/evidence/actual-baseline.json",
+          "sha256": "e4d7c9f09bfbb5d9a34a42c0362b17112f5401c7ff3e72fb740b16849f7fe4b1"
+        },
+        "max_absolute_error": 5.9396931817445875e-15,
+        "max_relative_error": 5.9396931817445875e-15,
+        "tolerance": {
+          "absolute": 0.000000001,
+          "relative": 0.000000001
+        },
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "expected": {
+          "path": "modules/15-localize-with-a-particle-filter/evidence/expected-broken.json",
+          "sha256": "1ffa10d86d1690b591d01819fb24f2b74016d286ad48204683158eec1b33f623"
+        },
+        "actual": {
+          "path": "modules/15-localize-with-a-particle-filter/evidence/actual-broken.json",
+          "sha256": "a56aab1c669b7a9be74a512eef0043b3927fea393a567f0bea4064a1c77af94f"
+        },
+        "max_absolute_error": 7.355227538141662e-15,
+        "max_relative_error": 7.355227538141662e-15,
+        "tolerance": {
+          "absolute": 0.000000001,
+          "relative": 0.000000001
+        },
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "The pinned source item is a non-runnable scaffold and no licensed MATLAB runtime executed; native Python correctness is independently verified without a MATLAB parity claim."
+  },
+  "claims": {
+    "profile": "elp-robotics-native-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Browser visual review is a separate integrated evidence step."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Accessibility review is a separate integrated evidence step."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study."
+    },
+    "physical_system_validation": {
+      "status": "not_run",
+      "reason": "No physical robot, sensor, planner, bench, HIL, or field system executed."
+    },
+    "release_and_production": {
+      "status": "not_run",
+      "reason": "No release, deployment, credential, setting, or production operation occurred."
+    }
+  }
+}

@@ -1,0 +1,184 @@
+{
+  "schema_version": 1,
+  "course_id": "robotics-autonomy",
+  "item": {
+    "id": "P22",
+    "number": 22,
+    "source_folder": "modules/22-meet-real-time-perception-and-control-deadlines",
+    "target_module_id": "22-meet-real-time-perception-and-control-deadlines",
+    "target_folder": "modules/22-meet-real-time-perception-and-control-deadlines",
+    "batch_id": "ELP-ROB-P01-P24",
+    "design_basis": "native_python_design",
+    "source_map_sha256": "6e2de2c7a4f1eb3992da157d0aeb4d562a0542af8860f030a6a608526c6ba723",
+    "source_inputs": [
+      {
+        "path": "modules/22-meet-real-time-perception-and-control-deadlines/README.md",
+        "sha256": "4822c6d23e6bf10623c826f8b5900321418d35edd27e0046346bdc2c9864e8ab"
+      },
+      {
+        "path": "modules/22-meet-real-time-perception-and-control-deadlines/checks.md",
+        "sha256": "29e0577bd3aa49e31ff4568c4392b77301324eeefc21ca5ce01e45807145623f"
+      },
+      {
+        "path": "modules/22-meet-real-time-perception-and-control-deadlines/experiment.m",
+        "sha256": "60e518239aee88ebd33d60e1347415254d01d765cb994b1e22e0e1bdb35e3dbe"
+      },
+      {
+        "path": "modules/22-meet-real-time-perception-and-control-deadlines/lesson.m",
+        "sha256": "a4eb8d596f113d517a24b041ce4c7c15a10e8b0fbefe54b6b5ec192330c20a5f"
+      },
+      {
+        "path": "modules/22-meet-real-time-perception-and-control-deadlines/lesson.md",
+        "sha256": "14917936f5a83abfa35cf3b6e1fa54405ce49a395ad32a7613933913281c79d6"
+      },
+      {
+        "path": "modules/22-meet-real-time-perception-and-control-deadlines/walkthrough.md",
+        "sha256": "4edc8ce5140dcce522598ff2a01cada1df7e4f9db465e1b1db8ae42e8e3a9cea"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "ba5c7ff436304016939ff7b892957c677b05cc684f8ebff53d3bad2f43f78510",
+    "files": [
+      {
+        "path": "modules/22-meet-real-time-perception-and-control-deadlines/experiment.py",
+        "sha256": "4789f8a9e6a149ae2718157db9f37a5adcbd9f44d82b8e6dd4b6adac4971f4db"
+      },
+      {
+        "path": "modules/22-meet-real-time-perception-and-control-deadlines/lesson.md",
+        "sha256": "55bd5c40c34627908cfe3b6b1275f2430ed3b317000467b4fd488a5a94833158"
+      },
+      {
+        "path": "modules/22-meet-real-time-perception-and-control-deadlines/module.yaml",
+        "sha256": "7bc9a742fbfe04b3a61955333d7e039d94693da19d7b17c566feebbe8d874ee9"
+      }
+    ]
+  },
+  "learning": {
+    "guiding_question": "What inputs, observable effects, and failure modes matter when you meet Real-Time Perception and Control Deadlines?",
+    "equations": [
+      {
+        "latex": "U=\\sum_i C_i/T_i",
+        "meaning": "Processor utilization sums each task WCET divided by its period."
+      },
+      {
+        "latex": "R_i=C_i+\\sum_{j\\in hp(i)}\\lceil R_i/T_j\\rceil C_j",
+        "meaning": "Fixed-point response time includes interference from all higher-priority releases."
+      }
+    ],
+    "coordinate_and_sign_convention": "Task codes are control=0, perception=1, and planning=2. Smaller periods receive higher rate-monotonic priority unless broken mode reverses the order.",
+    "units": [
+      "period, WCET, response, deadline, and horizon: ms",
+      "utilization: dimensionless ratio; jobs and misses: integer counts"
+    ],
+    "sweeps": [
+      {
+        "control": "control_wcet_ms",
+        "values": [
+          1,
+          5,
+          10
+        ],
+        "expected_observation": "More control execution consumes capacity and increases lower-priority interference."
+      },
+      {
+        "control": "perception_wcet_ms",
+        "values": [
+          5,
+          18,
+          30
+        ],
+        "expected_observation": "More perception execution lengthens planning response and can consume its deadline margin."
+      }
+    ],
+    "broken_case": {
+      "name": "Fixed priorities reversed",
+      "trigger": "Set broken_mode true.",
+      "failure": "Long-period planning and perception block the fast control loop beyond its 20 ms deadline.",
+      "recovery": "Restore rate-monotonic ordering and compare every bounded response with its own deadline."
+    },
+    "limiting_cases": [
+      "A highest-priority task has response equal to its WCET in this zero-blocking model.",
+      "Utilization below one is necessary but does not validate an arbitrary priority assignment."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "timeout_seconds": 3,
+    "max_samples": 1000,
+    "max_output_bytes": 1000000
+  },
+  "python_verification": {
+    "status": "passed",
+    "basis": "native_python_reference",
+    "reference_method": "Independent release-to-release event scheduler plus fixed-point response-time analysis.",
+    "oracle_file": "reference_cases.py",
+    "oracle_independence": "The reference module imports no production experiment and evaluates a closed-form, invariant, alternative-algorithm, or separately formulated numerical recurrence.",
+    "cases": [
+      {
+        "name": "baseline",
+        "expected": {
+          "path": "modules/22-meet-real-time-perception-and-control-deadlines/evidence/expected-baseline.json",
+          "sha256": "f96779b3919135af81798c03821d5999198b1d719370949227acb0b2cddf91f5"
+        },
+        "actual": {
+          "path": "modules/22-meet-real-time-perception-and-control-deadlines/evidence/actual-baseline.json",
+          "sha256": "178c694baccaa3fa233f69a7fc3555fd6f8c7cd89ee7dcd34c304cac9331ea79"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "tolerance": {
+          "absolute": 0.000000001,
+          "relative": 0.000000001
+        },
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "expected": {
+          "path": "modules/22-meet-real-time-perception-and-control-deadlines/evidence/expected-broken.json",
+          "sha256": "bf59928b74816745bb0fabca6154d7beb11c9d11d5a22d4058ba919019b1e17e"
+        },
+        "actual": {
+          "path": "modules/22-meet-real-time-perception-and-control-deadlines/evidence/actual-broken.json",
+          "sha256": "82298498b8186b6bcb1a7410a949eeffc6c22990e9d977f0d379f2186f4ad535"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "tolerance": {
+          "absolute": 0.000000001,
+          "relative": 0.000000001
+        },
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "The pinned source item is a non-runnable scaffold and no licensed MATLAB runtime executed; native Python correctness is independently verified without a MATLAB parity claim."
+  },
+  "claims": {
+    "profile": "elp-robotics-native-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Browser visual review is a separate integrated evidence step."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Accessibility review is a separate integrated evidence step."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study."
+    },
+    "physical_system_validation": {
+      "status": "not_run",
+      "reason": "No physical robot, sensor, planner, bench, HIL, or field system executed."
+    },
+    "release_and_production": {
+      "status": "not_run",
+      "reason": "No release, deployment, credential, setting, or production operation occurred."
+    }
+  }
+}

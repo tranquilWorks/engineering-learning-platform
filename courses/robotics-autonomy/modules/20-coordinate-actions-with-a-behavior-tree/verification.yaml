@@ -1,0 +1,184 @@
+{
+  "schema_version": 1,
+  "course_id": "robotics-autonomy",
+  "item": {
+    "id": "P20",
+    "number": 20,
+    "source_folder": "modules/20-coordinate-actions-with-a-behavior-tree",
+    "target_module_id": "20-coordinate-actions-with-a-behavior-tree",
+    "target_folder": "modules/20-coordinate-actions-with-a-behavior-tree",
+    "batch_id": "ELP-ROB-P01-P24",
+    "design_basis": "native_python_design",
+    "source_map_sha256": "6e2de2c7a4f1eb3992da157d0aeb4d562a0542af8860f030a6a608526c6ba723",
+    "source_inputs": [
+      {
+        "path": "modules/20-coordinate-actions-with-a-behavior-tree/README.md",
+        "sha256": "c0a0970a470ab502d00e1e5e65eac5799c6c8e2263c0e60a648e8869d471e58a"
+      },
+      {
+        "path": "modules/20-coordinate-actions-with-a-behavior-tree/checks.md",
+        "sha256": "250ac564422de7dc1b5217350c36cfdb7a8cca904d9a4c00ceeb7faa0bf9e984"
+      },
+      {
+        "path": "modules/20-coordinate-actions-with-a-behavior-tree/experiment.m",
+        "sha256": "4973f5e3bf44d56bfbccb32222e4b55db565bb03486d73776dfccd74e9780609"
+      },
+      {
+        "path": "modules/20-coordinate-actions-with-a-behavior-tree/lesson.m",
+        "sha256": "3485bcd181d1bef2ee32da9caef96b99d08ad2ed18358509d23af62d5b1035fe"
+      },
+      {
+        "path": "modules/20-coordinate-actions-with-a-behavior-tree/lesson.md",
+        "sha256": "c608ad9c3a49bb2b38a31e7cb25f7e466a1b1c24b15c4e005ca5cf45ce47ef15"
+      },
+      {
+        "path": "modules/20-coordinate-actions-with-a-behavior-tree/walkthrough.md",
+        "sha256": "e6655dac7d018f8c800a8dd79f31b27cabfab00948a23cf84f1cbd9df38d5be5"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "7cff0668bc44834dccec623aef4962ef11e07391f565ec6e006b5a6523963820",
+    "files": [
+      {
+        "path": "modules/20-coordinate-actions-with-a-behavior-tree/experiment.py",
+        "sha256": "8abb1e5b896d13aa2c2890cf79fe2f918f9cadbc58503bb751fcd38466865a84"
+      },
+      {
+        "path": "modules/20-coordinate-actions-with-a-behavior-tree/lesson.md",
+        "sha256": "b1796c62922c6cfe9a30099ebe67dfec0fcd37236bd40ac2772f2e9e05b44fe3"
+      },
+      {
+        "path": "modules/20-coordinate-actions-with-a-behavior-tree/module.yaml",
+        "sha256": "f4dd7fd2f0994dc175cba4807e7497db3882dfc65ce7a412f26650bcdd69d707"
+      }
+    ]
+  },
+  "learning": {
+    "guiding_question": "What inputs, observable effects, and failure modes matter when you coordinate Actions with a Behavior Tree?",
+    "equations": [
+      {
+        "latex": "s_{seq}=s_j\\;\\text{for the first child }j\\text{ not returning SUCCESS}",
+        "meaning": "A sequence propagates the first RUNNING or FAILURE child status."
+      },
+      {
+        "latex": "p_{k+1}=p_k+1\\;\\text{while an action remains RUNNING}",
+        "meaning": "A stateful action must retain its progress from tick to tick."
+      }
+    ],
+    "coordinate_and_sign_convention": "Node codes increase through Navigate, Grasp, Deliver, and Done; Failed is a separate terminal code. One tick advances exactly one active child.",
+    "units": [
+      "execution and completion: mission ticks",
+      "retry and transition quantities: integer counts"
+    ],
+    "sweeps": [
+      {
+        "control": "navigate_ticks",
+        "values": [
+          2,
+          5,
+          10
+        ],
+        "expected_observation": "Longer navigation delays every downstream child while preserving the sequence order."
+      },
+      {
+        "control": "retry_limit",
+        "values": [
+          0,
+          3,
+          6
+        ],
+        "expected_observation": "Too few retries cause explicit failure; enough retries allow the scripted grasp success."
+      }
+    ],
+    "broken_case": {
+      "name": "RUNNING child progress reset",
+      "trigger": "Set broken_mode true.",
+      "failure": "Navigate progress returns to one every tick and the sequence cannot reach Grasp.",
+      "recovery": "Retain child-local state across ticks and distinguish RUNNING from FAILURE."
+    },
+    "limiting_cases": [
+      "Zero grasp failures succeeds on the first grasp attempt.",
+      "A mission budget shorter than required work ends nonterminal without inventing success."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "timeout_seconds": 3,
+    "max_samples": 40,
+    "max_output_bytes": 1000000
+  },
+  "python_verification": {
+    "status": "passed",
+    "basis": "native_python_reference",
+    "reference_method": "Independent closed-form behavior-tree tick schedule with explicit retry and terminal-state counts.",
+    "oracle_file": "reference_cases.py",
+    "oracle_independence": "The reference module imports no production experiment and evaluates a closed-form, invariant, alternative-algorithm, or separately formulated numerical recurrence.",
+    "cases": [
+      {
+        "name": "baseline",
+        "expected": {
+          "path": "modules/20-coordinate-actions-with-a-behavior-tree/evidence/expected-baseline.json",
+          "sha256": "7ed0f985301f2967118af33d3c742306ef2eeee7b79acbbf4600ef599da3a7e3"
+        },
+        "actual": {
+          "path": "modules/20-coordinate-actions-with-a-behavior-tree/evidence/actual-baseline.json",
+          "sha256": "822d198047d0f32edc7e9da1ed98bd56a76d09dbf99a0ef5fa5985e48d8bb3ba"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "tolerance": {
+          "absolute": 0.000000001,
+          "relative": 0.000000001
+        },
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "expected": {
+          "path": "modules/20-coordinate-actions-with-a-behavior-tree/evidence/expected-broken.json",
+          "sha256": "7dff23cc521fa03903aea9410095af6571b4a60c817fca0b19f8a53e8cf965df"
+        },
+        "actual": {
+          "path": "modules/20-coordinate-actions-with-a-behavior-tree/evidence/actual-broken.json",
+          "sha256": "399cbd8f6e1c095c1ec21cbd26ef1218ab029c60be6b6f461d7637a95bd88097"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "tolerance": {
+          "absolute": 0.000000001,
+          "relative": 0.000000001
+        },
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "The pinned source item is a non-runnable scaffold and no licensed MATLAB runtime executed; native Python correctness is independently verified without a MATLAB parity claim."
+  },
+  "claims": {
+    "profile": "elp-robotics-native-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Browser visual review is a separate integrated evidence step."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Accessibility review is a separate integrated evidence step."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study."
+    },
+    "physical_system_validation": {
+      "status": "not_run",
+      "reason": "No physical robot, sensor, planner, bench, HIL, or field system executed."
+    },
+    "release_and_production": {
+      "status": "not_run",
+      "reason": "No release, deployment, credential, setting, or production operation occurred."
+    }
+  }
+}

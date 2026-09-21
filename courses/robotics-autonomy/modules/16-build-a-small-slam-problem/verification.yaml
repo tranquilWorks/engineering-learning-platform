@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "course_id": "robotics-autonomy",
+  "item": {
+    "id": "P16",
+    "number": 16,
+    "source_folder": "modules/16-build-a-small-slam-problem",
+    "target_module_id": "16-build-a-small-slam-problem",
+    "target_folder": "modules/16-build-a-small-slam-problem",
+    "batch_id": "ELP-ROB-P01-P24",
+    "design_basis": "native_python_design",
+    "source_map_sha256": "6e2de2c7a4f1eb3992da157d0aeb4d562a0542af8860f030a6a608526c6ba723",
+    "source_inputs": [
+      {
+        "path": "modules/16-build-a-small-slam-problem/README.md",
+        "sha256": "a0f7b61c6c83208b60dc767e6a59172055e7210c4323ebae040f3fbd01486a1c"
+      },
+      {
+        "path": "modules/16-build-a-small-slam-problem/checks.md",
+        "sha256": "2a2b529938dd6829c73648cfbb28efb8a13080c4db9b1d210bb02259cdcdbdf4"
+      },
+      {
+        "path": "modules/16-build-a-small-slam-problem/experiment.m",
+        "sha256": "716a6bd849d2107344b3fd2fb372e0f09629130a4e3fee408b53ff7a5ca236e6"
+      },
+      {
+        "path": "modules/16-build-a-small-slam-problem/lesson.m",
+        "sha256": "21a92591c55a85c64d0bfaf5d3a32970aea85a61c7e3d8b188ffa7f532775a9e"
+      },
+      {
+        "path": "modules/16-build-a-small-slam-problem/lesson.md",
+        "sha256": "8c2d537f91984241e54a9debbb4d8892c3283f73e849462e673e7b7e40031500"
+      },
+      {
+        "path": "modules/16-build-a-small-slam-problem/walkthrough.md",
+        "sha256": "4f51fedcddd22102646614ccc00eead1fd85ba8d11c845e6ace240692b7acd3a"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "c448fa713b8fc13e5362aab9a400405eeb523fe3c1edd68d527f7e04a7e1dc95",
+    "files": [
+      {
+        "path": "modules/16-build-a-small-slam-problem/experiment.py",
+        "sha256": "04603ad99710d5bcd07474464466e832e6dd5107157c641688f643a880371187"
+      },
+      {
+        "path": "modules/16-build-a-small-slam-problem/lesson.md",
+        "sha256": "b293dd211595c2ab79d8cab3d340e37f5eb33e8760ec32f63c99763fb216571f"
+      },
+      {
+        "path": "modules/16-build-a-small-slam-problem/module.yaml",
+        "sha256": "0dd370f125126e4b37f47207d40b463f431ddd966e3fac24245ced4e2e41324f"
+      }
+    ]
+  },
+  "learning": {
+    "guiding_question": "What inputs, observable effects, and failure modes matter when you build a Small SLAM Problem?",
+    "equations": [
+      {
+        "latex": "x_i-x_(i-1)=u_i+n_i",
+        "meaning": "Odometry factors constrain consecutive poses."
+      },
+      {
+        "latex": "l-x_i=z_i+v_i",
+        "meaning": "Range factors connect poses to a landmark."
+      }
+    ],
+    "coordinate_and_sign_convention": "A one-dimensional world uses increasing +x along robot travel; the first pose defines the absolute origin when the prior is present.",
+    "units": [
+      "poses and landmark: m",
+      "sensor sigmas: m",
+      "whitened residual: sigma"
+    ],
+    "sweeps": [
+      {
+        "control": "odometry_sigma_m",
+        "values": [
+          0.01,
+          0.05,
+          0.3
+        ],
+        "expected_observation": "Odometry weighting trades against landmark factors."
+      },
+      {
+        "control": "range_sigma_m",
+        "values": [
+          0.02,
+          0.1,
+          0.5
+        ],
+        "expected_observation": "Landmark coupling weakens as range uncertainty grows."
+      }
+    ],
+    "broken_case": {
+      "name": "Missing gauge prior",
+      "trigger": "Set broken_mode true.",
+      "failure": "All relative factors remain invariant to a common translation and the matrix loses rank.",
+      "recovery": "Set broken_mode false and anchor one pose with an absolute prior."
+    },
+    "limiting_cases": [
+      "A strong correct prior effectively fixes the first pose.",
+      "Without an absolute constraint, every common state translation has equal relative residual."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "timeout_seconds": 3,
+    "max_samples": 40,
+    "max_output_bytes": 1000000
+  },
+  "python_verification": {
+    "status": "passed",
+    "basis": "native_python_reference",
+    "reference_method": "Weighted normal-equation pseudoinverse, independent of the production rectangular least-squares solve.",
+    "oracle_file": "reference_cases.py",
+    "oracle_independence": "The reference module imports no production experiment and evaluates a closed-form, invariant, alternative-algorithm, or separately formulated numerical recurrence.",
+    "cases": [
+      {
+        "name": "baseline",
+        "expected": {
+          "path": "modules/16-build-a-small-slam-problem/evidence/expected-baseline.json",
+          "sha256": "dfa7ceaf8eafe6e545a1ec71f8273e2ab360d9fdd38275a2cef2f5f23df1414f"
+        },
+        "actual": {
+          "path": "modules/16-build-a-small-slam-problem/evidence/actual-baseline.json",
+          "sha256": "ef026fbedb6c9c95c35121fcdd935cba38174b7d76ebc7ab14c7a5a46ebdf71d"
+        },
+        "max_absolute_error": 7.993605777301127e-15,
+        "max_relative_error": 1.4190038033490282e-15,
+        "tolerance": {
+          "absolute": 0.000000001,
+          "relative": 0.000000001
+        },
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "expected": {
+          "path": "modules/16-build-a-small-slam-problem/evidence/expected-broken.json",
+          "sha256": "5f4d033ef20b4b8b4bffbfc31f5131cd7aa36e3c75a53b20d5c585208cd049e0"
+        },
+        "actual": {
+          "path": "modules/16-build-a-small-slam-problem/evidence/actual-broken.json",
+          "sha256": "92b5e71f2fd4d97b7d5219dd1812070bc983515309c66430ec54ba1043dab969"
+        },
+        "max_absolute_error": 2.353672812205332e-14,
+        "max_relative_error": 8.498420998850318e-15,
+        "tolerance": {
+          "absolute": 0.000000001,
+          "relative": 0.000000001
+        },
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "The pinned source item is a non-runnable scaffold and no licensed MATLAB runtime executed; native Python correctness is independently verified without a MATLAB parity claim."
+  },
+  "claims": {
+    "profile": "elp-robotics-native-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Browser visual review is a separate integrated evidence step."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Accessibility review is a separate integrated evidence step."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study."
+    },
+    "physical_system_validation": {
+      "status": "not_run",
+      "reason": "No physical robot, sensor, planner, bench, HIL, or field system executed."
+    },
+    "release_and_production": {
+      "status": "not_run",
+      "reason": "No release, deployment, credential, setting, or production operation occurred."
+    }
+  }
+}

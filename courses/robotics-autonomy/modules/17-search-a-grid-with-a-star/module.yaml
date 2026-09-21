@@ -1,0 +1,71 @@
+schema_version: 1
+id: 17-search-a-grid-with-a-star
+number: 17
+title: Search a Grid with A-Star
+summary: Use cost-to-come plus a bounded heuristic to find a collision-free grid path and compare it with a Dijkstra optimum.
+guiding_question: What inputs, observable effects, and failure modes matter when you search a Grid with A-Star?
+status: implemented
+tags:
+- robotics-autonomy
+- planning-and-behavior
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: grid_size
+  type: slider
+  label: Square grid size
+  default: 21
+  unit: cells
+  minimum: 15
+  maximum: 35
+  step: 2
+- id: gap_offset
+  type: slider
+  label: Wall-gap offset
+  default: 5
+  unit: cells
+  minimum: -7
+  maximum: 7
+  step: 1
+- id: heuristic_weight
+  type: slider
+  label: Manhattan heuristic weight
+  default: 1
+  unit: ratio
+  minimum: 0
+  maximum: 2
+  step: 0.1
+- id: broken_mode
+  type: toggle
+  label: Disable obstacle checks
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: An admissible Manhattan heuristic reduces expansions without changing the optimal four-connected path, but a search that ignores occupancy can return a shorter invalid route.
+  reveal: Apply collision checks during neighbor expansion and validate the final path independently.
+- type: controls
+  title: Live A-star controls
+- type: metrics
+- type: plot_grid
+  title: Grid path and search effort
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

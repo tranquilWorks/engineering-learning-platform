@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "course_id": "robotics-autonomy",
+  "item": {
+    "id": "P18",
+    "number": 18,
+    "source_folder": "modules/18-plan-with-random-samples",
+    "target_module_id": "18-plan-with-random-samples",
+    "target_folder": "modules/18-plan-with-random-samples",
+    "batch_id": "ELP-ROB-P01-P24",
+    "design_basis": "native_python_design",
+    "source_map_sha256": "6e2de2c7a4f1eb3992da157d0aeb4d562a0542af8860f030a6a608526c6ba723",
+    "source_inputs": [
+      {
+        "path": "modules/18-plan-with-random-samples/README.md",
+        "sha256": "ab452ebc6a93c95f2ad95a5d5908d44b9073c526d3a4ca2e2b605306067ed205"
+      },
+      {
+        "path": "modules/18-plan-with-random-samples/checks.md",
+        "sha256": "2cca39664fe257650f11657b847e0a2152a4c7e7aae3a02891596b1128427107"
+      },
+      {
+        "path": "modules/18-plan-with-random-samples/experiment.m",
+        "sha256": "48c9746a527b4344617d645ed86dfda379a3bd4738e32af7ba0a69400dd73dc4"
+      },
+      {
+        "path": "modules/18-plan-with-random-samples/lesson.m",
+        "sha256": "231d73f36a80eb930bbb57ccf7cd1b801ea445be7bdabc6eb85cb0414f634d66"
+      },
+      {
+        "path": "modules/18-plan-with-random-samples/lesson.md",
+        "sha256": "94f6e2290c62fcf7b09649ef5478c92ad2e81d07aac9d2f82646597f0cf44f71"
+      },
+      {
+        "path": "modules/18-plan-with-random-samples/walkthrough.md",
+        "sha256": "ad4a7812540734fde259a6ce2e91dd050d9403ccbca358d19a50567d92880e7d"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "bc1d816015bd6e14c1335663111b5c07962a583a9a3de52e64acf6b521ce3091",
+    "files": [
+      {
+        "path": "modules/18-plan-with-random-samples/experiment.py",
+        "sha256": "1227cb3293aeea4bd693a6cd3c38f462dd0aa238c4db1bc803131d75e4b430b1"
+      },
+      {
+        "path": "modules/18-plan-with-random-samples/lesson.md",
+        "sha256": "248193f7e3ff7fb74645e1460503eca11f379cd36f8fef44a8d6097840e76f1e"
+      },
+      {
+        "path": "modules/18-plan-with-random-samples/module.yaml",
+        "sha256": "46e0b31e80d61d59637314ee16815491d0361206f4047e8ff246a4b8f7f2ff6c"
+      }
+    ]
+  },
+  "learning": {
+    "guiding_question": "What inputs, observable effects, and failure modes matter when you plan with Random Samples?",
+    "equations": [
+      {
+        "latex": "q_new=q_near+min(eta,d) direction",
+        "meaning": "The RRT extends a bounded distance toward each sample."
+      },
+      {
+        "latex": "c(e)=min_alpha distance(segment(alpha), obstacle)-r",
+        "meaning": "Continuous edge clearance determines validity."
+      }
+    ],
+    "coordinate_and_sign_convention": "The planar workspace uses +x right and +y up; all positions, step sizes, radii, and clearances use metres.",
+    "units": [
+      "workspace and path: m",
+      "goal bias: ratio",
+      "sample budget: samples"
+    ],
+    "sweeps": [
+      {
+        "control": "sample_budget",
+        "values": [
+          200,
+          700,
+          1200
+        ],
+        "expected_observation": "More samples increase the opportunity to connect through free space."
+      },
+      {
+        "control": "goal_bias",
+        "values": [
+          0.05,
+          0.15,
+          0.35
+        ],
+        "expected_observation": "Goal bias trades direct progress against detour exploration."
+      }
+    ],
+    "broken_case": {
+      "name": "Edge collision checking omitted",
+      "trigger": "Set broken_mode true.",
+      "failure": "The tree and final path accept segments through the circular obstacle.",
+      "recovery": "Set broken_mode false and require positive analytic segment clearance."
+    },
+    "limiting_cases": [
+      "No obstacle permits direct growth toward the goal.",
+      "No finite sample budget validates a path when edge checking is absent."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "timeout_seconds": 3,
+    "max_samples": 1202,
+    "max_output_bytes": 1000000
+  },
+  "python_verification": {
+    "status": "passed",
+    "basis": "native_python_reference",
+    "reference_method": "Separately formulated deterministic RRT recurrence with analytic segment-circle validation.",
+    "oracle_file": "reference_cases.py",
+    "oracle_independence": "The reference module imports no production experiment and evaluates a closed-form, invariant, alternative-algorithm, or separately formulated numerical recurrence.",
+    "cases": [
+      {
+        "name": "baseline",
+        "expected": {
+          "path": "modules/18-plan-with-random-samples/evidence/expected-baseline.json",
+          "sha256": "316aff75a7e66fb1527872c82d2071e63c4611651ca1c8a62e757cd25acb79b3"
+        },
+        "actual": {
+          "path": "modules/18-plan-with-random-samples/evidence/actual-baseline.json",
+          "sha256": "55f74791a2dea03fd4fac552fa9c3246770ccb93daa9677a02acf794dabb9b4e"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "tolerance": {
+          "absolute": 0.000000001,
+          "relative": 0.000000001
+        },
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "expected": {
+          "path": "modules/18-plan-with-random-samples/evidence/expected-broken.json",
+          "sha256": "59cc9729243be93defb0847527335d901bd1221e37e818e07621aa15b292daab"
+        },
+        "actual": {
+          "path": "modules/18-plan-with-random-samples/evidence/actual-broken.json",
+          "sha256": "5dbea4b098bb359c4e8e31fc18709b18e21cd15a2de51d0e04b7a70873323e28"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "tolerance": {
+          "absolute": 0.000000001,
+          "relative": 0.000000001
+        },
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "The pinned source item is a non-runnable scaffold and no licensed MATLAB runtime executed; native Python correctness is independently verified without a MATLAB parity claim."
+  },
+  "claims": {
+    "profile": "elp-robotics-native-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Browser visual review is a separate integrated evidence step."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Accessibility review is a separate integrated evidence step."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study."
+    },
+    "physical_system_validation": {
+      "status": "not_run",
+      "reason": "No physical robot, sensor, planner, bench, HIL, or field system executed."
+    },
+    "release_and_production": {
+      "status": "not_run",
+      "reason": "No release, deployment, credential, setting, or production operation occurred."
+    }
+  }
+}

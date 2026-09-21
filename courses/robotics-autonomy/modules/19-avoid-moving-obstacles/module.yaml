@@ -1,0 +1,79 @@
+schema_version: 1
+id: 19-avoid-moving-obstacles
+number: 19
+title: Avoid Moving Obstacles
+summary: Select a bounded robot heading from analytic closest-point-of-approach predictions for a crossing obstacle.
+guiding_question: What inputs, observable effects, and failure modes matter when you avoid Moving Obstacles?
+status: implemented
+tags:
+- robotics-autonomy
+- planning-and-behavior
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: robot_speed_m_s
+  type: slider
+  label: Robot speed
+  default: 1
+  unit: m/s
+  minimum: 0.4
+  maximum: 2
+  step: 0.1
+- id: obstacle_speed_m_s
+  type: slider
+  label: Crossing-obstacle speed
+  default: 1
+  unit: m/s
+  minimum: 0.2
+  maximum: 2
+  step: 0.1
+- id: prediction_horizon_s
+  type: slider
+  label: Prediction horizon
+  default: 8
+  unit: s
+  minimum: 2
+  maximum: 10
+  step: 0.5
+- id: safety_radius_m
+  type: slider
+  label: Required separation
+  default: 0.8
+  unit: m
+  minimum: 0.3
+  maximum: 2
+  step: 0.1
+- id: broken_mode
+  type: toggle
+  label: Predict obstacle as static
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: A crossing obstacle that is currently far from the path can still collide at the same future time; closest-point prediction must use relative velocity.
+  reveal: Predict obstacle motion over the horizon and choose the least-deviating heading with adequate separation.
+- type: controls
+  title: Live dynamic-avoidance controls
+- type: metrics
+- type: plot_grid
+  title: Actual encounter and candidate prediction
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

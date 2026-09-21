@@ -190,7 +190,7 @@ def test_gnc_final_catalog_shape_when_complete() -> None:
     assert len(courses) == 5
     modules = sum(len(course.modules) for course in courses)
     interactive = sum(module.interactive for course in courses for module in course.modules)
-    assert (modules, interactive) == (120, 120)
+    assert (modules, interactive) == (134, 134)
     gnc = next(course for course in courses if course.id == "controls-gnc")
     assert len(gnc.modules) == 24
 

@@ -1,0 +1,186 @@
+{
+  "schema_version": 1,
+  "course_id": "robotics-autonomy",
+  "item": {
+    "id": "P14",
+    "number": 14,
+    "source_folder": "modules/14-fuse-sensors-with-an-ekf",
+    "target_module_id": "14-fuse-sensors-with-an-ekf",
+    "target_folder": "modules/14-fuse-sensors-with-an-ekf",
+    "batch_id": "ELP-ROB-P01-P24",
+    "design_basis": "native_python_design",
+    "source_map_sha256": "6e2de2c7a4f1eb3992da157d0aeb4d562a0542af8860f030a6a608526c6ba723",
+    "source_inputs": [
+      {
+        "path": "modules/14-fuse-sensors-with-an-ekf/README.md",
+        "sha256": "861ab27f55a96c955f1ca7ce480c70a4843b71a6967cee69a894a512a3d31cb2"
+      },
+      {
+        "path": "modules/14-fuse-sensors-with-an-ekf/checks.md",
+        "sha256": "08b256ed178d39bcaa3410043c7e85fc0284466eabb031102b5fe34d8d4ac370"
+      },
+      {
+        "path": "modules/14-fuse-sensors-with-an-ekf/experiment.m",
+        "sha256": "97262b598b015d3465ab82e833c1c0368a6ec5a39856137f725ec034e4b64855"
+      },
+      {
+        "path": "modules/14-fuse-sensors-with-an-ekf/lesson.m",
+        "sha256": "bf550b6cdc681e8daac97f59a92865a0dc905a1cb43cf27e44718a8293ff3ed0"
+      },
+      {
+        "path": "modules/14-fuse-sensors-with-an-ekf/lesson.md",
+        "sha256": "93d151941f6f2bba232415a0266c3c06e5154a673d6a950527cb05a8114964c6"
+      },
+      {
+        "path": "modules/14-fuse-sensors-with-an-ekf/walkthrough.md",
+        "sha256": "8ec592b31213b04f189fe22ddf51696e2ac163c639140e323baad1d0f9d9f4ad"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "3f9f7580e64ae65bd19cccea3ca3168656070c0c8ffe1b139be85938edf55d3e",
+    "files": [
+      {
+        "path": "modules/14-fuse-sensors-with-an-ekf/experiment.py",
+        "sha256": "47d3cf45f47bce8c52cc007f34ecf3b00c9f1142b4ae9ab57b577bcfd6ad1117"
+      },
+      {
+        "path": "modules/14-fuse-sensors-with-an-ekf/lesson.md",
+        "sha256": "d37651b28f891a903f0eed8639b4334b761648cebfebbdb9103e4aa44cc1c68a"
+      },
+      {
+        "path": "modules/14-fuse-sensors-with-an-ekf/module.yaml",
+        "sha256": "61fb80eb31a8846f440964e4693e43759e8570ecb989ace882c216b17fe29348"
+      }
+    ]
+  },
+  "learning": {
+    "guiding_question": "What inputs, observable effects, and failure modes matter when you fuse Sensors with an EKF?",
+    "equations": [
+      {
+        "latex": "x_minus=f(x,u), P_minus=F P F^T+Q",
+        "meaning": "The nonlinear process and its Jacobian propagate state and covariance."
+      },
+      {
+        "latex": "K=P_minus H^T(H P_minus H^T+R)^-1",
+        "meaning": "The Kalman gain balances predicted and measured uncertainty."
+      }
+    ],
+    "coordinate_and_sign_convention": "The world frame uses +x right, +y up, and positive counterclockwise yaw; the state stores yaw in radians.",
+    "units": [
+      "position and GPS noise: m",
+      "heading: rad internal and displayed deg",
+      "time: s",
+      "Q and R: state-unit variances"
+    ],
+    "sweeps": [
+      {
+        "control": "gps_noise_m",
+        "values": [
+          0.05,
+          0.25,
+          1.0
+        ],
+        "expected_observation": "Noisier GPS has less correction authority."
+      },
+      {
+        "control": "gps_interval_s",
+        "values": [
+          0.1,
+          0.5,
+          2.0
+        ],
+        "expected_observation": "Longer prediction spans produce larger uncertainty peaks."
+      }
+    ],
+    "broken_case": {
+      "name": "Radian state used as degrees",
+      "trigger": "Set broken_mode true.",
+      "failure": "The motion function and Jacobian evaluate a unit-corrupted heading.",
+      "recovery": "Set broken_mode false and keep the nonlinear state and Jacobian in radians."
+    },
+    "limiting_cases": [
+      "Consistent noiseless initial state and sensors keep estimation error near zero.",
+      "Sparse GPS makes the filter approach dead reckoning between updates."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "timeout_seconds": 3,
+    "max_samples": 241,
+    "max_output_bytes": 1000000
+  },
+  "python_verification": {
+    "status": "passed",
+    "basis": "native_python_reference",
+    "reference_method": "Separately formulated EKF recurrence using a finite-difference motion Jacobian.",
+    "oracle_file": "reference_cases.py",
+    "oracle_independence": "The reference module imports no production experiment and evaluates a closed-form, invariant, alternative-algorithm, or separately formulated numerical recurrence.",
+    "cases": [
+      {
+        "name": "baseline",
+        "expected": {
+          "path": "modules/14-fuse-sensors-with-an-ekf/evidence/expected-baseline.json",
+          "sha256": "542826d72c41a29212172f1fa51bbad21de13497926211d6d3a1d078854ae0e1"
+        },
+        "actual": {
+          "path": "modules/14-fuse-sensors-with-an-ekf/evidence/actual-baseline.json",
+          "sha256": "52456d6486bede0a28f05bcf905cac3a4e5eb2a9df294a6ae27af23b72a49ff1"
+        },
+        "max_absolute_error": 2.9636595400006627e-09,
+        "max_relative_error": 1.1927593981941875e-10,
+        "tolerance": {
+          "absolute": 1.0e-6,
+          "relative": 1.0e-6
+        },
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "expected": {
+          "path": "modules/14-fuse-sensors-with-an-ekf/evidence/expected-broken.json",
+          "sha256": "0a286408681a14982e1c7538db3b6c5729d7fbb0904867e32e4c2fa34034df57"
+        },
+        "actual": {
+          "path": "modules/14-fuse-sensors-with-an-ekf/evidence/actual-broken.json",
+          "sha256": "e191c12c2d6353ef1f87e85add1a02e9ba480a6e7a3c449deb09b24c02231a3b"
+        },
+        "max_absolute_error": 1.3769795259577222e-07,
+        "max_relative_error": 3.530232438511386e-09,
+        "tolerance": {
+          "absolute": 1.0e-6,
+          "relative": 1.0e-6
+        },
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "The pinned source item is a non-runnable scaffold and no licensed MATLAB runtime executed; native Python correctness is independently verified without a MATLAB parity claim."
+  },
+  "claims": {
+    "profile": "elp-robotics-native-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Browser visual review is a separate integrated evidence step."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Accessibility review is a separate integrated evidence step."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study."
+    },
+    "physical_system_validation": {
+      "status": "not_run",
+      "reason": "No physical robot, sensor, motor, bench, HIL, or field system executed."
+    },
+    "release_and_production": {
+      "status": "not_run",
+      "reason": "No release, deployment, credential, setting, or production operation occurred."
+    }
+  }
+}

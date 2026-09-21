@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "course_id": "robotics-autonomy",
+  "item": {
+    "id": "P17",
+    "number": 17,
+    "source_folder": "modules/17-search-a-grid-with-a-star",
+    "target_module_id": "17-search-a-grid-with-a-star",
+    "target_folder": "modules/17-search-a-grid-with-a-star",
+    "batch_id": "ELP-ROB-P01-P24",
+    "design_basis": "native_python_design",
+    "source_map_sha256": "6e2de2c7a4f1eb3992da157d0aeb4d562a0542af8860f030a6a608526c6ba723",
+    "source_inputs": [
+      {
+        "path": "modules/17-search-a-grid-with-a-star/README.md",
+        "sha256": "3dbeb802c86a48281e992c30a98dfdba9eb0a79ad4ba5f255b75734f76623b42"
+      },
+      {
+        "path": "modules/17-search-a-grid-with-a-star/checks.md",
+        "sha256": "c1faddf053167912fe124cfb2072c79ca24c49ea8cc5be1fedb9838878d46621"
+      },
+      {
+        "path": "modules/17-search-a-grid-with-a-star/experiment.m",
+        "sha256": "402371f3442f291c904e4d58e00be78e888f6d360644f92535d4f959498b9d60"
+      },
+      {
+        "path": "modules/17-search-a-grid-with-a-star/lesson.m",
+        "sha256": "e44ba1fccb39d8a072628582c6c470d0f25d2dd32de1dae552db344235ceca1b"
+      },
+      {
+        "path": "modules/17-search-a-grid-with-a-star/lesson.md",
+        "sha256": "2335b518ceb48793ac22d4a239a5aa231f3f2d4a0c4d2e50b3dd094ca3613d74"
+      },
+      {
+        "path": "modules/17-search-a-grid-with-a-star/walkthrough.md",
+        "sha256": "1f6772343da8c27445c6706ed8b9a2a25292c5fa0246d39a869e9dacde90156f"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "7527ed7f20c19104faaa72a95b64d86f6cd27b447bc21fcda0564506b67a8b69",
+    "files": [
+      {
+        "path": "modules/17-search-a-grid-with-a-star/experiment.py",
+        "sha256": "ff2b2ef38437d7ff7d75721694ae841b3b8728f37690afea78fc8cf1c44d5697"
+      },
+      {
+        "path": "modules/17-search-a-grid-with-a-star/lesson.md",
+        "sha256": "0daa77878cc39c7673fcba26cf221306b9a7e797f433b5bba68b9d9b80fde6e5"
+      },
+      {
+        "path": "modules/17-search-a-grid-with-a-star/module.yaml",
+        "sha256": "3822fad5fdba212063f312957b0d2c0bbaef5732384d5977d47bec36e644fe72"
+      }
+    ]
+  },
+  "learning": {
+    "guiding_question": "What inputs, observable effects, and failure modes matter when you search a Grid with A-Star?",
+    "equations": [
+      {
+        "latex": "f(n)=g(n)+w_h h(n)",
+        "meaning": "A-star combines known and estimated remaining cost."
+      },
+      {
+        "latex": "h=abs(dx)+abs(dy)",
+        "meaning": "Manhattan distance is admissible for four-connected unit-cost motion at unit weight."
+      }
+    ],
+    "coordinate_and_sign_convention": "Integer grid +x points right and +y up; motion uses four-connected unit cell steps.",
+    "units": [
+      "position: cells",
+      "path and heuristic cost: cell steps",
+      "expansions: nodes"
+    ],
+    "sweeps": [
+      {
+        "control": "heuristic_weight",
+        "values": [
+          0,
+          1,
+          2
+        ],
+        "expected_observation": "Higher weight reduces expansions but can weaken optimality guarantees."
+      },
+      {
+        "control": "gap_offset",
+        "values": [
+          -7,
+          0,
+          7
+        ],
+        "expected_observation": "Safe path cost follows the wall-gap detour."
+      }
+    ],
+    "broken_case": {
+      "name": "Obstacle checks disabled",
+      "trigger": "Set broken_mode true.",
+      "failure": "The returned shortest route crosses occupied wall cells.",
+      "recovery": "Set broken_mode false and reject occupied neighbors, then audit the path."
+    },
+    "limiting_cases": [
+      "Heuristic weight zero reduces A-star to Dijkstra.",
+      "A gap on the direct row permits the straight safe path."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "timeout_seconds": 3,
+    "max_samples": 1225,
+    "max_output_bytes": 1000000
+  },
+  "python_verification": {
+    "status": "passed",
+    "basis": "native_python_reference",
+    "reference_method": "Independent Dijkstra shortest-path cost and returned-path collision audit.",
+    "oracle_file": "reference_cases.py",
+    "oracle_independence": "The reference module imports no production experiment and evaluates a closed-form, invariant, alternative-algorithm, or separately formulated numerical recurrence.",
+    "cases": [
+      {
+        "name": "baseline",
+        "expected": {
+          "path": "modules/17-search-a-grid-with-a-star/evidence/expected-baseline.json",
+          "sha256": "4b4fcce10cc728fcbfe30e54b7533907e84fce6a6f888ccd3b0d3a148e7b6b70"
+        },
+        "actual": {
+          "path": "modules/17-search-a-grid-with-a-star/evidence/actual-baseline.json",
+          "sha256": "ca02d8e7b13642bcb721bfdeed719f0c6a82d0401a10611a76d37ccacd447604"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "tolerance": {
+          "absolute": 0.000000001,
+          "relative": 0.000000001
+        },
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "expected": {
+          "path": "modules/17-search-a-grid-with-a-star/evidence/expected-broken.json",
+          "sha256": "bd19372ae35549e3183ebda5ae5ee34b8eefb1d343f5d126631c5037120916b3"
+        },
+        "actual": {
+          "path": "modules/17-search-a-grid-with-a-star/evidence/actual-broken.json",
+          "sha256": "bc721a3f63b0a085cf5184ad52960728d0913057d31b70401638bcbef6ad7c6b"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "tolerance": {
+          "absolute": 0.000000001,
+          "relative": 0.000000001
+        },
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "The pinned source item is a non-runnable scaffold and no licensed MATLAB runtime executed; native Python correctness is independently verified without a MATLAB parity claim."
+  },
+  "claims": {
+    "profile": "elp-robotics-native-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Browser visual review is a separate integrated evidence step."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Accessibility review is a separate integrated evidence step."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study."
+    },
+    "physical_system_validation": {
+      "status": "not_run",
+      "reason": "No physical robot, sensor, planner, bench, HIL, or field system executed."
+    },
+    "release_and_production": {
+      "status": "not_run",
+      "reason": "No release, deployment, credential, setting, or production operation occurred."
+    }
+  }
+}

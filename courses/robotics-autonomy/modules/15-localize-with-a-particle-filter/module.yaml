@@ -1,0 +1,79 @@
+schema_version: 1
+id: 15-localize-with-a-particle-filter
+number: 15
+title: Localize with a Particle Filter
+summary: Track a multimodal cyclic-position belief with deterministic bootstrap particles, likelihood weighting, and systematic resampling.
+guiding_question: What inputs, observable effects, and failure modes matter when you localize with a Particle Filter?
+status: implemented
+tags:
+- robotics-autonomy
+- localization-and-mapping
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: particle_count
+  type: slider
+  label: Particle count
+  default: 400
+  unit: particles
+  minimum: 100
+  maximum: 1000
+  step: 100
+- id: motion_noise_m
+  type: slider
+  label: Motion-noise scale
+  default: 0.08
+  unit: m
+  minimum: 0
+  maximum: 0.4
+  step: 0.02
+- id: sensor_noise_m
+  type: slider
+  label: Range-noise scale
+  default: 0.4
+  unit: m
+  minimum: 0.1
+  maximum: 1.5
+  step: 0.1
+- id: steps
+  type: slider
+  label: Filter steps
+  default: 18
+  unit: steps
+  minimum: 5
+  maximum: 30
+  step: 1
+- id: broken_mode
+  type: toggle
+  label: Ignore cyclic range geometry
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Motion broadens a particle belief, range likelihood concentrates it, and resampling preserves high-weight hypotheses only if the measurement model respects the cyclic world.
+  reveal: Compute landmark distance on the circle, normalize likelihoods, and resample systematically.
+- type: controls
+  title: Live particle-filter controls
+- type: metrics
+- type: plot_grid
+  title: Posterior belief and filter health
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

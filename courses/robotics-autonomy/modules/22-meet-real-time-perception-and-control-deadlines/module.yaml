@@ -1,0 +1,79 @@
+schema_version: 1
+id: 22-meet-real-time-perception-and-control-deadlines
+number: 22
+title: Meet Real-Time Perception and Control Deadlines
+summary: Simulate preemptive fixed-priority tasks and cross-check response times against rate-monotonic analysis.
+guiding_question: What inputs, observable effects, and failure modes matter when you meet Real-Time Perception and Control Deadlines?
+status: implemented
+tags:
+- robotics-autonomy
+- autonomous-system-integration
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: control_wcet_ms
+  type: slider
+  label: Control WCET
+  default: 5
+  unit: ms
+  minimum: 1
+  maximum: 10
+  step: 1
+- id: perception_wcet_ms
+  type: slider
+  label: Perception WCET
+  default: 18
+  unit: ms
+  minimum: 5
+  maximum: 30
+  step: 1
+- id: planning_wcet_ms
+  type: slider
+  label: Planning WCET
+  default: 25
+  unit: ms
+  minimum: 5
+  maximum: 40
+  step: 1
+- id: horizon_ms
+  type: slider
+  label: Schedule horizon
+  default: 100
+  unit: ms
+  minimum: 100
+  maximum: 1000
+  step: 100
+- id: broken_mode
+  type: toggle
+  label: Reverse fixed priorities
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Utilization below one is necessary but not sufficient; rate-monotonic priority protects the shortest-period control loop from longer perception and planning work.
+  reveal: Assign higher priority to shorter periods and compare event simulation with fixed-point response-time analysis.
+- type: controls
+  title: Live scheduler controls
+- type: metrics
+- type: plot_grid
+  title: CPU schedule and response-time evidence
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

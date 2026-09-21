@@ -1,0 +1,87 @@
+schema_version: 1
+id: 13-integrate-wheel-odometry
+number: 13
+title: Integrate Wheel Odometry
+summary: Convert quantized wheel increments into an SE(2) trajectory and expose drift from slip and a first-order integration shortcut.
+guiding_question: What inputs, observable effects, and failure modes matter when you integrate Wheel Odometry?
+status: implemented
+tags:
+- robotics-autonomy
+- localization-and-mapping
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: wheel_radius_m
+  type: slider
+  label: Wheel radius
+  default: 0.08
+  unit: m
+  minimum: 0.03
+  maximum: 0.15
+  step: 0.005
+- id: track_width_m
+  type: slider
+  label: Track width
+  default: 0.36
+  unit: m
+  minimum: 0.2
+  maximum: 0.8
+  step: 0.02
+- id: encoder_cpr
+  type: slider
+  label: Encoder lines per revolution
+  default: 2048
+  unit: lines/rev
+  minimum: 128
+  maximum: 4096
+  step: 128
+- id: duration_s
+  type: slider
+  label: Integration duration
+  default: 12
+  unit: s
+  minimum: 4
+  maximum: 20
+  step: 1
+- id: slip_percent
+  type: slider
+  label: Right-wheel ground slip
+  default: 2
+  unit: '%'
+  minimum: 0
+  maximum: 15
+  step: 1
+- id: broken_mode
+  type: toggle
+  label: Use old-heading Euler steps
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Quantized wheel increments can be integrated exactly as local SE(2) twists, but unmeasured ground slip still produces accumulating pose error.
+  reveal: Apply each twist about its midpoint and separate encoder quantization from wheel-to-ground model error.
+- type: controls
+  title: Live odometry controls
+- type: metrics
+- type: plot_grid
+  title: Estimated path and accumulated error
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

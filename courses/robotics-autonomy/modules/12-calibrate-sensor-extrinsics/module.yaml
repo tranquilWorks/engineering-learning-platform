@@ -1,0 +1,87 @@
+schema_version: 1
+id: 12-calibrate-sensor-extrinsics
+number: 12
+title: Calibrate Sensor Extrinsics
+summary: Estimate a planar sensor-to-body rotation and translation from noisy point correspondences and inspect the residual structure.
+guiding_question: What inputs, observable effects, and failure modes matter when you calibrate Sensor Extrinsics?
+status: implemented
+tags:
+- robotics-autonomy
+- sensing-and-calibration
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: sensor_x_m
+  type: slider
+  label: True sensor x offset
+  default: 0.18
+  unit: m
+  minimum: -0.5
+  maximum: 0.5
+  step: 0.02
+- id: sensor_y_m
+  type: slider
+  label: True sensor y offset
+  default: -0.07
+  unit: m
+  minimum: -0.5
+  maximum: 0.5
+  step: 0.02
+- id: sensor_yaw_deg
+  type: slider
+  label: True sensor yaw
+  default: 12
+  unit: deg
+  minimum: -45
+  maximum: 45
+  step: 1
+- id: noise_mm
+  type: slider
+  label: Correspondence noise
+  default: 2
+  unit: mm
+  minimum: 0
+  maximum: 20
+  step: 1
+- id: correspondence_count
+  type: slider
+  label: Correspondence count
+  default: 24
+  unit: samples
+  minimum: 8
+  maximum: 64
+  step: 4
+- id: broken_mode
+  type: toggle
+  label: Fit translation only
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: A rigid planar calibration must rotate centered point clouds before solving translation; translation alone leaves a position-dependent residual.
+  reveal: Recover yaw from cross-covariance, then solve translation from the centroids.
+- type: controls
+  title: Live calibration controls
+- type: metrics
+- type: plot_grid
+  title: Correspondence fit and residual evidence
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

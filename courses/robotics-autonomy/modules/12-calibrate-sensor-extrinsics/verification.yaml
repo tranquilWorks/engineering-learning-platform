@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "course_id": "robotics-autonomy",
+  "item": {
+    "id": "P12",
+    "number": 12,
+    "source_folder": "modules/12-calibrate-sensor-extrinsics",
+    "target_module_id": "12-calibrate-sensor-extrinsics",
+    "target_folder": "modules/12-calibrate-sensor-extrinsics",
+    "batch_id": "ELP-ROB-P01-P24",
+    "design_basis": "native_python_design",
+    "source_map_sha256": "6e2de2c7a4f1eb3992da157d0aeb4d562a0542af8860f030a6a608526c6ba723",
+    "source_inputs": [
+      {
+        "path": "modules/12-calibrate-sensor-extrinsics/README.md",
+        "sha256": "7acb69f2399d7a92a5720fc8e8d6f614b6156661abe3e98a78f0c77859247308"
+      },
+      {
+        "path": "modules/12-calibrate-sensor-extrinsics/checks.md",
+        "sha256": "94b7b800472fa90b114aed7e562b08b1c6c6aa5307ff570c03795eb4808e882b"
+      },
+      {
+        "path": "modules/12-calibrate-sensor-extrinsics/experiment.m",
+        "sha256": "6126111de81962ee1b4f4b8f0033fd067bac691ffd7d525bdad1fc56ed9955a1"
+      },
+      {
+        "path": "modules/12-calibrate-sensor-extrinsics/lesson.m",
+        "sha256": "89aafb45d502a5a25b4750bada78dac24cf32db09fe0c43dbc0116ad424ecedc"
+      },
+      {
+        "path": "modules/12-calibrate-sensor-extrinsics/lesson.md",
+        "sha256": "ad235cb5512ff2bc6c496680ef83ae9d0b19db0798a1a479c62b3105f8225750"
+      },
+      {
+        "path": "modules/12-calibrate-sensor-extrinsics/walkthrough.md",
+        "sha256": "fd8ec0e7bc0896beb050c1aca31a4202ff5be92153b2d465393ff2b00ed74056"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "8b590d30227992f14871ce7ecf920f7fb69b8570594f13b17f6fd1e03aa91799",
+    "files": [
+      {
+        "path": "modules/12-calibrate-sensor-extrinsics/experiment.py",
+        "sha256": "8325c2bee83d60cc66804c0525a3ac57f9602c2f10b9e741f974891c52fbf822"
+      },
+      {
+        "path": "modules/12-calibrate-sensor-extrinsics/lesson.md",
+        "sha256": "f99ed575fbc87c43b3ccf973c9d7d0bc173598b50b7dfb462488922f725832b3"
+      },
+      {
+        "path": "modules/12-calibrate-sensor-extrinsics/module.yaml",
+        "sha256": "cfe21cdcf6e866e3ffb255a9c6d33f28ac0e10df207a3b35f2ee2cdaccc34cb2"
+      }
+    ]
+  },
+  "learning": {
+    "guiding_question": "What inputs, observable effects, and failure modes matter when you calibrate Sensor Extrinsics?",
+    "equations": [
+      {
+        "latex": "p_B=R_BS p_S+t_BS+n",
+        "meaning": "A planar rigid transform relates sensor and body correspondences."
+      },
+      {
+        "latex": "t=mean(p_B)-R mean(p_S)",
+        "meaning": "Translation follows after rotation is estimated."
+      }
+    ],
+    "coordinate_and_sign_convention": "Body and sensor use +x forward, +y left, and positive counterclockwise yaw; the estimated transform maps sensor coordinates into body coordinates.",
+    "units": [
+      "translation: m",
+      "yaw: deg control, rad internal",
+      "residual: m and displayed mm"
+    ],
+    "sweeps": [
+      {
+        "control": "sensor_yaw_deg",
+        "values": [
+          -30,
+          0,
+          30
+        ],
+        "expected_observation": "Rigid calibration tracks yaw without structured residual."
+      },
+      {
+        "control": "noise_mm",
+        "values": [
+          0,
+          2,
+          20
+        ],
+        "expected_observation": "Parameter error and residual RMS grow with correspondence noise."
+      }
+    ],
+    "broken_case": {
+      "name": "Translation-only extrinsic",
+      "trigger": "Set broken_mode true.",
+      "failure": "The fit fixes rotation to identity and leaves a position-dependent residual.",
+      "recovery": "Set broken_mode false and solve a proper SO(2) rotation before translation."
+    },
+    "limiting_cases": [
+      "Zero yaw makes translation-only fitting sufficient apart from noise.",
+      "Zero noise with distributed correspondences recovers the rigid transform to numerical precision."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "timeout_seconds": 3,
+    "max_samples": 64,
+    "max_output_bytes": 1000000
+  },
+  "python_verification": {
+    "status": "passed",
+    "basis": "native_python_reference",
+    "reference_method": "Closed-form planar Procrustes angle and centroid solution, independent of the production SVD fit.",
+    "oracle_file": "reference_cases.py",
+    "oracle_independence": "The reference module imports no production experiment and evaluates a closed-form, invariant, alternative-algorithm, or separately formulated numerical recurrence.",
+    "cases": [
+      {
+        "name": "baseline",
+        "expected": {
+          "path": "modules/12-calibrate-sensor-extrinsics/evidence/expected-baseline.json",
+          "sha256": "16d4128f0a1e19be232939fb270cfb5b06fd22878d9bea35b51c8e0d316c302d"
+        },
+        "actual": {
+          "path": "modules/12-calibrate-sensor-extrinsics/evidence/actual-baseline.json",
+          "sha256": "4a69c79505e21d97af8d0474c133636bf94b176cb3e8081c1c8dc7d44504f738"
+        },
+        "max_absolute_error": 1.7763568394002505e-15,
+        "max_relative_error": 1.4776232535332078e-16,
+        "tolerance": {
+          "absolute": 0.0000000001,
+          "relative": 0.0000000001
+        },
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "expected": {
+          "path": "modules/12-calibrate-sensor-extrinsics/evidence/expected-broken.json",
+          "sha256": "854dfaa0fdda55a2ef8fc5703a252aff4e6a7d5df53ed3798d05a0592585306a"
+        },
+        "actual": {
+          "path": "modules/12-calibrate-sensor-extrinsics/evidence/actual-broken.json",
+          "sha256": "8a59f50c90fac740efb4973d156d570d16a5e85659957fe2845149bd5531ec2e"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "tolerance": {
+          "absolute": 0.0000000001,
+          "relative": 0.0000000001
+        },
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "The pinned source item is a non-runnable scaffold and no licensed MATLAB runtime executed; native Python correctness is independently verified without a MATLAB parity claim."
+  },
+  "claims": {
+    "profile": "elp-robotics-native-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Browser visual review is a separate integrated evidence step."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Accessibility review is a separate integrated evidence step."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study."
+    },
+    "physical_system_validation": {
+      "status": "not_run",
+      "reason": "No physical robot, sensor, motor, bench, HIL, or field system executed."
+    },
+    "release_and_production": {
+      "status": "not_run",
+      "reason": "No release, deployment, credential, setting, or production operation occurred."
+    }
+  }
+}

@@ -110,33 +110,25 @@ def test_robotics_manifest_and_coverage_are_one_ordered_authored_prefix() -> Non
     assert MANIFEST["source_map_sha256"] == COVERAGE["source_map_sha256"] == source_hash
     assert MANIFEST["verification_schema_sha256"] == schema_hash
     assert COVERAGE["conversion_manifest_sha256"] == manifest_hash
-    assert MANIFEST["authored_prefix"] == [f"P{number:02d}" for number in range(1, 11)]
+    assert MANIFEST["authored_prefix"] == [f"P{number:02d}" for number in range(1, 25)]
     assert COVERAGE["summary"] == {
         "total": 24,
-        "authored": 10,
-        "remaining": 14,
+        "authored": 24,
+        "remaining": 0,
         "blocked": 0,
         "placeholder": 0,
     }
-    assert [item["status"] for item in COVERAGE["items"]] == (
-        ["authored"] * 10 + ["remaining"] * 14
-    )
+    assert [item["status"] for item in COVERAGE["items"]] == ["authored"] * 24
     for number, (source, mapped, covered) in enumerate(
         zip(SOURCE_MAP["items"], MANIFEST["items"], COVERAGE["items"], strict=True),
         start=1,
     ):
         assert source["id"] == mapped["id"] == covered["id"] == f"P{number:02d}"
         assert source["source_folder"] == mapped["source_folder"] == covered["source_folder"]
-        if number <= 10:
-            assert mapped["target_module_id"] and mapped["verification_record"]
-            assert HEX_64.fullmatch(mapped["target_content_digest"])
-            assert mapped["target_content_digest"] == covered["target_content_digest"]
-            assert mapped["verification_sha256"] == _sha256(
-                COURSE_ROOT / mapped["verification_record"]
-            )
-        else:
-            assert mapped["target_module_id"] is None
-            assert mapped["verification_record"] is None
+        assert mapped["target_module_id"] and mapped["verification_record"]
+        assert HEX_64.fullmatch(mapped["target_content_digest"])
+        assert mapped["target_content_digest"] == covered["target_content_digest"]
+        assert mapped["verification_sha256"] == _sha256(COURSE_ROOT / mapped["verification_record"])
 
 
 def test_robotics_records_are_closed_honest_and_runtime_bounded() -> None:
@@ -149,7 +141,7 @@ def test_robotics_records_are_closed_honest_and_runtime_bounded() -> None:
     forbidden_imports = {"httpx", "pip", "requests", "socket", "subprocess", "urllib"}
     forbidden_calls = {"__import__", "compile", "eval", "exec"}
 
-    for number, mapped in enumerate(MANIFEST["items"][:10], start=1):
+    for number, mapped in enumerate(MANIFEST["items"], start=1):
         module_root = COURSE_ROOT / mapped["target_folder"]
         record = _yaml(module_root / "verification.yaml")
         assert helper._schema_errors(record, schema, schema) == []
@@ -184,7 +176,7 @@ def test_reference_oracle_is_independent_and_native_lessons_are_not_placeholders
         for alias in node.names
     }
     assert not any("experiment" in name for name in imported)
-    for mapped in MANIFEST["items"][:10]:
+    for mapped in MANIFEST["items"]:
         lesson = (COURSE_ROOT / mapped["target_folder"] / "lesson.md").read_text().lower()
         experiment = (COURSE_ROOT / mapped["target_folder"] / "experiment.py").read_text().lower()
         assert "todo" not in lesson
@@ -198,6 +190,6 @@ def test_robotics_final_catalog_shape() -> None:
     assert len(courses) == 5
     modules = sum(len(course.modules) for course in courses)
     interactive = sum(module.interactive for course in courses for module in course.modules)
-    assert (modules, interactive) == (120, 120)
+    assert (modules, interactive) == (134, 134)
     robotics = next(course for course in courses if course.id == "robotics-autonomy")
-    assert [module.number for module in robotics.modules] == list(range(1, 11))
+    assert [module.number for module in robotics.modules] == list(range(1, 25))

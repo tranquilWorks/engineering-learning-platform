@@ -1,0 +1,184 @@
+{
+  "schema_version": 1,
+  "course_id": "robotics-autonomy",
+  "item": {
+    "id": "P24",
+    "number": 24,
+    "source_folder": "modules/24-validate-autonomy-in-hil",
+    "target_module_id": "24-validate-autonomy-in-hil",
+    "target_folder": "modules/24-validate-autonomy-in-hil",
+    "batch_id": "ELP-ROB-P01-P24",
+    "design_basis": "native_python_design",
+    "source_map_sha256": "6e2de2c7a4f1eb3992da157d0aeb4d562a0542af8860f030a6a608526c6ba723",
+    "source_inputs": [
+      {
+        "path": "modules/24-validate-autonomy-in-hil/README.md",
+        "sha256": "13884bebae1508484a521f0397bcec7d17c1ec07cb928bf0b38195bb31d46139"
+      },
+      {
+        "path": "modules/24-validate-autonomy-in-hil/checks.md",
+        "sha256": "65bef85c8d19adb73c404bd06f496712da982beced1559ba6288209363c5c2f3"
+      },
+      {
+        "path": "modules/24-validate-autonomy-in-hil/experiment.m",
+        "sha256": "a208afbb4d95f6272880f8ebea9514c7bcd106e759d98b07e41b240ba8233153"
+      },
+      {
+        "path": "modules/24-validate-autonomy-in-hil/lesson.m",
+        "sha256": "ad2888253f0016637eff77ab0ee59ed8cae719e211ad040787934990edd89737"
+      },
+      {
+        "path": "modules/24-validate-autonomy-in-hil/lesson.md",
+        "sha256": "cd3286785efeb67503798f7e7608666106ac0cd302e0682b807a0f250cd279a4"
+      },
+      {
+        "path": "modules/24-validate-autonomy-in-hil/walkthrough.md",
+        "sha256": "391ffba94eeb6d9bf21383419325eea62fd242d99e194d51d0f0e5a18fb1c3aa"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "6b87213a5bd2a7b76ccb2ee69defcb9f1c196d6c3cbaa66ce2c3f154545fcfa3",
+    "files": [
+      {
+        "path": "modules/24-validate-autonomy-in-hil/experiment.py",
+        "sha256": "a15ebf673f8cf83b9ae2adf4b6630bc213ff69cce889ffa8d7e51cdbf55d21e0"
+      },
+      {
+        "path": "modules/24-validate-autonomy-in-hil/lesson.md",
+        "sha256": "1e138c1d1d806540cdd4330b327c0d30e280f26e715da74fa496a92e0e056030"
+      },
+      {
+        "path": "modules/24-validate-autonomy-in-hil/module.yaml",
+        "sha256": "7e4444d2d930381ae49fa9ef76cd26a87d5a257c58e70be0582b51bcc6be8da3"
+      }
+    ]
+  },
+  "learning": {
+    "guiding_question": "What inputs, observable effects, and failure modes matter when you validate Autonomy in HIL?",
+    "equations": [
+      {
+        "latex": "y_{k+1}=y_k+\\Delta t(-y_k+u_k)/\\tau",
+        "meaning": "The software-only virtual plant follows a bounded first-order recurrence."
+      },
+      {
+        "latex": "a_k=t_k-t_{last};\\quad a_k>T_w\\Rightarrow u_k=0",
+        "meaning": "Telemetry age beyond the watchdog threshold forces the modeled safe command."
+      }
+    ],
+    "coordinate_and_sign_convention": "Positive normalized command increases virtual-plant output toward a unit reference. Telemetry age is nonnegative elapsed time since the last delivered sample.",
+    "units": [
+      "virtual-plant time constant, fault timing, and plotted time: s",
+      "I/O latency, watchdog threshold, and plotted signal age: ms; plant signals: normalized"
+    ],
+    "sweeps": [
+      {
+        "control": "io_latency_ms",
+        "values": [
+          0,
+          30,
+          100
+        ],
+        "expected_observation": "More interface delay increases phase lag and changes closed-loop peak response."
+      },
+      {
+        "control": "fault_duration_s",
+        "values": [
+          0.2,
+          1,
+          2
+        ],
+        "expected_observation": "Longer dropout holds the software safe command for more samples after watchdog detection."
+      }
+    ],
+    "broken_case": {
+      "name": "Freshness watchdog disabled",
+      "trigger": "Set broken_mode true.",
+      "failure": "The controller acts on stale telemetry through the dropout and cannot produce required safe-state evidence.",
+      "recovery": "Enable the watchdog, inhibit integral growth, and command the virtual plant safe after the age bound."
+    },
+    "limiting_cases": [
+      "Zero interface latency removes queue delay but does not remove the sampled-data step.",
+      "A dropout shorter than the watchdog may be tolerated without entering the modeled safe state."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "timeout_seconds": 3,
+    "max_samples": 601,
+    "max_output_bytes": 1000000
+  },
+  "python_verification": {
+    "status": "passed",
+    "basis": "native_python_reference",
+    "reference_method": "Independent discrete virtual-plant, delayed-telemetry, PI-control, and freshness-watchdog recurrence.",
+    "oracle_file": "reference_cases.py",
+    "oracle_independence": "The reference module imports no production experiment and evaluates a closed-form, invariant, alternative-algorithm, or separately formulated numerical recurrence.",
+    "cases": [
+      {
+        "name": "baseline",
+        "expected": {
+          "path": "modules/24-validate-autonomy-in-hil/evidence/expected-baseline.json",
+          "sha256": "812436838f076878ac4426b09cc3747c88176769628cd26ca417c4e1b6ab5b1a"
+        },
+        "actual": {
+          "path": "modules/24-validate-autonomy-in-hil/evidence/actual-baseline.json",
+          "sha256": "a00abe12de6152c1562997eafb09ade26d491fd40b8d602796dad8ad34fd7d13"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "tolerance": {
+          "absolute": 0.000000001,
+          "relative": 0.000000001
+        },
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "expected": {
+          "path": "modules/24-validate-autonomy-in-hil/evidence/expected-broken.json",
+          "sha256": "fda30858e5adbe6373bceeb04e9c7e49f6b13b6fadb4894dd4af4e685a1a9de6"
+        },
+        "actual": {
+          "path": "modules/24-validate-autonomy-in-hil/evidence/actual-broken.json",
+          "sha256": "493488d8757f312d29fd391b4a67318fe320294a386990ecb808806058986ea7"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "tolerance": {
+          "absolute": 0.000000001,
+          "relative": 0.000000001
+        },
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "The pinned source item is a non-runnable scaffold and no licensed MATLAB runtime executed; native Python correctness is independently verified without a MATLAB parity claim."
+  },
+  "claims": {
+    "profile": "elp-robotics-native-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Browser visual review is a separate integrated evidence step."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Accessibility review is a separate integrated evidence step."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study."
+    },
+    "physical_system_validation": {
+      "status": "not_run",
+      "reason": "This is a deterministic software-only virtual-plant HIL methodology exercise; no real-time target, physical robot, motor, sensor, bench, or hardware loop executed."
+    },
+    "release_and_production": {
+      "status": "not_run",
+      "reason": "No release, deployment, credential, setting, or production operation occurred."
+    }
+  }
+}

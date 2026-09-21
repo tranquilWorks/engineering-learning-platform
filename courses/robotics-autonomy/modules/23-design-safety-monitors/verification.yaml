@@ -1,0 +1,184 @@
+{
+  "schema_version": 1,
+  "course_id": "robotics-autonomy",
+  "item": {
+    "id": "P23",
+    "number": 23,
+    "source_folder": "modules/23-design-safety-monitors",
+    "target_module_id": "23-design-safety-monitors",
+    "target_folder": "modules/23-design-safety-monitors",
+    "batch_id": "ELP-ROB-P01-P24",
+    "design_basis": "native_python_design",
+    "source_map_sha256": "6e2de2c7a4f1eb3992da157d0aeb4d562a0542af8860f030a6a608526c6ba723",
+    "source_inputs": [
+      {
+        "path": "modules/23-design-safety-monitors/README.md",
+        "sha256": "21c830c002a852ef30a6a1a7ee89739793900ad2b0bea7d4b47a3c15baf90158"
+      },
+      {
+        "path": "modules/23-design-safety-monitors/checks.md",
+        "sha256": "0e60686be3a2f42042ab5812f6bf09cf5b50da87c98f02b4728ea23885ce1a33"
+      },
+      {
+        "path": "modules/23-design-safety-monitors/experiment.m",
+        "sha256": "24af71f489845dc52312af6383ea3d4c22e0fa22a5da0d87c7824f4c7f0d1519"
+      },
+      {
+        "path": "modules/23-design-safety-monitors/lesson.m",
+        "sha256": "075baf4a4edc466650effde13d74d63d75adc723c0f13643d7cb80ba40ef0c71"
+      },
+      {
+        "path": "modules/23-design-safety-monitors/lesson.md",
+        "sha256": "c8862a09e17da01d184b3a0236f0a29c6c2fffa4aa9e051da8d3397ea01d52fa"
+      },
+      {
+        "path": "modules/23-design-safety-monitors/walkthrough.md",
+        "sha256": "93ada237d3d7948df6209efd79258b43540fbcd2143a8e4efd563b5745984af1"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "980f70852c48562309ffedd6209b9a0c92f50aee8999d7b2bf6973f3ae1fdbc4",
+    "files": [
+      {
+        "path": "modules/23-design-safety-monitors/experiment.py",
+        "sha256": "91a5324970260fa10dfaea95307954c8633f0d027c86cb95833524c80daa15ca"
+      },
+      {
+        "path": "modules/23-design-safety-monitors/lesson.md",
+        "sha256": "7b37f8fd153190e6b09c0df207a54b00e80698327d951e403e044813dea1d8a5"
+      },
+      {
+        "path": "modules/23-design-safety-monitors/module.yaml",
+        "sha256": "a847ef5c868e17e2121541c7bdb09b137d5e40e28545ad2488caadca7de6a93a"
+      }
+    ]
+  },
+  "learning": {
+    "guiding_question": "What inputs, observable effects, and failure modes matter when you design Safety Monitors?",
+    "equations": [
+      {
+        "latex": "d_{req}=v t_r+v^2/(2a)+m",
+        "meaning": "The intervention envelope includes reaction travel, braking distance, and margin."
+      },
+      {
+        "latex": "v_{k+1}=\\max(0,v_k-a\\Delta t)",
+        "meaning": "A latched stop reduces speed monotonically at the validated deceleration bound."
+      }
+    ],
+    "coordinate_and_sign_convention": "Robot position and positive velocity point toward the obstacle. Separation is obstacle position minus robot position, so nonpositive separation indicates crossing.",
+    "units": [
+      "position, separation, margin, and stopping envelope: m",
+      "speed: m/s; deceleration: m/s^2; reaction and stop time: s"
+    ],
+    "sweeps": [
+      {
+        "control": "command_speed_m_s",
+        "values": [
+          0.5,
+          2,
+          3
+        ],
+        "expected_observation": "Braking distance grows quadratically with speed and moves intervention earlier."
+      },
+      {
+        "control": "reaction_time_s",
+        "values": [
+          0,
+          0.2,
+          0.8
+        ],
+        "expected_observation": "Longer reaction bounds add linear travel to the required envelope."
+      }
+    ],
+    "broken_case": {
+      "name": "Fixed-distance stop trigger",
+      "trigger": "Set broken_mode true.",
+      "failure": "The monitor waits for 0.1 m regardless of speed and crosses the obstacle before stopping.",
+      "recovery": "Use the speed-dependent envelope with conservative reaction and deceleration bounds."
+    },
+    "limiting_cases": [
+      "At zero speed the dynamic braking and reaction terms vanish, leaving only margin.",
+      "Smaller available deceleration increases required braking distance."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "timeout_seconds": 3,
+    "max_samples": 401,
+    "max_output_bytes": 1000000
+  },
+  "python_verification": {
+    "status": "passed",
+    "basis": "native_python_reference",
+    "reference_method": "Independent discrete stopping-envelope recurrence checked against the kinematic stopping limit.",
+    "oracle_file": "reference_cases.py",
+    "oracle_independence": "The reference module imports no production experiment and evaluates a closed-form, invariant, alternative-algorithm, or separately formulated numerical recurrence.",
+    "cases": [
+      {
+        "name": "baseline",
+        "expected": {
+          "path": "modules/23-design-safety-monitors/evidence/expected-baseline.json",
+          "sha256": "16952cab4805c5a98c53041bbc76eadd6ab53a2664945df638fb5eabb157827e"
+        },
+        "actual": {
+          "path": "modules/23-design-safety-monitors/evidence/actual-baseline.json",
+          "sha256": "afa81f9f122d3186d989514dcbac2be97915ffa33305c56e57f858567f545c89"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "tolerance": {
+          "absolute": 0.000000001,
+          "relative": 0.000000001
+        },
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "expected": {
+          "path": "modules/23-design-safety-monitors/evidence/expected-broken.json",
+          "sha256": "168eeaca22386b5bdb2ec2453cf34444692cb3b253907cfcd029a17da3995869"
+        },
+        "actual": {
+          "path": "modules/23-design-safety-monitors/evidence/actual-broken.json",
+          "sha256": "4135e7b8b7bb70e6a1cfdef187144378911ecb09e627d8a6366ff0564c001995"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "tolerance": {
+          "absolute": 0.000000001,
+          "relative": 0.000000001
+        },
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "The pinned source item is a non-runnable scaffold and no licensed MATLAB runtime executed; native Python correctness is independently verified without a MATLAB parity claim."
+  },
+  "claims": {
+    "profile": "elp-robotics-native-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Browser visual review is a separate integrated evidence step."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Accessibility review is a separate integrated evidence step."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study."
+    },
+    "physical_system_validation": {
+      "status": "not_run",
+      "reason": "No physical robot, sensor, planner, bench, HIL, or field system executed."
+    },
+    "release_and_production": {
+      "status": "not_run",
+      "reason": "No release, deployment, credential, setting, or production operation occurred."
+    }
+  }
+}

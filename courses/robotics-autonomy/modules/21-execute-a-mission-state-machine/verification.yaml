@@ -1,0 +1,184 @@
+{
+  "schema_version": 1,
+  "course_id": "robotics-autonomy",
+  "item": {
+    "id": "P21",
+    "number": 21,
+    "source_folder": "modules/21-execute-a-mission-state-machine",
+    "target_module_id": "21-execute-a-mission-state-machine",
+    "target_folder": "modules/21-execute-a-mission-state-machine",
+    "batch_id": "ELP-ROB-P01-P24",
+    "design_basis": "native_python_design",
+    "source_map_sha256": "6e2de2c7a4f1eb3992da157d0aeb4d562a0542af8860f030a6a608526c6ba723",
+    "source_inputs": [
+      {
+        "path": "modules/21-execute-a-mission-state-machine/README.md",
+        "sha256": "e45f6ac89388d2e3574f62f394514be5b589b0aa89381ab4c4ab77b853a9a4fc"
+      },
+      {
+        "path": "modules/21-execute-a-mission-state-machine/checks.md",
+        "sha256": "c2d02d1b5d44708e9f31152edbc4316d047f819ce8d6bbd299c4e3f8414bffd6"
+      },
+      {
+        "path": "modules/21-execute-a-mission-state-machine/experiment.m",
+        "sha256": "862c1afe46f838048b59313d29397fe6f834cefc9cadc388398a4baf778b889c"
+      },
+      {
+        "path": "modules/21-execute-a-mission-state-machine/lesson.m",
+        "sha256": "8e4b8425885da2fd4f55e7678ac2c16ec86491a04989c861ad5873d443f84e9f"
+      },
+      {
+        "path": "modules/21-execute-a-mission-state-machine/lesson.md",
+        "sha256": "ebbf62749d6c89cd0a69e7ad30b57b3f490e562af6294528faa1e3833d7b72c0"
+      },
+      {
+        "path": "modules/21-execute-a-mission-state-machine/walkthrough.md",
+        "sha256": "700cf308a235d9650901b6018efa93b271178cdcff7fcafd9bae79caf6459a42"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "424d221737aa3e1290693a790ef2c9bfd914e3c08dc6026f9a51c9a131984fa7",
+    "files": [
+      {
+        "path": "modules/21-execute-a-mission-state-machine/experiment.py",
+        "sha256": "cff003c3adabc27483dcd62ddfdf757fa122b787376708158996d768f0d5ace8"
+      },
+      {
+        "path": "modules/21-execute-a-mission-state-machine/lesson.md",
+        "sha256": "0501e2a1efa70326abc7f206bb262d52a4ad4d4cb9e2003063b19174b6c7997a"
+      },
+      {
+        "path": "modules/21-execute-a-mission-state-machine/module.yaml",
+        "sha256": "0797ca719b872a19690c81739e038a93117bee99b78308d644f1d314d7a6c413"
+      }
+    ]
+  },
+  "learning": {
+    "guiding_question": "What inputs, observable effects, and failure modes matter when you execute a Mission State Machine?",
+    "equations": [
+      {
+        "latex": "x_{k+1}=\\delta(x_k,e_k)",
+        "meaning": "The transition function maps the current state and events to one next state."
+      },
+      {
+        "latex": "t-t_{enter}\\ge T_{watchdog}",
+        "meaning": "A state timeout sends stalled execution to SAFE."
+      }
+    ],
+    "coordinate_and_sign_convention": "State codes progress INIT=0, SEARCH=1, TRACK=2, EXECUTE=3, with SAFE=4 and COMPLETE=5 terminal. Time advances in positive 0.1 s ticks.",
+    "units": [
+      "event, dwell, and terminal times: s",
+      "unsafe exposure and transition totals: integer counts"
+    ],
+    "sweeps": [
+      {
+        "control": "target_detect_s",
+        "values": [
+          0.5,
+          2,
+          8
+        ],
+        "expected_observation": "A late target can delay progress or let the SEARCH watchdog win."
+      },
+      {
+        "control": "fault_time_s",
+        "values": [
+          1,
+          5,
+          11
+        ],
+        "expected_observation": "Earlier faults shorten active execution and route immediately to SAFE."
+      }
+    ],
+    "broken_case": {
+      "name": "Global fault transition omitted",
+      "trigger": "Set broken_mode true.",
+      "failure": "Local mission progress continues after the injected fault and can report COMPLETE.",
+      "recovery": "Evaluate a global fault guard before every nonterminal local transition."
+    },
+    "limiting_cases": [
+      "A target event after the watchdog cannot rescue a timed-out SEARCH state.",
+      "Terminal SAFE and COMPLETE states remain latched without an explicit reset."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "timeout_seconds": 3,
+    "max_samples": 121,
+    "max_output_bytes": 1000000
+  },
+  "python_verification": {
+    "status": "passed",
+    "basis": "native_python_reference",
+    "reference_method": "Independent table-driven mission transition schedule with watchdog and global-fault guard evaluation.",
+    "oracle_file": "reference_cases.py",
+    "oracle_independence": "The reference module imports no production experiment and evaluates a closed-form, invariant, alternative-algorithm, or separately formulated numerical recurrence.",
+    "cases": [
+      {
+        "name": "baseline",
+        "expected": {
+          "path": "modules/21-execute-a-mission-state-machine/evidence/expected-baseline.json",
+          "sha256": "b8e02ba0e8737db0a91807b67835d7fdce144767f7fcedd7c79b2c5cb04ff137"
+        },
+        "actual": {
+          "path": "modules/21-execute-a-mission-state-machine/evidence/actual-baseline.json",
+          "sha256": "b6305e510e50511442b8bfdba5ce16a24ceb5df56e63229013d65f7e7f3e2b9e"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "tolerance": {
+          "absolute": 0.000000001,
+          "relative": 0.000000001
+        },
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "expected": {
+          "path": "modules/21-execute-a-mission-state-machine/evidence/expected-broken.json",
+          "sha256": "97aeb66a570ec1e5e25cc628f8cf672aae6febd07a786effd378edbe1a3c4324"
+        },
+        "actual": {
+          "path": "modules/21-execute-a-mission-state-machine/evidence/actual-broken.json",
+          "sha256": "7313195eb5a57818f67d63befb0ec0d0982b659493941153957b4758b1a40e4d"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "tolerance": {
+          "absolute": 0.000000001,
+          "relative": 0.000000001
+        },
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "The pinned source item is a non-runnable scaffold and no licensed MATLAB runtime executed; native Python correctness is independently verified without a MATLAB parity claim."
+  },
+  "claims": {
+    "profile": "elp-robotics-native-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Browser visual review is a separate integrated evidence step."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Accessibility review is a separate integrated evidence step."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study."
+    },
+    "physical_system_validation": {
+      "status": "not_run",
+      "reason": "No physical robot, sensor, planner, bench, HIL, or field system executed."
+    },
+    "release_and_production": {
+      "status": "not_run",
+      "reason": "No release, deployment, credential, setting, or production operation occurred."
+    }
+  }
+}
