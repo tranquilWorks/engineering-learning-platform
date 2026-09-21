@@ -1,37 +1,38 @@
 # Current state
 
-`ELP-ROB-P01-P24` is the active target batch on
-`agent/elp-robotics-p11-p24-20260921`, based directly on target main
-`5f6fdae255cf5f188e4ee8a4d50e74949538b8eb` (tree
-`568707b6a2db038fd3d3fa66308b8872122f1601`) after P01-P10 merged through PR
-#12. Portfolio Control merge `b9437c60a12e6c72918e55b037ef4d49e33166fa`
-authorizes P11-P24 as fourteen separately gated work items in one new target
-commit and PR #13; merged PR #12 remains immutable.
+`ELP-COURSE-CALIBER-00` is the active governance batch. It starts from exact
+Engineering Learning Platform baseline
+`39aed41de4e3c84fc00c3b8546c5488e253b6be2` (tree
+`648c193722e8d356b7520ba064e23e884d25d36c`) and projects Portfolio Control
+merge `f6745e44f459a52431b81a3f953c8f2e03cbe45e` without changing course,
+runtime, UI, dependency, workflow, or deployment files.
 
-The platform-owned `robotics-autonomy` course now contains P01-P24 in pinned
-curriculum order. P01 implements the differential-drive contract from the
-read-only source design. P02-P24 are new native Python designs because their
-pinned source folders are explicit non-runnable scaffolds. Every module has
-equations, conventions and units, two bounded sweeps, a named broken/recovery
-case, deterministic NumPy execution, Plotly-compatible plots, and distinct
-expected/actual evidence checked by an oracle that imports no production
-experiment.
+The catalog remains five courses, 134 modules, and 134 interactive modules.
+Those counts describe implementation inventory, not curriculum completeness.
+The ordered course-caliber states are `source_authored`,
+`platform_converted`, `numerically_verified`, `curriculum_covered`,
+`capstone_integrated`, and `learner_validated`; every state requires its own
+evidence and limitations.
 
-The Robotics source gitlink remains unchanged at
-`f8807640258f1a6c1c77f1dcc9e61734551c585b` (tree
-`7f8bc62382ca8d7fbe26ff4413cabf7d00d64bb9`). Robotics coverage is 24 authored,
-zero remaining, zero blocked, and zero placeholders. DSP/Radar remains 84/84
-and Controls/GNC remains 24/24. The catalog is five courses, 134 modules, and
-134 interactive modules.
+At this audit baseline:
 
-P11-P24 cover range sensing, extrinsic calibration, odometry, EKF and particle
-localization, SLAM, grid and sample-based planning, dynamic-obstacle avoidance,
-behavior trees, mission state machines, real-time scheduling, safety monitors,
-and deterministic software-only HIL. P24 does not imply a real-time target or
-physical hardware loop. MATLAB runtime parity remains `not_run` because no
-licensed MATLAB runtime executed and P02-P24 have no runnable MATLAB source.
+- DSP/Radar is source-authored and platform-converted, but numerical fidelity,
+  curriculum coverage, and capstone integration are blocked by the generic
+  P02-P84 execution structure. Issue #441 owns remediation.
+- Controls/GNC is source-authored and platform-converted, but its fixtures do
+  not establish independent numerical evidence. Curriculum and capstone
+  coverage are partial. Issues #438 and #439 own repair and expansion.
+- Robotics and Autonomy is platform-converted and independently verified at
+  the software level. Source authorship, curriculum coverage, and capstone
+  integration remain partial. Issue #440 owns expansion.
+- No reviewed course has passed `curriculum_covered` or `learner_validated`.
 
-The claim boundary is twenty-four Python-verified software lessons. Browser and
-accessibility acceptance, learner effectiveness, physical robot, motor, sensor,
-HIL, bench, field, release, deployment, credentials/settings, and production
-operation remain unperformed.
+Vehicle Dynamics remains queued and unimplemented. It is blocked until the
+course-caliber gate is projected, a reviewed schema-valid competency map
+exists, replayable GR86 CAN/BLE fixtures have provenance, and a separate
+coherent batch of at most ten lessons is authorized.
+
+The authoritative projection is `docs/course-caliber-status.yaml`. This batch
+does not implement #438 through #441 and does not claim MATLAB runtime,
+browser/accessibility, learner, physical hardware/HIL, bench, field, release,
+deployment, credentials/settings, or production evidence.

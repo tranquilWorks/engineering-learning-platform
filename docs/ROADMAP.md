@@ -140,6 +140,28 @@ and simulation, not physical HIL evidence. MATLAB runtime parity stays
 `not_run`; no browser/accessibility, learner, physical robot/HIL, bench, field,
 release, deployment, credential/settings, or production result is claimed.
 
+## ELP-COURSE-CALIBER — Curriculum quality gate
+
+**Depends on:** ELP-ROB-P01-P24
+
+`ELP-COURSE-CALIBER-00` corrects the roadmap boundary after the initial course
+conversions. The catalog totals—five courses, 134 modules, and 134 interactive
+modules—remain implementation inventory only. They do not certify curriculum
+coverage, capstone integration, or learner validation.
+
+All new conversion and expansion work now requires a reviewed
+competency-to-module matrix, a module count derived from that matrix, coherent
+batches of no more than ten new lessons, semantic anti-template review, and
+independently originated evidence. The six-stage and nine-dimension review is
+defined in `docs/COURSE_CALIBER.md` and projected in
+`docs/course-caliber-status.yaml`.
+
+The audit creates no child implementation under this batch. Controls/GNC
+fidelity (#438), Controls/GNC expansion (#439), Robotics expansion (#440), and
+DSP/Radar fidelity (#441) remain separately authorized work. Vehicle Dynamics
+stays queued and unimplemented until its reviewed map, replayable GR86 CAN/BLE
+fixtures, and a separate at-most-ten-lesson batch are ready.
+
 ## B020 — Course ingestion and migration tooling
 
 **Depends on:** B010
