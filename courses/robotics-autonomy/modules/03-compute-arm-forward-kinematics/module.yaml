@@ -1,0 +1,80 @@
+schema_version: 1
+id: 03-compute-arm-forward-kinematics
+number: 3
+title: Compute Arm Forward Kinematics
+summary: Map two revolute joint angles to elbow and tool positions for a planar serial arm.
+guiding_question: What inputs, observable effects, and failure modes matter when you compute Arm Forward Kinematics?
+status: implemented
+tags:
+- robotics-autonomy
+- kinematics
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: joint1_deg
+  type: slider
+  label: Joint 1 angle
+  default: 35
+  unit: deg
+  minimum: -180
+  maximum: 180
+  step: 5
+- id: joint2_deg
+  type: slider
+  label: Joint 2 relative angle
+  default: -45
+  unit: deg
+  minimum: -180
+  maximum: 180
+  step: 5
+- id: link1_m
+  type: slider
+  label: Link 1 length
+  default: 0.8
+  unit: m
+  minimum: 0.2
+  maximum: 1.5
+  step: 0.05
+- id: link2_m
+  type: slider
+  label: Link 2 length
+  default: 0.6
+  unit: m
+  minimum: 0.2
+  maximum: 1.5
+  step: 0.05
+- id: broken_mode
+  type: toggle
+  label: Treat joint 2 as absolute
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Changing joint 1 rotates both links, while changing joint 2 rotates only the second link relative to the first.
+  reveal: Disable absolute-joint-2 mode and accumulate serial joint angles before projecting each link.
+- type: controls
+  title: Live model controls
+- type: metrics
+- type: plot_grid
+  title: Physical response and diagnostic
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery
+

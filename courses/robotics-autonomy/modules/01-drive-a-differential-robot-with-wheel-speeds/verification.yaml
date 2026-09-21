@@ -1,0 +1,198 @@
+{
+  "schema_version": 1,
+  "course_id": "robotics-autonomy",
+  "item": {
+    "id": "P01",
+    "number": 1,
+    "source_folder": "modules/01-drive-a-differential-robot-with-wheel-speeds",
+    "target_module_id": "01-drive-a-differential-robot-with-wheel-speeds",
+    "target_folder": "modules/01-drive-a-differential-robot-with-wheel-speeds",
+    "batch_id": "ELP-ROB-P01-P10",
+    "design_basis": "implemented_source_design",
+    "source_map_sha256": "6e2de2c7a4f1eb3992da157d0aeb4d562a0542af8860f030a6a608526c6ba723",
+    "source_inputs": [
+      {
+        "path": "modules/01-drive-a-differential-robot-with-wheel-speeds/README.md",
+        "sha256": "83d556e9c155ce0486a5d637218997e01f8be84729263cbf1055e878110161c3"
+      },
+      {
+        "path": "modules/01-drive-a-differential-robot-with-wheel-speeds/checks.md",
+        "sha256": "dc105b69d4718f59e23b207db141287592cde851307e9ace90642b10bbd42a23"
+      },
+      {
+        "path": "modules/01-drive-a-differential-robot-with-wheel-speeds/experiment.m",
+        "sha256": "e0dca67b6f7d7112d93c9caee2c6e3d877d620efc1af0c6fca6cbea8192a76b3"
+      },
+      {
+        "path": "modules/01-drive-a-differential-robot-with-wheel-speeds/interactive.m",
+        "sha256": "31520849f62beb65e9ef7673a0f4916f509d6e726eae61f6ff453dbc03d00fcd"
+      },
+      {
+        "path": "modules/01-drive-a-differential-robot-with-wheel-speeds/lesson.m",
+        "sha256": "7964962703da2f7e0125db9403fc4e3670293fc9c735a5b765dde22b05d1086f"
+      },
+      {
+        "path": "modules/01-drive-a-differential-robot-with-wheel-speeds/lesson.md",
+        "sha256": "0ce10c72f17282a6bfb228b4456649b2916a8f4218af22afea63a0829b5346e9"
+      },
+      {
+        "path": "modules/01-drive-a-differential-robot-with-wheel-speeds/model.m",
+        "sha256": "8a388fee0ccff90603569b0d2ccbfc1b3b4f07ccf0cb0fd11e8469c0781790f2"
+      },
+      {
+        "path": "modules/01-drive-a-differential-robot-with-wheel-speeds/run_checks.m",
+        "sha256": "2327e3adabf3ab22db05770e5a276ccb9ecc3a2c331ed781200a3497ca742165"
+      },
+      {
+        "path": "modules/01-drive-a-differential-robot-with-wheel-speeds/walkthrough.md",
+        "sha256": "35cd19580578605c19dd92f62ea91bfd8a8a31edc2fcd9af3dda9fa35c326b7a"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "3379b9c273c208c5284e4f329fbbdf0039c5e3e777580b3832439eee26418489",
+    "files": [
+      {
+        "path": "modules/01-drive-a-differential-robot-with-wheel-speeds/experiment.py",
+        "sha256": "a3894301602dc91394768222cfe74032302adfd6cca22ed95ca629893bb70f6f"
+      },
+      {
+        "path": "modules/01-drive-a-differential-robot-with-wheel-speeds/lesson.md",
+        "sha256": "001867f05cfac7ba7177e8eefbe3c9988fe00b721716d4aba5dff1b84ad4b33e"
+      },
+      {
+        "path": "modules/01-drive-a-differential-robot-with-wheel-speeds/module.yaml",
+        "sha256": "b860ccbcb49242b22b65fbe02876644429116e1a63dc4cd9008b4f8ab1fae313"
+      }
+    ]
+  },
+  "learning": {
+    "guiding_question": "How do left and right wheel speeds determine a differential-drive robot's path?",
+    "equations": [
+      {
+        "latex": "v=r(omega_R+omega_L)/2",
+        "meaning": "Mean rim speed sets body-forward velocity."
+      },
+      {
+        "latex": "Omega=r(omega_R-omega_L)/b",
+        "meaning": "Differential rim speed sets yaw rate."
+      }
+    ],
+    "coordinate_and_sign_convention": "World +x is the initial forward direction, +y is left, and positive yaw is counterclockwise.",
+    "units": [
+      "wheel speed: rad/s",
+      "length: m",
+      "body speed: m/s",
+      "yaw rate: rad/s"
+    ],
+    "sweeps": [
+      {
+        "control": "left_wheel_rad_s",
+        "values": [
+          -6,
+          6,
+          12
+        ],
+        "expected_observation": "Average and difference create spin, arc, and reversed curvature."
+      },
+      {
+        "control": "track_width_m",
+        "values": [
+          0.2,
+          0.35,
+          0.7
+        ],
+        "expected_observation": "A wider track reduces yaw rate for the same wheel-speed difference."
+      }
+    ],
+    "broken_case": {
+      "name": "Decoupled translation",
+      "trigger": "Set broken_mode true.",
+      "failure": "Heading changes while translation remains on world +x.",
+      "recovery": "Set broken_mode false and rotate velocity through the body heading."
+    },
+    "limiting_cases": [
+      "Equal wheel speeds produce a straight line.",
+      "Equal-and-opposite speeds rotate the center in place."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "timeout_seconds": 3,
+    "max_samples": 401,
+    "max_output_bytes": 1000000
+  },
+  "python_verification": {
+    "status": "passed",
+    "basis": "source_design",
+    "reference_method": "Pinned MATLAB model.m equations evaluated independently in closed form.",
+    "oracle_file": "reference_cases.py",
+    "oracle_independence": "The reference module imports no production experiment and evaluates a closed-form, invariant, continuous-time, or separately formulated recurrence.",
+    "cases": [
+      {
+        "name": "baseline",
+        "expected": {
+          "path": "modules/01-drive-a-differential-robot-with-wheel-speeds/evidence/expected-baseline.json",
+          "sha256": "57dae7796a0945ef89ef99f495b29063ac72f0d557dfc0a7cfc9186be3e7e22c"
+        },
+        "actual": {
+          "path": "modules/01-drive-a-differential-robot-with-wheel-speeds/evidence/actual-baseline.json",
+          "sha256": "ae72cae84474993b3d5fd750d3a0b672cabee097225e871aae79ec998464225d"
+        },
+        "max_absolute_error": 5.551115123125783e-17,
+        "max_relative_error": 5.551115123125783e-17,
+        "tolerance": {
+        "absolute": 1.0e-10,
+        "relative": 1.0e-10
+        },
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "expected": {
+          "path": "modules/01-drive-a-differential-robot-with-wheel-speeds/evidence/expected-broken.json",
+          "sha256": "36eaae67870a36df62591967c695ba0504f4d8044c14e5d8479bf8630fc972b6"
+        },
+        "actual": {
+          "path": "modules/01-drive-a-differential-robot-with-wheel-speeds/evidence/actual-broken.json",
+          "sha256": "3ac8c92d97d389ff785a2a651a05047c7eca686e7fe6a68008b59c4e61504318"
+        },
+        "max_absolute_error": 0,
+        "max_relative_error": 0,
+        "tolerance": {
+        "absolute": 1.0e-10,
+        "relative": 1.0e-10
+        },
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "A licensed MATLAB runtime is unavailable; P01 is checked against the pinned source equations and retained independent vectors."
+  },
+  "claims": {
+    "profile": "elp-robotics-native-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Browser visual review is a separate integrated evidence step."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Accessibility review is a separate integrated evidence step."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study."
+    },
+    "physical_system_validation": {
+      "status": "not_run",
+      "reason": "No physical robot, motor, encoder, IMU, bench, HIL, or field system executed."
+    },
+    "release_and_production": {
+      "status": "not_run",
+      "reason": "No release, deployment, credential, setting, or production operation occurred."
+    }
+  }
+}

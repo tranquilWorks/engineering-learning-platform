@@ -1,0 +1,64 @@
+schema_version: 1
+id: 07-generate-a-smooth-trajectory
+number: 7
+title: Generate a Smooth Trajectory
+summary: Build a quintic point-to-point trajectory with zero endpoint velocity and acceleration.
+guiding_question: What inputs, observable effects, and failure modes matter when you generate a Smooth Trajectory?
+status: implemented
+tags:
+- robotics-autonomy
+- dynamics-and-actuation
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: distance_m
+  type: slider
+  label: Travel distance
+  default: 2
+  unit: m
+  minimum: 0.25
+  maximum: 5
+  step: 0.25
+- id: duration_s
+  type: slider
+  label: Move duration
+  default: 4
+  unit: s
+  minimum: 1
+  maximum: 10
+  step: 0.25
+- id: broken_mode
+  type: toggle
+  label: Use cubic profile
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Increasing distance scales position, velocity, and acceleration; increasing duration reduces peak velocity as $1/T$ and acceleration as $1/T^2$.
+  reveal: Disable the cubic profile and restore the quintic polynomial that enforces zero endpoint acceleration.
+- type: controls
+  title: Live model controls
+- type: metrics
+- type: plot_grid
+  title: Physical response and diagnostic
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery
+

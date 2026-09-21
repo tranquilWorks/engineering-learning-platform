@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "course_id": "robotics-autonomy",
+  "item": {
+    "id": "P04",
+    "number": 4,
+    "source_folder": "modules/04-solve-inverse-kinematics",
+    "target_module_id": "04-solve-inverse-kinematics",
+    "target_folder": "modules/04-solve-inverse-kinematics",
+    "batch_id": "ELP-ROB-P01-P10",
+    "design_basis": "native_python_design",
+    "source_map_sha256": "6e2de2c7a4f1eb3992da157d0aeb4d562a0542af8860f030a6a608526c6ba723",
+    "source_inputs": [
+      {
+        "path": "modules/04-solve-inverse-kinematics/README.md",
+        "sha256": "fd1434c12a47bb5fff7a154b4cdec15d4d5a681ae1ccf0f2168b91eff3640c36"
+      },
+      {
+        "path": "modules/04-solve-inverse-kinematics/checks.md",
+        "sha256": "4a85acc0c83b281c5938ea6328afb7c8479629591b163343b718d8533aac3732"
+      },
+      {
+        "path": "modules/04-solve-inverse-kinematics/experiment.m",
+        "sha256": "a7de7a5fb09e5f03c235f18066c6af20299dc6625be139fe051f041ac9d5f13d"
+      },
+      {
+        "path": "modules/04-solve-inverse-kinematics/lesson.m",
+        "sha256": "239cb27b270f5b52558201af907607f160ee924d4e61659e15e958d75f6e4fef"
+      },
+      {
+        "path": "modules/04-solve-inverse-kinematics/lesson.md",
+        "sha256": "6d7072663b839ffbf4557a54b4ffc56fb2db6af13f36a9d2d8875d29958a6fcd"
+      },
+      {
+        "path": "modules/04-solve-inverse-kinematics/walkthrough.md",
+        "sha256": "26eebd59741dccba1f7b80a513aa80b9485f225498f27bff30205942dbc9c4f1"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "55f8f682791b6a5cd7636382f591ced14e3e4b0b2128713a2b11facdedff76e5",
+    "files": [
+      {
+        "path": "modules/04-solve-inverse-kinematics/experiment.py",
+        "sha256": "e4dee6d58bd3fff747f4f1c7b62924628ef2cebc4fc544fc4eba956ec16efc03"
+      },
+      {
+        "path": "modules/04-solve-inverse-kinematics/lesson.md",
+        "sha256": "5aaaf4ce1a06ce7e9236df49b0540122e8e601abe1c11268c801513c136693b8"
+      },
+      {
+        "path": "modules/04-solve-inverse-kinematics/module.yaml",
+        "sha256": "0ad91be3f77372876672def6af119b85b25d948fb8e40214e28cfba645ef476d"
+      }
+    ]
+  },
+  "learning": {
+    "guiding_question": "What inputs, observable effects, and failure modes matter when you solve Inverse Kinematics?",
+    "equations": [
+      {
+        "latex": "c_2=(x_d^2+y_d^2-L_1^2-L_2^2)/(2L_1L_2)",
+        "meaning": "Law of cosines determines the elbow."
+      },
+      {
+        "latex": "q_1=atan2(y_d,x_d)-atan2(L_2 sin(q_2),L_1+L_2 cos(q_2))",
+        "meaning": "Triangle correction determines the shoulder."
+      }
+    ],
+    "coordinate_and_sign_convention": "Base +x is right, +y is up; elbow-up selects the negative sine branch.",
+    "units": [
+      "target and links: m",
+      "solution angles: deg in metrics, rad internally",
+      "residual: m"
+    ],
+    "sweeps": [
+      {
+        "control": "target_x_m",
+        "values": [
+          0.4,
+          1,
+          1.4
+        ],
+        "expected_observation": "Conditioning changes near the reach boundary."
+      },
+      {
+        "control": "target_y_m",
+        "values": [
+          -0.8,
+          0.4,
+          1
+        ],
+        "expected_observation": "The shoulder follows the target quadrant."
+      }
+    ],
+    "broken_case": {
+      "name": "Missing shoulder correction",
+      "trigger": "Set broken_mode true.",
+      "failure": "The first link points directly at the target before applying q2.",
+      "recovery": "Set broken_mode false and restore the link-triangle correction."
+    },
+    "limiting_cases": [
+      "Reachable radius lies between |L1-L2| and L1+L2.",
+      "Both branches merge at full extension."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "timeout_seconds": 3,
+    "max_samples": 361,
+    "max_output_bytes": 1000000
+  },
+  "python_verification": {
+    "status": "passed",
+    "basis": "native_python_reference",
+    "reference_method": "Independent law-of-cosines solution checked by forward kinematics.",
+    "oracle_file": "reference_cases.py",
+    "oracle_independence": "The reference module imports no production experiment and evaluates a closed-form, invariant, continuous-time, or separately formulated recurrence.",
+    "cases": [
+      {
+        "name": "baseline",
+        "expected": {
+          "path": "modules/04-solve-inverse-kinematics/evidence/expected-baseline.json",
+          "sha256": "f7d0622c36714d7365d45fcab364eb73239ca6f47b31c1670690dd4ccbca8c6e"
+        },
+        "actual": {
+          "path": "modules/04-solve-inverse-kinematics/evidence/actual-baseline.json",
+          "sha256": "0f4b1bf4c86907e14bedb64a4c609a29ad4b12cd6a753d02de3daa0c35bdf83f"
+        },
+        "max_absolute_error": 0,
+        "max_relative_error": 0,
+        "tolerance": {
+        "absolute": 1.0e-10,
+        "relative": 1.0e-10
+        },
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "expected": {
+          "path": "modules/04-solve-inverse-kinematics/evidence/expected-broken.json",
+          "sha256": "ba81093df15fd215ffa6de8efe137208a6320c5615893657b9ca34694bd85c95"
+        },
+        "actual": {
+          "path": "modules/04-solve-inverse-kinematics/evidence/actual-broken.json",
+          "sha256": "c5653429ffca466f324796e2c04615e51ce98fbb42ff5ff0d77d528602ad8736"
+        },
+        "max_absolute_error": 0,
+        "max_relative_error": 0,
+        "tolerance": {
+        "absolute": 1.0e-10,
+        "relative": 1.0e-10
+        },
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "The pinned source item is a non-runnable scaffold and no licensed MATLAB runtime executed; native Python correctness is independently verified without a MATLAB parity claim."
+  },
+  "claims": {
+    "profile": "elp-robotics-native-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Browser visual review is a separate integrated evidence step."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Accessibility review is a separate integrated evidence step."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study."
+    },
+    "physical_system_validation": {
+      "status": "not_run",
+      "reason": "No physical robot, motor, encoder, IMU, bench, HIL, or field system executed."
+    },
+    "release_and_production": {
+      "status": "not_run",
+      "reason": "No release, deployment, credential, setting, or production operation occurred."
+    }
+  }
+}

@@ -1,0 +1,80 @@
+schema_version: 1
+id: 06-close-a-wheel-speed-loop
+number: 6
+title: Close a Wheel-Speed Loop
+summary: Tune a sampled PI wheel-speed controller with saturation and anti-windup.
+guiding_question: What inputs, observable effects, and failure modes matter when you close a Wheel-Speed Loop?
+status: implemented
+tags:
+- robotics-autonomy
+- dynamics-and-actuation
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: kp_v_per_rad_s
+  type: slider
+  label: Proportional gain
+  default: 1.5
+  unit: V/(rad/s)
+  minimum: 0
+  maximum: 5
+  step: 0.1
+- id: ki_v_per_rad
+  type: slider
+  label: Integral gain
+  default: 4
+  unit: V/rad
+  minimum: 0
+  maximum: 12
+  step: 0.25
+- id: command_rad_s
+  type: slider
+  label: Speed command
+  default: 8
+  unit: rad/s
+  minimum: 0
+  maximum: 20
+  step: 0.5
+- id: voltage_limit_v
+  type: slider
+  label: Voltage limit
+  default: 12
+  unit: V
+  minimum: 2
+  maximum: 24
+  step: 1
+- id: broken_mode
+  type: toggle
+  label: Omit sample time in integrator
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Proportional gain speeds the first correction; integral gain removes residual error but can accumulate badly during saturation.
+  reveal: Disable the unscaled integrator so error is accumulated as error times sample interval and saturation can pause harmful windup.
+- type: controls
+  title: Live model controls
+- type: metrics
+- type: plot_grid
+  title: Physical response and diagnostic
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery
+

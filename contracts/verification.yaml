@@ -1,21 +1,22 @@
 schema_version: 1
 commands:
-  identity-framework:
-    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_gnc_conversion_framework.py
-  gnc-framework:
-    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_gnc_conversion_framework.py
-  gnc-source-attested:
-    - ELP_GNC_SOURCE_ROOT=courses/controls-gnc-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_gnc_conversion_framework.py
-  gnc-course:
-    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_gnc_course.py
-  gnc-course-source-attested:
-    - ELP_GNC_SOURCE_ROOT=courses/controls-gnc-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_course.py
-  dsp-regression:
+  robotics-framework:
+    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_robotics_conversion_framework.py
+  robotics-course:
+    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_robotics_course.py
+  robotics-focused:
+    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_robotics_conversion_framework.py apps/api/tests/test_robotics_course.py
+  source-course-regression:
     - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py
+    - ELP_GNC_SOURCE_ROOT=courses/controls-gnc-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_course.py
+  deterministic-catalog:
+    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic --json
+  robotics-lint:
+    - .venv/bin/ruff check apps/api/tests/test_robotics_conversion_framework.py apps/api/tests/test_robotics_course.py courses/robotics-autonomy/modules courses/robotics-autonomy/reference_cases.py
   contract:
     - ./scripts/agent-verify.sh contract
   quick:
     - ./scripts/agent-verify.sh quick
   full:
     - ./scripts/agent-verify.sh full
-evidence_boundary: These commands provide repository-identity, provenance-closure, repository-static, deterministic software, API protocol, frontend build, exact source identity, read-only conversion-framework, Python/source-equivalence, and retained DSP/Radar plus Controls/GNC regression evidence for ELP-ORG-IDENTITY. The source-attested profiles inspect but do not execute or modify the canonical MATLAB courses. No new course content is authorized. MATLAB execution or parity, browser/accessibility acceptance, learner effectiveness, physical HIL/HWIL or timing, bench, field, release, deployment, and production evidence remain separate and unperformed unless explicitly retained.
+evidence_boundary: These commands provide exact source identity and cleanliness, deterministic bounded Python runtime, independent numeric reference, closed provenance, content-digest, source-course regression, API protocol, and frontend build evidence for Robotics P01-P10. P01 is checked against its implemented source design. P02-P10 are native Python designs derived from scaffolded curriculum identities and are not source-equivalence claims. MATLAB runtime, browser/accessibility acceptance, learner effectiveness, physical robot/motor/encoder/IMU, HIL, bench, field, release, deployment, credentials/settings, and production evidence remain separate and unperformed.

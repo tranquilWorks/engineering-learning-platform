@@ -1,113 +1,117 @@
 schema_version: 1
 batch:
-  id: ELP-ORG-IDENTITY
-  title: Normalize TranquilWorks repository identities after organization transfer
-  goal: Replace stale kpbianco repository identities with canonical tranquilWorks identities across the platform, its 13 submodule declarations, imported-course provenance closure, tests, governance, current documentation, and retained transfer evidence without changing course content or behavior.
+  id: ELP-ROB-P01-P10
+  title: Author Robotics and Autonomy P01-P10 as native Python lessons
+  goal: Add one platform-owned Robotics and Autonomy course containing P01 through P10 as complete deterministic Python/Plotly lessons while preserving the pinned MATLAB-first source repository read-only. P01 is checked against its implemented source model; P02-P10 are new native designs derived from the approved curriculum identities and independently checked analytic or numerical reference cases, without pretending the scaffolded MATLAB source ran.
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
-    - products/engineering-learning-platform/automation.json#ELP-ORG-IDENTITY
+    - products/engineering-learning-platform/automation.json#ELP-ROB-P01-P10
     - products/engineering-learning-platform/CODEX_HANDOFF.md
-    - products/engineering-learning-platform/roadmap.yaml#authorized_org_identity_lane
-  baseline_commit: 923a86ab79893bd939d88d275bdcb12a5a1ddad6
-  baseline_tree: ebb16887a492d4327d0fbda4b58e933ed5645dfa
+    - products/engineering-learning-platform/roadmap.yaml#authorized_robotics_python_lane
+    - tranquilWorks/robotics-autonomy-learning/curriculum/modules.json
+  milestone: products/engineering-learning-platform/roadmap.yaml#authorized_robotics_python_lane
+  baseline_commit: 71e3842f0839d9534a1c77e9d95d84a929489aff
+  baseline_tree: d7716986417df16aeaf1171bd5cc3e40bd3f4295
   control_plane_repository: tranquilWorks/portfolio-control
+  control_plane_path: products/engineering-learning-platform/batches/ELP-ROB-P01-P10.yaml
   target_repository: tranquilWorks/engineering-learning-platform
+  source_repository: tranquilWorks/robotics-autonomy-learning
+  source_pin: f8807640258f1a6c1c77f1dcc9e61734551c585b
+  source_tree: 7f8bc62382ca8d7fbe26ff4413cabf7d00d64bb9
+  source_curriculum_sha256: 972eee6b99945f6c2380ba097e443b30c37ca9e4e0acfd2c7f7cde8a7550207d
 dependencies:
-  - ELP-GNC-P01-P24
+  - ELP-ORG-IDENTITY
 scope:
   allowed_paths:
-    - .gitmodules
-    - .portfolio-harness.json
-    - README.md
-    - scripts/publish_github.sh
+    - courses/robotics-autonomy/**
+    - apps/api/tests/test_robotics_conversion_framework.py
+    - apps/api/tests/test_robotics_course.py
+    - apps/api/tests/test_gnc_conversion_framework.py
     - contracts/active-batch.yaml
-    - contracts/profile-requirements.yaml
     - contracts/repo-profile.yaml
     - contracts/verification.yaml
-    - apps/api/tests/test_dsp_conversion_framework.py
-    - apps/api/tests/test_gnc_conversion_framework.py
-    - courses/dsp-radar/AUTHORING.md
-    - courses/dsp-radar/source-map.yaml
-    - courses/dsp-radar/conversion-manifest.yaml
-    - courses/dsp-radar/coverage.yaml
-    - courses/dsp-radar/modules/*/conversion.yaml
-    - courses/controls-gnc/source-map.yaml
-    - courses/controls-gnc/conversion-manifest.yaml
-    - courses/controls-gnc/coverage.yaml
-    - courses/controls-gnc/modules/*/conversion.yaml
-    - docs/PORTFOLIO_CONTROL.md
-    - docs/PORTFOLIO_ONBOARDING_REQUEST.md
     - docs/CURRENT_STATE.md
     - docs/HANDOFF.md
     - docs/ROADMAP.md
-    - docs/evidence/*.md
+    - docs/evidence/ELP-ROB-P01-P10-*.md
   forbidden_paths:
-    - courses/*-learning
-    - courses/*-learning/**
-    - courses/dsp-radar/course.yaml
-    - courses/dsp-radar/modules/*/module.yaml
-    - courses/dsp-radar/modules/*/lesson.md
-    - courses/dsp-radar/modules/*/experiment.py
-    - courses/dsp-radar/modules/*/evidence/**
-    - courses/controls-gnc/course.yaml
-    - courses/controls-gnc/modules/*/module.yaml
-    - courses/controls-gnc/modules/*/lesson.md
-    - courses/controls-gnc/modules/*/experiment.py
-    - courses/controls-gnc/modules/*/evidence/**
+    - .gitmodules
+    - courses/robotics-autonomy-learning
+    - courses/robotics-autonomy-learning/**
+    - courses/dsp-radar/**
+    - courses/dsp-radar-learning
+    - courses/dsp-radar-learning/**
+    - courses/controls-gnc/**
+    - courses/controls-gnc-learning
+    - courses/controls-gnc-learning/**
     - courses/demo-radar/**
     - courses/platform-showcase/**
     - apps/api/src/**
     - apps/web/**
     - packages/**
-    - .github/**
-    - Dockerfile
-    - compose.yaml
+    - scripts/**
     - package.json
     - package-lock.json
     - apps/api/pyproject.toml
     - apps/web/package.json
     - apps/web/package-lock.json
+    - .github/**
+    - Dockerfile
+    - compose.yaml
 acceptance:
-  - Begin from exact clean target main 923a86ab79893bd939d88d275bdcb12a5a1ddad6, tree ebb16887a492d4327d0fbda4b58e933ed5645dfa, after this exact control contract merges. Any target or control drift stops implementation.
-  - Canonical control, target, and all 13 source-course repository names and URLs resolve under tranquilWorks. No current platform-owned provenance field or clone/publish/submodule instruction names kpbianco as repository owner.
-  - All 13 gitlink SHAs, every source commit/tree/curriculum/file hash, the complete 84-item DSP and 24-item GNC mappings, and every source-course byte remain unchanged.
-  - Only source-map repository identity and its mechanically derived digest bindings may change inside imported native courses. Every course.yaml, module.yaml, lesson.md, experiment.py, and expected/actual numeric evidence JSON file remains byte-identical.
-  - Generic API/UI/schema/runtime, dependencies, workflows, deployment files, examples, and unfinished courses remain byte-identical. No course, module, conversion, or learner behavior is added.
-  - DSP/Radar coverage remains 84 converted and Controls/GNC coverage remains 24 converted with zero pending, blocked, or placeholder entries. Catalog remains exactly four courses, 110 modules, and 110 interactive modules.
-  - One target branch, one implementation commit, and one target PR contain the entire identity normalization. Exact-head hosted backend, frontend, and Linux/amd64 container jobs pass before human merge.
+  - Begin from exact clean target main 71e3842f0839d9534a1c77e9d95d84a929489aff, tree d7716986417df16aeaf1171bd5cc3e40bd3f4295, after the merged control revision contains this exact contract. Any target, control, source, dependency, index, or worktree drift stops implementation.
+  - Keep the Robotics source gitlink byte-identical at f8807640258f1a6c1c77f1dcc9e61734551c585b, tree 7f8bc62382ca8d7fbe26ff4413cabf7d00d64bb9, curriculum SHA-256 972eee6b99945f6c2380ba097e443b30c37ca9e4e0acfd2c7f7cde8a7550207d. Source inspection is read-only.
+  - Create one platform-owned native course with exactly P01-P10 in source order. P01 retains the implemented differential-drive source contract. P02-P10 retain their source IDs, numbers, titles, guiding questions, prerequisite order, and scaffold hashes while supplying new Python-first designs; they must not be labeled source-equivalent or MATLAB-parity passed.
+  - Use one isolated target branch and one final implementation commit/PR. Internally complete P01 through P10 strictly in order; a failed, blocked, placeholder, nondeterministic, or over-budget item stops the lane.
+  - Every module contains exact-v1 module.yaml, an expanded lesson.md, a self-contained bounded experiment.py, a closed provenance/verification record, and distinct expected plus actual JSON evidence. No TODO, copied scaffold prose, generic placeholder, renamed duplicate experiment, or fabricated evidence is accepted.
+  - Each lesson implements concept -> prediction -> manipulation -> evidence -> explanation -> focused check. It defines equations, symbols, coordinate/sign conventions, units, limiting cases, at least two bounded useful controls/sweeps, one named broken assumption with recovery, common mistakes, and teach-back completion.
+  - P01 Python/source-equivalence uses independent retained cases against the pinned implemented MATLAB design. P02-P10 correctness uses independent analytic, closed-form, invariant, or separately formulated numerical references that do not call the production experiment implementation. Expected and actual files must remain distinct and report tolerances and measured errors.
+  - MATLAB runtime parity is passed only if an identified licensed MATLAB runtime actually executes. The expected environment has no MATLAB runtime, so records remain not_run unless retained runtime evidence proves otherwise. Octave, Python agreement, or visual similarity must not be relabeled MATLAB parity.
+  - Experiments use only current dependencies, validate parameters before allocation, cap sample/state sizes and output, emit finite stable Plotly-compatible result keys with labeled axes and units, and perform no network, source write, subprocess, dynamic install/import, eval, learner-code execution, or shared mutable state.
+  - The completed DSP/Radar and Controls/GNC courses, their source pins/provenance/evidence, both example courses, generic API/UI/schema/runtime, dependencies, workflows, and deployment files remain byte-identical.
+  - Final catalog is exactly five courses, 120 modules, and 120 interactive modules. Every default executes deterministically; Robotics coverage is total=24, authored=10, remaining=14, blocked=0, placeholder=0, with only P01-P10 catalog-visible.
+  - Update only the stale final-catalog assertion in apps/api/tests/test_gnc_conversion_framework.py from the completed pre-Robotics 4/110/110 shape to the required post-Robotics 5/120/120 shape; all GNC course data, provenance, evidence, and other test behavior remain byte-identical.
+  - Focused tests verify exact source identity and read-only state, ordered unique mappings, honest P01 versus P02-P10 provenance semantics, lesson completeness, controls and result references, default/two-sweep/broken-recovery behavior, invalid/resource rejection, finite deterministic serialization, independent expected/actual evidence, content digests, and catalog visibility.
+  - Final evidence distinguishes Python verification from unperformed MATLAB, browser/accessibility, learner-effectiveness, physical robot, motor/encoder/IMU, HIL, bench, field, release, deployment, and production validation.
 validation:
   local:
-    - test "$(git rev-parse HEAD)" = 923a86ab79893bd939d88d275bdcb12a5a1ddad6 && test "$(git rev-parse origin/main)" = 923a86ab79893bd939d88d275bdcb12a5a1ddad6
-    - test "$(git rev-parse HEAD^{tree})" = ebb16887a492d4327d0fbda4b58e933ed5645dfa
-    - git diff --check
-    - python3 -B -m pytest -q apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_gnc_conversion_framework.py
+    - test "$(git rev-parse HEAD)" = 71e3842f0839d9534a1c77e9d95d84a929489aff && test "$(git rev-parse origin/main)" = 71e3842f0839d9534a1c77e9d95d84a929489aff
+    - test "$(git rev-parse HEAD^{tree})" = d7716986417df16aeaf1171bd5cc3e40bd3f4295
+    - test "$(git -C courses/robotics-autonomy-learning rev-parse HEAD)" = f8807640258f1a6c1c77f1dcc9e61734551c585b
+    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_robotics_conversion_framework.py apps/api/tests/test_robotics_course.py
     - ./scripts/agent-verify.sh contract
     - ./scripts/agent-verify.sh quick
     - ./scripts/agent-verify.sh full
     - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic --json
-    - test -z "$(git diff --raw 923a86ab79893bd939d88d275bdcb12a5a1ddad6 -- courses/*-learning)"
-    - test -z "$(git diff --name-only 923a86ab79893bd939d88d275bdcb12a5a1ddad6 -- 'courses/*/modules/*/lesson.md' 'courses/*/modules/*/module.yaml' 'courses/*/modules/*/experiment.py' 'courses/*/modules/*/evidence/**')"
+    - .venv/bin/ruff check apps/api/tests/test_robotics_conversion_framework.py apps/api/tests/test_robotics_course.py courses/robotics-autonomy/modules
+    - git diff --check
+    - test -z "$(git -C courses/robotics-autonomy-learning status --porcelain=v1 --untracked-files=all)"
+  focused_tests_to_add:
+    - Add a Robotics framework suite for exact source pin/tree/curriculum/scaffold hashes, 24-item mapping, P01 source-backed versus P02-P10 native-design provenance, ten-item authored prefix, placeholder rejection, source cleanliness, and honest evidence states.
+    - Add an item-filterable P01-P10 suite exercising source-specific defaults, two sweeps, broken/recovery behavior, independent oracle comparisons, invalid/resource inputs, finite deterministic serialization, stable result references, lessons, records, content digests, and catalog visibility.
+    - Prove the final catalog exposes and executes Robotics P01-P10 plus the retained 110 modules, with no skips, xfails, count waivers, source writes, or generic runtime/schema changes.
   required_ci:
-    - Existing exact-head GitHub Actions backend, frontend, and Linux/amd64 container jobs pass without skips or waivers.
+    - Existing quality workflow passes backend, frontend, and Linux/amd64 container jobs on the exact PR head. Any later target commit invalidates those results.
 risk:
-  class: medium
+  class: high
   hazards:
-    - stale owner strings leave mixed canonical identity
-    - source-map repository rename breaks derived digest closure
-    - a gitlink or course payload changes during a mechanical migration
-    - unfinished course work enters an administrative batch
+    - a plausible visualization hides a wrong frame convention, kinematic sign, unreachable inverse-kinematics branch, motor unit conversion, controller discretization, trajectory boundary, impedance sign, encoder quantization, or inertial integration bias
+    - scaffold identity is misrepresented as implemented MATLAB behavior or Python agreement is mislabeled MATLAB parity
+    - expected and actual evidence share an implementation path, use fabricated values, exceed tolerance, or omit units and limiting cases
+    - generic platform, completed courses, source gitlink, dependencies, workflows, or deployment change to accommodate Robotics
   stop_conditions:
-    - any target/control drift or unavailable canonical repository
-    - any gitlink, source hash, lesson, module manifest, experiment, numeric evidence, runtime, UI, dependency, workflow, deployment, or catalog change
-    - any new course/module/conversion or failed/skipped verification
+    - exact target/control/source identities or source cleanliness differ
+    - any item requires source mutation, generic renderer/runtime/schema/type changes, a new dependency, unsupported result primitive, unbounded solver, placeholder, or semantic duplication
+    - any independent correctness case, focused test, cumulative gate, full verification, deterministic catalog run, lint, source-cleanliness check, or exact-head CI fails or is skipped
+    - any MATLAB, browser/accessibility, learner, physical robot/HIL, bench, field, release, deployment, credential/settings, or production claim exceeds retained evidence
 rollback:
-  strategy: Before merge discard the isolated branch. After merge revert the one target identity-normalization commit; external GitHub transfer redirects remain independent and no course/source content is rewritten.
+  strategy: Before merge, close or discard the isolated target branch. After merge, revert the one aggregate implementation commit, removing only the platform-owned Robotics native course/tests/evidence and restoring the prior 4/110/110 catalog while leaving the source repository and completed courses untouched.
 evidence:
   output:
-    - docs/evidence/ELP-ORG-IDENTITY-2026-08-27.md
-    - canonical repository URL matrix and stale-identity audit
-    - gitlink/source/course-payload immutability hashes
-    - source-map and derived provenance digest closure
-    - complete local and exact-head hosted verification
-  claim_boundary: Repository identity and provenance normalization only. No new course content, MATLAB parity, learner/browser/accessibility acceptance, physical HIL/HWIL, release, deployment, credentials/settings, or production operation.
+    - docs/evidence/ELP-ROB-P01-P10-2026-09-21.md
+    - exact target/control/source identities and source cleanliness
+    - one P01-P10 row per internal gate with design equations, reference method, coverage transition, default/two-sweep/broken-recovery/resource/determinism/comparison results, tolerances, residual risks, and unperformed checks
+    - complete focused, contract, quick, full, deterministic catalog, lint, diff, source-cleanliness, and exact-head hosted-CI results
+    - one final target commit, one target PR, rollback path, and explicit MATLAB/browser/accessibility/learner/physical/release/deployment/production dispositions
+  claim_boundary: Ten catalog-visible, Python-verified Robotics and Autonomy software lessons at pinned curriculum identity f8807640258f1a6c1c77f1dcc9e61734551c585b. P01 is checked against its implemented source design; P02-P10 are Python-first native designs verified against independent references. No MATLAB runtime comparison, learner effectiveness, browser/accessibility acceptance, physical robot/HIL, bench, field, release, deployment, or production result is implied.

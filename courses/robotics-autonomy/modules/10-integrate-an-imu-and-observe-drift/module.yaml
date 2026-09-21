@@ -1,0 +1,80 @@
+schema_version: 1
+id: 10-integrate-an-imu-and-observe-drift
+number: 10
+title: Integrate an IMU and Observe Drift
+summary: Integrate constant gyro and accelerometer bias to expose angle, velocity, and position drift growth.
+guiding_question: What inputs, observable effects, and failure modes matter when you integrate an IMU and Observe Drift?
+status: implemented
+tags:
+- robotics-autonomy
+- sensing-and-calibration
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: gyro_bias_deg_s
+  type: slider
+  label: Gyro bias
+  default: 0.2
+  unit: deg/s
+  minimum: -2
+  maximum: 2
+  step: 0.05
+- id: accel_bias_m_s2
+  type: slider
+  label: Acceleration bias
+  default: 0.03
+  unit: m/s^2
+  minimum: -0.2
+  maximum: 0.2
+  step: 0.01
+- id: duration_s
+  type: slider
+  label: Integration duration
+  default: 30
+  unit: s
+  minimum: 5
+  maximum: 60
+  step: 5
+- id: sample_rate_hz
+  type: slider
+  label: Sample rate
+  default: 100
+  unit: Hz
+  minimum: 20
+  maximum: 200
+  step: 10
+- id: broken_mode
+  type: toggle
+  label: Treat deg/s as rad/s
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Constant gyro bias creates angle error proportional to time; constant acceleration bias creates velocity error proportional to time and position error proportional to time squared.
+  reveal: Disable the degree/radian mismatch and convert gyro bias to radians per second before integration.
+- type: controls
+  title: Live model controls
+- type: metrics
+- type: plot_grid
+  title: Physical response and diagnostic
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery
+
