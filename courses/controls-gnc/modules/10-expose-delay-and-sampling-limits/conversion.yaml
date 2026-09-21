@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 course_id: controls-gnc
 item:
   id: P10
@@ -26,17 +26,17 @@ item:
   - path: modules/10-expose-delay-and-sampling-limits/model.m
     sha256: 494cc454b008ec99ab397f33f9fcf6a5ece53a3e351505e4bbe268d6c745fdf9
 target:
-  content_digest: 349db3909e29ac42b5482687cb934e7317dc9580382220b97583c64848b48688
+  content_digest: 83fbe6863a63ed00370574c54b8c974e7edb67b280388c721b5cd5eb4e0f1939
   files:
   - path: modules/10-expose-delay-and-sampling-limits/module.yaml
     sha256: 7a67267afec7c444e6c66c42169f483bb6102f6c5fad63f237c17f96977de4f9
   - path: modules/10-expose-delay-and-sampling-limits/lesson.md
-    sha256: 339608f75ba3c4ab5c86e1504aabeac02f26ebe65792b83a14547d15fc834d53
+    sha256: c8ffecfeff9130ac3f8f0612cddbf897674bd6b4b96f3315bee23a06c28c9a59
   - path: modules/10-expose-delay-and-sampling-limits/experiment.py
-    sha256: 057ff6f69799c36fcddb39eece483d0528d0503a4c27b6cb0abbd0ae756830a2
+    sha256: 24d66bba24860e6b1994748c7605de4e01c45a61c939839f8f7f6ab76ecabfab
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you expose Delay and
-    Sampling Limits?
+  guiding_question: What inputs, observable effects, and failure modes matter when you expose Delay and Sampling
+    Limits?
   physical_model: Reveal held commands, computation latency, and sampled-data pole movement.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
@@ -56,41 +56,44 @@ content:
       value: 10
       unit: index
     datasets:
-    - name: baseline numeric signature
-      provenance: retained_fixture
-      sha256: b32745b15f0dde4e6dc15c285c38483f1001318ca60f3a9861c92dea57c6101f
-      unit: mixed numeric signature
+    - name: five-scenario independent reference signatures (expected-independent.json)
+      provenance: independent_reference
+      sha256: 020bd9e765590d6a63848ab47400650e9d9ca7174dbac2ae839d33493bb6b4ef
+      unit: ordered mixed SI signature; fields and units are embedded in the evidence file
   plot_sequence:
-  - source_figure: Source baseline and sweep figures
+  - source_figure: Pinned MATLAB source intent mapped to platform response view
     target_plot_key: response
-    title: Observable response
+    title: Sampled response with computation delay
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Response
-      unit: source units
-    interpretation: Reveal held commands, computation latency, and sampled-data pole movement.
-  - source_figure: Source diagnostic and broken-case figures
+      label: Normalized plant output
+      unit: ratio
+    interpretation: delay is the declared fraction of one sample
+  - source_figure: Pinned MATLAB source intent mapped to platform mechanism view
     target_plot_key: mechanism
-    title: Mechanism and diagnostic view
+    title: Delayed command and equilibrium error
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Diagnostic
-      unit: source units
-    interpretation: The broken case uses a 0.2 s period with 90 percent computation delay.
+      label: Applied command
+      unit: normalized input
+    - role: y
+      label: Equilibrium error
+      unit: ratio
+    interpretation: the plant holds stale command for most of each sample
   sweeps:
   - control: sample_period_s
     values:
     - 0.02
     - 0.1
     - 0.2
-    expected_observation: Sampling and delay together should increase oscillation even when the continuous
-      design is fast.
+    expected_observation: Sampling and delay together should increase oscillation even when the continuous design
+      is fast.
   - control: delay_fraction
     values:
     - 0.0
@@ -132,39 +135,137 @@ python_source_equivalence:
   - name: broken_mode
     value: false
     unit: flag
+  reference_origin:
+    derived_from_production_output: false
+    formulation: Independent sample/compute/apply event state machine
+    imports_production_entrypoint: false
+    independent: true
+    package:
+      path: reference_cases.py
+      sha256: 975fe4772642993eeda6cfa33487192de0ae526b4f12ab2523d3f100ca994c8d
+    perturbs_production_output: false
+    type: alternative_algorithm
+  production_origin:
+    derived_from_production_output: true
+    formulation: Direct capture of diagnostics.signature from experiment.py:run
+    imports_production_entrypoint: true
+    independent: false
+    package:
+      path: modules/10-expose-delay-and-sampling-limits/experiment.py
+      sha256: 24d66bba24860e6b1994748c7605de4e01c45a61c939839f8f7f6ab76ecabfab
+    perturbs_production_output: false
+    type: production_entrypoint
   cases:
-  - name: baseline-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/10-expose-delay-and-sampling-limits/evidence/expected-baseline.json
-      sha256: b32745b15f0dde4e6dc15c285c38483f1001318ca60f3a9861c92dea57c6101f
-    actual:
-      path: modules/10-expose-delay-and-sampling-limits/evidence/actual-baseline.json
-      sha256: 1f246ee687a16b2ca6c2a9f217bcd6b5eaa3a782630fe65021ac205bf26a17f6
-    max_absolute_error: 1.0000333894311098e-13
-    max_relative_error: 1.0000333894311098e-13
+  - name: baseline-independent-reference-vs-production
+    scenario: baseline
+    evidence_key: baseline
+    parameters:
+      broken_mode: false
+      delay_fraction: 0.2
+      sample_period_s: 0.05
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: &id001
+      absolute: 1.0e-10
+      relative: 1.0e-10
+    expected: &id002
+      path: modules/10-expose-delay-and-sampling-limits/evidence/expected-independent.json
+      sha256: 020bd9e765590d6a63848ab47400650e9d9ca7174dbac2ae839d33493bb6b4ef
+    actual: &id003
+      path: modules/10-expose-delay-and-sampling-limits/evidence/actual-production.json
+      sha256: fe82d4969a5df8043f16b4f4fcb5d0af955262fa5be0f40f5bee4189211c4613
+    comparison_scale: 1.0
+    allowed_absolute_error: 1.0e-10
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: delay is the declared fraction of one sample
+      reference_passed: true
+      production_passed: true
     passed: true
-  - name: broken-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/10-expose-delay-and-sampling-limits/evidence/expected-broken.json
-      sha256: c995af978f065b79408878ccbb86dc61a1543481517aef904f421e6cc4e10749
-    actual:
-      path: modules/10-expose-delay-and-sampling-limits/evidence/actual-broken.json
-      sha256: 35414e96eb82cf231db0e551420d7ec75f947d0264f8204d341ab9ae498457c9
-    max_absolute_error: 1.0000333894311098e-13
-    max_relative_error: 1.0000333894311098e-13
+  - name: sweep-1-independent-reference-vs-production
+    scenario: sweep_1
+    evidence_key: sweep_1
+    parameters:
+      broken_mode: false
+      delay_fraction: 0.2
+      sample_period_s: 0.2
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 1.4534390318186052
+    allowed_absolute_error: 1.4534390318186054e-10
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: delay is the declared fraction of one sample
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: sweep-2-independent-reference-vs-production
+    scenario: sweep_2
+    evidence_key: sweep_2
+    parameters:
+      broken_mode: false
+      delay_fraction: 0.9
+      sample_period_s: 0.05
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 1.1259375363266368
+    allowed_absolute_error: 1.1259375363266369e-10
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: delay is the declared fraction of one sample
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: broken-independent-reference-vs-production
+    scenario: broken
+    evidence_key: broken
+    parameters:
+      broken_mode: true
+      delay_fraction: 0.2
+      sample_period_s: 0.05
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 14.32297408391248
+    allowed_absolute_error: 1.4322974083912482e-09
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: delay is the declared fraction of one sample
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: recovery-independent-reference-vs-production
+    scenario: recovery
+    evidence_key: recovery
+    parameters:
+      broken_mode: false
+      delay_fraction: 0.2
+      sample_period_s: 0.05
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 1.0
+    allowed_absolute_error: 1.0e-10
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: delay is the declared fraction of one sample
+      reference_passed: true
+      production_passed: true
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
-    signatures bind the Python conversion.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
+    constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:
@@ -176,3 +277,15 @@ claims:
   learner_effectiveness:
     status: not_run
     reason: Learner effectiveness requires post-release study and is not claimed.
+fidelity:
+  batch_id: ELP-GNC-FIDELITY-P01-P24
+  item_id: P10
+  map:
+    path: fidelity-map.yaml
+    sha256: 0607e8f0908f32e1cded19c7daa550a3ff40d788372e6927e2cfc364c633f4b4
+  schema:
+    path: fidelity-map.schema.json
+    sha256: 256f1e1298b80812ce35a26eeb750917ffc1ea10cc25e9da8363d9524da102a0
+  source_model:
+    path: modules/10-expose-delay-and-sampling-limits/model.m
+    sha256: 494cc454b008ec99ab397f33f9fcf6a5ece53a3e351505e4bbe268d6c745fdf9

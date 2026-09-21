@@ -1,40 +1,46 @@
 schema_version: 1
 standard:
   id: ELP-COURSE-CALIBER-1
-  effective_date: "2026-09-21"
+  effective_date: '2026-09-21'
   control_repository: tranquilWorks/portfolio-control
-  control_revision: f6745e44f459a52431b81a3f953c8f2e03cbe45e
-  audit_baseline: 39aed41de4e3c84fc00c3b8546c5488e253b6be2
+  control_revision: 0038f6ed725ae2fc7b3eb6647e9621a2ad23db34
+  audit_baseline: 1506591946ec8e96fe3201e8893b8ad851a1685a
 count_semantics: implementation_inventory_not_curriculum_completeness
 maturity_states:
-  - id: source_authored
-    definition: Canonical learning goals, prerequisites, explanations, exercises, and source provenance are authored rather than placeholders.
-    required_evidence: Reviewed source inventory, immutable revision, and no unresolved authorship gaps in the claimed scope.
-  - id: platform_converted
-    definition: The reviewed source or approved native design is represented by complete learner-facing modules and executable platform artifacts.
-    required_evidence: Complete lesson, runtime, provenance, deterministic discovery, and execution evidence for every mapped item.
-  - id: numerically_verified
-    definition: Course-specific computations pass independently originated references with units, tolerances, limiting cases, and failure behavior.
-    required_evidence: Evidence-origin metadata and semantic anti-template review across unrelated competencies.
-  - id: curriculum_covered
-    definition: A reviewed competency map demonstrates appropriate foundations, breadth, sequencing, assessment, exclusions, and cross-course handoffs.
-    required_evidence: Every in-scope competency maps to teaching modules and assessment evidence; inventory counts are insufficient.
-  - id: capstone_integrated
-    definition: Learners integrate multiple mapped competencies in one or more cumulative, independently assessed capstones.
-    required_evidence: Capstone traceability names integrated competencies, modules, artifacts, recovery behavior, and cumulative assessment.
-  - id: learner_validated
-    definition: Representative learners meet predeclared comprehension, usability, and accessibility criteria.
-    required_evidence: Reviewed protocol, cohort, privacy boundary, results, and acceptance thresholds.
+- id: source_authored
+  definition: Canonical learning goals, prerequisites, explanations, exercises, and source provenance are authored rather
+    than placeholders.
+  required_evidence: Reviewed source inventory, immutable revision, and no unresolved authorship gaps in the claimed scope.
+- id: platform_converted
+  definition: The reviewed source or approved native design is represented by complete learner-facing modules and executable
+    platform artifacts.
+  required_evidence: Complete lesson, runtime, provenance, deterministic discovery, and execution evidence for every mapped
+    item.
+- id: numerically_verified
+  definition: Course-specific computations pass independently originated references with units, tolerances, limiting cases,
+    and failure behavior.
+  required_evidence: Evidence-origin metadata and semantic anti-template review across unrelated competencies.
+- id: curriculum_covered
+  definition: A reviewed competency map demonstrates appropriate foundations, breadth, sequencing, assessment, exclusions,
+    and cross-course handoffs.
+  required_evidence: Every in-scope competency maps to teaching modules and assessment evidence; inventory counts are insufficient.
+- id: capstone_integrated
+  definition: Learners integrate multiple mapped competencies in one or more cumulative, independently assessed capstones.
+  required_evidence: Capstone traceability names integrated competencies, modules, artifacts, recovery behavior, and cumulative
+    assessment.
+- id: learner_validated
+  definition: Representative learners meet predeclared comprehension, usability, and accessibility criteria.
+  required_evidence: Reviewed protocol, cohort, privacy boundary, results, and acceptance thresholds.
 rubric_dimensions:
-  - foundations_prerequisites
-  - breadth_sequencing
-  - derivation_physical_meaning
-  - unique_executable_fidelity
-  - sweeps_limits_failure_recovery
-  - independent_evidence
-  - formative_cumulative_assessment
-  - capstones
-  - exclusions_cross_course_handoffs
+- foundations_prerequisites
+- breadth_sequencing
+- derivation_physical_meaning
+- unique_executable_fidelity
+- sweeps_limits_failure_recovery
+- independent_evidence
+- formative_cumulative_assessment
+- capstones
+- exclusions_cross_course_handoffs
 policies:
   conversion_authorization:
     competency_map_required: true
@@ -47,13 +53,13 @@ policies:
   semantic_fidelity:
     anti_template_review_required: true
     compared_facets:
-      - governing_relations
-      - state
-      - controls
-      - transformations
-      - outputs
-      - failures
-      - reference_methods
+    - governing_relations
+    - state
+    - controls
+    - transformations
+    - outputs
+    - failures
+    - reference_methods
   independent_evidence:
     origin_metadata_required: true
     imports_production_entrypoint_allowed: false
@@ -61,144 +67,218 @@ policies:
     perturbs_production_output_allowed: false
   completion_language:
     module_counts_are_inventory_only: true
-    curriculum_complete_requires: "curriculum_covered: passed"
+    curriculum_complete_requires: 'curriculum_covered: passed'
 course_reviews:
-  - course_id: dsp-radar
-    title: DSP and Radar
-    inventory:
-      source_items: 84
-      platform_modules: 84
-      interactive_modules: 84
-    maturity:
-      source_authored:
-        status: passed
-        evidence: The pinned source contains 84 authored DSP and radar modules.
-        limitation: Source authorship does not establish fidelity of the native platform implementation.
-      platform_converted:
-        status: passed
-        evidence: The catalog discovers and deterministically executes 84 native modules.
-        limitation: Structural conversion is not semantic equivalence or curriculum completeness.
-      numerically_verified:
-        status: blocked
-        evidence: Verification records and fixtures exist for all 84 modules.
-        limitation: P02-P84 share a generic execution structure across unrelated topics; issue 441 must replace and independently reverify them.
-      curriculum_covered:
-        status: blocked
-        evidence: The source topic inventory is broad.
-        limitation: Coverage cannot pass until fidelity remediation and a reviewed competency matrix close the audit.
-      capstone_integrated:
-        status: blocked
-        evidence: P84 is labeled as an end-to-end radar processing capstone.
-        limitation: Its native implementation has not passed semantic fidelity or independent capstone evidence.
-      learner_validated:
-        status: not_run
-        evidence: No representative-learner study is retained.
-        limitation: No learning-effectiveness or accessibility acceptance claim is supported.
-    rubric:
-      foundations_prerequisites: {status: partial, finding: "The sequence is extensive, but prerequisites are not reconciled to a reviewed competency graph."}
-      breadth_sequencing: {status: partial, finding: "Topic breadth is strong; competency depth and sequencing require post-remediation review."}
-      derivation_physical_meaning: {status: partial, finding: "Source derivations are substantial, but native fidelity is not established for P02-P84."}
-      unique_executable_fidelity: {status: failed, finding: "P02-P84 reuse a generic implementation structure across unrelated DSP and radar topics."}
-      sweeps_limits_failure_recovery: {status: partial, finding: "Declared sweeps and broken cases do not compensate for failed semantic fidelity."}
-      independent_evidence: {status: failed, finding: "Existing evidence cannot close correctness while the production implementations are semantically templated."}
-      formative_cumulative_assessment: {status: partial, finding: "Module checks exist; cumulative competency assessment is not demonstrated."}
-      capstones: {status: failed, finding: "P84 cannot pass until its course-specific runtime and independent integration evidence are repaired."}
-      exclusions_cross_course_handoffs: {status: partial, finding: "MATLAB and physical boundaries are explicit; competency handoffs remain unmapped."}
-    disposition: remediate
-    follow_up_issues: [441]
-  - course_id: controls-gnc
-    title: Controls and Guidance, Navigation, and Control
-    inventory:
-      source_items: 24
-      platform_modules: 24
-      interactive_modules: 24
-    maturity:
-      source_authored:
-        status: passed
-        evidence: The pinned source contains 24 implemented modules.
-        limitation: The source inventory is not a complete Controls/GNC competency map.
-      platform_converted:
-        status: passed
-        evidence: The catalog discovers and deterministically executes 24 native modules.
-        limitation: The 24/24 inventory is implementation coverage only.
-      numerically_verified:
-        status: blocked
-        evidence: Expected and actual artifacts exist for all 24 modules.
-        limitation: All 48 baseline/broken fixtures differ from production at only the first numeric leaf by about 1e-13; issue 438 owns independent fidelity repair.
-      curriculum_covered:
-        status: partial
-        evidence: The course teaches a useful Controls/GNC sequence.
-        limitation: Important breadth and depth remain unmapped; issue 439 owns expansion after fidelity repair.
-      capstone_integrated:
-        status: partial
-        evidence: P24 exercises a software-only virtual-HIL boundary.
-        limitation: P24 is an isolated HIL-methodology topic, not a cumulative traced Controls/GNC capstone.
-      learner_validated:
-        status: not_run
-        evidence: No representative-learner study is retained.
-        limitation: No learning-effectiveness or accessibility acceptance claim is supported.
-    rubric:
-      foundations_prerequisites: {status: partial, finding: "Core concepts are sequenced, but mathematical and estimation prerequisites need an explicit map."}
-      breadth_sequencing: {status: partial, finding: "Twenty-four useful topics do not exhaust Controls/GNC breadth or depth."}
-      derivation_physical_meaning: {status: partial, finding: "Lessons include equations and meaning; fidelity repair must confirm course-specific implementations."}
-      unique_executable_fidelity: {status: partial, finding: "Experiments are structurally distinct, but issue 438 must close source-model fidelity."}
-      sweeps_limits_failure_recovery: {status: passed, finding: "Modules include bounded sweeps and named failure/recovery paths at the software level."}
-      independent_evidence: {status: failed, finding: "The near-identical expected/actual fixtures do not establish independent evidence origin."}
-      formative_cumulative_assessment: {status: partial, finding: "Focused checks exist; cumulative competency assessment is absent."}
-      capstones: {status: failed, finding: "The final virtual-HIL topic is not a traced multi-competency capstone."}
-      exclusions_cross_course_handoffs: {status: partial, finding: "MATLAB and physical-HIL exclusions are explicit; estimation, optimization, and flight-dynamics handoffs need mapping."}
-    disposition: remediate
-    follow_up_issues: [438, 439]
-  - course_id: robotics-autonomy
-    title: Robotics and Autonomy
-    inventory:
-      source_items: 24
-      platform_modules: 24
-      interactive_modules: 24
-    maturity:
-      source_authored:
-        status: partial
-        evidence: P01 is implemented source material; P02-P24 provide approved identities and scaffolds.
-        limitation: P02-P24 are not fully authored runnable source lessons.
-      platform_converted:
-        status: passed
-        evidence: The catalog discovers and deterministically executes 24 native modules.
-        limitation: P02-P24 are Python-first platform designs, not source-equivalent conversions.
-      numerically_verified:
-        status: passed
-        evidence: P01 retains source-design cases and P02-P24 use analytic, invariant, or separately formulated references that do not import production experiments.
-        limitation: Verification is software-only and excludes MATLAB runtime and physical robot/HIL evidence.
-      curriculum_covered:
-        status: partial
-        evidence: The sequence covers mobile-robot kinematics, estimation, planning, mission logic, safety, and software-HIL methodology.
-        limitation: Spatial mechanics, manipulator dynamics/control, perception, mapping depth, manipulation, and integrated autonomy remain gaps owned by issue 440.
-      capstone_integrated:
-        status: partial
-        evidence: P24 combines a virtual plant, interface timing, and fault injection.
-        limitation: P24 is a HIL-methodology lesson, not a cumulative robotics/autonomy capstone across the full competency map.
-      learner_validated:
-        status: not_run
-        evidence: No representative-learner study is retained.
-        limitation: No learning-effectiveness or accessibility acceptance claim is supported.
-    rubric:
-      foundations_prerequisites: {status: partial, finding: "Mobile-robot foundations are coherent; broader mechanics, probability, perception, and optimization prerequisites need mapping."}
-      breadth_sequencing: {status: partial, finding: "The mobile-robot autonomy arc is useful but not a full robotics/autonomy curriculum."}
-      derivation_physical_meaning: {status: passed, finding: "Native lessons state equations, frames, units, assumptions, and limiting behavior."}
-      unique_executable_fidelity: {status: passed, finding: "The 24 modules use distinct course-specific models and stable result structures."}
-      sweeps_limits_failure_recovery: {status: passed, finding: "Each module retains two useful sweeps and a named broken/recovery path."}
-      independent_evidence: {status: passed, finding: "References do not import production experiments and retain tolerances and measured errors."}
-      formative_cumulative_assessment: {status: partial, finding: "Focused checks exist; a mapped cumulative assessment program does not."}
-      capstones: {status: failed, finding: "No traced multi-competency autonomy capstone closes the sequence."}
-      exclusions_cross_course_handoffs: {status: partial, finding: "Software and physical boundaries are explicit; controls, estimation, optimization, and vehicle-dynamics handoffs need mapping."}
-    disposition: expand
-    follow_up_issues: [440]
+- course_id: dsp-radar
+  title: DSP and Radar
+  inventory:
+    source_items: 84
+    platform_modules: 84
+    interactive_modules: 84
+  maturity:
+    source_authored:
+      status: passed
+      evidence: The pinned source contains 84 authored DSP and radar modules.
+      limitation: Source authorship does not establish fidelity of the native platform implementation.
+    platform_converted:
+      status: passed
+      evidence: The catalog discovers and deterministically executes 84 native modules.
+      limitation: Structural conversion is not semantic equivalence or curriculum completeness.
+    numerically_verified:
+      status: blocked
+      evidence: Verification records and fixtures exist for all 84 modules.
+      limitation: P02-P84 share a generic execution structure across unrelated topics; issue 441 must replace and independently
+        reverify them.
+    curriculum_covered:
+      status: blocked
+      evidence: The source topic inventory is broad.
+      limitation: Coverage cannot pass until fidelity remediation and a reviewed competency matrix close the audit.
+    capstone_integrated:
+      status: blocked
+      evidence: P84 is labeled as an end-to-end radar processing capstone.
+      limitation: Its native implementation has not passed semantic fidelity or independent capstone evidence.
+    learner_validated:
+      status: not_run
+      evidence: No representative-learner study is retained.
+      limitation: No learning-effectiveness or accessibility acceptance claim is supported.
+  rubric:
+    foundations_prerequisites:
+      status: partial
+      finding: The sequence is extensive, but prerequisites are not reconciled to a reviewed competency graph.
+    breadth_sequencing:
+      status: partial
+      finding: Topic breadth is strong; competency depth and sequencing require post-remediation review.
+    derivation_physical_meaning:
+      status: partial
+      finding: Source derivations are substantial, but native fidelity is not established for P02-P84.
+    unique_executable_fidelity:
+      status: failed
+      finding: P02-P84 reuse a generic implementation structure across unrelated DSP and radar topics.
+    sweeps_limits_failure_recovery:
+      status: partial
+      finding: Declared sweeps and broken cases do not compensate for failed semantic fidelity.
+    independent_evidence:
+      status: failed
+      finding: Existing evidence cannot close correctness while the production implementations are semantically templated.
+    formative_cumulative_assessment:
+      status: partial
+      finding: Module checks exist; cumulative competency assessment is not demonstrated.
+    capstones:
+      status: failed
+      finding: P84 cannot pass until its course-specific runtime and independent integration evidence are repaired.
+    exclusions_cross_course_handoffs:
+      status: partial
+      finding: MATLAB and physical boundaries are explicit; competency handoffs remain unmapped.
+  disposition: remediate
+  follow_up_issues:
+  - 441
+- course_id: controls-gnc
+  title: Controls and Guidance, Navigation, and Control
+  inventory:
+    source_items: 24
+    platform_modules: 24
+    interactive_modules: 24
+  maturity:
+    source_authored:
+      status: passed
+      evidence: The immutable source pin contains 24 authored modules with exact per-file identities retained in both source
+        and fidelity maps.
+      limitation: The authored inventory is not a complete Controls/GNC competency map.
+    platform_converted:
+      status: passed
+      evidence: The catalog discovers and deterministically executes all 24 native modules with two one-variable sweeps and
+        named broken/recovery paths.
+      limitation: The 24/24 inventory is implementation coverage only and includes explicit source behavior omissions.
+    numerically_verified:
+      status: passed
+      evidence: P01-P24 each retain independently originated baseline, two sweep, broken, and recovery signatures with units,
+        tolerances, measured errors, limiting cases, and teaching invariants.
+      limitation: Verification is deterministic software-only evidence; MATLAB runtime, browser/accessibility, learner, and
+        physical HIL evidence remain unperformed.
+    curriculum_covered:
+      status: partial
+      evidence: The repaired sequence teaches a useful controls, estimation, optimization, guidance, dynamics, and software-HIL
+        arc.
+      limitation: Important breadth and depth remain unmapped; issue 439 solely owns reviewed competency mapping and expansion.
+    capstone_integrated:
+      status: partial
+      evidence: P24 exercises a software-only two-way packet loop, exact virtual plant, deterministic loss, and watchdog recovery.
+      limitation: P24 is an isolated software-HIL methodology topic, not a cumulative traced Controls/GNC capstone.
+    learner_validated:
+      status: not_run
+      evidence: No representative-learner study is retained.
+      limitation: No learning-effectiveness or accessibility acceptance claim is supported.
+  rubric:
+    foundations_prerequisites:
+      status: partial
+      finding: Core concepts are sequenced, but mathematical and estimation prerequisites still require the issue 439 competency
+        map.
+    breadth_sequencing:
+      status: partial
+      finding: Twenty-four rigorously mapped topics form a useful arc but do not exhaust Controls/GNC breadth or depth.
+    derivation_physical_meaning:
+      status: passed
+      finding: Every item retains governing relations, observables, units, limiting cases, failure behavior, and explicit
+        omissions.
+    unique_executable_fidelity:
+      status: passed
+      finding: P01-P24 retain distinct state equations, controls, observables, failures, plots, and reference formulations.
+    sweeps_limits_failure_recovery:
+      status: passed
+      finding: Every item executes baseline, two one-variable sweeps, broken behavior, and explicit recovery with invariant
+        checks.
+    independent_evidence:
+      status: passed
+      finding: Course-owned references import no production entrypoint, consume no production output, and perturb no production
+        value.
+    formative_cumulative_assessment:
+      status: partial
+      finding: Per-item prediction, checks, recovery, and teach-back exist; a mapped cumulative assessment program does not.
+    capstones:
+      status: failed
+      finding: No traced multi-competency Controls/GNC capstone closes the sequence.
+    exclusions_cross_course_handoffs:
+      status: partial
+      finding: MATLAB, browser, learner, and physical-HIL exclusions are explicit; estimation, optimization, and flight-dynamics
+        handoffs still need mapping.
+  disposition: expand
+  follow_up_issues:
+  - 439
+- course_id: robotics-autonomy
+  title: Robotics and Autonomy
+  inventory:
+    source_items: 24
+    platform_modules: 24
+    interactive_modules: 24
+  maturity:
+    source_authored:
+      status: partial
+      evidence: P01 is implemented source material; P02-P24 provide approved identities and scaffolds.
+      limitation: P02-P24 are not fully authored runnable source lessons.
+    platform_converted:
+      status: passed
+      evidence: The catalog discovers and deterministically executes 24 native modules.
+      limitation: P02-P24 are Python-first platform designs, not source-equivalent conversions.
+    numerically_verified:
+      status: passed
+      evidence: P01 retains source-design cases and P02-P24 use analytic, invariant, or separately formulated references that
+        do not import production experiments.
+      limitation: Verification is software-only and excludes MATLAB runtime and physical robot/HIL evidence.
+    curriculum_covered:
+      status: partial
+      evidence: The sequence covers mobile-robot kinematics, estimation, planning, mission logic, safety, and software-HIL
+        methodology.
+      limitation: Spatial mechanics, manipulator dynamics/control, perception, mapping depth, manipulation, and integrated
+        autonomy remain gaps owned by issue 440.
+    capstone_integrated:
+      status: partial
+      evidence: P24 combines a virtual plant, interface timing, and fault injection.
+      limitation: P24 is a HIL-methodology lesson, not a cumulative robotics/autonomy capstone across the full competency
+        map.
+    learner_validated:
+      status: not_run
+      evidence: No representative-learner study is retained.
+      limitation: No learning-effectiveness or accessibility acceptance claim is supported.
+  rubric:
+    foundations_prerequisites:
+      status: partial
+      finding: Mobile-robot foundations are coherent; broader mechanics, probability, perception, and optimization prerequisites
+        need mapping.
+    breadth_sequencing:
+      status: partial
+      finding: The mobile-robot autonomy arc is useful but not a full robotics/autonomy curriculum.
+    derivation_physical_meaning:
+      status: passed
+      finding: Native lessons state equations, frames, units, assumptions, and limiting behavior.
+    unique_executable_fidelity:
+      status: passed
+      finding: The 24 modules use distinct course-specific models and stable result structures.
+    sweeps_limits_failure_recovery:
+      status: passed
+      finding: Each module retains two useful sweeps and a named broken/recovery path.
+    independent_evidence:
+      status: passed
+      finding: References do not import production experiments and retain tolerances and measured errors.
+    formative_cumulative_assessment:
+      status: partial
+      finding: Focused checks exist; a mapped cumulative assessment program does not.
+    capstones:
+      status: failed
+      finding: No traced multi-competency autonomy capstone closes the sequence.
+    exclusions_cross_course_handoffs:
+      status: partial
+      finding: Software and physical boundaries are explicit; controls, estimation, optimization, and vehicle-dynamics handoffs
+        need mapping.
+  disposition: expand
+  follow_up_issues:
+  - 440
 holds:
-  - course_id: vehicle-dynamics
-    implementation_status: not_implemented
-    authorization_status: blocked
-    reason: Vehicle Dynamics is queued and cannot be sized or converted from an arbitrary lesson target.
-    release_conditions:
-      - Issue 437 course-caliber gate is merged and projected into the target repository.
-      - A reviewed Vehicle Dynamics competency-to-module matrix validates against the control-plane schema.
-      - Replayable GR86 CAN/BLE fixtures and their provenance are available for authorized software evidence.
-      - A separately authorized first batch forms a coherent unit and contains at most ten new lessons.
+- course_id: vehicle-dynamics
+  implementation_status: not_implemented
+  authorization_status: blocked
+  reason: Vehicle Dynamics is queued and cannot be sized or converted from an arbitrary lesson target.
+  release_conditions:
+  - Issue 437 course-caliber gate is merged and projected into the target repository.
+  - A reviewed Vehicle Dynamics competency-to-module matrix validates against the control-plane schema.
+  - Replayable GR86 CAN/BLE fixtures and their provenance are available for authorized software evidence.
+  - A separately authorized first batch forms a coherent unit and contains at most ten new lessons.

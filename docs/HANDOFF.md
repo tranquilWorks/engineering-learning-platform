@@ -1,37 +1,33 @@
 # Handoff
 
-The course-caliber governance projection is complete at control revision
-`f6745e44f459a52431b81a3f953c8f2e03cbe45e` and target audit baseline
-`39aed41de4e3c84fc00c3b8546c5488e253b6be2`.
+Controls/GNC P01-P24 fidelity remediation is complete within
+`ELP-GNC-FIDELITY-P01-P24` at source pin
+`ffd6623ee2cf8ccd8599fffd935ef07370750fa3`. The implementation retains one
+target commit and pull request for 24 separately checked work items.
 
-Future course work must start from `docs/course-caliber-status.yaml` and obey
-these boundaries:
+The durable course evidence is:
 
-1. Do not use source, platform, authored, interactive, or `P##` counts as a
-   curriculum-completeness claim.
-2. Require a reviewed schema-valid competency-to-module matrix before a new
-   conversion or expansion. Derive the module count from that matrix.
-3. Authorize only the smallest coherent batch, with no more than ten new
-   lessons.
-4. Run the semantic anti-template review across governing relations, state,
-   controls, transformations, outputs, failures, and reference methods.
-5. Reject an independent-evidence claim when its fixture imports the
-   production entrypoint, derives from production output, or perturbs
-   production output.
-6. Preserve separate evidence and limitations for all six maturity states and
-   all nine rubric dimensions.
+1. `courses/controls-gnc/fidelity-map.yaml` — exact source-model identity,
+   controls, equations, observables, two sweeps, failure/recovery, limiting
+   cases, omissions, reference method, and axes for every P01-P24 item.
+2. `courses/controls-gnc/reference_cases.py` — course-owned closed-form,
+   alternate-algorithm, or separately formulated numerical references that do
+   not import production experiments or consume production output.
+3. Each module's `expected-independent.json` and `actual-production.json` —
+   baseline, sweep 1, sweep 2, broken, and recovery signatures with ordered
+   fields and units.
+4. `docs/evidence/ELP-GNC-FIDELITY-P01-P24-2026-09-21.md` — the retained
+   verification and claim boundary.
 
-Owned next work remains deliberately separate: #438 repairs Controls/GNC
-fidelity and evidence, #439 expands Controls/GNC against a reviewed competency
-map, #440 expands Robotics and adds integrated assessment/capstone work, and
-#441 replaces the generic DSP/Radar implementation structure.
+Do not reintroduce production-derived expected vectors or generic axes. Preserve
+P20's narrow two-fixed-gain statement and P24's software-only, non-capstone
+boundary. The next Controls/GNC work is issue #439: create or review the
+competency map, derive the expansion count from it, and authorize coherent
+batches of at most ten new lessons.
 
-Vehicle Dynamics remains blocked and unimplemented. Release the hold only when
-its reviewed competency map validates, replayable GR86 CAN/BLE fixtures and
-provenance are available, and Portfolio Control separately authorizes a
-coherent batch of at most ten lessons.
+Issues #440 and #441 remain separate Robotics and DSP/Radar work. Vehicle
+Dynamics remains blocked until its reviewed competency map, replayable GR86
+CAN/BLE fixtures, and separate first batch are authorized.
 
-Verification commands are listed in `contracts/verification.yaml`; retained
-results are in `docs/evidence/ELP-COURSE-CALIBER-00-2026-09-21.md`. Roll back
-this governance projection by reverting its single target merge. No course or
-source history needs rewriting.
+Rollback this remediation by reverting its single target merge. The source
+repository and all source gitlinks remain unchanged.

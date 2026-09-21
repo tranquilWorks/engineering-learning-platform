@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 course_id: controls-gnc
 item:
   id: P20
@@ -26,28 +26,29 @@ item:
   - path: modules/20-compare-nominal-and-robust-designs/model.m
     sha256: e5a16705f1f2c1c911eeb79f16b49be03e3633dd6b4efd96814e116e3e1118a2
 target:
-  content_digest: 40dfc61f5abf99f6fb87255512713b3150084dfa5bb6c0661d2a4ba772af7ec9
+  content_digest: d7094bf3534878424892bab4575c79b238b465a1418752b10d8a1d53b4eed24a
   files:
   - path: modules/20-compare-nominal-and-robust-designs/module.yaml
-    sha256: 9421bb79df05fb44fcc82fd57b39db5caae27d031e4636f28c2dc3e386d7651a
+    sha256: 954e42eacb55b2eb7adf57dfc970aa7294344bacce62c99c449f9be6750dcba8
   - path: modules/20-compare-nominal-and-robust-designs/lesson.md
-    sha256: 9c7c6ee1e4b3dcb62cd668dc462abaed75b4ba27814cb0f5c82ccfdd56596b9a
+    sha256: 17749887f92fcaa003dc27eb29e4f4432612ebfb700120380578f6a77e4e77f3
   - path: modules/20-compare-nominal-and-robust-designs/experiment.py
-    sha256: 22705c4252302335513d98696d7db8f9410c02415aee7e79ea9807e2585fa05c
+    sha256: b3aebfbbf0175351304a4d543e8f5b25f749a74857a3e2e57c74832ee9c5fc3c
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you compare Nominal
-    and Robust Designs?
-  physical_model: Compare a nominal gain with a conservative design across the same uncertainty envelope.
+  guiding_question: What inputs, observable effects, and failure modes matter when you compare Nominal and Robust
+    Designs?
+  physical_model: Compare exactly two preselected proportional gains on a scalar uncertain speed plant; no robust
+    synthesis or certification is claimed.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
   - Evaluate the deterministic Python model.
   - Compare the observable response with its diagnostic mechanism.
   - Inject the source failure and verify the stated recovery.
   equations:
-  - latex: u=K(r-v)
-    meaning: Both designs share structure; their gain is selected against different plant sets.
-  - latex: J_w=\max_{p\in\mathcal P}J(K,p)
-    meaning: The robust choice reduces worst-case error at the cost of more effort.
+  - latex: \dot v=-a v+b u,\quad u_K=K(r-v),\;K\in\{2,4\}
+    meaning: Both displayed designs are fixed proportional gains evaluated at the selected positive plant point.
+  - latex: J_K=\int_0^{12}[(r-v_K)^2+0.05u_K^2]dt
+    meaning: The finite-horizon objective compares tracking and effort at one point; it is not a worst-case certificate.
   equation_order: before_toolbox_shortcuts
   deterministic_data:
     seed: 1601
@@ -56,53 +57,54 @@ content:
       value: 20
       unit: index
     datasets:
-    - name: baseline numeric signature
-      provenance: retained_fixture
-      sha256: e807f06aec60056612b6855b255e203af65809ca584d6542e1efbc4744398493
-      unit: mixed numeric signature
+    - name: five-scenario independent reference signatures (expected-independent.json)
+      provenance: independent_reference
+      sha256: 1ebeb09d9030e34d9dfa30280db65b361fb0b257878d74293bf070ed0d01eb78
+      unit: ordered mixed SI signature; fields and units are embedded in the evidence file
   plot_sequence:
-  - source_figure: Source baseline and sweep figures
+  - source_figure: Pinned MATLAB source intent mapped to platform response view
     target_plot_key: response
-    title: Observable response
+    title: Two fixed-gain speed responses
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Response
-      unit: source units
-    interpretation: Compare a nominal gain with a conservative design across the same uncertainty envelope.
-  - source_figure: Source diagnostic and broken-case figures
+      label: Speed
+      unit: m/s
+    interpretation: the lesson compares exactly two fixed gains, not robust synthesis
+  - source_figure: Pinned MATLAB source intent mapped to platform mechanism view
     target_plot_key: mechanism
-    title: Mechanism and diagnostic view
+    title: Two fixed-gain commands
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Diagnostic
-      unit: source units
-    interpretation: The broken case reverses actuator sign, violating the uncertainty set both designs
-      assumed.
+      label: Commanded acceleration
+      unit: m/s²
+    interpretation: both preselected gains become positive-feedback failures
   sweeps:
   - control: actuator_gain_ratio
     values:
     - 0.5
     - 1.0
     - 1.5
-    expected_observation: The robust design should improve the difficult low-gain/high-drag corner while
-      using more command nominally.
+    expected_observation: Higher positive actuator gain increases closed-loop authority for both fixed proportional
+      gains and changes their finite-horizon tracking/effort objectives.
   - control: drag_ratio
     values:
     - 0.5
     - 1.0
     - 2.0
-    expected_observation: Compare a nominal gain with a conservative design across the same uncertainty
-      envelope.
+    expected_observation: Higher drag slows both fixed-gain responses and increases their proportional steady-state
+      speed error.
   broken_case:
     trigger: Enable broken_mode.
-    failure: The broken case reverses actuator sign, violating the uncertainty set both designs assumed.
-    recovery: Disable the broken case and restore a plant inside the certified uncertainty family.
+    failure: Broken mode reverses actuator polarity, outside the declared positive gain/drag family; both fixed-gain
+      loops then have the wrong feedback direction.
+    recovery: Disable broken_mode to restore positive actuator polarity. The module remains a two-fixed-gain comparison,
+      not a robust synthesis.
     expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
   common_mistakes:
   - Changing more than one lever before explaining the first delta.
@@ -134,39 +136,137 @@ python_source_equivalence:
   - name: broken_mode
     value: false
     unit: flag
+  reference_origin:
+    derived_from_production_output: false
+    formulation: Two fixed-gain scalar recurrences over the declared uncertainty point
+    imports_production_entrypoint: false
+    independent: true
+    package:
+      path: reference_cases.py
+      sha256: 975fe4772642993eeda6cfa33487192de0ae526b4f12ab2523d3f100ca994c8d
+    perturbs_production_output: false
+    type: closed_form
+  production_origin:
+    derived_from_production_output: true
+    formulation: Direct capture of diagnostics.signature from experiment.py:run
+    imports_production_entrypoint: true
+    independent: false
+    package:
+      path: modules/20-compare-nominal-and-robust-designs/experiment.py
+      sha256: b3aebfbbf0175351304a4d543e8f5b25f749a74857a3e2e57c74832ee9c5fc3c
+    perturbs_production_output: false
+    type: production_entrypoint
   cases:
-  - name: baseline-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/20-compare-nominal-and-robust-designs/evidence/expected-baseline.json
-      sha256: e807f06aec60056612b6855b255e203af65809ca584d6542e1efbc4744398493
-    actual:
-      path: modules/20-compare-nominal-and-robust-designs/evidence/actual-baseline.json
-      sha256: ea4132df9dc8063359236de86a9a8c2f6078c7d0ac0b433df0c11e0f74d08e31
-    max_absolute_error: 9.992007221626409e-14
-    max_relative_error: 9.99200722162541e-14
+  - name: baseline-independent-reference-vs-production
+    scenario: baseline
+    evidence_key: baseline
+    parameters:
+      actuator_gain_ratio: 1.0
+      broken_mode: false
+      drag_ratio: 1.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: &id001
+      absolute: 1.0e-06
+      relative: 0.04
+    expected: &id002
+      path: modules/20-compare-nominal-and-robust-designs/evidence/expected-independent.json
+      sha256: 1ebeb09d9030e34d9dfa30280db65b361fb0b257878d74293bf070ed0d01eb78
+    actual: &id003
+      path: modules/20-compare-nominal-and-robust-designs/evidence/actual-production.json
+      sha256: ea4a896580ec7b4309d87be52fd205479a1831582cba1634dcf32354c82c7f27
+    comparison_scale: 1.858749140893476
+    allowed_absolute_error: 0.07434996563573903
+    max_absolute_error: 0.0003199999999967673
+    max_relative_error: 0.00029542556830251706
+    teaching_invariant:
+      description: the lesson compares exactly two fixed gains, not robust synthesis
+      reference_passed: true
+      production_passed: true
     passed: true
-  - name: broken-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/20-compare-nominal-and-robust-designs/evidence/expected-broken.json
-      sha256: 79be175588cd865396b1f17d82f18bff28fa06c535ea26dc08d922bb452ccd5d
-    actual:
-      path: modules/20-compare-nominal-and-robust-designs/evidence/actual-broken.json
-      sha256: 584dfa90efcd6e02f14a7952c23007e9741b9fdca0e08406d9c1a90fb6890bcb
-    max_absolute_error: 9.992007221626409e-14
-    max_relative_error: 9.99200722162541e-14
+  - name: sweep-1-independent-reference-vs-production
+    scenario: sweep_1
+    evidence_key: sweep_1
+    parameters:
+      actuator_gain_ratio: 1.5
+      broken_mode: false
+      drag_ratio: 1.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 1.5
+    allowed_absolute_error: 0.06
+    max_absolute_error: 0.00016326530612198464
+    max_relative_error: 0.00016326530612198464
+    teaching_invariant:
+      description: the lesson compares exactly two fixed gains, not robust synthesis
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: sweep-2-independent-reference-vs-production
+    scenario: sweep_2
+    evidence_key: sweep_2
+    parameters:
+      actuator_gain_ratio: 1.0
+      broken_mode: false
+      drag_ratio: 2.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 3.7800624999999966
+    allowed_absolute_error: 0.15120249999999988
+    max_absolute_error: 0.0008888888888858304
+    max_relative_error: 0.0003434316863214688
+    teaching_invariant:
+      description: the lesson compares exactly two fixed gains, not robust synthesis
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: broken-independent-reference-vs-production
+    scenario: broken
+    evidence_key: broken
+    parameters:
+      actuator_gain_ratio: 1.0
+      broken_mode: true
+      drag_ratio: 1.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 1.2800960042677956e+30
+    allowed_absolute_error: 5.120384017071182e+28
+    max_absolute_error: 3.311355269413075e+28
+    max_relative_error: 0.025868022854326017
+    teaching_invariant:
+      description: the lesson compares exactly two fixed gains, not robust synthesis
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: recovery-independent-reference-vs-production
+    scenario: recovery
+    evidence_key: recovery
+    parameters:
+      actuator_gain_ratio: 1.0
+      broken_mode: false
+      drag_ratio: 1.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 1.858749140893476
+    allowed_absolute_error: 0.07434996563573903
+    max_absolute_error: 0.0003199999999967673
+    max_relative_error: 0.00029542556830251706
+    teaching_invariant:
+      description: the lesson compares exactly two fixed gains, not robust synthesis
+      reference_passed: true
+      production_passed: true
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
-    signatures bind the Python conversion.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
+    constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:
@@ -178,3 +278,15 @@ claims:
   learner_effectiveness:
     status: not_run
     reason: Learner effectiveness requires post-release study and is not claimed.
+fidelity:
+  batch_id: ELP-GNC-FIDELITY-P01-P24
+  item_id: P20
+  map:
+    path: fidelity-map.yaml
+    sha256: 0607e8f0908f32e1cded19c7daa550a3ff40d788372e6927e2cfc364c633f4b4
+  schema:
+    path: fidelity-map.schema.json
+    sha256: 256f1e1298b80812ce35a26eeb750917ffc1ea10cc25e9da8363d9524da102a0
+  source_model:
+    path: modules/20-compare-nominal-and-robust-designs/model.m
+    sha256: e5a16705f1f2c1c911eeb79f16b49be03e3633dd6b4efd96814e116e3e1118a2

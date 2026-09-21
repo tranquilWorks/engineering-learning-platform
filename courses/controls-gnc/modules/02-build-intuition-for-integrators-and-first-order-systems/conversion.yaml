@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 course_id: controls-gnc
 item:
   id: P02
@@ -26,17 +26,17 @@ item:
   - path: modules/02-build-intuition-for-integrators-and-first-order-systems/model.m
     sha256: dc2b2f62bfd039133e2c7582b9014cda8f826e6dde89614947208befc19085a6
 target:
-  content_digest: 0d3361f1efb475a7aaa7a5e27d63e829b595cc14ffd1d19c718faae18add1a20
+  content_digest: 1466dcbe69fe3bb59f7a13c1a953efea98e39f4227fad4f345823fd7c3cc0dac
   files:
   - path: modules/02-build-intuition-for-integrators-and-first-order-systems/module.yaml
     sha256: 6057ddfe555d982720a56443249b53e0b4bc8cb0c547bc5aebcb491273bd30bf
   - path: modules/02-build-intuition-for-integrators-and-first-order-systems/lesson.md
-    sha256: 5b1117fa9214f78eeb8369333fdcfd42f2b06931be7ba1e0e623e243d33db82b
+    sha256: 95b90f81006e9f52467757109bd034563d459740b00c7f3be2f255030024b25c
   - path: modules/02-build-intuition-for-integrators-and-first-order-systems/experiment.py
-    sha256: 07d573742639fa63b286b41a881b49901e80fab21dc50d30a07449d0f5b060ff
+    sha256: 047292c55d3dce24f1eb5751d5fd4d1c756e24a4ef0c712c729aba9cf5978750
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you build Intuition
-    for Integrators and First-Order Systems?
+  guiding_question: What inputs, observable effects, and failure modes matter when you build Intuition for Integrators
+    and First-Order Systems?
   physical_model: Compare accumulation with exponential memory under the same step input.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
@@ -56,42 +56,41 @@ content:
       value: 2
       unit: index
     datasets:
-    - name: baseline numeric signature
-      provenance: retained_fixture
-      sha256: f4a3884c19df9b4811b5b1e406ddad8c2625ccf02e88c88c4349cd90df6e72a2
-      unit: mixed numeric signature
+    - name: five-scenario independent reference signatures (expected-independent.json)
+      provenance: independent_reference
+      sha256: f75f208cedad2f60244b58b346db8ba276c89c654f0430a7d594cd089aa6994b
+      unit: ordered mixed SI signature; fields and units are embedded in the evidence file
   plot_sequence:
-  - source_figure: Source baseline and sweep figures
+  - source_figure: Pinned MATLAB source intent mapped to platform response view
     target_plot_key: response
-    title: Observable response
+    title: Integrator and first-order step responses
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Response
-      unit: source units
-    interpretation: Compare accumulation with exponential memory under the same step input.
-  - source_figure: Source diagnostic and broken-case figures
+      label: Normalized response
+      unit: ratio
+    interpretation: the integrator ramps while the stable first-order path remains bounded
+  - source_figure: Pinned MATLAB source intent mapped to platform mechanism view
     target_plot_key: mechanism
-    title: Mechanism and diagnostic view
+    title: First-order tracking mechanism
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Diagnostic
-      unit: source units
-    interpretation: The broken case uses forward Euler with dt/tau greater than two, creating a discrete
-      pole outside the unit circle.
+      label: Normalized signal
+      unit: ratio
+    interpretation: the discrete first-order path oscillates or grows outside its physical bound
   sweeps:
   - control: input_amplitude
     values:
     - 0.5
     - 1.0
     - 1.5
-    expected_observation: The integrator ramp slope follows input amplitude; the first-order final value
-      does not depend on tau.
+    expected_observation: The integrator ramp slope follows input amplitude; the first-order final value does not
+      depend on tau.
   - control: time_constant_s
     values:
     - 0.5
@@ -100,8 +99,8 @@ content:
     expected_observation: Compare accumulation with exponential memory under the same step input.
   broken_case:
     trigger: Enable broken_mode.
-    failure: The broken case uses forward Euler with dt/tau greater than two, creating a discrete pole
-      outside the unit circle.
+    failure: The broken case uses forward Euler with dt/tau greater than two, creating a discrete pole outside the
+      unit circle.
     recovery: Disable the broken case to use the exact first-order transition.
     expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
   common_mistakes:
@@ -134,39 +133,137 @@ python_source_equivalence:
   - name: broken_mode
     value: false
     unit: flag
+  reference_origin:
+    derived_from_production_output: false
+    formulation: Analytic integrator/first-order response and Euler recurrence formula
+    imports_production_entrypoint: false
+    independent: true
+    package:
+      path: reference_cases.py
+      sha256: 975fe4772642993eeda6cfa33487192de0ae526b4f12ab2523d3f100ca994c8d
+    perturbs_production_output: false
+    type: closed_form
+  production_origin:
+    derived_from_production_output: true
+    formulation: Direct capture of diagnostics.signature from experiment.py:run
+    imports_production_entrypoint: true
+    independent: false
+    package:
+      path: modules/02-build-intuition-for-integrators-and-first-order-systems/experiment.py
+      sha256: 047292c55d3dce24f1eb5751d5fd4d1c756e24a4ef0c712c729aba9cf5978750
+    perturbs_production_output: false
+    type: production_entrypoint
   cases:
-  - name: baseline-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/02-build-intuition-for-integrators-and-first-order-systems/evidence/expected-baseline.json
-      sha256: f4a3884c19df9b4811b5b1e406ddad8c2625ccf02e88c88c4349cd90df6e72a2
-    actual:
-      path: modules/02-build-intuition-for-integrators-and-first-order-systems/evidence/actual-baseline.json
-      sha256: c31ab7bb58797dd13ddd2ba477cc34f6d07b24cb258088d77f27913eddea7aac
-    max_absolute_error: 9.992007221626409e-14
-    max_relative_error: 9.99200722162541e-14
+  - name: baseline-independent-reference-vs-production
+    scenario: baseline
+    evidence_key: baseline
+    parameters:
+      broken_mode: false
+      input_amplitude: 1.0
+      time_constant_s: 2.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: &id001
+      absolute: 1.0e-10
+      relative: 1.0e-10
+    expected: &id002
+      path: modules/02-build-intuition-for-integrators-and-first-order-systems/evidence/expected-independent.json
+      sha256: f75f208cedad2f60244b58b346db8ba276c89c654f0430a7d594cd089aa6994b
+    actual: &id003
+      path: modules/02-build-intuition-for-integrators-and-first-order-systems/evidence/actual-production.json
+      sha256: f2aa9213bc63c3591bfeaee2ea8ca018fd3792748515c14180e6832cca84b5c5
+    comparison_scale: 10.0
+    allowed_absolute_error: 1.0e-09
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: the integrator ramps while the stable first-order path remains bounded
+      reference_passed: true
+      production_passed: true
     passed: true
-  - name: broken-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/02-build-intuition-for-integrators-and-first-order-systems/evidence/expected-broken.json
-      sha256: 22d532807f027aaf2b067e904c5c987acfc152e2875ce355b49fbc718f624190
-    actual:
-      path: modules/02-build-intuition-for-integrators-and-first-order-systems/evidence/actual-broken.json
-      sha256: 887064ca660fa59b0d56285256ba408807503a76965c84e2edaf76a719e53d23
-    max_absolute_error: 9.992007221626409e-14
-    max_relative_error: 9.99200722162541e-14
+  - name: sweep-1-independent-reference-vs-production
+    scenario: sweep_1
+    evidence_key: sweep_1
+    parameters:
+      broken_mode: false
+      input_amplitude: 1.5
+      time_constant_s: 2.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 15.0
+    allowed_absolute_error: 1.5e-09
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: the integrator ramps while the stable first-order path remains bounded
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: sweep-2-independent-reference-vs-production
+    scenario: sweep_2
+    evidence_key: sweep_2
+    parameters:
+      broken_mode: false
+      input_amplitude: 1.0
+      time_constant_s: 4.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 10.0
+    allowed_absolute_error: 1.0e-09
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: the integrator ramps while the stable first-order path remains bounded
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: broken-independent-reference-vs-production
+    scenario: broken
+    evidence_key: broken
+    parameters:
+      broken_mode: true
+      input_amplitude: 1.0
+      time_constant_s: 2.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 10.0
+    allowed_absolute_error: 1.0e-09
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: the integrator ramps while the stable first-order path remains bounded
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: recovery-independent-reference-vs-production
+    scenario: recovery
+    evidence_key: recovery
+    parameters:
+      broken_mode: false
+      input_amplitude: 1.0
+      time_constant_s: 2.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 10.0
+    allowed_absolute_error: 1.0e-09
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: the integrator ramps while the stable first-order path remains bounded
+      reference_passed: true
+      production_passed: true
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
-    signatures bind the Python conversion.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
+    constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:
@@ -178,3 +275,15 @@ claims:
   learner_effectiveness:
     status: not_run
     reason: Learner effectiveness requires post-release study and is not claimed.
+fidelity:
+  batch_id: ELP-GNC-FIDELITY-P01-P24
+  item_id: P02
+  map:
+    path: fidelity-map.yaml
+    sha256: 0607e8f0908f32e1cded19c7daa550a3ff40d788372e6927e2cfc364c633f4b4
+  schema:
+    path: fidelity-map.schema.json
+    sha256: 256f1e1298b80812ce35a26eeb750917ffc1ea10cc25e9da8363d9524da102a0
+  source_model:
+    path: modules/02-build-intuition-for-integrators-and-first-order-systems/model.m
+    sha256: dc2b2f62bfd039133e2c7582b9014cda8f826e6dde89614947208befc19085a6

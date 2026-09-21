@@ -2,7 +2,7 @@
 
 **Guiding question:** What inputs, observable effects, and failure modes matter when you test Observability?
 
-Use measurement history and observability conditioning to expose hidden state. This native lab preserves the source experiment while making the levers, diagnostics, and recovery available directly in the learning platform.
+Use measurement history and observability conditioning to expose hidden state. This native lab preserves the source teaching objective in a bounded Python model; the course fidelity record names behavior that is intentionally not exposed in the platform.
 
 ## Predict before running
 

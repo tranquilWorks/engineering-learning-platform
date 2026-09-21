@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 course_id: controls-gnc
 item:
   id: P13
@@ -26,14 +26,14 @@ item:
   - path: modules/13-test-controllability/model.m
     sha256: 1e6cbdfb5f99db26b29cdc1a2dd7715636cce34263bf6a485db3289ed83f1da0
 target:
-  content_digest: 68614fda76b8cf3cd5f841b796210117c9db18114ae6ad871c84d5f1fc7bf489
+  content_digest: 9a47edf852a246c94ba32aa91701c809b6b53de086de88929e9422649eb9ad02
   files:
   - path: modules/13-test-controllability/module.yaml
     sha256: d392c5ce4f1318558d9751acca52eb5748c7c41163a812bf6a21b1063cc2a8f6
   - path: modules/13-test-controllability/lesson.md
-    sha256: e22ea776edac47256e13ceb3dcb4dbbc6472af80bf5206d7bc2971e3e1a11661
+    sha256: 9f1b885c535f5b215d40f5225d2a54c001d885c3933c4f88b6842c6a4a7eb7ac
   - path: modules/13-test-controllability/experiment.py
-    sha256: b752e38e8f926ad5263887d1d8dd2c7f15c9bc6f46e8bbc33471bd26d728713a
+    sha256: b3cd2ede8792232b8365cdba26a3f4f36463a227ac8eaa2fea888aa526181136
 content:
   guiding_question: What inputs, observable effects, and failure modes matter when you test Controllability?
   physical_model: Use rank and reachability energy to distinguish weak from missing control authority.
@@ -55,42 +55,43 @@ content:
       value: 13
       unit: index
     datasets:
-    - name: baseline numeric signature
-      provenance: retained_fixture
-      sha256: bca514c05d07586acf9512a46fe72553cd148019d592b32914a3ceccfda3f99c
-      unit: mixed numeric signature
+    - name: five-scenario independent reference signatures (expected-independent.json)
+      provenance: independent_reference
+      sha256: 25f32e5aad77512712321354130baeba0b08ecceeec793e1bf5d9614d3d61b7e
+      unit: ordered mixed SI signature; fields and units are embedded in the evidence file
   plot_sequence:
-  - source_figure: Source baseline and sweep figures
+  - source_figure: Pinned MATLAB source intent mapped to platform response view
     target_plot_key: response
-    title: Observable response
+    title: Reachable position under unit command
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Response
-      unit: source units
-    interpretation: Use rank and reachability energy to distinguish weak from missing control authority.
-  - source_figure: Source diagnostic and broken-case figures
+      label: Position
+      unit: m
+    interpretation: zero coupling removes one controllable direction
+  - source_figure: Pinned MATLAB source intent mapped to platform mechanism view
     target_plot_key: mechanism
-    title: Mechanism and diagnostic view
+    title: Controllability conditioning and energy map
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Ordered direction
+      unit: index
     - role: y
-      label: Diagnostic
-      unit: source units
-    interpretation: The broken case removes coupling between rate and position, dropping controllability
-      rank.
+      label: Controllability singular value
+      unit: state/input
+    - role: y
+      label: Gramian eigenvalue
+      unit: state²/input²
+    interpretation: controllability rank drops from two to one
   sweeps:
   - control: input_gain
     values:
     - 0.25
     - 1.0
     - 2.0
-    expected_observation: Zero coupling should make position unreachable even though rate is directly
-      actuated.
+    expected_observation: Zero coupling should make position unreachable even though rate is directly actuated.
   - control: coupling
     values:
     - 0.25
@@ -132,39 +133,137 @@ python_source_equivalence:
   - name: broken_mode
     value: false
     unit: flag
+  reference_origin:
+    derived_from_production_output: false
+    formulation: Direct controllability matrix and finite-horizon Gramian construction
+    imports_production_entrypoint: false
+    independent: true
+    package:
+      path: reference_cases.py
+      sha256: 975fe4772642993eeda6cfa33487192de0ae526b4f12ab2523d3f100ca994c8d
+    perturbs_production_output: false
+    type: closed_form
+  production_origin:
+    derived_from_production_output: true
+    formulation: Direct capture of diagnostics.signature from experiment.py:run
+    imports_production_entrypoint: true
+    independent: false
+    package:
+      path: modules/13-test-controllability/experiment.py
+      sha256: b3cd2ede8792232b8365cdba26a3f4f36463a227ac8eaa2fea888aa526181136
+    perturbs_production_output: false
+    type: production_entrypoint
   cases:
-  - name: baseline-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/13-test-controllability/evidence/expected-baseline.json
-      sha256: bca514c05d07586acf9512a46fe72553cd148019d592b32914a3ceccfda3f99c
-    actual:
-      path: modules/13-test-controllability/evidence/actual-baseline.json
-      sha256: e414f2c5483bf13eccb33653f1d5cbd76789fe0cb8a91d988c6eaac528a61f69
-    max_absolute_error: 9.992007221626409e-14
-    max_relative_error: 9.99200722162541e-14
+  - name: baseline-independent-reference-vs-production
+    scenario: baseline
+    evidence_key: baseline
+    parameters:
+      broken_mode: false
+      coupling: 1.0
+      input_gain: 1.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: &id001
+      absolute: 1.0e-12
+      relative: 1.0e-12
+    expected: &id002
+      path: modules/13-test-controllability/evidence/expected-independent.json
+      sha256: 25f32e5aad77512712321354130baeba0b08ecceeec793e1bf5d9614d3d61b7e
+    actual: &id003
+      path: modules/13-test-controllability/evidence/actual-production.json
+      sha256: f5a60e0c4db5319e37b797514a5a6a73b03b885a61d4bc3e3a603287c7419360
+    comparison_scale: 2.0
+    allowed_absolute_error: 2.0e-12
+    max_absolute_error: 2.0816681711721685e-17
+    max_relative_error: 2.0816681711721685e-17
+    teaching_invariant:
+      description: zero coupling removes one controllable direction
+      reference_passed: true
+      production_passed: true
     passed: true
-  - name: broken-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/13-test-controllability/evidence/expected-broken.json
-      sha256: da2a147b253517d52379e6eacba60ab3d99e845470e518f167f62359290c6b11
-    actual:
-      path: modules/13-test-controllability/evidence/actual-broken.json
-      sha256: 00de6a405e94bb5c6b83da5876e0b432b966958d44e6e69d65e8eff06ec0a7d3
-    max_absolute_error: 9.992007221626409e-14
-    max_relative_error: 9.99200722162541e-14
+  - name: sweep-1-independent-reference-vs-production
+    scenario: sweep_1
+    evidence_key: sweep_1
+    parameters:
+      broken_mode: false
+      coupling: 1.0
+      input_gain: 2.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 4.0
+    allowed_absolute_error: 4.0e-12
+    max_absolute_error: 8.326672684688674e-17
+    max_relative_error: 8.326672684688674e-17
+    teaching_invariant:
+      description: zero coupling removes one controllable direction
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: sweep-2-independent-reference-vs-production
+    scenario: sweep_2
+    evidence_key: sweep_2
+    parameters:
+      broken_mode: false
+      coupling: 2.0
+      input_gain: 1.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 4.0
+    allowed_absolute_error: 4.0e-12
+    max_absolute_error: 1.3877787807814457e-17
+    max_relative_error: 1.3877787807814457e-17
+    teaching_invariant:
+      description: zero coupling removes one controllable direction
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: broken-independent-reference-vs-production
+    scenario: broken
+    evidence_key: broken
+    parameters:
+      broken_mode: true
+      coupling: 1.0
+      input_gain: 1.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 1.0
+    allowed_absolute_error: 1.0e-12
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: zero coupling removes one controllable direction
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: recovery-independent-reference-vs-production
+    scenario: recovery
+    evidence_key: recovery
+    parameters:
+      broken_mode: false
+      coupling: 1.0
+      input_gain: 1.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 2.0
+    allowed_absolute_error: 2.0e-12
+    max_absolute_error: 2.0816681711721685e-17
+    max_relative_error: 2.0816681711721685e-17
+    teaching_invariant:
+      description: zero coupling removes one controllable direction
+      reference_passed: true
+      production_passed: true
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
-    signatures bind the Python conversion.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
+    constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:
@@ -176,3 +275,15 @@ claims:
   learner_effectiveness:
     status: not_run
     reason: Learner effectiveness requires post-release study and is not claimed.
+fidelity:
+  batch_id: ELP-GNC-FIDELITY-P01-P24
+  item_id: P13
+  map:
+    path: fidelity-map.yaml
+    sha256: 0607e8f0908f32e1cded19c7daa550a3ff40d788372e6927e2cfc364c633f4b4
+  schema:
+    path: fidelity-map.schema.json
+    sha256: 256f1e1298b80812ce35a26eeb750917ffc1ea10cc25e9da8363d9524da102a0
+  source_model:
+    path: modules/13-test-controllability/model.m
+    sha256: 1e6cbdfb5f99db26b29cdc1a2dd7715636cce34263bf6a485db3289ed83f1da0

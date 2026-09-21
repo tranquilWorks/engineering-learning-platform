@@ -1,0 +1,116 @@
+{
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "broken_mode": false,
+        "integral_gain": 4.0,
+        "sample_period_s": 0.05
+      },
+      "signature": [
+        0.05,
+        4.0,
+        0.999999994700982,
+        1.0961548854377112,
+        2.0049176980028562
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "broken_mode": true,
+        "integral_gain": 4.0,
+        "sample_period_s": 0.05
+      },
+      "signature": [
+        0.3,
+        4.0,
+        1183.3695588563335,
+        1183.3695588563335,
+        2285.9335378168585
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "broken_mode": false,
+        "integral_gain": 4.0,
+        "sample_period_s": 0.05
+      },
+      "signature": [
+        0.05,
+        4.0,
+        0.999999994700982,
+        1.0961548854377112,
+        2.0049176980028562
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "broken_mode": false,
+        "integral_gain": 4.0,
+        "sample_period_s": 0.3
+      },
+      "signature": [
+        0.3,
+        4.0,
+        1.0000002806327206,
+        1.2609527223303298,
+        2.1632728827268712
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "broken_mode": false,
+        "integral_gain": 7.0,
+        "sample_period_s": 0.05
+      },
+      "signature": [
+        0.05,
+        7.0,
+        1.0000000621758656,
+        1.2127893600548776,
+        2.4099104044784365
+      ]
+    }
+  },
+  "course_id": "controls-gnc",
+  "item_id": "P09",
+  "origin": {
+    "derived_from_production_output": true,
+    "formulation": "Direct capture of diagnostics.signature from experiment.py:run",
+    "imports_production_entrypoint": true,
+    "independent": false,
+    "package": {
+      "path": "modules/09-discretize-a-continuous-controller/experiment.py",
+      "sha256": "2fe4f460dbc8465fab3fc9385ba599353ef387ee5a2f055188d8b5328c8abea7"
+    },
+    "perturbs_production_output": false,
+    "type": "production_entrypoint"
+  },
+  "schema_version": 1,
+  "signature_fields": [
+    {
+      "index": 0,
+      "name": "sample_period",
+      "unit": "s"
+    },
+    {
+      "index": 1,
+      "name": "integral_gain",
+      "unit": "1/s"
+    },
+    {
+      "index": 2,
+      "name": "final_output",
+      "unit": "ratio"
+    },
+    {
+      "index": 3,
+      "name": "peak_output",
+      "unit": "ratio"
+    },
+    {
+      "index": 4,
+      "name": "peak_command",
+      "unit": "input"
+    }
+  ]
+}

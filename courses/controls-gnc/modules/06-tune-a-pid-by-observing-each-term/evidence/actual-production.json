@@ -1,0 +1,116 @@
+{
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "broken_mode": false,
+        "derivative_gain": 3.0,
+        "integral_gain": 1.0
+      },
+      "signature": [
+        1.0,
+        3.0,
+        1.0000210951976969,
+        1.0062799510677853,
+        4.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "broken_mode": true,
+        "derivative_gain": 3.0,
+        "integral_gain": 1.0
+      },
+      "signature": [
+        1.0,
+        -3.0,
+        15524119184.977413,
+        26272816454.356556,
+        5658042455128.878
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "broken_mode": false,
+        "derivative_gain": 3.0,
+        "integral_gain": 1.0
+      },
+      "signature": [
+        1.0,
+        3.0,
+        1.0000210951976969,
+        1.0062799510677853,
+        4.0
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "broken_mode": false,
+        "derivative_gain": 3.0,
+        "integral_gain": 3.0
+      },
+      "signature": [
+        3.0,
+        3.0,
+        0.9999963486749783,
+        1.2802025280267653,
+        4.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "broken_mode": false,
+        "derivative_gain": 7.0,
+        "integral_gain": 1.0
+      },
+      "signature": [
+        1.0,
+        7.0,
+        0.9963895789945751,
+        1.1149301712787216,
+        4.0
+      ]
+    }
+  },
+  "course_id": "controls-gnc",
+  "item_id": "P06",
+  "origin": {
+    "derived_from_production_output": true,
+    "formulation": "Direct capture of diagnostics.signature from experiment.py:run",
+    "imports_production_entrypoint": true,
+    "independent": false,
+    "package": {
+      "path": "modules/06-tune-a-pid-by-observing-each-term/experiment.py",
+      "sha256": "900a3dc5752074b8bbf69dfcabe1e3572c99b073422ad3c6047baa68ca550e56"
+    },
+    "perturbs_production_output": false,
+    "type": "production_entrypoint"
+  },
+  "schema_version": 1,
+  "signature_fields": [
+    {
+      "index": 0,
+      "name": "integral_gain",
+      "unit": "N/(m*s)"
+    },
+    {
+      "index": 1,
+      "name": "derivative_gain",
+      "unit": "N*s/m"
+    },
+    {
+      "index": 2,
+      "name": "final_position",
+      "unit": "m"
+    },
+    {
+      "index": 3,
+      "name": "peak_position",
+      "unit": "m"
+    },
+    {
+      "index": 4,
+      "name": "peak_command",
+      "unit": "N"
+    }
+  ]
+}

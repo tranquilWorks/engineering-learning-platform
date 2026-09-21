@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 course_id: controls-gnc
 item:
   id: P17
@@ -26,17 +26,17 @@ item:
   - path: modules/17-balance-state-error-and-control-effort-with-lqr/model.m
     sha256: 59d0301e1d84821359028b6725aa33976dc89b997bbe65fc23d5b808d089b9b3
 target:
-  content_digest: e86e1d483a66e4f5946d418ee65a3c081a8fb679bd4a355e3825e39b30c6a89c
+  content_digest: accf67d24a095f9175fd3f8bf6ba29bab8787266556692166dd4724b4253a691
   files:
   - path: modules/17-balance-state-error-and-control-effort-with-lqr/module.yaml
     sha256: 79ab43a0f1c8a907bfd2ad9fadb505467ed7d2ba113f38ad4bbc1ddbb8628c67
   - path: modules/17-balance-state-error-and-control-effort-with-lqr/lesson.md
-    sha256: 67456b2598b75ff632c0323d3b6c2d35e490bda37f8e1247e3ca0ac206fc7077
+    sha256: 108c48ce201645df64765ffc178626f62d19e7892c5ba8bbbdbf31232f7c9b2b
   - path: modules/17-balance-state-error-and-control-effort-with-lqr/experiment.py
-    sha256: ac4a09e2e5b9d3272f39690461bb7302c3f8c83cdcb4df56d90e2dd9e10fba65
+    sha256: f5535e3012f9aba10156d45cf8a2480830dcfc958311e9fa3c5a00ca9dd1fb42
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you balance State Error
-    and Control Effort with LQR?
+  guiding_question: What inputs, observable effects, and failure modes matter when you balance State Error and Control
+    Effort with LQR?
   physical_model: Trade position regulation against command effort with a discrete LQR design.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
@@ -56,34 +56,39 @@ content:
       value: 17
       unit: index
     datasets:
-    - name: baseline numeric signature
-      provenance: retained_fixture
-      sha256: 91ec483788d5e262abd21620dcaa118c38621b062dfc4a106ad665f306b7f1bc
-      unit: mixed numeric signature
+    - name: five-scenario independent reference signatures (expected-independent.json)
+      provenance: independent_reference
+      sha256: f6250c03ee4d7861769c695b12f4c4976112080cd2b884177670f20cac35f118
+      unit: ordered mixed SI signature; fields and units are embedded in the evidence file
   plot_sequence:
-  - source_figure: Source baseline and sweep figures
+  - source_figure: Pinned MATLAB source intent mapped to platform response view
     target_plot_key: response
-    title: Observable response
+    title: LQR state trajectory
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Response
-      unit: source units
-    interpretation: Trade position regulation against command effort with a discrete LQR design.
-  - source_figure: Source diagnostic and broken-case figures
+      label: Position
+      unit: m
+    - role: y
+      label: Velocity
+      unit: m/s
+    interpretation: zero actuator effectiveness produces zero feedback authority
+  - source_figure: Pinned MATLAB source intent mapped to platform mechanism view
     target_plot_key: mechanism
-    title: Mechanism and diagnostic view
+    title: LQR authority and position decay
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Diagnostic
-      unit: source units
-    interpretation: The broken case sets actuator effectiveness to zero, so a valid design model cannot
-      move the plant.
+      label: Control command
+      unit: N
+    - role: y
+      label: Absolute position
+      unit: m
+    interpretation: the valid gain has no applied authority and the state does not regulate
   sweeps:
   - control: position_weight
     values:
@@ -99,8 +104,7 @@ content:
     expected_observation: Trade position regulation against command effort with a discrete LQR design.
   broken_case:
     trigger: Enable broken_mode.
-    failure: The broken case sets actuator effectiveness to zero, so a valid design model cannot move
-      the plant.
+    failure: The broken case sets actuator effectiveness to zero, so a valid design model cannot move the plant.
     recovery: Disable the broken case and verify actuator authority before applying the gain.
     expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
   common_mistakes:
@@ -133,39 +137,137 @@ python_source_equivalence:
   - name: broken_mode
     value: false
     unit: flag
+  reference_origin:
+    derived_from_production_output: false
+    formulation: Schur-method discrete Riccati solution
+    imports_production_entrypoint: false
+    independent: true
+    package:
+      path: reference_cases.py
+      sha256: 975fe4772642993eeda6cfa33487192de0ae526b4f12ab2523d3f100ca994c8d
+    perturbs_production_output: false
+    type: alternative_algorithm
+  production_origin:
+    derived_from_production_output: true
+    formulation: Direct capture of diagnostics.signature from experiment.py:run
+    imports_production_entrypoint: true
+    independent: false
+    package:
+      path: modules/17-balance-state-error-and-control-effort-with-lqr/experiment.py
+      sha256: f5535e3012f9aba10156d45cf8a2480830dcfc958311e9fa3c5a00ca9dd1fb42
+    perturbs_production_output: false
+    type: production_entrypoint
   cases:
-  - name: baseline-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/17-balance-state-error-and-control-effort-with-lqr/evidence/expected-baseline.json
-      sha256: 91ec483788d5e262abd21620dcaa118c38621b062dfc4a106ad665f306b7f1bc
-    actual:
-      path: modules/17-balance-state-error-and-control-effort-with-lqr/evidence/actual-baseline.json
-      sha256: 10007101c35f48ed166bfbfad89427c0748c6bf8373e96fb0d9f69cd3266ef20
-    max_absolute_error: 1.0036416142611415e-13
-    max_relative_error: 2.5091040356527907e-14
+  - name: baseline-independent-reference-vs-production
+    scenario: baseline
+    evidence_key: baseline
+    parameters:
+      broken_mode: false
+      control_weight: 1.0
+      position_weight: 4.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: &id001
+      absolute: 2.0e-06
+      relative: 2.0e-06
+    expected: &id002
+      path: modules/17-balance-state-error-and-control-effort-with-lqr/evidence/expected-independent.json
+      sha256: f6250c03ee4d7861769c695b12f4c4976112080cd2b884177670f20cac35f118
+    actual: &id003
+      path: modules/17-balance-state-error-and-control-effort-with-lqr/evidence/actual-production.json
+      sha256: 3e3329e5c27144749b6ea7488d3ea007df10cc4911525efa8c615cee88532a57
+    comparison_scale: 4.486898377357936
+    allowed_absolute_error: 8.973796754715871e-06
+    max_absolute_error: 4.476674586584295e-10
+    max_relative_error: 2.2807936795375582e-10
+    teaching_invariant:
+      description: zero actuator effectiveness produces zero feedback authority
+      reference_passed: true
+      production_passed: true
     passed: true
-  - name: broken-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/17-balance-state-error-and-control-effort-with-lqr/evidence/expected-broken.json
-      sha256: 98a9e4512b2dc7f50789682774439cd917a747fcdb3111c7deb8e25d6c69ad59
-    actual:
-      path: modules/17-balance-state-error-and-control-effort-with-lqr/evidence/actual-broken.json
-      sha256: 276aff530bbe210bcd181727b30a4abd21bc70a4f9c05711b93519bfb0870c7f
-    max_absolute_error: 1.0036416142611415e-13
-    max_relative_error: 2.5091040356527907e-14
+  - name: sweep-1-independent-reference-vs-production
+    scenario: sweep_1
+    evidence_key: sweep_1
+    parameters:
+      broken_mode: false
+      control_weight: 1.0
+      position_weight: 16.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 16.0
+    allowed_absolute_error: 3.2e-05
+    max_absolute_error: 1.2536638394067268e-12
+    max_relative_error: 3.217905629349789e-13
+    teaching_invariant:
+      description: zero actuator effectiveness produces zero feedback authority
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: sweep-2-independent-reference-vs-production
+    scenario: sweep_2
+    evidence_key: sweep_2
+    parameters:
+      broken_mode: false
+      control_weight: 10.0
+      position_weight: 4.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 10.0
+    allowed_absolute_error: 1.9999999999999998e-05
+    max_absolute_error: 9.810958360167987e-07
+    max_relative_error: 9.810958360167987e-07
+    teaching_invariant:
+      description: zero actuator effectiveness produces zero feedback authority
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: broken-independent-reference-vs-production
+    scenario: broken
+    evidence_key: broken
+    parameters:
+      broken_mode: true
+      control_weight: 1.0
+      position_weight: 4.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 48.0
+    allowed_absolute_error: 9.6e-05
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: zero actuator effectiveness produces zero feedback authority
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: recovery-independent-reference-vs-production
+    scenario: recovery
+    evidence_key: recovery
+    parameters:
+      broken_mode: false
+      control_weight: 1.0
+      position_weight: 4.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 4.486898377357936
+    allowed_absolute_error: 8.973796754715871e-06
+    max_absolute_error: 4.476674586584295e-10
+    max_relative_error: 2.2807936795375582e-10
+    teaching_invariant:
+      description: zero actuator effectiveness produces zero feedback authority
+      reference_passed: true
+      production_passed: true
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
-    signatures bind the Python conversion.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
+    constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:
@@ -177,3 +279,15 @@ claims:
   learner_effectiveness:
     status: not_run
     reason: Learner effectiveness requires post-release study and is not claimed.
+fidelity:
+  batch_id: ELP-GNC-FIDELITY-P01-P24
+  item_id: P17
+  map:
+    path: fidelity-map.yaml
+    sha256: 0607e8f0908f32e1cded19c7daa550a3ff40d788372e6927e2cfc364c633f4b4
+  schema:
+    path: fidelity-map.schema.json
+    sha256: 256f1e1298b80812ce35a26eeb750917ffc1ea10cc25e9da8363d9524da102a0
+  source_model:
+    path: modules/17-balance-state-error-and-control-effort-with-lqr/model.m
+    sha256: 59d0301e1d84821359028b6725aa33976dc89b997bbe65fc23d5b808d089b9b3

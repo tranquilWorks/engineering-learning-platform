@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 course_id: controls-gnc
 item:
   id: P04
@@ -26,19 +26,18 @@ item:
   - path: modules/04-compare-linear-and-nonlinear-pendulum-models/model.m
     sha256: 90b101c9c04fed852f4cac88c0c0eb5b91f37d53181b1860b42f28414fc31c1d
 target:
-  content_digest: b3dea045171f06b52f2a5755fc852a27ca82a2492393eeafbdaf49132732854c
+  content_digest: baaacfa1b25f6ee3314bf110b0d3ec21ce7d49c3dcc97cc3e28138b24a489eff
   files:
   - path: modules/04-compare-linear-and-nonlinear-pendulum-models/module.yaml
     sha256: a76a4780ffcef3dfda3d20db364ef78e7b46c1187e62581be6c82dd8b2494866
   - path: modules/04-compare-linear-and-nonlinear-pendulum-models/lesson.md
-    sha256: d9685aba6ca98a5ccaa0a5a8caef48f3d5c6c76a5cd2a301f65d66ad16d0a3a8
+    sha256: e34ee067b72824b8e255ab628abacb051f61b1cf1fac98317fed8b6b73bb9e2f
   - path: modules/04-compare-linear-and-nonlinear-pendulum-models/experiment.py
-    sha256: b5a411ec137cfd00a1a1efdbc785ec7538d554e9744a1f43a22235cce1db0a13
+    sha256: f4733c06b3dc465114f830e508d2dce3900c1ddf83f9a70014bbd672d5648b72
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you compare Linear
-    and Nonlinear Pendulum Models?
-  physical_model: Expose when the small-angle pendulum approximation stops representing the nonlinear
-    plant.
+  guiding_question: What inputs, observable effects, and failure modes matter when you compare Linear and Nonlinear
+    Pendulum Models?
+  physical_model: Expose when the small-angle pendulum approximation stops representing the nonlinear plant.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
   - Evaluate the deterministic Python model.
@@ -57,50 +56,52 @@ content:
       value: 4
       unit: index
     datasets:
-    - name: baseline numeric signature
-      provenance: retained_fixture
-      sha256: 35c339e41f69356faf2215e8476592f5cf08acfb95a2dbfae636e03d01a3a9d7
-      unit: mixed numeric signature
+    - name: five-scenario independent reference signatures (expected-independent.json)
+      provenance: independent_reference
+      sha256: 326f4032380e7f9101a0a55b2bafa474e04be16b6387d3a8787997960be54615
+      unit: ordered mixed SI signature; fields and units are embedded in the evidence file
   plot_sequence:
-  - source_figure: Source baseline and sweep figures
+  - source_figure: Pinned MATLAB source intent mapped to platform response view
     target_plot_key: response
-    title: Observable response
+    title: Linear and nonlinear pendulum angles
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Response
-      unit: source units
-    interpretation: Expose when the small-angle pendulum approximation stops representing the nonlinear
-      plant.
-  - source_figure: Source diagnostic and broken-case figures
+      label: Angular displacement
+      unit: deg
+    interpretation: small-angle error grows at the forced large-angle failure
+  - source_figure: Pinned MATLAB source intent mapped to platform mechanism view
     target_plot_key: mechanism
-    title: Mechanism and diagnostic view
+    title: Approximation error and nonlinear phase state
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Diagnostic
-      unit: source units
-    interpretation: The broken case forces a 120 degree release while interpreting the small-angle trace
-      as truth.
+      label: Angular model gap
+      unit: deg
+    - role: x
+      label: Angular displacement
+      unit: deg
+    - role: y
+      label: Angular rate
+      unit: deg/s
+    interpretation: the linear/nonlinear angle gap becomes large
   sweeps:
   - control: initial_angle_deg
     values:
     - 5.0
     - 30.0
     - 100.0
-    expected_observation: Large release angles should lengthen the nonlinear period relative to the linear
-      prediction.
+    expected_observation: Large release angles should lengthen the nonlinear period relative to the linear prediction.
   - control: length_m
     values:
     - 0.5
     - 1.0
     - 2.0
-    expected_observation: Expose when the small-angle pendulum approximation stops representing the nonlinear
-      plant.
+    expected_observation: Expose when the small-angle pendulum approximation stops representing the nonlinear plant.
   broken_case:
     trigger: Enable broken_mode.
     failure: The broken case forces a 120 degree release while interpreting the small-angle trace as truth.
@@ -136,39 +137,137 @@ python_source_equivalence:
   - name: broken_mode
     value: false
     unit: flag
+  reference_origin:
+    derived_from_production_output: false
+    formulation: High-accuracy continuous nonlinear and linear pendulum integration
+    imports_production_entrypoint: false
+    independent: true
+    package:
+      path: reference_cases.py
+      sha256: 975fe4772642993eeda6cfa33487192de0ae526b4f12ab2523d3f100ca994c8d
+    perturbs_production_output: false
+    type: separately_formulated_numerical
+  production_origin:
+    derived_from_production_output: true
+    formulation: Direct capture of diagnostics.signature from experiment.py:run
+    imports_production_entrypoint: true
+    independent: false
+    package:
+      path: modules/04-compare-linear-and-nonlinear-pendulum-models/experiment.py
+      sha256: f4733c06b3dc465114f830e508d2dce3900c1ddf83f9a70014bbd672d5648b72
+    perturbs_production_output: false
+    type: production_entrypoint
   cases:
-  - name: baseline-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/04-compare-linear-and-nonlinear-pendulum-models/evidence/expected-baseline.json
-      sha256: 35c339e41f69356faf2215e8476592f5cf08acfb95a2dbfae636e03d01a3a9d7
-    actual:
-      path: modules/04-compare-linear-and-nonlinear-pendulum-models/evidence/actual-baseline.json
-      sha256: 084e41e71f9815d9c6b247c7bfeddd965d9964c135e32fd22e627a3c720ed24c
-    max_absolute_error: 9.997558336749535e-14
-    max_relative_error: 9.997558336749535e-14
+  - name: baseline-independent-reference-vs-production
+    scenario: baseline
+    evidence_key: baseline
+    parameters:
+      broken_mode: false
+      initial_angle_deg: 20.0
+      length_m: 1.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: &id001
+      absolute: 0.03
+      relative: 0.03
+    expected: &id002
+      path: modules/04-compare-linear-and-nonlinear-pendulum-models/evidence/expected-independent.json
+      sha256: 326f4032380e7f9101a0a55b2bafa474e04be16b6387d3a8787997960be54615
+    actual: &id003
+      path: modules/04-compare-linear-and-nonlinear-pendulum-models/evidence/actual-production.json
+      sha256: 4dedf8920f31cf0749e902ab83c3c5014032e5c3ffe98e9c893207caaa393d6d
+    comparison_scale: 1.0
+    allowed_absolute_error: 0.03
+    max_absolute_error: 0.001182651295584758
+    max_relative_error: 0.001182651295584758
+    teaching_invariant:
+      description: small-angle error grows at the forced large-angle failure
+      reference_passed: true
+      production_passed: true
     passed: true
-  - name: broken-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/04-compare-linear-and-nonlinear-pendulum-models/evidence/expected-broken.json
-      sha256: 4c9631007594e4b352b80a2023ecedaa97a2cd744aaeebd15bd3121178a1cf61
-    actual:
-      path: modules/04-compare-linear-and-nonlinear-pendulum-models/evidence/actual-broken.json
-      sha256: 9fe6aab793a075e80d83f7852999e1014867f56a2ee0337037f3d9636d45079e
-    max_absolute_error: 9.992007221626409e-14
-    max_relative_error: 4.7708320221950476e-14
+  - name: sweep-1-independent-reference-vs-production
+    scenario: sweep_1
+    evidence_key: sweep_1
+    parameters:
+      broken_mode: false
+      initial_angle_deg: 100.0
+      length_m: 1.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 2.1839994254550303
+    allowed_absolute_error: 0.06551998276365091
+    max_absolute_error: 0.008101427275755468
+    max_relative_error: 0.008101427275755468
+    teaching_invariant:
+      description: small-angle error grows at the forced large-angle failure
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: sweep-2-independent-reference-vs-production
+    scenario: sweep_2
+    evidence_key: sweep_2
+    parameters:
+      broken_mode: false
+      initial_angle_deg: 20.0
+      length_m: 2.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 2.0
+    allowed_absolute_error: 0.06
+    max_absolute_error: 0.003564743046872848
+    max_relative_error: 0.003564743046872848
+    teaching_invariant:
+      description: small-angle error grows at the forced large-angle failure
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: broken-independent-reference-vs-production
+    scenario: broken
+    evidence_key: broken
+    parameters:
+      broken_mode: true
+      initial_angle_deg: 20.0
+      length_m: 1.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 3.034887881787661
+    allowed_absolute_error: 0.09104663645362983
+    max_absolute_error: 0.024530186996767928
+    max_relative_error: 0.024530186996767928
+    teaching_invariant:
+      description: small-angle error grows at the forced large-angle failure
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: recovery-independent-reference-vs-production
+    scenario: recovery
+    evidence_key: recovery
+    parameters:
+      broken_mode: false
+      initial_angle_deg: 20.0
+      length_m: 1.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 1.0
+    allowed_absolute_error: 0.03
+    max_absolute_error: 0.001182651295584758
+    max_relative_error: 0.001182651295584758
+    teaching_invariant:
+      description: small-angle error grows at the forced large-angle failure
+      reference_passed: true
+      production_passed: true
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
-    signatures bind the Python conversion.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
+    constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:
@@ -180,3 +279,15 @@ claims:
   learner_effectiveness:
     status: not_run
     reason: Learner effectiveness requires post-release study and is not claimed.
+fidelity:
+  batch_id: ELP-GNC-FIDELITY-P01-P24
+  item_id: P04
+  map:
+    path: fidelity-map.yaml
+    sha256: 0607e8f0908f32e1cded19c7daa550a3ff40d788372e6927e2cfc364c633f4b4
+  schema:
+    path: fidelity-map.schema.json
+    sha256: 256f1e1298b80812ce35a26eeb750917ffc1ea10cc25e9da8363d9524da102a0
+  source_model:
+    path: modules/04-compare-linear-and-nonlinear-pendulum-models/model.m
+    sha256: 90b101c9c04fed852f4cac88c0c0eb5b91f37d53181b1860b42f28414fc31c1d

@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 course_id: controls-gnc
 item:
   id: P16
@@ -26,17 +26,17 @@ item:
   - path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/model.m
     sha256: 4179689c7da9893c2cd9436192d064687e980c995163734385e1844db830052b
 target:
-  content_digest: 378cd569bfbc3798af889750df8aab33ece887eb2718ed801c028fb43689be79
+  content_digest: 4445a318f94601511562ef69d95c0465dbe96b2753457ac94203c4a4d8f1ec8f
   files:
   - path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/module.yaml
     sha256: dc00515cdab713c810151546aa361eb4518b34ea312d426504ccddbe6d56b1d9
   - path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/lesson.md
-    sha256: 68fa932a87e6a57d348a61cc87770409804bb7d91590f7ed53007076fb74f534
+    sha256: f5c506fca4200bef307f19b426b3e7428053ac4b50406cce0d2bc859e076c7cd
   - path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/experiment.py
-    sha256: 847f93871956cab31f004baa7eef7a2413a459519c4b90a9f69a3900b0619b69
+    sha256: a64e35db96416d96deac44abec3e668332150f0d2fd3e16b1009cf51fae84e75
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you fuse Noisy Sensors
-    with a Kalman Filter?
+  guiding_question: What inputs, observable effects, and failure modes matter when you fuse Noisy Sensors with a
+    Kalman Filter?
   physical_model: Fuse noisy position samples with a deterministic constant-velocity Kalman filter.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
@@ -56,41 +56,44 @@ content:
       value: 16
       unit: index
     datasets:
-    - name: baseline numeric signature
-      provenance: retained_fixture
-      sha256: c2d888f522c290eea7dd6aae9910a23858e048e9b2b7172956036bab1368ba1d
-      unit: mixed numeric signature
+    - name: five-scenario independent reference signatures (expected-independent.json)
+      provenance: independent_reference
+      sha256: a960fdc9be56bf06efae0a70dc197f41a25669db2f112420fd1ecbfcf4ebf635
+      unit: ordered mixed SI signature; fields and units are embedded in the evidence file
   plot_sequence:
-  - source_figure: Source baseline and sweep figures
+  - source_figure: Pinned MATLAB source intent mapped to platform response view
     target_plot_key: response
-    title: Observable response
+    title: Kalman position fusion
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Response
-      unit: source units
-    interpretation: Fuse noisy position samples with a deterministic constant-velocity Kalman filter.
-  - source_figure: Source diagnostic and broken-case figures
+      label: Position
+      unit: m
+    interpretation: Kalman covariance assumptions yield a finite deterministic estimate
+  - source_figure: Pinned MATLAB source intent mapped to platform mechanism view
     target_plot_key: mechanism
-    title: Mechanism and diagnostic view
+    title: Kalman state-estimation error
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Diagnostic
-      unit: source units
-    interpretation: The broken case injects one unvalidated 4 m position outlier.
+      label: Position error
+      unit: m
+    - role: y
+      label: Velocity estimate
+      unit: m/s
+    interpretation: the deterministic outlier increases estimation error
   sweeps:
   - control: assumed_sensor_noise_m
     values:
     - 0.15
     - 0.35
     - 0.8
-    expected_observation: Assuming noisier measurements should smooth the estimate but slow its response
-      to real motion changes.
+    expected_observation: Assuming noisier measurements should smooth the estimate but slow its response to real
+      motion changes.
   - control: assumed_process_noise_m_s2
     values:
     - 0.02
@@ -132,39 +135,137 @@ python_source_equivalence:
   - name: broken_mode
     value: false
     unit: flag
+  reference_origin:
+    derived_from_production_output: false
+    formulation: Joseph-form covariance Kalman recurrence
+    imports_production_entrypoint: false
+    independent: true
+    package:
+      path: reference_cases.py
+      sha256: 975fe4772642993eeda6cfa33487192de0ae526b4f12ab2523d3f100ca994c8d
+    perturbs_production_output: false
+    type: alternative_algorithm
+  production_origin:
+    derived_from_production_output: true
+    formulation: Direct capture of diagnostics.signature from experiment.py:run
+    imports_production_entrypoint: true
+    independent: false
+    package:
+      path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/experiment.py
+      sha256: a64e35db96416d96deac44abec3e668332150f0d2fd3e16b1009cf51fae84e75
+    perturbs_production_output: false
+    type: production_entrypoint
   cases:
-  - name: baseline-numeric-signature
-    units: mixed numeric signature
-    tolerance:
+  - name: baseline-independent-reference-vs-production
+    scenario: baseline
+    evidence_key: baseline
+    parameters:
+      assumed_process_noise_m_s2: 0.08
+      assumed_sensor_noise_m: 0.35
+      broken_mode: false
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: &id001
       absolute: 1.0e-09
       relative: 1.0e-09
-    expected:
-      path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/evidence/expected-baseline.json
-      sha256: c2d888f522c290eea7dd6aae9910a23858e048e9b2b7172956036bab1368ba1d
-    actual:
-      path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/evidence/actual-baseline.json
-      sha256: 8a4848fef816d30b7a61294b88b3973da6a7cf0dfae8d2b9f5cfc5dc678dc141
-    max_absolute_error: 9.997558336749535e-14
-    max_relative_error: 9.997558336749535e-14
+    expected: &id002
+      path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/evidence/expected-independent.json
+      sha256: a960fdc9be56bf06efae0a70dc197f41a25669db2f112420fd1ecbfcf4ebf635
+    actual: &id003
+      path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/evidence/actual-production.json
+      sha256: b1ea6afeb9d4235b228fd70426bbef20eacbcbdf70c70ebd112db21820e26362
+    comparison_scale: 1.0
+    allowed_absolute_error: 1.0e-09
+    max_absolute_error: 1.6653345369377348e-16
+    max_relative_error: 1.6653345369377348e-16
+    teaching_invariant:
+      description: Kalman covariance assumptions yield a finite deterministic estimate
+      reference_passed: true
+      production_passed: true
     passed: true
-  - name: broken-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/evidence/expected-broken.json
-      sha256: 0d77dc9eef7838295a288490e41a135907fb3782e38a4dd17ede3d21733b2082
-    actual:
-      path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/evidence/actual-broken.json
-      sha256: 6776c9fe2a1eee26c268d30f641f6c6b028e85f748e3818ab9b27690efd494c5
-    max_absolute_error: 9.997558336749535e-14
-    max_relative_error: 9.997558336749535e-14
+  - name: sweep-1-independent-reference-vs-production
+    scenario: sweep_1
+    evidence_key: sweep_1
+    parameters:
+      assumed_process_noise_m_s2: 0.08
+      assumed_sensor_noise_m: 0.8
+      broken_mode: false
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 1.0
+    allowed_absolute_error: 1.0e-09
+    max_absolute_error: 3.885780586188048e-16
+    max_relative_error: 3.885780586188048e-16
+    teaching_invariant:
+      description: Kalman covariance assumptions yield a finite deterministic estimate
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: sweep-2-independent-reference-vs-production
+    scenario: sweep_2
+    evidence_key: sweep_2
+    parameters:
+      assumed_process_noise_m_s2: 0.3
+      assumed_sensor_noise_m: 0.35
+      broken_mode: false
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 1.0
+    allowed_absolute_error: 1.0e-09
+    max_absolute_error: 2.7755575615628914e-16
+    max_relative_error: 2.7755575615628914e-16
+    teaching_invariant:
+      description: Kalman covariance assumptions yield a finite deterministic estimate
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: broken-independent-reference-vs-production
+    scenario: broken
+    evidence_key: broken
+    parameters:
+      assumed_process_noise_m_s2: 0.08
+      assumed_sensor_noise_m: 0.35
+      broken_mode: true
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 4.0
+    allowed_absolute_error: 4.0e-09
+    max_absolute_error: 1.1102230246251565e-16
+    max_relative_error: 1.1102230246251565e-16
+    teaching_invariant:
+      description: Kalman covariance assumptions yield a finite deterministic estimate
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: recovery-independent-reference-vs-production
+    scenario: recovery
+    evidence_key: recovery
+    parameters:
+      assumed_process_noise_m_s2: 0.08
+      assumed_sensor_noise_m: 0.35
+      broken_mode: false
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 1.0
+    allowed_absolute_error: 1.0e-09
+    max_absolute_error: 1.6653345369377348e-16
+    max_relative_error: 1.6653345369377348e-16
+    teaching_invariant:
+      description: Kalman covariance assumptions yield a finite deterministic estimate
+      reference_passed: true
+      production_passed: true
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
-    signatures bind the Python conversion.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
+    constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:
@@ -176,3 +277,15 @@ claims:
   learner_effectiveness:
     status: not_run
     reason: Learner effectiveness requires post-release study and is not claimed.
+fidelity:
+  batch_id: ELP-GNC-FIDELITY-P01-P24
+  item_id: P16
+  map:
+    path: fidelity-map.yaml
+    sha256: 0607e8f0908f32e1cded19c7daa550a3ff40d788372e6927e2cfc364c633f4b4
+  schema:
+    path: fidelity-map.schema.json
+    sha256: 256f1e1298b80812ce35a26eeb750917ffc1ea10cc25e9da8363d9524da102a0
+  source_model:
+    path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/model.m
+    sha256: 4179689c7da9893c2cd9436192d064687e980c995163734385e1844db830052b

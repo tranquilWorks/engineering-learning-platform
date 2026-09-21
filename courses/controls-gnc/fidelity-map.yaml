@@ -1,0 +1,1891 @@
+schema_version: 1
+course_id: controls-gnc
+source:
+  repository: tranquilWorks/controls-gnc-learning
+  commit: ffd6623ee2cf8ccd8599fffd935ef07370750fa3
+  tree: 471a0afead6f44e875627e7ffe9c088c23f784db
+  curriculum:
+    path: curriculum/modules.json
+    sha256: 8763981e20d02a88450956682b4daff9ee0d74bfed5f0ad91b08715f16aea930
+items:
+- id: P01
+  number: 1
+  source_folder: modules/01-watch-a-mass-spring-damper-respond
+  target_folder: modules/01-watch-a-mass-spring-damper-respond
+  source_model:
+    path: modules/01-watch-a-mass-spring-damper-respond/model.m
+    sha256: d820c6e74cf73aafb66220a5ac89873f575fd9a80983a21a0ccb7cedb5b329a8
+  controls:
+  - platform_control: mass_kg
+    source_quantity: Mass
+    unit: kg
+    role: learner_sweep
+  - platform_control: damping_ns_m
+    source_quantity: Damping
+    unit: N s/m
+    role: learner_sweep
+  - platform_control: stiffness_n_m
+    source_quantity: Stiffness
+    unit: N/m
+    role: learner_sweep
+  - platform_control: broken_mode
+    source_quantity: Enable the source broken case
+    unit: flag
+    role: failure_injection
+  state_equations:
+  - m x_ddot + c x_dot + k x = F
+  - 'normal: v[k+1]=v[k]+dt*a[k], x[k+1]=x[k]+dt*v[k+1]; broken: explicit x update at dt=1 s'
+  observables:
+  - quantity: displacement
+    unit: m
+  - quantity: velocity
+    unit: m/s
+  - quantity: mechanical energy
+    unit: J
+  sweeps:
+  - control: damping_ns_m
+    evidence_case: sweep_1
+    endpoint: 2.5
+    one_variable: true
+    expected_observation: More damping should reduce ringing without changing the static displacement F/k.
+  - control: stiffness_n_m
+    evidence_case: sweep_2
+    endpoint: 10.0
+    one_variable: true
+    expected_observation: Relate inertia, energy storage, and dissipation to a forced mechanical response.
+  broken_case:
+    trigger: broken_mode=true
+    state_change: Use explicit Euler at dt=1 s instead of the resolved semi-implicit step
+    observable_failure: final numerical energy grows instead of decaying
+  recovery: Disable the broken case to restore a time step that resolves the natural period.
+  teaching_invariant: natural frequency and damping are physical; broken integration exposes energy growth
+  limiting_cases:
+  - c=0 removes physical damping but does not justify an unstable integrator
+  - dt small relative to 2*pi/sqrt(k/m) recovers the resolved semi-implicit response
+  omissions:
+  - The platform fixes force, horizon, normal dt, and source resource diagnostics so the three learner levers isolate
+    m, c, and k.
+  reference:
+    type: alternative_algorithm
+    formulation: Affine semi-implicit state-transition recurrence
+    path: reference_cases.py
+    independent: true
+    imports_production_entrypoint: false
+    derived_from_production_output: false
+    perturbs_production_output: false
+  plots:
+  - key: response
+    title: Mass–spring–damper displacement
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Position (m)
+  - key: mechanism
+    title: Phase state and mechanical energy
+    axes:
+    - id: x
+      title: Position (m)
+    - id: y
+      title: Velocity (m/s)
+    - id: x2
+      title: Time (s)
+    - id: y2
+      title: Mechanical energy (J)
+- id: P02
+  number: 2
+  source_folder: modules/02-build-intuition-for-integrators-and-first-order-systems
+  target_folder: modules/02-build-intuition-for-integrators-and-first-order-systems
+  source_model:
+    path: modules/02-build-intuition-for-integrators-and-first-order-systems/model.m
+    sha256: dc2b2f62bfd039133e2c7582b9014cda8f826e6dde89614947208befc19085a6
+  controls:
+  - platform_control: input_amplitude
+    source_quantity: Step amplitude
+    unit: input
+    role: learner_sweep
+  - platform_control: time_constant_s
+    source_quantity: First-order time constant
+    unit: s
+    role: learner_sweep
+  - platform_control: broken_mode
+    source_quantity: Enable the source broken case
+    unit: flag
+    role: failure_injection
+  state_equations:
+  - x_dot=u for the integrator
+  - tau*y_dot+y=u; normal path uses the analytic step response
+  observables:
+  - quantity: integrator response
+    unit: ratio
+  - quantity: first-order response
+    unit: ratio
+  - quantity: first-order error
+    unit: ratio
+  sweeps:
+  - control: input_amplitude
+    evidence_case: sweep_1
+    endpoint: 1.5
+    one_variable: true
+    expected_observation: The integrator ramp slope follows input amplitude; the first-order final value does not
+      depend on tau.
+  - control: time_constant_s
+    evidence_case: sweep_2
+    endpoint: 4.0
+    one_variable: true
+    expected_observation: Compare accumulation with exponential memory under the same step input.
+  broken_case:
+    trigger: broken_mode=true
+    state_change: Use forward Euler with dt=3*tau
+    observable_failure: the discrete first-order path oscillates or grows outside its physical bound
+  recovery: Disable the broken case to use the exact first-order transition.
+  teaching_invariant: the integrator ramps while the stable first-order path remains bounded
+  limiting_cases:
+  - tau>0 gives a bounded first-order equilibrium equal to the step amplitude
+  - forward Euler crosses its scalar stability boundary when dt/tau exceeds 2
+  omissions:
+  - The platform fixes horizon and display grid; source-only validation and extended diagnostic tables are not exposed.
+  reference:
+    type: closed_form
+    formulation: Analytic integrator/first-order response and Euler recurrence formula
+    path: reference_cases.py
+    independent: true
+    imports_production_entrypoint: false
+    derived_from_production_output: false
+    perturbs_production_output: false
+  plots:
+  - key: response
+    title: Integrator and first-order step responses
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Normalized response (ratio)
+  - key: mechanism
+    title: First-order tracking mechanism
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Normalized signal (ratio)
+- id: P03
+  number: 3
+  source_folder: modules/03-relate-poles-to-visible-motion
+  target_folder: modules/03-relate-poles-to-visible-motion
+  source_model:
+    path: modules/03-relate-poles-to-visible-motion/model.m
+    sha256: 0b7db76072227ff9e10f4db3541046ebd55642be66b42867fbc470bc4ea4c471
+  controls:
+  - platform_control: pole_real_per_s
+    source_quantity: Pole real part
+    unit: 1/s
+    role: learner_sweep
+  - platform_control: pole_imag_rad_s
+    source_quantity: Pole imaginary part
+    unit: rad/s
+    role: learner_sweep
+  - platform_control: broken_mode
+    source_quantity: Enable the source broken case
+    unit: flag
+    role: failure_injection
+  state_equations:
+  - x(t)=exp(sigma*t)*cos(omega*t)
+  - period=2*pi/omega for omega>0
+  observables:
+  - quantity: modal amplitude
+    unit: ratio
+  - quantity: modal rate
+    unit: 1/s
+  - quantity: pole location
+    unit: 1/s and rad/s
+  sweeps:
+  - control: pole_real_per_s
+    evidence_case: sweep_1
+    endpoint: 0.2
+    one_variable: true
+    expected_observation: Moving sigma right slows decay and eventually turns the envelope into growth.
+  - control: pole_imag_rad_s
+    evidence_case: sweep_2
+    endpoint: 5.0
+    one_variable: true
+    expected_observation: Translate complex pole location into decay, oscillation, and instability.
+  broken_case:
+    trigger: broken_mode=true
+    state_change: Reflect the real pole part into the right half-plane
+    observable_failure: the modal envelope grows
+  recovery: Disable the broken case and keep the real part negative.
+  teaching_invariant: real pole sign controls decay or growth and imaginary part fixes period
+  limiting_cases:
+  - sigma<0 decays, sigma=0 is sustained, and reflected sigma>0 grows
+  - omega approaching zero removes visible oscillation and makes the period convention explicit
+  omissions:
+  - The platform keeps one conjugate-mode visualization and omits the source check-table and resource-bound reporting
+    surface.
+  reference:
+    type: closed_form
+    formulation: Complex-pole exponential envelope and phase relation
+    path: reference_cases.py
+    independent: true
+    imports_production_entrypoint: false
+    derived_from_production_output: false
+    perturbs_production_output: false
+  plots:
+  - key: response
+    title: Mode response and exponential envelope
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Modal amplitude (ratio)
+  - key: mechanism
+    title: Phase portrait and pole location
+    axes:
+    - id: x
+      title: Modal amplitude (ratio)
+    - id: y
+      title: Modal rate (1/s)
+    - id: x2
+      title: Real pole part (1/s)
+    - id: y2
+      title: Imaginary pole part (rad/s)
+- id: P04
+  number: 4
+  source_folder: modules/04-compare-linear-and-nonlinear-pendulum-models
+  target_folder: modules/04-compare-linear-and-nonlinear-pendulum-models
+  source_model:
+    path: modules/04-compare-linear-and-nonlinear-pendulum-models/model.m
+    sha256: 90b101c9c04fed852f4cac88c0c0eb5b91f37d53181b1860b42f28414fc31c1d
+  controls:
+  - platform_control: initial_angle_deg
+    source_quantity: Initial angle
+    unit: deg
+    role: learner_sweep
+  - platform_control: length_m
+    source_quantity: Pendulum length
+    unit: m
+    role: learner_sweep
+  - platform_control: broken_mode
+    source_quantity: Enable the source broken case
+    unit: flag
+    role: failure_injection
+  state_equations:
+  - theta_ddot+2*zeta*sqrt(g/L)*theta_dot+(g/L)*sin(theta)=0
+  - linear comparison replaces sin(theta) by theta
+  observables:
+  - quantity: pendulum angle
+    unit: deg
+  - quantity: linearization gap
+    unit: deg
+  - quantity: angular rate
+    unit: deg/s
+  sweeps:
+  - control: initial_angle_deg
+    evidence_case: sweep_1
+    endpoint: 100.0
+    one_variable: true
+    expected_observation: Large release angles should lengthen the nonlinear period relative to the linear prediction.
+  - control: length_m
+    evidence_case: sweep_2
+    endpoint: 2.0
+    one_variable: true
+    expected_observation: Expose when the small-angle pendulum approximation stops representing the nonlinear plant.
+  broken_case:
+    trigger: broken_mode=true
+    state_change: Force a 120 deg release while applying the linear interpretation
+    observable_failure: the linear/nonlinear angle gap becomes large
+  recovery: Disable the broken case or reduce the release angle until the approximation error is acceptable.
+  teaching_invariant: small-angle error grows at the forced large-angle failure
+  limiting_cases:
+  - initial angle approaching zero makes sin(theta) approach theta
+  - a 120 deg release exposes the small-angle approximation error
+  omissions:
+  - The platform fixes damping and integration grid and omits the source solver-residual and extended validation
+    diagnostics.
+  reference:
+    type: separately_formulated_numerical
+    formulation: High-accuracy continuous nonlinear and linear pendulum integration
+    path: reference_cases.py
+    independent: true
+    imports_production_entrypoint: false
+    derived_from_production_output: false
+    perturbs_production_output: false
+  plots:
+  - key: response
+    title: Linear and nonlinear pendulum angles
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Angular displacement (deg)
+  - key: mechanism
+    title: Approximation error and nonlinear phase state
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Angular model gap (deg)
+    - id: x2
+      title: Angular displacement (deg)
+    - id: y2
+      title: Angular rate (deg/s)
+- id: P05
+  number: 5
+  source_folder: modules/05-close-a-loop-with-proportional-control
+  target_folder: modules/05-close-a-loop-with-proportional-control
+  source_model:
+    path: modules/05-close-a-loop-with-proportional-control/model.m
+    sha256: 30bf526bcffff28fc74ec5f925a82f5f3d69e820079bbac3388413a3c85b8386
+  controls:
+  - platform_control: proportional_gain
+    source_quantity: Proportional gain
+    unit: gain
+    role: learner_sweep
+  - platform_control: plant_time_constant_s
+    source_quantity: Plant time constant
+    unit: s
+    role: learner_sweep
+  - platform_control: broken_mode
+    source_quantity: Enable the source broken case
+    unit: flag
+    role: failure_injection
+  state_equations:
+  - tau*y_dot=-y+Kp*(r+s*y), with s=-1 for negative feedback and s=+1 for the failure
+  observables:
+  - quantity: plant output
+    unit: ratio
+  - quantity: tracking error
+    unit: ratio
+  - quantity: control command
+    unit: ratio
+  sweeps:
+  - control: proportional_gain
+    evidence_case: sweep_1
+    endpoint: 6.0
+    one_variable: true
+    expected_observation: Gain should speed the response and reduce—but not eliminate—the step error.
+  - control: plant_time_constant_s
+    evidence_case: sweep_2
+    endpoint: 3.0
+    one_variable: true
+    expected_observation: Make proportional feedback speed/error tradeoffs and the sign of feedback visible.
+  broken_case:
+    trigger: broken_mode=true
+    state_change: Reverse the measurement sign
+    observable_failure: plant output grows under positive feedback
+  recovery: Disable the broken case to restore subtraction at the summing junction.
+  teaching_invariant: negative feedback is bounded while the reversed sign is unstable
+  limiting_cases:
+  - Kp=0 leaves the open plant equilibrium unchanged
+  - reversing the measurement sign changes negative feedback into positive feedback
+  omissions:
+  - The platform fixes reference amplitude and initial condition; source-only bound tables are omitted.
+  reference:
+    type: closed_form
+    formulation: Scalar affine closed-loop recurrence
+    path: reference_cases.py
+    independent: true
+    imports_production_entrypoint: false
+    derived_from_production_output: false
+    perturbs_production_output: false
+  plots:
+  - key: response
+    title: Proportional closed-loop response
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Normalized plant output (ratio)
+  - key: mechanism
+    title: Control action and tracking error
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Normalized control command (ratio)
+    - id: y2
+      title: Tracking error (ratio)
+- id: P06
+  number: 6
+  source_folder: modules/06-tune-a-pid-by-observing-each-term
+  target_folder: modules/06-tune-a-pid-by-observing-each-term
+  source_model:
+    path: modules/06-tune-a-pid-by-observing-each-term/model.m
+    sha256: b75ab58810ad8aaf4070bb566c620de70431183c30e3af9f3035a844e2bbbfea
+  controls:
+  - platform_control: integral_gain
+    source_quantity: Integral gain
+    unit: 1/s
+    role: learner_sweep
+  - platform_control: derivative_gain
+    source_quantity: Derivative gain
+    unit: s
+    role: learner_sweep
+  - platform_control: broken_mode
+    source_quantity: Enable the source broken case
+    unit: flag
+    role: failure_injection
+  state_equations:
+  - x_ddot=u-1-0.4*x_dot; q_dot=r-x
+  - u=4(r-x)+Ki*q-Kd*x_dot
+  observables:
+  - quantity: position
+    unit: m
+  - quantity: P/I/D force contributions
+    unit: N
+  - quantity: peak command
+    unit: N
+  sweeps:
+  - control: integral_gain
+    evidence_case: sweep_1
+    endpoint: 3.0
+    one_variable: true
+    expected_observation: Integral action should remove load error; derivative action should suppress overshoot.
+  - control: derivative_gain
+    evidence_case: sweep_2
+    endpoint: 7.0
+    one_variable: true
+    expected_observation: Observe proportional, integral, and derivative actions separately on a loaded carriage.
+  broken_case:
+    trigger: broken_mode=true
+    state_change: Reverse derivative-feedback sign
+    observable_failure: derivative action injects energy and command magnitude grows
+  recovery: Disable the broken case to restore derivative damping.
+  teaching_invariant: correct derivative feedback dissipates rather than injects energy
+  limiting_cases:
+  - Ki=0 removes integral memory while Kd=0 removes derivative damping
+  - negative derivative gain injects rather than dissipates velocity feedback
+  omissions:
+  - The platform fixes Kp, load, damping, horizon, and initial state to isolate Ki and Kd.
+  reference:
+    type: alternative_algorithm
+    formulation: Augmented affine PID state-transition recurrence
+    path: reference_cases.py
+    independent: true
+    imports_production_entrypoint: false
+    derived_from_production_output: false
+    perturbs_production_output: false
+  plots:
+  - key: response
+    title: PID position response
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Position (m)
+  - key: mechanism
+    title: PID command decomposition
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Force contribution (N)
+- id: P07
+  number: 7
+  source_folder: modules/07-see-stability-margin-in-time-and-frequency
+  target_folder: modules/07-see-stability-margin-in-time-and-frequency
+  source_model:
+    path: modules/07-see-stability-margin-in-time-and-frequency/model.m
+    sha256: 223a80479b0ce06e48d37b4b210260a0bf16766d9b42d2254c468b5b0769b4cd
+  controls:
+  - platform_control: loop_gain
+    source_quantity: Loop gain
+    unit: 1/s²
+    role: learner_sweep
+  - platform_control: actuator_lag_s
+    source_quantity: Actuator lag
+    unit: s
+    role: learner_sweep
+  - platform_control: broken_mode
+    source_quantity: Enable the source broken case
+    unit: flag
+    role: failure_injection
+  state_equations:
+  - L(s)=K/[s(s+1)(tau*s+1)]
+  - phase margin is evaluated at |L(j*omega_c)|=1
+  observables:
+  - quantity: plant output
+    unit: ratio
+  - quantity: open-loop magnitude
+    unit: dB
+  - quantity: open-loop phase
+    unit: deg
+  sweeps:
+  - control: loop_gain
+    evidence_case: sweep_1
+    endpoint: 4.0
+    one_variable: true
+    expected_observation: Higher gain moves crossover upward where actuator lag removes phase margin.
+  - control: actuator_lag_s
+    evidence_case: sweep_2
+    endpoint: 0.5
+    one_variable: true
+    expected_observation: Connect gain/phase margins to ringing and instability in the same transparent loop.
+  broken_case:
+    trigger: broken_mode=true
+    state_change: Force K=4 and actuator lag=0.5 s
+    observable_failure: phase reserve becomes negative and the time response rings
+  recovery: Disable the broken case or lower loop gain until both margins are positive.
+  teaching_invariant: actuator lag reduces phase reserve
+  limiting_cases:
+  - actuator lag approaching zero removes its phase contribution
+  - the source failure combines K=4 with 0.5 s lag and yields negative phase reserve
+  omissions:
+  - The platform uses a fixed logarithmic display grid and reports an approximate grid crossover; the independent
+    reference root-solves the crossover.
+  reference:
+    type: alternative_algorithm
+    formulation: Affine plant recurrence plus root-solved frequency crossover
+    path: reference_cases.py
+    independent: true
+    imports_production_entrypoint: false
+    derived_from_production_output: false
+    perturbs_production_output: false
+  plots:
+  - key: response
+    title: Closed-loop stability-margin response
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Normalized plant output (ratio)
+  - key: mechanism
+    title: Open-loop frequency response
+    axes:
+    - id: x
+      title: Angular frequency (rad/s)
+    - id: y
+      title: Magnitude (dB)
+    - id: y2
+      title: Phase (deg)
+- id: P08
+  number: 8
+  source_folder: modules/08-reject-a-disturbance-with-feedback
+  target_folder: modules/08-reject-a-disturbance-with-feedback
+  source_model:
+    path: modules/08-reject-a-disturbance-with-feedback/model.m
+    sha256: bff95267e52505a22fb513477abb436ca0c9bb631f6429201479af17cc9883a3
+  controls:
+  - platform_control: feedback_gain
+    source_quantity: Feedback gain
+    unit: gain
+    role: learner_sweep
+  - platform_control: disturbance_frequency_rad_s
+    source_quantity: Disturbance frequency
+    unit: rad/s
+    role: learner_sweep
+  - platform_control: broken_mode
+    source_quantity: Enable the source broken case
+    unit: flag
+    role: failure_injection
+  state_equations:
+  - y_dot=-y+u+d; u=-K*(y+b)
+  - '|S(j*omega)|=1/sqrt((1+K)^2+omega^2)'
+  observables:
+  - quantity: plant disturbance
+    unit: normalized input
+  - quantity: true/measured output
+    unit: normalized output
+  - quantity: control command
+    unit: normalized input
+  sweeps:
+  - control: feedback_gain
+    evidence_case: sweep_1
+    endpoint: 9.0
+    one_variable: true
+    expected_observation: More gain should reject a slow plant disturbance but amplify control response to bias.
+  - control: disturbance_frequency_rad_s
+    evidence_case: sweep_2
+    endpoint: 8.0
+    one_variable: true
+    expected_observation: Separate true disturbance rejection from the cost of measurement bias.
+  broken_case:
+    trigger: broken_mode=true
+    state_change: Inject a measurement bias after the disturbance starts
+    observable_failure: feedback reacts to sensor bias and creates costly true motion
+  recovery: Disable the broken case and validate/calibrate the sensor bias.
+  teaching_invariant: sensitivity attenuation matches the closed-loop frequency relation
+  limiting_cases:
+  - K=0 gives open-loop disturbance response
+  - zero disturbance frequency reduces the sensitivity magnitude to 1/(1+K)
+  omissions:
+  - The platform fixes plant pole, disturbance start, and horizon; source-only extended sensitivity tables are omitted.
+  reference:
+    type: alternative_algorithm
+    formulation: Closed-loop scalar recurrence with analytic sensitivity
+    path: reference_cases.py
+    independent: true
+    imports_production_entrypoint: false
+    derived_from_production_output: false
+    perturbs_production_output: false
+  plots:
+  - key: response
+    title: Disturbance rejection response
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Plant disturbance (normalized input)
+    - id: y2
+      title: True output (normalized output)
+  - key: mechanism
+    title: Measurement and feedback command
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Measured output (normalized output)
+    - id: y2
+      title: Control command (normalized input)
+- id: P09
+  number: 9
+  source_folder: modules/09-discretize-a-continuous-controller
+  target_folder: modules/09-discretize-a-continuous-controller
+  source_model:
+    path: modules/09-discretize-a-continuous-controller/model.m
+    sha256: 3eafd5232b4dec38c1ccb34c0224d258630d0f1c0454678d72cdae01903d0803
+  controls:
+  - platform_control: sample_period_s
+    source_quantity: Controller sample period
+    unit: s
+    role: learner_sweep
+  - platform_control: integral_gain
+    source_quantity: Integral gain
+    unit: 1/s
+    role: learner_sweep
+  - platform_control: broken_mode
+    source_quantity: Enable the source broken case
+    unit: flag
+    role: failure_injection
+  state_equations:
+  - y[k+1]=exp(-Ts)*y[k]+(1-exp(-Ts))*u[k]
+  - q[k+1]=q[k]+Ts*e[k] with the declared broken integral convention
+  observables:
+  - quantity: digital PI output
+    unit: ratio
+  - quantity: held command
+    unit: normalized input
+  - quantity: integral state
+    unit: ratio*s
+  sweeps:
+  - control: sample_period_s
+    evidence_case: sweep_1
+    endpoint: 0.3
+    one_variable: true
+    expected_observation: A coarser sample period should move the digital response away from the continuous target.
+  - control: integral_gain
+    evidence_case: sweep_2
+    endpoint: 7.0
+    one_variable: true
+    expected_observation: Compare a sampled PI implementation with its continuous design target.
+  broken_case:
+    trigger: broken_mode=true
+    state_change: Force Ts=0.3 s and use the declared delayed-integral update
+    observable_failure: coarse/delayed integration changes the sampled PI trajectory
+  recovery: Disable the broken case and reduce the controller sample period.
+  teaching_invariant: sampled PI remains finite and exposes the chosen discretization
+  limiting_cases:
+  - Ts approaching zero approaches the continuous-controller convention
+  - the broken delayed-integral convention remains deterministic and finite on the declared grid
+  omissions:
+  - The platform fixes Kp, plant pole, reference, and horizon and does not expose alternate discretization families.
+  reference:
+    type: alternative_algorithm
+    formulation: Augmented sampled-data PI state recurrence
+    path: reference_cases.py
+    independent: true
+    imports_production_entrypoint: false
+    derived_from_production_output: false
+    perturbs_production_output: false
+  plots:
+  - key: response
+    title: Sampled PI response versus continuous target
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Normalized plant output (ratio)
+  - key: mechanism
+    title: Held command and discrete integral state
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Held command (normalized input)
+    - id: y2
+      title: Integral state (ratio·s)
+- id: P10
+  number: 10
+  source_folder: modules/10-expose-delay-and-sampling-limits
+  target_folder: modules/10-expose-delay-and-sampling-limits
+  source_model:
+    path: modules/10-expose-delay-and-sampling-limits/model.m
+    sha256: 494cc454b008ec99ab397f33f9fcf6a5ece53a3e351505e4bbe268d6c745fdf9
+  controls:
+  - platform_control: sample_period_s
+    source_quantity: Sample period
+    unit: s
+    role: learner_sweep
+  - platform_control: delay_fraction
+    source_quantity: Delay / sample period
+    unit: ratio
+    role: learner_sweep
+  - platform_control: broken_mode
+    source_quantity: Enable the source broken case
+    unit: flag
+    role: failure_injection
+  state_equations:
+  - y_dot=-y+u_held
+  - sample, compute, wait delay_fraction*Ts, then apply the new command
+  observables:
+  - quantity: sampled output
+    unit: ratio
+  - quantity: applied command
+    unit: normalized input
+  - quantity: equilibrium error
+    unit: ratio
+  sweeps:
+  - control: sample_period_s
+    evidence_case: sweep_1
+    endpoint: 0.2
+    one_variable: true
+    expected_observation: Sampling and delay together should increase oscillation even when the continuous design
+      is fast.
+  - control: delay_fraction
+    evidence_case: sweep_2
+    endpoint: 0.9
+    one_variable: true
+    expected_observation: Reveal held commands, computation latency, and sampled-data pole movement.
+  broken_case:
+    trigger: broken_mode=true
+    state_change: Force Ts=0.2 s and delay_fraction=0.9
+    observable_failure: the plant holds stale command for most of each sample
+  recovery: Disable the broken case and schedule computation early in the sample interval.
+  teaching_invariant: delay is the declared fraction of one sample
+  limiting_cases:
+  - delay_fraction=0 applies a newly computed command at its sample timestamp
+  - delay_fraction approaching 1 holds the old command for nearly a full sample
+  omissions:
+  - The platform fixes controller gain, plant tick, and horizon and omits source-only event counters.
+  reference:
+    type: alternative_algorithm
+    formulation: Independent sample/compute/apply event state machine
+    path: reference_cases.py
+    independent: true
+    imports_production_entrypoint: false
+    derived_from_production_output: false
+    perturbs_production_output: false
+  plots:
+  - key: response
+    title: Sampled response with computation delay
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Normalized plant output (ratio)
+  - key: mechanism
+    title: Delayed command and equilibrium error
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Applied command (normalized input)
+    - id: y2
+      title: Equilibrium error (ratio)
+- id: P11
+  number: 11
+  source_folder: modules/11-drive-an-actuator-into-saturation
+  target_folder: modules/11-drive-an-actuator-into-saturation
+  source_model:
+    path: modules/11-drive-an-actuator-into-saturation/model.m
+    sha256: 29f3f67ddc431f194030ef813f92747003f8ef4f53c055ea05531686ab8c078e
+  controls:
+  - platform_control: reference
+    source_quantity: Reference
+    unit: output
+    role: learner_sweep
+  - platform_control: actuator_limit
+    source_quantity: Actuator limit
+    unit: actuator
+    role: learner_sweep
+  - platform_control: broken_mode
+    source_quantity: Enable the source broken case
+    unit: flag
+    role: failure_injection
+  state_equations:
+  - y_dot=-y+clip(4*(r-y), -u_max, u_max)
+  observables:
+  - quantity: limited output
+    unit: ratio
+  - quantity: requested command
+    unit: ratio
+  - quantity: applied command
+    unit: ratio
+  sweeps:
+  - control: reference
+    evidence_case: sweep_1
+    endpoint: 3.0
+    one_variable: true
+    expected_observation: A limit below the needed equilibrium command should create persistent tracking error.
+  - control: actuator_limit
+    evidence_case: sweep_2
+    endpoint: 5.0
+    one_variable: true
+    expected_observation: Show the gap between requested and physically available actuator effort.
+  broken_case:
+    trigger: broken_mode=true
+    state_change: Force reference=1.5 and actuator limit=0.6
+    observable_failure: requested and applied command separate for a large fraction of the run
+  recovery: Disable the broken case or reduce the command to fit available authority.
+  teaching_invariant: applied authority clips whenever requested authority exceeds its limit
+  limiting_cases:
+  - u_max above every request makes applied and requested command identical
+  - reference beyond available authority produces a nonzero saturation fraction
+  omissions:
+  - The platform fixes controller gain and plant pole and omits source-only saturation transition tables.
+  reference:
+    type: closed_form
+    formulation: Continuous clipped first-order plant integration
+    path: reference_cases.py
+    independent: true
+    imports_production_entrypoint: false
+    derived_from_production_output: false
+    perturbs_production_output: false
+  plots:
+  - key: response
+    title: Actuator-limited plant response
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Normalized plant output (ratio)
+  - key: mechanism
+    title: Requested versus applied actuator command
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Normalized actuator command (ratio)
+- id: P12
+  number: 12
+  source_folder: modules/12-recover-from-integrator-windup
+  target_folder: modules/12-recover-from-integrator-windup
+  source_model:
+    path: modules/12-recover-from-integrator-windup/model.m
+    sha256: 42bbda3356206c8d8991def6f5ffd9f50e1d4818be4679b59ac661de63cb6265
+  controls:
+  - platform_control: anti_windup_gain
+    source_quantity: Anti-windup gain
+    unit: 1/s
+    role: learner_sweep
+  - platform_control: demand_duration_s
+    source_quantity: High-demand duration
+    unit: s
+    role: learner_sweep
+  - platform_control: broken_mode
+    source_quantity: Enable the source broken case
+    unit: flag
+    role: failure_injection
+  state_equations:
+  - y_dot=-y+sat(2e+q)
+  - q_dot=e+s*Kaw*(u_sat-u_raw), with s=-1 in the failure
+  observables:
+  - quantity: plant output
+    unit: ratio
+  - quantity: raw/saturated command
+    unit: ratio
+  - quantity: integral state
+    unit: ratio*s
+  sweeps:
+  - control: anti_windup_gain
+    evidence_case: sweep_1
+    endpoint: 2.0
+    one_variable: true
+    expected_observation: Correctly signed back-calculation should shorten recovery after the high demand ends.
+  - control: demand_duration_s
+    evidence_case: sweep_2
+    endpoint: 5.0
+    one_variable: true
+    expected_observation: Compare PI recovery with and without correctly signed back-calculation.
+  broken_case:
+    trigger: broken_mode=true
+    state_change: Reverse the anti-windup back-calculation sign
+    observable_failure: the integral state grows and post-demand recovery degrades
+  recovery: Disable the broken case to feed the saturation gap back with the corrective sign.
+  teaching_invariant: anti-windup recovery metrics remain finite and nonnegative
+  limiting_cases:
+  - Kaw=0 is ordinary windup with no back-calculation
+  - positive back-calculation uses u_sat-u_raw to unwind the integral state
+  omissions:
+  - The platform fixes Kp, Ki, saturation limit, demand levels, and plant pole to isolate anti-windup gain and demand
+    duration.
+  reference:
+    type: separately_formulated_numerical
+    formulation: High-accuracy continuous anti-windup state integration
+    path: reference_cases.py
+    independent: true
+    imports_production_entrypoint: false
+    derived_from_production_output: false
+    perturbs_production_output: false
+  plots:
+  - key: response
+    title: Anti-windup recovery response
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Normalized plant output (ratio)
+  - key: mechanism
+    title: Saturation gap and controller memory
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Normalized actuator command (ratio)
+    - id: y2
+      title: Integral state (ratio·s)
+- id: P13
+  number: 13
+  source_folder: modules/13-test-controllability
+  target_folder: modules/13-test-controllability
+  source_model:
+    path: modules/13-test-controllability/model.m
+    sha256: 1e6cbdfb5f99db26b29cdc1a2dd7715636cce34263bf6a485db3289ed83f1da0
+  controls:
+  - platform_control: input_gain
+    source_quantity: Input gain
+    unit: (m/s²)/cmd
+    role: learner_sweep
+  - platform_control: coupling
+    source_quantity: State coupling
+    unit: ratio
+    role: learner_sweep
+  - platform_control: broken_mode
+    source_quantity: Enable the source broken case
+    unit: flag
+    role: failure_injection
+  state_equations:
+  - C=[B, A*B] and rank(C) tests controllability
+  - W_N=sum A^k*B*B^T*(A^T)^k over the declared finite horizon
+  observables:
+  - quantity: reachable position
+    unit: m
+  - quantity: controllability singular values
+    unit: state/input
+  - quantity: Gramian eigenvalues
+    unit: state^2/input^2
+  sweeps:
+  - control: input_gain
+    evidence_case: sweep_1
+    endpoint: 2.0
+    one_variable: true
+    expected_observation: Zero coupling should make position unreachable even though rate is directly actuated.
+  - control: coupling
+    evidence_case: sweep_2
+    endpoint: 2.0
+    one_variable: true
+    expected_observation: Use rank and reachability energy to distinguish weak from missing control authority.
+  broken_case:
+    trigger: broken_mode=true
+    state_change: Set state coupling to zero
+    observable_failure: controllability rank drops from two to one
+  recovery: Disable the broken case to restore the state-to-state path.
+  teaching_invariant: zero coupling removes one controllable direction
+  limiting_cases:
+  - zero coupling produces rank one
+  - nonzero coupling and input gain produce rank two, while the smallest Gramian eigenvalue exposes conditioning
+  omissions:
+  - The platform is a fixed two-state structural demonstrator; broader source parameterization, exact-ZOH variants,
+    and complete finite-horizon Gramian tables are omitted.
+  reference:
+    type: closed_form
+    formulation: Direct controllability matrix and finite-horizon Gramian construction
+    path: reference_cases.py
+    independent: true
+    imports_production_entrypoint: false
+    derived_from_production_output: false
+    perturbs_production_output: false
+  plots:
+  - key: response
+    title: Reachable position under unit command
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Position (m)
+  - key: mechanism
+    title: Controllability conditioning and energy map
+    axes:
+    - id: x
+      title: Ordered direction (index)
+    - id: y
+      title: Controllability singular value (state/input)
+    - id: y2
+      title: Gramian eigenvalue (state²/input²)
+- id: P14
+  number: 14
+  source_folder: modules/14-test-observability
+  target_folder: modules/14-test-observability
+  source_model:
+    path: modules/14-test-observability/model.m
+    sha256: 6164ee7a6c9506700df113a62c50b4592d859f2efd3d89d946ecf4b341ccf791
+  controls:
+  - platform_control: sensor_gain
+    source_quantity: Sensor gain
+    unit: measurement/m
+    role: learner_sweep
+  - platform_control: observation_window_s
+    source_quantity: Observation window
+    unit: s
+    role: learner_sweep
+  - platform_control: broken_mode
+    source_quantity: Enable the source broken case
+    unit: flag
+    role: failure_injection
+  state_equations:
+  - O=[C; C*A] and rank(O) tests observability
+  - the initial rate is reconstructed from the measurement history by least squares
+  observables:
+  - quantity: measurement history
+    unit: m
+  - quantity: observability singular values
+    unit: measurement/state
+  - quantity: reconstructed rate
+    unit: m/s
+  sweeps:
+  - control: sensor_gain
+    evidence_case: sweep_1
+    endpoint: 2.0
+    one_variable: true
+    expected_observation: A longer position record should improve velocity inference; a rate-only sensor hides initial
+      position.
+  - control: observation_window_s
+    evidence_case: sweep_2
+    endpoint: 5.0
+    one_variable: true
+    expected_observation: Use measurement history and observability conditioning to expose hidden state.
+  broken_case:
+    trigger: broken_mode=true
+    state_change: Measure rate only
+    observable_failure: observability rank drops from two to one
+  recovery: Disable the broken case to measure position and restore full observability.
+  teaching_invariant: rate-only sensing removes one observable direction
+  limiting_cases:
+  - rate-only sensing produces rank one
+  - position history over a nonzero window permits rate reconstruction for nonzero sensor gain
+  omissions:
+  - The platform is a fixed two-state sensing demonstrator; broader source measurement models and complete reconstruction
+    residual tables are omitted.
+  reference:
+    type: closed_form
+    formulation: Direct observability matrix and least-squares reconstruction
+    path: reference_cases.py
+    independent: true
+    imports_production_entrypoint: false
+    derived_from_production_output: false
+    perturbs_production_output: false
+  plots:
+  - key: response
+    title: Measurement history and position truth
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Position-equivalent measurement (m)
+  - key: mechanism
+    title: Observability conditioning and reconstructed rate
+    axes:
+    - id: x
+      title: Ordered direction (index)
+    - id: y
+      title: Observability singular value (measurement/state)
+    - id: x2
+      title: Time (s)
+    - id: y2
+      title: Reconstructed rate (m/s)
+- id: P15
+  number: 15
+  source_folder: modules/15-build-a-state-observer
+  target_folder: modules/15-build-a-state-observer
+  source_model:
+    path: modules/15-build-a-state-observer/model.m
+    sha256: b93215c921dcbf2a79326e0dde6efc0562cf9e5ee8bcbe0e8e9373df0b4308f1
+  controls:
+  - platform_control: observer_speed_per_s
+    source_quantity: Observer pole speed
+    unit: 1/s
+    role: learner_sweep
+  - platform_control: sensor_bias_m
+    source_quantity: Sensor bias
+    unit: m
+    role: learner_sweep
+  - platform_control: broken_mode
+    source_quantity: Enable the source broken case
+    unit: flag
+    role: failure_injection
+  state_equations:
+  - e_dot=(A-LC)e-L*bias
+  - observer poles are placed by L=[2*speed, speed^2]^T
+  observables:
+  - quantity: true/estimated position
+    unit: m
+  - quantity: position error
+    unit: m
+  - quantity: rate error
+    unit: m/s
+  sweeps:
+  - control: observer_speed_per_s
+    evidence_case: sweep_1
+    endpoint: 5.0
+    one_variable: true
+    expected_observation: Faster poles should reduce settling time but increase sensitivity to measurement contamination.
+  - control: sensor_bias_m
+    evidence_case: sweep_2
+    endpoint: 0.1
+    one_variable: true
+    expected_observation: Watch a Luenberger observer reconstruct position and rate from position measurements.
+  broken_case:
+    trigger: broken_mode=true
+    state_change: Inject a 0.15 m sensor bias
+    observable_failure: the observer converges to a bias-driven error
+  recovery: Disable the broken case and correct the sensor bias before trusting the state estimate.
+  teaching_invariant: observer error converges to the bias-consistent equilibrium
+  limiting_cases:
+  - zero sensor bias permits asymptotic error decay
+  - constant bias produces a finite bias-consistent observer-error equilibrium
+  omissions:
+  - The platform fixes the two-state plant and observer structure and omits source-only pole/residual tables.
+  reference:
+    type: closed_form
+    formulation: Exact affine observer-error transition from a matrix exponential
+    path: reference_cases.py
+    independent: true
+    imports_production_entrypoint: false
+    derived_from_production_output: false
+    perturbs_production_output: false
+  plots:
+  - key: response
+    title: True and observed position
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Position (m)
+  - key: mechanism
+    title: Observer error components
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Position error (m)
+    - id: y2
+      title: Rate error (m/s)
+- id: P16
+  number: 16
+  source_folder: modules/16-fuse-noisy-sensors-with-a-kalman-filter
+  target_folder: modules/16-fuse-noisy-sensors-with-a-kalman-filter
+  source_model:
+    path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/model.m
+    sha256: 4179689c7da9893c2cd9436192d064687e980c995163734385e1844db830052b
+  controls:
+  - platform_control: assumed_sensor_noise_m
+    source_quantity: Assumed position noise
+    unit: m
+    role: learner_sweep
+  - platform_control: assumed_process_noise_m_s2
+    source_quantity: Assumed acceleration noise
+    unit: m/s²
+    role: learner_sweep
+  - platform_control: broken_mode
+    source_quantity: Enable the source broken case
+    unit: flag
+    role: failure_injection
+  state_equations:
+  - xhat^- = A*xhat; P^- = A*P*A^T+Q
+  - K=P^-*H^T/(H*P^-*H^T+R); Joseph-form reference updates P
+  observables:
+  - quantity: true/measured/estimated position
+    unit: m
+  - quantity: position error
+    unit: m
+  - quantity: velocity estimate
+    unit: m/s
+  sweeps:
+  - control: assumed_sensor_noise_m
+    evidence_case: sweep_1
+    endpoint: 0.8
+    one_variable: true
+    expected_observation: Assuming noisier measurements should smooth the estimate but slow its response to real
+      motion changes.
+  - control: assumed_process_noise_m_s2
+    evidence_case: sweep_2
+    endpoint: 0.3
+    one_variable: true
+    expected_observation: Fuse noisy position samples with a deterministic constant-velocity Kalman filter.
+  broken_case:
+    trigger: broken_mode=true
+    state_change: Inject a deterministic 4 m measurement outlier
+    observable_failure: the deterministic outlier increases estimation error
+  recovery: Disable the broken case; in production, gate innovations before applying the update.
+  teaching_invariant: Kalman covariance assumptions yield a finite deterministic estimate
+  limiting_cases:
+  - smaller assumed R increases measurement trust
+  - zero process noise removes covariance injection but not deterministic propagation
+  omissions:
+  - The platform fixes the deterministic truth/noise record and two-state model and omits source-only covariance
+    history tables.
+  reference:
+    type: alternative_algorithm
+    formulation: Joseph-form covariance Kalman recurrence
+    path: reference_cases.py
+    independent: true
+    imports_production_entrypoint: false
+    derived_from_production_output: false
+    perturbs_production_output: false
+  plots:
+  - key: response
+    title: Kalman position fusion
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Position (m)
+  - key: mechanism
+    title: Kalman state-estimation error
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Position error (m)
+    - id: y2
+      title: Velocity estimate (m/s)
+- id: P17
+  number: 17
+  source_folder: modules/17-balance-state-error-and-control-effort-with-lqr
+  target_folder: modules/17-balance-state-error-and-control-effort-with-lqr
+  source_model:
+    path: modules/17-balance-state-error-and-control-effort-with-lqr/model.m
+    sha256: 59d0301e1d84821359028b6725aa33976dc89b997bbe65fc23d5b808d089b9b3
+  controls:
+  - platform_control: position_weight
+    source_quantity: Position-error weight
+    unit: weight
+    role: learner_sweep
+  - platform_control: control_weight
+    source_quantity: Control-effort weight
+    unit: weight
+    role: learner_sweep
+  - platform_control: broken_mode
+    source_quantity: Enable the source broken case
+    unit: flag
+    role: failure_injection
+  state_equations:
+  - P=A^T*P*A-A^T*P*B*(R+B^T*P*B)^-1*B^T*P*A+Q
+  - u=-Kx, K=(R+B^T*P*B)^-1*B^T*P*A
+  observables:
+  - quantity: position
+    unit: m
+  - quantity: velocity
+    unit: m/s
+  - quantity: control command
+    unit: N
+  sweeps:
+  - control: position_weight
+    evidence_case: sweep_1
+    endpoint: 16.0
+    one_variable: true
+    expected_observation: More position weight should regulate faster with a larger peak command.
+  - control: control_weight
+    evidence_case: sweep_2
+    endpoint: 10.0
+    one_variable: true
+    expected_observation: Trade position regulation against command effort with a discrete LQR design.
+  broken_case:
+    trigger: broken_mode=true
+    state_change: Set actuator effectiveness to zero
+    observable_failure: the valid gain has no applied authority and the state does not regulate
+  recovery: Disable the broken case and verify actuator authority before applying the gain.
+  teaching_invariant: zero actuator effectiveness produces zero feedback authority
+  limiting_cases:
+  - zero actuator effectiveness makes applied authority and feedback gain effect zero
+  - larger R reduces command authority while the DARE solution remains stabilizing on the declared positive plant
+  omissions:
+  - The platform uses its documented discrete cart approximation and 500-step Riccati iteration rather than the
+    source exact-ZOH plant and full 40000-iteration diagnostics.
+  reference:
+    type: alternative_algorithm
+    formulation: Schur-method discrete Riccati solution
+    path: reference_cases.py
+    independent: true
+    imports_production_entrypoint: false
+    derived_from_production_output: false
+    perturbs_production_output: false
+  plots:
+  - key: response
+    title: LQR state trajectory
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Position (m)
+    - id: y2
+      title: Velocity (m/s)
+  - key: mechanism
+    title: LQR authority and position decay
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Control command (N)
+    - id: y2
+      title: Absolute position (m)
+- id: P18
+  number: 18
+  source_folder: modules/18-use-feedforward-and-feedback-together
+  target_folder: modules/18-use-feedforward-and-feedback-together
+  source_model:
+    path: modules/18-use-feedforward-and-feedback-together/model.m
+    sha256: c8ca1dcd305946251b8bb888b8acd79e347c8f995351fef7c54233185cf7f059
+  controls:
+  - platform_control: feedforward_scale
+    source_quantity: Feedforward scale
+    unit: ratio
+    role: learner_sweep
+  - platform_control: feedback_scale
+    source_quantity: Feedback scale
+    unit: ratio
+    role: learner_sweep
+  - platform_control: broken_mode
+    source_quantity: Enable the source broken case
+    unit: flag
+    role: failure_injection
+  state_equations:
+  - x_ddot=s*ff*x_des_ddot+fb*(4*(x_des-x)+3*(v_des-v))+d
+  observables:
+  - quantity: desired/actual position
+    unit: m
+  - quantity: acceleration terms
+    unit: m/s^2
+  - quantity: tracking error
+    unit: m
+  sweeps:
+  - control: feedforward_scale
+    evidence_case: sweep_1
+    endpoint: 1.5
+    one_variable: true
+    expected_observation: Feedforward should reduce nominal lag while feedback remains necessary for disturbance
+      rejection.
+  - control: feedback_scale
+    evidence_case: sweep_2
+    endpoint: 2.0
+    one_variable: true
+    expected_observation: Separate planned acceleration from feedback correction during trajectory tracking.
+  broken_case:
+    trigger: broken_mode=true
+    state_change: Reverse feedforward sign
+    observable_failure: feedforward accelerates opposite the modeled demand
+  recovery: Disable the broken case and verify inverse-model sign conventions.
+  teaching_invariant: tracking and command measures remain finite under the declared sign
+  limiting_cases:
+  - feedforward_scale=0 leaves feedback-only tracking
+  - feedback_scale=0 exposes open-loop feedforward sensitivity to disturbance and sign
+  omissions:
+  - The platform fixes the sinusoidal demand, disturbance step, feedback shape, and plant mass to isolate feedforward
+    and feedback scale.
+  reference:
+    type: separately_formulated_numerical
+    formulation: High-accuracy continuous feedforward/feedback integration
+    path: reference_cases.py
+    independent: true
+    imports_production_entrypoint: false
+    derived_from_production_output: false
+    perturbs_production_output: false
+  plots:
+  - key: response
+    title: Feedforward-plus-feedback tracking
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Position (m)
+  - key: mechanism
+    title: Acceleration-command decomposition
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Acceleration (m/s²)
+- id: P19
+  number: 19
+  source_folder: modules/19-measure-sensitivity-to-model-error
+  target_folder: modules/19-measure-sensitivity-to-model-error
+  source_model:
+    path: modules/19-measure-sensitivity-to-model-error/model.m
+    sha256: 9d1246e2dfc957f23fb287b8594f9199cfb1f08168693cf6fda9c4ef11787091
+  controls:
+  - platform_control: actuator_gain_ratio
+    source_quantity: Actual / nominal actuator gain
+    unit: ratio
+    role: learner_sweep
+  - platform_control: drag_ratio
+    source_quantity: Actual / nominal drag
+    unit: ratio
+    role: learner_sweep
+  - platform_control: broken_mode
+    source_quantity: Enable the source broken case
+    unit: flag
+    role: failure_injection
+  state_equations:
+  - v[k+1]=(1-dt*drag)*v[k]+dt*sign*gain*2*(1-v[k])
+  observables:
+  - quantity: nominal/actual speed
+    unit: m/s
+  - quantity: commanded acceleration
+    unit: m/s^2
+  - quantity: speed prediction gap
+    unit: m/s
+  sweeps:
+  - control: actuator_gain_ratio
+    evidence_case: sweep_1
+    endpoint: 1.5
+    one_variable: true
+    expected_observation: Lower actuator gain and higher drag should both increase tracking error, but through different
+      mechanisms.
+  - control: drag_ratio
+    evidence_case: sweep_2
+    endpoint: 2.0
+    one_variable: true
+    expected_observation: Measure how actuator gain and drag mismatch change closed-loop speed tracking.
+  broken_case:
+    trigger: broken_mode=true
+    state_change: Reverse actuator polarity
+    observable_failure: the actual plant diverges away from the nominal prediction
+  recovery: Disable the broken case and validate control polarity before tuning robustness.
+  teaching_invariant: the uncertainty experiment reports a finite model gap
+  limiting_cases:
+  - gain=drag=1 is the matched nominal point
+  - negative actuator sign lies outside the declared positive uncertainty family
+  omissions:
+  - The platform uses the documented forward-Euler scalar plant and omits the source exact-ZOH recurrence and extended
+    uncertainty tables.
+  reference:
+    type: closed_form
+    formulation: Scalar uncertain closed-loop recurrence
+    path: reference_cases.py
+    independent: true
+    imports_production_entrypoint: false
+    derived_from_production_output: false
+    perturbs_production_output: false
+  plots:
+  - key: response
+    title: Nominal and uncertain speed responses
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Speed (m/s)
+  - key: mechanism
+    title: Command and prediction mismatch
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Commanded acceleration (m/s²)
+    - id: y2
+      title: Speed prediction gap (m/s)
+- id: P20
+  number: 20
+  source_folder: modules/20-compare-nominal-and-robust-designs
+  target_folder: modules/20-compare-nominal-and-robust-designs
+  source_model:
+    path: modules/20-compare-nominal-and-robust-designs/model.m
+    sha256: e5a16705f1f2c1c911eeb79f16b49be03e3633dd6b4efd96814e116e3e1118a2
+  controls:
+  - platform_control: actuator_gain_ratio
+    source_quantity: Actual / nominal actuator gain
+    unit: ratio
+    role: learner_sweep
+  - platform_control: drag_ratio
+    source_quantity: Actual / nominal drag
+    unit: ratio
+    role: learner_sweep
+  - platform_control: broken_mode
+    source_quantity: Enable the source broken case
+    unit: flag
+    role: failure_injection
+  state_equations:
+  - v_K[k+1]=(1-dt*(drag+sign*gain*K))*v_K[k]+dt*sign*gain*K for K in {2,4}
+  observables:
+  - quantity: K=2 and K=4 speed
+    unit: m/s
+  - quantity: K=2 and K=4 command
+    unit: m/s^2
+  - quantity: finite-horizon objective
+    unit: s
+  sweeps:
+  - control: actuator_gain_ratio
+    evidence_case: sweep_1
+    endpoint: 1.5
+    one_variable: true
+    expected_observation: Higher positive actuator gain increases closed-loop authority for both fixed proportional
+      gains and changes their finite-horizon tracking/effort objectives.
+  - control: drag_ratio
+    evidence_case: sweep_2
+    endpoint: 2.0
+    one_variable: true
+    expected_observation: Higher drag slows both fixed-gain responses and increases their proportional steady-state
+      speed error.
+  broken_case:
+    trigger: broken_mode=true
+    state_change: Reverse actuator polarity
+    observable_failure: both preselected gains become positive-feedback failures
+  recovery: Disable broken_mode to restore positive actuator polarity; retain the narrow two-fixed-gain claim and
+    do not infer robust synthesis or certification.
+  teaching_invariant: the lesson compares exactly two fixed gains, not robust synthesis
+  limiting_cases:
+  - gain=drag=1 is the matched comparison point
+  - negative actuator sign makes both proportional recurrences positive-feedback failures
+  omissions:
+  - The source finite enumeration of 12 PI candidates over 25 plant points, feedforward term, effort screen, and
+    PI state are omitted; this item claims only two preselected proportional gains.
+  reference:
+    type: closed_form
+    formulation: Two fixed-gain scalar recurrences over the declared uncertainty point
+    path: reference_cases.py
+    independent: true
+    imports_production_entrypoint: false
+    derived_from_production_output: false
+    perturbs_production_output: false
+  plots:
+  - key: response
+    title: Two fixed-gain speed responses
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Speed (m/s)
+  - key: mechanism
+    title: Two fixed-gain commands
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Commanded acceleration (m/s²)
+- id: P21
+  number: 21
+  source_folder: modules/21-generate-a-feasible-trajectory
+  target_folder: modules/21-generate-a-feasible-trajectory
+  source_model:
+    path: modules/21-generate-a-feasible-trajectory/model.m
+    sha256: d2ef8dab467fd61a4121fd6455ef8276119336cd61542b0b9fb9affd33b61b7c
+  controls:
+  - platform_control: target_position_m
+    source_quantity: Target position
+    unit: m
+    role: learner_sweep
+  - platform_control: move_duration_s
+    source_quantity: Move duration
+    unit: s
+    role: learner_sweep
+  - platform_control: broken_mode
+    source_quantity: Enable the source broken case
+    unit: flag
+    role: failure_injection
+  state_equations:
+  - x=D*(10*s^3-15*s^4+6*s^5), s=t/T
+  - v and a are analytic first and second derivatives of the quintic
+  observables:
+  - quantity: position
+    unit: m
+  - quantity: velocity
+    unit: m/s
+  - quantity: acceleration
+    unit: m/s^2
+  sweeps:
+  - control: target_position_m
+    evidence_case: sweep_1
+    endpoint: 30.0
+    one_variable: true
+    expected_observation: Shortening duration should raise peak acceleration faster than peak speed.
+  - control: move_duration_s
+    evidence_case: sweep_2
+    endpoint: 14.0
+    one_variable: true
+    expected_observation: Generate a rest-to-rest quintic and test speed/acceleration feasibility.
+  broken_case:
+    trigger: broken_mode=true
+    state_change: Force a 20 m move in 4 s
+    observable_failure: peak speed or acceleration violates the declared feasibility limits
+  recovery: Disable the broken case and lengthen the move until both constraints pass.
+  teaching_invariant: feasibility follows explicit speed and acceleration limits
+  limiting_cases:
+  - larger duration reduces both peak speed and peak acceleration
+  - the forced 20 m in 4 s case exceeds at least one declared limit
+  omissions:
+  - The platform fixes zero endpoint velocity/acceleration and the 5 m/s and 2 m/s^2 limits; alternate boundary
+    conditions are omitted.
+  reference:
+    type: closed_form
+    formulation: Analytic quintic trajectory and derivative extrema
+    path: reference_cases.py
+    independent: true
+    imports_production_entrypoint: false
+    derived_from_production_output: false
+    perturbs_production_output: false
+  plots:
+  - key: response
+    title: Quintic trajectory and derivatives
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Position (m)
+    - id: y2
+      title: Velocity (m/s)
+    - id: y3
+      title: Acceleration (m/s²)
+  - key: mechanism
+    title: Declared trajectory limits
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Speed limit (m/s)
+    - id: y2
+      title: Acceleration limit (m/s²)
+- id: P22
+  number: 22
+  source_folder: modules/22-implement-proportional-navigation
+  target_folder: modules/22-implement-proportional-navigation
+  source_model:
+    path: modules/22-implement-proportional-navigation/model.m
+    sha256: 643e4474b87f7f669c0eaa9a6f637b9119fc8e0f90e4c545cb6e5fb40bed305a
+  controls:
+  - platform_control: navigation_constant
+    source_quantity: Navigation constant
+    unit: ratio
+    role: learner_sweep
+  - platform_control: maximum_acceleration_m_s2
+    source_quantity: Acceleration limit
+    unit: m/s²
+    role: learner_sweep
+  - platform_control: broken_mode
+    source_quantity: Enable the source broken case
+    unit: flag
+    role: failure_injection
+  state_equations:
+  - a_n=clip(N*V_c*lambda_dot, -a_max, a_max)
+  - heading[k+1]=heading[k]+dt*a_n/speed using signed planar line-of-sight geometry
+  observables:
+  - quantity: range
+    unit: m
+  - quantity: line-of-sight angle
+    unit: deg
+  - quantity: lateral acceleration
+    unit: m/s^2
+  sweeps:
+  - control: navigation_constant
+    evidence_case: sweep_1
+    endpoint: 5.0
+    one_variable: true
+    expected_observation: Insufficient lateral acceleration should leave a finite miss even with a reasonable navigation
+      constant.
+  - control: maximum_acceleration_m_s2
+    evidence_case: sweep_2
+    endpoint: 120.0
+    one_variable: true
+    expected_observation: Observe proportional navigation geometry, acceleration authority, and miss distance.
+  broken_case:
+    trigger: broken_mode=true
+    state_change: Reduce acceleration authority to 5 m/s^2
+    observable_failure: the acceleration clips and the modeled engagement misses
+  recovery: Disable the broken case and restore the 80 m/s² authority used by the baseline.
+  teaching_invariant: PN acceleration respects the declared saturation
+  limiting_cases:
+  - large acceleration authority approaches unclipped PN
+  - the 5 m/s^2 failure makes saturation visible and prevents the modeled intercept
+  omissions:
+  - The platform fixes initial geometry, speeds, target motion, hit radius, dt, and horizon; source-only event and
+    geometry tables are omitted.
+  reference:
+    type: alternative_algorithm
+    formulation: Complex-plane proportional-navigation geometry recurrence
+    path: reference_cases.py
+    independent: true
+    imports_production_entrypoint: false
+    derived_from_production_output: false
+    perturbs_production_output: false
+  plots:
+  - key: response
+    title: Proportional-navigation engagement geometry
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Range (m)
+    - id: y2
+      title: Line-of-sight angle (deg)
+  - key: mechanism
+    title: Lateral-acceleration authority
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Lateral acceleration (m/s²)
+- id: P23
+  number: 23
+  source_folder: modules/23-model-sensor-and-actuator-dynamics
+  target_folder: modules/23-model-sensor-and-actuator-dynamics
+  source_model:
+    path: modules/23-model-sensor-and-actuator-dynamics/model.m
+    sha256: c0703e13c7caefeb864983be924427e806996ea08aa57bcf1e1d8530fade18a2
+  controls:
+  - platform_control: actuator_time_constant_s
+    source_quantity: Actuator time constant
+    unit: s
+    role: learner_sweep
+  - platform_control: sensor_time_constant_s
+    source_quantity: Sensor time constant
+    unit: s
+    role: learner_sweep
+  - platform_control: broken_mode
+    source_quantity: Enable the source broken case
+    unit: flag
+    role: failure_injection
+  state_equations:
+  - a[k+1]=alpha_a*a[k]+(1-alpha_a)*u[k]
+  - y[k+1]=alpha_s*y[k]+(1-alpha_s)*a[k]
+  observables:
+  - quantity: commanded/actual/measured acceleration
+    unit: m/s^2
+  - quantity: actuator tracking error
+    unit: m/s^2
+  - quantity: sensor lag error
+    unit: m/s^2
+  sweeps:
+  - control: actuator_time_constant_s
+    evidence_case: sweep_1
+    endpoint: 0.8
+    one_variable: true
+    expected_observation: When command reversals are faster than either bandwidth, measured output should lag twice.
+  - control: sensor_time_constant_s
+    evidence_case: sweep_2
+    endpoint: 0.6
+    one_variable: true
+    expected_observation: Separate actuator lag, sensor lag, clipping, and bias in one command chain.
+  broken_case:
+    trigger: broken_mode=true
+    state_change: Force 0.8/0.6 s lags with a 0.1 s command half-period
+    observable_failure: the measured acceleration cannot follow rapid command reversals
+  recovery: Disable the broken case and slow the command or increase component bandwidth.
+  teaching_invariant: positive first-order time constants create finite cascaded lag
+  limiting_cases:
+  - time constant approaching zero approaches an ideal component
+  - a 0.1 s command half-period with 0.8/0.6 s lags produces a large cascaded tracking error
+  omissions:
+  - The platform omits ideal zero-time-constant branches, sensor bias, independent amplitude/limit controls, and
+    the source exact coupled repeated-pole sensor update.
+  reference:
+    type: alternative_algorithm
+    formulation: Independent convolution/IIR realization of actuator and sensor lags
+    path: reference_cases.py
+    independent: true
+    imports_production_entrypoint: false
+    derived_from_production_output: false
+    perturbs_production_output: false
+  plots:
+  - key: response
+    title: Actuator and sensor acceleration dynamics
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Acceleration (m/s²)
+  - key: mechanism
+    title: Actuator and sensor lag errors
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Acceleration error (m/s²)
+- id: P24
+  number: 24
+  source_folder: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant
+  target_folder: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant
+  source_model:
+    path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/model.m
+    sha256: 2bdd4440ad12ed616c77e91dc71461ee4f3aeb9a5d40bd01d7ece9dd385cdf11
+  controls:
+  - platform_control: controller_period_s
+    source_quantity: Controller period
+    unit: s
+    role: learner_sweep
+  - platform_control: one_way_latency_s
+    source_quantity: One-way latency
+    unit: s
+    role: learner_sweep
+  - platform_control: broken_mode
+    source_quantity: Enable the source broken case
+    unit: flag
+    role: failure_injection
+  state_equations:
+  - measurement packet -> one-way latency -> sampled controller -> command packet -> one-way latency -> watchdog
+  - exact held-force mass-damper transition advances x and v after delivery and safety decisions
+  observables:
+  - quantity: virtual-plant position
+    unit: m
+  - quantity: controller/applied force
+    unit: N
+  - quantity: measurement/command age
+    unit: s
+  sweeps:
+  - control: controller_period_s
+    evidence_case: sweep_1
+    endpoint: 0.15
+    one_variable: true
+    expected_observation: A longer controller period reduces release count and holds delivered measurements and
+      forces longer while the 0.01 s plant tick stays fixed.
+  - control: one_way_latency_s
+    evidence_case: sweep_2
+    endpoint: 0.06
+    one_variable: true
+    expected_observation: More one-way latency raises measurement and command source age before its downstream effect
+      appears in position.
+  broken_case:
+    trigger: broken_mode=true
+    state_change: Force 0.1 s controller period, 0.04 s one-way latency, 0.12 s watchdog, and drop every second
+      command
+    observable_failure: delivery gaps exceed the watchdog threshold and applied force repeatedly falls to zero
+  recovery: Disable the broken case to restore fresh commands. This is a software-only virtual protocol/plant lesson;
+    it does not claim physical HIL execution.
+  teaching_invariant: software event ordering produces a bounded watchdog fraction
+  limiting_cases:
+  - zero latency delivers measurement and command on the same controller tick
+  - surviving-command spacing above the watchdog timeout creates fail-zero intervals
+  omissions:
+  - The platform omits cancellation, user-set watchdog/drop cadence/mass/dt/duration, packet counters, and cancellation
+    precedence; retained behavior is software-only and not a capstone.
+  reference:
+    type: alternative_algorithm
+    formulation: Independent timestamped delivery/watchdog event scheduler
+    path: reference_cases.py
+    independent: true
+    imports_production_entrypoint: false
+    derived_from_production_output: false
+    perturbs_production_output: false
+  plots:
+  - key: response
+    title: Software-only virtual-plant tracking
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Position (m)
+  - key: mechanism
+    title: Packet-driven force and freshness
+    axes:
+    - id: x
+      title: Time (s)
+    - id: y
+      title: Force (N)
+    - id: y2
+      title: Packet age (s)

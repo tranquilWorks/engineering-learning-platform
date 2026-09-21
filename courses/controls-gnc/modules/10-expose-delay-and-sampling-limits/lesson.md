@@ -2,7 +2,7 @@
 
 **Guiding question:** What inputs, observable effects, and failure modes matter when you expose Delay and Sampling Limits?
 
-Reveal held commands, computation latency, and sampled-data pole movement. This native lab preserves the source experiment while making the levers, diagnostics, and recovery available directly in the learning platform.
+Reveal held commands, computation latency, and sampled-data pole movement. This native lab preserves the source teaching objective in a bounded Python model; the course fidelity record names behavior that is intentionally not exposed in the platform.
 
 ## Predict before running
 

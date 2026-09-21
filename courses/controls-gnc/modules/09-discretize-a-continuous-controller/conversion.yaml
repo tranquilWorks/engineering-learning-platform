@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 course_id: controls-gnc
 item:
   id: P09
@@ -26,17 +26,16 @@ item:
   - path: modules/09-discretize-a-continuous-controller/model.m
     sha256: 3eafd5232b4dec38c1ccb34c0224d258630d0f1c0454678d72cdae01903d0803
 target:
-  content_digest: bada55ece967dd627679e2820c079562aae12e607b97d793c1045e1f730954f1
+  content_digest: a44a4821128f6c1a70e024f9189868c04cf835d4dc919c29412cee43346ac522
   files:
   - path: modules/09-discretize-a-continuous-controller/module.yaml
     sha256: ec1d149da164c4fdf70cadfa2da65c941ab05df51ad5d8855d85440fb4e3dc5f
   - path: modules/09-discretize-a-continuous-controller/lesson.md
-    sha256: 7089526965c76beded8633c4f4e2752735d9a31c7b0fe3e61e57d572d58a4c04
+    sha256: 03b64bbdc53199a35fbde205a5eb64d7836fa20e2bfcea738314a2b8e5b9be3f
   - path: modules/09-discretize-a-continuous-controller/experiment.py
-    sha256: 07f53505554328d66aed27853d37f239cbc99aa1f92f215292f046af91f45fa2
+    sha256: 2fe4f460dbc8465fab3fc9385ba599353ef387ee5a2f055188d8b5328c8abea7
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you discretize a Continuous
-    Controller?
+  guiding_question: What inputs, observable effects, and failure modes matter when you discretize a Continuous Controller?
   physical_model: Compare a sampled PI implementation with its continuous design target.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
@@ -56,42 +55,43 @@ content:
       value: 9
       unit: index
     datasets:
-    - name: baseline numeric signature
-      provenance: retained_fixture
-      sha256: cf6fe7a0bd2934d95747fd66edce97c2813e2a57654ec4dde724b7c271ea37d4
-      unit: mixed numeric signature
+    - name: five-scenario independent reference signatures (expected-independent.json)
+      provenance: independent_reference
+      sha256: 6934a7dc21d9fcd6c7a0e2d18654363c7db99904218ee47b29bcac2fcc39a065
+      unit: ordered mixed SI signature; fields and units are embedded in the evidence file
   plot_sequence:
-  - source_figure: Source baseline and sweep figures
+  - source_figure: Pinned MATLAB source intent mapped to platform response view
     target_plot_key: response
-    title: Observable response
+    title: Sampled PI response versus continuous target
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Response
-      unit: source units
-    interpretation: Compare a sampled PI implementation with its continuous design target.
-  - source_figure: Source diagnostic and broken-case figures
+      label: Normalized plant output
+      unit: ratio
+    interpretation: sampled PI remains finite and exposes the chosen discretization
+  - source_figure: Pinned MATLAB source intent mapped to platform mechanism view
     target_plot_key: mechanism
-    title: Mechanism and diagnostic view
+    title: Held command and discrete integral state
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Diagnostic
-      unit: source units
-    interpretation: The broken case combines coarse sampling with the less forgiving forward-error integral
-      update.
+      label: Held command
+      unit: normalized input
+    - role: y
+      label: Integral state
+      unit: ratio·s
+    interpretation: coarse/delayed integration changes the sampled PI trajectory
   sweeps:
   - control: sample_period_s
     values:
     - 0.02
     - 0.1
     - 0.3
-    expected_observation: A coarser sample period should move the digital response away from the continuous
-      target.
+    expected_observation: A coarser sample period should move the digital response away from the continuous target.
   - control: integral_gain
     values:
     - 1.0
@@ -133,39 +133,137 @@ python_source_equivalence:
   - name: broken_mode
     value: false
     unit: flag
+  reference_origin:
+    derived_from_production_output: false
+    formulation: Augmented sampled-data PI state recurrence
+    imports_production_entrypoint: false
+    independent: true
+    package:
+      path: reference_cases.py
+      sha256: 975fe4772642993eeda6cfa33487192de0ae526b4f12ab2523d3f100ca994c8d
+    perturbs_production_output: false
+    type: alternative_algorithm
+  production_origin:
+    derived_from_production_output: true
+    formulation: Direct capture of diagnostics.signature from experiment.py:run
+    imports_production_entrypoint: true
+    independent: false
+    package:
+      path: modules/09-discretize-a-continuous-controller/experiment.py
+      sha256: 2fe4f460dbc8465fab3fc9385ba599353ef387ee5a2f055188d8b5328c8abea7
+    perturbs_production_output: false
+    type: production_entrypoint
   cases:
-  - name: baseline-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/09-discretize-a-continuous-controller/evidence/expected-baseline.json
-      sha256: cf6fe7a0bd2934d95747fd66edce97c2813e2a57654ec4dde724b7c271ea37d4
-    actual:
-      path: modules/09-discretize-a-continuous-controller/evidence/actual-baseline.json
-      sha256: 42c293de0f57e611372fa08e4b552a98b6992e3e83cb93b8a665903c3c355741
-    max_absolute_error: 1.0000333894311098e-13
-    max_relative_error: 1.0000333894311098e-13
+  - name: baseline-independent-reference-vs-production
+    scenario: baseline
+    evidence_key: baseline
+    parameters:
+      broken_mode: false
+      integral_gain: 4.0
+      sample_period_s: 0.05
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: &id001
+      absolute: 1.0e-10
+      relative: 1.0e-10
+    expected: &id002
+      path: modules/09-discretize-a-continuous-controller/evidence/expected-independent.json
+      sha256: 6934a7dc21d9fcd6c7a0e2d18654363c7db99904218ee47b29bcac2fcc39a065
+    actual: &id003
+      path: modules/09-discretize-a-continuous-controller/evidence/actual-production.json
+      sha256: 4d4b81485e0003035b4f640c9bdf92ccc03d25161954c4df8042395a7c6e316d
+    comparison_scale: 4.0
+    allowed_absolute_error: 4.0e-10
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: sampled PI remains finite and exposes the chosen discretization
+      reference_passed: true
+      production_passed: true
     passed: true
-  - name: broken-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/09-discretize-a-continuous-controller/evidence/expected-broken.json
-      sha256: 682b98e687a634f352402e55b0a076674aaa6f862f944ca14708e159b54194c9
-    actual:
-      path: modules/09-discretize-a-continuous-controller/evidence/actual-broken.json
-      sha256: fadd599426f067351f1e08819c32291631041a7bcb4161b6df70ff884eb2c6e4
-    max_absolute_error: 9.997558336749535e-14
-    max_relative_error: 9.997558336749535e-14
+  - name: sweep-1-independent-reference-vs-production
+    scenario: sweep_1
+    evidence_key: sweep_1
+    parameters:
+      broken_mode: false
+      integral_gain: 4.0
+      sample_period_s: 0.3
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 4.0
+    allowed_absolute_error: 4.0e-10
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: sampled PI remains finite and exposes the chosen discretization
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: sweep-2-independent-reference-vs-production
+    scenario: sweep_2
+    evidence_key: sweep_2
+    parameters:
+      broken_mode: false
+      integral_gain: 7.0
+      sample_period_s: 0.05
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 7.0
+    allowed_absolute_error: 7.000000000000001e-10
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: sampled PI remains finite and exposes the chosen discretization
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: broken-independent-reference-vs-production
+    scenario: broken
+    evidence_key: broken
+    parameters:
+      broken_mode: true
+      integral_gain: 4.0
+      sample_period_s: 0.05
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 2285.9335378168585
+    allowed_absolute_error: 2.2859335378168586e-07
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: sampled PI remains finite and exposes the chosen discretization
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: recovery-independent-reference-vs-production
+    scenario: recovery
+    evidence_key: recovery
+    parameters:
+      broken_mode: false
+      integral_gain: 4.0
+      sample_period_s: 0.05
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 4.0
+    allowed_absolute_error: 4.0e-10
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: sampled PI remains finite and exposes the chosen discretization
+      reference_passed: true
+      production_passed: true
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
-    signatures bind the Python conversion.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
+    constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:
@@ -177,3 +275,15 @@ claims:
   learner_effectiveness:
     status: not_run
     reason: Learner effectiveness requires post-release study and is not claimed.
+fidelity:
+  batch_id: ELP-GNC-FIDELITY-P01-P24
+  item_id: P09
+  map:
+    path: fidelity-map.yaml
+    sha256: 0607e8f0908f32e1cded19c7daa550a3ff40d788372e6927e2cfc364c633f4b4
+  schema:
+    path: fidelity-map.schema.json
+    sha256: 256f1e1298b80812ce35a26eeb750917ffc1ea10cc25e9da8363d9524da102a0
+  source_model:
+    path: modules/09-discretize-a-continuous-controller/model.m
+    sha256: 3eafd5232b4dec38c1ccb34c0224d258630d0f1c0454678d72cdae01903d0803

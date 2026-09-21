@@ -1,25 +1,33 @@
 schema_version: 1
 batch:
-  id: ELP-COURSE-CALIBER-00
-  title: Separate course implementation coverage from curriculum completeness
-  goal: Establish the six-stage course-caliber gate, competency-map prerequisite, semantic anti-template and independent-evidence rules, audited DSP/Controls/Robotics dispositions, and matching target status documentation without changing any lesson or starting Vehicle Dynamics.
+  id: ELP-GNC-FIDELITY-P01-P24
+  title: Repair Controls/GNC P01-P24 fidelity and independent evidence
+  goal: Retain the existing twenty-four Controls/GNC curriculum identities and useful lesson prose while replacing production-derived evidence, closing source-intent gaps, and making every native experiment independently and physically checkable without expanding the curriculum.
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
     - products/engineering-learning-platform/COURSE_CALIBER.md
     - products/engineering-learning-platform/course-caliber.yaml
-    - tranquilWorks/portfolio-control#437
-  milestone: products/engineering-learning-platform/roadmap.yaml#course_caliber_gate
-  baseline_commit: 39aed41de4e3c84fc00c3b8546c5488e253b6be2
-  baseline_tree: 648c193722e8d356b7520ba064e23e884d25d36c
+    - tranquilWorks/portfolio-control#438
+  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-GNC-FIDELITY-P01-P24
+  baseline_commit: 1506591946ec8e96fe3201e8893b8ad851a1685a
+  baseline_tree: cff72df08f1c37655e912ca1c24f90e27222f6e3
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_revision: f6745e44f459a52431b81a3f953c8f2e03cbe45e
-  control_plane_path: products/engineering-learning-platform/batches/ELP-COURSE-CALIBER-00.yaml
+  control_plane_baseline: f6745e44f459a52431b81a3f953c8f2e03cbe45e
+  control_plane_path: products/engineering-learning-platform/batches/ELP-GNC-FIDELITY-P01-P24.yaml
   target_repository: tranquilWorks/engineering-learning-platform
+  source_repository: tranquilWorks/controls-gnc-learning
+  source_pin: ffd6623ee2cf8ccd8599fffd935ef07370750fa3
+  source_tree: 471a0afead6f44e875627e7ffe9c088c23f784db
+  source_curriculum_sha256: 8763981e20d02a88450956682b4daff9ee0d74bfed5f0ad91b08715f16aea930
 dependencies:
-  - ELP-ROB-P01-P24
+  - ELP-COURSE-CALIBER-00
 scope:
   allowed_paths:
+    - courses/controls-gnc/**
+    - apps/api/tests/test_gnc_conversion_framework.py
+    - apps/api/tests/test_gnc_course.py
+    - apps/api/tests/test_course_caliber_status.py
     - contracts/active-batch.yaml
     - contracts/repo-profile.yaml
     - contracts/verification.yaml
@@ -28,10 +36,14 @@ scope:
     - docs/CURRENT_STATE.md
     - docs/HANDOFF.md
     - docs/ROADMAP.md
-    - docs/evidence/ELP-COURSE-CALIBER-00-*.md
-    - apps/api/tests/test_course_caliber_status.py
+    - docs/evidence/ELP-GNC-FIDELITY-P01-P24-*.md
   forbidden_paths:
-    - courses/**
+    - courses/controls-gnc-learning
+    - courses/controls-gnc-learning/**
+    - courses/dsp-radar/**
+    - courses/robotics-autonomy/**
+    - courses/demo-radar/**
+    - courses/platform-showcase/**
     - apps/api/src/**
     - apps/web/**
     - packages/**
@@ -46,52 +58,59 @@ scope:
     - Dockerfile
     - compose.yaml
 acceptance:
-  - Start only after the exact control commit containing this contract is merged. Use exact clean target main 39aed41de4e3c84fc00c3b8546c5488e253b6be2, tree 648c193722e8d356b7520ba064e23e884d25d36c; target, control, index, or worktree drift stops implementation.
-  - Project the ordered maturity states source_authored, platform_converted, numerically_verified, curriculum_covered, capstone_integrated, and learner_validated into target status documentation with separate evidence and limitations.
-  - State explicitly that source-item, platform-module, authored, interactive, or P## counts are implementation inventory only and cannot establish curriculum completeness.
-  - Document all nine rubric dimensions, the mandatory competency-to-module matrix before any new course conversion, count derivation from that matrix, and coherent implementation batches of at most ten new lessons.
-  - Document semantic anti-template review across governing relations, state, controls, transformations, outputs, failures, and reference methods for unrelated competencies.
-  - Require evidence-origin metadata and reject any independent claim whose fixture imports the production entrypoint, derives from production output, or perturbs production output.
-  - Project the reviewed DSP/Radar, Controls/GNC, and Robotics and Autonomy maturity and rubric dispositions without modifying their course content. Link DSP remediation to issue 441, Controls fidelity and expansion to issues 438 and 439, and Robotics expansion to issue 440.
-  - Keep Vehicle Dynamics queued and unimplemented. It remains blocked until this gate is merged, a schema-valid reviewed competency map exists, replayable GR86 CAN/BLE fixtures are available, and a coherent first batch of at most ten lessons is separately authorized.
-  - Add a focused target test that validates the status document shape, exact states and dispositions, inventory-only count semantics, follow-up issue ownership, Vehicle Dynamics hold, batch limit, and independent-evidence rejection examples.
-  - Preserve all five catalog courses, 134 modules, 134 interactive modules, every course/source byte and gitlink, generic runtime/UI/schema behavior, dependencies, workflows, and deployment artifacts.
-  - Record local validation and exact-head hosted backend/frontend/container CI. Keep MATLAB runtime, browser/accessibility acceptance, learner effectiveness, physical hardware/HIL, bench, field, release, deployment, credentials/settings, and production evidence explicitly unperformed.
+  - Start only after the exact control commit containing this contract is merged. Use exact clean target main 1506591946ec8e96fe3201e8893b8ad851a1685a, tree cff72df08f1c37655e912ca1c24f90e27222f6e3; target, control, source identity, index, or worktree drift stops implementation.
+  - Keep the Controls/GNC source gitlink byte-identical at ffd6623ee2cf8ccd8599fffd935ef07370750fa3, tree 471a0afead6f44e875627e7ffe9c088c23f784db, curriculum SHA-256 8763981e20d02a88450956682b4daff9ee0d74bfed5f0ad91b08715f16aea930. Source inspection is read-only.
+  - Retain exact P01-P24 IDs, numbers, titles, guiding questions, source folders, source hashes, prerequisite order, and 24/24 platform inventory. This remediation adds no lesson and does not implement issue 439.
+  - Treat P01-P24 as twenty-four separately reviewed work items in source order within one target implementation commit and one pull request. Every item must pass its focused semantic mapping, baseline, two one-variable sweeps, broken, recovery, invariant, finite/deterministic, provenance, and cumulative gates before the next item is considered complete.
+  - For every item, retain a semantic mapping from the pinned MATLAB source to Python controls, state equations, observables, sweeps, broken case, limiting cases, and explicitly justified omissions. Refactor production Python only where the mapping or physical interpretation requires it.
+  - Implement independently formulated course-owned reference methods that import no production experiment entrypoint, derive no value from production output, and do not perturb a production value. Record origin metadata, formulation, inputs, units, tolerances, measured errors, and invariant results.
+  - Retain evidence for baseline, one endpoint from each of the two declared one-variable sweeps, broken behavior, and explicit recovery for every item. Expected and production results must be independently generated; file inequality or a harmless epsilon is not evidence.
+  - Give every plot domain-specific variables and units. Use separate axes or separate views when quantities have incompatible units; generic Independent variable, Response, Diagnostic, source units, output, actuator, measurement, units, and cost labels do not pass.
+  - Add assertions for the actual teaching invariant and limiting behavior, not only output inequality or deterministic serialization.
+  - Perform focused correctness review for P03 and P07 classical/frequency behavior; P09-P10 discretization and delay conventions; P11-P12 saturation and anti-windup transitions; P13-P14 rank/tolerance behavior; P15-P16 observer and Kalman covariance behavior; P17 Riccati convergence and actuator authority; P19-P20 uncertainty claims; P21 feasibility; P22 proportional-navigation sign, closing speed, and saturation; and P23-P24 sensor/actuator dynamics and software-HIL event ordering.
+  - Describe P20 narrowly as a fixed-gain comparison over its declared uncertainty family, not a general robust-control synthesis or certification result. Keep P24 software-only and do not call it a cumulative capstone.
+  - MATLAB runtime parity stays not_run unless a named licensed MATLAB runtime actually executes. Python agreement, source inspection, and retained fixtures are not MATLAB execution.
+  - Update course-caliber status to Controls/GNC source_authored passed, platform_converted passed, numerically_verified passed at the repaired software-only evidence boundary, curriculum_covered partial, capstone_integrated partial, and learner_validated not_run. Keep issue 439 as the sole curriculum-expansion owner.
+  - Preserve the five-course, 134-module, 134-interactive catalog; DSP/Radar, Robotics, examples, generic platform behavior, dependencies, workflows, deployment artifacts, and every source gitlink remain byte-identical.
+  - Record exact local verification. Hosted CI is not a completion gate by owner direction; do not claim a hosted result that was not run. Keep browser/accessibility, learner effectiveness, physical hardware/HIL, bench, field, release, deployment, credentials/settings, and production evidence explicitly unperformed.
 validation:
   local:
-    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_course_caliber_status.py
+    - ELP_GNC_SOURCE_ROOT=courses/controls-gnc-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_course.py
+    - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py
+    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_robotics_conversion_framework.py apps/api/tests/test_robotics_course.py apps/api/tests/test_course_caliber_status.py
     - ./scripts/agent-verify.sh contract
     - ./scripts/agent-verify.sh quick
     - ./scripts/agent-verify.sh full
     - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic --json
+    - .venv/bin/ruff check apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_course.py courses/controls-gnc
     - git diff --check
-    - test -z "$(git status --short -- courses)"
+    - test -z "$(git status --short -- courses/controls-gnc-learning courses/dsp-radar courses/robotics-autonomy courses/demo-radar courses/platform-showcase)"
   focused_tests_to_add:
-    - Validate the target status document's closed shape, ordered maturity states, exact reviewed courses, issue dispositions, inventory-only count semantics, and Vehicle Dynamics hold.
-    - Exercise negative fixtures for an arbitrary module-count target, an eleven-lesson batch, missing competency mapping, and independent evidence derived from or perturbed from production output.
-    - Assert no course is marked curriculum-complete at this audit baseline.
-  required_ci:
-    - Existing quality workflow passes backend, frontend, and Linux/amd64 container jobs on the exact final PR head. Any later target commit invalidates those results.
+    - Prove every semantic mapping is closed, source-bound, and explicit about omitted behavior and limiting cases.
+    - Prove the independent reference package has no production-course import, production-output derivation, perturbation, dynamic import, or shared expected/actual execution path.
+    - Execute and compare baseline, two one-variable sweeps, broken, and recovery cases for each P01-P24 with finite values, stated units, tolerances, measured errors, and named teaching invariants.
+    - Reject generic axes, incompatible quantities on an unlabeled shared axis, epsilon-only fixture differences, broad robust-control claims for P20, physical-HIL claims for P24, and any curriculum-complete Controls/GNC status.
+  required_ci: []
 risk:
-  class: moderate
+  class: high
   hazards:
-    - status language continues to equate a complete module inventory with curriculum completeness
-    - a future course is sized to an arbitrary count before competencies, prerequisites, assessment, capstone, exclusions, and handoffs are mapped
-    - semantic duplicates or production-derived fixtures are accepted as independent numerical evidence
-    - a governance-only change accidentally modifies existing course content or starts Vehicle Dynamics
+    - an oracle silently reuses production code or values and recreates the original false-independence defect
+    - compressed Python behavior diverges from the pinned MATLAB intent while signatures still look plausible
+    - mismatched units share axes or generic labels hide the physical quantity being taught
+    - stability, delay, anti-windup, rank, covariance, Riccati, uncertainty, feasibility, guidance, dynamics, or event-order conventions are subtly wrong
+    - issue 438 expands into new curriculum, a capstone claim, source mutation, generic platform changes, or Vehicle Dynamics
   stop_conditions:
-    - the exact target or control baseline drifts before target implementation
-    - any lesson, experiment, evidence fixture, source gitlink, runtime, UI, dependency, workflow, release, deployment, credential, or production path must change
-    - any target status marks DSP/Radar, Controls/GNC, or Robotics curriculum-complete at this baseline
-    - Vehicle Dynamics content or a child remediation issue is implemented under this batch
-    - focused, contract, quick, full, deterministic catalog, diff, course-immutability, or exact-head hosted CI fails or is skipped
+    - exact target, control, or source identities drift before implementation
+    - an independent method needs a production entrypoint, production result, or perturbed production result
+    - a lesson requires source mutation, generic runtime/UI/schema changes, a dependency, unsupported plot primitive, unbounded compute, or a new curriculum item
+    - any per-item invariant/reference comparison, focused/cumulative regression, full verification, deterministic catalog, lint, source-cleanliness, or scope check fails or is skipped
+    - any MATLAB, browser/accessibility, learner, physical HIL, bench, field, release, deployment, credential/settings, or production claim exceeds retained evidence
 rollback:
-  strategy: Before merge, close or discard the isolated governance branch and pull request. After merge, revert the one target governance commit; no course or source history is rewritten.
+  strategy: Before merge, close or discard the isolated target branch and pull request. After merge, revert the one target remediation commit to restore the course-caliber baseline; the source repository and issue 439 are never rewritten.
 evidence:
   output:
-    - docs/evidence/ELP-COURSE-CALIBER-00-2026-09-21.md
-    - exact target and merged control identities
-    - focused status-contract negative and positive test results
-    - contract, quick, full, deterministic catalog, diff, course-immutability, and exact-head hosted-CI results
-    - explicit child-issue and Vehicle Dynamics hold dispositions
-  claim_boundary: A governance and status correction at the five-course, 134-module platform baseline. It defines how course caliber will be authorized and reported but does not repair DSP/Radar or Controls, expand Controls or Robotics, implement Vehicle Dynamics, validate learners, execute MATLAB, operate hardware, or authorize release/deployment/production.
+    - docs/evidence/ELP-GNC-FIDELITY-P01-P24-2026-09-21.md
+    - one P01-P24 row recording source mapping, independent formulation, five scenario comparisons, teaching invariants, tolerances, measured errors, axis review, omissions, and residual limitations
+    - focused GNC, DSP, Robotics, course-caliber, contract, quick, full, deterministic catalog, lint, diff, scope, and source-cleanliness results
+    - one target implementation commit, one target pull request, merge identity, rollback path, and explicit unperformed evidence
+  claim_boundary: Twenty-four existing Controls/GNC platform modules are source-mapped and numerically verified at a deterministic software-only boundary by independently formulated references. This batch does not add curriculum, close issue 439, establish curriculum completeness or an integrated capstone, execute MATLAB, validate learners or browser accessibility, operate physical HIL/hardware, or authorize release, deployment, credentials/settings, or production use.

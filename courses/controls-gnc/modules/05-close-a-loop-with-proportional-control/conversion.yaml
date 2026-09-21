@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 course_id: controls-gnc
 item:
   id: P05
@@ -26,17 +26,17 @@ item:
   - path: modules/05-close-a-loop-with-proportional-control/model.m
     sha256: 30bf526bcffff28fc74ec5f925a82f5f3d69e820079bbac3388413a3c85b8386
 target:
-  content_digest: 090f29f2f0bee32283c28e66d9e1788a9fd053420db5266e46cd4fbef16897f4
+  content_digest: e7ffcedf0998698d34405e0964c8104c007afb37dc8786c0d786d71fccdb4642
   files:
   - path: modules/05-close-a-loop-with-proportional-control/module.yaml
     sha256: e9766074aa9757c6e0588b5640fc85c63b11ccdc1a3701ac57df425fd23135c6
   - path: modules/05-close-a-loop-with-proportional-control/lesson.md
-    sha256: 8e69a24e4d0c9fb0d2a8c744030d31913f30de4a86ef64563ecd17ed92e83065
+    sha256: d692419d7b2e9d44961d6d8e9c94e25e56b164bcb397b71d8343d3777dbc8659
   - path: modules/05-close-a-loop-with-proportional-control/experiment.py
-    sha256: 0a8a24727336121ea72aaad1ffb3f58fc1b51f2eeb5b0959501e28c5f0614949
+    sha256: 9341c4e53f1de0e0d03defeb6f4e9cf66a89a3368418ae4d058a2651f1c88b11
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you close a Loop with
-    Proportional Control?
+  guiding_question: What inputs, observable effects, and failure modes matter when you close a Loop with Proportional
+    Control?
   physical_model: Make proportional feedback speed/error tradeoffs and the sign of feedback visible.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
@@ -56,33 +56,36 @@ content:
       value: 5
       unit: index
     datasets:
-    - name: baseline numeric signature
-      provenance: retained_fixture
-      sha256: 7b0482e2c8e1a14ddaa92dc1d678446c13d708d846308d708df830d5a1355ffc
-      unit: mixed numeric signature
+    - name: five-scenario independent reference signatures (expected-independent.json)
+      provenance: independent_reference
+      sha256: 64e4cb30bbceb4105ab283c752f2e5c8eeca9dde956019bf9aa0403e4d9058c7
+      unit: ordered mixed SI signature; fields and units are embedded in the evidence file
   plot_sequence:
-  - source_figure: Source baseline and sweep figures
+  - source_figure: Pinned MATLAB source intent mapped to platform response view
     target_plot_key: response
-    title: Observable response
+    title: Proportional closed-loop response
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Response
-      unit: source units
-    interpretation: Make proportional feedback speed/error tradeoffs and the sign of feedback visible.
-  - source_figure: Source diagnostic and broken-case figures
+      label: Normalized plant output
+      unit: ratio
+    interpretation: negative feedback is bounded while the reversed sign is unstable
+  - source_figure: Pinned MATLAB source intent mapped to platform mechanism view
     target_plot_key: mechanism
-    title: Mechanism and diagnostic view
+    title: Control action and tracking error
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Diagnostic
-      unit: source units
-    interpretation: The broken toggle reverses the measurement sign, producing positive feedback.
+      label: Normalized control command
+      unit: ratio
+    - role: y
+      label: Tracking error
+      unit: ratio
+    interpretation: plant output grows under positive feedback
   sweeps:
   - control: proportional_gain
     values:
@@ -131,39 +134,137 @@ python_source_equivalence:
   - name: broken_mode
     value: false
     unit: flag
+  reference_origin:
+    derived_from_production_output: false
+    formulation: Scalar affine closed-loop recurrence
+    imports_production_entrypoint: false
+    independent: true
+    package:
+      path: reference_cases.py
+      sha256: 975fe4772642993eeda6cfa33487192de0ae526b4f12ab2523d3f100ca994c8d
+    perturbs_production_output: false
+    type: closed_form
+  production_origin:
+    derived_from_production_output: true
+    formulation: Direct capture of diagnostics.signature from experiment.py:run
+    imports_production_entrypoint: true
+    independent: false
+    package:
+      path: modules/05-close-a-loop-with-proportional-control/experiment.py
+      sha256: 9341c4e53f1de0e0d03defeb6f4e9cf66a89a3368418ae4d058a2651f1c88b11
+    perturbs_production_output: false
+    type: production_entrypoint
   cases:
-  - name: baseline-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/05-close-a-loop-with-proportional-control/evidence/expected-baseline.json
-      sha256: 7b0482e2c8e1a14ddaa92dc1d678446c13d708d846308d708df830d5a1355ffc
-    actual:
-      path: modules/05-close-a-loop-with-proportional-control/evidence/actual-baseline.json
-      sha256: 9c99b5dca03ccf82a723ac526ec8e092082f4236f417c3349234fae83229f2f7
-    max_absolute_error: 9.992007221626409e-14
-    max_relative_error: 4.9960036108129545e-14
+  - name: baseline-independent-reference-vs-production
+    scenario: baseline
+    evidence_key: baseline
+    parameters:
+      broken_mode: false
+      plant_time_constant_s: 1.0
+      proportional_gain: 2.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: &id001
+      absolute: 1.0e-10
+      relative: 1.0e-10
+    expected: &id002
+      path: modules/05-close-a-loop-with-proportional-control/evidence/expected-independent.json
+      sha256: 64e4cb30bbceb4105ab283c752f2e5c8eeca9dde956019bf9aa0403e4d9058c7
+    actual: &id003
+      path: modules/05-close-a-loop-with-proportional-control/evidence/actual-production.json
+      sha256: 6ab4cd4c9beef8db49fa0ed8bf208f98b3dd39118718d00e9b8563ac0b74f7cb
+    comparison_scale: 2.0
+    allowed_absolute_error: 2.0e-10
+    max_absolute_error: 7.771561172376096e-16
+    max_relative_error: 7.771561172376096e-16
+    teaching_invariant:
+      description: negative feedback is bounded while the reversed sign is unstable
+      reference_passed: true
+      production_passed: true
     passed: true
-  - name: broken-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/05-close-a-loop-with-proportional-control/evidence/expected-broken.json
-      sha256: 3047a030124f41085297bbd9ff4333bcae2fae270c1aacddb7a9c7a3717b08c6
-    actual:
-      path: modules/05-close-a-loop-with-proportional-control/evidence/actual-broken.json
-      sha256: a4de17890988df07f8f191cebb53e03ad81b24fcf9d0e658d70b1db010f5d4a5
-    max_absolute_error: 9.992007221626409e-14
-    max_relative_error: 4.9960036108129545e-14
+  - name: sweep-1-independent-reference-vs-production
+    scenario: sweep_1
+    evidence_key: sweep_1
+    parameters:
+      broken_mode: false
+      plant_time_constant_s: 1.0
+      proportional_gain: 6.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 6.0
+    allowed_absolute_error: 6.0e-10
+    max_absolute_error: 1.1102230246251565e-16
+    max_relative_error: 1.1102230246251565e-16
+    teaching_invariant:
+      description: negative feedback is bounded while the reversed sign is unstable
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: sweep-2-independent-reference-vs-production
+    scenario: sweep_2
+    evidence_key: sweep_2
+    parameters:
+      broken_mode: false
+      plant_time_constant_s: 3.0
+      proportional_gain: 2.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 3.0
+    allowed_absolute_error: 3.0e-10
+    max_absolute_error: 4.440892098500626e-16
+    max_relative_error: 4.440892098500626e-16
+    teaching_invariant:
+      description: negative feedback is bounded while the reversed sign is unstable
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: broken-independent-reference-vs-production
+    scenario: broken
+    evidence_key: broken
+    parameters:
+      broken_mode: true
+      plant_time_constant_s: 1.0
+      proportional_gain: 2.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 781.166793998643
+    allowed_absolute_error: 7.811667939986431e-08
+    max_absolute_error: 3.751665644813329e-12
+    max_relative_error: 4.802643524578499e-15
+    teaching_invariant:
+      description: negative feedback is bounded while the reversed sign is unstable
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: recovery-independent-reference-vs-production
+    scenario: recovery
+    evidence_key: recovery
+    parameters:
+      broken_mode: false
+      plant_time_constant_s: 1.0
+      proportional_gain: 2.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 2.0
+    allowed_absolute_error: 2.0e-10
+    max_absolute_error: 7.771561172376096e-16
+    max_relative_error: 7.771561172376096e-16
+    teaching_invariant:
+      description: negative feedback is bounded while the reversed sign is unstable
+      reference_passed: true
+      production_passed: true
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
-    signatures bind the Python conversion.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
+    constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:
@@ -175,3 +276,15 @@ claims:
   learner_effectiveness:
     status: not_run
     reason: Learner effectiveness requires post-release study and is not claimed.
+fidelity:
+  batch_id: ELP-GNC-FIDELITY-P01-P24
+  item_id: P05
+  map:
+    path: fidelity-map.yaml
+    sha256: 0607e8f0908f32e1cded19c7daa550a3ff40d788372e6927e2cfc364c633f4b4
+  schema:
+    path: fidelity-map.schema.json
+    sha256: 256f1e1298b80812ce35a26eeb750917ffc1ea10cc25e9da8363d9524da102a0
+  source_model:
+    path: modules/05-close-a-loop-with-proportional-control/model.m
+    sha256: 30bf526bcffff28fc74ec5f925a82f5f3d69e820079bbac3388413a3c85b8386

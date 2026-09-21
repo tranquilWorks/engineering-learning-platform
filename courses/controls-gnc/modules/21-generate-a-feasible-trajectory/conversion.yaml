@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 course_id: controls-gnc
 item:
   id: P21
@@ -26,17 +26,16 @@ item:
   - path: modules/21-generate-a-feasible-trajectory/model.m
     sha256: d2ef8dab467fd61a4121fd6455ef8276119336cd61542b0b9fb9affd33b61b7c
 target:
-  content_digest: 8d178b763dd42c52e482cfea2d7e9111206b0418e3322a24d317be1e56888ec1
+  content_digest: e2f44ccfa97d26de39fc9627df54125739e90044cdd91d71daf6e416e7120840
   files:
   - path: modules/21-generate-a-feasible-trajectory/module.yaml
     sha256: 3929ec423c4adbce47feb73f54d17feffc263496168d32cda96e052b96367ced
   - path: modules/21-generate-a-feasible-trajectory/lesson.md
-    sha256: 3e88169972834b5541026dfacd8d2d396a4adc8eed140e280cd41eb1301afeee
+    sha256: 7506b381fa837a750a7fd7c1ee7bc1ab1e98aab2f5cde7e3f2c8c75e10dbe43f
   - path: modules/21-generate-a-feasible-trajectory/experiment.py
-    sha256: c4ca04a46ea656e422fa10e2bac56dff255a8a0e79488d083f4c8e0b28c5d896
+    sha256: e686635913f7befac6545030985eb41a8af9af7717419b247f3498ae3695f0a9
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you generate a Feasible
-    Trajectory?
+  guiding_question: What inputs, observable effects, and failure modes matter when you generate a Feasible Trajectory?
   physical_model: Generate a rest-to-rest quintic and test speed/acceleration feasibility.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
@@ -56,34 +55,42 @@ content:
       value: 21
       unit: index
     datasets:
-    - name: baseline numeric signature
-      provenance: retained_fixture
-      sha256: 9614292d843643bd786b8b3e474296172403b1be9a1ca9387c8106c862207844
-      unit: mixed numeric signature
+    - name: five-scenario independent reference signatures (expected-independent.json)
+      provenance: independent_reference
+      sha256: 3beda22754e153aa823db47c2454380a813d86d4b49e6eb0efbe97eb55141ff3
+      unit: ordered mixed SI signature; fields and units are embedded in the evidence file
   plot_sequence:
-  - source_figure: Source baseline and sweep figures
+  - source_figure: Pinned MATLAB source intent mapped to platform response view
     target_plot_key: response
-    title: Observable response
+    title: Quintic trajectory and derivatives
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Response
-      unit: source units
-    interpretation: Generate a rest-to-rest quintic and test speed/acceleration feasibility.
-  - source_figure: Source diagnostic and broken-case figures
+      label: Position
+      unit: m
+    - role: y
+      label: Velocity
+      unit: m/s
+    - role: y
+      label: Acceleration
+      unit: m/s²
+    interpretation: feasibility follows explicit speed and acceleration limits
+  - source_figure: Pinned MATLAB source intent mapped to platform mechanism view
     target_plot_key: mechanism
-    title: Mechanism and diagnostic view
+    title: Declared trajectory limits
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Diagnostic
-      unit: source units
-    interpretation: The broken case forces the 20 m move into 4 s, exceeding the declared speed/acceleration
-      limits.
+      label: Speed limit
+      unit: m/s
+    - role: y
+      label: Acceleration limit
+      unit: m/s²
+    interpretation: peak speed or acceleration violates the declared feasibility limits
   sweeps:
   - control: target_position_m
     values:
@@ -99,8 +106,7 @@ content:
     expected_observation: Generate a rest-to-rest quintic and test speed/acceleration feasibility.
   broken_case:
     trigger: Enable broken_mode.
-    failure: The broken case forces the 20 m move into 4 s, exceeding the declared speed/acceleration
-      limits.
+    failure: The broken case forces the 20 m move into 4 s, exceeding the declared speed/acceleration limits.
     recovery: Disable the broken case and lengthen the move until both constraints pass.
     expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
   common_mistakes:
@@ -133,39 +139,137 @@ python_source_equivalence:
   - name: broken_mode
     value: false
     unit: flag
+  reference_origin:
+    derived_from_production_output: false
+    formulation: Analytic quintic trajectory and derivative extrema
+    imports_production_entrypoint: false
+    independent: true
+    package:
+      path: reference_cases.py
+      sha256: 975fe4772642993eeda6cfa33487192de0ae526b4f12ab2523d3f100ca994c8d
+    perturbs_production_output: false
+    type: closed_form
+  production_origin:
+    derived_from_production_output: true
+    formulation: Direct capture of diagnostics.signature from experiment.py:run
+    imports_production_entrypoint: true
+    independent: false
+    package:
+      path: modules/21-generate-a-feasible-trajectory/experiment.py
+      sha256: e686635913f7befac6545030985eb41a8af9af7717419b247f3498ae3695f0a9
+    perturbs_production_output: false
+    type: production_entrypoint
   cases:
-  - name: baseline-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/21-generate-a-feasible-trajectory/evidence/expected-baseline.json
-      sha256: 9614292d843643bd786b8b3e474296172403b1be9a1ca9387c8106c862207844
-    actual:
-      path: modules/21-generate-a-feasible-trajectory/evidence/actual-baseline.json
-      sha256: 903c70203df0aabaf90f59353e74b1df4742d93cfb44fcf12fb62e20b4449cc4
-    max_absolute_error: 9.947598300641403e-14
-    max_relative_error: 4.9737991503206765e-15
+  - name: baseline-independent-reference-vs-production
+    scenario: baseline
+    evidence_key: baseline
+    parameters:
+      broken_mode: false
+      move_duration_s: 8.0
+      target_position_m: 20.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: &id001
+      absolute: 1.0e-12
+      relative: 1.0e-12
+    expected: &id002
+      path: modules/21-generate-a-feasible-trajectory/evidence/expected-independent.json
+      sha256: 3beda22754e153aa823db47c2454380a813d86d4b49e6eb0efbe97eb55141ff3
+    actual: &id003
+      path: modules/21-generate-a-feasible-trajectory/evidence/actual-production.json
+      sha256: 2a1923d1bf78fe6a2467e7e7e1e179a966b51815ee6827011750dc476858deb6
+    comparison_scale: 20.0
+    allowed_absolute_error: 2.0e-11
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: feasibility follows explicit speed and acceleration limits
+      reference_passed: true
+      production_passed: true
     passed: true
-  - name: broken-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/21-generate-a-feasible-trajectory/evidence/expected-broken.json
-      sha256: 15c6af2d2b2e0de6ac4530479d5f9acc1d0a61d2f60e3f200da04c7a28066a03
-    actual:
-      path: modules/21-generate-a-feasible-trajectory/evidence/actual-broken.json
-      sha256: 1251b885928a0474b03ee3b4a9098169479fcf11f588bfb28d25c353e31a0c21
-    max_absolute_error: 9.947598300641403e-14
-    max_relative_error: 4.9737991503206765e-15
+  - name: sweep-1-independent-reference-vs-production
+    scenario: sweep_1
+    evidence_key: sweep_1
+    parameters:
+      broken_mode: false
+      move_duration_s: 8.0
+      target_position_m: 30.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 30.0
+    allowed_absolute_error: 3.0e-11
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: feasibility follows explicit speed and acceleration limits
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: sweep-2-independent-reference-vs-production
+    scenario: sweep_2
+    evidence_key: sweep_2
+    parameters:
+      broken_mode: false
+      move_duration_s: 14.0
+      target_position_m: 20.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 20.0
+    allowed_absolute_error: 2.0e-11
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: feasibility follows explicit speed and acceleration limits
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: broken-independent-reference-vs-production
+    scenario: broken
+    evidence_key: broken
+    parameters:
+      broken_mode: true
+      move_duration_s: 8.0
+      target_position_m: 20.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 20.0
+    allowed_absolute_error: 2.0e-11
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: feasibility follows explicit speed and acceleration limits
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: recovery-independent-reference-vs-production
+    scenario: recovery
+    evidence_key: recovery
+    parameters:
+      broken_mode: false
+      move_duration_s: 8.0
+      target_position_m: 20.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 20.0
+    allowed_absolute_error: 2.0e-11
+    max_absolute_error: 0.0
+    max_relative_error: 0.0
+    teaching_invariant:
+      description: feasibility follows explicit speed and acceleration limits
+      reference_passed: true
+      production_passed: true
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
-    signatures bind the Python conversion.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
+    constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:
@@ -177,3 +281,15 @@ claims:
   learner_effectiveness:
     status: not_run
     reason: Learner effectiveness requires post-release study and is not claimed.
+fidelity:
+  batch_id: ELP-GNC-FIDELITY-P01-P24
+  item_id: P21
+  map:
+    path: fidelity-map.yaml
+    sha256: 0607e8f0908f32e1cded19c7daa550a3ff40d788372e6927e2cfc364c633f4b4
+  schema:
+    path: fidelity-map.schema.json
+    sha256: 256f1e1298b80812ce35a26eeb750917ffc1ea10cc25e9da8363d9524da102a0
+  source_model:
+    path: modules/21-generate-a-feasible-trajectory/model.m
+    sha256: d2ef8dab467fd61a4121fd6455ef8276119336cd61542b0b9fb9affd33b61b7c

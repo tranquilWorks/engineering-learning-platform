@@ -1,0 +1,116 @@
+{
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "anti_windup_gain": 0.5,
+        "broken_mode": false,
+        "demand_duration_s": 3.0
+      },
+      "signature": [
+        0.5,
+        3.0,
+        1.0,
+        1.340326129201751,
+        0.7768698365109483
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "anti_windup_gain": 0.5,
+        "broken_mode": true,
+        "demand_duration_s": 3.0
+      },
+      "signature": [
+        0.5,
+        3.0,
+        -1.0,
+        10.450257917048685,
+        318.96910991442746
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "anti_windup_gain": 0.5,
+        "broken_mode": false,
+        "demand_duration_s": 3.0
+      },
+      "signature": [
+        0.5,
+        3.0,
+        1.0,
+        1.340326129201751,
+        0.7768698365109483
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "anti_windup_gain": 2.0,
+        "broken_mode": false,
+        "demand_duration_s": 3.0
+      },
+      "signature": [
+        2.0,
+        3.0,
+        1.0,
+        1.0870743762653887,
+        1.142852461661583
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "anti_windup_gain": 0.5,
+        "broken_mode": false,
+        "demand_duration_s": 5.0
+      },
+      "signature": [
+        0.5,
+        5.0,
+        1.0,
+        1.3770498893243923,
+        0.9179149992482147
+      ]
+    }
+  },
+  "course_id": "controls-gnc",
+  "item_id": "P12",
+  "origin": {
+    "derived_from_production_output": false,
+    "formulation": "High-accuracy continuous anti-windup state integration",
+    "imports_production_entrypoint": false,
+    "independent": true,
+    "package": {
+      "path": "reference_cases.py",
+      "sha256": "975fe4772642993eeda6cfa33487192de0ae526b4f12ab2523d3f100ca994c8d"
+    },
+    "perturbs_production_output": false,
+    "type": "separately_formulated_numerical"
+  },
+  "schema_version": 1,
+  "signature_fields": [
+    {
+      "index": 0,
+      "name": "anti_windup_gain",
+      "unit": "1/s"
+    },
+    {
+      "index": 1,
+      "name": "demand_duration",
+      "unit": "s"
+    },
+    {
+      "index": 2,
+      "name": "back_calculation_sign",
+      "unit": "sign"
+    },
+    {
+      "index": 3,
+      "name": "recovery_error_area",
+      "unit": "output*s"
+    },
+    {
+      "index": 4,
+      "name": "peak_integral_state",
+      "unit": "output*s"
+    }
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "assumed_process_noise_m_s2": 0.08,
+        "assumed_sensor_noise_m": 0.35,
+        "broken_mode": false
+      },
+      "signature": [
+        0.35,
+        0.08,
+        0.0,
+        0.1465838155978613,
+        0.29174178600107176
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "assumed_process_noise_m_s2": 0.08,
+        "assumed_sensor_noise_m": 0.35,
+        "broken_mode": true
+      },
+      "signature": [
+        0.35,
+        0.08,
+        4.0,
+        0.16408651445183528,
+        0.2906275496932363
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "assumed_process_noise_m_s2": 0.08,
+        "assumed_sensor_noise_m": 0.35,
+        "broken_mode": false
+      },
+      "signature": [
+        0.35,
+        0.08,
+        0.0,
+        0.1465838155978613,
+        0.29174178600107176
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "assumed_process_noise_m_s2": 0.08,
+        "assumed_sensor_noise_m": 0.8,
+        "broken_mode": false
+      },
+      "signature": [
+        0.8,
+        0.08,
+        0.0,
+        0.22980288480804398,
+        0.2614955732194018
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "assumed_process_noise_m_s2": 0.3,
+        "assumed_sensor_noise_m": 0.35,
+        "broken_mode": false
+      },
+      "signature": [
+        0.35,
+        0.3,
+        0.0,
+        0.10488171838616868,
+        0.3471685743527076
+      ]
+    }
+  },
+  "course_id": "controls-gnc",
+  "item_id": "P16",
+  "origin": {
+    "derived_from_production_output": true,
+    "formulation": "Direct capture of diagnostics.signature from experiment.py:run",
+    "imports_production_entrypoint": true,
+    "independent": false,
+    "package": {
+      "path": "modules/16-fuse-noisy-sensors-with-a-kalman-filter/experiment.py",
+      "sha256": "a64e35db96416d96deac44abec3e668332150f0d2fd3e16b1009cf51fae84e75"
+    },
+    "perturbs_production_output": false,
+    "type": "production_entrypoint"
+  },
+  "schema_version": 1,
+  "signature_fields": [
+    {
+      "index": 0,
+      "name": "assumed_sensor_noise",
+      "unit": "m"
+    },
+    {
+      "index": 1,
+      "name": "assumed_process_noise",
+      "unit": "m/s^2"
+    },
+    {
+      "index": 2,
+      "name": "outlier_amplitude",
+      "unit": "m"
+    },
+    {
+      "index": 3,
+      "name": "position_rmse",
+      "unit": "m"
+    },
+    {
+      "index": 4,
+      "name": "final_velocity_estimate",
+      "unit": "m/s"
+    }
+  ]
+}

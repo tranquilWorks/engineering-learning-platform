@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 course_id: controls-gnc
 item:
   id: P24
@@ -26,28 +26,31 @@ item:
   - path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/model.m
     sha256: 2bdd4440ad12ed616c77e91dc71461ee4f3aeb9a5d40bd01d7ece9dd385cdf11
 target:
-  content_digest: 8fe6a6aa494e2b065bed230affd4c686a208a0c9e8fbe9424c87d615d5e3119c
+  content_digest: d050c9f9969c389e50b202d76f7f1a700651247e7998f2c6b13092bb987cacd5
   files:
   - path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/module.yaml
-    sha256: 487b1e3ebec4bc25b74c6087e44802239f59069efac6c53f491ab42051212de1
+    sha256: cb9d6ada5132d2cc26d7ddce51814437c53684e91aaf381ee91899a872e2bf13
   - path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/lesson.md
-    sha256: e9aa5002064d46b0c8c351254a923d18c374cb40633b12b396c70354c037d040
+    sha256: 30ec4dff4666699c6c5b05aa542ae4444a0cafe83ed86aa20585a4cbaf16256b
   - path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/experiment.py
-    sha256: 2fe5a057f979e873eec2197bd1984bf36bf605fda1a9f4fce0c161158d6869a3
+    sha256: de30b1431089dbd81be892be3383b6932849b75f4271afce6626dbca7e52dfbc
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you close the Loop
-    Through a Hardware-in-the-Loop Plant?
-  physical_model: Close a virtual controller/plant protocol loop with latency, drops, watchdog, and cancellation.
+  guiding_question: What inputs, observable effects, and failure modes matter when you close the Loop Through a
+    Hardware-in-the-Loop Plant?
+  physical_model: A software-only two-way timestamped packet loop around an exact damped virtual mass, with deterministic
+    drops and watchdog fail-zero.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
   - Evaluate the deterministic Python model.
   - Compare the observable response with its diagnostic mechanism.
   - Inject the source failure and verify the stated recovery.
   equations:
-  - latex: u_k=K_p(r-y_k)-K_d\dot y_k
-    meaning: A sampled controller computes timestamped commands.
-  - latex: u=0\;\text{if age}>T_w
-    meaning: The virtual plant watchdog removes stale authority safely.
+  - latex: u_c=\operatorname{clip}(18(r-x_m)-8v_m,-30,30)
+    meaning: The sampled controller uses the most recently delivered measurement.
+  - latex: v_{k+1}=\alpha v_k+(1-\alpha)u_k/c
+    meaning: The virtual mass-damper uses the exact held-force velocity transition.
+  - latex: u_{applied}=0\;\text{during startup or when command age}\ge T_w
+    meaning: The receiver substitutes zero rather than holding stale force.
   equation_order: before_toolbox_shortcuts
   deterministic_data:
     seed: 1601
@@ -56,56 +59,57 @@ content:
       value: 24
       unit: index
     datasets:
-    - name: baseline numeric signature
-      provenance: retained_fixture
-      sha256: da593fe7fa288f2ec255bd531fbc996bd8ac39c1de13553c32a86b662ccb59e1
-      unit: mixed numeric signature
+    - name: five-scenario independent reference signatures (expected-independent.json)
+      provenance: independent_reference
+      sha256: 6c2b34ad20ad7850be16a653539b2783a7c9b0575f308332da8cefe354f206b1
+      unit: ordered mixed SI signature; fields and units are embedded in the evidence file
   plot_sequence:
-  - source_figure: Source baseline and sweep figures
+  - source_figure: Pinned MATLAB source intent mapped to platform response view
     target_plot_key: response
-    title: Observable response
+    title: Software-only virtual-plant tracking
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Response
-      unit: source units
-    interpretation: Close a virtual controller/plant protocol loop with latency, drops, watchdog, and
-      cancellation.
-  - source_figure: Source diagnostic and broken-case figures
+      label: Position
+      unit: m
+    interpretation: software event ordering produces a bounded watchdog fraction
+  - source_figure: Pinned MATLAB source intent mapped to platform mechanism view
     target_plot_key: mechanism
-    title: Mechanism and diagnostic view
+    title: Packet-driven force and freshness
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Diagnostic
-      unit: source units
-    interpretation: The broken case drops every second command with a 0.1 s controller period, 0.04 s
-      one-way latency, and 0.12 s watchdog.
+      label: Force
+      unit: N
+    - role: y
+      label: Packet age
+      unit: s
+    interpretation: delivery gaps exceed the watchdog threshold and applied force repeatedly falls to zero
   sweeps:
   - control: controller_period_s
     values:
     - 0.02
     - 0.05
     - 0.15
-    expected_observation: Latency and dropped packets should increase command age; the watchdog must fail
-      to zero rather than hold forever.
+    expected_observation: A longer controller period reduces release count and holds delivered measurements and
+      forces longer while the 0.01 s plant tick stays fixed.
   - control: one_way_latency_s
     values:
     - 0.0
     - 0.01
     - 0.06
-    expected_observation: Close a virtual controller/plant protocol loop with latency, drops, watchdog,
-      and cancellation.
+    expected_observation: More one-way latency raises measurement and command source age before its downstream effect
+      appears in position.
   broken_case:
     trigger: Enable broken_mode.
-    failure: The broken case drops every second command with a 0.1 s controller period, 0.04 s one-way
-      latency, and 0.12 s watchdog.
-    recovery: Disable the broken case to restore fresh commands. This is a software-only virtual protocol/plant
-      lesson; it does not claim physical HIL execution.
+    failure: The broken case drops every second command with a 0.1 s controller period, 0.04 s one-way latency,
+      and 0.12 s watchdog.
+    recovery: Disable broken_mode to restore the selected clocks, retain every command, and return to the 0.2 s
+      watchdog. No physical HIL is claimed.
     expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
   common_mistakes:
   - Changing more than one lever before explaining the first delta.
@@ -137,39 +141,137 @@ python_source_equivalence:
   - name: broken_mode
     value: false
     unit: flag
+  reference_origin:
+    derived_from_production_output: false
+    formulation: Independent timestamped delivery/watchdog event scheduler
+    imports_production_entrypoint: false
+    independent: true
+    package:
+      path: reference_cases.py
+      sha256: 975fe4772642993eeda6cfa33487192de0ae526b4f12ab2523d3f100ca994c8d
+    perturbs_production_output: false
+    type: alternative_algorithm
+  production_origin:
+    derived_from_production_output: true
+    formulation: Direct capture of diagnostics.signature from experiment.py:run
+    imports_production_entrypoint: true
+    independent: false
+    package:
+      path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/experiment.py
+      sha256: de30b1431089dbd81be892be3383b6932849b75f4271afce6626dbca7e52dfbc
+    perturbs_production_output: false
+    type: production_entrypoint
   cases:
-  - name: baseline-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/evidence/expected-baseline.json
-      sha256: da593fe7fa288f2ec255bd531fbc996bd8ac39c1de13553c32a86b662ccb59e1
-    actual:
-      path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/evidence/actual-baseline.json
-      sha256: af36a062b473d1165aa25934c5af5aad505fde82362115b760578990b1698d8f
-    max_absolute_error: 1.0000333894311098e-13
-    max_relative_error: 1.0000333894311098e-13
+  - name: baseline-independent-reference-vs-production
+    scenario: baseline
+    evidence_key: baseline
+    parameters:
+      broken_mode: false
+      controller_period_s: 0.05
+      one_way_latency_s: 0.01
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: &id001
+      absolute: 1.0e-10
+      relative: 1.0e-10
+    expected: &id002
+      path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/evidence/expected-independent.json
+      sha256: 6c2b34ad20ad7850be16a653539b2783a7c9b0575f308332da8cefe354f206b1
+    actual: &id003
+      path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/evidence/actual-production.json
+      sha256: b9128f47707a197d771ab1bc9b85dd02cc07c1e8c833601daa07a813785b5496
+    comparison_scale: 1.0
+    allowed_absolute_error: 1.0e-10
+    max_absolute_error: 5.551115123125783e-17
+    max_relative_error: 5.551115123125783e-17
+    teaching_invariant:
+      description: software event ordering produces a bounded watchdog fraction
+      reference_passed: true
+      production_passed: true
     passed: true
-  - name: broken-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/evidence/expected-broken.json
-      sha256: 8488ce6551b19a6df86d08d84267a5ec326d037482f6d8041e2a597207d5b851
-    actual:
-      path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/evidence/actual-broken.json
-      sha256: 128ddf7f8995c7b29a889345046b51582a68020c20a5c741bc2350e419ffb0a5
-    max_absolute_error: 1.0000333894311098e-13
-    max_relative_error: 1.0000333894311098e-13
+  - name: sweep-1-independent-reference-vs-production
+    scenario: sweep_1
+    evidence_key: sweep_1
+    parameters:
+      broken_mode: false
+      controller_period_s: 0.15
+      one_way_latency_s: 0.01
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 1.0
+    allowed_absolute_error: 1.0e-10
+    max_absolute_error: 2.5202062658991053e-14
+    max_relative_error: 2.5202062658991053e-14
+    teaching_invariant:
+      description: software event ordering produces a bounded watchdog fraction
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: sweep-2-independent-reference-vs-production
+    scenario: sweep_2
+    evidence_key: sweep_2
+    parameters:
+      broken_mode: false
+      controller_period_s: 0.05
+      one_way_latency_s: 0.06
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 1.0
+    allowed_absolute_error: 1.0e-10
+    max_absolute_error: 6.106226635438361e-16
+    max_relative_error: 6.106226635438361e-16
+    teaching_invariant:
+      description: software event ordering produces a bounded watchdog fraction
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: broken-independent-reference-vs-production
+    scenario: broken
+    evidence_key: broken
+    parameters:
+      broken_mode: true
+      controller_period_s: 0.05
+      one_way_latency_s: 0.01
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 2.0
+    allowed_absolute_error: 2.0e-10
+    max_absolute_error: 3.3306690738754696e-16
+    max_relative_error: 3.3306690738754696e-16
+    teaching_invariant:
+      description: software event ordering produces a bounded watchdog fraction
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: recovery-independent-reference-vs-production
+    scenario: recovery
+    evidence_key: recovery
+    parameters:
+      broken_mode: false
+      controller_period_s: 0.05
+      one_way_latency_s: 0.01
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 1.0
+    allowed_absolute_error: 1.0e-10
+    max_absolute_error: 5.551115123125783e-17
+    max_relative_error: 5.551115123125783e-17
+    teaching_invariant:
+      description: software event ordering produces a bounded watchdog fraction
+      reference_passed: true
+      production_passed: true
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
-    signatures bind the Python conversion.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
+    constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:
@@ -181,3 +283,15 @@ claims:
   learner_effectiveness:
     status: not_run
     reason: Learner effectiveness requires post-release study and is not claimed.
+fidelity:
+  batch_id: ELP-GNC-FIDELITY-P01-P24
+  item_id: P24
+  map:
+    path: fidelity-map.yaml
+    sha256: 0607e8f0908f32e1cded19c7daa550a3ff40d788372e6927e2cfc364c633f4b4
+  schema:
+    path: fidelity-map.schema.json
+    sha256: 256f1e1298b80812ce35a26eeb750917ffc1ea10cc25e9da8363d9524da102a0
+  source_model:
+    path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/model.m
+    sha256: 2bdd4440ad12ed616c77e91dc71461ee4f3aeb9a5d40bd01d7ece9dd385cdf11

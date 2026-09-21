@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://engineering-learning-platform.local/schemas/controls-gnc-conversion-v1.json",
+  "$id": "https://engineering-learning-platform.local/schemas/controls-gnc-conversion-v2.json",
   "title": "Controls/GNC source-to-Python conversion record",
   "description": "A closed, source-bound evidence record for exactly one converted Controls/GNC learner module.",
   "type": "object",
@@ -10,6 +10,7 @@
     "course_id",
     "item",
     "target",
+    "fidelity",
     "content",
     "runtime",
     "python_source_equivalence",
@@ -19,7 +20,7 @@
   "properties": {
     "schema_version": {
       "type": "integer",
-      "const": 1
+      "const": 2
     },
     "course_id": {
       "const": "controls-gnc"
@@ -29,6 +30,9 @@
     },
     "target": {
       "$ref": "#/$defs/targetIdentity"
+    },
+    "fidelity": {
+      "$ref": "#/$defs/fidelityLink"
     },
     "content": {
       "$ref": "#/$defs/contentFidelity"
@@ -74,6 +78,18 @@
         "sha256": {
           "$ref": "#/$defs/sha256"
         }
+      }
+    },
+    "fidelityLink": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["batch_id", "item_id", "map", "schema", "source_model"],
+      "properties": {
+        "batch_id": {"const": "ELP-GNC-FIDELITY-P01-P24"},
+        "item_id": {"type": "string", "pattern": "^P(?:0[1-9]|1[0-9]|2[0-4])$"},
+        "map": {"$ref": "#/$defs/fileIdentity"},
+        "schema": {"$ref": "#/$defs/fileIdentity"},
+        "source_model": {"$ref": "#/$defs/fileIdentity"}
       }
     },
     "itemIdentity": {
@@ -267,7 +283,8 @@
           "enum": [
             "generated",
             "retained_fixture",
-            "source_constant"
+            "source_constant",
+            "independent_reference"
           ]
         },
         "sha256": {
@@ -495,17 +512,36 @@
       "additionalProperties": false,
       "required": [
         "name",
+        "scenario",
+        "evidence_key",
+        "parameters",
         "units",
         "tolerance",
         "expected",
         "actual",
+        "comparison_scale",
+        "allowed_absolute_error",
         "max_absolute_error",
         "max_relative_error",
+        "teaching_invariant",
         "passed"
       ],
       "properties": {
         "name": {
           "$ref": "#/$defs/nonEmptyString"
+        },
+        "scenario": {
+          "enum": ["baseline", "sweep_1", "sweep_2", "broken", "recovery"]
+        },
+        "evidence_key": {
+          "enum": ["baseline", "sweep_1", "sweep_2", "broken", "recovery"]
+        },
+        "parameters": {
+          "type": "object",
+          "minProperties": 3,
+          "additionalProperties": {
+            "type": ["number", "integer", "string", "boolean"]
+          }
         },
         "units": {
           "$ref": "#/$defs/nonEmptyString"
@@ -519,6 +555,14 @@
         "actual": {
           "$ref": "#/$defs/fileIdentity"
         },
+        "comparison_scale": {
+          "type": "number",
+          "minimum": 1
+        },
+        "allowed_absolute_error": {
+          "type": "number",
+          "minimum": 0
+        },
         "max_absolute_error": {
           "type": "number",
           "minimum": 0
@@ -526,6 +570,16 @@
         "max_relative_error": {
           "type": "number",
           "minimum": 0
+        },
+        "teaching_invariant": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["description", "reference_passed", "production_passed"],
+          "properties": {
+            "description": {"$ref": "#/$defs/nonEmptyString"},
+            "reference_passed": {"const": true},
+            "production_passed": {"const": true}
+          }
         },
         "passed": {
           "const": true
@@ -581,6 +635,8 @@
         "command",
         "seed",
         "inputs",
+        "reference_origin",
+        "production_origin",
         "cases"
       ],
       "properties": {
@@ -601,13 +657,34 @@
             "$ref": "#/$defs/equivalenceInput"
           }
         },
+        "reference_origin": {
+          "$ref": "#/$defs/evidenceOrigin"
+        },
+        "production_origin": {
+          "$ref": "#/$defs/evidenceOrigin"
+        },
         "cases": {
           "type": "array",
-          "minItems": 1,
+          "minItems": 5,
+          "maxItems": 5,
           "items": {
             "$ref": "#/$defs/equivalenceCase"
           }
         }
+      }
+    },
+    "evidenceOrigin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "formulation", "package", "independent", "imports_production_entrypoint", "derived_from_production_output", "perturbs_production_output"],
+      "properties": {
+        "type": {"$ref": "#/$defs/nonEmptyString"},
+        "formulation": {"$ref": "#/$defs/nonEmptyString"},
+        "package": {"$ref": "#/$defs/fileIdentity"},
+        "independent": {"type": "boolean"},
+        "imports_production_entrypoint": {"type": "boolean"},
+        "derived_from_production_output": {"type": "boolean"},
+        "perturbs_production_output": {"type": "boolean"}
       }
     },
     "matlabPassed": {

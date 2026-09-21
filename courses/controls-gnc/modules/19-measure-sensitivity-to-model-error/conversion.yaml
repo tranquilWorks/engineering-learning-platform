@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 course_id: controls-gnc
 item:
   id: P19
@@ -26,17 +26,17 @@ item:
   - path: modules/19-measure-sensitivity-to-model-error/model.m
     sha256: 9d1246e2dfc957f23fb287b8594f9199cfb1f08168693cf6fda9c4ef11787091
 target:
-  content_digest: 4378af2bed834096e3343347014b65fd601b3c78e30031021289f425ebb305e0
+  content_digest: 7f217af546a90c7e934afc0acf0afca65de9bd04d1e4b06428f9d7058e17fafa
   files:
   - path: modules/19-measure-sensitivity-to-model-error/module.yaml
     sha256: 5983f235d9cfb76081cdeaca722980145c21551975f50eaf2ccef683fdd72e4a
   - path: modules/19-measure-sensitivity-to-model-error/lesson.md
-    sha256: 9d566d7c3b77aa07acdca549d33d38b487e564476b6cb4be08617fe1a3d7ad79
+    sha256: f64e7c1aebd80a1e02ef0a6caa647c856e1cb23dd4a18777164c8775b4092b7d
   - path: modules/19-measure-sensitivity-to-model-error/experiment.py
-    sha256: 5fa4b7a955a710dfaa9cdc95215a5c82bff1fd6907c195a0be728697a25ea1b0
+    sha256: c363001229833be4297aa0688da02e33a15b87936c10509b3a25da23e80185d6
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you measure Sensitivity
-    to Model Error?
+  guiding_question: What inputs, observable effects, and failure modes matter when you measure Sensitivity to Model
+    Error?
   physical_model: Measure how actuator gain and drag mismatch change closed-loop speed tracking.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
@@ -56,42 +56,44 @@ content:
       value: 19
       unit: index
     datasets:
-    - name: baseline numeric signature
-      provenance: retained_fixture
-      sha256: 271e5c874d821e70a70af4ef4e730d95c6f2052c6fd8299f12ba874d2d83f2e5
-      unit: mixed numeric signature
+    - name: five-scenario independent reference signatures (expected-independent.json)
+      provenance: independent_reference
+      sha256: 3576082f70749b89f2d3fdc73f7aa7a58e76af3a41fd1a75e5f935c4677d2b1e
+      unit: ordered mixed SI signature; fields and units are embedded in the evidence file
   plot_sequence:
-  - source_figure: Source baseline and sweep figures
+  - source_figure: Pinned MATLAB source intent mapped to platform response view
     target_plot_key: response
-    title: Observable response
+    title: Nominal and uncertain speed responses
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Response
-      unit: source units
-    interpretation: Measure how actuator gain and drag mismatch change closed-loop speed tracking.
-  - source_figure: Source diagnostic and broken-case figures
+      label: Speed
+      unit: m/s
+    interpretation: the uncertainty experiment reports a finite model gap
+  - source_figure: Pinned MATLAB source intent mapped to platform mechanism view
     target_plot_key: mechanism
-    title: Mechanism and diagnostic view
+    title: Command and prediction mismatch
     axes:
     - role: x
-      label: Independent variable
-      unit: source units
+      label: Time
+      unit: s
     - role: y
-      label: Diagnostic
-      unit: source units
-    interpretation: The broken case reverses actuator sign, outside the modeled positive-gain uncertainty
-      family.
+      label: Commanded acceleration
+      unit: m/s²
+    - role: y
+      label: Speed prediction gap
+      unit: m/s
+    interpretation: the actual plant diverges away from the nominal prediction
   sweeps:
   - control: actuator_gain_ratio
     values:
     - 0.5
     - 1.0
     - 1.5
-    expected_observation: Lower actuator gain and higher drag should both increase tracking error, but
-      through different mechanisms.
+    expected_observation: Lower actuator gain and higher drag should both increase tracking error, but through different
+      mechanisms.
   - control: drag_ratio
     values:
     - 0.5
@@ -133,39 +135,137 @@ python_source_equivalence:
   - name: broken_mode
     value: false
     unit: flag
+  reference_origin:
+    derived_from_production_output: false
+    formulation: Scalar uncertain closed-loop recurrence
+    imports_production_entrypoint: false
+    independent: true
+    package:
+      path: reference_cases.py
+      sha256: 975fe4772642993eeda6cfa33487192de0ae526b4f12ab2523d3f100ca994c8d
+    perturbs_production_output: false
+    type: closed_form
+  production_origin:
+    derived_from_production_output: true
+    formulation: Direct capture of diagnostics.signature from experiment.py:run
+    imports_production_entrypoint: true
+    independent: false
+    package:
+      path: modules/19-measure-sensitivity-to-model-error/experiment.py
+      sha256: c363001229833be4297aa0688da02e33a15b87936c10509b3a25da23e80185d6
+    perturbs_production_output: false
+    type: production_entrypoint
   cases:
-  - name: baseline-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/19-measure-sensitivity-to-model-error/evidence/expected-baseline.json
-      sha256: 271e5c874d821e70a70af4ef4e730d95c6f2052c6fd8299f12ba874d2d83f2e5
-    actual:
-      path: modules/19-measure-sensitivity-to-model-error/evidence/actual-baseline.json
-      sha256: e70c8ac8df3e33e4037c3f7946f32a770ef5f0004709427e01fbede421e9b94d
-    max_absolute_error: 9.992007221626409e-14
-    max_relative_error: 9.99200722162541e-14
+  - name: baseline-independent-reference-vs-production
+    scenario: baseline
+    evidence_key: baseline
+    parameters:
+      actuator_gain_ratio: 1.0
+      broken_mode: false
+      drag_ratio: 1.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: &id001
+      absolute: 1.0e-10
+      relative: 1.0e-10
+    expected: &id002
+      path: modules/19-measure-sensitivity-to-model-error/evidence/expected-independent.json
+      sha256: 3576082f70749b89f2d3fdc73f7aa7a58e76af3a41fd1a75e5f935c4677d2b1e
+    actual: &id003
+      path: modules/19-measure-sensitivity-to-model-error/evidence/actual-production.json
+      sha256: 2f1fd120a20e4df88c6636d3741d055280490e4fd6048e3ad83afa0e14fd8b28
+    comparison_scale: 1.0
+    allowed_absolute_error: 1.0e-10
+    max_absolute_error: 6.661338147750939e-16
+    max_relative_error: 6.661338147750939e-16
+    teaching_invariant:
+      description: the uncertainty experiment reports a finite model gap
+      reference_passed: true
+      production_passed: true
     passed: true
-  - name: broken-numeric-signature
-    units: mixed numeric signature
-    tolerance:
-      absolute: 1.0e-09
-      relative: 1.0e-09
-    expected:
-      path: modules/19-measure-sensitivity-to-model-error/evidence/expected-broken.json
-      sha256: c77cf25daf4190c4c93edd41b52e70981b5abd5471f33e62b2ea236f36932179
-    actual:
-      path: modules/19-measure-sensitivity-to-model-error/evidence/actual-broken.json
-      sha256: 6983c75ab2c5d39514f063862fdef7d23ad4f21f18853d8a8c1ecda7a81a760c
-    max_absolute_error: 9.992007221626409e-14
-    max_relative_error: 9.99200722162541e-14
+  - name: sweep-1-independent-reference-vs-production
+    scenario: sweep_1
+    evidence_key: sweep_1
+    parameters:
+      actuator_gain_ratio: 1.5
+      broken_mode: false
+      drag_ratio: 1.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 1.5
+    allowed_absolute_error: 1.5e-10
+    max_absolute_error: 9.992007221626409e-16
+    max_relative_error: 9.992007221626409e-16
+    teaching_invariant:
+      description: the uncertainty experiment reports a finite model gap
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: sweep-2-independent-reference-vs-production
+    scenario: sweep_2
+    evidence_key: sweep_2
+    parameters:
+      actuator_gain_ratio: 1.0
+      broken_mode: false
+      drag_ratio: 2.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 2.0
+    allowed_absolute_error: 2.0e-10
+    max_absolute_error: 1.2212453270876722e-15
+    max_relative_error: 1.2212453270876722e-15
+    teaching_invariant:
+      description: the uncertainty experiment reports a finite model gap
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: broken-independent-reference-vs-production
+    scenario: broken
+    evidence_key: broken
+    parameters:
+      actuator_gain_ratio: 1.0
+      broken_mode: true
+      drag_ratio: 1.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 39911.80493757369
+    allowed_absolute_error: 3.991180493757369e-06
+    max_absolute_error: 2.6193447411060333e-10
+    max_relative_error: 6.5629417114755365e-15
+    teaching_invariant:
+      description: the uncertainty experiment reports a finite model gap
+      reference_passed: true
+      production_passed: true
+    passed: true
+  - name: recovery-independent-reference-vs-production
+    scenario: recovery
+    evidence_key: recovery
+    parameters:
+      actuator_gain_ratio: 1.0
+      broken_mode: false
+      drag_ratio: 1.0
+    units: ordered mixed SI signature; see expected-independent.json signature_fields
+    tolerance: *id001
+    expected: *id002
+    actual: *id003
+    comparison_scale: 1.0
+    allowed_absolute_error: 1.0e-10
+    max_absolute_error: 6.661338147750939e-16
+    max_relative_error: 6.661338147750939e-16
+    teaching_invariant:
+      description: the uncertainty experiment reports a finite model gap
+      reference_passed: true
+      production_passed: true
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: A licensed MATLAB runtime is unavailable; source equations and independently retained numeric
-    signatures bind the Python conversion.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
+    constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:
@@ -177,3 +277,15 @@ claims:
   learner_effectiveness:
     status: not_run
     reason: Learner effectiveness requires post-release study and is not claimed.
+fidelity:
+  batch_id: ELP-GNC-FIDELITY-P01-P24
+  item_id: P19
+  map:
+    path: fidelity-map.yaml
+    sha256: 0607e8f0908f32e1cded19c7daa550a3ff40d788372e6927e2cfc364c633f4b4
+  schema:
+    path: fidelity-map.schema.json
+    sha256: 256f1e1298b80812ce35a26eeb750917ffc1ea10cc25e9da8363d9524da102a0
+  source_model:
+    path: modules/19-measure-sensitivity-to-model-error/model.m
+    sha256: 9d1246e2dfc957f23fb287b8594f9199cfb1f08168693cf6fda9c4ef11787091
