@@ -1,0 +1,79 @@
+schema_version: 1
+id: 18-plan-with-random-samples
+number: 18
+title: Plan with Random Samples
+summary: Grow a deterministic low-discrepancy RRT around a circular obstacle and audit every path edge for continuous collision.
+guiding_question: What inputs, observable effects, and failure modes matter when you plan with Random Samples?
+status: implemented
+tags:
+- robotics-autonomy
+- planning-and-behavior
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: sample_budget
+  type: slider
+  label: Sample budget
+  default: 700
+  unit: samples
+  minimum: 200
+  maximum: 1200
+  step: 100
+- id: step_size_m
+  type: slider
+  label: Tree extension length
+  default: 0.65
+  unit: m
+  minimum: 0.25
+  maximum: 1.5
+  step: 0.05
+- id: goal_bias
+  type: slider
+  label: Goal-sample fraction
+  default: 0.15
+  unit: ratio
+  minimum: 0.05
+  maximum: 0.35
+  step: 0.05
+- id: obstacle_radius_m
+  type: slider
+  label: Circular obstacle radius
+  default: 1.4
+  unit: m
+  minimum: 0.8
+  maximum: 2.2
+  step: 0.1
+- id: broken_mode
+  type: toggle
+  label: Skip edge collision checks
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: More samples improve probabilistic coverage, but no sample budget can make an unchecked edge collision-free.
+  reveal: Validate each continuous extension segment, not only tree nodes and endpoints.
+- type: controls
+  title: Live sampling-planner controls
+- type: metrics
+- type: plot_grid
+  title: Search tree and path-clearance evidence
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

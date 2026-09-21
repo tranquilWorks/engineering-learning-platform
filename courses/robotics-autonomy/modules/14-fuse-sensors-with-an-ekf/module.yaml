@@ -1,0 +1,79 @@
+schema_version: 1
+id: 14-fuse-sensors-with-an-ekf
+number: 14
+title: Fuse Sensors with an EKF
+summary: Propagate a nonlinear planar motion model, update with intermittent GPS, and track covariance consistency.
+guiding_question: What inputs, observable effects, and failure modes matter when you fuse Sensors with an EKF?
+status: implemented
+tags:
+- robotics-autonomy
+- localization-and-mapping
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: initial_heading_error_deg
+  type: slider
+  label: Initial heading error
+  default: 20
+  unit: deg
+  minimum: -45
+  maximum: 45
+  step: 5
+- id: gps_noise_m
+  type: slider
+  label: GPS noise scale
+  default: 0.25
+  unit: m
+  minimum: 0.05
+  maximum: 1
+  step: 0.05
+- id: process_noise
+  type: slider
+  label: Process-noise scale
+  default: 0.02
+  unit: variance/s
+  minimum: 0.001
+  maximum: 0.1
+  step: 0.005
+- id: gps_interval_s
+  type: slider
+  label: GPS update interval
+  default: 0.5
+  unit: s
+  minimum: 0.1
+  maximum: 2
+  step: 0.1
+- id: broken_mode
+  type: toggle
+  label: Treat radians as degrees in motion
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Prediction carries state between GPS updates while covariance grows; measurement updates reduce position uncertainty but cannot repair a unit-corrupted motion model consistently.
+  reveal: Use radians in the nonlinear motion function and linearize that same function about the current estimate.
+- type: controls
+  title: Live filter controls
+- type: metrics
+- type: plot_grid
+  title: State estimate and uncertainty evidence
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

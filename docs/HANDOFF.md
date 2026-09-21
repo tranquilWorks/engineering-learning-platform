@@ -1,15 +1,17 @@
 # Handoff
 
-ELP-ROB-P01-P10 adds Robotics and Autonomy P01-P10 in one target commit and one
-pull request. Keep `courses/robotics-autonomy-learning` read-only at
+`ELP-ROB-P01-P24` retains merged Robotics and Autonomy P01-P10 and completes
+P11-P24 in one new target commit and one new pull request. Keep
+`courses/robotics-autonomy-learning` read-only at
 `f8807640258f1a6c1c77f1dcc9e61734551c585b`; the platform-owned derivative is
 `courses/robotics-autonomy`.
 
 Start from exact target baseline
-`71e3842f0839d9534a1c77e9d95d84a929489aff`. Canonical control authority is
-Portfolio Control merge `d434e7a36dccc9c85577798c80a5e05b0dbfc677`, which
-includes the narrow authorization to update the retained GNC catalog count
-assertion from 4/110/110 to 5/120/120.
+`5f6fdae255cf5f188e4ee8a4d50e74949538b8eb`. Canonical control authority is
+Portfolio Control merge `b9437c60a12e6c72918e55b037ef4d49e33166fa`, which
+treats merged PR #12 as immutable and authorizes P11-P24 as fourteen full-rigor
+sequential gates in exactly one new PR, plus the narrow completed-GNC catalog
+assertion update to 5/134/134.
 
 Before publishing the candidate, run in fail-fast order:
 
@@ -42,16 +44,17 @@ git diff --check
 test -z "$(git -C courses/robotics-autonomy-learning status --porcelain=v1 --untracked-files=all)"
 ```
 
-Expected final state is Robotics P01-P10 authored with 14 remaining,
+Expected final state is Robotics P01-P24 authored with zero remaining,
 DSP/Radar 84/84, Controls/GNC 24/24, unchanged source gitlinks, and catalog
-5 / 120 / 120.
+5 / 134 / 134. P24 is a software-only virtual-plant and fault-injection lesson;
+do not convert it into a physical-HIL claim.
 
-Publish exactly one implementation commit on
-`agent/elp-robotics-p01-p10-20260921` and one PR against `main`. Exact-head
-hosted backend, frontend, and Linux/amd64 container jobs must pass before a
-separate human merge decision. A later target commit invalidates prior hosted
-evidence.
+Publish exactly one P11-P24 implementation commit on
+`agent/elp-robotics-p11-p24-20260921` and exactly one new PR (#13) against
+`main`. Do not rewrite merged PR #12. Exact-head hosted backend, frontend, and
+Linux/amd64 container jobs must pass before a separate human merge decision. A
+later target commit invalidates prior hosted evidence.
 
 Rollback before merge is branch/PR disposal. Rollback after merge is a reviewed
-revert of the single Robotics implementation commit; the pinned source history
-is never rewritten.
+revert of the single P11-P24 implementation commit, restoring merged P01-P10
+and catalog 5/120/120; the pinned source history is never rewritten.

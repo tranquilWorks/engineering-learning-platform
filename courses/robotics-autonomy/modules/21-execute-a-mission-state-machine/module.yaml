@@ -1,0 +1,79 @@
+schema_version: 1
+id: 21-execute-a-mission-state-machine
+number: 21
+title: Execute a Mission State Machine
+summary: Execute explicit mission transitions with timeout and global fault-to-safe guards, then expose an unsafe missing transition.
+guiding_question: What inputs, observable effects, and failure modes matter when you execute a Mission State Machine?
+status: implemented
+tags:
+- robotics-autonomy
+- autonomous-system-integration
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: target_detect_s
+  type: slider
+  label: Target-detection time
+  default: 2
+  unit: s
+  minimum: 0.5
+  maximum: 8
+  step: 0.5
+- id: execute_duration_s
+  type: slider
+  label: Execute-state duration
+  default: 4
+  unit: s
+  minimum: 1
+  maximum: 6
+  step: 0.5
+- id: watchdog_s
+  type: slider
+  label: Search watchdog
+  default: 6
+  unit: s
+  minimum: 2
+  maximum: 8
+  step: 0.5
+- id: fault_time_s
+  type: slider
+  label: Injected fault time
+  default: 5
+  unit: s
+  minimum: 1
+  maximum: 11
+  step: 0.5
+- id: broken_mode
+  type: toggle
+  label: Omit global fault transition
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: A global fault guard must preempt every nonterminal mission state before local success transitions are considered.
+  reveal: Route the injected fault to SAFE from every active state and record transition timing.
+- type: controls
+  title: Live mission-state controls
+- type: metrics
+- type: plot_grid
+  title: State sequence and event timing
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

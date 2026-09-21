@@ -60,12 +60,12 @@ def _load_reference() -> Any:
 SOURCE_MAP = _yaml(COURSE_ROOT / "source-map.yaml")
 MANIFEST = _yaml(COURSE_ROOT / "conversion-manifest.yaml")
 COVERAGE = _yaml(COURSE_ROOT / "coverage.yaml")
-AUTHORED = COVERAGE["items"][:10]
+AUTHORED = [item for item in COVERAGE["items"] if item["status"] == "authored"]
 REQUESTED_ITEM = os.environ.get("ELP_ROBOTICS_ITEM")
 if REQUESTED_ITEM:
     SELECTED = [item for item in AUTHORED if item["id"] == REQUESTED_ITEM]
     if not SELECTED:
-        raise RuntimeError(f"{REQUESTED_ITEM} is not in the authored P01-P10 prefix")
+        raise RuntimeError(f"{REQUESTED_ITEM} is not in the authored Robotics prefix")
 else:
     SELECTED = AUTHORED
 REFERENCE = _load_reference()
@@ -219,9 +219,7 @@ def test_robotics_independent_expected_and_actual_evidence(
             item["target_module_id"],
             {"broken_mode": broken},
         ).diagnostics["signature"]
-        assert expected_document["signature"] == pytest.approx(
-            independent, abs=1e-9, rel=1e-9
-        )
+        assert expected_document["signature"] == pytest.approx(independent, abs=1e-9, rel=1e-9)
         assert actual_document["signature"] == pytest.approx(actual, abs=1e-9, rel=1e-9)
 
         retained_expected = expected_document["signature"]
@@ -270,3 +268,41 @@ def test_robotics_resource_extremes_and_unreachable_ik_remain_bounded(
     assert metrics["reachable"]["value"] == "no"
     assert metrics["target_residual"]["value"] > 0
     _assert_finite(ik)
+
+    bounded_cases = [
+        (
+            "15-localize-with-a-particle-filter",
+            {"particle_count": 1000, "steps": 30},
+            1000,
+        ),
+        (
+            "17-search-a-grid-with-a-star",
+            {"grid_size": 35, "gap_offset": 7},
+            1225,
+        ),
+        (
+            "18-plan-with-random-samples",
+            {"sample_budget": 1200, "step_size_m": 0.25, "goal_bias": 0.05},
+            1202,
+        ),
+        (
+            "22-meet-real-time-perception-and-control-deadlines",
+            {"horizon_ms": 1000},
+            1000,
+        ),
+        (
+            "24-validate-autonomy-in-hil",
+            {"io_latency_ms": 100, "fault_duration_s": 2, "watchdog_ms": 500},
+            601,
+        ),
+    ]
+    for module_id, parameters, sample_limit in bounded_cases:
+        result = runtime.run("robotics-autonomy", module_id, parameters).model_dump(mode="json")
+        assert result["diagnostics"]["sample_count"] <= sample_limit
+        assert len(_canonical(result).encode()) < 1_000_000
+        _assert_finite(result)
+
+    software_hil = runtime.run("robotics-autonomy", "24-validate-autonomy-in-hil", {}).model_dump(
+        mode="json"
+    )
+    assert software_hil["diagnostics"]["software_hil_only"] is True

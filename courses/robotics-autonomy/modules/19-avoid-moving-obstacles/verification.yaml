@@ -1,0 +1,186 @@
+{
+  "schema_version": 1,
+  "course_id": "robotics-autonomy",
+  "item": {
+    "id": "P19",
+    "number": 19,
+    "source_folder": "modules/19-avoid-moving-obstacles",
+    "target_module_id": "19-avoid-moving-obstacles",
+    "target_folder": "modules/19-avoid-moving-obstacles",
+    "batch_id": "ELP-ROB-P01-P24",
+    "design_basis": "native_python_design",
+    "source_map_sha256": "6e2de2c7a4f1eb3992da157d0aeb4d562a0542af8860f030a6a608526c6ba723",
+    "source_inputs": [
+      {
+        "path": "modules/19-avoid-moving-obstacles/README.md",
+        "sha256": "526156b75df40f2e6343b23e28944c395caf3fd1a674ef216b14f5f2af569d37"
+      },
+      {
+        "path": "modules/19-avoid-moving-obstacles/checks.md",
+        "sha256": "bd5fefd3ffa9d28272a8ddf71a211728b8267e1c46e53ef963fc515938acf170"
+      },
+      {
+        "path": "modules/19-avoid-moving-obstacles/experiment.m",
+        "sha256": "63a08965227bf828b7fcc4f7f6b9d6f04d4d7230e95ba43859673e4cbac3d455"
+      },
+      {
+        "path": "modules/19-avoid-moving-obstacles/lesson.m",
+        "sha256": "7a078f7c0fdc3d98f0275edd2d4862de08631393228cb8c9c1dbe269eef9baf8"
+      },
+      {
+        "path": "modules/19-avoid-moving-obstacles/lesson.md",
+        "sha256": "42ba2c25c4e813d112226ddf3bb7d6a667cb3a3df9f0dc8f09428f7aae345845"
+      },
+      {
+        "path": "modules/19-avoid-moving-obstacles/walkthrough.md",
+        "sha256": "7126081cde556442d14fb775860f6deb41758e72552ecf79229a3578406e052d"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "959b646a52a409d07a7d4aaa941fddb97f6ce2d9204225bcd060cfeb577f9a90",
+    "files": [
+      {
+        "path": "modules/19-avoid-moving-obstacles/experiment.py",
+        "sha256": "388ecc5e850e357de34c11edfa8539ec59d9d881afbd97f5de335e7b4ce9ad52"
+      },
+      {
+        "path": "modules/19-avoid-moving-obstacles/lesson.md",
+        "sha256": "8b3ed7772854a289b152a051bd6f5a0b43d8662f17e13095bb57dd6f820226db"
+      },
+      {
+        "path": "modules/19-avoid-moving-obstacles/module.yaml",
+        "sha256": "03892b5a5228a2c65b4cab5fcf3e2a2e0b67121a7b3eeef4cf21aa21b58a0f64"
+      }
+    ]
+  },
+  "learning": {
+    "guiding_question": "What inputs, observable effects, and failure modes matter when you avoid Moving Obstacles?",
+    "equations": [
+      {
+        "latex": "r(t)=r_0+(v_o-v_r)t",
+        "meaning": "Relative position determines the dynamic encounter."
+      },
+      {
+        "latex": "t_CPA=clip(-r_0 dot v_rel / norm(v_rel)^2,0,T)",
+        "meaning": "Closest-approach time is bounded by the prediction horizon."
+      }
+    ],
+    "coordinate_and_sign_convention": "World +x is the nominal robot goal direction, +y is left, and positive candidate heading is counterclockwise.",
+    "units": [
+      "position and separation: m",
+      "velocity: m/s",
+      "heading: deg",
+      "time: s"
+    ],
+    "sweeps": [
+      {
+        "control": "obstacle_speed_m_s",
+        "values": [
+          0.2,
+          1,
+          2
+        ],
+        "expected_observation": "Changing crossing time can create or remove conflict."
+      },
+      {
+        "control": "prediction_horizon_s",
+        "values": [
+          2,
+          8,
+          10
+        ],
+        "expected_observation": "A short horizon can miss a later collision."
+      }
+    ],
+    "broken_case": {
+      "name": "Moving obstacle treated as static",
+      "trigger": "Set broken_mode true.",
+      "failure": "The planner chooses the straight route using zero predicted obstacle velocity.",
+      "recovery": "Set broken_mode false and use relative velocity in closest-approach prediction."
+    },
+    "limiting_cases": [
+      "Zero relative velocity keeps separation constant.",
+      "A horizon shorter than the collision time cannot reject that conflict."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "timeout_seconds": 3,
+    "max_samples": 401,
+    "max_output_bytes": 1000000
+  },
+  "python_verification": {
+    "status": "passed",
+    "basis": "native_python_reference",
+    "reference_method": "Independent scalar closest-point-of-approach enumeration over the candidate headings.",
+    "oracle_file": "reference_cases.py",
+    "oracle_independence": "The reference module imports no production experiment and evaluates a closed-form, invariant, alternative-algorithm, or separately formulated numerical recurrence.",
+    "cases": [
+      {
+        "name": "baseline",
+        "expected": {
+          "path": "modules/19-avoid-moving-obstacles/evidence/expected-baseline.json",
+          "sha256": "5dfcd12a46f5d3bab5b90381567491636c1e9026bf0b4860cbcb990b508d00b7"
+        },
+        "actual": {
+          "path": "modules/19-avoid-moving-obstacles/evidence/actual-baseline.json",
+          "sha256": "c96ddd3525891166e57f144bbe8f67bb0dfdb997f9afa57303e55048024c97f0"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "tolerance": {
+          "absolute": 0.000000001,
+          "relative": 0.000000001
+        },
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "expected": {
+          "path": "modules/19-avoid-moving-obstacles/evidence/expected-broken.json",
+          "sha256": "9b9547d3a70846c5db84e36b513190657be45eb3c1b92717f7380b18381e9f20"
+        },
+        "actual": {
+          "path": "modules/19-avoid-moving-obstacles/evidence/actual-broken.json",
+          "sha256": "df69a1c8a0e672c6657d132d56ca7829968c1da82bf4ae59dc4ade760c92cd50"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "tolerance": {
+          "absolute": 0.000000001,
+          "relative": 0.000000001
+        },
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "The pinned source item is a non-runnable scaffold and no licensed MATLAB runtime executed; native Python correctness is independently verified without a MATLAB parity claim."
+  },
+  "claims": {
+    "profile": "elp-robotics-native-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Browser visual review is a separate integrated evidence step."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Accessibility review is a separate integrated evidence step."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study."
+    },
+    "physical_system_validation": {
+      "status": "not_run",
+      "reason": "No physical robot, sensor, planner, bench, HIL, or field system executed."
+    },
+    "release_and_production": {
+      "status": "not_run",
+      "reason": "No release, deployment, credential, setting, or production operation occurred."
+    }
+  }
+}

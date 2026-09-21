@@ -1,0 +1,186 @@
+{
+  "schema_version": 1,
+  "course_id": "robotics-autonomy",
+  "item": {
+    "id": "P13",
+    "number": 13,
+    "source_folder": "modules/13-integrate-wheel-odometry",
+    "target_module_id": "13-integrate-wheel-odometry",
+    "target_folder": "modules/13-integrate-wheel-odometry",
+    "batch_id": "ELP-ROB-P01-P24",
+    "design_basis": "native_python_design",
+    "source_map_sha256": "6e2de2c7a4f1eb3992da157d0aeb4d562a0542af8860f030a6a608526c6ba723",
+    "source_inputs": [
+      {
+        "path": "modules/13-integrate-wheel-odometry/README.md",
+        "sha256": "045bf2a5cfcb408af1d5046f7331fe0812c117f3f47be646efc35064f2f1b083"
+      },
+      {
+        "path": "modules/13-integrate-wheel-odometry/checks.md",
+        "sha256": "a8c5bbe6ec2cb00ed39e376613211425531de2721ec2335026d2558c067863a9"
+      },
+      {
+        "path": "modules/13-integrate-wheel-odometry/experiment.m",
+        "sha256": "debe49ddf5299b45a620cc49ef142416e4d2ca91b5cf8d9c0b68c47512f6b92f"
+      },
+      {
+        "path": "modules/13-integrate-wheel-odometry/lesson.m",
+        "sha256": "f03ad05b1234661a7fc299992970dfcfb4f3c2d1509c46830a48d4f7660fd491"
+      },
+      {
+        "path": "modules/13-integrate-wheel-odometry/lesson.md",
+        "sha256": "5e9252ba2bfbdd4da3c477572b05a6b034d2057f0f09f80b9e3731c5a8c8f9d1"
+      },
+      {
+        "path": "modules/13-integrate-wheel-odometry/walkthrough.md",
+        "sha256": "5e146914042857f901b889af32eb86c27152c3933e0ab137f21c6c8b780992ec"
+      }
+    ]
+  },
+  "target": {
+    "content_digest": "19089ebfec28c2568e7d995bc7d5a48bea753118c54e19f6fae0b43d5b5d90ce",
+    "files": [
+      {
+        "path": "modules/13-integrate-wheel-odometry/experiment.py",
+        "sha256": "ac1c7d8955c9e528a0850930d5931caf7edb88a85cf13dde49613d19207a0fab"
+      },
+      {
+        "path": "modules/13-integrate-wheel-odometry/lesson.md",
+        "sha256": "19e5d8ba9c624787999518100c8e5e6607f7b3b9148b075d72dd142cfd903de3"
+      },
+      {
+        "path": "modules/13-integrate-wheel-odometry/module.yaml",
+        "sha256": "798e62b0483bd474056ddaabe2cbf951ed99ff4206ebb81a705522103ea80611"
+      }
+    ]
+  },
+  "learning": {
+    "guiding_question": "What inputs, observable effects, and failure modes matter when you integrate Wheel Odometry?",
+    "equations": [
+      {
+        "latex": "Delta s=(Delta s_R+Delta s_L)/2",
+        "meaning": "Mean wheel travel gives local forward motion."
+      },
+      {
+        "latex": "Delta theta=(Delta s_R-Delta s_L)/b",
+        "meaning": "Differential wheel travel gives yaw change."
+      }
+    ],
+    "coordinate_and_sign_convention": "World +x and +y form a right-handed plane; body +x is forward and positive yaw is counterclockwise.",
+    "units": [
+      "wheel radius and position: m",
+      "track width: m",
+      "heading: rad internal and displayed deg",
+      "encoder resolution: lines/rev"
+    ],
+    "sweeps": [
+      {
+        "control": "encoder_cpr",
+        "values": [
+          128,
+          1024,
+          4096
+        ],
+        "expected_observation": "Quantization decreases with resolution but slip bias remains."
+      },
+      {
+        "control": "slip_percent",
+        "values": [
+          0,
+          2,
+          15
+        ],
+        "expected_observation": "Unmeasured wheel slip accumulates position and heading error."
+      }
+    ],
+    "broken_case": {
+      "name": "Old-heading Euler step",
+      "trigger": "Set broken_mode true.",
+      "failure": "Finite translation is projected along the interval start heading instead of the exact twist midpoint.",
+      "recovery": "Set broken_mode false and compose the SE(2) wheel increment."
+    },
+    "limiting_cases": [
+      "Equal wheel increments produce straight translation.",
+      "Infinite encoder resolution removes quantization but not wheel slip."
+    ]
+  },
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "timeout_seconds": 3,
+    "max_samples": 1001,
+    "max_output_bytes": 1000000
+  },
+  "python_verification": {
+    "status": "passed",
+    "basis": "native_python_reference",
+    "reference_method": "Separately formulated SE(2) exponential composition of quantized wheel increments.",
+    "oracle_file": "reference_cases.py",
+    "oracle_independence": "The reference module imports no production experiment and evaluates a closed-form, invariant, alternative-algorithm, or separately formulated numerical recurrence.",
+    "cases": [
+      {
+        "name": "baseline",
+        "expected": {
+          "path": "modules/13-integrate-wheel-odometry/evidence/expected-baseline.json",
+          "sha256": "a93a76081e7563dc4b19a89d241432f973ca2fb1995dd44d8edd3d0d31ee0a9b"
+        },
+        "actual": {
+          "path": "modules/13-integrate-wheel-odometry/evidence/actual-baseline.json",
+          "sha256": "8ce7a1c93d6a6e883423af573eda1b2b693ba6d6550f437b6ed013dcbfc61cb2"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "tolerance": {
+          "absolute": 0.0000000001,
+          "relative": 0.0000000001
+        },
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "expected": {
+          "path": "modules/13-integrate-wheel-odometry/evidence/expected-broken.json",
+          "sha256": "f0b37ebda8313814d95318aa33070d597d8174e7d2785bbbcb3c2bd6d64b9572"
+        },
+        "actual": {
+          "path": "modules/13-integrate-wheel-odometry/evidence/actual-broken.json",
+          "sha256": "4c02dad792ca2df3d3f49768eee7d95ca65ea436b6fa4a33cb0f375bafac6ec1"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "tolerance": {
+          "absolute": 0.0000000001,
+          "relative": 0.0000000001
+        },
+        "passed": true
+      }
+    ]
+  },
+  "matlab_runtime_parity": {
+    "status": "not_run",
+    "reason": "The pinned source item is a non-runnable scaffold and no licensed MATLAB runtime executed; native Python correctness is independently verified without a MATLAB parity claim."
+  },
+  "claims": {
+    "profile": "elp-robotics-native-software-v1",
+    "browser_visual_review": {
+      "status": "not_run",
+      "reason": "Browser visual review is a separate integrated evidence step."
+    },
+    "accessibility_review": {
+      "status": "not_run",
+      "reason": "Accessibility review is a separate integrated evidence step."
+    },
+    "learner_effectiveness": {
+      "status": "not_run",
+      "reason": "Learner effectiveness requires a post-release study."
+    },
+    "physical_system_validation": {
+      "status": "not_run",
+      "reason": "No physical robot, sensor, motor, bench, HIL, or field system executed."
+    },
+    "release_and_production": {
+      "status": "not_run",
+      "reason": "No release, deployment, credential, setting, or production operation occurred."
+    }
+  }
+}

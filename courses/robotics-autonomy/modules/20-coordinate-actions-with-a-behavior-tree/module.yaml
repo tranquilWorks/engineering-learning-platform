@@ -1,0 +1,79 @@
+schema_version: 1
+id: 20-coordinate-actions-with-a-behavior-tree
+number: 20
+title: Coordinate Actions with a Behavior Tree
+summary: Tick a stateful sequence with a retry-decorated grasp and expose the failure caused by discarding RUNNING state.
+guiding_question: What inputs, observable effects, and failure modes matter when you coordinate Actions with a Behavior Tree?
+status: implemented
+tags:
+- robotics-autonomy
+- planning-and-behavior
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: navigate_ticks
+  type: slider
+  label: Navigation duration
+  default: 5
+  unit: ticks
+  minimum: 2
+  maximum: 10
+  step: 1
+- id: grasp_failures
+  type: slider
+  label: Grasp failures before success
+  default: 2
+  unit: attempts
+  minimum: 0
+  maximum: 6
+  step: 1
+- id: retry_limit
+  type: slider
+  label: Allowed grasp retries
+  default: 3
+  unit: retries
+  minimum: 0
+  maximum: 6
+  step: 1
+- id: mission_ticks
+  type: slider
+  label: Mission tick budget
+  default: 20
+  unit: ticks
+  minimum: 10
+  maximum: 40
+  step: 2
+- id: broken_mode
+  type: toggle
+  label: Reset RUNNING child every tick
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: A sequence must preserve the RUNNING child across ticks, while a retry decorator converts a bounded number of grasp failures into another attempt.
+  reveal: Retain child progress and distinguish RUNNING from FAILURE at every composite boundary.
+- type: controls
+  title: Live behavior-tree controls
+- type: metrics
+- type: plot_grid
+  title: Active node and progress evidence
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

@@ -1,0 +1,79 @@
+schema_version: 1
+id: 16-build-a-small-slam-problem
+number: 16
+title: Build a Small SLAM Problem
+summary: Solve a weighted one-dimensional pose-and-landmark graph and expose the gauge freedom hidden by plausible relative residuals.
+guiding_question: What inputs, observable effects, and failure modes matter when you build a Small SLAM Problem?
+status: implemented
+tags:
+- robotics-autonomy
+- localization-and-mapping
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: pose_count
+  type: slider
+  label: Pose count
+  default: 8
+  unit: poses
+  minimum: 4
+  maximum: 20
+  step: 1
+- id: odometry_sigma_m
+  type: slider
+  label: Odometry standard deviation
+  default: 0.05
+  unit: m
+  minimum: 0.01
+  maximum: 0.3
+  step: 0.01
+- id: range_sigma_m
+  type: slider
+  label: Landmark-range standard deviation
+  default: 0.1
+  unit: m
+  minimum: 0.02
+  maximum: 0.5
+  step: 0.02
+- id: prior_weight
+  type: slider
+  label: Gauge-prior weight
+  default: 1000
+  unit: 1/m
+  minimum: 10
+  maximum: 2000
+  step: 10
+- id: broken_mode
+  type: toggle
+  label: Remove the gauge prior
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Relative odometry and landmark observations constrain geometry but not global translation; one prior is required to choose an absolute frame.
+  reveal: Anchor one pose, solve the weighted graph, and inspect rank as well as residual.
+- type: controls
+  title: Live graph-SLAM controls
+- type: metrics
+- type: plot_grid
+  title: State solution and factor residuals
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

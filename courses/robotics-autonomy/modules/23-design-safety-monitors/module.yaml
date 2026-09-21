@@ -1,0 +1,79 @@
+schema_version: 1
+id: 23-design-safety-monitors
+number: 23
+title: Design Safety Monitors
+summary: Compare stopping-distance supervision with an unsafe distance-only trigger while a robot approaches a fixed obstacle.
+guiding_question: What inputs, observable effects, and failure modes matter when you design Safety Monitors?
+status: implemented
+tags:
+- robotics-autonomy
+- autonomous-system-integration
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: command_speed_m_s
+  type: slider
+  label: Commanded speed
+  default: 2
+  unit: m/s
+  minimum: 0.5
+  maximum: 3
+  step: 0.1
+- id: obstacle_distance_m
+  type: slider
+  label: Initial obstacle distance
+  default: 3
+  unit: m
+  minimum: 1
+  maximum: 6
+  step: 0.25
+- id: reaction_time_s
+  type: slider
+  label: Monitor reaction allowance
+  default: 0.2
+  unit: s
+  minimum: 0
+  maximum: 0.8
+  step: 0.05
+- id: deceleration_m_s2
+  type: slider
+  label: Available deceleration
+  default: 2.5
+  unit: m/s^2
+  minimum: 0.5
+  maximum: 5
+  step: 0.25
+- id: broken_mode
+  type: toggle
+  label: Trigger only at 0.1 m
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: A safety monitor must intervene before the remaining distance falls below reaction travel plus braking distance and margin.
+  reveal: Compare measured separation with a speed-dependent stopping envelope, then apply a monotonic braking command.
+- type: controls
+  title: Live safety-monitor controls
+- type: metrics
+- type: plot_grid
+  title: Approach response and safety margin
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery
