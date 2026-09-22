@@ -65,13 +65,15 @@ def test_robotics_capstones_integrate_multiple_prior_competencies() -> None:
 
 
 def test_every_retained_module_has_a_specific_depth_disposition() -> None:
-    assert DEPTH["summary"] == {
+    expected_summary = {
         "retained_modules": 24,
         "dispositioned": 24,
         "deepen_in_place": 24,
         "runtime_changes_planned": 0,
         "minimum_additions_per_lesson": 5,
     }
+    assert {key: DEPTH["summary"][key] for key in expected_summary} == expected_summary
+    assert DEPTH["summary"].get("completed", 0) + DEPTH["summary"].get("remaining", 24) == 24
     assert [item["id"] for item in DEPTH["items"]] == [f"P{number:02d}" for number in range(1, 25)]
     derivations: set[str] = set()
     failures: set[str] = set()
@@ -91,3 +93,21 @@ def test_every_retained_module_has_a_specific_depth_disposition() -> None:
         derivations.add(additions["derivation_and_conventions"])
         failures.add(additions["practical_failure_analysis"])
     assert len(derivations) == len(failures) == 24
+
+
+def test_completed_depth_items_have_rigorous_lesson_sections() -> None:
+    completed = [item for item in DEPTH["items"] if item.get("status") == "completed"]
+    for item in completed:
+        module_root = COURSE_ROOT / "modules" / item["target_module_id"]
+        lesson = (module_root / "lesson.md").read_text(encoding="utf-8")
+        assert item["completed_word_count"] >= 1_250
+        assert item["completed_word_count"] > item["baseline_word_count"] + 600
+        assert item["runtime_changed"] is False
+        for heading in (
+            "## Deep derivation and conventions",
+            "## Alternative formulation and limiting analysis",
+            "## Practical failure analysis and recovery",
+            "## Evidence workflow and formative check",
+            "## Boundary and onward links",
+        ):
+            assert heading in lesson
