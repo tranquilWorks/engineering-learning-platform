@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P39
+module: 39-solve-finite-horizon-and-time-varying-lqr
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- -P_dot=2A(t)P-P^2/R+Q
+- P(t_f)=S_f
+- K(t)=R^-1 B^T P(t)
+signature:
+- field: initial_feedback_gain
+  unit: 1/s
+- field: terminal_riccati_value
+  unit: '1'
+- field: maximum_riccati_value
+  unit: '1'
+teaching_invariant: Finite-horizon optimal feedback is obtained from the terminal boundary backward; the terminal
+  Riccati value must equal the declared terminal weight.
+limiting_cases:
+- At terminal time P equals the terminal weight exactly.
+- As horizon grows in a time-invariant stable case, early gains approach the infinite-horizon solution.
+scenarios:
+  baseline: &id001
+    horizon_s: 4.0
+    terminal_weight: 6.0
+    broken_mode: false
+  sweep_1:
+    horizon_s: 10.0
+    terminal_weight: 6.0
+    broken_mode: false
+  sweep_2:
+    horizon_s: 4.0
+    terminal_weight: 20.0
+    broken_mode: false
+  broken:
+    horizon_s: 4.0
+    terminal_weight: 6.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

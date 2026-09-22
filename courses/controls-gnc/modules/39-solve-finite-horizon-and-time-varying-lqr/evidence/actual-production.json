@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "item_id": "P39",
+  "signature_fields": [
+    {
+      "field": "initial_feedback_gain",
+      "unit": "1/s"
+    },
+    {
+      "field": "terminal_riccati_value",
+      "unit": "1"
+    },
+    {
+      "field": "maximum_riccati_value",
+      "unit": "1"
+    }
+  ],
+  "origin": {
+    "kind": "production-experiment",
+    "independent": false,
+    "imports_production_entrypoint": true,
+    "derived_from_production_output": true,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "horizon_s": 4.0,
+        "terminal_weight": 6.0,
+        "broken_mode": false
+      },
+      "signature": [
+        1.129505201276164,
+        6.0,
+        6.0
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "horizon_s": 10.0,
+        "terminal_weight": 6.0,
+        "broken_mode": false
+      },
+      "signature": [
+        1.0737534365343266,
+        6.0,
+        6.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "horizon_s": 4.0,
+        "terminal_weight": 20.0,
+        "broken_mode": false
+      },
+      "signature": [
+        1.1296281388121907,
+        20.0,
+        20.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "horizon_s": 4.0,
+        "terminal_weight": 6.0,
+        "broken_mode": true
+      },
+      "signature": [
+        6.0,
+        50.0,
+        50.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "horizon_s": 4.0,
+        "terminal_weight": 6.0,
+        "broken_mode": false
+      },
+      "signature": [
+        1.129505201276164,
+        6.0,
+        6.0
+      ]
+    }
+  }
+}

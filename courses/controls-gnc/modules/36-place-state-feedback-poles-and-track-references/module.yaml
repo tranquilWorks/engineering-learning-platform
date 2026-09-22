@@ -1,0 +1,68 @@
+schema_version: 1
+id: 36-place-state-feedback-poles-and-track-references
+number: 36
+title: Place State-Feedback Poles and Track References
+summary: Place both double-integrator poles analytically, compute the DC reference precompensator, and separate
+  eigenvalue assignment from command tracking.
+guiding_question: How do controllability, pole placement, and a reference precompensator combine in a state-feedback
+  servo?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- state-space-and-digital-control
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: dominant_pole_per_s
+  type: slider
+  label: Dominant pole magnitude
+  default: 2.0
+  unit: 1/s
+  minimum: 0.5
+  maximum: 6.0
+  step: 0.25
+- id: pole_ratio
+  type: slider
+  label: Second-pole ratio
+  default: 2.0
+  unit: '1'
+  minimum: 1.1
+  maximum: 5.0
+  step: 0.1
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Controllability permits both poles to be assigned, but unit steady reference tracking requires the separately
+    computed precompensator.
+  reveal: Retain the stabilizing gain and restore the DC precompensator, then verify both eigenvalues and final-value
+    tracking.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

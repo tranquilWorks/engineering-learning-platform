@@ -1,0 +1,67 @@
+schema_version: 1
+id: 34-propagate-state-modes-and-diagnose-numerical-conditioning
+number: 34
+title: Propagate State Modes and Diagnose Numerical Conditioning
+summary: Propagate a two-mode state exactly, separate modal decay from eigenvector conditioning, and detect when
+  a numerically fragile realization hides the physics.
+guiding_question: How do modal geometry and conditioning affect a state-transition calculation?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- state-space-and-digital-control
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: slow_mode_per_s
+  type: slider
+  label: Slow modal decay
+  default: 0.8
+  unit: 1/s
+  minimum: 0.2
+  maximum: 2.0
+  step: 0.1
+- id: eigenvector_angle_deg
+  type: slider
+  label: Eigenvector separation angle
+  default: 25.0
+  unit: deg
+  minimum: 2.0
+  maximum: 80.0
+  step: 1.0
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Modal decay rates remain the eigenvalues, while nearly parallel eigenvectors amplify reconstruction sensitivity
+    without moving those eigenvalues.
+  reveal: Restore a separated eigenbasis or use a numerically balanced realization, then verify state propagation
+    against the direct matrix reconstruction.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

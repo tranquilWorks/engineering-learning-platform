@@ -1,139 +1,187 @@
 schema_version: 1
 batch:
-  id: ELP-GNC-MODELING-CLASSICAL-P25-P33
-  title: Expand Controls/GNC modeling and classical control P25-P33
-  goal: Add the nine modeling, classical-control, loop-shaping, and multivariable prerequisites derived by the reviewed Controls/GNC competency matrix, with distinct Python-first models, independently formulated evidence, and no false MATLAB/source-equivalence claim.
+  id: ELP-GNC-STATE-DIGITAL-P34-P42
+  title: Expand Controls/GNC state-space and digital implementation P34-P42
+  goal: 'Implement P34, P35, P36, P37, P38, P39, P40, P41, P42 as the next coherent issue-439 Controls/GNC batch derived from
+    the reviewed competency map: state modes and numerical conditioning; discretization and aliasing; pole placement and reference
+    tracking; integral augmentation and command limits; LQR/observer separation; finite-horizon time-varying LQR; quantization
+    and jitter; rate transitions and execution delay; bumpless transfer and anti-windup.'
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
-    - products/engineering-learning-platform/COURSE_CALIBER.md
-    - products/engineering-learning-platform/course-caliber.yaml
-    - products/engineering-learning-platform/competency-maps/controls-gnc.yaml
-    - tranquilWorks/portfolio-control#439
-  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-GNC-MODELING-CLASSICAL-P25-P33
-  baseline_commit: 88e8f7407ce516a16e9397318c38902a78c11070
-  baseline_tree: b713b922be3bc7a0c6fbe9f0b0bc5c485818b16c
+  - products/engineering-learning-platform/COURSE_CALIBER.md
+  - products/engineering-learning-platform/course-caliber.yaml
+  - products/engineering-learning-platform/competency-maps/controls-gnc.yaml
+  - tranquilWorks/portfolio-control#439
+  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-GNC-STATE-DIGITAL-P34-P42
+  baseline_commit: 5c2dc7c918100ef9c6d94aeb1e080f282f947db8
+  baseline_tree: 3e77d4f6844be639a27bcf25c3236336e7a2a82c
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_baseline: 0038f6ed725ae2fc7b3eb6647e9621a2ad23db34
-  control_plane_path: products/engineering-learning-platform/batches/ELP-GNC-MODELING-CLASSICAL-P25-P33.yaml
+  control_plane_baseline: 66580fcd3764402d03d715ff09cee98ff74f5786
+  control_plane_path: products/engineering-learning-platform/batches/ELP-GNC-STATE-DIGITAL-P34-P42.yaml
   target_repository: tranquilWorks/engineering-learning-platform
   source_repository: tranquilWorks/controls-gnc-learning
   source_pin: ffd6623ee2cf8ccd8599fffd935ef07370750fa3
   source_tree: 471a0afead6f44e875627e7ffe9c088c23f784db
   source_curriculum_sha256: 8763981e20d02a88450956682b4daff9ee0d74bfed5f0ad91b08715f16aea930
 dependencies:
-  - ELP-COURSE-CALIBER-00
-  - ELP-GNC-FIDELITY-P01-P24
+- ELP-GNC-MODELING-CLASSICAL-P25-P33
 scope:
   allowed_paths:
-    - courses/controls-gnc/course.yaml
-    - courses/controls-gnc/competency-map.yaml
-    - courses/controls-gnc/competency-map.schema.json
-    - courses/controls-gnc/native-design.schema.json
-    - courses/controls-gnc/expansion-map.yaml
-    - courses/controls-gnc/expansion_reference_cases.py
-    - courses/controls-gnc/modules/25-*/**
-    - courses/controls-gnc/modules/26-*/**
-    - courses/controls-gnc/modules/27-*/**
-    - courses/controls-gnc/modules/28-*/**
-    - courses/controls-gnc/modules/29-*/**
-    - courses/controls-gnc/modules/30-*/**
-    - courses/controls-gnc/modules/31-*/**
-    - courses/controls-gnc/modules/32-*/**
-    - courses/controls-gnc/modules/33-*/**
-    - apps/api/tests/test_gnc_expansion.py
-    - apps/api/tests/test_gnc_conversion_framework.py
-    - apps/api/tests/test_course_caliber_status.py
-    - apps/api/tests/test_robotics_conversion_framework.py
-    - contracts/active-batch.yaml
-    - contracts/repo-profile.yaml
-    - contracts/verification.yaml
-    - docs/COURSE_CALIBER.md
-    - docs/course-caliber-status.yaml
-    - docs/CURRENT_STATE.md
-    - docs/HANDOFF.md
-    - docs/ROADMAP.md
-    - docs/evidence/ELP-GNC-MODELING-CLASSICAL-P25-P33-*.md
+  - courses/controls-gnc/course.yaml
+  - courses/controls-gnc/competency-map.yaml
+  - courses/controls-gnc/competency-map.schema.json
+  - courses/controls-gnc/native-design.schema.json
+  - courses/controls-gnc/expansion-map.yaml
+  - courses/controls-gnc/expansion_reference_cases.py
+  - courses/controls-gnc/modules/34-*/**
+  - courses/controls-gnc/modules/35-*/**
+  - courses/controls-gnc/modules/36-*/**
+  - courses/controls-gnc/modules/37-*/**
+  - courses/controls-gnc/modules/38-*/**
+  - courses/controls-gnc/modules/39-*/**
+  - courses/controls-gnc/modules/40-*/**
+  - courses/controls-gnc/modules/41-*/**
+  - courses/controls-gnc/modules/42-*/**
+  - apps/api/tests/test_gnc_expansion.py
+  - apps/api/tests/test_gnc_conversion_framework.py
+  - apps/api/tests/test_course_caliber_status.py
+  - apps/api/tests/test_robotics_conversion_framework.py
+  - contracts/active-batch.yaml
+  - contracts/repo-profile.yaml
+  - contracts/verification.yaml
+  - docs/COURSE_CALIBER.md
+  - docs/course-caliber-status.yaml
+  - docs/CURRENT_STATE.md
+  - docs/HANDOFF.md
+  - docs/ROADMAP.md
+  - docs/evidence/ELP-GNC-STATE-DIGITAL-P34-P42-*.md
   forbidden_paths:
-    - courses/controls-gnc-learning
-    - courses/controls-gnc-learning/**
-    - courses/controls-gnc/modules/0*/**
-    - courses/controls-gnc/modules/1*/**
-    - courses/controls-gnc/modules/20-*/**
-    - courses/controls-gnc/modules/21-*/**
-    - courses/controls-gnc/modules/22-*/**
-    - courses/controls-gnc/modules/23-*/**
-    - courses/controls-gnc/modules/24-*/**
-    - courses/controls-gnc/source-map.yaml
-    - courses/controls-gnc/fidelity-map.yaml
-    - courses/controls-gnc/reference_cases.py
-    - courses/dsp-radar/**
-    - courses/robotics-autonomy/**
-    - courses/demo-radar/**
-    - courses/platform-showcase/**
-    - apps/api/src/**
-    - apps/web/**
-    - packages/**
-    - scripts/**
-    - .github/**
-    - .gitmodules
-    - package.json
-    - package-lock.json
-    - apps/api/pyproject.toml
-    - apps/web/package.json
-    - apps/web/package-lock.json
-    - Dockerfile
-    - compose.yaml
+  - courses/controls-gnc-learning
+  - courses/controls-gnc-learning/**
+  - courses/controls-gnc/modules/01-*/**
+  - courses/controls-gnc/modules/02-*/**
+  - courses/controls-gnc/modules/03-*/**
+  - courses/controls-gnc/modules/04-*/**
+  - courses/controls-gnc/modules/05-*/**
+  - courses/controls-gnc/modules/06-*/**
+  - courses/controls-gnc/modules/07-*/**
+  - courses/controls-gnc/modules/08-*/**
+  - courses/controls-gnc/modules/09-*/**
+  - courses/controls-gnc/modules/10-*/**
+  - courses/controls-gnc/modules/11-*/**
+  - courses/controls-gnc/modules/12-*/**
+  - courses/controls-gnc/modules/13-*/**
+  - courses/controls-gnc/modules/14-*/**
+  - courses/controls-gnc/modules/15-*/**
+  - courses/controls-gnc/modules/16-*/**
+  - courses/controls-gnc/modules/17-*/**
+  - courses/controls-gnc/modules/18-*/**
+  - courses/controls-gnc/modules/19-*/**
+  - courses/controls-gnc/modules/20-*/**
+  - courses/controls-gnc/modules/21-*/**
+  - courses/controls-gnc/modules/22-*/**
+  - courses/controls-gnc/modules/23-*/**
+  - courses/controls-gnc/modules/24-*/**
+  - courses/controls-gnc/modules/25-*/**
+  - courses/controls-gnc/modules/26-*/**
+  - courses/controls-gnc/modules/27-*/**
+  - courses/controls-gnc/modules/28-*/**
+  - courses/controls-gnc/modules/29-*/**
+  - courses/controls-gnc/modules/30-*/**
+  - courses/controls-gnc/modules/31-*/**
+  - courses/controls-gnc/modules/32-*/**
+  - courses/controls-gnc/modules/33-*/**
+  - courses/controls-gnc/source-map.yaml
+  - courses/controls-gnc/fidelity-map.yaml
+  - courses/controls-gnc/reference_cases.py
+  - courses/controls-gnc/conversion-manifest.yaml
+  - courses/controls-gnc/coverage.yaml
+  - courses/dsp-radar/**
+  - courses/robotics-autonomy/**
+  - courses/demo-radar/**
+  - courses/platform-showcase/**
+  - apps/api/src/**
+  - apps/web/**
+  - packages/**
+  - scripts/**
+  - .github/**
+  - .gitmodules
+  - package.json
+  - package-lock.json
+  - apps/api/pyproject.toml
+  - apps/web/package.json
+  - apps/web/package-lock.json
+  - Dockerfile
+  - compose.yaml
 acceptance:
-  - Start only after the exact control commit containing this contract and the reviewed competency map is merged. Use exact clean target main 88e8f7407ce516a16e9397318c38902a78c11070, tree b713b922be3bc7a0c6fbe9f0b0bc5c485818b16c; target, control, source identity, index, or worktree drift stops implementation.
-  - Validate products/engineering-learning-platform/competency-maps/controls-gnc.yaml against contracts/course-competency-map.schema.json. The planned course count is exactly len(modules)=68, with seven coherent delivery batches of nine, nine, nine, five, six, three, and three new modules; no arbitrary lesson target is used.
-  - "Implement exactly P25-P33 from batch ELP-GNC-MODELING-CLASSICAL-P25-P33: nonlinear operating-point linearization, block reduction and transfer/state realizations, transient and system-type specifications, root locus, Nyquist, Bode sensitivity shaping, lead/lag, notch/prefilter, and MIMO interaction/zeros/decoupling."
-  - Treat P25-P33 as nine separately reviewed work items. Each must include a complete learner lesson, unique executable model, baseline, two one-variable sweeps, broken behavior, explicit recovery, limiting cases, domain-specific quantities and units, and named teaching invariants.
-  - Mark P25-P33 as Python-first native designs authorized by the reviewed competency map. Do not add them to the immutable 24-item source map, source conversion manifest, source coverage, or source fidelity map; do not claim MATLAB equivalence.
-  - Implement independent references that import no production experiment, consume no production result, and perturb no production value. Retain origin metadata, inputs, signature fields/units, tolerances, measured errors, and invariant results for baseline, sweep_1, sweep_2, broken, and recovery.
-  - Every plot must use domain-specific titles, axes, quantities, and units. Incompatible units require separate axes or views. Every runtime remains deterministic, finite, bounded, and within the existing trusted Python timeout.
-  - P25 must distinguish operating-point residual from local linearization error; P26 must prove block/transfer/state realization equivalence and expose an invalid reduction; P27 must connect poles and system type to measured transient and steady error; P28 must preserve root-locus branch/asymptote behavior; P29 must use Nyquist encirclement with the correct open-loop right-half-plane pole count; P30 must calculate sensitivity, complementary sensitivity, disturbance, noise, and effort tradeoffs; P31 must calculate lead/lag phase and magnitude; P32 must distinguish a notch from a reference prefilter; P33 must expose interaction, transmission zeros, relative gain, and decoupling residual.
-  - Preserve P01-P24 module files, source gitlink, source identity, source/fidelity/conversion evidence, and 24/24 source inventory byte-identically. Preserve DSP/Radar, Robotics, examples, platform source/UI/schema/runtime, dependencies, workflows, and deployment artifacts byte-identically.
-  - End with 33 Controls/GNC platform modules and a five-course catalog of 143 modules, all interactive. Keep curriculum_covered and capstone_integrated partial because P34-P68 remain unimplemented; keep learner_validated not_run and issue 439 open.
-  - Record exact local verification. Hosted CI is not a completion gate by owner direction; do not claim a hosted result that was not run. Keep browser/accessibility, learner effectiveness, physical hardware/HIL, bench, field, release, deployment, credentials/settings, certification, and production evidence explicitly unperformed.
+- Start only after the exact control commit containing this contract is merged. Use exact clean target main 5c2dc7c918100ef9c6d94aeb1e080f282f947db8,
+  tree 3e77d4f6844be639a27bcf25c3236336e7a2a82c; any target, control, source, competency-map, index, or worktree drift stops
+  implementation.
+- 'Implement exactly P34, P35, P36, P37, P38, P39, P40, P41, P42 from batch ELP-GNC-STATE-DIGITAL-P34-P42: state modes and
+  numerical conditioning; discretization and aliasing; pole placement and reference tracking; integral augmentation and command
+  limits; LQR/observer separation; finite-horizon time-varying LQR; quantization and jitter; rate transitions and execution
+  delay; bumpless transfer and anti-windup.'
+- Treat P34, P35, P36, P37, P38, P39, P40, P41, P42 as 9 separately reviewed work items. Each must include a complete learner
+  lesson, unique executable model, baseline, two one-variable sweeps, broken behavior, explicit recovery, limiting cases,
+  domain-specific quantities and units, and named teaching invariants.
+- Keep every expansion lesson a Python-first native design authorized by the reviewed competency map. Do not modify the immutable
+  24-item source map, conversion manifest, source coverage, or source fidelity map; do not claim MATLAB equivalence.
+- Use independent references that import no production experiment, consume no production result, and perturb no production
+  value. Retain origin metadata, inputs, signature fields/units, tolerances, and finite comparison results for baseline, sweep_1,
+  sweep_2, broken, and recovery.
+- Every plot must use domain-specific titles, axes, quantities, and units. Every runtime must be deterministic, finite, bounded,
+  and within the trusted Python timeout.
+- Preserve P01-P33, the source gitlink and source evidence, all other courses, generic platform behavior, dependencies, workflows,
+  and deployment artifacts byte-identically.
+- End with 42 Controls/GNC platform modules and a five-course catalog of 152 modules, all interactive. P43-P68 remain unimplemented;
+  curriculum_covered and capstone_integrated remain partial, learner_validated remains not_run, and issue 439 remains open.
+- Record exact local verification. Hosted CI is not a completion gate by owner direction; do not claim a hosted result that
+  was not run. Keep MATLAB, browser/accessibility, learner, physical HIL/hardware, certification, release, deployment, credentials/settings,
+  and production evidence explicitly unperformed.
 validation:
   local:
-    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_gnc_expansion.py apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_course.py apps/api/tests/test_course_caliber_status.py
-    - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py
-    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_robotics_conversion_framework.py apps/api/tests/test_robotics_course.py
-    - ./scripts/agent-verify.sh contract
-    - ./scripts/agent-verify.sh quick
-    - ./scripts/agent-verify.sh full
-    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic --json
-    - .venv/bin/ruff check apps/api/tests/test_gnc_expansion.py apps/api/tests/test_gnc_conversion_framework.py courses/controls-gnc
-    - git diff --check
-    - test -z "$(git status --short -- courses/controls-gnc-learning courses/controls-gnc/modules/{01..24}-* courses/dsp-radar courses/robotics-autonomy courses/demo-radar courses/platform-showcase)"
+  - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_gnc_expansion.py apps/api/tests/test_gnc_conversion_framework.py
+    apps/api/tests/test_gnc_course.py apps/api/tests/test_course_caliber_status.py
+  - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest
+    -q apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py
+  - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_robotics_conversion_framework.py
+    apps/api/tests/test_robotics_course.py
+  - ./scripts/agent-verify.sh contract
+  - ./scripts/agent-verify.sh quick
+  - ./scripts/agent-verify.sh full
+  - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic --json
+  - .venv/bin/ruff check apps/api/tests/test_gnc_expansion.py apps/api/tests/test_gnc_conversion_framework.py courses/controls-gnc
+  - git diff --check
+  - test -z "$(git status --short -- courses/controls-gnc-learning courses/controls-gnc/modules/{01..33}-* courses/dsp-radar
+    courses/robotics-autonomy courses/demo-radar courses/platform-showcase)"
   focused_tests_to_add:
-    - Validate the reviewed competency map, reference integrity, exact map-derived count, and batch membership.
-    - Prove P25-P33 use nine semantically distinct governing models and independent reference paths.
-    - Execute and compare five scenarios per module with finite values, units, tolerances, measured errors, and teaching invariants.
-    - Reject source-equivalence claims for native modules, generic axes, incompatible shared units, production-derived evidence, broad robust-certification claims, or premature curriculum/capstone completion.
+  - Validate batch membership, distinct governing equations, prerequisite closure, and Python-first provenance.
+  - Execute and compare five finite scenarios per module through independent and production paths.
+  - Assert topic-specific teaching invariants, physical axes/units, deterministic behavior, and exact baseline recovery.
   required_ci: []
 risk:
   class: high
   hazards:
-    - a round module target substitutes for reviewed competency coverage
-    - native Python designs are mislabeled as conversions of the pinned MATLAB course
-    - a shared implementation template hides distinct control equations or reference methods
-    - operating-point, realization, root-locus, Nyquist, frequency-shaping, compensator, transmission-zero, relative-gain, or decoupling conventions are subtly wrong
-    - the first expansion batch prematurely claims navigation breadth, curriculum completeness, or an integrated capstone
+  - a renamed shared template substitutes for the named governing models
+  - an independent oracle silently imports or derives from production behavior
+  - sign, frame, timing, discretization, covariance, constraint, or stability conventions are subtly wrong
+  - the batch prematurely claims later competencies, capstone integration, learner validation, or physical evidence
   stop_conditions:
-    - exact target, control, source, competency-map, or worktree identities drift before implementation
-    - a module count is changed without a revised reviewed competency matrix
-    - an independent method needs production code/output or a perturbed production value
-    - any focused/cumulative regression, full verification, deterministic catalog, lint, source-cleanliness, or scope check fails or is skipped
-    - work requires source mutation, generic runtime/UI/schema changes, a dependency, unsupported plot primitive, unbounded compute, or evidence beyond deterministic software simulation
+  - exact target, control, source, map, or worktree identity drifts
+  - an independent method needs production code/output or a perturbed production value
+  - any focused, cumulative, full, deterministic, lint, scope, or source-cleanliness gate fails or is skipped
+  - work requires source mutation, generic runtime/UI changes, a dependency, unbounded compute, or unsupported evidence
 rollback:
-  strategy: Before merge, close or discard the isolated target branch and pull request. After merge, revert the one target implementation commit to restore the issue-438 baseline; the source repository, reviewed competency map in control, and issue 439 are not rewritten.
+  strategy: Before merge, close the isolated target pull request. After merge, revert its one squash commit; do not rewrite
+    source or prior batches.
 evidence:
   output:
-    - docs/evidence/ELP-GNC-MODELING-CLASSICAL-P25-P33-2026-09-22.md
-    - one P25-P33 row recording competency mapping, governing model, independent formulation, five scenario comparisons, teaching invariants, tolerances, errors, axis review, omissions, and residual limitations
-    - focused GNC, DSP, Robotics, course-caliber, contract, quick, full, deterministic catalog, lint, diff, scope, and source-cleanliness results
-    - one target implementation commit and pull request for this batch, merge identity, rollback path, and explicit unperformed evidence
-  claim_boundary: P25-P33 extend the source-bound 24-module course with nine reviewed Python-first modeling and classical-control laboratories verified at a deterministic software-only boundary. This batch does not implement P34-P68, close issue 439, establish curriculum completeness or cumulative capstones, execute MATLAB, validate learners or browser accessibility, operate physical hardware/HIL, or authorize certification, release, deployment, credentials/settings, or production use.
+  - docs/evidence/ELP-GNC-STATE-DIGITAL-P34-P42-2026-09-22.md
+  - per-item model, oracle, five-scenario, invariant, tolerance, axis, limitation, and residual-risk review
+  - focused, regression, full, deterministic catalog, lint, diff, scope, and source-cleanliness results
+  - one target squash merge and explicit unperformed evidence
+  claim_boundary: This batch implements only P34, P35, P36, P37, P38, P39, P40, P41, P42 at a deterministic software-only
+    boundary. P43-P68 remain unimplemented; curriculum_covered and capstone_integrated remain partial, learner_validated remains
+    not_run, and issue 439 remains open. It does not execute MATLAB, validate learners or browser accessibility, operate physical
+    HIL/hardware, certify safety, or authorize release, deployment, credentials/settings, or production use.

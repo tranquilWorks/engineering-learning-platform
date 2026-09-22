@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P35
+module: 35-compare-discretization-methods-and-aliasing
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- z_ZOH=exp(a*T_s)
+- z_Tustin=(1+a*T_s/2)/(1-a*T_s/2)
+- f_alias=wrap(f,[-f_s/2,f_s/2])
+signature:
+- field: zoh_pole_error
+  unit: '1'
+- field: euler_pole_error
+  unit: '1'
+- field: aliased_frequency
+  unit: Hz
+teaching_invariant: ZOH maps the autonomous pole exactly, Tustin preserves stability, and any sampled sinusoid is
+  indistinguishable from its Nyquist-folded alias.
+limiting_cases:
+- All consistent mappings approach 1+a*T_s as T_s tends to zero.
+- A tone below Nyquist retains its original sampled frequency.
+scenarios:
+  baseline: &id001
+    sample_period_s: 0.08
+    input_frequency_hz: 3.0
+    broken_mode: false
+  sweep_1:
+    sample_period_s: 0.6
+    input_frequency_hz: 3.0
+    broken_mode: false
+  sweep_2:
+    sample_period_s: 0.08
+    input_frequency_hz: 15.0
+    broken_mode: false
+  broken:
+    sample_period_s: 0.08
+    input_frequency_hz: 3.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

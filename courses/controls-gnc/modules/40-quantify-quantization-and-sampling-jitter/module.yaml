@@ -1,0 +1,67 @@
+schema_version: 1
+id: 40-quantify-quantization-and-sampling-jitter
+number: 40
+title: Quantify Quantization and Sampling Jitter
+summary: Sample a deterministic sinusoid on a jittered clock, quantize it, and separate level error from timing-induced
+  phase error.
+guiding_question: How do amplitude quantization and clock jitter create different error signatures in sampled feedback
+  data?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- state-space-and-digital-control
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: converter_bits
+  type: slider
+  label: Converter resolution
+  default: 10.0
+  unit: bit
+  minimum: 3.0
+  maximum: 16.0
+  step: 1.0
+- id: jitter_fraction
+  type: slider
+  label: Peak jitter fraction
+  default: 0.03
+  unit: sample
+  minimum: 0.0
+  maximum: 0.45
+  step: 0.01
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Quantization error follows converter step size, while jitter error scales with signal slope and timing displacement.
+  reveal: Restore adequate resolution and clock stability, then budget quantization and jitter as separate mechanisms
+    before combining them.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

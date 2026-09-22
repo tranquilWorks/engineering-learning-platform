@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P41
+module: 41-cross-rate-transitions-and-execution-delay
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- u_fast[k]=u_slow[floor(k/M)]
+- delay phase=-omega*tau
+- age=t_read-t_sample
+signature:
+- field: hold_rms_error
+  unit: '1'
+- field: delay_phase_lag
+  unit: deg
+- field: maximum_data_age
+  unit: s
+teaching_invariant: A coherent rate transition never uses future data; maximum age is bounded by one slow period
+  plus execution delay.
+limiting_cases:
+- At rate ratio one, hold error vanishes before execution delay.
+- At zero delay, phase lag from execution is zero but hold age remains.
+scenarios:
+  baseline: &id001
+    rate_ratio: 5.0
+    execution_delay_ms: 12.0
+    broken_mode: false
+  sweep_1:
+    rate_ratio: 20.0
+    execution_delay_ms: 12.0
+    broken_mode: false
+  sweep_2:
+    rate_ratio: 5.0
+    execution_delay_ms: 80.0
+    broken_mode: false
+  broken:
+    rate_ratio: 5.0
+    execution_delay_ms: 12.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

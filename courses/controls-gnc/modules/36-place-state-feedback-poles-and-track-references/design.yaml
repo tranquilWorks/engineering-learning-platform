@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P36
+module: 36-place-state-feedback-poles-and-track-references
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- u=-Kx+Nbar*r
+- det(sI-(A-BK))=(s+p_1)(s+p_2)
+- Nbar=-1/(C(A-BK)^-1 B)
+signature:
+- field: pole_assignment_error
+  unit: 1/s
+- field: steady_tracking_error
+  unit: '1'
+- field: feedback_gain_norm
+  unit: 1/s^2
+teaching_invariant: Controllability permits both poles to be assigned, but unit steady reference tracking requires
+  the separately computed precompensator.
+limiting_cases:
+- For the double integrator K=[p1*p2,p1+p2].
+- The precompensator changes command gain without moving feedback poles.
+scenarios:
+  baseline: &id001
+    dominant_pole_per_s: 2.0
+    pole_ratio: 2.0
+    broken_mode: false
+  sweep_1:
+    dominant_pole_per_s: 6.0
+    pole_ratio: 2.0
+    broken_mode: false
+  sweep_2:
+    dominant_pole_per_s: 2.0
+    pole_ratio: 5.0
+    broken_mode: false
+  broken:
+    dominant_pole_per_s: 2.0
+    pole_ratio: 2.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.
