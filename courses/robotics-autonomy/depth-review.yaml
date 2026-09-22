@@ -1,0 +1,401 @@
+schema_version: 1
+authority: tranquilWorks/portfolio-control#440
+reviewed_map: competency-map.yaml
+baseline_commit: ce2c130fd25571913f427d5ae3ad5d6c1b64e585
+summary:
+  retained_modules: 24
+  dispositioned: 24
+  deepen_in_place: 24
+  runtime_changes_planned: 0
+  minimum_additions_per_lesson: 5
+review_standard:
+- Expose governing derivation and coordinate, sign, frame, sampling, or energy conventions.
+- Compare an alternative formulation or a meaningful limiting case.
+- Diagnose a practical failure instead of merely toggling a generic broken flag.
+- Add a numerical prediction, invariant/dimensional check, and teach-back prompt.
+- Name the prerequisite and adjacent-course boundary so depth is neither duplicated nor omitted.
+items:
+- id: P01
+  target_module_id: 01-drive-a-differential-robot-with-wheel-speeds
+  title: Drive a Differential Robot with Wheel Speeds
+  baseline_lesson_sha256: 001867f05cfac7ba7177e8eefbe3c9988fe00b721716d4aba5dff1b84ad4b33e
+  baseline_word_count: 550
+  disposition: deepen_in_place
+  required_additions:
+    derivation_and_conventions: derive the nonholonomic rolling constraints and wheel/body Jacobian
+    alternative_or_limiting_comparison: compare straight, pure-spin, and unequal-wheel curvature
+    practical_failure_analysis: wheel-radius mismatch and lateral slip
+    formative_check: add a numeric prediction, a dimensional or invariant check, and a teach-back prompt tied to the executable
+      experiment
+    cross_course_boundary: controls/gnc owns general tracking design; vehicle dynamics owns tire-force depth
+  runtime_disposition: retain verified experiment and independent reference unless the depth review exposes a correctness
+    defect
+  claim_boundary: lesson-depth improvement only; source identity and existing Python verification remain distinct evidence
+- id: P02
+  target_module_id: 02-transform-coordinates-between-frames
+  title: Transform Coordinates Between Frames
+  baseline_lesson_sha256: 9a727b52cba64197e62e542b8e27c5c00d92e06ab9eb6eabdd89dc24cdaed3d9
+  baseline_word_count: 548
+  disposition: deepen_in_place
+  required_additions:
+    derivation_and_conventions: derive homogeneous composition and inverse transforms under one frame notation
+    alternative_or_limiting_comparison: compare active versus passive interpretation and a round trip
+    practical_failure_analysis: frame-order and handedness mismatch
+    formative_check: add a numeric prediction, a dimensional or invariant check, and a teach-back prompt tied to the executable
+      experiment
+    cross_course_boundary: P26-P27 extend this planar foundation to SE(3), twists, screws, and adjoints
+  runtime_disposition: retain verified experiment and independent reference unless the depth review exposes a correctness
+    defect
+  claim_boundary: lesson-depth improvement only; source identity and existing Python verification remain distinct evidence
+- id: P03
+  target_module_id: 03-compute-arm-forward-kinematics
+  title: Compute Arm Forward Kinematics
+  baseline_lesson_sha256: 96fef330f767cfb575de42397c5949f4e23f2286298cafb657c174d7f37d5f92
+  baseline_word_count: 522
+  disposition: deepen_in_place
+  required_additions:
+    derivation_and_conventions: derive the two-link pose from ordered joint transforms
+    alternative_or_limiting_comparison: compare equal-link symmetry and a zero-length limiting link
+    practical_failure_analysis: degrees/radians and link-order mistakes
+    formative_check: add a numeric prediction, a dimensional or invariant check, and a teach-back prompt tied to the executable
+      experiment
+    cross_course_boundary: P26-P28 provide the spatial and differential continuation
+  runtime_disposition: retain verified experiment and independent reference unless the depth review exposes a correctness
+    defect
+  claim_boundary: lesson-depth improvement only; source identity and existing Python verification remain distinct evidence
+- id: P04
+  target_module_id: 04-solve-inverse-kinematics
+  title: Solve Inverse Kinematics
+  baseline_lesson_sha256: 5aaaf4ce1a06ce7e9236df49b0540122e8e601abe1c11268c801513c136693b8
+  baseline_word_count: 538
+  disposition: deepen_in_place
+  required_additions:
+    derivation_and_conventions: derive cosine-law branches, reachability bounds, and residual checks
+    alternative_or_limiting_comparison: compare elbow-up/down and boundary singularity
+    practical_failure_analysis: silently clipping an unreachable target
+    formative_check: add a numeric prediction, a dimensional or invariant check, and a teach-back prompt tied to the executable
+      experiment
+    cross_course_boundary: P28-P29 own Jacobian conditioning and redundant inverse kinematics
+  runtime_disposition: retain verified experiment and independent reference unless the depth review exposes a correctness
+    defect
+  claim_boundary: lesson-depth improvement only; source identity and existing Python verification remain distinct evidence
+- id: P05
+  target_module_id: 05-model-a-dc-motor-and-geartrain
+  title: Model a DC Motor and Geartrain
+  baseline_lesson_sha256: 62aa9c56f94c63105b407babf4beb16537f34653250e22a82b2b66ff9c6127b1
+  baseline_word_count: 563
+  disposition: deepen_in_place
+  required_additions:
+    derivation_and_conventions: derive electrical/mechanical coupling through gear ratio and reflected inertia
+    alternative_or_limiting_comparison: compare no-load, stalled, and ideal-resistance limits
+    practical_failure_analysis: unit, sign, saturation, and neglected-inductance errors
+    formative_check: add a numeric prediction, a dimensional or invariant check, and a teach-back prompt tied to the executable
+      experiment
+    cross_course_boundary: power electronics owns device switching and drive-circuit depth
+  runtime_disposition: retain verified experiment and independent reference unless the depth review exposes a correctness
+    defect
+  claim_boundary: lesson-depth improvement only; source identity and existing Python verification remain distinct evidence
+- id: P06
+  target_module_id: 06-close-a-wheel-speed-loop
+  title: Close a Wheel-Speed Loop
+  baseline_lesson_sha256: f807d8145c95daf3f00dd92b9968eafe98029903d0492594c9a247e52303bd97
+  baseline_word_count: 560
+  disposition: deepen_in_place
+  required_additions:
+    derivation_and_conventions: derive closed-loop wheel-speed error dynamics with actuator limits
+    alternative_or_limiting_comparison: compare proportional bandwidth with the open-loop motor
+    practical_failure_analysis: encoder sign reversal, saturation, and integral windup
+    formative_check: add a numeric prediction, a dimensional or invariant check, and a teach-back prompt tied to the executable
+      experiment
+    cross_course_boundary: Controls/GNC owns general loop-shaping theory; P34-P35 apply multijoint robot control
+  runtime_disposition: retain verified experiment and independent reference unless the depth review exposes a correctness
+    defect
+  claim_boundary: lesson-depth improvement only; source identity and existing Python verification remain distinct evidence
+- id: P07
+  target_module_id: 07-generate-a-smooth-trajectory
+  title: Generate a Smooth Trajectory
+  baseline_lesson_sha256: 412b6681eb88c43d304b2ce0be0cbb0d55cfeb94e7d61b0e72084dd9f5840844
+  baseline_word_count: 539
+  disposition: deepen_in_place
+  required_additions:
+    derivation_and_conventions: derive cubic/quintic boundary conditions and velocity/acceleration continuity
+    alternative_or_limiting_comparison: compare time scaling and a zero-displacement move
+    practical_failure_analysis: discontinuous acceleration and infeasible joint limits
+    formative_check: add a numeric prediction, a dimensional or invariant check, and a teach-back prompt tied to the executable
+      experiment
+    cross_course_boundary: P33 and P58 extend this scalar profile to bounded multijoint and optimized trajectories
+  runtime_disposition: retain verified experiment and independent reference unless the depth review exposes a correctness
+    defect
+  claim_boundary: lesson-depth improvement only; source identity and existing Python verification remain distinct evidence
+- id: P08
+  target_module_id: 08-control-contact-with-impedance
+  title: Control Contact with Impedance
+  baseline_lesson_sha256: 306fd3f8eb3752ff0ddc24823ec257595d183830c1e6da597918df528bb25e3b
+  baseline_word_count: 527
+  disposition: deepen_in_place
+  required_additions:
+    derivation_and_conventions: derive the virtual spring-damper wrench and stored/dissipated energy
+    alternative_or_limiting_comparison: compare free space, rigid contact, and zero damping
+    practical_failure_analysis: excess stiffness under delay or saturation
+    formative_check: add a numeric prediction, a dimensional or invariant check, and a teach-back prompt tied to the executable
+      experiment
+    cross_course_boundary: P37-P39 add admittance, hybrid force, and passivity analysis
+  runtime_disposition: retain verified experiment and independent reference unless the depth review exposes a correctness
+    defect
+  claim_boundary: lesson-depth improvement only; source identity and existing Python verification remain distinct evidence
+- id: P09
+  target_module_id: 09-measure-motion-with-encoders
+  title: Measure Motion with Encoders
+  baseline_lesson_sha256: 94470a52a82ec2608d8c06837d5cfc29ea9a1d0db2858c18fa62cb4cce0b9c9f
+  baseline_word_count: 527
+  disposition: deepen_in_place
+  required_additions:
+    derivation_and_conventions: derive count-to-angle conversion, wrap behavior, and quantization bound
+    alternative_or_limiting_comparison: compare increasing resolution with a stationary shaft
+    practical_failure_analysis: missed counts, aliasing, backlash, and wrap discontinuity
+    formative_check: add a numeric prediction, a dimensional or invariant check, and a teach-back prompt tied to the executable
+      experiment
+    cross_course_boundary: DSP/Radar owns general sampling theory; Robotics retains encoder embodiment
+  runtime_disposition: retain verified experiment and independent reference unless the depth review exposes a correctness
+    defect
+  claim_boundary: lesson-depth improvement only; source identity and existing Python verification remain distinct evidence
+- id: P10
+  target_module_id: 10-integrate-an-imu-and-observe-drift
+  title: Integrate an IMU and Observe Drift
+  baseline_lesson_sha256: ab5898c139bb0dfde3c0ce1006110c0fcd23537770734c484b4fd3c10495d900
+  baseline_word_count: 540
+  disposition: deepen_in_place
+  required_additions:
+    derivation_and_conventions: derive discrete bias integration and attitude-error growth
+    alternative_or_limiting_comparison: compare zero bias, zero motion, and sample-rate change
+    practical_failure_analysis: treating bias as white noise or ignoring frame/gravity conventions
+    formative_check: add a numeric prediction, a dimensional or invariant check, and a teach-back prompt tied to the executable
+      experiment
+    cross_course_boundary: Controls/GNC owns full inertial-navigation mechanization; P49 studies observability
+  runtime_disposition: retain verified experiment and independent reference unless the depth review exposes a correctness
+    defect
+  claim_boundary: lesson-depth improvement only; source identity and existing Python verification remain distinct evidence
+- id: P11
+  target_module_id: 11-build-a-range-sensor-model
+  title: Build a Range Sensor Model
+  baseline_lesson_sha256: 61ed01ead5052c24a0e49c102999b1a27c07426b95643407b52f74cbc9e0beaa
+  baseline_word_count: 519
+  disposition: deepen_in_place
+  required_additions:
+    derivation_and_conventions: derive beam/range noise, clipping, dropout, and inverse observation assumptions
+    alternative_or_limiting_comparison: compare no return, maximum range, and zero-noise limits
+    practical_failure_analysis: using range as a point without sensor pose or uncertainty
+    formative_check: add a numeric prediction, a dimensional or invariant check, and a teach-back prompt tied to the executable
+      experiment
+    cross_course_boundary: P47-P48 turn range observations into maps and registered geometry
+  runtime_disposition: retain verified experiment and independent reference unless the depth review exposes a correctness
+    defect
+  claim_boundary: lesson-depth improvement only; source identity and existing Python verification remain distinct evidence
+- id: P12
+  target_module_id: 12-calibrate-sensor-extrinsics
+  title: Calibrate Sensor Extrinsics
+  baseline_lesson_sha256: f99ed575fbc87c43b3ccf973c9d7d0bc173598b50b7dfb462488922f725832b3
+  baseline_word_count: 459
+  disposition: deepen_in_place
+  required_additions:
+    derivation_and_conventions: derive rigid extrinsic calibration residuals and identifiability
+    alternative_or_limiting_comparison: compare exact alignment with degenerate collinear observations
+    practical_failure_analysis: inverting the wrong transform or accepting unobservable calibration
+    formative_check: add a numeric prediction, a dimensional or invariant check, and a teach-back prompt tied to the executable
+      experiment
+    cross_course_boundary: P42 covers camera intrinsics; P66 integrates the frame tree
+  runtime_disposition: retain verified experiment and independent reference unless the depth review exposes a correctness
+    defect
+  claim_boundary: lesson-depth improvement only; source identity and existing Python verification remain distinct evidence
+- id: P13
+  target_module_id: 13-integrate-wheel-odometry
+  title: Integrate Wheel Odometry
+  baseline_lesson_sha256: 19e5d8ba9c624787999518100c8e5e6607f7b3b9148b075d72dd142cfd903de3
+  baseline_word_count: 449
+  disposition: deepen_in_place
+  required_additions:
+    derivation_and_conventions: derive SE(2) odometry propagation and small-angle limit
+    alternative_or_limiting_comparison: compare straight motion, pure rotation, and unequal ticks
+    practical_failure_analysis: timestamp, wrap, slip, and left/right convention faults
+    formative_check: add a numeric prediction, a dimensional or invariant check, and a teach-back prompt tied to the executable
+      experiment
+    cross_course_boundary: P49-P53 extend odometry into observable multi-sensor SLAM
+  runtime_disposition: retain verified experiment and independent reference unless the depth review exposes a correctness
+    defect
+  claim_boundary: lesson-depth improvement only; source identity and existing Python verification remain distinct evidence
+- id: P14
+  target_module_id: 14-fuse-sensors-with-an-ekf
+  title: Fuse Sensors with an EKF
+  baseline_lesson_sha256: d37651b28f891a903f0eed8639b4334b761648cebfebbdb9103e4aa44cc1c68a
+  baseline_word_count: 503
+  disposition: deepen_in_place
+  required_additions:
+    derivation_and_conventions: derive EKF predict/update equations, Jacobians, and covariance form
+    alternative_or_limiting_comparison: compare missing measurement and vanishing-noise limits
+    practical_failure_analysis: inconsistent covariance, wrong Jacobian, and frame mismatch
+    formative_check: add a numeric prediction, a dimensional or invariant check, and a teach-back prompt tied to the executable
+      experiment
+    cross_course_boundary: Controls/GNC owns general EKF theory; Robotics applies it to embodied sensing
+  runtime_disposition: retain verified experiment and independent reference unless the depth review exposes a correctness
+    defect
+  claim_boundary: lesson-depth improvement only; source identity and existing Python verification remain distinct evidence
+- id: P15
+  target_module_id: 15-localize-with-a-particle-filter
+  title: Localize with a Particle Filter
+  baseline_lesson_sha256: 930ad88fbec1f77c65de6db65643202eb58214011e68a7633df08fc8ac3d4edb
+  baseline_word_count: 453
+  disposition: deepen_in_place
+  required_additions:
+    derivation_and_conventions: derive importance weighting, effective sample size, and resampling
+    alternative_or_limiting_comparison: compare uniform weights, likelihood collapse, and particle-count scaling
+    practical_failure_analysis: sample impoverishment and non-deterministic evaluation
+    formative_check: add a numeric prediction, a dimensional or invariant check, and a teach-back prompt tied to the executable
+      experiment
+    cross_course_boundary: statistics curricula own particle-method proofs; Robotics retains localization mechanics
+  runtime_disposition: retain verified experiment and independent reference unless the depth review exposes a correctness
+    defect
+  claim_boundary: lesson-depth improvement only; source identity and existing Python verification remain distinct evidence
+- id: P16
+  target_module_id: 16-build-a-small-slam-problem
+  title: Build a Small SLAM Problem
+  baseline_lesson_sha256: b293dd211595c2ab79d8cab3d340e37f5eb33e8760ec32f63c99763fb216571f
+  baseline_word_count: 426
+  disposition: deepen_in_place
+  required_additions:
+    derivation_and_conventions: derive pose-landmark constraints, gauge freedom, and linearized residuals
+    alternative_or_limiting_comparison: compare open trajectory with a loop closure
+    practical_failure_analysis: anchoring errors, false association, and overconfident constraints
+    formative_check: add a numeric prediction, a dimensional or invariant check, and a teach-back prompt tied to the executable
+      experiment
+    cross_course_boundary: P51-P53 provide the substantial nonlinear factor-graph continuation
+  runtime_disposition: retain verified experiment and independent reference unless the depth review exposes a correctness
+    defect
+  claim_boundary: lesson-depth improvement only; source identity and existing Python verification remain distinct evidence
+- id: P17
+  target_module_id: 17-search-a-grid-with-a-star
+  title: Search a Grid with A-Star
+  baseline_lesson_sha256: 0daa77878cc39c7673fcba26cf221306b9a7e797f433b5bba68b9d9b80fde6e5
+  baseline_word_count: 432
+  disposition: deepen_in_place
+  required_additions:
+    derivation_and_conventions: derive admissibility/consistency roles and graph cost accounting
+    alternative_or_limiting_comparison: compare Dijkstra, A-star, and a blocked goal
+    practical_failure_analysis: inadmissible heuristic and diagonal/corner-cutting errors
+    formative_check: add a numeric prediction, a dimensional or invariant check, and a teach-back prompt tied to the executable
+      experiment
+    cross_course_boundary: P54 extends search to incremental replanning
+  runtime_disposition: retain verified experiment and independent reference unless the depth review exposes a correctness
+    defect
+  claim_boundary: lesson-depth improvement only; source identity and existing Python verification remain distinct evidence
+- id: P18
+  target_module_id: 18-plan-with-random-samples
+  title: Plan with Random Samples
+  baseline_lesson_sha256: 248193f7e3ff7fb74645e1460503eca11f379cd36f8fef44a8d6097840e76f1e
+  baseline_word_count: 444
+  disposition: deepen_in_place
+  required_additions:
+    derivation_and_conventions: derive sampling, steering, collision, and probabilistic-completeness boundaries
+    alternative_or_limiting_comparison: compare goal bias, step size, and unreachable budget
+    practical_failure_analysis: unchecked edges and confusing failure-to-find with infeasibility
+    formative_check: add a numeric prediction, a dimensional or invariant check, and a teach-back prompt tied to the executable
+      experiment
+    cross_course_boundary: P55-P56 add PRM and asymptotically improving RRT-star
+  runtime_disposition: retain verified experiment and independent reference unless the depth review exposes a correctness
+    defect
+  claim_boundary: lesson-depth improvement only; source identity and existing Python verification remain distinct evidence
+- id: P19
+  target_module_id: 19-avoid-moving-obstacles
+  title: Avoid Moving Obstacles
+  baseline_lesson_sha256: 8b3ed7772854a289b152a051bd6f5a0b43d8662f17e13095bb57dd6f820226db
+  baseline_word_count: 444
+  disposition: deepen_in_place
+  required_additions:
+    derivation_and_conventions: derive relative-motion prediction and time-to-collision
+    alternative_or_limiting_comparison: compare static, crossing, and receding obstacles
+    practical_failure_analysis: myopic velocity choice, oscillation, and infeasible braking
+    formative_check: add a numeric prediction, a dimensional or invariant check, and a teach-back prompt tied to the executable
+      experiment
+    cross_course_boundary: P59-P60 add dynamic feasibility and local predictive constraints
+  runtime_disposition: retain verified experiment and independent reference unless the depth review exposes a correctness
+    defect
+  claim_boundary: lesson-depth improvement only; source identity and existing Python verification remain distinct evidence
+- id: P20
+  target_module_id: 20-coordinate-actions-with-a-behavior-tree
+  title: Coordinate Actions with a Behavior Tree
+  baseline_lesson_sha256: b1796c62922c6cfe9a30099ebe67dfec0fcd37236bd40ac2772f2e9e05b44fe3
+  baseline_word_count: 449
+  disposition: deepen_in_place
+  required_additions:
+    derivation_and_conventions: derive behavior-tree status propagation and reactive tick semantics
+    alternative_or_limiting_comparison: compare sequence, selector, and a permanently running child
+    practical_failure_analysis: hidden state and side effects that violate tick contracts
+    formative_check: add a numeric prediction, a dimensional or invariant check, and a teach-back prompt tied to the executable
+      experiment
+    cross_course_boundary: P64 combines behavior with task-and-motion recovery
+  runtime_disposition: retain verified experiment and independent reference unless the depth review exposes a correctness
+    defect
+  claim_boundary: lesson-depth improvement only; source identity and existing Python verification remain distinct evidence
+- id: P21
+  target_module_id: 21-execute-a-mission-state-machine
+  title: Execute a Mission State Machine
+  baseline_lesson_sha256: 0501e2a1efa70326abc7f206bb262d52a4ad4d4cb9e2003063b19174b6c7997a
+  baseline_word_count: 439
+  disposition: deepen_in_place
+  required_additions:
+    derivation_and_conventions: derive mission transition guards, invariants, and terminal/recovery states
+    alternative_or_limiting_comparison: compare nominal completion with timeout and retry exhaustion
+    practical_failure_analysis: unreachable states, ambiguous guards, and unsafe reset
+    formative_check: add a numeric prediction, a dimensional or invariant check, and a teach-back prompt tied to the executable
+      experiment
+    cross_course_boundary: systems engineering owns formal requirements depth; P64-P68 integrate recovery
+  runtime_disposition: retain verified experiment and independent reference unless the depth review exposes a correctness
+    defect
+  claim_boundary: lesson-depth improvement only; source identity and existing Python verification remain distinct evidence
+- id: P22
+  target_module_id: 22-meet-real-time-perception-and-control-deadlines
+  title: Meet Real-Time Perception and Control Deadlines
+  baseline_lesson_sha256: 55bd5c40c34627908cfe3b6b1275f2430ed3b317000467b4fd488a5a94833158
+  baseline_word_count: 458
+  disposition: deepen_in_place
+  required_additions:
+    derivation_and_conventions: derive response-time, utilization, data-age, and end-to-end latency budgets
+    alternative_or_limiting_comparison: compare harmonic tasks, overload, and zero jitter
+    practical_failure_analysis: averages hiding deadline misses or stale sensor/control pairs
+    formative_check: add a numeric prediction, a dimensional or invariant check, and a teach-back prompt tied to the executable
+      experiment
+    cross_course_boundary: real-time curricula own scheduler proofs; Robotics retains autonomy-pipeline timing
+  runtime_disposition: retain verified experiment and independent reference unless the depth review exposes a correctness
+    defect
+  claim_boundary: lesson-depth improvement only; source identity and existing Python verification remain distinct evidence
+- id: P23
+  target_module_id: 23-design-safety-monitors
+  title: Design Safety Monitors
+  baseline_lesson_sha256: 7b37f8fd153190e6b09c0df207a54b00e80698327d951e403e044813dea1d8a5
+  baseline_word_count: 408
+  disposition: deepen_in_place
+  required_additions:
+    derivation_and_conventions: derive monitor thresholds, hysteresis, latching, and safe-state logic
+    alternative_or_limiting_comparison: compare nuisance alarm, missed detection, and sensor disagreement
+    practical_failure_analysis: single-point monitor failure and unsafe automatic reset
+    formative_check: add a numeric prediction, a dimensional or invariant check, and a teach-back prompt tied to the executable
+      experiment
+    cross_course_boundary: reliability/FDIR owns certification and coverage depth
+  runtime_disposition: retain verified experiment and independent reference unless the depth review exposes a correctness
+    defect
+  claim_boundary: lesson-depth improvement only; source identity and existing Python verification remain distinct evidence
+- id: P24
+  target_module_id: 24-validate-autonomy-in-hil
+  title: Validate Autonomy in HIL
+  baseline_lesson_sha256: 1e138c1d1d806540cdd4330b327c0d30e280f26e715da74fa496a92e0e056030
+  baseline_word_count: 505
+  disposition: deepen_in_place
+  required_additions:
+    derivation_and_conventions: derive the sampled virtual-plant, transport queue, watchdog, and verdict logic
+    alternative_or_limiting_comparison: compare software-only, zero latency, short dropout, and long dropout
+    practical_failure_analysis: calling software simulation physical HIL or omitting fail-zero evidence
+    formative_check: add a numeric prediction, a dimensional or invariant check, and a teach-back prompt tied to the executable
+      experiment
+    cross_course_boundary: P67 adds replay/diagnostics; physical HIL remains an explicit external validation step
+  runtime_disposition: retain verified experiment and independent reference unless the depth review exposes a correctness
+    defect
+  claim_boundary: lesson-depth improvement only; source identity and existing Python verification remain distinct evidence

@@ -1,22 +1,12 @@
 schema_version: 1
 commands:
-  gnc-expansion-and-fidelity:
-    - ELP_GNC_SOURCE_ROOT=courses/controls-gnc-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_gnc_expansion.py apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_course.py apps/api/tests/test_course_caliber_status.py
-  dsp-regression:
-    - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py
-  robotics-and-status-regression:
-    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_robotics_conversion_framework.py apps/api/tests/test_robotics_course.py apps/api/tests/test_course_caliber_status.py
+  robotics-map-and-regression:
+    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_robotics_expansion.py apps/api/tests/test_robotics_conversion_framework.py apps/api/tests/test_robotics_course.py
   contract:
     - ./scripts/agent-verify.sh contract
   quick:
     - ./scripts/agent-verify.sh quick
-  full:
-    - ./scripts/agent-verify.sh full
-  deterministic-catalog:
-    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic --json
-  lint:
-    - .venv/bin/ruff check apps/api/tests/test_gnc_expansion.py apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_course.py courses/controls-gnc
   scope:
     - git diff --check
-    - test -z "$(git status --short -- courses/controls-gnc-learning courses/dsp-radar courses/robotics-autonomy courses/demo-radar courses/platform-showcase)"
-evidence_boundary: These commands validate all sixty-eight Controls/GNC modules—twenty-four source-bound conversions plus forty-four competency-mapped Python-first laboratories—through three requirements-traced cumulative capstones at a deterministic software-only boundary with semantic maps, five independently originated numerical scenarios per item, units, tolerances, teaching invariants, and cumulative regressions. They establish platform curriculum coverage and software capstone integration, but do not execute MATLAB, validate browser accessibility or learners, operate physical hardware/HIL, certify safety, or authorize release, deployment, credentials/settings, or production use.
+    - test -z "$(git status --short -- courses/robotics-autonomy-learning courses/robotics-autonomy/modules courses/controls-gnc courses/dsp-radar courses/demo-radar courses/platform-showcase)"
+evidence_boundary: These commands validate only the reviewed 69-module Robotics/Autonomy competency boundary, prerequisite/reference closure, ten bounded batches, two planned cumulative capstones, and 24 module-specific depth dispositions while regressing the retained 24 source-bound Python laboratories. They implement no expansion lesson and do not execute MATLAB, validate browser accessibility or learners, operate physical hardware/HIL, certify safety, or authorize release, deployment, credentials/settings, or production use.
