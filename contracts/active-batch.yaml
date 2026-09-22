@@ -1,212 +1,95 @@
 schema_version: 1
 batch:
-  id: ELP-GNC-CAPSTONES-P66-P68
-  title: Complete Controls/GNC cumulative capstones P66-P68
-  goal: 'Implement P66, P67, P68 as the next coherent issue-439 Controls/GNC batch derived from the reviewed competency map:
-    identification, control, and estimation under uncertainty; constrained autonomous-survey navigation and guidance; faulted
-    software-HIL timing and fault-response verification.'
+  id: ELP-ROB-COMPETENCY-MAP
+  title: Commit the issue-440 Robotics competency boundary before authoring
+  goal: Mirror the reviewed 69-module competency map, prerequisite graph, exclusions, evidence origins, and depth dispositions into the target repository without changing a lesson or executable model.
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
-  - products/engineering-learning-platform/COURSE_CALIBER.md
-  - products/engineering-learning-platform/course-caliber.yaml
-  - products/engineering-learning-platform/competency-maps/controls-gnc.yaml
-  - tranquilWorks/portfolio-control#439
-  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-GNC-CAPSTONES-P66-P68
-  baseline_commit: c1ed195ec1d9c07c1ed044a9f18a6fee3118d70e
-  baseline_tree: d5cf9b9c349922ff6217e96733d35e6c486f07ad
+    - products/engineering-learning-platform/COURSE_CALIBER.md
+    - products/engineering-learning-platform/course-caliber.yaml
+    - products/engineering-learning-platform/competency-maps/robotics-autonomy.yaml
+    - tranquilWorks/portfolio-control#440
+  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-ROB-COMPETENCY-MAP
+  baseline_commit: ce2c130fd25571913f427d5ae3ad5d6c1b64e585
+  baseline_tree: 8c50b323b82abdb8d0c96dd500f97f1e63e08d9a
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_baseline: 6f364109f00a6fd67f5dff8cd96b86bd2227d3a4
-  control_plane_path: products/engineering-learning-platform/batches/ELP-GNC-CAPSTONES-P66-P68.yaml
+  control_plane_baseline: 39157eae12e257039dbe2213ee4d672273d42769
+  control_plane_path: products/engineering-learning-platform/batches/ELP-ROB-COMPETENCY-MAP.yaml
   target_repository: tranquilWorks/engineering-learning-platform
-  source_repository: tranquilWorks/controls-gnc-learning
-  source_pin: ffd6623ee2cf8ccd8599fffd935ef07370750fa3
-  source_tree: 471a0afead6f44e875627e7ffe9c088c23f784db
-  source_curriculum_sha256: 8763981e20d02a88450956682b4daff9ee0d74bfed5f0ad91b08715f16aea930
+  source_repository: tranquilWorks/robotics-autonomy-learning
+  source_pin: f8807640258f1a6c1c77f1dcc9e61734551c585b
+  source_tree: 7f8bc62382ca8d7fbe26ff4413cabf7d00d64bb9
+  source_curriculum_sha256: 972eee6b99945f6c2380ba097e443b30c37ca9e4e0acfd2c7f7cde8a7550207d
 dependencies:
-- ELP-GNC-GUIDANCE-P63-P65
+  - ELP-ROB-P01-P24
 scope:
   allowed_paths:
-  - courses/controls-gnc/course.yaml
-  - courses/controls-gnc/competency-map.yaml
-  - courses/controls-gnc/competency-map.schema.json
-  - courses/controls-gnc/native-design.schema.json
-  - courses/controls-gnc/expansion-map.yaml
-  - courses/controls-gnc/expansion_reference_cases.py
-  - courses/controls-gnc/modules/66-*/**
-  - courses/controls-gnc/modules/67-*/**
-  - courses/controls-gnc/modules/68-*/**
-  - apps/api/tests/test_gnc_expansion.py
-  - apps/api/tests/test_gnc_conversion_framework.py
-  - apps/api/tests/test_course_caliber_status.py
-  - apps/api/tests/test_robotics_conversion_framework.py
-  - contracts/active-batch.yaml
-  - contracts/repo-profile.yaml
-  - contracts/verification.yaml
-  - docs/COURSE_CALIBER.md
-  - docs/course-caliber-status.yaml
-  - docs/CURRENT_STATE.md
-  - docs/HANDOFF.md
-  - docs/ROADMAP.md
-  - docs/evidence/ELP-GNC-CAPSTONES-P66-P68-*.md
+    - courses/robotics-autonomy/competency-map.yaml
+    - courses/robotics-autonomy/competency-map.schema.json
+    - courses/robotics-autonomy/depth-review.yaml
+    - apps/api/tests/test_robotics_expansion.py
+    - contracts/active-batch.yaml
+    - contracts/repo-profile.yaml
+    - contracts/verification.yaml
+    - docs/COURSE_CALIBER.md
+    - docs/course-caliber-status.yaml
+    - docs/CURRENT_STATE.md
+    - docs/HANDOFF.md
+    - docs/ROADMAP.md
+    - docs/evidence/ELP-ROB-COMPETENCY-MAP-*.md
   forbidden_paths:
-  - courses/controls-gnc-learning
-  - courses/controls-gnc-learning/**
-  - courses/controls-gnc/modules/01-*/**
-  - courses/controls-gnc/modules/02-*/**
-  - courses/controls-gnc/modules/03-*/**
-  - courses/controls-gnc/modules/04-*/**
-  - courses/controls-gnc/modules/05-*/**
-  - courses/controls-gnc/modules/06-*/**
-  - courses/controls-gnc/modules/07-*/**
-  - courses/controls-gnc/modules/08-*/**
-  - courses/controls-gnc/modules/09-*/**
-  - courses/controls-gnc/modules/10-*/**
-  - courses/controls-gnc/modules/11-*/**
-  - courses/controls-gnc/modules/12-*/**
-  - courses/controls-gnc/modules/13-*/**
-  - courses/controls-gnc/modules/14-*/**
-  - courses/controls-gnc/modules/15-*/**
-  - courses/controls-gnc/modules/16-*/**
-  - courses/controls-gnc/modules/17-*/**
-  - courses/controls-gnc/modules/18-*/**
-  - courses/controls-gnc/modules/19-*/**
-  - courses/controls-gnc/modules/20-*/**
-  - courses/controls-gnc/modules/21-*/**
-  - courses/controls-gnc/modules/22-*/**
-  - courses/controls-gnc/modules/23-*/**
-  - courses/controls-gnc/modules/24-*/**
-  - courses/controls-gnc/modules/25-*/**
-  - courses/controls-gnc/modules/26-*/**
-  - courses/controls-gnc/modules/27-*/**
-  - courses/controls-gnc/modules/28-*/**
-  - courses/controls-gnc/modules/29-*/**
-  - courses/controls-gnc/modules/30-*/**
-  - courses/controls-gnc/modules/31-*/**
-  - courses/controls-gnc/modules/32-*/**
-  - courses/controls-gnc/modules/33-*/**
-  - courses/controls-gnc/modules/34-*/**
-  - courses/controls-gnc/modules/35-*/**
-  - courses/controls-gnc/modules/36-*/**
-  - courses/controls-gnc/modules/37-*/**
-  - courses/controls-gnc/modules/38-*/**
-  - courses/controls-gnc/modules/39-*/**
-  - courses/controls-gnc/modules/40-*/**
-  - courses/controls-gnc/modules/41-*/**
-  - courses/controls-gnc/modules/42-*/**
-  - courses/controls-gnc/modules/43-*/**
-  - courses/controls-gnc/modules/44-*/**
-  - courses/controls-gnc/modules/45-*/**
-  - courses/controls-gnc/modules/46-*/**
-  - courses/controls-gnc/modules/47-*/**
-  - courses/controls-gnc/modules/48-*/**
-  - courses/controls-gnc/modules/49-*/**
-  - courses/controls-gnc/modules/50-*/**
-  - courses/controls-gnc/modules/51-*/**
-  - courses/controls-gnc/modules/52-*/**
-  - courses/controls-gnc/modules/53-*/**
-  - courses/controls-gnc/modules/54-*/**
-  - courses/controls-gnc/modules/55-*/**
-  - courses/controls-gnc/modules/56-*/**
-  - courses/controls-gnc/modules/57-*/**
-  - courses/controls-gnc/modules/58-*/**
-  - courses/controls-gnc/modules/59-*/**
-  - courses/controls-gnc/modules/60-*/**
-  - courses/controls-gnc/modules/61-*/**
-  - courses/controls-gnc/modules/62-*/**
-  - courses/controls-gnc/modules/63-*/**
-  - courses/controls-gnc/modules/64-*/**
-  - courses/controls-gnc/modules/65-*/**
-  - courses/controls-gnc/source-map.yaml
-  - courses/controls-gnc/fidelity-map.yaml
-  - courses/controls-gnc/reference_cases.py
-  - courses/controls-gnc/conversion-manifest.yaml
-  - courses/controls-gnc/coverage.yaml
-  - courses/dsp-radar/**
-  - courses/robotics-autonomy/**
-  - courses/demo-radar/**
-  - courses/platform-showcase/**
-  - apps/api/src/**
-  - apps/web/**
-  - packages/**
-  - scripts/**
-  - .github/**
-  - .gitmodules
-  - package.json
-  - package-lock.json
-  - apps/api/pyproject.toml
-  - apps/web/package.json
-  - apps/web/package-lock.json
-  - Dockerfile
-  - compose.yaml
+    - courses/robotics-autonomy-learning
+    - courses/robotics-autonomy-learning/**
+    - courses/robotics-autonomy/modules/**
+    - courses/robotics-autonomy/source-map.yaml
+    - courses/robotics-autonomy/fidelity-map.yaml
+    - courses/robotics-autonomy/reference_cases.py
+    - courses/robotics-autonomy/conversion-manifest.yaml
+    - courses/robotics-autonomy/coverage.yaml
+    - courses/controls-gnc/**
+    - courses/dsp-radar/**
+    - courses/demo-radar/**
+    - courses/platform-showcase/**
+    - apps/api/src/**
+    - apps/web/**
+    - packages/**
+    - scripts/**
+    - .github/**
 acceptance:
-- Start only after the exact control commit containing this contract is merged. Use exact clean target main c1ed195ec1d9c07c1ed044a9f18a6fee3118d70e,
-  tree d5cf9b9c349922ff6217e96733d35e6c486f07ad; any target, control, source, competency-map, index, or worktree drift stops
-  implementation.
-- 'Implement exactly P66, P67, P68 from batch ELP-GNC-CAPSTONES-P66-P68: identification, control, and estimation under uncertainty;
-  constrained autonomous-survey navigation and guidance; faulted software-HIL timing and fault-response verification.'
-- Treat P66, P67, P68 as 3 separately reviewed work items. Each must include a complete learner lesson, unique executable
-  model, baseline, two one-variable sweeps, broken behavior, explicit recovery, limiting cases, domain-specific quantities
-  and units, and named teaching invariants.
-- Keep every expansion lesson a Python-first native design authorized by the reviewed competency map. Do not modify the immutable
-  24-item source map, conversion manifest, source coverage, or source fidelity map; do not claim MATLAB equivalence.
-- Use independent references that import no production experiment, consume no production result, and perturb no production
-  value. Retain origin metadata, inputs, signature fields/units, tolerances, and finite comparison results for baseline, sweep_1,
-  sweep_2, broken, and recovery.
-- Every plot must use domain-specific titles, axes, quantities, and units. Every runtime must be deterministic, finite, bounded,
-  and within the trusted Python timeout.
-- Preserve P01-P65, the source gitlink and source evidence, all other courses, generic platform behavior, dependencies, workflows,
-  and deployment artifacts byte-identically.
-- End with 68 Controls/GNC platform modules and a five-course catalog of 178 modules, all interactive. All P25-P68 competency-mapped
-  expansion items are implemented; curriculum_covered and capstone_integrated must pass after cumulative verification, learner_validated
-  remains not_run, and issue 439 may close only after the target merge and closure evidence.
-- Record exact local verification. Hosted CI is not a completion gate by owner direction; do not claim a hosted result that
-  was not run. Keep MATLAB, browser/accessibility, learner, physical HIL/hardware, certification, release, deployment, credentials/settings,
-  and production evidence explicitly unperformed.
+  - Start from exact clean target main ce2c130fd25571913f427d5ae3ad5d6c1b64e585, tree 8c50b323b82abdb8d0c96dd500f97f1e63e08d9a, after this exact control contract is merged.
+  - Mirror the reviewed control-plane map byte-for-byte and validate it against the retained competency-map schema.
+  - Record a module-specific depth disposition for every retained P01-P24 lesson before editing any retained lesson.
+  - Prove that the 69 module identities are ordered, all references close, all ten batches contain at most ten items, and two cumulative capstones integrate at least five competencies each.
+  - Preserve every module, executable, source-bound record, source gitlink, other course, platform path, dependency, workflow, and deployment artifact byte-identically.
+  - Do not claim implementation of P25-P69, completion of any depth pass, MATLAB parity, browser/accessibility, learner, physical HIL/hardware, certification, release, deployment, or production evidence.
 validation:
   local:
-  - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_gnc_expansion.py apps/api/tests/test_gnc_conversion_framework.py
-    apps/api/tests/test_gnc_course.py apps/api/tests/test_course_caliber_status.py
-  - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest
-    -q apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py
-  - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_robotics_conversion_framework.py
-    apps/api/tests/test_robotics_course.py
-  - ./scripts/agent-verify.sh contract
-  - ./scripts/agent-verify.sh quick
-  - ./scripts/agent-verify.sh full
-  - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic --json
-  - .venv/bin/ruff check apps/api/tests/test_gnc_expansion.py apps/api/tests/test_gnc_conversion_framework.py courses/controls-gnc
-  - git diff --check
-  - test -z "$(git status --short -- courses/controls-gnc-learning courses/controls-gnc/modules/{01..65}-* courses/dsp-radar
-    courses/robotics-autonomy courses/demo-radar courses/platform-showcase)"
+    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_robotics_expansion.py apps/api/tests/test_robotics_conversion_framework.py apps/api/tests/test_robotics_course.py
+    - ./scripts/agent-verify.sh contract
+    - ./scripts/agent-verify.sh quick
+    - git diff --check
+    - test -z "$(git status --short -- courses/robotics-autonomy-learning courses/robotics-autonomy/modules courses/controls-gnc courses/dsp-radar courses/demo-radar courses/platform-showcase)"
   focused_tests_to_add:
-  - Validate batch membership, distinct governing equations, prerequisite closure, and Python-first provenance.
-  - Execute and compare five finite scenarios per module through independent and production paths.
-  - Assert topic-specific teaching invariants, physical axes/units, deterministic behavior, and exact baseline recovery.
+    - Validate the reviewed map schema, count derivation, prerequisite/reference closure, batch bound, and capstone breadth.
+    - Validate one planned, module-specific depth disposition for every retained P01-P24 item.
   required_ci: []
 risk:
-  class: high
+  class: medium
   hazards:
-  - a renamed shared template substitutes for the named governing models
-  - an independent oracle silently imports or derives from production behavior
-  - sign, frame, timing, discretization, covariance, constraint, or stability conventions are subtly wrong
-  - the batch prematurely claims later competencies, capstone integration, learner validation, or physical evidence
+    - a count is selected independently of the competency graph
+    - a prerequisite, assessment, evidence, or batch reference is dangling
+    - a generic depth template replaces module-specific review
+    - target content is edited before the reviewed boundary is committed
   stop_conditions:
-  - exact target, control, source, map, or worktree identity drifts
-  - an independent method needs production code/output or a perturbed production value
-  - any focused, cumulative, full, deterministic, lint, scope, or source-cleanliness gate fails or is skipped
-  - work requires source mutation, generic runtime/UI changes, a dependency, unbounded compute, or unsupported evidence
+    - target, control, source, competency-map, or worktree identity drifts
+    - a batch exceeds ten work items or the count no longer equals len(modules)
+    - any focused, regression, contract, quick, scope, or source-cleanliness gate fails or is skipped
 rollback:
-  strategy: Before merge, close the isolated target pull request. After merge, revert its one squash commit; do not rewrite
-    source or prior batches.
+  strategy: Before merge, close the isolated target pull request. After merge, revert its single squash commit; no lesson or runtime rollback is required.
 evidence:
   output:
-  - docs/evidence/ELP-GNC-CAPSTONES-P66-P68-2026-09-22.md
-  - per-item model, oracle, five-scenario, invariant, tolerance, axis, limitation, and residual-risk review
-  - focused, regression, full, deterministic catalog, lint, diff, scope, and source-cleanliness results
-  - one target squash merge and explicit unperformed evidence
-  claim_boundary: This batch implements only P66, P67, P68 at a deterministic software-only boundary. All P25-P68 competency-mapped
-    expansion items are implemented; curriculum_covered and capstone_integrated must pass after cumulative verification, learner_validated
-    remains not_run, and issue 439 may close only after the target merge and closure evidence. It does not execute MATLAB,
-    validate learners or browser accessibility, operate physical HIL/hardware, certify safety, or authorize release, deployment,
-    credentials/settings, or production use.
+    - docs/evidence/ELP-ROB-COMPETENCY-MAP-2026-09-22.md
+    - map schema, graph closure, count derivation, batch-bound, capstone-breadth, depth-disposition, regression, and scope results
+    - one target squash merge and explicit unperformed evidence
+  claim_boundary: This batch records the reviewed course boundary and depth work plan only. It implements no new module, edits no retained lesson, executes no MATLAB or hardware, and does not validate browser accessibility, learners, certification, release, deployment, credentials/settings, or production use.
