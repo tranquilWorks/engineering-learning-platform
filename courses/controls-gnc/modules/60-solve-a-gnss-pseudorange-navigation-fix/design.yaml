@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P60
+module: 60-solve-a-gnss-pseudorange-navigation-fix
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- rho_i=||r-r_i||+c dt+epsilon_i
+- delta_x=(H^T H)^-1 H^T delta_rho
+- sigma_pos=GDOP*sigma_rho
+signature:
+- field: position_error_bound
+  unit: m
+- field: clock_bias_error
+  unit: m
+- field: postfit_residual_rms
+  unit: m
+teaching_invariant: A valid fix estimates position and clock bias together; geometry dilution scales range noise
+  into state uncertainty.
+limiting_cases:
+- With zero range noise the linearized error bound tends to zero.
+- Worse geometry increases position error without changing receiver measurement noise.
+scenarios:
+  baseline: &id001
+    pseudorange_noise_m: 2.0
+    geometry_dilution: 2.2
+    broken_mode: false
+  sweep_1:
+    pseudorange_noise_m: 10.0
+    geometry_dilution: 2.2
+    broken_mode: false
+  sweep_2:
+    pseudorange_noise_m: 2.0
+    geometry_dilution: 12.0
+    broken_mode: false
+  broken:
+    pseudorange_noise_m: 2.0
+    geometry_dilution: 2.2
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

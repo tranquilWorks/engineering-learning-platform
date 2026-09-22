@@ -1,0 +1,68 @@
+schema_version: 1
+id: 61-fuse-gnss-and-ins-with-an-error-state-kalman-filter
+number: 61
+title: Fuse GNSS and INS with an Error-State Kalman Filter
+summary: Propagate position error from bias random walk, apply periodic GNSS covariance updates, and quantify the
+  omitted-bias failure.
+guiding_question: Why does an error-state formulation estimate IMU bias rather than repeatedly resetting the nominal
+  strapdown state?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- navigation
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: gnss_interval_s
+  type: slider
+  label: GNSS update interval
+  default: 1.0
+  unit: s
+  minimum: 0.2
+  maximum: 10.0
+  step: 0.2
+- id: bias_random_walk
+  type: slider
+  label: Bias random walk
+  default: 0.01
+  unit: m/s^2/sqrt(s)
+  minimum: 0.001
+  maximum: 0.08
+  step: 0.001
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: GNSS updates reduce navigation-error covariance, while an explicit bias error state prevents systematic
+    inertial drift from masquerading as white noise.
+  reveal: Restore the bias state, inject the estimated error into the nominal solution, and reset only the error
+    coordinates.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

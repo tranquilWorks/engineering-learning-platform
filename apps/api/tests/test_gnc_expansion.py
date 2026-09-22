@@ -315,3 +315,55 @@ def test_gnc_estimation_and_smoothing_teaching_invariants() -> None:
     assert smoother[2] > 0
     assert disabled_smoother[1] == disabled_smoother[0]
     assert disabled_smoother[2] == 0
+
+
+def test_gnc_navigation_teaching_invariants() -> None:
+    catalog = CourseCatalog([ROOT / "courses"])
+    runtime = ExperimentRuntime(catalog)
+
+    def signature(number: int, supplied: dict[str, Any]) -> list[float]:
+        item = NATIVE[number - 25]
+        module_id = _yaml(COURSE_ROOT / item["folder"] / "module.yaml")["id"]
+        return runtime.run("controls-gnc", module_id, supplied).diagnostics["signature"]
+
+    rotation = signature(57, {"broken_mode": False})
+    invalid_rotation = signature(57, {"broken_mode": True})
+    assert rotation[0] == 0
+    assert rotation[1] == 0
+    assert invalid_rotation[0] > 0
+    assert invalid_rotation[1] > 0
+    assert invalid_rotation[2] > rotation[2]
+
+    alignment = signature(58, {"broken_mode": False})
+    unobservable_alignment = signature(58, {"broken_mode": True})
+    assert alignment[0] > 0
+    assert math.isfinite(alignment[1])
+    assert unobservable_alignment[0] == 0
+    assert unobservable_alignment[1] > alignment[1]
+    assert unobservable_alignment[2] > alignment[2]
+
+    inertial = signature(59, {"broken_mode": False})
+    inertial_broken = signature(59, {"broken_mode": True})
+    assert inertial[2] < inertial[1]
+    assert inertial_broken[0] > inertial[0]
+    assert inertial_broken[1] > inertial[1]
+
+    gnss = signature(60, {"broken_mode": False})
+    poor_geometry = signature(60, {"broken_mode": True})
+    assert gnss[0] == 2 * 2.2
+    assert gnss[1] == gnss[0] / 2
+    assert poor_geometry[0] > gnss[0]
+    assert poor_geometry[1] > gnss[1]
+
+    fusion = signature(61, {"broken_mode": False})
+    omitted_bias = signature(61, {"broken_mode": True})
+    assert fusion[1] < fusion[0]
+    assert omitted_bias[1] < omitted_bias[0]
+    assert omitted_bias[2] > fusion[2]
+
+    integrity = signature(62, {"broken_mode": False})
+    suppressed_monitor = signature(62, {"broken_mode": True})
+    assert integrity[0] > 5
+    assert integrity[2] < 18
+    assert suppressed_monitor[0] > 5
+    assert suppressed_monitor[2] == 60

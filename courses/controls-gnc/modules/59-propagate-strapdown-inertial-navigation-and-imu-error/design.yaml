@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P59
+module: 59-propagate-strapdown-inertial-navigation-and-imu-error
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- delta_v=b_a t
+- delta_r=.5 b_a t^2
+- f_n=R_nb(f_b-b_hat)+g_n
+signature:
+- field: velocity_error
+  unit: m/s
+- field: position_error
+  unit: m
+- field: corrected_position_error
+  unit: m
+teaching_invariant: Under constant uncorrected bias, velocity error grows linearly and position error quadratically
+  with coast time.
+limiting_cases:
+- At zero duration both errors are zero.
+- Doubling coast time quadruples constant-bias position error.
+scenarios:
+  baseline: &id001
+    accelerometer_bias_m_s2: 0.03
+    coast_duration_s: 30.0
+    broken_mode: false
+  sweep_1:
+    accelerometer_bias_m_s2: 0.2
+    coast_duration_s: 30.0
+    broken_mode: false
+  sweep_2:
+    accelerometer_bias_m_s2: 0.03
+    coast_duration_s: 120.0
+    broken_mode: false
+  broken:
+    accelerometer_bias_m_s2: 0.03
+    coast_duration_s: 30.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

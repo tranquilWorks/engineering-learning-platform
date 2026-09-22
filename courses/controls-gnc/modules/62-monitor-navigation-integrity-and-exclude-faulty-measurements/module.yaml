@@ -1,0 +1,67 @@
+schema_version: 1
+id: 62-monitor-navigation-integrity-and-exclude-faulty-measurements
+number: 62
+title: Monitor Navigation Integrity and Exclude Faulty Measurements
+summary: Normalize a pseudorange fault, compare it with an integrity threshold, and measure residual reduction after
+  exclusion.
+guiding_question: How do residual testing, protection levels, and fault exclusion bound a navigation solution?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- navigation
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: fault_magnitude_m
+  type: slider
+  label: Fault magnitude
+  default: 18.0
+  unit: m
+  minimum: 0.0
+  maximum: 60.0
+  step: 1.0
+- id: integrity_threshold
+  type: slider
+  label: Integrity threshold
+  default: 5.0
+  unit: sigma
+  minimum: 2.0
+  maximum: 10.0
+  step: 0.2
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: A declared fault above threshold raises an alarm and the excluded solution must be recomputed before reporting
+    a reduced residual.
+  reveal: Restore residual monitoring, exclude the identified fault, recompute the solution, and keep protection-level
+    assumptions explicit.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

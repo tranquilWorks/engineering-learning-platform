@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P58
+module: 58-analyze-navigation-observability-and-alignment-calibration
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- Y=[cos psi,1] [theta,bias]^T
+- I=Y^T R^-1 Y
+- rank(I)=2 requires heading diversity
+signature:
+- field: observability_determinant
+  unit: '1'
+- field: information_condition
+  unit: '1'
+- field: bias_standard_deviation
+  unit: '1'
+teaching_invariant: Heading/bias calibration requires maneuver diversity; repeated geometry cannot separate the
+  two parameters regardless of sample count.
+limiting_cases:
+- At zero heading span determinant is zero.
+- Reducing measurement noise scales information but cannot repair missing rank.
+scenarios:
+  baseline: &id001
+    maneuver_span_deg: 60.0
+    measurement_noise: 0.05
+    broken_mode: false
+  sweep_1:
+    maneuver_span_deg: 180.0
+    measurement_noise: 0.05
+    broken_mode: false
+  sweep_2:
+    maneuver_span_deg: 60.0
+    measurement_noise: 0.3
+    broken_mode: false
+  broken:
+    maneuver_span_deg: 60.0
+    measurement_noise: 0.05
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

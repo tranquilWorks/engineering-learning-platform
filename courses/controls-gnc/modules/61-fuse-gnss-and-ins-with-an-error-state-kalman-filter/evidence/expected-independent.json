@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "item_id": "P61",
+  "signature_fields": [
+    {
+      "field": "preupdate_position_sigma",
+      "unit": "m"
+    },
+    {
+      "field": "postupdate_position_sigma",
+      "unit": "m"
+    },
+    {
+      "field": "unmodeled_bias_error",
+      "unit": "m"
+    }
+  ],
+  "origin": {
+    "kind": "independent-reviewed-fixture",
+    "item_id": "P61",
+    "independent": true,
+    "imports_production_entrypoint": false,
+    "derived_from_production_output": false,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "gnss_interval_s": 1.0,
+        "bias_random_walk": 0.01,
+        "broken_mode": false
+      },
+      "signature": [
+        0.505,
+        0.17675,
+        0.001
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "gnss_interval_s": 10.0,
+        "bias_random_walk": 0.01,
+        "broken_mode": false
+      },
+      "signature": [
+        1.0,
+        0.35,
+        0.1
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "gnss_interval_s": 1.0,
+        "bias_random_walk": 0.08,
+        "broken_mode": false
+      },
+      "signature": [
+        0.54,
+        0.189,
+        0.008
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "gnss_interval_s": 1.0,
+        "bias_random_walk": 0.01,
+        "broken_mode": true
+      },
+      "signature": [
+        4.5,
+        1.575,
+        12.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "gnss_interval_s": 1.0,
+        "bias_random_walk": 0.01,
+        "broken_mode": false
+      },
+      "signature": [
+        0.505,
+        0.17675,
+        0.001
+      ]
+    }
+  }
+}

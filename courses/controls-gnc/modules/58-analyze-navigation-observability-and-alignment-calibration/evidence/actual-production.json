@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "item_id": "P58",
+  "signature_fields": [
+    {
+      "field": "observability_determinant",
+      "unit": "1"
+    },
+    {
+      "field": "information_condition",
+      "unit": "1"
+    },
+    {
+      "field": "bias_standard_deviation",
+      "unit": "1"
+    }
+  ],
+  "origin": {
+    "kind": "production-experiment",
+    "independent": false,
+    "imports_production_entrypoint": true,
+    "derived_from_production_output": true,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "maneuver_span_deg": 60.0,
+        "measurement_noise": 0.05,
+        "broken_mode": false
+      },
+      "signature": [
+        299.9999999999999,
+        2.9999940000120007,
+        0.05773502691896258
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "maneuver_span_deg": 180.0,
+        "measurement_noise": 0.05,
+        "broken_mode": false
+      },
+      "signature": [
+        5.9990391306474294e-30,
+        2000000.0,
+        50000.00000000001
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "maneuver_span_deg": 60.0,
+        "measurement_noise": 0.3,
+        "broken_mode": false
+      },
+      "signature": [
+        8.333333333333332,
+        2.9999940000120007,
+        0.34641016151377546
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "maneuver_span_deg": 60.0,
+        "measurement_noise": 0.05,
+        "broken_mode": true
+      },
+      "signature": [
+        0.0,
+        1000000000.0,
+        50000.00000000001
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "maneuver_span_deg": 60.0,
+        "measurement_noise": 0.05,
+        "broken_mode": false
+      },
+      "signature": [
+        299.9999999999999,
+        2.9999940000120007,
+        0.05773502691896258
+      ]
+    }
+  }
+}
