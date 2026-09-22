@@ -1,95 +1,205 @@
 schema_version: 1
 batch:
-  id: ELP-ROB-COMPETENCY-MAP
-  title: Commit the issue-440 Robotics competency boundary before authoring
-  goal: Mirror the reviewed 69-module competency map, prerequisite graph, exclusions, evidence origins, and depth dispositions into the target repository without changing a lesson or executable model.
+  id: ELP-ROB-DEPTH-P01-P08
+  title: Deepen Robotics foundations P01-P08
+  goal: 'Complete the next coherent issue-440 depth batch for P01, P02, P03, P04, P05, P06, P07, P08: mobile kinematics, frame
+    transforms, arm kinematics, actuation, feedback, smooth trajectories, and impedance contact.'
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
-    - products/engineering-learning-platform/COURSE_CALIBER.md
-    - products/engineering-learning-platform/course-caliber.yaml
-    - products/engineering-learning-platform/competency-maps/robotics-autonomy.yaml
-    - tranquilWorks/portfolio-control#440
-  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-ROB-COMPETENCY-MAP
-  baseline_commit: ce2c130fd25571913f427d5ae3ad5d6c1b64e585
-  baseline_tree: 8c50b323b82abdb8d0c96dd500f97f1e63e08d9a
+  - products/engineering-learning-platform/COURSE_CALIBER.md
+  - products/engineering-learning-platform/course-caliber.yaml
+  - products/engineering-learning-platform/competency-maps/robotics-autonomy.yaml
+  - tranquilWorks/portfolio-control#440
+  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-ROB-DEPTH-P01-P08
+  baseline_commit: a2df550dfeb11b212e9282f07c2b219718f8f778
+  baseline_tree: 6e9c8961067dd61dbc44ab8fdd19ab7d52703676
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_baseline: 39157eae12e257039dbe2213ee4d672273d42769
-  control_plane_path: products/engineering-learning-platform/batches/ELP-ROB-COMPETENCY-MAP.yaml
+  control_plane_baseline: aa815297ae43fd5138327fa309f4e9a7f382dec2
+  control_plane_path: products/engineering-learning-platform/batches/ELP-ROB-DEPTH-P01-P08.yaml
   target_repository: tranquilWorks/engineering-learning-platform
   source_repository: tranquilWorks/robotics-autonomy-learning
   source_pin: f8807640258f1a6c1c77f1dcc9e61734551c585b
   source_tree: 7f8bc62382ca8d7fbe26ff4413cabf7d00d64bb9
   source_curriculum_sha256: 972eee6b99945f6c2380ba097e443b30c37ca9e4e0acfd2c7f7cde8a7550207d
 dependencies:
-  - ELP-ROB-P01-P24
+- ELP-ROB-COMPETENCY-MAP
 scope:
   allowed_paths:
-    - courses/robotics-autonomy/competency-map.yaml
-    - courses/robotics-autonomy/competency-map.schema.json
-    - courses/robotics-autonomy/depth-review.yaml
-    - apps/api/tests/test_robotics_expansion.py
-    - contracts/active-batch.yaml
-    - contracts/repo-profile.yaml
-    - contracts/verification.yaml
-    - docs/COURSE_CALIBER.md
-    - docs/course-caliber-status.yaml
-    - docs/CURRENT_STATE.md
-    - docs/HANDOFF.md
-    - docs/ROADMAP.md
-    - docs/evidence/ELP-ROB-COMPETENCY-MAP-*.md
+  - courses/robotics-autonomy/course.yaml
+  - courses/robotics-autonomy/competency-map.yaml
+  - courses/robotics-autonomy/competency-map.schema.json
+  - courses/robotics-autonomy/depth-review.yaml
+  - courses/robotics-autonomy/native-design.schema.json
+  - courses/robotics-autonomy/expansion-map.yaml
+  - courses/robotics-autonomy/expansion_reference_cases.py
+  - courses/robotics-autonomy/modules/01-*/**
+  - courses/robotics-autonomy/modules/02-*/**
+  - courses/robotics-autonomy/modules/03-*/**
+  - courses/robotics-autonomy/modules/04-*/**
+  - courses/robotics-autonomy/modules/05-*/**
+  - courses/robotics-autonomy/modules/06-*/**
+  - courses/robotics-autonomy/modules/07-*/**
+  - courses/robotics-autonomy/modules/08-*/**
+  - courses/robotics-autonomy/conversion-manifest.yaml
+  - courses/robotics-autonomy/coverage.yaml
+  - apps/api/tests/test_robotics_expansion.py
+  - apps/api/tests/test_robotics_conversion_framework.py
+  - apps/api/tests/test_course_caliber_status.py
+  - contracts/active-batch.yaml
+  - contracts/repo-profile.yaml
+  - contracts/verification.yaml
+  - docs/COURSE_CALIBER.md
+  - docs/course-caliber-status.yaml
+  - docs/CURRENT_STATE.md
+  - docs/HANDOFF.md
+  - docs/ROADMAP.md
+  - docs/evidence/ELP-ROB-DEPTH-P01-P08-*.md
   forbidden_paths:
-    - courses/robotics-autonomy-learning
-    - courses/robotics-autonomy-learning/**
-    - courses/robotics-autonomy/modules/**
-    - courses/robotics-autonomy/source-map.yaml
-    - courses/robotics-autonomy/fidelity-map.yaml
-    - courses/robotics-autonomy/reference_cases.py
-    - courses/robotics-autonomy/conversion-manifest.yaml
-    - courses/robotics-autonomy/coverage.yaml
-    - courses/controls-gnc/**
-    - courses/dsp-radar/**
-    - courses/demo-radar/**
-    - courses/platform-showcase/**
-    - apps/api/src/**
-    - apps/web/**
-    - packages/**
-    - scripts/**
-    - .github/**
+  - courses/robotics-autonomy-learning
+  - courses/robotics-autonomy-learning/**
+  - courses/robotics-autonomy/modules/09-*/**
+  - courses/robotics-autonomy/modules/10-*/**
+  - courses/robotics-autonomy/modules/11-*/**
+  - courses/robotics-autonomy/modules/12-*/**
+  - courses/robotics-autonomy/modules/13-*/**
+  - courses/robotics-autonomy/modules/14-*/**
+  - courses/robotics-autonomy/modules/15-*/**
+  - courses/robotics-autonomy/modules/16-*/**
+  - courses/robotics-autonomy/modules/17-*/**
+  - courses/robotics-autonomy/modules/18-*/**
+  - courses/robotics-autonomy/modules/19-*/**
+  - courses/robotics-autonomy/modules/20-*/**
+  - courses/robotics-autonomy/modules/21-*/**
+  - courses/robotics-autonomy/modules/22-*/**
+  - courses/robotics-autonomy/modules/23-*/**
+  - courses/robotics-autonomy/modules/24-*/**
+  - courses/robotics-autonomy/modules/25-*/**
+  - courses/robotics-autonomy/modules/26-*/**
+  - courses/robotics-autonomy/modules/27-*/**
+  - courses/robotics-autonomy/modules/28-*/**
+  - courses/robotics-autonomy/modules/29-*/**
+  - courses/robotics-autonomy/modules/30-*/**
+  - courses/robotics-autonomy/modules/31-*/**
+  - courses/robotics-autonomy/modules/32-*/**
+  - courses/robotics-autonomy/modules/33-*/**
+  - courses/robotics-autonomy/modules/34-*/**
+  - courses/robotics-autonomy/modules/35-*/**
+  - courses/robotics-autonomy/modules/36-*/**
+  - courses/robotics-autonomy/modules/37-*/**
+  - courses/robotics-autonomy/modules/38-*/**
+  - courses/robotics-autonomy/modules/39-*/**
+  - courses/robotics-autonomy/modules/40-*/**
+  - courses/robotics-autonomy/modules/41-*/**
+  - courses/robotics-autonomy/modules/42-*/**
+  - courses/robotics-autonomy/modules/43-*/**
+  - courses/robotics-autonomy/modules/44-*/**
+  - courses/robotics-autonomy/modules/45-*/**
+  - courses/robotics-autonomy/modules/46-*/**
+  - courses/robotics-autonomy/modules/47-*/**
+  - courses/robotics-autonomy/modules/48-*/**
+  - courses/robotics-autonomy/modules/49-*/**
+  - courses/robotics-autonomy/modules/50-*/**
+  - courses/robotics-autonomy/modules/51-*/**
+  - courses/robotics-autonomy/modules/52-*/**
+  - courses/robotics-autonomy/modules/53-*/**
+  - courses/robotics-autonomy/modules/54-*/**
+  - courses/robotics-autonomy/modules/55-*/**
+  - courses/robotics-autonomy/modules/56-*/**
+  - courses/robotics-autonomy/modules/57-*/**
+  - courses/robotics-autonomy/modules/58-*/**
+  - courses/robotics-autonomy/modules/59-*/**
+  - courses/robotics-autonomy/modules/60-*/**
+  - courses/robotics-autonomy/modules/61-*/**
+  - courses/robotics-autonomy/modules/62-*/**
+  - courses/robotics-autonomy/modules/63-*/**
+  - courses/robotics-autonomy/modules/64-*/**
+  - courses/robotics-autonomy/modules/65-*/**
+  - courses/robotics-autonomy/modules/66-*/**
+  - courses/robotics-autonomy/modules/67-*/**
+  - courses/robotics-autonomy/modules/68-*/**
+  - courses/robotics-autonomy/modules/69-*/**
+  - courses/robotics-autonomy/source-map.yaml
+  - courses/robotics-autonomy/fidelity-map.yaml
+  - courses/robotics-autonomy/reference_cases.py
+  - courses/dsp-radar/**
+  - courses/controls-gnc/**
+  - courses/demo-radar/**
+  - courses/platform-showcase/**
+  - apps/api/src/**
+  - apps/web/**
+  - packages/**
+  - scripts/**
+  - .github/**
+  - .gitmodules
+  - package.json
+  - package-lock.json
+  - apps/api/pyproject.toml
+  - apps/web/package.json
+  - apps/web/package-lock.json
+  - Dockerfile
+  - compose.yaml
 acceptance:
-  - Start from exact clean target main ce2c130fd25571913f427d5ae3ad5d6c1b64e585, tree 8c50b323b82abdb8d0c96dd500f97f1e63e08d9a, after this exact control contract is merged.
-  - Mirror the reviewed control-plane map byte-for-byte and validate it against the retained competency-map schema.
-  - Record a module-specific depth disposition for every retained P01-P24 lesson before editing any retained lesson.
-  - Prove that the 69 module identities are ordered, all references close, all ten batches contain at most ten items, and two cumulative capstones integrate at least five competencies each.
-  - Preserve every module, executable, source-bound record, source gitlink, other course, platform path, dependency, workflow, and deployment artifact byte-identically.
-  - Do not claim implementation of P25-P69, completion of any depth pass, MATLAB parity, browser/accessibility, learner, physical HIL/hardware, certification, release, deployment, or production evidence.
+- Start only after the exact control commit containing this contract is merged. Use exact clean target main a2df550dfeb11b212e9282f07c2b219718f8f778,
+  tree 6e9c8961067dd61dbc44ab8fdd19ab7d52703676; any target, control, source, map, index, or worktree drift stops implementation.
+- 'Deepen exactly P01, P02, P03, P04, P05, P06, P07, P08 in place from their reviewed dispositions: mobile kinematics, frame
+  transforms, arm kinematics, actuation, feedback, smooth trajectories, and impedance contact.'
+- Do not change an experiment, module manifest, expected/actual evidence fixture, or independent reference unless a separately
+  documented correctness defect is found. Update content digests and source-bound record hashes for lesson changes.
+- Each lesson must expose its governing derivation and conventions, a real alternative or limiting comparison, a practical
+  failure analysis, a numerical prediction plus invariant/dimensional check, a teach-back prompt, and a named adjacent-course
+  boundary.
+- Every plot and metric must retain domain-specific quantities and units. Every runtime must remain deterministic, finite,
+  bounded, and within the trusted Python timeout.
+- Preserve every module outside P01, P02, P03, P04, P05, P06, P07, P08, the source gitlink and source evidence, every other
+  course, generic platform behavior, dependencies, workflows, and deployment artifacts byte-identically.
+- End with 24 implemented/deepened Robotics modules visible at this checkpoint and a five-course catalog of 178 modules, all
+  interactive. P09-P24 depth passes and P25-P69 native expansion remain intentionally unimplemented.
+- Record exact local verification. Hosted CI is not a completion gate by owner direction; keep MATLAB, browser/accessibility,
+  learner, physical HIL/hardware, certification, release, deployment, credentials/settings, and production evidence explicitly
+  unperformed.
 validation:
   local:
-    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_robotics_expansion.py apps/api/tests/test_robotics_conversion_framework.py apps/api/tests/test_robotics_course.py
-    - ./scripts/agent-verify.sh contract
-    - ./scripts/agent-verify.sh quick
-    - git diff --check
-    - test -z "$(git status --short -- courses/robotics-autonomy-learning courses/robotics-autonomy/modules courses/controls-gnc courses/dsp-radar courses/demo-radar courses/platform-showcase)"
+  - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_robotics_expansion.py apps/api/tests/test_robotics_conversion_framework.py
+    apps/api/tests/test_robotics_course.py apps/api/tests/test_course_caliber_status.py
+  - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest
+    -q apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py
+  - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_gnc_expansion.py apps/api/tests/test_gnc_conversion_framework.py
+    apps/api/tests/test_gnc_course.py
+  - ./scripts/agent-verify.sh contract
+  - ./scripts/agent-verify.sh quick
+  - ./scripts/agent-verify.sh full
+  - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic --json
+  - .venv/bin/ruff check apps/api/tests/test_robotics_expansion.py apps/api/tests/test_robotics_conversion_framework.py courses/robotics-autonomy
+  - git diff --check
   focused_tests_to_add:
-    - Validate the reviewed map schema, count derivation, prerequisite/reference closure, batch bound, and capstone breadth.
-    - Validate one planned, module-specific depth disposition for every retained P01-P24 item.
+  - Validate exact batch membership, map identity, prerequisite closure, and source/native provenance.
+  - Execute deterministic baseline, two sweeps, broken, recovery, invalid-input, resource, axis/unit, and evidence-independence
+    checks where applicable.
+  - Assert topic-specific derivations, teaching invariants, limits, failure/recovery, formative checks, and cross-course boundaries.
   required_ci: []
 risk:
-  class: medium
+  class: high
   hazards:
-    - a count is selected independently of the competency graph
-    - a prerequisite, assessment, evidence, or batch reference is dangling
-    - a generic depth template replaces module-specific review
-    - target content is edited before the reviewed boundary is committed
+  - a shared template substitutes for a named derivation or unique governing model
+  - an independent oracle silently imports or derives from production behavior
+  - a frame, sign, timing, covariance, collision, force, or energy convention is subtly wrong
+  - the batch claims later competencies, capstone integration, learner validation, or physical evidence
   stop_conditions:
-    - target, control, source, competency-map, or worktree identity drifts
-    - a batch exceeds ten work items or the count no longer equals len(modules)
-    - any focused, regression, contract, quick, scope, or source-cleanliness gate fails or is skipped
+  - exact target, control, source, map, or worktree identity drifts
+  - independent evidence needs production code/output or a perturbed production value
+  - any focused, cumulative, full, deterministic, lint, scope, or source-cleanliness gate fails or is skipped
+  - work requires source mutation, generic runtime/UI changes, a dependency, unbounded compute, or unsupported evidence
 rollback:
-  strategy: Before merge, close the isolated target pull request. After merge, revert its single squash commit; no lesson or runtime rollback is required.
+  strategy: Before merge, close the isolated target pull request. After merge, revert its one squash commit; do not rewrite
+    source or prior batches.
 evidence:
   output:
-    - docs/evidence/ELP-ROB-COMPETENCY-MAP-2026-09-22.md
-    - map schema, graph closure, count derivation, batch-bound, capstone-breadth, depth-disposition, regression, and scope results
-    - one target squash merge and explicit unperformed evidence
-  claim_boundary: This batch records the reviewed course boundary and depth work plan only. It implements no new module, edits no retained lesson, executes no MATLAB or hardware, and does not validate browser accessibility, learners, certification, release, deployment, credentials/settings, or production use.
+  - docs/evidence/ELP-ROB-DEPTH-P01-P08-2026-09-22.md
+  - per-item derivation/model, scenario, invariant, tolerance, axis, limitation, and residual-risk review
+  - focused, regression, full, deterministic catalog, lint, diff, scope, and source-cleanliness results
+  - one target squash merge and explicit unperformed evidence
+  claim_boundary: This batch covers only P01, P02, P03, P04, P05, P06, P07, P08 at a deterministic software-only boundary.
+    P09-P24 depth passes and P25-P69 native expansion remain intentionally unimplemented. It does not execute MATLAB, validate
+    learners or browser accessibility, operate physical HIL/hardware, certify safety, or authorize release, deployment, credentials/settings,
+    or production use.
