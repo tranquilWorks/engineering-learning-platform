@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "item_id": "P66",
+  "signature_fields": [
+    {
+      "field": "worst_tracking_error",
+      "unit": "1"
+    },
+    {
+      "field": "maximum_nees",
+      "unit": "1"
+    },
+    {
+      "field": "requirements_passed",
+      "unit": "bool"
+    }
+  ],
+  "origin": {
+    "kind": "independent-reviewed-fixture",
+    "item_id": "P66",
+    "independent": true,
+    "imports_production_entrypoint": false,
+    "derived_from_production_output": false,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "plant_uncertainty": 0.2,
+        "measurement_noise": 0.1,
+        "broken_mode": false
+      },
+      "signature": [
+        0.18000000000000005,
+        3.0,
+        1.0
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "plant_uncertainty": 0.8,
+        "measurement_noise": 0.1,
+        "broken_mode": false
+      },
+      "signature": [
+        0.4200000000000001,
+        9.0,
+        0.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "plant_uncertainty": 0.2,
+        "measurement_noise": 0.5,
+        "broken_mode": false
+      },
+      "signature": [
+        0.26,
+        1.4,
+        1.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "plant_uncertainty": 0.2,
+        "measurement_noise": 0.1,
+        "broken_mode": true
+      },
+      "signature": [
+        1.0000000000000002,
+        5.2,
+        0.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "plant_uncertainty": 0.2,
+        "measurement_noise": 0.1,
+        "broken_mode": false
+      },
+      "signature": [
+        0.18000000000000005,
+        3.0,
+        1.0
+      ]
+    }
+  }
+}

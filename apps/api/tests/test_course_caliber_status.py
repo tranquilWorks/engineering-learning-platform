@@ -96,7 +96,7 @@ def test_status_has_closed_top_level_shape_and_exact_standard_identity() -> None
         "id": "ELP-COURSE-CALIBER-1",
         "effective_date": "2026-09-21",
         "control_repository": "tranquilWorks/portfolio-control",
-        "control_revision": "6f364109f00a6fd67f5dff8cd96b86bd2227d3a4",
+        "control_revision": "322072170f8b25dade7ad7ebfa183cceaebad6b2",
         "audit_baseline": "1506591946ec8e96fe3201e8893b8ad851a1685a",
     }
     assert status["count_semantics"] == (
@@ -125,8 +125,8 @@ def test_reviewed_course_dispositions_keep_inventory_separate_from_maturity() ->
     }
     assert reviews["controls-gnc"]["inventory"] == {
         "source_items": 24,
-        "platform_modules": 65,
-        "interactive_modules": 65,
+        "platform_modules": 68,
+        "interactive_modules": 68,
     }
     assert reviews["robotics-autonomy"]["inventory"] == {
         "source_items": 24,
@@ -138,10 +138,13 @@ def test_reviewed_course_dispositions_keep_inventory_separate_from_maturity() ->
         "curriculum_complete_requires": "curriculum_covered: passed",
     }
 
-    for review in reviews.values():
+    for course_id, review in reviews.items():
         assert list(review["maturity"]) == MATURITY_STATES
         assert list(review["rubric"]) == RUBRIC_DIMENSIONS
-        assert review["maturity"]["curriculum_covered"]["status"] != "passed"
+        if course_id == "controls-gnc":
+            assert review["maturity"]["curriculum_covered"]["status"] == "passed"
+        else:
+            assert review["maturity"]["curriculum_covered"]["status"] != "passed"
         for stage in review["maturity"].values():
             assert set(stage) == {"status", "evidence", "limitation"}
             assert stage["evidence"].strip()
@@ -152,16 +155,16 @@ def test_follow_up_ownership_is_exact_and_remains_unimplemented_here() -> None:
     reviews = _review_by_id(_status())
     assert reviews["dsp-radar"]["disposition"] == "remediate"
     assert reviews["dsp-radar"]["follow_up_issues"] == [441]
-    assert reviews["controls-gnc"]["disposition"] == "expand"
-    assert reviews["controls-gnc"]["follow_up_issues"] == [439]
+    assert reviews["controls-gnc"]["disposition"] == "maintain"
+    assert reviews["controls-gnc"]["follow_up_issues"] == []
     assert reviews["controls-gnc"]["maturity"]["numerically_verified"]["status"] == (
         "passed"
     )
     assert reviews["controls-gnc"]["maturity"]["curriculum_covered"]["status"] == (
-        "partial"
+        "passed"
     )
     assert reviews["controls-gnc"]["maturity"]["capstone_integrated"]["status"] == (
-        "partial"
+        "passed"
     )
     assert reviews["controls-gnc"]["maturity"]["learner_validated"]["status"] == (
         "not_run"

@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "item_id": "P67",
+  "signature_fields": [
+    {
+      "field": "maximum_cross_track_error",
+      "unit": "m"
+    },
+    {
+      "field": "turn_rate_violation",
+      "unit": "deg/s"
+    },
+    {
+      "field": "monitor_alarm",
+      "unit": "bool"
+    }
+  ],
+  "origin": {
+    "kind": "independent-reviewed-fixture",
+    "item_id": "P67",
+    "independent": true,
+    "imports_production_entrypoint": false,
+    "derived_from_production_output": false,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "gnss_dropout_s": 4.0,
+        "turn_rate_limit_deg_s": 12.0,
+        "broken_mode": false
+      },
+      "signature": [
+        3.0666666666666664,
+        0.0,
+        1.0
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "gnss_dropout_s": 20.0,
+        "turn_rate_limit_deg_s": 12.0,
+        "broken_mode": false
+      },
+      "signature": [
+        8.666666666666666,
+        0.0,
+        1.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "gnss_dropout_s": 4.0,
+        "turn_rate_limit_deg_s": 30.0,
+        "broken_mode": false
+      },
+      "signature": [
+        2.6666666666666665,
+        0.0,
+        1.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "gnss_dropout_s": 4.0,
+        "turn_rate_limit_deg_s": 12.0,
+        "broken_mode": true
+      },
+      "signature": [
+        8.0,
+        20.0,
+        0.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "gnss_dropout_s": 4.0,
+        "turn_rate_limit_deg_s": 12.0,
+        "broken_mode": false
+      },
+      "signature": [
+        3.0666666666666664,
+        0.0,
+        1.0
+      ]
+    }
+  }
+}

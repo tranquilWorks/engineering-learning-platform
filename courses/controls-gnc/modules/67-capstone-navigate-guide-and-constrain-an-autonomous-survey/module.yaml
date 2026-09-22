@@ -1,0 +1,68 @@
+schema_version: 1
+id: 67-capstone-navigate-guide-and-constrain-an-autonomous-survey
+number: 67
+title: 'Capstone: Navigate, Guide, and Constrain an Autonomous Survey'
+summary: Combine dropout-driven navigation uncertainty, LOS cross-track behavior, turn-rate constraint, and a monitor
+  alarm into an integrated survey verdict.
+guiding_question: Can navigation, path guidance, plant limits, and monitoring close an autonomous survey requirement
+  set?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- capstone
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: gnss_dropout_s
+  type: slider
+  label: GNSS dropout
+  default: 4.0
+  unit: s
+  minimum: 0.0
+  maximum: 20.0
+  step: 1.0
+- id: turn_rate_limit_deg_s
+  type: slider
+  label: Turn-rate limit
+  default: 12.0
+  unit: deg/s
+  minimum: 3.0
+  maximum: 30.0
+  step: 1.0
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: The survey passes only when navigation uncertainty, cross-track error, turn-rate constraint, and monitor
+    response satisfy their separate requirements.
+  reveal: Restore uncertainty-aware guidance, enforce the turn-rate limit, and require the monitor to alarm on the
+    injected dropout fault.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P66
+module: 66-capstone-identify-control-estimate-and-stress-a-plant
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- identify theta from excitation
+- design K(theta_hat) and estimator covariance
+- stress delta in declared uncertainty set
+signature:
+- field: worst_tracking_error
+  unit: '1'
+- field: maximum_nees
+  unit: '1'
+- field: requirements_passed
+  unit: bool
+teaching_invariant: The capstone passes only when identification conditioning, tracking error, estimator consistency,
+  and actuator authority all pass their named requirements.
+limiting_cases:
+- At zero uncertainty/noise the nominal chain reaches its numerical floor.
+- A pass flag is the conjunction of traced requirements, not an average score.
+scenarios:
+  baseline: &id001
+    plant_uncertainty: 0.2
+    measurement_noise: 0.1
+    broken_mode: false
+  sweep_1:
+    plant_uncertainty: 0.8
+    measurement_noise: 0.1
+    broken_mode: false
+  sweep_2:
+    plant_uncertainty: 0.2
+    measurement_noise: 0.5
+    broken_mode: false
+  broken:
+    plant_uncertainty: 0.2
+    measurement_noise: 0.1
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

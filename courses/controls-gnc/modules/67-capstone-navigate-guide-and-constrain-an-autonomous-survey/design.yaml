@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P67
+module: 67-capstone-navigate-guide-and-constrain-an-autonomous-survey
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- P_nav grows during GNSS dropout
+- chi_c=chi_path-atan(e_y/L)
+- '|chi_dot|<=chi_dot_max and monitor residuals'
+signature:
+- field: maximum_cross_track_error
+  unit: m
+- field: turn_rate_violation
+  unit: deg/s
+- field: monitor_alarm
+  unit: bool
+teaching_invariant: The survey passes only when navigation uncertainty, cross-track error, turn-rate constraint,
+  and monitor response satisfy their separate requirements.
+limiting_cases:
+- At zero dropout navigation covariance does not accumulate outage growth.
+- Applied turn rate never exceeds its declared limit in the constrained case.
+scenarios:
+  baseline: &id001
+    gnss_dropout_s: 4.0
+    turn_rate_limit_deg_s: 12.0
+    broken_mode: false
+  sweep_1:
+    gnss_dropout_s: 20.0
+    turn_rate_limit_deg_s: 12.0
+    broken_mode: false
+  sweep_2:
+    gnss_dropout_s: 4.0
+    turn_rate_limit_deg_s: 30.0
+    broken_mode: false
+  broken:
+    gnss_dropout_s: 4.0
+    turn_rate_limit_deg_s: 12.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

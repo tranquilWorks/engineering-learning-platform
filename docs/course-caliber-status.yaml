@@ -3,7 +3,7 @@ standard:
   id: ELP-COURSE-CALIBER-1
   effective_date: '2026-09-21'
   control_repository: tranquilWorks/portfolio-control
-  control_revision: 6f364109f00a6fd67f5dff8cd96b86bd2227d3a4
+  control_revision: 322072170f8b25dade7ad7ebfa183cceaebad6b2
   audit_baseline: 1506591946ec8e96fe3201e8893b8ad851a1685a
 count_semantics: implementation_inventory_not_curriculum_completeness
 maturity_states:
@@ -136,8 +136,8 @@ course_reviews:
   title: Controls and Guidance, Navigation, and Control
   inventory:
     source_items: 24
-    platform_modules: 65
-    interactive_modules: 65
+    platform_modules: 68
+    interactive_modules: 68
   maturity:
     source_authored:
       status: passed
@@ -146,46 +146,44 @@ course_reviews:
       limitation: The authored inventory is not a complete Controls/GNC competency map.
     platform_converted:
       status: passed
-      evidence: The catalog discovers and deterministically executes 24 source-bound conversions plus forty-one competency-mapped
-        Python-first native laboratories through actuator-aware guidance, each with two one-variable sweeps and
+      evidence: The catalog discovers and deterministically executes 24 source-bound conversions plus forty-four competency-mapped
+        Python-first native laboratories through three cumulative capstones, each with two one-variable sweeps and
         named broken/recovery paths.
-      limitation: The 65-module inventory is implementation coverage only; P66-P68 remain unimplemented and native additions
-        do not claim MATLAB/source equivalence.
+      limitation: The 68-module inventory represents the reviewed map, but native additions do not claim MATLAB/source equivalence.
     numerically_verified:
       status: passed
-      evidence: P01-P24 each retain independently originated baseline, two sweep, broken, and recovery signatures with units,
-        tolerances, measured errors, limiting cases, and teaching invariants.
+      evidence: P01-P68 each retain independently originated baseline, two sweep, broken, and recovery signatures with units,
+        tolerances, finite comparisons, limiting cases, and teaching invariants.
       limitation: Verification is deterministic software-only evidence; MATLAB runtime, browser/accessibility, learner, and
         physical HIL evidence remain unperformed.
     curriculum_covered:
-      status: partial
+      status: passed
       evidence: The reviewed 68-module competency/prerequisite map closes every named topic to a lesson or explicit cross-course
-        handoff, and its P25-P65 non-capstone sequence through actuator-aware guidance is implemented.
-      limitation: P66-P68 cumulative capstones remain unimplemented, so mapped coverage is not yet delivered.
+        handoff; P01-P68 implement the complete prerequisite-closed sequence and all named assessments.
+      limitation: This is platform curriculum coverage; learner-effectiveness and physical-system validation are separate evidence states.
     capstone_integrated:
-      status: partial
-      evidence: P24 exercises a software-only two-way packet loop, exact virtual plant, deterministic loss, and watchdog recovery.
-      limitation: P24 is an isolated software-HIL methodology topic, not a cumulative traced Controls/GNC capstone.
+      status: passed
+      evidence: P66 traces identification, control, estimation, and uncertainty requirements; P67 traces navigation, guidance,
+        monitoring, and actuator constraints; P68 traces timing, loss, and fail-zero watchdog requirements.
+      limitation: Capstones are deterministic software integrations, not physical HIL, certification, or production evidence.
     learner_validated:
       status: not_run
       evidence: No representative-learner study is retained.
       limitation: No learning-effectiveness or accessibility acceptance claim is supported.
   rubric:
     foundations_prerequisites:
-      status: partial
-      finding: The reviewed competency map sequences prerequisites and handoffs through P68; implementation currently stops
-        after the P63-P65 guidance batch.
+      status: passed
+      finding: The reviewed prerequisite graph and cross-course handoffs are implemented through P68 without unresolved internal gaps.
     breadth_sequencing:
-      status: partial
-      finding: Sixty-five implemented topics cover the complete non-capstone sequence through actuator-aware guidance; P66-P68
-        cumulative capstones remain planned.
+      status: passed
+      finding: Sixty-eight implemented topics cover source foundations, mapped breadth, sequencing, and three cumulative capstones.
     derivation_physical_meaning:
       status: passed
       finding: Every item retains governing relations, observables, units, limiting cases, failure behavior, and explicit
         omissions.
     unique_executable_fidelity:
       status: passed
-      finding: P01-P65 retain distinct state equations, controls, observables, failures, plots, and reference formulations.
+      finding: P01-P68 retain distinct state equations, controls, observables, failures, plots, and reference formulations.
     sweeps_limits_failure_recovery:
       status: passed
       finding: Every item executes baseline, two one-variable sweeps, broken behavior, and explicit recovery with invariant
@@ -195,18 +193,17 @@ course_reviews:
       finding: Course-owned references import no production entrypoint, consume no production output, and perturb no production
         value.
     formative_cumulative_assessment:
-      status: partial
-      finding: Per-item prediction, checks, recovery, and teach-back exist; a mapped cumulative assessment program does not.
+      status: passed
+      finding: Per-item prediction, checks, recovery, and teach-back culminate in three requirements-traced capstone assessments.
     capstones:
-      status: failed
-      finding: No traced multi-competency Controls/GNC capstone closes the sequence.
+      status: passed
+      finding: P66-P68 close control/estimation, navigation/guidance, and software-HIL requirement chains with explicit failure recovery.
     exclusions_cross_course_handoffs:
-      status: partial
+      status: passed
       finding: MATLAB, browser, learner, and physical-HIL exclusions are explicit, and the reviewed map names Robotics, Statistics,
         Optimization, Flight Dynamics, Embedded/RT-HIL, Reliability/FDIR, and Vehicle Dynamics handoffs.
-  disposition: expand
-  follow_up_issues:
-  - 439
+  disposition: maintain
+  follow_up_issues: []
 - course_id: robotics-autonomy
   title: Robotics and Autonomy
   inventory:
