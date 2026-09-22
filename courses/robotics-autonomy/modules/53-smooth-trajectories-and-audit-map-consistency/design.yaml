@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P53
+module: 53-smooth-trajectories-and-audit-map-consistency
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- C_k=P_k^f F^T(P_{k+1}^-)^-1 and x_k^s=x_k^f+C_k(x_{k+1}^s-x_{k+1}^-)
+- P_k^s=P_k^f+C_k(P_{k+1}^s-P_{k+1}^-)C_k^T
+- NEES=e^T P^-1 e and held-out fixes audit covariance and map consistency
+signature:
+- field: smoothed_rmse
+  unit: m
+- field: consistency_ratio
+  unit: '1'
+- field: heldout_map_error
+  unit: m
+teaching_invariant: Smoothing may use future data to reduce past error, but consistency and held-out map geometry
+  must remain explicit.
+limiting_cases:
+- At the final time, smoothed and filtered estimates coincide.
+- With no future information, the smoothing correction is zero.
+scenarios:
+  baseline: &id001
+    process_noise: 0.06
+    measurement_noise: 0.15
+    broken_mode: false
+  sweep_1:
+    process_noise: 0.5
+    measurement_noise: 0.15
+    broken_mode: false
+  sweep_2:
+    process_noise: 0.06
+    measurement_noise: 1.0
+    broken_mode: false
+  broken:
+    process_noise: 0.06
+    measurement_noise: 0.15
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

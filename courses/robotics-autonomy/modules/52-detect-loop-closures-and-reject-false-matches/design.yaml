@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P52
+module: 52-detect-loop-closures-and-reject-false-matches
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- propose a revisit only if descriptor similarity s>=s_min
+- insert the factor only if independent geometric residual ||r_g||<=r_max
+- w(r)=psi(r)/r bounds the influence of an accepted closure
+signature:
+- field: closure_weight
+  unit: '1'
+- field: robust_cost
+  unit: '1'
+- field: map_deformation
+  unit: m
+teaching_invariant: A loop closure enters the graph only after independent appearance and geometric checks, then
+  receives bounded influence.
+limiting_cases:
+- At zero geometric residual, a verified high-score closure receives full weight.
+- At large residual, robust influence must decrease rather than grow quadratically.
+scenarios:
+  baseline: &id001
+    descriptor_score: 0.78
+    geometric_residual_m: 0.12
+    broken_mode: false
+  sweep_1:
+    descriptor_score: 1.0
+    geometric_residual_m: 0.12
+    broken_mode: false
+  sweep_2:
+    descriptor_score: 0.78
+    geometric_residual_m: 2.0
+    broken_mode: false
+  broken:
+    descriptor_score: 0.78
+    geometric_residual_m: 0.12
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

@@ -1,0 +1,67 @@
+schema_version: 1
+id: 49-test-observability-in-multi-rate-sensor-fusion
+number: 49
+title: Test Observability in Multi-Rate Sensor Fusion
+summary: Assemble the whitened information matrix for asynchronous inertial and position measurements, then separate
+  structural rank from usable conditioning and covariance.
+guiding_question: When do faster samples add a genuinely new state direction rather than repeat information the estimator
+  already has?
+status: implemented
+tags:
+- robotics-autonomy
+- native-python
+- slam
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: rate_ratio
+  type: slider
+  label: Fast/slow sensor rate ratio
+  default: 10.0
+  minimum: 1.0
+  maximum: 40.0
+  step: 1.0
+  unit: '1'
+- id: excitation_level
+  type: slider
+  label: Motion excitation
+  default: 0.6
+  minimum: 0.02
+  maximum: 2.0
+  step: 0.02
+  unit: '1'
+- id: broken_mode
+  type: toggle
+  label: Enable named failure
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: A multi-rate estimator needs motion and measurement geometry that make the relevant states observable with
+    usable conditioning.
+  reveal: Use the equations, units, and mechanism plot to test the prediction.
+- type: controls
+  title: Live model controls
+- type: metrics
+- type: plot_grid
+  title: Response and governing mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

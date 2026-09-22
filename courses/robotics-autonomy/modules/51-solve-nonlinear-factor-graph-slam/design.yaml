@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P51
+module: 51-solve-nonlinear-factor-graph-slam
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- X*=argmin_X sum_i ||h_i(X)-z_i||^2_{Omega_i}
+- (J^T J) delta=-J^T r, followed by X<-X+delta and relinearization
+- one absolute prior removes the two-dimensional translation gauge
+signature:
+- field: trajectory_rmse
+  unit: m
+- field: gauge_residual
+  unit: m
+- field: normal_condition
+  unit: '1'
+teaching_invariant: Nonlinear SLAM requires explicit gauge fixing, iterated relinearization, and residual checks
+  beyond a single normal-equation solve.
+limiting_cases:
+- With a fixed gauge and exact consistent factors, trajectory residual tends to zero.
+- Without an absolute prior, a global rigid transform leaves relative factors unchanged.
+scenarios:
+  baseline: &id001
+    loop_noise_m: 0.08
+    pose_count: 30.0
+    broken_mode: false
+  sweep_1:
+    loop_noise_m: 0.5
+    pose_count: 30.0
+    broken_mode: false
+  sweep_2:
+    loop_noise_m: 0.08
+    pose_count: 100.0
+    broken_mode: false
+  broken:
+    loop_noise_m: 0.08
+    pose_count: 30.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

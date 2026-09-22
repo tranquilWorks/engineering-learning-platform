@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P50
+module: 50-associate-measurements-with-gating-and-robust-losses
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- d_j^2=nu_j^T S_j^-1 nu_j
+- accept j only if d_j^2<=gamma
+- rho_Huber(r)=r^2/2 for |r|<=delta, else delta(|r|-delta/2)
+signature:
+- field: accepted_inlier
+  unit: '1'
+- field: rejected_outlier
+  unit: '1'
+- field: association_cost
+  unit: '1'
+teaching_invariant: Association must gate with predicted uncertainty before a robust loss limits the influence of
+  accepted residuals.
+limiting_cases:
+- A zero innovation always lies inside a positive gate.
+- An outlier beyond the gate must be rejected regardless of robust-loss tuning.
+scenarios:
+  baseline: &id001
+    gate_sigma: 3.0
+    outlier_sigma: 5.0
+    broken_mode: false
+  sweep_1:
+    gate_sigma: 8.0
+    outlier_sigma: 5.0
+    broken_mode: false
+  sweep_2:
+    gate_sigma: 3.0
+    outlier_sigma: 12.0
+    broken_mode: false
+  broken:
+    gate_sigma: 3.0
+    outlier_sigma: 5.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

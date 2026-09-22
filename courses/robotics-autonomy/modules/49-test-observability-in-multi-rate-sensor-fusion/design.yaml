@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P49
+module: 49-test-observability-in-multi-rate-sensor-fusion
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- h_p(t)=[1,t,double_integral(u),t^2/2], h_a(t)=[0,0,u(t),1]
+- W=sum_k h_k^T R_k^-1 h_k
+- rank(W)=n is structural observability; kappa(W) measures usable conditioning
+signature:
+- field: observability_rank
+  unit: count
+- field: gramian_condition
+  unit: '1'
+- field: state_variance
+  unit: '1'
+teaching_invariant: A multi-rate estimator needs motion and measurement geometry that make the relevant states observable
+  with usable conditioning.
+limiting_cases:
+- At zero excitation, coupled scale or bias states may remain unobservable.
+- Increasing identical sample rate alone does not create a missing observation direction.
+scenarios:
+  baseline: &id001
+    rate_ratio: 10.0
+    excitation_level: 0.6
+    broken_mode: false
+  sweep_1:
+    rate_ratio: 40.0
+    excitation_level: 0.6
+    broken_mode: false
+  sweep_2:
+    rate_ratio: 10.0
+    excitation_level: 2.0
+    broken_mode: false
+  broken:
+    rate_ratio: 10.0
+    excitation_level: 0.6
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

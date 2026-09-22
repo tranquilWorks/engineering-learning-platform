@@ -1,10 +1,10 @@
 schema_version: 1
 batch:
-  id: ELP-ROB-PERCEPTION-P41-P48
-  title: Robotics perception expansion P41-P48
-  goal: 'Complete the next coherent issue-440 expansion batch for P41, P42, P43, P44, P45, P46, P47, P48: pinhole projection;
-    intrinsic and lens calibration; feature detection and description; robust correspondence rejection; stereo depth; landmark
-    pose estimation; occupancy-grid inverse sensor models; point-cloud registration.'
+  id: ELP-ROB-SLAM-P49-P53
+  title: Robotics SLAM expansion P49-P53
+  goal: 'Complete the next coherent issue-440 expansion batch for P49, P50, P51, P52, P53: multi-rate observability; gated
+    data association and robust loss; nonlinear factor-graph SLAM; loop-closure verification and rejection; trajectory smoothing
+    and map consistency.'
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
@@ -12,19 +12,19 @@ sources:
   - products/engineering-learning-platform/course-caliber.yaml
   - products/engineering-learning-platform/competency-maps/robotics-autonomy.yaml
   - tranquilWorks/portfolio-control#440
-  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-ROB-PERCEPTION-P41-P48
-  baseline_commit: e31ca5659c0691dc6d4f5fc58bb51f18201d060a
-  baseline_tree: 1d42f6899328a7166b7b95e6aaabd8293151b0af
+  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-ROB-SLAM-P49-P53
+  baseline_commit: 660e916f2ea53ea1482b552d02d9e7a225fa4271
+  baseline_tree: 19fb64e3f317aa9d4b92ba1927228168be9e4a22
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_baseline: 0dec96d8b58a8ab7641a396b45ade87e61d918b9
-  control_plane_path: products/engineering-learning-platform/batches/ELP-ROB-PERCEPTION-P41-P48.yaml
+  control_plane_baseline: ae8a9c8656f04669b267f3bdf5bc2f63c4e58d5a
+  control_plane_path: products/engineering-learning-platform/batches/ELP-ROB-SLAM-P49-P53.yaml
   target_repository: tranquilWorks/engineering-learning-platform
   source_repository: tranquilWorks/robotics-autonomy-learning
   source_pin: f8807640258f1a6c1c77f1dcc9e61734551c585b
   source_tree: 7f8bc62382ca8d7fbe26ff4413cabf7d00d64bb9
   source_curriculum_sha256: 972eee6b99945f6c2380ba097e443b30c37ca9e4e0acfd2c7f7cde8a7550207d
 dependencies:
-- ELP-ROB-CONTROL-INTERACTION-P34-P40
+- ELP-ROB-PERCEPTION-P41-P48
 scope:
   allowed_paths:
   - courses/robotics-autonomy/course.yaml
@@ -34,14 +34,11 @@ scope:
   - courses/robotics-autonomy/native-design.schema.json
   - courses/robotics-autonomy/expansion-map.yaml
   - courses/robotics-autonomy/expansion_reference_cases.py
-  - courses/robotics-autonomy/modules/41-*/**
-  - courses/robotics-autonomy/modules/42-*/**
-  - courses/robotics-autonomy/modules/43-*/**
-  - courses/robotics-autonomy/modules/44-*/**
-  - courses/robotics-autonomy/modules/45-*/**
-  - courses/robotics-autonomy/modules/46-*/**
-  - courses/robotics-autonomy/modules/47-*/**
-  - courses/robotics-autonomy/modules/48-*/**
+  - courses/robotics-autonomy/modules/49-*/**
+  - courses/robotics-autonomy/modules/50-*/**
+  - courses/robotics-autonomy/modules/51-*/**
+  - courses/robotics-autonomy/modules/52-*/**
+  - courses/robotics-autonomy/modules/53-*/**
   - courses/robotics-autonomy/conversion-manifest.yaml
   - courses/robotics-autonomy/coverage.yaml
   - apps/api/tests/test_robotics_expansion.py
@@ -56,7 +53,7 @@ scope:
   - docs/CURRENT_STATE.md
   - docs/HANDOFF.md
   - docs/ROADMAP.md
-  - docs/evidence/ELP-ROB-PERCEPTION-P41-P48-*.md
+  - docs/evidence/ELP-ROB-SLAM-P49-P53-*.md
   forbidden_paths:
   - courses/robotics-autonomy-learning
   - courses/robotics-autonomy-learning/**
@@ -100,11 +97,14 @@ scope:
   - courses/robotics-autonomy/modules/38-*/**
   - courses/robotics-autonomy/modules/39-*/**
   - courses/robotics-autonomy/modules/40-*/**
-  - courses/robotics-autonomy/modules/49-*/**
-  - courses/robotics-autonomy/modules/50-*/**
-  - courses/robotics-autonomy/modules/51-*/**
-  - courses/robotics-autonomy/modules/52-*/**
-  - courses/robotics-autonomy/modules/53-*/**
+  - courses/robotics-autonomy/modules/41-*/**
+  - courses/robotics-autonomy/modules/42-*/**
+  - courses/robotics-autonomy/modules/43-*/**
+  - courses/robotics-autonomy/modules/44-*/**
+  - courses/robotics-autonomy/modules/45-*/**
+  - courses/robotics-autonomy/modules/46-*/**
+  - courses/robotics-autonomy/modules/47-*/**
+  - courses/robotics-autonomy/modules/48-*/**
   - courses/robotics-autonomy/modules/54-*/**
   - courses/robotics-autonomy/modules/55-*/**
   - courses/robotics-autonomy/modules/56-*/**
@@ -142,11 +142,11 @@ scope:
   - Dockerfile
   - compose.yaml
 acceptance:
-- Start only after the exact control commit containing this contract is merged. Use exact clean target main e31ca5659c0691dc6d4f5fc58bb51f18201d060a,
-  tree 1d42f6899328a7166b7b95e6aaabd8293151b0af; any target, control, source, map, index, or worktree drift stops implementation.
-- 'Implement exactly P41, P42, P43, P44, P45, P46, P47, P48 as Python-first native modules from the reviewed map: pinhole
-  projection; intrinsic and lens calibration; feature detection and description; robust correspondence rejection; stereo depth;
-  landmark pose estimation; occupancy-grid inverse sensor models; point-cloud registration.'
+- Start only after the exact control commit containing this contract is merged. Use exact clean target main 660e916f2ea53ea1482b552d02d9e7a225fa4271,
+  tree 19fb64e3f317aa9d4b92ba1927228168be9e4a22; any target, control, source, map, index, or worktree drift stops implementation.
+- 'Implement exactly P49, P50, P51, P52, P53 as Python-first native modules from the reviewed map: multi-rate observability;
+  gated data association and robust loss; nonlinear factor-graph SLAM; loop-closure verification and rejection; trajectory
+  smoothing and map consistency.'
 - Treat every ID as a separately reviewed work item with a complete learner lesson, unique executable model, baseline, two
   one-variable sweeps, broken behavior, exact recovery, limiting cases, domain quantities/units, and a named teaching invariant.
 - Use an independent reference that imports no production experiment, consumes no production result, and perturbs no production
@@ -155,10 +155,10 @@ acceptance:
   claim conversion or MATLAB equivalence for native additions.
 - Every plot and metric must retain domain-specific quantities and units. Every runtime must remain deterministic, finite,
   bounded, and within the trusted Python timeout.
-- Preserve every module outside P41, P42, P43, P44, P45, P46, P47, P48, the source gitlink and source evidence, every other
-  course, generic platform behavior, dependencies, workflows, and deployment artifacts byte-identically.
-- 'End with 48 implemented/deepened Robotics modules visible at this checkpoint and a five-course catalog of 202 modules,
-  all interactive. P49-P69 remain: SLAM, planning, manipulation, systems integration, and two cumulative capstones.'
+- Preserve every module outside P49, P50, P51, P52, P53, the source gitlink and source evidence, every other course, generic
+  platform behavior, dependencies, workflows, and deployment artifacts byte-identically.
+- 'End with 53 implemented/deepened Robotics modules visible at this checkpoint and a five-course catalog of 207 modules,
+  all interactive. P54-P69 remain: planning, manipulation, systems integration, and two cumulative capstones.'
 - Record exact local verification. Hosted CI is not a completion gate by owner direction; keep MATLAB, browser/accessibility,
   learner, physical HIL/hardware, certification, release, deployment, credentials/settings, and production evidence explicitly
   unperformed.
@@ -199,11 +199,11 @@ rollback:
     source or prior batches.
 evidence:
   output:
-  - docs/evidence/ELP-ROB-PERCEPTION-P41-P48-2026-09-22.md
+  - docs/evidence/ELP-ROB-SLAM-P49-P53-2026-09-22.md
   - per-item derivation/model, scenario, invariant, tolerance, axis, limitation, and residual-risk review
   - focused, regression, full, deterministic catalog, lint, diff, scope, and source-cleanliness results
   - one target squash merge and explicit unperformed evidence
-  claim_boundary: 'This batch covers only P41, P42, P43, P44, P45, P46, P47, P48 at a deterministic software-only boundary.
-    P49-P69 remain: SLAM, planning, manipulation, systems integration, and two cumulative capstones. It does not execute MATLAB,
-    validate learners or browser accessibility, operate physical HIL/hardware, certify safety, or authorize release, deployment,
-    credentials/settings, or production use.'
+  claim_boundary: 'This batch covers only P49, P50, P51, P52, P53 at a deterministic software-only boundary. P54-P69 remain:
+    planning, manipulation, systems integration, and two cumulative capstones. It does not execute MATLAB, validate learners
+    or browser accessibility, operate physical HIL/hardware, certify safety, or authorize release, deployment, credentials/settings,
+    or production use.'
