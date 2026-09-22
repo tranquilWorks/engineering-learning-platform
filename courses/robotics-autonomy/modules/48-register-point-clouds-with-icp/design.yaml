@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P48
+module: 48-register-point-clouds-with-icp
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- c_i=argmin_j ||T p_i-q_j||
+- min_T sum rho(||T p_i-q_ci||^2)
+- T_{k+1}=Delta T T_k
+signature:
+- field: alignment_rmse
+  unit: m
+- field: pose_error
+  unit: m
+- field: iterations
+  unit: count
+teaching_invariant: 'ICP supports only a local registration claim: correspondences, robust weighting, and initialization
+  jointly determine convergence.'
+limiting_cases:
+- At exact alignment with identical clouds, residual and pose update are zero.
+- Without geometric overlap, nearest-neighbor ICP cannot establish the correct transform.
+scenarios:
+  baseline: &id001
+    initial_offset_m: 0.25
+    outlier_fraction: 0.12
+    broken_mode: false
+  sweep_1:
+    initial_offset_m: 1.5
+    outlier_fraction: 0.12
+    broken_mode: false
+  sweep_2:
+    initial_offset_m: 0.25
+    outlier_fraction: 0.7
+    broken_mode: false
+  broken:
+    initial_offset_m: 0.25
+    outlier_fraction: 0.12
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

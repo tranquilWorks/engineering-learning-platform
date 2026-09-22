@@ -1,0 +1,66 @@
+schema_version: 1
+id: 46-estimate-object-pose-from-visual-landmarks
+number: 46
+title: Estimate Object Pose from Visual Landmarks
+summary: Build a deterministic numerical laboratory to estimate object pose from visual landmarks, expose its governing
+  relation, and diagnose a named counterexample before recovery.
+guiding_question: What assumptions and evidence make estimate object pose from visual landmarks defensible?
+status: implemented
+tags:
+- robotics-autonomy
+- native-python
+- perception
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: landmark_noise_px
+  type: slider
+  label: Landmark noise
+  default: 1.2
+  minimum: 0.0
+  maximum: 8.0
+  step: 0.2
+  unit: px
+- id: visible_landmarks
+  type: slider
+  label: Visible landmarks
+  default: 12.0
+  minimum: 4.0
+  maximum: 40.0
+  step: 1.0
+  unit: count
+- id: broken_mode
+  type: toggle
+  label: Enable named failure
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Pose estimation must keep the solution on SE(3), use nondegenerate landmarks, and report geometric residuals
+    plus inlier support.
+  reveal: Use the equations, units, and mechanism plot to test the prediction.
+- type: controls
+  title: Live model controls
+- type: metrics
+- type: plot_grid
+  title: Response and governing mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

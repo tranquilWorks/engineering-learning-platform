@@ -1,0 +1,66 @@
+schema_version: 1
+id: 47-build-occupancy-grids-from-range-data
+number: 47
+title: Build Occupancy Grids from Range Data
+summary: Build a deterministic numerical laboratory to build occupancy grids from range data, expose its governing
+  relation, and diagnose a named counterexample before recovery.
+guiding_question: What assumptions and evidence make build occupancy grids from range data defensible?
+status: implemented
+tags:
+- robotics-autonomy
+- native-python
+- perception
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: hit_probability
+  type: slider
+  label: Hit probability
+  default: 0.72
+  minimum: 0.51
+  maximum: 0.98
+  step: 0.01
+  unit: '1'
+- id: beam_count
+  type: slider
+  label: Range beams
+  default: 90.0
+  minimum: 8.0
+  maximum: 360.0
+  step: 4.0
+  unit: count
+- id: broken_mode
+  type: toggle
+  label: Enable named failure
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Log-odds mapping must distinguish traversed free cells from terminal occupied cells and avoid treating unobserved
+    space as free.
+  reveal: Use the equations, units, and mechanism plot to test the prediction.
+- type: controls
+  title: Live model controls
+- type: metrics
+- type: plot_grid
+  title: Response and governing mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

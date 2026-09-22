@@ -309,3 +309,32 @@ def test_robotics_control_and_interaction_teaching_invariants() -> None:
     wrong_energy_sign = signature(40, {"broken_mode": True})
     assert wrong_energy_sign[0] > swing_up[0]
     assert wrong_energy_sign[1] > swing_up[1]
+
+
+def test_robotics_perception_teaching_invariants() -> None:
+    runtime = ExperimentRuntime(CourseCatalog([ROOT / "courses"]))
+
+    def signature(number: int, supplied: dict[str, Any]) -> list[float]:
+        item = NATIVE[number - 25]
+        module_id = _yaml(COURSE_ROOT / item["folder"] / "module.yaml")["id"]
+        return runtime.run("robotics-autonomy", module_id, supplied).diagnostics["signature"]
+
+    pinhole = signature(41, {"broken_mode": False})
+    wrong_frame = signature(41, {"broken_mode": True})
+    assert pinhole[2] == 0 < wrong_frame[2]
+    calibration = signature(42, {"broken_mode": False})
+    pinhole_only = signature(42, {"broken_mode": True})
+    assert pinhole_only[0] > calibration[0]
+    features = signature(43, {"broken_mode": False})
+    unnormalized = signature(43, {"broken_mode": True})
+    assert features[0] > unnormalized[0] and features[1] < unnormalized[1]
+    robust_match = signature(44, {"broken_mode": False})
+    least_squares = signature(44, {"broken_mode": True})
+    assert robust_match[0] > least_squares[0] and robust_match[1] < least_squares[1]
+    for number in (45, 46, 48):
+        nominal = signature(number, {"broken_mode": False})
+        broken = signature(number, {"broken_mode": True})
+        assert nominal[0] < broken[0] and nominal[1] < broken[1]
+    occupancy = signature(47, {"broken_mode": False})
+    endpoint_only = signature(47, {"broken_mode": True})
+    assert occupancy[2] < endpoint_only[2]

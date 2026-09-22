@@ -1,0 +1,66 @@
+schema_version: 1
+id: 42-calibrate-camera-intrinsics-and-lens-distortion
+number: 42
+title: Calibrate Camera Intrinsics and Lens Distortion
+summary: Build a deterministic numerical laboratory to calibrate camera intrinsics and lens distortion, expose its
+  governing relation, and diagnose a named counterexample before recovery.
+guiding_question: What assumptions and evidence make calibrate camera intrinsics and lens distortion defensible?
+status: implemented
+tags:
+- robotics-autonomy
+- native-python
+- perception
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: radial_k1
+  type: slider
+  label: Radial distortion k1
+  default: -0.18
+  minimum: -0.5
+  maximum: 0.3
+  step: 0.02
+  unit: '1'
+- id: calibration_views
+  type: slider
+  label: Calibration views
+  default: 18.0
+  minimum: 4.0
+  maximum: 60.0
+  step: 1.0
+  unit: count
+- id: broken_mode
+  type: toggle
+  label: Enable named failure
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Camera calibration is supported by held-out reprojection residuals spanning the image, not by a low fit
+    error on one pose.
+  reveal: Use the equations, units, and mechanism plot to test the prediction.
+- type: controls
+  title: Live model controls
+- type: metrics
+- type: plot_grid
+  title: Response and governing mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

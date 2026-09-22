@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P42
+module: 42-calibrate-camera-intrinsics-and-lens-distortion
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- x_d=x(1+k_1 r^2+k_2 r^4)
+- min sum ||z-pi(K,D,T_i,X)||^2
+- validate on held-out views
+signature:
+- field: reprojection_rms
+  unit: px
+- field: focal_bias
+  unit: '%'
+- field: edge_residual
+  unit: px
+teaching_invariant: Camera calibration is supported by held-out reprojection residuals spanning the image, not by
+  a low fit error on one pose.
+limiting_cases:
+- At zero distortion, distorted and normalized coordinates coincide.
+- More geometrically diverse views improve conditioning but do not cure wrong correspondences.
+scenarios:
+  baseline: &id001
+    radial_k1: -0.18
+    calibration_views: 18.0
+    broken_mode: false
+  sweep_1:
+    radial_k1: 0.3
+    calibration_views: 18.0
+    broken_mode: false
+  sweep_2:
+    radial_k1: -0.18
+    calibration_views: 60.0
+    broken_mode: false
+  broken:
+    radial_k1: -0.18
+    calibration_views: 18.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

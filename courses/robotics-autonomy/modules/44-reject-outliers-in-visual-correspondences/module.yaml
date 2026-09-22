@@ -1,0 +1,66 @@
+schema_version: 1
+id: 44-reject-outliers-in-visual-correspondences
+number: 44
+title: Reject Outliers in Visual Correspondences
+summary: Build a deterministic numerical laboratory to reject outliers in visual correspondences, expose its governing
+  relation, and diagnose a named counterexample before recovery.
+guiding_question: What assumptions and evidence make reject outliers in visual correspondences defensible?
+status: implemented
+tags:
+- robotics-autonomy
+- native-python
+- perception
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: outlier_fraction
+  type: slider
+  label: Match outlier fraction
+  default: 0.35
+  minimum: 0.0
+  maximum: 0.85
+  step: 0.05
+  unit: '1'
+- id: ransac_threshold_px
+  type: slider
+  label: RANSAC threshold
+  default: 2.0
+  minimum: 0.3
+  maximum: 8.0
+  step: 0.1
+  unit: px
+- id: broken_mode
+  type: toggle
+  label: Enable named failure
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Robust correspondence fitting must recover a consensus model from the declared inlier ratio and verify it
+    on residuals not used to hypothesize the model.
+  reveal: Use the equations, units, and mechanism plot to test the prediction.
+- type: controls
+  title: Live model controls
+- type: metrics
+- type: plot_grid
+  title: Response and governing mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

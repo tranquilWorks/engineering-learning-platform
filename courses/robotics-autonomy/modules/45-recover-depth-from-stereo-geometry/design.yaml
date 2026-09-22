@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P45
+module: 45-recover-depth-from-stereo-geometry
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- Z=fB/d
+- sigma_Z=|fB/d^2| sigma_d
+- rectified matches share image row
+signature:
+- field: depth
+  unit: m
+- field: depth_sigma
+  unit: m
+- field: rectification_residual
+  unit: px
+teaching_invariant: Stereo depth is inverse in disparity, so uncertainty and calibration residuals must accompany
+  every long-range estimate.
+limiting_cases:
+- As disparity tends to zero, depth and depth uncertainty become unbounded.
+- At fixed disparity, doubling baseline doubles inferred depth.
+scenarios:
+  baseline: &id001
+    baseline_m: 0.18
+    disparity_px: 28.0
+    broken_mode: false
+  sweep_1:
+    baseline_m: 0.8
+    disparity_px: 28.0
+    broken_mode: false
+  sweep_2:
+    baseline_m: 0.18
+    disparity_px: 140.0
+    broken_mode: false
+  broken:
+    baseline_m: 0.18
+    disparity_px: 28.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

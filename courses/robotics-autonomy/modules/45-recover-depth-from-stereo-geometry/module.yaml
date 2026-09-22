@@ -1,0 +1,66 @@
+schema_version: 1
+id: 45-recover-depth-from-stereo-geometry
+number: 45
+title: Recover Depth from Stereo Geometry
+summary: Build a deterministic numerical laboratory to recover depth from stereo geometry, expose its governing
+  relation, and diagnose a named counterexample before recovery.
+guiding_question: What assumptions and evidence make recover depth from stereo geometry defensible?
+status: implemented
+tags:
+- robotics-autonomy
+- native-python
+- perception
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: baseline_m
+  type: slider
+  label: Stereo baseline
+  default: 0.18
+  minimum: 0.03
+  maximum: 0.8
+  step: 0.01
+  unit: m
+- id: disparity_px
+  type: slider
+  label: Disparity
+  default: 28.0
+  minimum: 1.0
+  maximum: 140.0
+  step: 1.0
+  unit: px
+- id: broken_mode
+  type: toggle
+  label: Enable named failure
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Stereo depth is inverse in disparity, so uncertainty and calibration residuals must accompany every long-range
+    estimate.
+  reveal: Use the equations, units, and mechanism plot to test the prediction.
+- type: controls
+  title: Live model controls
+- type: metrics
+- type: plot_grid
+  title: Response and governing mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

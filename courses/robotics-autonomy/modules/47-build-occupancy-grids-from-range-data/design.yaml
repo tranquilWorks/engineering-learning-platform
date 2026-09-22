@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P47
+module: 47-build-occupancy-grids-from-range-data
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- l_t=l_{t-1}+logit(p(z|m))-l_0
+- p=1/(1+exp(-l))
+- inverse sensor model marks free then occupied
+signature:
+- field: occupied_probability
+  unit: '1'
+- field: map_entropy
+  unit: bit
+- field: false_free_rate
+  unit: '1'
+teaching_invariant: Log-odds mapping must distinguish traversed free cells from terminal occupied cells and avoid
+  treating unobserved space as free.
+limiting_cases:
+- At hit probability one half, a measurement adds no occupancy information.
+- With zero beams, the prior map remains unchanged.
+scenarios:
+  baseline: &id001
+    hit_probability: 0.72
+    beam_count: 90.0
+    broken_mode: false
+  sweep_1:
+    hit_probability: 0.98
+    beam_count: 90.0
+    broken_mode: false
+  sweep_2:
+    hit_probability: 0.72
+    beam_count: 360.0
+    broken_mode: false
+  broken:
+    hit_probability: 0.72
+    beam_count: 90.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

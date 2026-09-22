@@ -1,0 +1,66 @@
+schema_version: 1
+id: 41-project-3d-points-with-a-pinhole-camera
+number: 41
+title: Project 3D Points with a Pinhole Camera
+summary: Build a deterministic numerical laboratory to project 3d points with a pinhole camera, expose its governing
+  relation, and diagnose a named counterexample before recovery.
+guiding_question: What assumptions and evidence make project 3d points with a pinhole camera defensible?
+status: implemented
+tags:
+- robotics-autonomy
+- native-python
+- perception
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: focal_length_px
+  type: slider
+  label: Focal length
+  default: 520.0
+  minimum: 150.0
+  maximum: 1200.0
+  step: 10.0
+  unit: px
+- id: point_depth_m
+  type: slider
+  label: Point depth
+  default: 3.0
+  minimum: 0.3
+  maximum: 12.0
+  step: 0.1
+  unit: m
+- id: broken_mode
+  type: toggle
+  label: Enable named failure
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Perspective projection is defined only for positive camera-frame depth and its pixel sensitivity grows inversely
+    with depth.
+  reveal: Use the equations, units, and mechanism plot to test the prediction.
+- type: controls
+  title: Live model controls
+- type: metrics
+- type: plot_grid
+  title: Response and governing mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P41
+module: 41-project-3d-points-with-a-pinhole-camera
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- u=f X/Z+c_x
+- v=f Y/Z+c_y
+- Z>0
+signature:
+- field: image_radius
+  unit: px
+- field: depth_sensitivity
+  unit: px/m
+- field: behind_camera_count
+  unit: count
+teaching_invariant: Perspective projection is defined only for positive camera-frame depth and its pixel sensitivity
+  grows inversely with depth.
+limiting_cases:
+- On the optical axis, the image point equals the principal point.
+- As depth grows, pixel displacement from the principal point tends to zero.
+scenarios:
+  baseline: &id001
+    focal_length_px: 520.0
+    point_depth_m: 3.0
+    broken_mode: false
+  sweep_1:
+    focal_length_px: 1200.0
+    point_depth_m: 3.0
+    broken_mode: false
+  sweep_2:
+    focal_length_px: 520.0
+    point_depth_m: 12.0
+    broken_mode: false
+  broken:
+    focal_length_px: 520.0
+    point_depth_m: 3.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.
