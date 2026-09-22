@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P47
+module: 47-cancel-nonlinearities-with-feedback-linearization
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- x_dot=c*x^2+u
+- u=-c_hat*x^2-k(x-r)
+- e_dot=-k*e+(c-c_hat)x^2
+signature:
+- field: residual_drift
+  unit: 1/s
+- field: closed_loop_rate
+  unit: 1/s
+- field: terminal_error
+  unit: '1'
+teaching_invariant: Exact cancellation leaves the selected linear error dynamics; model mismatch appears explicitly
+  as residual nonlinear drift.
+limiting_cases:
+- At x=0 the quadratic cancellation term is zero.
+- With exact model and positive k the tracking error decays exponentially.
+scenarios:
+  baseline: &id001
+    model_mismatch: 0.08
+    tracking_gain_per_s: 2.0
+    broken_mode: false
+  sweep_1:
+    model_mismatch: 0.5
+    tracking_gain_per_s: 2.0
+    broken_mode: false
+  sweep_2:
+    model_mismatch: 0.08
+    tracking_gain_per_s: 6.0
+    broken_mode: false
+  broken:
+    model_mismatch: 0.08
+    tracking_gain_per_s: 2.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

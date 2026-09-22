@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "item_id": "P50",
+  "signature_fields": [
+    {
+      "field": "information_condition",
+      "unit": "1"
+    },
+    {
+      "field": "parameter_error_bound",
+      "unit": "1"
+    },
+    {
+      "field": "validation_rms",
+      "unit": "1"
+    }
+  ],
+  "origin": {
+    "kind": "independent-reviewed-fixture",
+    "item_id": "P50",
+    "independent": true,
+    "imports_production_entrypoint": false,
+    "derived_from_production_output": false,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "excitation_amplitude": 1.0,
+        "frequency_spread_hz": 2.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.5,
+        0.01,
+        0.025
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "excitation_amplitude": 3.0,
+        "frequency_spread_hz": 2.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.16666666666666666,
+        0.0033333333333333335,
+        0.015
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "excitation_amplitude": 1.0,
+        "frequency_spread_hz": 5.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.2,
+        0.004,
+        0.016
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "excitation_amplitude": 1.0,
+        "frequency_spread_hz": 2.0,
+        "broken_mode": true
+      },
+      "signature": [
+        99.99999999999999,
+        1.9999999999999996,
+        3.009999999999999
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "excitation_amplitude": 1.0,
+        "frequency_spread_hz": 2.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.5,
+        0.01,
+        0.025
+      ]
+    }
+  }
+}

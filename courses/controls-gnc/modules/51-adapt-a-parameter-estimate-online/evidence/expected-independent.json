@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "item_id": "P51",
+  "signature_fields": [
+    {
+      "field": "terminal_parameter_error",
+      "unit": "1"
+    },
+    {
+      "field": "terminal_covariance",
+      "unit": "1"
+    },
+    {
+      "field": "information_rate",
+      "unit": "1/s"
+    }
+  ],
+  "origin": {
+    "kind": "independent-reviewed-fixture",
+    "item_id": "P51",
+    "independent": true,
+    "imports_production_entrypoint": false,
+    "derived_from_production_output": false,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "forgetting_factor": 0.98,
+        "excitation_level": 0.8,
+        "broken_mode": false
+      },
+      "signature": [
+        0.025000000000000022,
+        0.04687500000000002,
+        0.6400000000000001
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "forgetting_factor": 1.0,
+        "excitation_level": 0.8,
+        "broken_mode": false
+      },
+      "signature": [
+        0.0,
+        0.015624999999999997,
+        0.6400000000000001
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "forgetting_factor": 0.98,
+        "excitation_level": 2.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.010000000000000009,
+        0.007500000000000005,
+        4.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "forgetting_factor": 0.98,
+        "excitation_level": 0.8,
+        "broken_mode": true
+      },
+      "signature": [
+        1.0,
+        0.001,
+        0.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "forgetting_factor": 0.98,
+        "excitation_level": 0.8,
+        "broken_mode": false
+      },
+      "signature": [
+        0.025000000000000022,
+        0.04687500000000002,
+        0.6400000000000001
+      ]
+    }
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "item_id": "P47",
+  "signature_fields": [
+    {
+      "field": "residual_drift",
+      "unit": "1/s"
+    },
+    {
+      "field": "closed_loop_rate",
+      "unit": "1/s"
+    },
+    {
+      "field": "terminal_error",
+      "unit": "1"
+    }
+  ],
+  "origin": {
+    "kind": "independent-reviewed-fixture",
+    "item_id": "P47",
+    "independent": true,
+    "imports_production_entrypoint": false,
+    "derived_from_production_output": false,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "model_mismatch": 0.08,
+        "tracking_gain_per_s": 2.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.08,
+        -1.92,
+        0.02666666666666667
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "model_mismatch": 0.5,
+        "tracking_gain_per_s": 2.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.5,
+        -1.5,
+        0.16666666666666666
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "model_mismatch": 0.08,
+        "tracking_gain_per_s": 6.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.08,
+        -5.92,
+        0.011428571428571429
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "model_mismatch": 0.08,
+        "tracking_gain_per_s": 2.0,
+        "broken_mode": true
+      },
+      "signature": [
+        2.0,
+        0.0,
+        0.6666666666666666
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "model_mismatch": 0.08,
+        "tracking_gain_per_s": 2.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.08,
+        -1.92,
+        0.02666666666666667
+      ]
+    }
+  }
+}

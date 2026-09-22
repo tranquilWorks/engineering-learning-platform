@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P43
+module: 43-use-phase-portraits-to-separate-local-and-global-stability
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- x_dot=v
+- v_dot=x-x^3-c*v
+- E=v^2/2-x^2/2+x^4/4
+signature:
+- field: energy_decay_rate
+  unit: W
+- field: terminal_radius
+  unit: '1'
+- field: local_decay_rate
+  unit: 1/s
+teaching_invariant: Positive damping makes energy nonincreasing even when a local linearization does not describe
+  the full basin.
+limiting_cases:
+- At the equilibria the vector field is zero.
+- With zero damping energy is conserved rather than asymptotically decreasing.
+scenarios:
+  baseline: &id001
+    damping_per_s: 0.25
+    initial_energy: 0.8
+    broken_mode: false
+  sweep_1:
+    damping_per_s: 1.0
+    initial_energy: 0.8
+    broken_mode: false
+  sweep_2:
+    damping_per_s: 0.25
+    initial_energy: 2.5
+    broken_mode: false
+  broken:
+    damping_per_s: 0.25
+    initial_energy: 0.8
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

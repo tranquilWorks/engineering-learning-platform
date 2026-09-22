@@ -1,0 +1,67 @@
+schema_version: 1
+id: 46-schedule-gains-across-operating-points
+number: 46
+title: Schedule Gains Across Operating Points
+summary: Schedule inverse plant gain across a nonlinear operating coordinate and quantify interpolation and closed-loop
+  bandwidth error.
+guiding_question: When does interpolation across operating points improve control, and what does a schedule fail
+  to guarantee?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- nonlinear-robust-id
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: operating_point
+  type: slider
+  label: Operating point
+  default: 0.5
+  unit: '1'
+  minimum: 0.0
+  maximum: 1.0
+  step: 0.05
+- id: grid_spacing
+  type: slider
+  label: Schedule grid spacing
+  default: 0.25
+  unit: '1'
+  minimum: 0.05
+  maximum: 0.5
+  step: 0.05
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: At tabulated points the inverse-gain schedule restores the target bandwidth; interpolation error must be
+    measured between points.
+  reveal: Restore interpolation, test the grid midpoints, and keep stability claims within the scheduled envelope.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

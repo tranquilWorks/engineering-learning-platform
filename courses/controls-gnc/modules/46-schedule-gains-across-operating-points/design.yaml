@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P46
+module: 46-schedule-gains-across-operating-points
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- g(rho)=1+.5*rho^2
+- K(rho)=2/g(rho)
+- lambda_cl=-g(rho)K(rho)
+signature:
+- field: scheduled_bandwidth
+  unit: 1/s
+- field: bandwidth_error
+  unit: 1/s
+- field: interpolation_error
+  unit: '1'
+teaching_invariant: At tabulated points the inverse-gain schedule restores the target bandwidth; interpolation error
+  must be measured between points.
+limiting_cases:
+- At rho=0 the schedule equals the nominal gain.
+- As grid spacing tends to zero interpolation approaches the exact inverse schedule.
+scenarios:
+  baseline: &id001
+    operating_point: 0.5
+    grid_spacing: 0.25
+    broken_mode: false
+  sweep_1:
+    operating_point: 1.0
+    grid_spacing: 0.25
+    broken_mode: false
+  sweep_2:
+    operating_point: 0.5
+    grid_spacing: 0.5
+    broken_mode: false
+  broken:
+    operating_point: 0.5
+    grid_spacing: 0.25
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

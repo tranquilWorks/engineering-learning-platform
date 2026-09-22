@@ -1,0 +1,7 @@
+# ELP-GNC-NONLINEAR-ROBUST-ID-P43-P51 evidence
+
+P43-P51 add nine Python-first laboratories and advance the catalog to five courses / 161 modules / 161 interactive modules. The batch separately checks: energy decay versus local phase behavior; strict Lyapunov sublevels; CBF inequality intervention; interpolated schedule error; feedback-linearization mismatch; worst-member structured uncertainty; MPC constraint feasibility; held-out identification residuals; and RLS excitation/covariance consistency.
+
+Each work item has a complete lesson, distinct governing equations, baseline, two one-variable sweeps, broken and exact recovery cases, two limiting cases, physical axes/units, and ordered signature evidence. Expected fixtures are generated from separately evaluated relations keyed by exact scenario inputs; the committed oracle imports no production experiment and consumes no production output.
+
+Focused and cumulative backend, DSP, Robotics, deterministic catalog, lint, full frontend build, diff/scope, and source-preservation gates pass before merge; exact counts are retained on the target pull request. Hosted Actions are not a completion gate. The evidence is deterministic software-only and does not implement P52-P68, establish capstone/curriculum completion, execute MATLAB, validate learners/accessibility, operate hardware/HIL, certify safety, or authorize release/deployment/production.

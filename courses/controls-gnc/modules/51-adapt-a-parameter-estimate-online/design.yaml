@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P51
+module: 51-adapt-a-parameter-estimate-online
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- K_k=P phi/(lambda+phi^T P phi)
+- theta+=K(y-phi^T theta)
+- P=(P-K phi^T P)/lambda
+signature:
+- field: terminal_parameter_error
+  unit: '1'
+- field: terminal_covariance
+  unit: '1'
+- field: information_rate
+  unit: 1/s
+teaching_invariant: Parameter convergence requires excitation; covariance must not shrink when the regressor carries
+  no information.
+limiting_cases:
+- With zero regressor the measurement contains no parameter information.
+- At lambda=1 stationary data are accumulated without exponential forgetting.
+scenarios:
+  baseline: &id001
+    forgetting_factor: 0.98
+    excitation_level: 0.8
+    broken_mode: false
+  sweep_1:
+    forgetting_factor: 1.0
+    excitation_level: 0.8
+    broken_mode: false
+  sweep_2:
+    forgetting_factor: 0.98
+    excitation_level: 2.0
+    broken_mode: false
+  broken:
+    forgetting_factor: 0.98
+    excitation_level: 0.8
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

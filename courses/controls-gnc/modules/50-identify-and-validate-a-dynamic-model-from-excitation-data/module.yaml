@@ -1,0 +1,66 @@
+schema_version: 1
+id: 50-identify-and-validate-a-dynamic-model-from-excitation-data
+number: 50
+title: Identify and Validate a Dynamic Model from Excitation Data
+summary: Relate an input information matrix to parameter uncertainty and validation residual without testing on
+  the fit data.
+guiding_question: How do excitation richness and held-out residuals determine whether an identified model is usable?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- nonlinear-robust-id
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: excitation_amplitude
+  type: slider
+  label: Excitation amplitude
+  default: 1.0
+  unit: '1'
+  minimum: 0.1
+  maximum: 3.0
+  step: 0.1
+- id: frequency_spread_hz
+  type: slider
+  label: Excitation frequency spread
+  default: 2.0
+  unit: Hz
+  minimum: 0.1
+  maximum: 5.0
+  step: 0.1
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: "Persistent excitation improves information conditioning, while held-out residual\u2014not training fit\u2014\
+    bounds the model claim."
+  reveal: Restore broadband excitation within safety limits and retain a separate validation segment.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

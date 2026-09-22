@@ -1,0 +1,68 @@
+schema_version: 1
+id: 45-enforce-safety-with-a-control-barrier-filter
+number: 45
+title: Enforce Safety with a Control Barrier Filter
+summary: Project a nominal closing-speed command onto the one-dimensional CBF inequality and measure intervention
+  and one-step safety margin.
+guiding_question: How can a minimally invasive barrier filter modify a nominal command before a state constraint
+  is violated?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- nonlinear-robust-id
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: barrier_gain_per_s
+  type: slider
+  label: Barrier gain
+  default: 2.0
+  unit: 1/s
+  minimum: 0.2
+  maximum: 8.0
+  step: 0.2
+- id: nominal_closing_speed
+  type: slider
+  label: Nominal closing speed
+  default: 1.5
+  unit: m/s
+  minimum: 0.1
+  maximum: 4.0
+  step: 0.1
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: The filtered command satisfies the declared barrier inequality and equals the nominal command whenever that
+    command is already safe.
+  reveal: Restore the projection, inspect the intervention size, and keep the claim limited to the modeled relative-degree-one
+    constraint.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

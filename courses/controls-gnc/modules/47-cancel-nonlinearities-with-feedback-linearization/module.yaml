@@ -1,0 +1,68 @@
+schema_version: 1
+id: 47-cancel-nonlinearities-with-feedback-linearization
+number: 47
+title: Cancel Nonlinearities with Feedback Linearization
+summary: Cancel a quadratic drift, impose first-order tracking dynamics, and expose residual drift under coefficient
+  mismatch.
+guiding_question: What remains after model-based nonlinear cancellation, and how does mismatch re-enter the error
+  dynamics?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- nonlinear-robust-id
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: model_mismatch
+  type: slider
+  label: Cancellation mismatch
+  default: 0.08
+  unit: '1'
+  minimum: 0.0
+  maximum: 0.5
+  step: 0.02
+- id: tracking_gain_per_s
+  type: slider
+  label: Tracking gain
+  default: 2.0
+  unit: 1/s
+  minimum: 0.2
+  maximum: 6.0
+  step: 0.2
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Exact cancellation leaves the selected linear error dynamics; model mismatch appears explicitly as residual
+    nonlinear drift.
+  reveal: Restore the cancellation sign, bound parameter mismatch, and verify the residual over the stated state
+    interval.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

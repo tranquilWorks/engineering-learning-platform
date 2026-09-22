@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P50
+module: 50-identify-and-validate-a-dynamic-model-from-excitation-data
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- theta_hat=(Phi^T Phi)^-1 Phi^T y
+- cov(theta_hat) proportional (Phi^T Phi)^-1
+- validate on held-out input
+signature:
+- field: information_condition
+  unit: '1'
+- field: parameter_error_bound
+  unit: '1'
+- field: validation_rms
+  unit: '1'
+teaching_invariant: "Persistent excitation improves information conditioning, while held-out residual\u2014not training\
+  \ fit\u2014bounds the model claim."
+limiting_cases:
+- Zero excitation provides no parameter information.
+- Increasing independent excitation directions reduces covariance conditioning.
+scenarios:
+  baseline: &id001
+    excitation_amplitude: 1.0
+    frequency_spread_hz: 2.0
+    broken_mode: false
+  sweep_1:
+    excitation_amplitude: 3.0
+    frequency_spread_hz: 2.0
+    broken_mode: false
+  sweep_2:
+    excitation_amplitude: 1.0
+    frequency_spread_hz: 5.0
+    broken_mode: false
+  broken:
+    excitation_amplitude: 1.0
+    frequency_spread_hz: 2.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.
