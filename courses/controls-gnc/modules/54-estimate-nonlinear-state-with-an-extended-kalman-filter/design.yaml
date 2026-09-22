@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P54
+module: 54-estimate-nonlinear-state-with-an-extended-kalman-filter
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- h(x)=x^2
+- H=2*xhat
+- K=P H/(H^2 P+R)
+signature:
+- field: measurement_jacobian
+  unit: '1'
+- field: posterior_variance
+  unit: '1'
+- field: linearization_residual
+  unit: '1'
+teaching_invariant: An EKF update uses the local Jacobian; at xhat=0 the quadratic measurement has zero first-order
+  sensitivity despite nonzero global information.
+limiting_cases:
+- At xhat=0 the first-order Jacobian is zero.
+- As prior variance tends to zero, the measurement gain tends to zero.
+scenarios:
+  baseline: &id001
+    prior_standard_deviation: 0.5
+    linearization_state: 1.0
+    broken_mode: false
+  sweep_1:
+    prior_standard_deviation: 2.0
+    linearization_state: 1.0
+    broken_mode: false
+  sweep_2:
+    prior_standard_deviation: 0.5
+    linearization_state: 3.0
+    broken_mode: false
+  broken:
+    prior_standard_deviation: 0.5
+    linearization_state: 1.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

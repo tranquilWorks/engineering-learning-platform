@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "item_id": "P53",
+  "signature_fields": [
+    {
+      "field": "normalized_innovation_squared",
+      "unit": "1"
+    },
+    {
+      "field": "gate_exceedance",
+      "unit": "1"
+    },
+    {
+      "field": "accepted_outlier",
+      "unit": "bool"
+    }
+  ],
+  "origin": {
+    "kind": "production-experiment",
+    "independent": false,
+    "imports_production_entrypoint": true,
+    "derived_from_production_output": true,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "nis_gate": 6.63,
+        "outlier_sigma": 4.0,
+        "broken_mode": false
+      },
+      "signature": [
+        16.0,
+        9.370000000000001,
+        0.0
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "nis_gate": 15.0,
+        "outlier_sigma": 4.0,
+        "broken_mode": false
+      },
+      "signature": [
+        16.0,
+        1.0,
+        0.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "nis_gate": 6.63,
+        "outlier_sigma": 10.0,
+        "broken_mode": false
+      },
+      "signature": [
+        100.0,
+        93.37,
+        0.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "nis_gate": 6.63,
+        "outlier_sigma": 4.0,
+        "broken_mode": true
+      },
+      "signature": [
+        64.0,
+        63.0,
+        1.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "nis_gate": 6.63,
+        "outlier_sigma": 4.0,
+        "broken_mode": false
+      },
+      "signature": [
+        16.0,
+        9.370000000000001,
+        0.0
+      ]
+    }
+  }
+}

@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P56
+module: 56-recover-a-trajectory-with-rauch-tung-striebel-smoothing
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- C_k=P_k F^T(P^-_{k+1})^-1
+- x^s_k=x_k+C_k(x^s_{k+1}-x^-_{k+1})
+- P^s_k=P_k+C_k(P^s_{k+1}-P^-_{k+1})C_k^T
+signature:
+- field: filtered_variance
+  unit: '1'
+- field: smoothed_variance
+  unit: '1'
+- field: variance_reduction
+  unit: '1'
+teaching_invariant: RTS smoothed covariance is no larger than filtered covariance for the same linear-Gaussian model
+  and complete future data.
+limiting_cases:
+- At the final sample smoothed and filtered estimates coincide.
+- With no future information the smoother cannot reduce uncertainty.
+scenarios:
+  baseline: &id001
+    process_variance: 0.08
+    measurement_variance: 0.4
+    broken_mode: false
+  sweep_1:
+    process_variance: 0.5
+    measurement_variance: 0.4
+    broken_mode: false
+  sweep_2:
+    process_variance: 0.08
+    measurement_variance: 2.0
+    broken_mode: false
+  broken:
+    process_variance: 0.08
+    measurement_variance: 0.4
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

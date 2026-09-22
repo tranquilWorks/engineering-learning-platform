@@ -1,0 +1,66 @@
+schema_version: 1
+id: 56-recover-a-trajectory-with-rauch-tung-striebel-smoothing
+number: 56
+title: Recover a Trajectory with Rauch-Tung-Striebel Smoothing
+summary: Compare scalar filtered and RTS-smoothed covariance and quantify the lagged improvement without calling
+  it real-time estimation.
+guiding_question: Why can a backward smoothing pass reduce past uncertainty after future measurements arrive?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- estimation
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: process_variance
+  type: slider
+  label: Process variance
+  default: 0.08
+  unit: '1'
+  minimum: 0.001
+  maximum: 0.5
+  step: 0.01
+- id: measurement_variance
+  type: slider
+  label: Measurement variance
+  default: 0.4
+  unit: '1'
+  minimum: 0.02
+  maximum: 2.0
+  step: 0.02
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: RTS smoothed covariance is no larger than filtered covariance for the same linear-Gaussian model and complete
+    future data.
+  reveal: Restore the backward recursion after the forward filter completes and label the result offline, not causal.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

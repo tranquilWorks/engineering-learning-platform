@@ -1,0 +1,66 @@
+schema_version: 1
+id: 53-monitor-innovations-nis-nees-and-measurement-gates
+number: 53
+title: Monitor Innovations, NIS, NEES, and Measurement Gates
+summary: Normalize a deterministic innovation, compare NIS to a gate, and show why accepting a large outlier corrupts
+  consistency.
+guiding_question: How do consistency statistics distinguish expected residuals from outliers and filter overconfidence?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- estimation
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: nis_gate
+  type: slider
+  label: NIS gate
+  default: 6.63
+  unit: '1'
+  minimum: 1.0
+  maximum: 15.0
+  step: 0.1
+- id: outlier_sigma
+  type: slider
+  label: Outlier magnitude
+  default: 4.0
+  unit: sigma
+  minimum: 0.5
+  maximum: 10.0
+  step: 0.1
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: A measurement is accepted only when its NIS is inside the declared gate; NEES/NIS interpretation requires
+    the corresponding covariance model.
+  reveal: Restore innovation gating, log the rejection, and diagnose the model rather than silently shrinking covariance.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

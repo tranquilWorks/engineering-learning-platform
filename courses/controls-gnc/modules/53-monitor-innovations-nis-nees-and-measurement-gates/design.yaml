@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P53
+module: 53-monitor-innovations-nis-nees-and-measurement-gates
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- nu=z-H xhat
+- S=H P H^T+R
+- NIS=nu^T S^-1 nu
+signature:
+- field: normalized_innovation_squared
+  unit: '1'
+- field: gate_exceedance
+  unit: '1'
+- field: accepted_outlier
+  unit: bool
+teaching_invariant: A measurement is accepted only when its NIS is inside the declared gate; NEES/NIS interpretation
+  requires the corresponding covariance model.
+limiting_cases:
+- A zero innovation has NIS zero.
+- For a scalar residual measured in sigma, NIS is its squared magnitude.
+scenarios:
+  baseline: &id001
+    nis_gate: 6.63
+    outlier_sigma: 4.0
+    broken_mode: false
+  sweep_1:
+    nis_gate: 15.0
+    outlier_sigma: 4.0
+    broken_mode: false
+  sweep_2:
+    nis_gate: 6.63
+    outlier_sigma: 10.0
+    broken_mode: false
+  broken:
+    nis_gate: 6.63
+    outlier_sigma: 4.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

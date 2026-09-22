@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P52
+module: 52-build-stochastic-process-models-and-interpret-covariance
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- x_{k+1}=x_k+w_k
+- Q_d=q*T
+- P^-=F P F^T+Q_d
+signature:
+- field: propagated_variance
+  unit: '1'
+- field: minimum_covariance_eigenvalue
+  unit: '1'
+- field: standard_deviation
+  unit: '1'
+teaching_invariant: Nonnegative process noise makes covariance positive semidefinite and increases variance without
+  changing a zero-mean state prediction.
+limiting_cases:
+- At zero interval no process covariance is accumulated.
+- Standard deviation is the square root of variance, not the variance itself.
+scenarios:
+  baseline: &id001
+    process_noise_density: 0.2
+    propagation_interval_s: 0.5
+    broken_mode: false
+  sweep_1:
+    process_noise_density: 1.0
+    propagation_interval_s: 0.5
+    broken_mode: false
+  sweep_2:
+    process_noise_density: 0.2
+    propagation_interval_s: 3.0
+    broken_mode: false
+  broken:
+    process_noise_density: 0.2
+    propagation_interval_s: 0.5
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.
