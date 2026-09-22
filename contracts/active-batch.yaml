@@ -1,9 +1,9 @@
 schema_version: 1
 batch:
-  id: ELP-ROB-DEPTH-P01-P08
-  title: Deepen Robotics foundations P01-P08
-  goal: 'Complete the next coherent issue-440 depth batch for P01, P02, P03, P04, P05, P06, P07, P08: mobile kinematics, frame
-    transforms, arm kinematics, actuation, feedback, smooth trajectories, and impedance contact.'
+  id: ELP-ROB-DEPTH-P09-P16
+  title: Deepen Robotics sensing and SLAM P09-P16
+  goal: 'Complete the next coherent issue-440 depth batch for P09, P10, P11, P12, P13, P14, P15, P16: encoders, IMU drift,
+    range sensing, extrinsic calibration, odometry, EKF fusion, particle localization, and introductory SLAM.'
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
@@ -11,19 +11,19 @@ sources:
   - products/engineering-learning-platform/course-caliber.yaml
   - products/engineering-learning-platform/competency-maps/robotics-autonomy.yaml
   - tranquilWorks/portfolio-control#440
-  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-ROB-DEPTH-P01-P08
-  baseline_commit: a2df550dfeb11b212e9282f07c2b219718f8f778
-  baseline_tree: 6e9c8961067dd61dbc44ab8fdd19ab7d52703676
+  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-ROB-DEPTH-P09-P16
+  baseline_commit: 59bc4275b5817efa1fa7364583fc8103c73482e8
+  baseline_tree: 260df11572450bc49420d7e057abd791bfbffd35
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_baseline: aa815297ae43fd5138327fa309f4e9a7f382dec2
-  control_plane_path: products/engineering-learning-platform/batches/ELP-ROB-DEPTH-P01-P08.yaml
+  control_plane_baseline: 26b4c38e76924200b8a6104dd65cbde3dd0c1a52
+  control_plane_path: products/engineering-learning-platform/batches/ELP-ROB-DEPTH-P09-P16.yaml
   target_repository: tranquilWorks/engineering-learning-platform
   source_repository: tranquilWorks/robotics-autonomy-learning
   source_pin: f8807640258f1a6c1c77f1dcc9e61734551c585b
   source_tree: 7f8bc62382ca8d7fbe26ff4413cabf7d00d64bb9
   source_curriculum_sha256: 972eee6b99945f6c2380ba097e443b30c37ca9e4e0acfd2c7f7cde8a7550207d
 dependencies:
-- ELP-ROB-COMPETENCY-MAP
+- ELP-ROB-DEPTH-P01-P08
 scope:
   allowed_paths:
   - courses/robotics-autonomy/course.yaml
@@ -33,14 +33,14 @@ scope:
   - courses/robotics-autonomy/native-design.schema.json
   - courses/robotics-autonomy/expansion-map.yaml
   - courses/robotics-autonomy/expansion_reference_cases.py
-  - courses/robotics-autonomy/modules/01-*/**
-  - courses/robotics-autonomy/modules/02-*/**
-  - courses/robotics-autonomy/modules/03-*/**
-  - courses/robotics-autonomy/modules/04-*/**
-  - courses/robotics-autonomy/modules/05-*/**
-  - courses/robotics-autonomy/modules/06-*/**
-  - courses/robotics-autonomy/modules/07-*/**
-  - courses/robotics-autonomy/modules/08-*/**
+  - courses/robotics-autonomy/modules/09-*/**
+  - courses/robotics-autonomy/modules/10-*/**
+  - courses/robotics-autonomy/modules/11-*/**
+  - courses/robotics-autonomy/modules/12-*/**
+  - courses/robotics-autonomy/modules/13-*/**
+  - courses/robotics-autonomy/modules/14-*/**
+  - courses/robotics-autonomy/modules/15-*/**
+  - courses/robotics-autonomy/modules/16-*/**
   - courses/robotics-autonomy/conversion-manifest.yaml
   - courses/robotics-autonomy/coverage.yaml
   - apps/api/tests/test_robotics_expansion.py
@@ -54,18 +54,18 @@ scope:
   - docs/CURRENT_STATE.md
   - docs/HANDOFF.md
   - docs/ROADMAP.md
-  - docs/evidence/ELP-ROB-DEPTH-P01-P08-*.md
+  - docs/evidence/ELP-ROB-DEPTH-P09-P16-*.md
   forbidden_paths:
   - courses/robotics-autonomy-learning
   - courses/robotics-autonomy-learning/**
-  - courses/robotics-autonomy/modules/09-*/**
-  - courses/robotics-autonomy/modules/10-*/**
-  - courses/robotics-autonomy/modules/11-*/**
-  - courses/robotics-autonomy/modules/12-*/**
-  - courses/robotics-autonomy/modules/13-*/**
-  - courses/robotics-autonomy/modules/14-*/**
-  - courses/robotics-autonomy/modules/15-*/**
-  - courses/robotics-autonomy/modules/16-*/**
+  - courses/robotics-autonomy/modules/01-*/**
+  - courses/robotics-autonomy/modules/02-*/**
+  - courses/robotics-autonomy/modules/03-*/**
+  - courses/robotics-autonomy/modules/04-*/**
+  - courses/robotics-autonomy/modules/05-*/**
+  - courses/robotics-autonomy/modules/06-*/**
+  - courses/robotics-autonomy/modules/07-*/**
+  - courses/robotics-autonomy/modules/08-*/**
   - courses/robotics-autonomy/modules/17-*/**
   - courses/robotics-autonomy/modules/18-*/**
   - courses/robotics-autonomy/modules/19-*/**
@@ -140,10 +140,10 @@ scope:
   - Dockerfile
   - compose.yaml
 acceptance:
-- Start only after the exact control commit containing this contract is merged. Use exact clean target main a2df550dfeb11b212e9282f07c2b219718f8f778,
-  tree 6e9c8961067dd61dbc44ab8fdd19ab7d52703676; any target, control, source, map, index, or worktree drift stops implementation.
-- 'Deepen exactly P01, P02, P03, P04, P05, P06, P07, P08 in place from their reviewed dispositions: mobile kinematics, frame
-  transforms, arm kinematics, actuation, feedback, smooth trajectories, and impedance contact.'
+- Start only after the exact control commit containing this contract is merged. Use exact clean target main 59bc4275b5817efa1fa7364583fc8103c73482e8,
+  tree 260df11572450bc49420d7e057abd791bfbffd35; any target, control, source, map, index, or worktree drift stops implementation.
+- 'Deepen exactly P09, P10, P11, P12, P13, P14, P15, P16 in place from their reviewed dispositions: encoders, IMU drift, range
+  sensing, extrinsic calibration, odometry, EKF fusion, particle localization, and introductory SLAM.'
 - Do not change an experiment, module manifest, expected/actual evidence fixture, or independent reference unless a separately
   documented correctness defect is found. Update content digests and source-bound record hashes for lesson changes.
 - Each lesson must expose its governing derivation and conventions, a real alternative or limiting comparison, a practical
@@ -151,10 +151,10 @@ acceptance:
   boundary.
 - Every plot and metric must retain domain-specific quantities and units. Every runtime must remain deterministic, finite,
   bounded, and within the trusted Python timeout.
-- Preserve every module outside P01, P02, P03, P04, P05, P06, P07, P08, the source gitlink and source evidence, every other
+- Preserve every module outside P09, P10, P11, P12, P13, P14, P15, P16, the source gitlink and source evidence, every other
   course, generic platform behavior, dependencies, workflows, and deployment artifacts byte-identically.
 - End with 24 implemented/deepened Robotics modules visible at this checkpoint and a five-course catalog of 178 modules, all
-  interactive. P09-P24 depth passes and P25-P69 native expansion remain intentionally unimplemented.
+  interactive. P17-P24 depth and P25-P69 native expansion remain intentionally incomplete.
 - Record exact local verification. Hosted CI is not a completion gate by owner direction; keep MATLAB, browser/accessibility,
   learner, physical HIL/hardware, certification, release, deployment, credentials/settings, and production evidence explicitly
   unperformed.
@@ -195,11 +195,11 @@ rollback:
     source or prior batches.
 evidence:
   output:
-  - docs/evidence/ELP-ROB-DEPTH-P01-P08-2026-09-22.md
+  - docs/evidence/ELP-ROB-DEPTH-P09-P16-2026-09-22.md
   - per-item derivation/model, scenario, invariant, tolerance, axis, limitation, and residual-risk review
   - focused, regression, full, deterministic catalog, lint, diff, scope, and source-cleanliness results
   - one target squash merge and explicit unperformed evidence
-  claim_boundary: This batch covers only P01, P02, P03, P04, P05, P06, P07, P08 at a deterministic software-only boundary.
-    P09-P24 depth passes and P25-P69 native expansion remain intentionally unimplemented. It does not execute MATLAB, validate
-    learners or browser accessibility, operate physical HIL/hardware, certify safety, or authorize release, deployment, credentials/settings,
+  claim_boundary: This batch covers only P09, P10, P11, P12, P13, P14, P15, P16 at a deterministic software-only boundary.
+    P17-P24 depth and P25-P69 native expansion remain intentionally incomplete. It does not execute MATLAB, validate learners
+    or browser accessibility, operate physical HIL/hardware, certify safety, or authorize release, deployment, credentials/settings,
     or production use.
