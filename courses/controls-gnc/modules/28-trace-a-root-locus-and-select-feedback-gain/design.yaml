@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P28
+module: 28-trace-a-root-locus-and-select-feedback-gain
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- 1+K(s+z)/(s(s+2)(s+5))=0
+- sum(angles)=odd*pi
+- sigma_a=(sum poles-sum zeros)/(n-m)
+signature:
+- field: rightmost_pole
+  unit: 1/s
+- field: dominant_damping
+  unit: '1'
+- field: asymptote_centroid
+  unit: 1/s
+teaching_invariant: All three branches start at open-loop poles, one terminates at the finite zero, and the remaining
+  two follow the asymptotes from the centroid.
+limiting_cases:
+- As K tends to zero, roots approach 0, -2, and -5 per second.
+- As K grows, one branch approaches the finite zero and two approach the asymptotes.
+scenarios:
+  baseline: &id001
+    loop_gain: 4.0
+    zero_location_per_s: 1.0
+    broken_mode: false
+  sweep_1:
+    loop_gain: 60.0
+    zero_location_per_s: 1.0
+    broken_mode: false
+  sweep_2:
+    loop_gain: 4.0
+    zero_location_per_s: 4.0
+    broken_mode: false
+  broken:
+    loop_gain: 4.0
+    zero_location_per_s: 1.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

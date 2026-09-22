@@ -181,6 +181,14 @@ owner of later Controls/GNC expansion. The batch does not execute MATLAB,
 validate browser accessibility or learners, operate physical HIL, or authorize
 release, deployment, credentials/settings, or production use.
 
+## ELP-GNC-EXPANSION — Competency-derived Controls/GNC P25-P68
+
+**Depends on:** ELP-GNC-FIDELITY-P01-P24
+
+Issue #439 derives a 68-module course from a reviewed competency and prerequisite map rather than a fixed lesson quota. The 44 native Python additions are divided into coherent batches of 9, 9, 9, 5, 6, 3, and 3 lessons. P25-P33 now implement the modeling/classical-control batch with independent five-scenario evidence. P34-P68 remain sequenced but unimplemented.
+
+The final three lessons are cumulative capstones: identification/control/estimation under uncertainty; navigation/guidance of a constrained survey; and a requirements-traced faulted software-HIL GNC loop. Issue #439 remains open until every batch and capstone is implemented and locally verified. Native additions do not claim MATLAB/source equivalence, and the entire lane remains software-only.
+
 ## B020 — Course ingestion and migration tooling
 
 **Depends on:** B010

@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P31
+module: 31-design-lead-and-lag-compensation
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- C_lead=(1+s/z_l)/(1+s/p_l), p_l>z_l
+- phi_max=sin^-1((1-alpha)/(1+alpha))
+- C_lag=(1+s/z_g)/(1+s/p_g), p_g<z_g
+signature:
+- field: peak_lead_phase
+  unit: deg
+- field: low_frequency_gain
+  unit: '1'
+- field: target_frequency_gain
+  unit: dB
+teaching_invariant: A correctly ordered lead pole and zero add positive phase, while lag raises low-frequency gain
+  relative to high frequency.
+limiting_cases:
+- As alpha tends to one, lead phase tends to zero.
+- At zero frequency the chosen lag network has gain beta.
+scenarios:
+  baseline: &id001
+    lead_alpha: 0.2
+    lag_beta: 5.0
+    broken_mode: false
+  sweep_1:
+    lead_alpha: 0.8
+    lag_beta: 5.0
+    broken_mode: false
+  sweep_2:
+    lead_alpha: 0.2
+    lag_beta: 12.0
+    broken_mode: false
+  broken:
+    lead_alpha: 0.2
+    lag_beta: 5.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

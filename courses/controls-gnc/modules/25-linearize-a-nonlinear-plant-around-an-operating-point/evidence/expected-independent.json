@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "item_id": "P25",
+  "signature_fields": [
+    {
+      "field": "equilibrium_residual",
+      "unit": "N*m"
+    },
+    {
+      "field": "local_torque_error",
+      "unit": "N*m"
+    },
+    {
+      "field": "jacobian_a21",
+      "unit": "1/s^2"
+    }
+  ],
+  "origin": {
+    "kind": "independent-analytic-python",
+    "item_id": "P25",
+    "independent": true,
+    "imports_production_entrypoint": false,
+    "derived_from_production_output": false,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "operating_angle_rad": 0.45,
+        "perturbation_rad": 0.2,
+        "broken_mode": false
+      },
+      "signature": [
+        0.0,
+        0.13553464984720165,
+        -12.619122962971087
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "operating_angle_rad": 1.0,
+        "perturbation_rad": 0.2,
+        "broken_mode": false
+      },
+      "signature": [
+        0.0,
+        0.2402400724363698,
+        -7.571950886523503
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "operating_angle_rad": 0.45,
+        "perturbation_rad": 0.8,
+        "broken_mode": false
+      },
+      "signature": [
+        0.0,
+        2.833854286223346,
+        -12.619122962971087
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "operating_angle_rad": 0.45,
+        "perturbation_rad": 0.2,
+        "broken_mode": true
+      },
+      "signature": [
+        5.973816645483636,
+        0.13553464984720165,
+        -12.619122962971087
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "operating_angle_rad": 0.45,
+        "perturbation_rad": 0.2,
+        "broken_mode": false
+      },
+      "signature": [
+        0.0,
+        0.13553464984720165,
+        -12.619122962971087
+      ]
+    }
+  }
+}

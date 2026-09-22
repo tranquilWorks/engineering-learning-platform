@@ -1,0 +1,66 @@
+schema_version: 1
+id: 30-shape-sensitivity-with-bode-loop-design
+number: 30
+title: Shape Sensitivity with Bode Loop Design
+summary: Compute S, T, PS, and CS for a lead-shaped type-one loop and expose the waterbed and effort penalties of
+  excessive gain.
+guiding_question: How does loop shape trade tracking and disturbance rejection against noise and control effort?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- modeling-and-classical-control
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: loop_gain
+  type: slider
+  label: Loop gain
+  default: 5.0
+  unit: '1'
+  minimum: 0.5
+  maximum: 30.0
+  step: 0.5
+- id: lead_zero_rad_s
+  type: slider
+  label: Lead zero
+  default: 1.0
+  unit: rad/s
+  minimum: 0.2
+  maximum: 5.0
+  step: 0.1
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: S+T=1 pointwise; lowering low-frequency sensitivity necessarily changes complementary sensitivity and control
+    effort elsewhere.
+  reveal: 'Restore negative feedback and select crossover only after checking all four maps: S, T, PS, and CS.'
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

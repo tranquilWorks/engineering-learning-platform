@@ -1,0 +1,67 @@
+schema_version: 1
+id: 32-place-a-notch-filter-and-reference-prefilter
+number: 32
+title: Place a Notch Filter and Reference Prefilter
+summary: Tune a notch against a flexible mode and a prefilter against command bandwidth, then separate disturbance-loop
+  and reference-path effects.
+guiding_question: Why does suppressing a plant resonance require a different filter from shaping the command?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- modeling-and-classical-control
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: notch_frequency_rad_s
+  type: slider
+  label: Notch frequency
+  default: 12.0
+  unit: rad/s
+  minimum: 5.0
+  maximum: 20.0
+  step: 0.5
+- id: prefilter_bandwidth_rad_s
+  type: slider
+  label: Prefilter bandwidth
+  default: 4.0
+  unit: rad/s
+  minimum: 0.5
+  maximum: 12.0
+  step: 0.5
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: The notch creates localized attenuation around its pole-zero frequency, while a unity-DC prefilter changes
+    only the command path.
+  reveal: Align the notch with the measured resonance and tune the prefilter independently from command rise-time
+    requirements.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

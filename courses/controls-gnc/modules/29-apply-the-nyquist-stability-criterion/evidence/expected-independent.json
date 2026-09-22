@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "item_id": "P29",
+  "signature_fields": [
+    {
+      "field": "open_loop_rhp_poles",
+      "unit": "count"
+    },
+    {
+      "field": "closed_loop_rhp_poles",
+      "unit": "count"
+    },
+    {
+      "field": "required_winding",
+      "unit": "turns"
+    },
+    {
+      "field": "sampled_winding",
+      "unit": "turns"
+    }
+  ],
+  "origin": {
+    "kind": "independent-analytic-python",
+    "item_id": "P29",
+    "independent": true,
+    "imports_production_entrypoint": false,
+    "derived_from_production_output": false,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "loop_gain": 6.0,
+        "unstable_pole_per_s": 0.5,
+        "broken_mode": false
+      },
+      "signature": [
+        1.0,
+        0.0,
+        -1.0,
+        -1.0
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "loop_gain": 20.0,
+        "unstable_pole_per_s": 0.5,
+        "broken_mode": false
+      },
+      "signature": [
+        1.0,
+        0.0,
+        -1.0,
+        -1.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "loop_gain": 6.0,
+        "unstable_pole_per_s": 1.5,
+        "broken_mode": false
+      },
+      "signature": [
+        1.0,
+        1.0,
+        0.0,
+        0.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "loop_gain": 6.0,
+        "unstable_pole_per_s": 0.5,
+        "broken_mode": true
+      },
+      "signature": [
+        1.0,
+        1.0,
+        0.0,
+        0.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "loop_gain": 6.0,
+        "unstable_pole_per_s": 0.5,
+        "broken_mode": false
+      },
+      "signature": [
+        1.0,
+        0.0,
+        -1.0,
+        -1.0
+      ]
+    }
+  }
+}

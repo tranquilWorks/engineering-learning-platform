@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P32
+module: 32-place-a-notch-filter-and-reference-prefilter
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- N(s)=(s^2+2*zeta_z*w_n*s+w_n^2)/(s^2+2*zeta_p*w_n*s+w_n^2)
+- F(s)=w_f/(s+w_f)
+- reference map=F*T while disturbance map keeps N inside the loop
+signature:
+- field: resonance_attenuation
+  unit: dB
+- field: high_frequency_prefilter
+  unit: dB
+- field: dc_reference_gain
+  unit: '1'
+teaching_invariant: The notch creates localized attenuation around its pole-zero frequency, while a unity-DC prefilter
+  changes only the command path.
+limiting_cases:
+- Both notch numerator and denominator have unity DC ratio.
+- The first-order prefilter tends to zero at high frequency without changing disturbance rejection.
+scenarios:
+  baseline: &id001
+    notch_frequency_rad_s: 12.0
+    prefilter_bandwidth_rad_s: 4.0
+    broken_mode: false
+  sweep_1:
+    notch_frequency_rad_s: 20.0
+    prefilter_bandwidth_rad_s: 4.0
+    broken_mode: false
+  sweep_2:
+    notch_frequency_rad_s: 12.0
+    prefilter_bandwidth_rad_s: 12.0
+    broken_mode: false
+  broken:
+    notch_frequency_rad_s: 12.0
+    prefilter_bandwidth_rad_s: 4.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

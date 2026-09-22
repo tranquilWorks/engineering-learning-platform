@@ -1,0 +1,67 @@
+schema_version: 1
+id: 29-apply-the-nyquist-stability-criterion
+number: 29
+title: Apply the Nyquist Stability Criterion
+summary: Close a Nyquist contour for an unstable open-loop plant, count the winding of -1, and reconcile it with
+  closed-loop poles.
+guiding_question: How do open-loop right-half-plane poles and encirclements determine closed-loop stability?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- modeling-and-classical-control
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: loop_gain
+  type: slider
+  label: Loop gain
+  default: 6.0
+  unit: '1'
+  minimum: 0.2
+  maximum: 20.0
+  step: 0.2
+- id: unstable_pole_per_s
+  type: slider
+  label: Open-loop unstable pole
+  default: 0.5
+  unit: 1/s
+  minimum: 0.1
+  maximum: 1.5
+  step: 0.1
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: The winding count of 1+L equals closed-loop right-half-plane poles minus open-loop right-half-plane poles
+    under the stated contour convention.
+  reveal: Count P before inspecting the curve, choose gain whose encirclement satisfies N=Z-P, and confirm Z from
+    the characteristic polynomial.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

@@ -1,0 +1,67 @@
+schema_version: 1
+id: 25-linearize-a-nonlinear-plant-around-an-operating-point
+number: 25
+title: Linearize a Nonlinear Plant Around an Operating Point
+summary: Balance a nonlinear pendulum, derive its Jacobian, and measure the neighborhood where the local model is
+  credible.
+guiding_question: How do equilibrium residual and local Taylor error make or break a linear model?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- modeling-and-classical-control
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: operating_angle_rad
+  type: slider
+  label: Operating angle
+  default: 0.45
+  unit: rad
+  minimum: -1.0
+  maximum: 1.0
+  step: 0.05
+- id: perturbation_rad
+  type: slider
+  label: Perturbation radius
+  default: 0.2
+  unit: rad
+  minimum: 0.02
+  maximum: 0.8
+  step: 0.02
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: The balanced operating point has zero residual, and Taylor error decreases quadratically as the perturbation
+    radius shrinks.
+  reveal: Restore the balancing torque, recompute the Jacobian at the same angle, and shrink the perturbation until
+    the nonlinear and tangent torques agree.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

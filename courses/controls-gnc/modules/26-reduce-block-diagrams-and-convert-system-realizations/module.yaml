@@ -1,0 +1,67 @@
+schema_version: 1
+id: 26-reduce-block-diagrams-and-convert-system-realizations
+number: 26
+title: Reduce Block Diagrams and Convert System Realizations
+summary: Compare a third-order transfer function with a controllable realization and quantify the danger of canceling
+  a merely nearby pole and zero.
+guiding_question: When are transfer, state-space, and reduced block descriptions actually equivalent?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- modeling-and-classical-control
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: pole_offset_per_s
+  type: slider
+  label: Near-cancelled pole offset
+  default: 0.0
+  unit: 1/s
+  minimum: 0.0
+  maximum: 1.0
+  step: 0.05
+- id: max_frequency_rad_s
+  type: slider
+  label: Maximum probe frequency
+  default: 20.0
+  unit: rad/s
+  minimum: 5.0
+  maximum: 50.0
+  step: 1.0
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: A valid realization matches the unreduced transfer function, while exact cancellation is permitted only
+    at zero pole-zero distance.
+  reveal: Retain the third state whenever the pole-zero distance is nonzero, then compare frequency responses before
+    accepting a reduced realization.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P27
+module: 27-predict-transients-and-steady-state-error-from-system-type
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- T(s)=omega_n^2/(s^2+2*zeta*omega_n*s+omega_n^2)
+- M_p=exp(-pi*zeta/sqrt(1-zeta^2))
+- e_ramp=1/K_v=2*zeta/omega_n
+signature:
+- field: percent_overshoot
+  unit: '%'
+- field: settling_time
+  unit: s
+- field: ramp_error
+  unit: s
+teaching_invariant: For stable positive damping, increasing damping reduces overshoot while the type-one loop keeps
+  zero step error and finite ramp error.
+limiting_cases:
+- At zeta approaching one the underdamped overshoot tends to zero.
+- Increasing natural frequency at fixed damping shortens settling and ramp error.
+scenarios:
+  baseline: &id001
+    damping_ratio: 0.55
+    natural_frequency_rad_s: 3.0
+    broken_mode: false
+  sweep_1:
+    damping_ratio: 1.2
+    natural_frequency_rad_s: 3.0
+    broken_mode: false
+  sweep_2:
+    damping_ratio: 0.55
+    natural_frequency_rad_s: 8.0
+    broken_mode: false
+  broken:
+    damping_ratio: 0.55
+    natural_frequency_rad_s: 3.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

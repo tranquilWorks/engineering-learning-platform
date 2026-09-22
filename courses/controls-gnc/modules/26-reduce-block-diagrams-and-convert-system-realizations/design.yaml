@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P26
+module: 26-reduce-block-diagrams-and-convert-system-realizations
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- G(s)=(s+2)/((s+1)(s+2+delta)(s+4))
+- G(s)=C(sI-A)^-1B
+- G_red(s)=1/((s+1)(s+4)) only when delta=0
+signature:
+- field: realization_error
+  unit: '1'
+- field: naive_reduction_error
+  unit: '1'
+- field: pole_zero_distance
+  unit: 1/s
+teaching_invariant: A valid realization matches the unreduced transfer function, while exact cancellation is permitted
+  only at zero pole-zero distance.
+limiting_cases:
+- At zero offset the cancellation is algebraically exact.
+- As offset grows, the naive reduced model develops a measurable low-frequency bias.
+scenarios:
+  baseline: &id001
+    pole_offset_per_s: 0.0
+    max_frequency_rad_s: 20.0
+    broken_mode: false
+  sweep_1:
+    pole_offset_per_s: 1.0
+    max_frequency_rad_s: 20.0
+    broken_mode: false
+  sweep_2:
+    pole_offset_per_s: 0.0
+    max_frequency_rad_s: 50.0
+    broken_mode: false
+  broken:
+    pole_offset_per_s: 0.0
+    max_frequency_rad_s: 20.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

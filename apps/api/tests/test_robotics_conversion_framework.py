@@ -190,6 +190,6 @@ def test_robotics_final_catalog_shape() -> None:
     assert len(courses) == 5
     modules = sum(len(course.modules) for course in courses)
     interactive = sum(module.interactive for course in courses for module in course.modules)
-    assert (modules, interactive) == (134, 134)
+    assert (modules, interactive) == (143, 143)
     robotics = next(course for course in courses if course.id == "robotics-autonomy")
     assert [module.number for module in robotics.modules] == list(range(1, 25))
