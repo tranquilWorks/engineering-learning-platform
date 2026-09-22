@@ -1,0 +1,66 @@
+schema_version: 1
+id: 31-derive-manipulator-inertia-coriolis-and-gravity-terms
+number: 31
+title: Derive Manipulator Inertia, Coriolis, and Gravity Terms
+summary: Build a deterministic numerical laboratory to derive manipulator inertia, coriolis, and gravity terms,
+  expose its governing relation, and diagnose a named counterexample before recovery.
+guiding_question: What assumptions and evidence make derive manipulator inertia, coriolis, and gravity terms defensible?
+status: implemented
+tags:
+- robotics-autonomy
+- native-python
+- geometry-dynamics
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: payload_kg
+  type: slider
+  label: Payload mass
+  default: 1.0
+  minimum: 0.0
+  maximum: 5.0
+  step: 0.25
+  unit: kg
+- id: elbow_angle_deg
+  type: slider
+  label: Elbow angle
+  default: 55.0
+  minimum: -160.0
+  maximum: 160.0
+  step: 5.0
+  unit: deg
+- id: broken_mode
+  type: toggle
+  label: Enable named failure
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: A physically consistent rigid manipulator has symmetric positive inertia and satisfies the kinetic-energy
+    skew identity.
+  reveal: Use the equations, units, and mechanism plot to test the prediction.
+- type: controls
+  title: Live model controls
+- type: metrics
+- type: plot_grid
+  title: Response and governing mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

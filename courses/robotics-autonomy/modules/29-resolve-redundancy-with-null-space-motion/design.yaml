@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P29
+module: 29-resolve-redundancy-with-null-space-motion
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- q_dot=J# v+ (I-J#J)z
+- J(I-J#J)=0
+- J#=J^T(JJ^T+lambda^2 I)^-1
+signature:
+- field: task_velocity_error
+  unit: m/s
+- field: null_space_leakage
+  unit: m/s
+- field: joint_limit_margin
+  unit: rad
+teaching_invariant: Secondary motion may improve posture only through the Jacobian null space while the primary
+  task residual remains bounded.
+limiting_cases:
+- At zero null gain, only the primary task remains.
+- With an exact full-row-rank pseudoinverse, projected secondary velocity produces zero task velocity.
+scenarios:
+  baseline: &id001
+    damping: 0.08
+    null_gain_per_s: 0.6
+    broken_mode: false
+  sweep_1:
+    damping: 0.5
+    null_gain_per_s: 0.6
+    broken_mode: false
+  sweep_2:
+    damping: 0.08
+    null_gain_per_s: 2.0
+    broken_mode: false
+  broken:
+    damping: 0.08
+    null_gain_per_s: 0.6
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

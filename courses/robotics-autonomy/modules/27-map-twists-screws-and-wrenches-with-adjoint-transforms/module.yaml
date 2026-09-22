@@ -1,0 +1,65 @@
+schema_version: 1
+id: 27-map-twists-screws-and-wrenches-with-adjoint-transforms
+number: 27
+title: Map Twists, Screws, and Wrenches with Adjoint Transforms
+summary: Build a deterministic numerical laboratory to map twists, screws, and wrenches with adjoint transforms,
+  expose its governing relation, and diagnose a named counterexample before recovery.
+guiding_question: What assumptions and evidence make map twists, screws, and wrenches with adjoint transforms defensible?
+status: implemented
+tags:
+- robotics-autonomy
+- native-python
+- geometry-dynamics
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: lever_arm_m
+  type: slider
+  label: Lever arm
+  default: 0.45
+  minimum: 0.05
+  maximum: 1.5
+  step: 0.05
+  unit: m
+- id: angular_speed_rad_s
+  type: slider
+  label: Angular speed
+  default: 1.8
+  minimum: 0.1
+  maximum: 6.0
+  step: 0.1
+  unit: rad/s
+- id: broken_mode
+  type: toggle
+  label: Enable named failure
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: A twist and its dual wrench must transform contragrediently so instantaneous power is frame invariant.
+  reveal: Use the equations, units, and mechanism plot to test the prediction.
+- type: controls
+  title: Live model controls
+- type: metrics
+- type: plot_grid
+  title: Response and governing mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

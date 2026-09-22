@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "item_id": "P29",
+  "signature_fields": [
+    {
+      "field": "task_velocity_error",
+      "unit": "m/s"
+    },
+    {
+      "field": "null_space_leakage",
+      "unit": "m/s"
+    },
+    {
+      "field": "joint_limit_margin",
+      "unit": "rad"
+    }
+  ],
+  "origin": {
+    "kind": "independent-analytic-python",
+    "item_id": "P29",
+    "independent": true,
+    "imports_production_entrypoint": false,
+    "derived_from_production_output": false,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "damping": 0.08,
+        "null_gain_per_s": 0.6,
+        "broken_mode": false
+      },
+      "signature": [
+        0.005925925925925926,
+        0.04444444444444444,
+        0.772
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "damping": 0.5,
+        "null_gain_per_s": 0.6,
+        "broken_mode": false
+      },
+      "signature": [
+        0.16666666666666666,
+        0.19999999999999998,
+        0.73
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "damping": 0.08,
+        "null_gain_per_s": 2.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.005925925925925926,
+        0.14814814814814814,
+        0.492
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "damping": 0.08,
+        "null_gain_per_s": 0.6,
+        "broken_mode": true
+      },
+      "signature": [
+        0.54,
+        0.7200000000000001,
+        0.49500000000000005
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "damping": 0.08,
+        "null_gain_per_s": 0.6,
+        "broken_mode": false
+      },
+      "signature": [
+        0.005925925925925926,
+        0.04444444444444444,
+        0.772
+      ]
+    }
+  }
+}

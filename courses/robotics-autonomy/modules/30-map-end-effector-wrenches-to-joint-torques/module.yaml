@@ -1,0 +1,65 @@
+schema_version: 1
+id: 30-map-end-effector-wrenches-to-joint-torques
+number: 30
+title: Map End-Effector Wrenches to Joint Torques
+summary: Build a deterministic numerical laboratory to map end-effector wrenches to joint torques, expose its governing
+  relation, and diagnose a named counterexample before recovery.
+guiding_question: What assumptions and evidence make map end-effector wrenches to joint torques defensible?
+status: implemented
+tags:
+- robotics-autonomy
+- native-python
+- geometry-dynamics
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: force_n
+  type: slider
+  label: End-effector force
+  default: 8.0
+  minimum: 0.0
+  maximum: 30.0
+  step: 1.0
+  unit: N
+- id: lever_arm_m
+  type: slider
+  label: Moment arm
+  default: 0.4
+  minimum: 0.05
+  maximum: 1.2
+  step: 0.05
+  unit: m
+- id: broken_mode
+  type: toggle
+  label: Enable named failure
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Jacobian transpose statics must preserve virtual power between joint and Cartesian coordinates.
+  reveal: Use the equations, units, and mechanism plot to test the prediction.
+- type: controls
+  title: Live model controls
+- type: metrics
+- type: plot_grid
+  title: Response and governing mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

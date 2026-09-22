@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "item_id": "P31",
+  "signature_fields": [
+    {
+      "field": "minimum_inertia_eigenvalue",
+      "unit": "kg*m^2"
+    },
+    {
+      "field": "skew_identity_error",
+      "unit": "1"
+    },
+    {
+      "field": "gravity_torque",
+      "unit": "N*m"
+    }
+  ],
+  "origin": {
+    "kind": "independent-analytic-python",
+    "item_id": "P31",
+    "independent": true,
+    "imports_production_entrypoint": false,
+    "derived_from_production_output": false,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "payload_kg": 1.0,
+        "elbow_angle_deg": 55.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.27441458618106274,
+        1e-10,
+        2.8133924203018816
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "payload_kg": 5.0,
+        "elbow_angle_deg": 55.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.6520729309053137,
+        1e-10,
+        7.314820292784892
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "payload_kg": 1.0,
+        "elbow_angle_deg": 160.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.2963815572471545,
+        1e-10,
+        -4.60919230495488
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "payload_kg": 1.0,
+        "elbow_angle_deg": 55.0,
+        "broken_mode": true
+      },
+      "signature": [
+        0.6711710519580278,
+        0.54,
+        -9.643057865370013
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "payload_kg": 1.0,
+        "elbow_angle_deg": 55.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.27441458618106274,
+        1e-10,
+        2.8133924203018816
+      ]
+    }
+  }
+}

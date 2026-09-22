@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P28
+module: 28-build-spatial-jacobians-and-diagnose-singularities
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- V_s=J_s(q) q_dot
+- mu=sqrt(det(J J^T))
+- sigma_min(J)->0 at singularity
+signature:
+- field: minimum_singular_value
+  unit: m/rad
+- field: manipulability
+  unit: m^2/rad^2
+- field: finite_difference_error
+  unit: m/rad
+teaching_invariant: The spatial Jacobian must match finite-difference kinematics and expose loss of motion authority
+  through singular values.
+limiting_cases:
+- At a straight two-link arm, one planar translational singular value vanishes.
+- Increasing the second link from zero adds reachable velocity directions away from singularity.
+scenarios:
+  baseline: &id001
+    elbow_angle_deg: 70.0
+    link_ratio: 0.8
+    broken_mode: false
+  sweep_1:
+    elbow_angle_deg: 175.0
+    link_ratio: 0.8
+    broken_mode: false
+  sweep_2:
+    elbow_angle_deg: 70.0
+    link_ratio: 1.5
+    broken_mode: false
+  broken:
+    elbow_angle_deg: 70.0
+    link_ratio: 0.8
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

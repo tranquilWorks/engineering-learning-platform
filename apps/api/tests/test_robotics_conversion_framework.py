@@ -33,6 +33,7 @@ def _sha256(path: Path) -> str:
 SOURCE_MAP = _yaml(COURSE_ROOT / "source-map.yaml")
 MANIFEST = _yaml(COURSE_ROOT / "conversion-manifest.yaml")
 COVERAGE = _yaml(COURSE_ROOT / "coverage.yaml")
+EXPANSION = _yaml(COURSE_ROOT / "expansion-map.yaml")
 
 
 def test_robotics_source_identity_and_exact_24_item_map() -> None:
@@ -190,6 +191,7 @@ def test_robotics_final_catalog_shape() -> None:
     assert len(courses) == 5
     modules = sum(len(course.modules) for course in courses)
     interactive = sum(module.interactive for course in courses for module in course.modules)
-    assert (modules, interactive) == (178, 178)
+    native_count = len(EXPANSION["implemented_native_modules"])
+    assert (modules, interactive) == (178 + native_count, 178 + native_count)
     robotics = next(course for course in courses if course.id == "robotics-autonomy")
-    assert [module.number for module in robotics.modules] == list(range(1, 25))
+    assert [module.number for module in robotics.modules] == list(range(1, 25 + native_count))

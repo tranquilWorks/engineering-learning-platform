@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "item_id": "P32",
+  "signature_fields": [
+    {
+      "field": "inverse_dynamics_residual",
+      "unit": "N*m"
+    },
+    {
+      "field": "payload_error",
+      "unit": "kg"
+    },
+    {
+      "field": "regressor_condition",
+      "unit": "1"
+    }
+  ],
+  "origin": {
+    "kind": "independent-analytic-python",
+    "item_id": "P32",
+    "independent": true,
+    "imports_production_entrypoint": false,
+    "derived_from_production_output": false,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "excitation_amplitude_rad": 0.7,
+        "payload_guess_kg": 1.1,
+        "broken_mode": false
+      },
+      "signature": [
+        0.011428571428571439,
+        0.10000000000000009,
+        2.0408163265306127
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "excitation_amplitude_rad": 1.5,
+        "payload_guess_kg": 1.1,
+        "broken_mode": false
+      },
+      "signature": [
+        0.005333333333333338,
+        0.10000000000000009,
+        0.4444444444444444
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "excitation_amplitude_rad": 0.7,
+        "payload_guess_kg": 3.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.2285714285714286,
+        2.0,
+        2.0408163265306127
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "excitation_amplitude_rad": 0.7,
+        "payload_guess_kg": 1.1,
+        "broken_mode": true
+      },
+      "signature": [
+        0.35,
+        1.7999999999999998,
+        1499.9999999999998
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "excitation_amplitude_rad": 0.7,
+        "payload_guess_kg": 1.1,
+        "broken_mode": false
+      },
+      "signature": [
+        0.011428571428571439,
+        0.10000000000000009,
+        2.0408163265306127
+      ]
+    }
+  }
+}
