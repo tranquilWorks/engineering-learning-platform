@@ -276,9 +276,9 @@ def test_gnc_final_catalog_shape() -> None:
     assert len(courses) == 5
     modules = sum(len(course.modules) for course in courses)
     interactive = sum(module.interactive for course in courses for module in course.modules)
-    assert (modules, interactive) == (175, 175)
+    assert (modules, interactive) == (178, 178)
     gnc = next(course for course in courses if course.id == "controls-gnc")
-    assert len(gnc.modules) == 65
+    assert len(gnc.modules) == 68
 
 
 def test_p24_is_explicitly_software_only_and_not_a_capstone() -> None:

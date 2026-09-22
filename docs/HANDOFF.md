@@ -1,9 +1,9 @@
 # Handoff
 
-Issue #439 is implemented through P65 in six prerequisite-closed batches. P63-P65 supply line-of-sight path following, pursuit/proportional-navigation comparisons, and explicit terminal/actuator feasibility before the cumulative capstones.
+Issue #439 is implemented through P68 in seven prerequisite-closed batches. P66-P68 close the reviewed competency map with requirements-traced control/estimation stress, autonomous-survey, and faulted software-HIL capstones.
 
-Retain the reviewed competency map, cumulative expansion map, per-module native design contracts, independent reviewed fixtures, production evidence, and batch reports. Preserve P01-P65 byte-identically in the next batch.
+Retain the reviewed competency map, cumulative expansion map, per-module native design contracts, independent reviewed fixtures, production evidence, batch reports, and capstone requirement traces. Future Controls/GNC work must preserve P01-P68 unless a separately authorized correction names the affected item.
 
-The final exact-baseline authorization is P66-P68: identification/control/estimation under uncertainty, constrained autonomous survey navigation/guidance, and a faulted software-HIL requirements verdict. Issue #439 remains open until that batch merges and cumulative gates pass.
+No issue-439 implementation item remains. After the final target merge and closure evidence, close #439 and return course work to the separately authorized queue; vehicle dynamics remains subject to its existing control-plane hold and release conditions.
 
 Native lessons do not claim MATLAB/source equivalence. Browser/accessibility, learner effectiveness, physical HIL/hardware, certification, release, deployment, credentials/settings, and production validation remain unperformed.

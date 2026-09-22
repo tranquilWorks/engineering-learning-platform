@@ -1,0 +1,68 @@
+schema_version: 1
+id: 68-capstone-verify-a-faulted-software-hil-gnc-loop
+number: 68
+title: 'Capstone: Verify a Faulted Software-HIL GNC Loop'
+summary: Run deterministic timing and packet-fault accounting, exercise a fail-zero watchdog, and retain a requirements
+  verdict plus physical-gap statement.
+guiding_question: Does the integrated software-HIL loop meet traced timing, fault-response, and pass/fail requirements
+  without claiming physical hardware?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- capstone
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: one_way_latency_ms
+  type: slider
+  label: One-way latency
+  default: 12.0
+  unit: ms
+  minimum: 0.0
+  maximum: 80.0
+  step: 2.0
+- id: packet_drop_fraction
+  type: slider
+  label: Packet drop fraction
+  default: 0.05
+  unit: '1'
+  minimum: 0.0
+  maximum: 0.5
+  step: 0.01
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: A software-HIL pass requires every named timing and fault-response requirement to pass; physical I/O and
+    real-time scheduling remain an explicit evidence gap.
+  reveal: Restore timestamp checks and fail-zero watchdog, rerun the deterministic fault schedule, and retain the
+    physical-HIL gap.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

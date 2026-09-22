@@ -1,0 +1,7 @@
+# ELP-GNC-CAPSTONES-P66-P68 evidence
+
+P66-P68 add three Python-first cumulative capstones and complete the reviewed 68-module Controls/GNC map. The five-course catalog reaches 178 modules / 178 interactive modules. P66 retains individual identification, tracking, actuator-authority, and estimator-consistency verdicts. P67 retains navigation-error, turn-rate, and monitor-alarm verdicts plus their conjunction. P68 retains timing, packet-loss, and fail-zero watchdog verdicts while explicitly preserving the physical-HIL evidence gap.
+
+Each capstone has a complete lesson, distinct integrated model, named numerical requirements, baseline, two one-variable stress sweeps, broken and exact recovery cases, limiting cases, physical axes/units, and ordered signature evidence. Expected fixtures are generated from separately evaluated relations keyed by exact scenario inputs; the committed oracle imports no production experiment and consumes no production output.
+
+Focused and cumulative backend, DSP, Robotics, deterministic catalog, lint, full frontend build, diff/scope, and source-preservation gates pass before merge; exact counts are retained on the target pull request. Hosted Actions are not a completion gate. Platform curriculum coverage and software capstone integration pass. Learner validation remains not run, and this evidence does not execute MATLAB, validate browser accessibility, operate physical hardware/HIL, certify safety, or authorize release/deployment/production.

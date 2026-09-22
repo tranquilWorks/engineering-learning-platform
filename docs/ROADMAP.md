@@ -185,9 +185,9 @@ release, deployment, credentials/settings, or production use.
 
 **Depends on:** ELP-GNC-FIDELITY-P01-P24
 
-Issue #439 derives a 68-module course from a reviewed competency and prerequisite map rather than a fixed lesson quota. The 44 native Python additions are divided into coherent batches of 9, 9, 9, 5, 6, 3, and 3 lessons. P25-P65 now implement the complete non-capstone sequence through actuator-aware guidance with independent five-scenario evidence. P66-P68 remain as cumulative capstones.
+Issue #439 derives a 68-module course from a reviewed competency and prerequisite map rather than a fixed lesson quota. The 44 native Python additions are divided into coherent batches of 9, 9, 9, 5, 6, 3, and 3 lessons. P25-P68 now implement the complete mapped sequence, including three requirements-traced cumulative capstones, with independent five-scenario evidence.
 
-The final three lessons are cumulative capstones: identification/control/estimation under uncertainty; navigation/guidance of a constrained survey; and a requirements-traced faulted software-HIL GNC loop. Issue #439 remains open until every batch and capstone is implemented and locally verified. Native additions do not claim MATLAB/source equivalence, and the entire lane remains software-only.
+The final three lessons are cumulative capstones: identification/control/estimation under uncertainty; navigation/guidance of a constrained survey; and a requirements-traced faulted software-HIL GNC loop. Every issue-439 batch and capstone is implemented and locally verified. Native additions do not claim MATLAB/source equivalence, and the entire lane remains software-only.
 
 ## B020 — Course ingestion and migration tooling
 
