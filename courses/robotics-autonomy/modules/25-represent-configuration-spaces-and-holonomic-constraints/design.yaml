@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P25
+module: 25-represent-configuration-spaces-and-holonomic-constraints
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- q in C subset R^n
+- h(q)=0
+- J_h(q) q_dot=0
+signature:
+- field: constraint_residual
+  unit: m
+- field: tangent_dimension
+  unit: count
+- field: minimum_clearance
+  unit: m
+teaching_invariant: A valid constrained velocity lies in the null space of the constraint Jacobian and preserves
+  configuration-space clearance.
+limiting_cases:
+- With zero offset the nominal configuration lies exactly on the constraint manifold.
+- At full-rank one constraint, a two-coordinate configuration has one tangent degree of freedom.
+scenarios:
+  baseline: &id001
+    constraint_offset_m: 0.08
+    joint_span_rad: 1.2
+    broken_mode: false
+  sweep_1:
+    constraint_offset_m: 0.4
+    joint_span_rad: 1.2
+    broken_mode: false
+  sweep_2:
+    constraint_offset_m: 0.08
+    joint_span_rad: 3.0
+    broken_mode: false
+  broken:
+    constraint_offset_m: 0.08
+    joint_span_rad: 1.2
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

@@ -2,10 +2,16 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import math
+import re
 from pathlib import Path
 from typing import Any
 
+import numpy as np
 import yaml
+
+from elp_api.catalog import CourseCatalog
+from elp_api.runtime import ExperimentRuntime
 
 ROOT = Path(__file__).resolve().parents[3]
 COURSE_ROOT = ROOT / "courses/robotics-autonomy"
@@ -17,6 +23,19 @@ def _yaml(path: Path) -> dict[str, Any]:
 
 MAP = _yaml(COURSE_ROOT / "competency-map.yaml")
 DEPTH = _yaml(COURSE_ROOT / "depth-review.yaml")
+EXPANSION = _yaml(COURSE_ROOT / "expansion-map.yaml")
+NATIVE = EXPANSION["implemented_native_modules"]
+REFERENCE = None
+if NATIVE:
+    reference_spec = importlib.util.spec_from_file_location(
+        "robotics_expansion_reference", COURSE_ROOT / "expansion_reference_cases.py"
+    )
+    assert reference_spec is not None and reference_spec.loader is not None
+    REFERENCE = importlib.util.module_from_spec(reference_spec)
+    reference_spec.loader.exec_module(REFERENCE)
+
+SCENARIOS = ("baseline", "sweep_1", "sweep_2", "broken", "recovery")
+GENERIC_LABELS = {"Independent variable", "Response", "Diagnostic", "output", "units"}
 
 
 def test_robotics_competency_map_schema_count_and_order() -> None:
@@ -111,3 +130,158 @@ def test_completed_depth_items_have_rigorous_lesson_sections() -> None:
             "## Boundary and onward links",
         ):
             assert heading in lesson
+
+
+def test_robotics_native_designs_are_schema_valid_distinct_and_rigorous() -> None:
+    schema = json.loads((COURSE_ROOT / "native-design.schema.json").read_text(encoding="utf-8"))
+    helper_path = ROOT / "apps/api/tests/test_dsp_conversion_framework.py"
+    helper_spec = importlib.util.spec_from_file_location("robotics_native_schema", helper_path)
+    assert helper_spec is not None and helper_spec.loader is not None
+    helper = importlib.util.module_from_spec(helper_spec)
+    helper_spec.loader.exec_module(helper)
+    expected_ids = [f"P{number:02d}" for number in range(25, 25 + len(NATIVE))]
+    assert [item["id"] for item in NATIVE] == expected_ids
+    fingerprints: set[tuple[str, ...]] = set()
+    for item in NATIVE:
+        module_root = COURSE_ROOT / item["folder"]
+        design = _yaml(module_root / "design.yaml")
+        assert helper._schema_errors(design, schema, schema) == []
+        fingerprints.add(tuple(design["governing_equations"]))
+        assert design["scenarios"]["baseline"] == design["scenarios"]["recovery"]
+        assert design["scenarios"]["broken"]["broken_mode"] is True
+        assert design["provenance"] == {
+            "kind": "python-first-native",
+            "source_equivalence_claimed": False,
+            "competency_map": "../../competency-map.yaml",
+            "matlab_runtime": "not_run",
+        }
+        lesson = (module_root / "lesson.md").read_text(encoding="utf-8")
+        assert len(lesson.split()) >= 1_000
+        for section in (
+            "Model, derivation, and conventions",
+            "Predict before running",
+            "Baseline workflow",
+            "Two one-variable sweeps",
+            "Intentionally broken case",
+            "Recovery",
+            "Alternative and limiting cases",
+            "Independent evidence and MATLAB-style design boundary",
+            "Engineering review checklist",
+            "Common mistakes",
+            "Focused check and teach-back",
+        ):
+            assert f"## {section}" in lesson
+    assert len(fingerprints) == len(NATIVE)
+
+
+def test_robotics_native_reference_has_no_production_execution_path() -> None:
+    assert REFERENCE is not None
+    tree = __import__("ast").parse(
+        (COURSE_ROOT / "expansion_reference_cases.py").read_text(encoding="utf-8")
+    )
+    allowed_imports = {"json", "typing", "numpy", "__future__"}
+    forbidden_calls = {"eval", "exec", "compile", "__import__", "run", "import_module"}
+    ast = __import__("ast")
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            assert all(alias.name.split(".")[0] in allowed_imports for alias in node.names)
+        if isinstance(node, ast.ImportFrom):
+            assert (node.module or "").split(".")[0] in allowed_imports
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
+            assert node.func.id not in forbidden_calls
+    doc = ast.get_docstring(tree, clean=True) or ""
+    assert "imports no production experiment" in doc
+    assert "consumes no production result" in doc
+    assert "perturbs no production value" in " ".join(doc.split())
+
+
+def _approx(expected: list[float], tolerance: dict[str, float]) -> Any:
+    import pytest
+
+    return pytest.approx(expected, abs=tolerance["absolute"], rel=tolerance["relative"])
+
+
+def test_robotics_native_five_scenario_evidence_and_runtime() -> None:
+    assert REFERENCE is not None
+    runtime = ExperimentRuntime(CourseCatalog([ROOT / "courses"]))
+    for item in NATIVE:
+        number = int(item["id"][1:])
+        module_root = COURSE_ROOT / item["folder"]
+        design = _yaml(module_root / "design.yaml")
+        module_id = _yaml(module_root / "module.yaml")["id"]
+        expected = json.loads((module_root / "evidence/expected-independent.json").read_text())
+        actual = json.loads((module_root / "evidence/actual-production.json").read_text())
+        assert expected["origin"] == REFERENCE.origin(number)
+        assert actual["origin"]["independent"] is False
+        assert expected["signature_fields"] == actual["signature_fields"] == design["signature"]
+        assert tuple(expected["cases"]) == tuple(actual["cases"]) == SCENARIOS
+        for scenario in SCENARIOS:
+            parameters = design["scenarios"][scenario]
+            reference = REFERENCE.reference_signature(number, parameters)
+            first = runtime.run("robotics-autonomy", module_id, parameters)
+            second = runtime.run("robotics-autonomy", module_id, parameters)
+            production = first.diagnostics["signature"]
+            assert first.model_dump(mode="json") == second.model_dump(mode="json")
+            assert first.diagnostics["sample_count"] <= 500
+            assert reference == expected["cases"][scenario]["signature"]
+            assert production == _approx(
+                actual["cases"][scenario]["signature"], design["tolerance"]
+            )
+            assert len(reference) == len(production) == len(design["signature"])
+            assert np.all(np.isfinite(reference)) and np.all(np.isfinite(production))
+            assert production == _approx(reference, design["tolerance"])
+        assert expected["cases"]["baseline"] == expected["cases"]["recovery"]
+        assert actual["cases"]["baseline"] == actual["cases"]["recovery"]
+        assert actual["cases"]["broken"]["signature"] != actual["cases"]["recovery"]["signature"]
+
+
+def test_robotics_native_plots_retain_domain_quantities_and_units() -> None:
+    runtime = ExperimentRuntime(CourseCatalog([ROOT / "courses"]))
+    for item in NATIVE:
+        module_root = COURSE_ROOT / item["folder"]
+        module_id = _yaml(module_root / "module.yaml")["id"]
+        result = runtime.run("robotics-autonomy", module_id, {}).model_dump(mode="json")
+        assert set(result["plots"]) == {"response", "mechanism"}
+        assert len(result["metrics"]) == 3
+        for plot in result["plots"].values():
+            for axis in ("xaxis", "yaxis"):
+                title = plot["layout"][axis]["title"]["text"]
+                assert title not in GENERIC_LABELS
+                assert re.search(r"\([^()]+\)$", title), title
+            for trace in plot["data"]:
+                assert set(trace["meta"]) == {
+                    "x_quantity",
+                    "x_unit",
+                    "y_quantity",
+                    "y_unit",
+                }
+                assert all(str(value).strip() for value in trace["meta"].values())
+
+
+def test_robotics_geometry_and_dynamics_teaching_invariants() -> None:
+    runtime = ExperimentRuntime(CourseCatalog([ROOT / "courses"]))
+
+    def signature(number: int, supplied: dict[str, Any]) -> list[float]:
+        item = NATIVE[number - 25]
+        module_id = _yaml(COURSE_ROOT / item["folder"] / "module.yaml")["id"]
+        return runtime.run("robotics-autonomy", module_id, supplied).diagnostics["signature"]
+
+    assert signature(25, {"broken_mode": False})[0] == 0
+    assert signature(25, {"broken_mode": True})[0] > 0
+    assert signature(26, {"broken_mode": False})[0] < 1e-10
+    assert signature(26, {"broken_mode": True})[1] > 0
+    assert signature(27, {"broken_mode": False})[0] == 0
+    assert signature(27, {"broken_mode": True})[0] > 0
+    singular = signature(28, {"elbow_angle_deg": 175.0})
+    nonsingular = signature(28, {"elbow_angle_deg": 70.0})
+    assert singular[0] < nonsingular[0]
+    assert signature(29, {"broken_mode": True})[1] > signature(29, {"broken_mode": False})[1]
+    assert signature(30, {"broken_mode": False})[1] == 0
+    assert signature(30, {"broken_mode": True})[1] > 0
+    inertia = signature(31, {"broken_mode": False})
+    assert inertia[0] > 0 and math.isfinite(inertia[2])
+    identification = signature(32, {"broken_mode": False})
+    assert identification[0] < signature(32, {"broken_mode": True})[0]
+    assert identification[2] < signature(32, {"broken_mode": True})[2]
+    assert signature(33, {"broken_mode": False})[2] == 0
+    assert signature(33, {"broken_mode": True})[2] > 0

@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P27
+module: 27-map-twists-screws-and-wrenches-with-adjoint-transforms
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- V_a=Ad_T V_b
+- F_a=Ad_T^{-T} F_b
+- F^T V is frame invariant
+signature:
+- field: power_invariance_error
+  unit: W
+- field: adjoint_roundtrip_error
+  unit: '1'
+- field: screw_pitch
+  unit: m/rad
+teaching_invariant: A twist and its dual wrench must transform contragrediently so instantaneous power is frame
+  invariant.
+limiting_cases:
+- At zero lever arm, translation-rotation coupling vanishes.
+- A pure rotation screw has zero pitch when axial translation is zero.
+scenarios:
+  baseline: &id001
+    lever_arm_m: 0.45
+    angular_speed_rad_s: 1.8
+    broken_mode: false
+  sweep_1:
+    lever_arm_m: 1.5
+    angular_speed_rad_s: 1.8
+    broken_mode: false
+  sweep_2:
+    lever_arm_m: 0.45
+    angular_speed_rad_s: 6.0
+    broken_mode: false
+  broken:
+    lever_arm_m: 0.45
+    angular_speed_rad_s: 1.8
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

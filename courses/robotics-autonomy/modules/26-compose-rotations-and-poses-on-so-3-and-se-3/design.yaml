@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P26
+module: 26-compose-rotations-and-poses-on-so-3-and-se-3
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- R^T R=I and det(R)=1
+- T_ab T_bc=T_ac
+- T^-1=[R^T,-R^T p]
+signature:
+- field: orthogonality_error
+  unit: '1'
+- field: determinant_error
+  unit: '1'
+- field: order_difference
+  unit: m
+teaching_invariant: Rigid transforms must remain on SE(3), round trip through their inverse, and preserve the declared
+  composition order.
+limiting_cases:
+- At zero rotation, the transform reduces to pure translation.
+- At zero translation, pose composition reduces to rotation composition on SO(3).
+scenarios:
+  baseline: &id001
+    rotation_angle_deg: 35.0
+    translation_m: 0.6
+    broken_mode: false
+  sweep_1:
+    rotation_angle_deg: 170.0
+    translation_m: 0.6
+    broken_mode: false
+  sweep_2:
+    rotation_angle_deg: 35.0
+    translation_m: 2.0
+    broken_mode: false
+  broken:
+    rotation_angle_deg: 35.0
+    translation_m: 0.6
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

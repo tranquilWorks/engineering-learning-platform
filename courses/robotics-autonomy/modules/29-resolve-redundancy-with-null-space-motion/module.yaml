@@ -1,0 +1,66 @@
+schema_version: 1
+id: 29-resolve-redundancy-with-null-space-motion
+number: 29
+title: Resolve Redundancy with Null-Space Motion
+summary: Build a deterministic numerical laboratory to resolve redundancy with null-space motion, expose its governing
+  relation, and diagnose a named counterexample before recovery.
+guiding_question: What assumptions and evidence make resolve redundancy with null-space motion defensible?
+status: implemented
+tags:
+- robotics-autonomy
+- native-python
+- geometry-dynamics
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: damping
+  type: slider
+  label: Pseudoinverse damping
+  default: 0.08
+  minimum: 0.0
+  maximum: 0.5
+  step: 0.01
+  unit: '1'
+- id: null_gain_per_s
+  type: slider
+  label: Null-space gain
+  default: 0.6
+  minimum: 0.0
+  maximum: 2.0
+  step: 0.05
+  unit: 1/s
+- id: broken_mode
+  type: toggle
+  label: Enable named failure
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Secondary motion may improve posture only through the Jacobian null space while the primary task residual
+    remains bounded.
+  reveal: Use the equations, units, and mechanism plot to test the prediction.
+- type: controls
+  title: Live model controls
+- type: metrics
+- type: plot_grid
+  title: Response and governing mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

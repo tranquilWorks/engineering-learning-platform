@@ -276,7 +276,9 @@ def test_gnc_final_catalog_shape() -> None:
     assert len(courses) == 5
     modules = sum(len(course.modules) for course in courses)
     interactive = sum(module.interactive for course in courses for module in course.modules)
-    assert (modules, interactive) == (178, 178)
+    robotics_expansion = _yaml(ROOT / "courses/robotics-autonomy/expansion-map.yaml")
+    robotics_native = len(robotics_expansion["implemented_native_modules"])
+    assert (modules, interactive) == (178 + robotics_native, 178 + robotics_native)
     gnc = next(course for course in courses if course.id == "controls-gnc")
     assert len(gnc.modules) == 68
 

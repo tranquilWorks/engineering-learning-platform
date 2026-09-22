@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P33
+module: 33-time-scale-multi-joint-trajectories-within-limits
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- q(t)=q(s(t))
+- q_dot=q_s s_dot
+- T>=max |q_s|/q_dot_max
+signature:
+- field: minimum_duration
+  unit: s
+- field: peak_acceleration
+  unit: rad/s^2
+- field: limit_violation
+  unit: rad/s
+teaching_invariant: Time scaling must preserve the geometric path while enforcing joint velocity and acceleration
+  bounds.
+limiting_cases:
+- At zero path length, required motion duration tends to zero.
+- Doubling every speed limit halves the velocity-dominated minimum duration.
+scenarios:
+  baseline: &id001
+    path_distance_rad: 2.0
+    speed_limit_rad_s: 1.2
+    broken_mode: false
+  sweep_1:
+    path_distance_rad: 6.0
+    speed_limit_rad_s: 1.2
+    broken_mode: false
+  sweep_2:
+    path_distance_rad: 2.0
+    speed_limit_rad_s: 4.0
+    broken_mode: false
+  broken:
+    path_distance_rad: 2.0
+    speed_limit_rad_s: 1.2
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

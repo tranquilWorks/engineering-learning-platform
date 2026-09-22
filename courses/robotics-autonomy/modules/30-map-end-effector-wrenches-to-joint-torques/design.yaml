@@ -1,0 +1,51 @@
+schema_version: 1
+item_id: P30
+module: 30-map-end-effector-wrenches-to-joint-torques
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- tau=J^T F
+- tau^T q_dot=F^T V
+- V=J q_dot
+signature:
+- field: joint_torque
+  unit: N*m
+- field: virtual_power_error
+  unit: W
+- field: mechanical_advantage
+  unit: '1'
+teaching_invariant: Jacobian transpose statics must preserve virtual power between joint and Cartesian coordinates.
+limiting_cases:
+- At zero force, every mapped joint torque is zero.
+- At zero moment arm, torque from a transverse force tends to zero.
+scenarios:
+  baseline: &id001
+    force_n: 8.0
+    lever_arm_m: 0.4
+    broken_mode: false
+  sweep_1:
+    force_n: 30.0
+    lever_arm_m: 0.4
+    broken_mode: false
+  sweep_2:
+    force_n: 8.0
+    lever_arm_m: 1.2
+    broken_mode: false
+  broken:
+    force_n: 8.0
+    lever_arm_m: 0.4
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

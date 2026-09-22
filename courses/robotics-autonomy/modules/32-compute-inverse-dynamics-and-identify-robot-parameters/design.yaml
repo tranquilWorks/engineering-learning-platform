@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P32
+module: 32-compute-inverse-dynamics-and-identify-robot-parameters
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- tau=Y(q,q_dot,q_ddot) theta
+- theta_hat=(Y^T Y)^-1Y^T tau
+- validate on held-out motion
+signature:
+- field: inverse_dynamics_residual
+  unit: N*m
+- field: payload_error
+  unit: kg
+- field: regressor_condition
+  unit: '1'
+teaching_invariant: Inverse dynamics and parameter identification are credible only when excitation is informative
+  and held-out torque residuals remain small.
+limiting_cases:
+- At zero excitation, dynamic parameters are unidentifiable.
+- With the exact payload and informative noiseless data, held-out residual tends to zero.
+scenarios:
+  baseline: &id001
+    excitation_amplitude_rad: 0.7
+    payload_guess_kg: 1.1
+    broken_mode: false
+  sweep_1:
+    excitation_amplitude_rad: 1.5
+    payload_guess_kg: 1.1
+    broken_mode: false
+  sweep_2:
+    excitation_amplitude_rad: 0.7
+    payload_guess_kg: 3.0
+    broken_mode: false
+  broken:
+    excitation_amplitude_rad: 0.7
+    payload_guess_kg: 1.1
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

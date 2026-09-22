@@ -1,12 +1,18 @@
 schema_version: 1
 commands:
   robotics-map-and-regression:
-    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_robotics_expansion.py apps/api/tests/test_robotics_conversion_framework.py apps/api/tests/test_robotics_course.py
+    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_robotics_expansion.py apps/api/tests/test_robotics_conversion_framework.py apps/api/tests/test_robotics_course.py apps/api/tests/test_course_caliber_status.py
   contract:
     - ./scripts/agent-verify.sh contract
   quick:
     - ./scripts/agent-verify.sh quick
+  full:
+    - ./scripts/agent-verify.sh full
+  deterministic-catalog:
+    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic --json
+  lint:
+    - .venv/bin/ruff check apps/api/tests/test_robotics_expansion.py apps/api/tests/test_robotics_conversion_framework.py courses/robotics-autonomy
   scope:
     - git diff --check
-    - test -z "$(git status --short -- courses/robotics-autonomy-learning courses/robotics-autonomy/modules courses/controls-gnc courses/dsp-radar courses/demo-radar courses/platform-showcase)"
-evidence_boundary: These commands validate the reviewed 69-module Robotics/Autonomy boundary and all 24 retained depth passes while regressing every source-bound Python laboratory. Every retained lesson exceeds 1,250 words and adds a named derivation/convention, alternative or limit, practical failure/recovery, formative evidence workflow, and cross-course boundary without changing runtime code. P25-P69 native expansion remains incomplete. The evidence does not execute MATLAB, validate browser accessibility or learners, operate physical hardware/HIL, certify safety, or authorize release, deployment, credentials/settings, or production use.
+    - test -z "$(git status --short -- courses/robotics-autonomy-learning courses/controls-gnc courses/dsp-radar courses/demo-radar courses/platform-showcase)"
+evidence_boundary: These commands validate the reviewed 69-module Robotics/Autonomy boundary, all 24 retained depth passes, and Python-first native expansion P25-P33 while regressing every source-bound Python laboratory. The nine additions have distinct equations, complete lessons, two one-variable sweeps, named failure/recovery, limiting cases, physical axes/units, and separately retained independent/production evidence. P34-P69 remain incomplete. The evidence does not execute MATLAB, validate browser accessibility or learners, operate physical hardware/HIL, certify safety, or authorize release, deployment, credentials/settings, or production use.

@@ -1,0 +1,66 @@
+schema_version: 1
+id: 32-compute-inverse-dynamics-and-identify-robot-parameters
+number: 32
+title: Compute Inverse Dynamics and Identify Robot Parameters
+summary: Build a deterministic numerical laboratory to compute inverse dynamics and identify robot parameters, expose
+  its governing relation, and diagnose a named counterexample before recovery.
+guiding_question: What assumptions and evidence make compute inverse dynamics and identify robot parameters defensible?
+status: implemented
+tags:
+- robotics-autonomy
+- native-python
+- geometry-dynamics
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: excitation_amplitude_rad
+  type: slider
+  label: Excitation amplitude
+  default: 0.7
+  minimum: 0.1
+  maximum: 1.5
+  step: 0.05
+  unit: rad
+- id: payload_guess_kg
+  type: slider
+  label: Payload estimate
+  default: 1.1
+  minimum: 0.0
+  maximum: 3.0
+  step: 0.1
+  unit: kg
+- id: broken_mode
+  type: toggle
+  label: Enable named failure
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Inverse dynamics and parameter identification are credible only when excitation is informative and held-out
+    torque residuals remain small.
+  reveal: Use the equations, units, and mechanism plot to test the prediction.
+- type: controls
+  title: Live model controls
+- type: metrics
+- type: plot_grid
+  title: Response and governing mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P31
+module: 31-derive-manipulator-inertia-coriolis-and-gravity-terms
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- M(q) q_ddot+C(q,q_dot)q_dot+g(q)=tau
+- M=M^T>0
+- q_dot^T(M_dot-2C)q_dot=0
+signature:
+- field: minimum_inertia_eigenvalue
+  unit: kg*m^2
+- field: skew_identity_error
+  unit: '1'
+- field: gravity_torque
+  unit: N*m
+teaching_invariant: A physically consistent rigid manipulator has symmetric positive inertia and satisfies the kinetic-energy
+  skew identity.
+limiting_cases:
+- With zero velocity, Coriolis/centrifugal power is zero.
+- At zero payload, the inertia remains positive from the links.
+scenarios:
+  baseline: &id001
+    payload_kg: 1.0
+    elbow_angle_deg: 55.0
+    broken_mode: false
+  sweep_1:
+    payload_kg: 5.0
+    elbow_angle_deg: 55.0
+    broken_mode: false
+  sweep_2:
+    payload_kg: 1.0
+    elbow_angle_deg: 160.0
+    broken_mode: false
+  broken:
+    payload_kg: 1.0
+    elbow_angle_deg: 55.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.
