@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P64
+module: 64-compare-pursuit-laws-and-proportional-navigation-variants
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- a_n=N V_c lambda_dot
+- V_c=-R_dot>0 for closing
+- augmented PN adds target acceleration estimate
+signature:
+- field: pn_acceleration_demand
+  unit: m/s^2
+- field: miss_distance_proxy
+  unit: m
+- field: closing_sign
+  unit: '1'
+teaching_invariant: For a closing engagement with correct LOS-rate sign, N greater than two reduces the nonmaneuvering
+  miss proxy while increasing acceleration demand.
+limiting_cases:
+- At zero LOS rate classical PN commands zero lateral acceleration.
+- Target maneuver increases required acceleration and residual miss when not estimated.
+scenarios:
+  baseline: &id001
+    navigation_constant: 3.5
+    target_turn_rate_deg_s: 4.0
+    broken_mode: false
+  sweep_1:
+    navigation_constant: 6.0
+    target_turn_rate_deg_s: 4.0
+    broken_mode: false
+  sweep_2:
+    navigation_constant: 3.5
+    target_turn_rate_deg_s: 15.0
+    broken_mode: false
+  broken:
+    navigation_constant: 3.5
+    target_turn_rate_deg_s: 4.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

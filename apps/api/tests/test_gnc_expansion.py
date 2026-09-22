@@ -367,3 +367,37 @@ def test_gnc_navigation_teaching_invariants() -> None:
     assert integrity[2] < 18
     assert suppressed_monitor[0] > 5
     assert suppressed_monitor[2] == 60
+
+
+def test_gnc_guidance_teaching_invariants() -> None:
+    catalog = CourseCatalog([ROOT / "courses"])
+    runtime = ExperimentRuntime(catalog)
+
+    def signature(number: int, supplied: dict[str, Any]) -> list[float]:
+        item = NATIVE[number - 25]
+        module_id = _yaml(COURSE_ROOT / item["folder"] / "module.yaml")["id"]
+        return runtime.run("controls-gnc", module_id, supplied).diagnostics["signature"]
+
+    los = signature(63, {"broken_mode": False})
+    reversed_los = signature(63, {"broken_mode": True})
+    assert los[0] > 0
+    assert los[1] < 10
+    assert reversed_los[0] < 0
+    assert reversed_los[1] > 10
+
+    pn = signature(64, {"broken_mode": False})
+    reversed_pn = signature(64, {"broken_mode": True})
+    assert pn[0] > 0
+    assert pn[2] == 1
+    assert reversed_pn[0] < 0
+    assert reversed_pn[1] > pn[1]
+    assert reversed_pn[2] == -1
+
+    constrained = signature(65, {"broken_mode": False})
+    unconstrained = signature(65, {"broken_mode": True})
+    assert constrained[0] <= 20
+    assert constrained[1] == 0
+    assert constrained[2] == 0
+    assert unconstrained[0] > 8
+    assert unconstrained[1] > 0
+    assert unconstrained[2] == 0

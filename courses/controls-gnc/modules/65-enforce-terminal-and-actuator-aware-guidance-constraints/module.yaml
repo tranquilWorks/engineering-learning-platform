@@ -1,0 +1,68 @@
+schema_version: 1
+id: 65-enforce-terminal-and-actuator-aware-guidance-constraints
+number: 65
+title: Enforce Terminal and Actuator-Aware Guidance Constraints
+summary: Compare required terminal acceleration with actuator authority and propagate the residual terminal miss
+  under saturation.
+guiding_question: How do terminal requirements change when the actuator cannot deliver the unconstrained guidance
+  command?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- guidance
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: acceleration_limit_m_s2
+  type: slider
+  label: Acceleration limit
+  default: 20.0
+  unit: m/s^2
+  minimum: 3.0
+  maximum: 50.0
+  step: 1.0
+- id: terminal_weight
+  type: slider
+  label: Terminal weight
+  default: 8.0
+  unit: '1'
+  minimum: 1.0
+  maximum: 20.0
+  step: 0.5
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: The applied command never exceeds actuator authority; an infeasible terminal requirement must appear as
+    residual error, not a hidden command.
+  reveal: Restore saturation, propagate the constrained plant, and renegotiate terminal requirements when authority
+    is insufficient.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery
