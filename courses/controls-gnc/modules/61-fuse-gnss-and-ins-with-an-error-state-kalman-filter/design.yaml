@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P61
+module: 61-fuse-gnss-and-ins-with-an-error-state-kalman-filter
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- delta_x_dot=F delta_x+G w
+- P^-=F P F^T+G Q G^T
+- x_nominal+=delta_x_hat; delta_x_hat reset to zero
+signature:
+- field: preupdate_position_sigma
+  unit: m
+- field: postupdate_position_sigma
+  unit: m
+- field: unmodeled_bias_error
+  unit: m
+teaching_invariant: GNSS updates reduce navigation-error covariance, while an explicit bias error state prevents
+  systematic inertial drift from masquerading as white noise.
+limiting_cases:
+- As GNSS interval tends to zero inertial drift between updates shrinks.
+- Post-update covariance cannot exceed its pre-update value for a valid measurement update.
+scenarios:
+  baseline: &id001
+    gnss_interval_s: 1.0
+    bias_random_walk: 0.01
+    broken_mode: false
+  sweep_1:
+    gnss_interval_s: 10.0
+    bias_random_walk: 0.01
+    broken_mode: false
+  sweep_2:
+    gnss_interval_s: 1.0
+    bias_random_walk: 0.08
+    broken_mode: false
+  broken:
+    gnss_interval_s: 1.0
+    bias_random_walk: 0.01
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

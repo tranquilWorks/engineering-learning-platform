@@ -1,0 +1,65 @@
+schema_version: 1
+id: 60-solve-a-gnss-pseudorange-navigation-fix
+number: 60
+title: Solve a GNSS Pseudorange Navigation Fix
+summary: Relate range noise and geometry dilution to position/clock error and reject a near-collinear geometry.
+guiding_question: How do receiver clock bias and satellite geometry jointly determine a pseudorange solution?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- navigation
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: pseudorange_noise_m
+  type: slider
+  label: Pseudorange noise
+  default: 2.0
+  unit: m
+  minimum: 0.1
+  maximum: 10.0
+  step: 0.1
+- id: geometry_dilution
+  type: slider
+  label: Geometry dilution
+  default: 2.2
+  unit: '1'
+  minimum: 1.0
+  maximum: 12.0
+  step: 0.2
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: A valid fix estimates position and clock bias together; geometry dilution scales range noise into state
+    uncertainty.
+  reveal: Restore four-or-more diverse lines of sight, solve clock and position jointly, and inspect post-fit residuals.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

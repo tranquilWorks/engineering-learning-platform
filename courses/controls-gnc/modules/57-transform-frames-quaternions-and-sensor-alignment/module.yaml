@@ -1,0 +1,67 @@
+schema_version: 1
+id: 57-transform-frames-quaternions-and-sensor-alignment
+number: 57
+title: Transform Frames, Quaternions, and Sensor Alignment
+summary: Rotate a body vector by a yaw quaternion, apply a sensor misalignment, and verify norm and DCM orthogonality
+  invariants.
+guiding_question: How do quaternion normalization and frame order prevent silent attitude and alignment errors?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- navigation
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: yaw_angle_deg
+  type: slider
+  label: Yaw angle
+  default: 35.0
+  unit: deg
+  minimum: -180.0
+  maximum: 180.0
+  step: 5.0
+- id: sensor_misalignment_deg
+  type: slider
+  label: Sensor misalignment
+  default: 3.0
+  unit: deg
+  minimum: 0.0
+  maximum: 20.0
+  step: 0.5
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: A normalized quaternion produces an orthogonal proper rotation that preserves vector norm; alignment order
+    remains explicit.
+  reveal: Convert units, normalize the quaternion, state active/passive frame order, and recheck vector norm and
+    determinant.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

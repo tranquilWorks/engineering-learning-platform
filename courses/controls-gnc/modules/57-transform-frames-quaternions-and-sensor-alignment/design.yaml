@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P57
+module: 57-transform-frames-quaternions-and-sensor-alignment
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- q=[cos(psi/2),0,0,sin(psi/2)]
+- v_n=R_nb v_b
+- R^T R=I and det R=1
+signature:
+- field: quaternion_norm_error
+  unit: '1'
+- field: dcm_orthogonality_error
+  unit: '1'
+- field: alignment_vector_error
+  unit: '1'
+teaching_invariant: A normalized quaternion produces an orthogonal proper rotation that preserves vector norm; alignment
+  order remains explicit.
+limiting_cases:
+- Zero yaw produces the identity rotation.
+- Any proper rotation preserves Euclidean vector length.
+scenarios:
+  baseline: &id001
+    yaw_angle_deg: 35.0
+    sensor_misalignment_deg: 3.0
+    broken_mode: false
+  sweep_1:
+    yaw_angle_deg: 180.0
+    sensor_misalignment_deg: 3.0
+    broken_mode: false
+  sweep_2:
+    yaw_angle_deg: 35.0
+    sensor_misalignment_deg: 20.0
+    broken_mode: false
+  broken:
+    yaw_angle_deg: 35.0
+    sensor_misalignment_deg: 3.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

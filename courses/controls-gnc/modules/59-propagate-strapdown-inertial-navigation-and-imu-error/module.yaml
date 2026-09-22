@@ -1,0 +1,67 @@
+schema_version: 1
+id: 59-propagate-strapdown-inertial-navigation-and-imu-error
+number: 59
+title: Propagate Strapdown Inertial Navigation and IMU Error
+summary: Integrate a declared body-axis bias, compare analytic error growth, and show the effect of a bias correction.
+guiding_question: How does a constant accelerometer bias grow into velocity and position error during strapdown
+  propagation?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- navigation
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: accelerometer_bias_m_s2
+  type: slider
+  label: Accelerometer bias
+  default: 0.03
+  unit: m/s^2
+  minimum: 0.0
+  maximum: 0.2
+  step: 0.005
+- id: coast_duration_s
+  type: slider
+  label: Coast duration
+  default: 30.0
+  unit: s
+  minimum: 1.0
+  maximum: 120.0
+  step: 1.0
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Under constant uncorrected bias, velocity error grows linearly and position error quadratically with coast
+    time.
+  reveal: Estimate and subtract bias, reapply gravity/frame conventions, and compare propagation to the analytic
+    limiting case.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

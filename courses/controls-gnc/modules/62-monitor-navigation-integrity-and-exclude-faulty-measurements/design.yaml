@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P62
+module: 62-monitor-navigation-integrity-and-exclude-faulty-measurements
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- T=||S^-1/2 r||
+- alarm if T>T_gate
+- HPL=K_H sigma_H
+signature:
+- field: test_statistic
+  unit: sigma
+- field: horizontal_protection_level
+  unit: m
+- field: post_exclusion_residual
+  unit: m
+teaching_invariant: A declared fault above threshold raises an alarm and the excluded solution must be recomputed
+  before reporting a reduced residual.
+limiting_cases:
+- With zero fault the normalized test statistic is zero.
+- Exclusion cannot be credited unless a new solution and residual are calculated.
+scenarios:
+  baseline: &id001
+    fault_magnitude_m: 18.0
+    integrity_threshold: 5.0
+    broken_mode: false
+  sweep_1:
+    fault_magnitude_m: 60.0
+    integrity_threshold: 5.0
+    broken_mode: false
+  sweep_2:
+    fault_magnitude_m: 18.0
+    integrity_threshold: 10.0
+    broken_mode: false
+  broken:
+    fault_magnitude_m: 18.0
+    integrity_threshold: 5.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

@@ -96,7 +96,7 @@ def test_status_has_closed_top_level_shape_and_exact_standard_identity() -> None
         "id": "ELP-COURSE-CALIBER-1",
         "effective_date": "2026-09-21",
         "control_repository": "tranquilWorks/portfolio-control",
-        "control_revision": "d9fbde10e21ce2e571c305fb998a8506d295684d",
+        "control_revision": "755c418c5b4f1fbccae77fa1695ce39a60d68cad",
         "audit_baseline": "1506591946ec8e96fe3201e8893b8ad851a1685a",
     }
     assert status["count_semantics"] == (
@@ -125,8 +125,8 @@ def test_reviewed_course_dispositions_keep_inventory_separate_from_maturity() ->
     }
     assert reviews["controls-gnc"]["inventory"] == {
         "source_items": 24,
-        "platform_modules": 56,
-        "interactive_modules": 56,
+        "platform_modules": 62,
+        "interactive_modules": 62,
     }
     assert reviews["robotics-autonomy"]["inventory"] == {
         "source_items": 24,
