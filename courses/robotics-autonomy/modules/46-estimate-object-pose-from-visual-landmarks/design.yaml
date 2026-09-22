@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P46
+module: 46-estimate-object-pose-from-visual-landmarks
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- z_i=pi(K T_co X_i)
+- min_T sum rho(||z_i-pi(T X_i)||^2)
+- T in SE(3)
+signature:
+- field: translation_error
+  unit: m
+- field: rotation_error
+  unit: deg
+- field: inlier_count
+  unit: count
+teaching_invariant: Pose estimation must keep the solution on SE(3), use nondegenerate landmarks, and report geometric
+  residuals plus inlier support.
+limiting_cases:
+- With exact nondegenerate landmarks and calibration, pose residual tends to zero.
+- Four coplanar points can support planar pose but weak depth geometry increases ambiguity.
+scenarios:
+  baseline: &id001
+    landmark_noise_px: 1.2
+    visible_landmarks: 12.0
+    broken_mode: false
+  sweep_1:
+    landmark_noise_px: 8.0
+    visible_landmarks: 12.0
+    broken_mode: false
+  sweep_2:
+    landmark_noise_px: 1.2
+    visible_landmarks: 40.0
+    broken_mode: false
+  broken:
+    landmark_noise_px: 1.2
+    visible_landmarks: 12.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.
