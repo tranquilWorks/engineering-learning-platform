@@ -1,11 +1,10 @@
 schema_version: 1
 batch:
-  id: ELP-GNC-NAVIGATION-P57-P62
-  title: Expand Controls/GNC navigation P57-P62
-  goal: 'Implement P57, P58, P59, P60, P61, P62 as the next coherent issue-439 Controls/GNC batch derived from the reviewed
-    competency map: frame transformations and sensor alignment; navigation observability and alignment calibration; strapdown
-    inertial propagation and IMU error; GNSS pseudorange geometry; error-state GNSS/INS fusion; integrity monitoring and fault
-    exclusion.'
+  id: ELP-GNC-GUIDANCE-P63-P65
+  title: Expand Controls/GNC guidance P63-P65
+  goal: 'Implement P63, P64, P65 as the next coherent issue-439 Controls/GNC batch derived from the reviewed competency map:
+    line-of-sight waypoint and path following; pursuit-law and proportional-navigation variants; terminal and actuator-aware
+    guidance constraints.'
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
@@ -13,19 +12,19 @@ sources:
   - products/engineering-learning-platform/course-caliber.yaml
   - products/engineering-learning-platform/competency-maps/controls-gnc.yaml
   - tranquilWorks/portfolio-control#439
-  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-GNC-NAVIGATION-P57-P62
-  baseline_commit: 1d98011ef31c7d150977a242a8ea8b5f113a1d14
-  baseline_tree: c62eb8a2d96cc0d4e04a56d4dc920eb24a68be5b
+  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-GNC-GUIDANCE-P63-P65
+  baseline_commit: be115e914ddcf4aa2a7a8f72146274a832808b3a
+  baseline_tree: 5de83873bb018766aa93069ef3d908ea67210752
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_baseline: d9fbde10e21ce2e571c305fb998a8506d295684d
-  control_plane_path: products/engineering-learning-platform/batches/ELP-GNC-NAVIGATION-P57-P62.yaml
+  control_plane_baseline: 755c418c5b4f1fbccae77fa1695ce39a60d68cad
+  control_plane_path: products/engineering-learning-platform/batches/ELP-GNC-GUIDANCE-P63-P65.yaml
   target_repository: tranquilWorks/engineering-learning-platform
   source_repository: tranquilWorks/controls-gnc-learning
   source_pin: ffd6623ee2cf8ccd8599fffd935ef07370750fa3
   source_tree: 471a0afead6f44e875627e7ffe9c088c23f784db
   source_curriculum_sha256: 8763981e20d02a88450956682b4daff9ee0d74bfed5f0ad91b08715f16aea930
 dependencies:
-- ELP-GNC-ESTIMATION-P52-P56
+- ELP-GNC-NAVIGATION-P57-P62
 scope:
   allowed_paths:
   - courses/controls-gnc/course.yaml
@@ -34,12 +33,9 @@ scope:
   - courses/controls-gnc/native-design.schema.json
   - courses/controls-gnc/expansion-map.yaml
   - courses/controls-gnc/expansion_reference_cases.py
-  - courses/controls-gnc/modules/57-*/**
-  - courses/controls-gnc/modules/58-*/**
-  - courses/controls-gnc/modules/59-*/**
-  - courses/controls-gnc/modules/60-*/**
-  - courses/controls-gnc/modules/61-*/**
-  - courses/controls-gnc/modules/62-*/**
+  - courses/controls-gnc/modules/63-*/**
+  - courses/controls-gnc/modules/64-*/**
+  - courses/controls-gnc/modules/65-*/**
   - apps/api/tests/test_gnc_expansion.py
   - apps/api/tests/test_gnc_conversion_framework.py
   - apps/api/tests/test_course_caliber_status.py
@@ -52,7 +48,7 @@ scope:
   - docs/CURRENT_STATE.md
   - docs/HANDOFF.md
   - docs/ROADMAP.md
-  - docs/evidence/ELP-GNC-NAVIGATION-P57-P62-*.md
+  - docs/evidence/ELP-GNC-GUIDANCE-P63-P65-*.md
   forbidden_paths:
   - courses/controls-gnc-learning
   - courses/controls-gnc-learning/**
@@ -112,6 +108,12 @@ scope:
   - courses/controls-gnc/modules/54-*/**
   - courses/controls-gnc/modules/55-*/**
   - courses/controls-gnc/modules/56-*/**
+  - courses/controls-gnc/modules/57-*/**
+  - courses/controls-gnc/modules/58-*/**
+  - courses/controls-gnc/modules/59-*/**
+  - courses/controls-gnc/modules/60-*/**
+  - courses/controls-gnc/modules/61-*/**
+  - courses/controls-gnc/modules/62-*/**
   - courses/controls-gnc/source-map.yaml
   - courses/controls-gnc/fidelity-map.yaml
   - courses/controls-gnc/reference_cases.py
@@ -135,15 +137,14 @@ scope:
   - Dockerfile
   - compose.yaml
 acceptance:
-- Start only after the exact control commit containing this contract is merged. Use exact clean target main 1d98011ef31c7d150977a242a8ea8b5f113a1d14,
-  tree c62eb8a2d96cc0d4e04a56d4dc920eb24a68be5b; any target, control, source, competency-map, index, or worktree drift stops
+- Start only after the exact control commit containing this contract is merged. Use exact clean target main be115e914ddcf4aa2a7a8f72146274a832808b3a,
+  tree 5de83873bb018766aa93069ef3d908ea67210752; any target, control, source, competency-map, index, or worktree drift stops
   implementation.
-- 'Implement exactly P57, P58, P59, P60, P61, P62 from batch ELP-GNC-NAVIGATION-P57-P62: frame transformations and sensor
-  alignment; navigation observability and alignment calibration; strapdown inertial propagation and IMU error; GNSS pseudorange
-  geometry; error-state GNSS/INS fusion; integrity monitoring and fault exclusion.'
-- Treat P57, P58, P59, P60, P61, P62 as 6 separately reviewed work items. Each must include a complete learner lesson, unique
-  executable model, baseline, two one-variable sweeps, broken behavior, explicit recovery, limiting cases, domain-specific
-  quantities and units, and named teaching invariants.
+- 'Implement exactly P63, P64, P65 from batch ELP-GNC-GUIDANCE-P63-P65: line-of-sight waypoint and path following; pursuit-law
+  and proportional-navigation variants; terminal and actuator-aware guidance constraints.'
+- Treat P63, P64, P65 as 3 separately reviewed work items. Each must include a complete learner lesson, unique executable
+  model, baseline, two one-variable sweeps, broken behavior, explicit recovery, limiting cases, domain-specific quantities
+  and units, and named teaching invariants.
 - Keep every expansion lesson a Python-first native design authorized by the reviewed competency map. Do not modify the immutable
   24-item source map, conversion manifest, source coverage, or source fidelity map; do not claim MATLAB equivalence.
 - Use independent references that import no production experiment, consume no production result, and perturb no production
@@ -151,9 +152,9 @@ acceptance:
   sweep_2, broken, and recovery.
 - Every plot must use domain-specific titles, axes, quantities, and units. Every runtime must be deterministic, finite, bounded,
   and within the trusted Python timeout.
-- Preserve P01-P56, the source gitlink and source evidence, all other courses, generic platform behavior, dependencies, workflows,
+- Preserve P01-P62, the source gitlink and source evidence, all other courses, generic platform behavior, dependencies, workflows,
   and deployment artifacts byte-identically.
-- End with 62 Controls/GNC platform modules and a five-course catalog of 172 modules, all interactive. P63-P68 remain unimplemented;
+- End with 65 Controls/GNC platform modules and a five-course catalog of 175 modules, all interactive. P66-P68 remain unimplemented;
   curriculum_covered and capstone_integrated remain partial, learner_validated remains not_run, and issue 439 remains open.
 - Record exact local verification. Hosted CI is not a completion gate by owner direction; do not claim a hosted result that
   was not run. Keep MATLAB, browser/accessibility, learner, physical HIL/hardware, certification, release, deployment, credentials/settings,
@@ -172,7 +173,7 @@ validation:
   - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic --json
   - .venv/bin/ruff check apps/api/tests/test_gnc_expansion.py apps/api/tests/test_gnc_conversion_framework.py courses/controls-gnc
   - git diff --check
-  - test -z "$(git status --short -- courses/controls-gnc-learning courses/controls-gnc/modules/{01..56}-* courses/dsp-radar
+  - test -z "$(git status --short -- courses/controls-gnc-learning courses/controls-gnc/modules/{01..62}-* courses/dsp-radar
     courses/robotics-autonomy courses/demo-radar courses/platform-showcase)"
   focused_tests_to_add:
   - Validate batch membership, distinct governing equations, prerequisite closure, and Python-first provenance.
@@ -196,11 +197,11 @@ rollback:
     source or prior batches.
 evidence:
   output:
-  - docs/evidence/ELP-GNC-NAVIGATION-P57-P62-2026-09-22.md
+  - docs/evidence/ELP-GNC-GUIDANCE-P63-P65-2026-09-22.md
   - per-item model, oracle, five-scenario, invariant, tolerance, axis, limitation, and residual-risk review
   - focused, regression, full, deterministic catalog, lint, diff, scope, and source-cleanliness results
   - one target squash merge and explicit unperformed evidence
-  claim_boundary: This batch implements only P57, P58, P59, P60, P61, P62 at a deterministic software-only boundary. P63-P68
-    remain unimplemented; curriculum_covered and capstone_integrated remain partial, learner_validated remains not_run, and
-    issue 439 remains open. It does not execute MATLAB, validate learners or browser accessibility, operate physical HIL/hardware,
-    certify safety, or authorize release, deployment, credentials/settings, or production use.
+  claim_boundary: This batch implements only P63, P64, P65 at a deterministic software-only boundary. P66-P68 remain unimplemented;
+    curriculum_covered and capstone_integrated remain partial, learner_validated remains not_run, and issue 439 remains open.
+    It does not execute MATLAB, validate learners or browser accessibility, operate physical HIL/hardware, certify safety,
+    or authorize release, deployment, credentials/settings, or production use.

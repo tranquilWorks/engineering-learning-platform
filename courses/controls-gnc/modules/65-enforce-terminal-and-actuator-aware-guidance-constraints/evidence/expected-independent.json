@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "item_id": "P65",
+  "signature_fields": [
+    {
+      "field": "required_acceleration",
+      "unit": "m/s^2"
+    },
+    {
+      "field": "constraint_violation",
+      "unit": "m/s^2"
+    },
+    {
+      "field": "terminal_error_bound",
+      "unit": "m"
+    }
+  ],
+  "origin": {
+    "kind": "independent-reviewed-fixture",
+    "item_id": "P65",
+    "independent": true,
+    "imports_production_entrypoint": false,
+    "derived_from_production_output": false,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "acceleration_limit_m_s2": 20.0,
+        "terminal_weight": 8.0,
+        "broken_mode": false
+      },
+      "signature": [
+        20.0,
+        0.0,
+        0.0
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "acceleration_limit_m_s2": 50.0,
+        "terminal_weight": 8.0,
+        "broken_mode": false
+      },
+      "signature": [
+        20.0,
+        0.0,
+        0.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "acceleration_limit_m_s2": 20.0,
+        "terminal_weight": 20.0,
+        "broken_mode": false
+      },
+      "signature": [
+        50.0,
+        30.0,
+        12.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "acceleration_limit_m_s2": 20.0,
+        "terminal_weight": 8.0,
+        "broken_mode": true
+      },
+      "signature": [
+        50.0,
+        42.0,
+        0.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "acceleration_limit_m_s2": 20.0,
+        "terminal_weight": 8.0,
+        "broken_mode": false
+      },
+      "signature": [
+        20.0,
+        0.0,
+        0.0
+      ]
+    }
+  }
+}

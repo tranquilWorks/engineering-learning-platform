@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P63
+module: 63-follow-waypoints-and-paths-with-line-of-sight-guidance
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- chi_c=chi_path-atan(e_y/L)
+- e_y_dot approximately -(V/L)e_y
+- kappa_c=2 sin(eta)/L
+signature:
+- field: cross_track_decay_rate
+  unit: 1/s
+- field: terminal_cross_track_error
+  unit: m
+- field: peak_heading_command
+  unit: deg
+teaching_invariant: Positive lookahead produces bounded heading commands and exponential local cross-track convergence
+  for forward speed.
+limiting_cases:
+- As cross-track error tends to zero the heading command tends to path heading.
+- Increasing lookahead reduces command aggressiveness and convergence rate.
+scenarios:
+  baseline: &id001
+    lookahead_distance_m: 15.0
+    vehicle_speed_m_s: 8.0
+    broken_mode: false
+  sweep_1:
+    lookahead_distance_m: 60.0
+    vehicle_speed_m_s: 8.0
+    broken_mode: false
+  sweep_2:
+    lookahead_distance_m: 15.0
+    vehicle_speed_m_s: 25.0
+    broken_mode: false
+  broken:
+    lookahead_distance_m: 15.0
+    vehicle_speed_m_s: 8.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

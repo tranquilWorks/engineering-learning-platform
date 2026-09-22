@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P65
+module: 65-enforce-terminal-and-actuator-aware-guidance-constraints
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- a_req=2 e/t_go^2+2 v_e/t_go
+- a_cmd=clip(a_req,a_max)
+- terminal cost=w_f e(tf)^2
+signature:
+- field: required_acceleration
+  unit: m/s^2
+- field: constraint_violation
+  unit: m/s^2
+- field: terminal_error_bound
+  unit: m
+teaching_invariant: The applied command never exceeds actuator authority; an infeasible terminal requirement must
+  appear as residual error, not a hidden command.
+limiting_cases:
+- If required acceleration is within the limit, clipping is inactive.
+- As time-to-go shrinks a fixed terminal error demands increasing acceleration.
+scenarios:
+  baseline: &id001
+    acceleration_limit_m_s2: 20.0
+    terminal_weight: 8.0
+    broken_mode: false
+  sweep_1:
+    acceleration_limit_m_s2: 50.0
+    terminal_weight: 8.0
+    broken_mode: false
+  sweep_2:
+    acceleration_limit_m_s2: 20.0
+    terminal_weight: 20.0
+    broken_mode: false
+  broken:
+    acceleration_limit_m_s2: 20.0
+    terminal_weight: 8.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

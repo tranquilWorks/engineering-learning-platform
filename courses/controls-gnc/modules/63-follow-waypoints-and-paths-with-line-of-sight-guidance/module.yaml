@@ -1,0 +1,67 @@
+schema_version: 1
+id: 63-follow-waypoints-and-paths-with-line-of-sight-guidance
+number: 63
+title: Follow Waypoints and Paths with Line-of-Sight Guidance
+summary: Apply line-of-sight path guidance to a straight segment and connect lookahead to heading command and exponential
+  cross-track decay.
+guiding_question: How do lookahead and speed set cross-track convergence without commanding impossible curvature?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- guidance
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: lookahead_distance_m
+  type: slider
+  label: LOS lookahead
+  default: 15.0
+  unit: m
+  minimum: 2.0
+  maximum: 60.0
+  step: 1.0
+- id: vehicle_speed_m_s
+  type: slider
+  label: Vehicle speed
+  default: 8.0
+  unit: m/s
+  minimum: 1.0
+  maximum: 25.0
+  step: 0.5
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Positive lookahead produces bounded heading commands and exponential local cross-track convergence for forward
+    speed.
+  reveal: Restore the frame/sign convention, select lookahead from curvature authority, and verify waypoint switching
+    separately.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery
