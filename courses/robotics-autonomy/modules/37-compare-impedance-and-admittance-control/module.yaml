@@ -1,0 +1,66 @@
+schema_version: 1
+id: 37-compare-impedance-and-admittance-control
+number: 37
+title: Compare Impedance and Admittance Control
+summary: Build a deterministic numerical laboratory to compare impedance and admittance control, expose its governing
+  relation, and diagnose a named counterexample before recovery.
+guiding_question: What assumptions and evidence make compare impedance and admittance control defensible?
+status: implemented
+tags:
+- robotics-autonomy
+- native-python
+- control-interaction
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: environment_stiffness_n_m
+  type: slider
+  label: Environment stiffness
+  default: 800.0
+  minimum: 50.0
+  maximum: 3000.0
+  step: 50.0
+  unit: N/m
+- id: virtual_damping_n_s_m
+  type: slider
+  label: Virtual damping
+  default: 45.0
+  minimum: 1.0
+  maximum: 150.0
+  step: 2.0
+  unit: N*s/m
+- id: broken_mode
+  type: toggle
+  label: Enable named failure
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Impedance shapes force from motion error while admittance shapes motion from force; both require an energy
+    and damping interpretation at contact.
+  reveal: Use the equations, units, and mechanism plot to test the prediction.
+- type: controls
+  title: Live model controls
+- type: metrics
+- type: plot_grid
+  title: Response and governing mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

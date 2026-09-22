@@ -285,3 +285,27 @@ def test_robotics_geometry_and_dynamics_teaching_invariants() -> None:
     assert identification[2] < signature(32, {"broken_mode": True})[2]
     assert signature(33, {"broken_mode": False})[2] == 0
     assert signature(33, {"broken_mode": True})[2] > 0
+
+
+def test_robotics_control_and_interaction_teaching_invariants() -> None:
+    runtime = ExperimentRuntime(CourseCatalog([ROOT / "courses"]))
+
+    def signature(number: int, supplied: dict[str, Any]) -> list[float]:
+        item = NATIVE[number - 25]
+        module_id = _yaml(COURSE_ROOT / item["folder"] / "module.yaml")["id"]
+        return runtime.run("robotics-autonomy", module_id, supplied).diagnostics["signature"]
+
+    for number in (34, 35, 36, 37):
+        nominal = signature(number, {"broken_mode": False})
+        broken = signature(number, {"broken_mode": True})
+        assert broken[0] > nominal[0]
+    hybrid = signature(38, {"broken_mode": False})
+    hybrid_broken = signature(38, {"broken_mode": True})
+    assert hybrid[2] == 0 < hybrid_broken[2]
+    passive = signature(39, {"broken_mode": False})
+    active = signature(39, {"broken_mode": True})
+    assert passive[0] > 0 > active[0]
+    swing_up = signature(40, {"broken_mode": False})
+    wrong_energy_sign = signature(40, {"broken_mode": True})
+    assert wrong_energy_sign[0] > swing_up[0]
+    assert wrong_energy_sign[1] > swing_up[1]

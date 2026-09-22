@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P38
+module: 38-regulate-hybrid-motion-and-contact-force
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- S v controls motion
+- (I-S)F controls force
+- S(I-S)=0
+signature:
+- field: force_error
+  unit: N
+- field: motion_leakage
+  unit: m/s
+- field: selection_orthogonality
+  unit: '1'
+teaching_invariant: Hybrid control must assign complementary motion and force subspaces so normal force regulation
+  does not corrupt tangential motion.
+limiting_cases:
+- At zero surface angle, aligned world/contact selection matrices coincide.
+- An ideal complementary selector has zero product S(I-S).
+scenarios:
+  baseline: &id001
+    force_setpoint_n: 12.0
+    surface_angle_deg: 25.0
+    broken_mode: false
+  sweep_1:
+    force_setpoint_n: 40.0
+    surface_angle_deg: 25.0
+    broken_mode: false
+  sweep_2:
+    force_setpoint_n: 12.0
+    surface_angle_deg: 80.0
+    broken_mode: false
+  broken:
+    force_setpoint_n: 12.0
+    surface_angle_deg: 25.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

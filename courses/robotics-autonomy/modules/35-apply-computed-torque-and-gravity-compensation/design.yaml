@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P35
+module: 35-apply-computed-torque-and-gravity-compensation
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- tau=M(q)v+C q_dot+g
+- v=q_ddot_d-K_d e_dot-K_p e
+- e_ddot+K_d e_dot+K_p e=Delta
+signature:
+- field: tracking_error
+  unit: rad
+- field: peak_torque
+  unit: N*m
+- field: cancellation_residual
+  unit: N*m
+teaching_invariant: Computed torque yields the selected nominal error dynamics only to the extent that inertia,
+  velocity, and gravity models cancel consistently.
+limiting_cases:
+- With exact model and zero error, commanded torque equals feedforward dynamics.
+- At zero gravity, gravity compensation contributes no torque.
+scenarios:
+  baseline: &id001
+    model_error_fraction: 0.08
+    tracking_bandwidth_per_s: 3.0
+    broken_mode: false
+  sweep_1:
+    model_error_fraction: 0.6
+    tracking_bandwidth_per_s: 3.0
+    broken_mode: false
+  sweep_2:
+    model_error_fraction: 0.08
+    tracking_bandwidth_per_s: 8.0
+    broken_mode: false
+  broken:
+    model_error_fraction: 0.08
+    tracking_bandwidth_per_s: 3.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

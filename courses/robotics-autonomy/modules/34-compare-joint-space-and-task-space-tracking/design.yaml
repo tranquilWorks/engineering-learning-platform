@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P34
+module: 34-compare-joint-space-and-task-space-tracking
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- tau=-K_q(q-q_d)
+- F=-K_x(x-x_d)
+- tau=J^T F
+signature:
+- field: joint_error
+  unit: rad
+- field: task_error
+  unit: m
+- field: control_effort
+  unit: N*m
+teaching_invariant: Joint and task tracking optimize different errors; Jacobian conditioning determines how joint
+  error maps into Cartesian error and effort.
+limiting_cases:
+- At identity Jacobian, equally scaled joint and task laws coincide.
+- Near singularity, small task corrections can demand large joint motion or effort.
+scenarios:
+  baseline: &id001
+    jacobian_condition: 4.0
+    joint_gain_per_s: 3.0
+    broken_mode: false
+  sweep_1:
+    jacobian_condition: 40.0
+    joint_gain_per_s: 3.0
+    broken_mode: false
+  sweep_2:
+    jacobian_condition: 4.0
+    joint_gain_per_s: 10.0
+    broken_mode: false
+  broken:
+    jacobian_condition: 4.0
+    joint_gain_per_s: 3.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

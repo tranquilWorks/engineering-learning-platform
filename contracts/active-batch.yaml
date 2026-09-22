@@ -1,10 +1,10 @@
 schema_version: 1
 batch:
-  id: ELP-ROB-GEOMETRY-DYNAMICS-P25-P33
-  title: Robotics geometry and dynamics expansion P25-P33
-  goal: 'Complete the next coherent issue-440 expansion batch for P25, P26, P27, P28, P29, P30, P31, P32, P33: configuration
-    spaces; SO(3)/SE(3); twists, screws, and adjoints; spatial Jacobians and singularities; redundancy and null-space motion;
-    statics and wrenches; manipulator dynamics; inverse dynamics and identification; multi-joint time scaling.'
+  id: ELP-ROB-CONTROL-INTERACTION-P34-P40
+  title: Robotics control and interaction expansion P34-P40
+  goal: 'Complete the next coherent issue-440 expansion batch for P34, P35, P36, P37, P38, P39, P40: joint-space versus task-space
+    tracking; computed torque and gravity compensation; operational-space control; impedance and admittance; hybrid motion/force
+    control; passivity under saturation and delay; underactuated swing-up and balance.'
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
@@ -12,19 +12,19 @@ sources:
   - products/engineering-learning-platform/course-caliber.yaml
   - products/engineering-learning-platform/competency-maps/robotics-autonomy.yaml
   - tranquilWorks/portfolio-control#440
-  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-ROB-GEOMETRY-DYNAMICS-P25-P33
-  baseline_commit: abc937948f9db5ab6cbe621652d3dcda744dffb6
-  baseline_tree: b321d94ed7b5ee8826d7d9cd3bd13f4d2290d009
+  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-ROB-CONTROL-INTERACTION-P34-P40
+  baseline_commit: 3a1dcec4576df4f85fb0af890210f92cd405a835
+  baseline_tree: e2b4409955068e789626b699471c6372b8205785
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_baseline: 008da76e3b101cca2feea2ff32eaa3e70d0d71c7
-  control_plane_path: products/engineering-learning-platform/batches/ELP-ROB-GEOMETRY-DYNAMICS-P25-P33.yaml
+  control_plane_baseline: f38660638470a739c8ccd8131516868e0b475913
+  control_plane_path: products/engineering-learning-platform/batches/ELP-ROB-CONTROL-INTERACTION-P34-P40.yaml
   target_repository: tranquilWorks/engineering-learning-platform
   source_repository: tranquilWorks/robotics-autonomy-learning
   source_pin: f8807640258f1a6c1c77f1dcc9e61734551c585b
   source_tree: 7f8bc62382ca8d7fbe26ff4413cabf7d00d64bb9
   source_curriculum_sha256: 972eee6b99945f6c2380ba097e443b30c37ca9e4e0acfd2c7f7cde8a7550207d
 dependencies:
-- ELP-ROB-DEPTH-P17-P24
+- ELP-ROB-GEOMETRY-DYNAMICS-P25-P33
 scope:
   allowed_paths:
   - courses/robotics-autonomy/course.yaml
@@ -34,15 +34,13 @@ scope:
   - courses/robotics-autonomy/native-design.schema.json
   - courses/robotics-autonomy/expansion-map.yaml
   - courses/robotics-autonomy/expansion_reference_cases.py
-  - courses/robotics-autonomy/modules/25-*/**
-  - courses/robotics-autonomy/modules/26-*/**
-  - courses/robotics-autonomy/modules/27-*/**
-  - courses/robotics-autonomy/modules/28-*/**
-  - courses/robotics-autonomy/modules/29-*/**
-  - courses/robotics-autonomy/modules/30-*/**
-  - courses/robotics-autonomy/modules/31-*/**
-  - courses/robotics-autonomy/modules/32-*/**
-  - courses/robotics-autonomy/modules/33-*/**
+  - courses/robotics-autonomy/modules/34-*/**
+  - courses/robotics-autonomy/modules/35-*/**
+  - courses/robotics-autonomy/modules/36-*/**
+  - courses/robotics-autonomy/modules/37-*/**
+  - courses/robotics-autonomy/modules/38-*/**
+  - courses/robotics-autonomy/modules/39-*/**
+  - courses/robotics-autonomy/modules/40-*/**
   - courses/robotics-autonomy/conversion-manifest.yaml
   - courses/robotics-autonomy/coverage.yaml
   - apps/api/tests/test_robotics_expansion.py
@@ -57,7 +55,7 @@ scope:
   - docs/CURRENT_STATE.md
   - docs/HANDOFF.md
   - docs/ROADMAP.md
-  - docs/evidence/ELP-ROB-GEOMETRY-DYNAMICS-P25-P33-*.md
+  - docs/evidence/ELP-ROB-CONTROL-INTERACTION-P34-P40-*.md
   forbidden_paths:
   - courses/robotics-autonomy-learning
   - courses/robotics-autonomy-learning/**
@@ -85,13 +83,15 @@ scope:
   - courses/robotics-autonomy/modules/22-*/**
   - courses/robotics-autonomy/modules/23-*/**
   - courses/robotics-autonomy/modules/24-*/**
-  - courses/robotics-autonomy/modules/34-*/**
-  - courses/robotics-autonomy/modules/35-*/**
-  - courses/robotics-autonomy/modules/36-*/**
-  - courses/robotics-autonomy/modules/37-*/**
-  - courses/robotics-autonomy/modules/38-*/**
-  - courses/robotics-autonomy/modules/39-*/**
-  - courses/robotics-autonomy/modules/40-*/**
+  - courses/robotics-autonomy/modules/25-*/**
+  - courses/robotics-autonomy/modules/26-*/**
+  - courses/robotics-autonomy/modules/27-*/**
+  - courses/robotics-autonomy/modules/28-*/**
+  - courses/robotics-autonomy/modules/29-*/**
+  - courses/robotics-autonomy/modules/30-*/**
+  - courses/robotics-autonomy/modules/31-*/**
+  - courses/robotics-autonomy/modules/32-*/**
+  - courses/robotics-autonomy/modules/33-*/**
   - courses/robotics-autonomy/modules/41-*/**
   - courses/robotics-autonomy/modules/42-*/**
   - courses/robotics-autonomy/modules/43-*/**
@@ -142,11 +142,11 @@ scope:
   - Dockerfile
   - compose.yaml
 acceptance:
-- Start only after the exact control commit containing this contract is merged. Use exact clean target main abc937948f9db5ab6cbe621652d3dcda744dffb6,
-  tree b321d94ed7b5ee8826d7d9cd3bd13f4d2290d009; any target, control, source, map, index, or worktree drift stops implementation.
-- 'Implement exactly P25, P26, P27, P28, P29, P30, P31, P32, P33 as Python-first native modules from the reviewed map: configuration
-  spaces; SO(3)/SE(3); twists, screws, and adjoints; spatial Jacobians and singularities; redundancy and null-space motion;
-  statics and wrenches; manipulator dynamics; inverse dynamics and identification; multi-joint time scaling.'
+- Start only after the exact control commit containing this contract is merged. Use exact clean target main 3a1dcec4576df4f85fb0af890210f92cd405a835,
+  tree e2b4409955068e789626b699471c6372b8205785; any target, control, source, map, index, or worktree drift stops implementation.
+- 'Implement exactly P34, P35, P36, P37, P38, P39, P40 as Python-first native modules from the reviewed map: joint-space versus
+  task-space tracking; computed torque and gravity compensation; operational-space control; impedance and admittance; hybrid
+  motion/force control; passivity under saturation and delay; underactuated swing-up and balance.'
 - Treat every ID as a separately reviewed work item with a complete learner lesson, unique executable model, baseline, two
   one-variable sweeps, broken behavior, exact recovery, limiting cases, domain quantities/units, and a named teaching invariant.
 - Use an independent reference that imports no production experiment, consumes no production result, and perturbs no production
@@ -155,11 +155,10 @@ acceptance:
   claim conversion or MATLAB equivalence for native additions.
 - Every plot and metric must retain domain-specific quantities and units. Every runtime must remain deterministic, finite,
   bounded, and within the trusted Python timeout.
-- Preserve every module outside P25, P26, P27, P28, P29, P30, P31, P32, P33, the source gitlink and source evidence, every
-  other course, generic platform behavior, dependencies, workflows, and deployment artifacts byte-identically.
-- 'End with 33 implemented/deepened Robotics modules visible at this checkpoint and a five-course catalog of 187 modules,
-  all interactive. P34-P69 remain: control and interaction, perception, SLAM, planning, manipulation, systems integration,
-  and two cumulative capstones.'
+- Preserve every module outside P34, P35, P36, P37, P38, P39, P40, the source gitlink and source evidence, every other course,
+  generic platform behavior, dependencies, workflows, and deployment artifacts byte-identically.
+- 'End with 40 implemented/deepened Robotics modules visible at this checkpoint and a five-course catalog of 194 modules,
+  all interactive. P41-P69 remain: perception, SLAM, planning, manipulation, systems integration, and two cumulative capstones.'
 - Record exact local verification. Hosted CI is not a completion gate by owner direction; keep MATLAB, browser/accessibility,
   learner, physical HIL/hardware, certification, release, deployment, credentials/settings, and production evidence explicitly
   unperformed.
@@ -200,11 +199,11 @@ rollback:
     source or prior batches.
 evidence:
   output:
-  - docs/evidence/ELP-ROB-GEOMETRY-DYNAMICS-P25-P33-2026-09-22.md
+  - docs/evidence/ELP-ROB-CONTROL-INTERACTION-P34-P40-2026-09-22.md
   - per-item derivation/model, scenario, invariant, tolerance, axis, limitation, and residual-risk review
   - focused, regression, full, deterministic catalog, lint, diff, scope, and source-cleanliness results
   - one target squash merge and explicit unperformed evidence
-  claim_boundary: 'This batch covers only P25, P26, P27, P28, P29, P30, P31, P32, P33 at a deterministic software-only boundary.
-    P34-P69 remain: control and interaction, perception, SLAM, planning, manipulation, systems integration, and two cumulative
-    capstones. It does not execute MATLAB, validate learners or browser accessibility, operate physical HIL/hardware, certify
-    safety, or authorize release, deployment, credentials/settings, or production use.'
+  claim_boundary: 'This batch covers only P34, P35, P36, P37, P38, P39, P40 at a deterministic software-only boundary. P41-P69
+    remain: perception, SLAM, planning, manipulation, systems integration, and two cumulative capstones. It does not execute
+    MATLAB, validate learners or browser accessibility, operate physical HIL/hardware, certify safety, or authorize release,
+    deployment, credentials/settings, or production use.'
