@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "item_id": "P53",
+  "signature_fields": [
+    {
+      "field": "smoothed_rmse",
+      "unit": "m"
+    },
+    {
+      "field": "consistency_ratio",
+      "unit": "1"
+    },
+    {
+      "field": "heldout_map_error",
+      "unit": "m"
+    }
+  ],
+  "origin": {
+    "kind": "independent-analytic-python",
+    "item_id": "P53",
+    "independent": true,
+    "imports_production_entrypoint": false,
+    "derived_from_production_output": false,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "process_noise": 0.06,
+        "measurement_noise": 0.15,
+        "broken_mode": false
+      },
+      "signature": [
+        0.034830218840569104,
+        0.9629629629629629,
+        0.09936613216746079
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "process_noise": 0.5,
+        "measurement_noise": 0.15,
+        "broken_mode": false
+      },
+      "signature": [
+        0.007120494350136375,
+        1.0,
+        0.09037480200978411
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "process_noise": 0.06,
+        "measurement_noise": 1.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.07283725335437781,
+        1.0,
+        0.6161368231469574
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "process_noise": 0.06,
+        "measurement_noise": 0.15,
+        "broken_mode": true
+      },
+      "signature": [
+        0.056480195906314846,
+        0.43209876543209874,
+        0.10642418417035024
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "process_noise": 0.06,
+        "measurement_noise": 0.15,
+        "broken_mode": false
+      },
+      "signature": [
+        0.034830218840569104,
+        0.9629629629629629,
+        0.09936613216746079
+      ]
+    }
+  }
+}

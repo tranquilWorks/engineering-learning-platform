@@ -338,3 +338,32 @@ def test_robotics_perception_teaching_invariants() -> None:
     occupancy = signature(47, {"broken_mode": False})
     endpoint_only = signature(47, {"broken_mode": True})
     assert occupancy[2] < endpoint_only[2]
+
+
+def test_robotics_slam_teaching_invariants() -> None:
+    runtime = ExperimentRuntime(CourseCatalog([ROOT / "courses"]))
+
+    def signature(number: int, supplied: dict[str, Any]) -> list[float]:
+        item = NATIVE[number - 25]
+        module_id = _yaml(COURSE_ROOT / item["folder"] / "module.yaml")["id"]
+        return runtime.run("robotics-autonomy", module_id, supplied).diagnostics["signature"]
+
+    observable = signature(49, {"broken_mode": False})
+    synchronized_badly = signature(49, {"broken_mode": True})
+    assert observable[0] > synchronized_badly[0]
+    assert observable[1] < synchronized_badly[1]
+    gated = signature(50, {"broken_mode": False})
+    ungated = signature(50, {"broken_mode": True})
+    assert gated[1] > ungated[1] and gated[2] < ungated[2]
+    for number in (51, 53):
+        nominal = signature(number, {"broken_mode": False})
+        broken = signature(number, {"broken_mode": True})
+        assert nominal[0] < broken[0]
+    verified_loop = signature(52, {"broken_mode": False})
+    false_loop = signature(52, {"broken_mode": True})
+    assert false_loop[0] > 0
+    assert verified_loop[1] < false_loop[1]
+    assert verified_loop[2] < false_loop[2]
+    consistent = signature(53, {"broken_mode": False})
+    inconsistent = signature(53, {"broken_mode": True})
+    assert consistent[1] > inconsistent[1] and consistent[2] < inconsistent[2]

@@ -1,0 +1,67 @@
+schema_version: 1
+id: 53-smooth-trajectories-and-audit-map-consistency
+number: 53
+title: Smooth Trajectories and Audit Map Consistency
+summary: Run a constant-velocity Kalman filter and Rauch-Tung-Striebel backward pass, propagate covariance, and test the
+  result against withheld absolute-position fixes.
+guiding_question: How can a smoother lower trajectory error while still failing a covariance or held-out map-consistency
+  audit?
+status: implemented
+tags:
+- robotics-autonomy
+- native-python
+- slam
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: process_noise
+  type: slider
+  label: Process noise
+  default: 0.06
+  minimum: 0.001
+  maximum: 0.5
+  step: 0.005
+  unit: m/s^2
+- id: measurement_noise
+  type: slider
+  label: Measurement noise
+  default: 0.15
+  minimum: 0.01
+  maximum: 1.0
+  step: 0.01
+  unit: m
+- id: broken_mode
+  type: toggle
+  label: Enable named failure
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Smoothing may use future data to reduce past error, but consistency and held-out map geometry must remain
+    explicit.
+  reveal: Use the equations, units, and mechanism plot to test the prediction.
+- type: controls
+  title: Live model controls
+- type: metrics
+- type: plot_grid
+  title: Response and governing mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

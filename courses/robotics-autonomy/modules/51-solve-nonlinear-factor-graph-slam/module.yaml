@@ -1,0 +1,66 @@
+schema_version: 1
+id: 51-solve-nonlinear-factor-graph-slam
+number: 51
+title: Solve Nonlinear Factor-Graph SLAM
+summary: Optimize a two-dimensional pose graph with odometry, loop, prior, and nonlinear landmark-range factors while
+  exposing gauge freedom and relinearization behavior.
+guiding_question: What must be fixed, relinearized, and audited before a low factor residual can support a SLAM claim?
+status: implemented
+tags:
+- robotics-autonomy
+- native-python
+- slam
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: loop_noise_m
+  type: slider
+  label: Loop-closure noise
+  default: 0.08
+  minimum: 0.005
+  maximum: 0.5
+  step: 0.005
+  unit: m
+- id: pose_count
+  type: slider
+  label: Graph poses
+  default: 30.0
+  minimum: 5.0
+  maximum: 100.0
+  step: 5.0
+  unit: count
+- id: broken_mode
+  type: toggle
+  label: Enable named failure
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Nonlinear SLAM requires explicit gauge fixing, iterated relinearization, and residual checks beyond a single
+    normal-equation solve.
+  reveal: Use the equations, units, and mechanism plot to test the prediction.
+- type: controls
+  title: Live model controls
+- type: metrics
+- type: plot_grid
+  title: Response and governing mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

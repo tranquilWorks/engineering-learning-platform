@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "item_id": "P51",
+  "signature_fields": [
+    {
+      "field": "trajectory_rmse",
+      "unit": "m"
+    },
+    {
+      "field": "gauge_residual",
+      "unit": "m"
+    },
+    {
+      "field": "normal_condition",
+      "unit": "1"
+    }
+  ],
+  "origin": {
+    "kind": "independent-analytic-python",
+    "item_id": "P51",
+    "independent": true,
+    "imports_production_entrypoint": false,
+    "derived_from_production_output": false,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "loop_noise_m": 0.08,
+        "pose_count": 30.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.012172684762798806,
+        0.002303392270687013,
+        85.82395855625549
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "loop_noise_m": 0.5,
+        "pose_count": 30.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.009589522618660225,
+        0.0023757197396582466,
+        160.20210140185887
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "loop_noise_m": 0.08,
+        "pose_count": 100.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.018868759885446028,
+        0.0018504313616980897,
+        611.2830315136036
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "loop_noise_m": 0.08,
+        "pose_count": 30.0,
+        "broken_mode": true
+      },
+      "signature": [
+        0.5491952667579719,
+        0.46016263875887325,
+        1000000000000.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "loop_noise_m": 0.08,
+        "pose_count": 30.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.012172684762798806,
+        0.002303392270687013,
+        85.82395855625549
+      ]
+    }
+  }
+}
