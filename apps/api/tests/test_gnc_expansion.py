@@ -207,3 +207,63 @@ def test_gnc_state_and_digital_teaching_invariants() -> None:
     assert signature(41, {"broken_mode": True})[2] > signature(41, {"broken_mode": False})[2]
     assert signature(42, {"broken_mode": False})[0] == 0
     assert signature(42, {"broken_mode": True})[0] > 0
+
+
+def test_gnc_nonlinear_robust_and_identification_teaching_invariants() -> None:
+    catalog = CourseCatalog([ROOT / "courses"])
+    runtime = ExperimentRuntime(catalog)
+
+    def signature(number: int, supplied: dict[str, Any]) -> list[float]:
+        item = NATIVE[number - 25]
+        module_id = _yaml(COURSE_ROOT / item["folder"] / "module.yaml")["id"]
+        return runtime.run("controls-gnc", module_id, supplied).diagnostics["signature"]
+
+    phase_nominal = signature(43, {"broken_mode": False})
+    phase_broken = signature(43, {"broken_mode": True})
+    assert phase_nominal[0] < 0 < phase_broken[0]
+    assert phase_nominal[1] < phase_broken[1]
+
+    lyapunov_nominal = signature(44, {"broken_mode": False})
+    lyapunov_broken = signature(44, {"broken_mode": True})
+    assert lyapunov_nominal[0] > 0 > lyapunov_broken[0]
+    assert lyapunov_nominal[1] < 0 < lyapunov_broken[1]
+
+    barrier_nominal = signature(45, {"broken_mode": False})
+    barrier_broken = signature(45, {"broken_mode": True})
+    assert barrier_nominal[1] > 0
+    assert barrier_nominal[2] > 0
+    assert barrier_broken[1] <= 0
+    assert barrier_broken[2] == 0
+
+    schedule_nominal = signature(46, {"broken_mode": False})
+    schedule_broken = signature(46, {"broken_mode": True})
+    assert schedule_nominal[1] == 0
+    assert schedule_nominal[2] < schedule_broken[2]
+
+    linearization_nominal = signature(47, {"broken_mode": False})
+    linearization_broken = signature(47, {"broken_mode": True})
+    assert linearization_nominal[0] < linearization_broken[0]
+    assert linearization_nominal[2] < linearization_broken[2]
+
+    robust_nominal = signature(48, {"broken_mode": False})
+    robust_broken = signature(48, {"broken_mode": True})
+    assert robust_nominal[0] > 0 > robust_broken[0]
+    assert robust_nominal[1] < robust_broken[1]
+
+    mpc_nominal = signature(49, {"broken_mode": False})
+    mpc_broken = signature(49, {"broken_mode": True})
+    assert abs(mpc_nominal[0]) <= 0.8
+    assert abs(mpc_broken[0]) > 0.3
+    assert mpc_broken[1] == 1
+
+    identification_nominal = signature(50, {"broken_mode": False})
+    identification_broken = signature(50, {"broken_mode": True})
+    assert identification_nominal[0] < identification_broken[0]
+    assert identification_nominal[1] < identification_broken[1]
+    assert identification_nominal[2] < identification_broken[2]
+
+    adaptation_nominal = signature(51, {"broken_mode": False})
+    adaptation_broken = signature(51, {"broken_mode": True})
+    assert adaptation_nominal[0] < adaptation_broken[0]
+    assert adaptation_nominal[2] > 0
+    assert adaptation_broken[2] == 0

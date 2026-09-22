@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "item_id": "P46",
+  "signature_fields": [
+    {
+      "field": "scheduled_bandwidth",
+      "unit": "1/s"
+    },
+    {
+      "field": "bandwidth_error",
+      "unit": "1/s"
+    },
+    {
+      "field": "interpolation_error",
+      "unit": "1"
+    }
+  ],
+  "origin": {
+    "kind": "production-experiment",
+    "independent": false,
+    "imports_production_entrypoint": true,
+    "derived_from_production_output": true,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "operating_point": 0.5,
+        "grid_spacing": 0.25,
+        "broken_mode": false
+      },
+      "signature": [
+        2.0,
+        0.0,
+        0.0078125
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "operating_point": 1.0,
+        "grid_spacing": 0.25,
+        "broken_mode": false
+      },
+      "signature": [
+        2.0,
+        0.0,
+        0.0078125
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "operating_point": 0.5,
+        "grid_spacing": 0.5,
+        "broken_mode": false
+      },
+      "signature": [
+        2.0,
+        0.0,
+        0.03125
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "operating_point": 0.5,
+        "grid_spacing": 0.25,
+        "broken_mode": true
+      },
+      "signature": [
+        3.0,
+        1.0,
+        0.03125
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "operating_point": 0.5,
+        "grid_spacing": 0.25,
+        "broken_mode": false
+      },
+      "signature": [
+        2.0,
+        0.0,
+        0.0078125
+      ]
+    }
+  }
+}

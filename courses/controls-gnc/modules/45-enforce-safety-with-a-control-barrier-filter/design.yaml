@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P45
+module: 45-enforce-safety-with-a-control-barrier-filter
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- h=x-x_min
+- h_dot+alpha*h>=0
+- u_safe=argmin |u-u_nom| subject to u>=-alpha*h
+signature:
+- field: filtered_command
+  unit: m/s
+- field: one_step_safety_margin
+  unit: m
+- field: intervention
+  unit: m/s
+teaching_invariant: The filtered command satisfies the declared barrier inequality and equals the nominal command
+  whenever that command is already safe.
+limiting_cases:
+- Far from the boundary a safe nominal command passes unchanged.
+- At the boundary the filter prohibits negative hdot.
+scenarios:
+  baseline: &id001
+    barrier_gain_per_s: 2.0
+    nominal_closing_speed: 1.5
+    broken_mode: false
+  sweep_1:
+    barrier_gain_per_s: 8.0
+    nominal_closing_speed: 1.5
+    broken_mode: false
+  sweep_2:
+    barrier_gain_per_s: 2.0
+    nominal_closing_speed: 4.0
+    broken_mode: false
+  broken:
+    barrier_gain_per_s: 2.0
+    nominal_closing_speed: 1.5
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

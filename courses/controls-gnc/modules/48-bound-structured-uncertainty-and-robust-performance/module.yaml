@@ -1,0 +1,68 @@
+schema_version: 1
+id: 48-bound-structured-uncertainty-and-robust-performance
+number: 48
+title: Bound Structured Uncertainty and Robust Performance
+summary: Sweep a first-order pole uncertainty, calculate the worst closed-loop margin and sensitivity proxy, and
+  expose a destabilizing gain choice.
+guiding_question: How can a declared real-parameter family support a narrow robust-stability statement without becoming
+  a certification claim?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- nonlinear-robust-id
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: uncertainty_radius
+  type: slider
+  label: Pole uncertainty radius
+  default: 0.3
+  unit: '1'
+  minimum: 0.0
+  maximum: 0.9
+  step: 0.05
+- id: feedback_gain
+  type: slider
+  label: Feedback gain
+  default: 1.5
+  unit: '1'
+  minimum: 0.1
+  maximum: 4.0
+  step: 0.1
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: A robust statement is valid only for every member of the explicitly swept uncertainty family and the stated
+    performance metric.
+  reveal: Restore the sign, recompute the worst member, and report the finite family and margin rather than general
+    robust certification.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

@@ -1,0 +1,67 @@
+schema_version: 1
+id: 49-control-a-constrained-plant-with-model-predictive-control
+number: 49
+title: Control a Constrained Plant with Model-Predictive Control
+summary: Solve a scalar constrained move analytically, compare unconstrained and clipped actions, and measure one-step
+  residual cost.
+guiding_question: How does receding-horizon optimization expose feasibility, active constraints, and horizon tradeoffs?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- nonlinear-robust-id
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: prediction_horizon
+  type: slider
+  label: Prediction horizon
+  default: 6.0
+  unit: step
+  minimum: 2.0
+  maximum: 20.0
+  step: 1.0
+- id: input_limit
+  type: slider
+  label: Input limit
+  default: 0.8
+  unit: '1'
+  minimum: 0.1
+  maximum: 2.0
+  step: 0.1
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: The applied MPC move satisfies the declared input bound; an unconstrained optimum is not a feasible control
+    law when it exceeds that bound.
+  reveal: Restore the constraint projection, check feasibility before cost, and distinguish horizon approximation
+    from plant truth.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

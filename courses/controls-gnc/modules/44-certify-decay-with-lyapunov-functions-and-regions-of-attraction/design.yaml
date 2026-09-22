@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P44
+module: 44-certify-decay-with-lyapunov-functions-and-regions-of-attraction
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- V=x^2/2
+- V_dot=-x^2+mu*x^4
+- '|x|<1/sqrt(mu)'
+signature:
+- field: minimum_decay_margin
+  unit: 1/s
+- field: boundary_vdot
+  unit: 1/s
+- field: roa_radius
+  unit: '1'
+teaching_invariant: A claimed sublevel is certified only when V is positive and Vdot is strictly negative everywhere
+  except the origin.
+limiting_cases:
+- At the origin V and Vdot are zero.
+- At |x|=1/sqrt(mu), Vdot reaches zero and strict decay is lost.
+scenarios:
+  baseline: &id001
+    sublevel_radius: 0.7
+    cubic_coefficient: 0.8
+    broken_mode: false
+  sweep_1:
+    sublevel_radius: 1.4
+    cubic_coefficient: 0.8
+    broken_mode: false
+  sweep_2:
+    sublevel_radius: 0.7
+    cubic_coefficient: 1.5
+    broken_mode: false
+  broken:
+    sublevel_radius: 0.7
+    cubic_coefficient: 0.8
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

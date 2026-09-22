@@ -1,0 +1,65 @@
+schema_version: 1
+id: 43-use-phase-portraits-to-separate-local-and-global-stability
+number: 43
+title: Use Phase Portraits to Separate Local and Global Stability
+summary: Trace a damped Duffing trajectory, compare local decay with basin-scale energy motion, and identify negative
+  damping as a global failure.
+guiding_question: What can a nonlinear phase portrait reveal that a local eigenvalue calculation cannot?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- nonlinear-robust-id
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: damping_per_s
+  type: slider
+  label: Damping
+  default: 0.25
+  unit: 1/s
+  minimum: 0.02
+  maximum: 1.0
+  step: 0.02
+- id: initial_energy
+  type: slider
+  label: Initial energy
+  default: 0.8
+  unit: J
+  minimum: 0.05
+  maximum: 2.5
+  step: 0.05
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Positive damping makes energy nonincreasing even when a local linearization does not describe the full basin.
+  reveal: Restore positive dissipation and verify both local eigenvalues and global energy decrease.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

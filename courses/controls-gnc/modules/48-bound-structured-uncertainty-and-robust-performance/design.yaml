@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P48
+module: 48-bound-structured-uncertainty-and-robust-performance
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- p(delta)=-(1+delta)
+- lambda_cl=p(delta)-K
+- margin=min_delta -Re(lambda_cl)
+signature:
+- field: worst_stability_margin
+  unit: 1/s
+- field: worst_sensitivity
+  unit: '1'
+- field: family_width
+  unit: 1/s
+teaching_invariant: A robust statement is valid only for every member of the explicitly swept uncertainty family
+  and the stated performance metric.
+limiting_cases:
+- At zero uncertainty the family collapses to the nominal plant.
+- Worst margin occurs at an interval endpoint for this affine scalar family.
+scenarios:
+  baseline: &id001
+    uncertainty_radius: 0.3
+    feedback_gain: 1.5
+    broken_mode: false
+  sweep_1:
+    uncertainty_radius: 0.9
+    feedback_gain: 1.5
+    broken_mode: false
+  sweep_2:
+    uncertainty_radius: 0.3
+    feedback_gain: 4.0
+    broken_mode: false
+  broken:
+    uncertainty_radius: 0.3
+    feedback_gain: 1.5
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

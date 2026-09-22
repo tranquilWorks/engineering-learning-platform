@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "item_id": "P45",
+  "signature_fields": [
+    {
+      "field": "filtered_command",
+      "unit": "m/s"
+    },
+    {
+      "field": "one_step_safety_margin",
+      "unit": "m"
+    },
+    {
+      "field": "intervention",
+      "unit": "m/s"
+    }
+  ],
+  "origin": {
+    "kind": "production-experiment",
+    "independent": false,
+    "imports_production_entrypoint": true,
+    "derived_from_production_output": true,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "barrier_gain_per_s": 2.0,
+        "nominal_closing_speed": 1.5,
+        "broken_mode": false
+      },
+      "signature": [
+        -0.8,
+        0.32,
+        0.7
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "barrier_gain_per_s": 8.0,
+        "nominal_closing_speed": 1.5,
+        "broken_mode": false
+      },
+      "signature": [
+        -1.5,
+        0.25,
+        0.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "barrier_gain_per_s": 2.0,
+        "nominal_closing_speed": 4.0,
+        "broken_mode": false
+      },
+      "signature": [
+        -0.8,
+        0.32,
+        3.2
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "barrier_gain_per_s": 2.0,
+        "nominal_closing_speed": 1.5,
+        "broken_mode": true
+      },
+      "signature": [
+        -4.0,
+        0.0,
+        0.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "barrier_gain_per_s": 2.0,
+        "nominal_closing_speed": 1.5,
+        "broken_mode": false
+      },
+      "signature": [
+        -0.8,
+        0.32,
+        0.7
+      ]
+    }
+  }
+}

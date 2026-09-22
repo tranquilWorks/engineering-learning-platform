@@ -185,7 +185,7 @@ release, deployment, credentials/settings, or production use.
 
 **Depends on:** ELP-GNC-FIDELITY-P01-P24
 
-Issue #439 derives a 68-module course from a reviewed competency and prerequisite map rather than a fixed lesson quota. The 44 native Python additions are divided into coherent batches of 9, 9, 9, 5, 6, 3, and 3 lessons. P25-P42 now implement the modeling/classical and state/digital batches with independent five-scenario evidence. P43-P68 remain sequenced but unimplemented.
+Issue #439 derives a 68-module course from a reviewed competency and prerequisite map rather than a fixed lesson quota. The 44 native Python additions are divided into coherent batches of 9, 9, 9, 5, 6, 3, and 3 lessons. P25-P51 now implement modeling/classical, state/digital, nonlinear/constrained/robust, identification, and adaptation with independent five-scenario evidence. P52-P68 remain sequenced but unimplemented.
 
 The final three lessons are cumulative capstones: identification/control/estimation under uncertainty; navigation/guidance of a constrained survey; and a requirements-traced faulted software-HIL GNC loop. Issue #439 remains open until every batch and capstone is implemented and locally verified. Native additions do not claim MATLAB/source equivalence, and the entire lane remains software-only.
 
