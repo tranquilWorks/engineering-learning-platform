@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P40
+module: 40-swing-up-and-balance-an-underactuated-robot
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- u=k(E_d-E) q_dot cos(q)
+- E=1/2 m l^2 q_dot^2+mgl(1-cos q)
+- switch to balance inside capture region
+signature:
+- field: capture_time
+  unit: s
+- field: terminal_angle_error
+  unit: rad
+- field: peak_energy_error
+  unit: J
+teaching_invariant: Energy shaping must add energy below the upright target, remove it above target, and hand off
+  to balancing only inside a reachable capture region.
+limiting_cases:
+- At the hanging equilibrium with zero velocity, energy error is maximal.
+- At exact upright rest, energy error and balance error are zero.
+scenarios:
+  baseline: &id001
+    energy_gain_per_s: 1.4
+    torque_limit_n_m: 2.2
+    broken_mode: false
+  sweep_1:
+    energy_gain_per_s: 4.0
+    torque_limit_n_m: 2.2
+    broken_mode: false
+  sweep_2:
+    energy_gain_per_s: 1.4
+    torque_limit_n_m: 6.0
+    broken_mode: false
+  broken:
+    energy_gain_per_s: 1.4
+    torque_limit_n_m: 2.2
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

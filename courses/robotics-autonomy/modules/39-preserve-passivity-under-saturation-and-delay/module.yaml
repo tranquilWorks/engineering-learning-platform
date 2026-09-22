@@ -1,0 +1,66 @@
+schema_version: 1
+id: 39-preserve-passivity-under-saturation-and-delay
+number: 39
+title: Preserve Passivity under Saturation and Delay
+summary: Build a deterministic numerical laboratory to preserve passivity under saturation and delay, expose its
+  governing relation, and diagnose a named counterexample before recovery.
+guiding_question: What assumptions and evidence make preserve passivity under saturation and delay defensible?
+status: implemented
+tags:
+- robotics-autonomy
+- native-python
+- control-interaction
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: round_trip_delay_ms
+  type: slider
+  label: Round-trip delay
+  default: 18.0
+  minimum: 0.0
+  maximum: 120.0
+  step: 2.0
+  unit: ms
+- id: force_limit_n
+  type: slider
+  label: Force limit
+  default: 25.0
+  minimum: 2.0
+  maximum: 80.0
+  step: 1.0
+  unit: N
+- id: broken_mode
+  type: toggle
+  label: Enable named failure
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: A delayed saturated interaction remains within this lesson's claim only when observed net energy and the
+    energy tank stay nonnegative.
+  reveal: Use the equations, units, and mechanism plot to test the prediction.
+- type: controls
+  title: Live model controls
+- type: metrics
+- type: plot_grid
+  title: Response and governing mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

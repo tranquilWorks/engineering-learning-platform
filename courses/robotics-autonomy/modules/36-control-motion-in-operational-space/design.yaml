@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P36
+module: 36-control-motion-in-operational-space
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- Lambda=(J M^-1 J^T)^-1
+- F=Lambda a_des+mu+p
+- tau=J^T F+N^T tau_0
+signature:
+- field: task_acceleration_error
+  unit: m/s^2
+- field: null_torque_leakage
+  unit: N*m
+- field: effective_inertia
+  unit: kg
+teaching_invariant: Operational-space control must use dynamically consistent task inertia and a null torque that
+  does not disturb the commanded task.
+limiting_cases:
+- At identity unit inertia and Jacobian, operational and joint acceleration commands coincide.
+- At singularity, unregularized task inertia becomes ill-conditioned.
+scenarios:
+  baseline: &id001
+    task_inertia_kg: 2.0
+    jacobian_condition: 5.0
+    broken_mode: false
+  sweep_1:
+    task_inertia_kg: 8.0
+    jacobian_condition: 5.0
+    broken_mode: false
+  sweep_2:
+    task_inertia_kg: 2.0
+    jacobian_condition: 30.0
+    broken_mode: false
+  broken:
+    task_inertia_kg: 2.0
+    jacobian_condition: 5.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

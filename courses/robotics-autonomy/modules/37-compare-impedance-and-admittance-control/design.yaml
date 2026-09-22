@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P37
+module: 37-compare-impedance-and-admittance-control
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- F=K_v(x_d-x)-B_v x_dot
+- M_a x_ddot+B_a x_dot+K_a x=F_ext
+- E=1/2 K_v e^2
+signature:
+- field: peak_contact_force
+  unit: N
+- field: settling_time
+  unit: s
+- field: interaction_energy
+  unit: J
+teaching_invariant: Impedance shapes force from motion error while admittance shapes motion from force; both require
+  an energy and damping interpretation at contact.
+limiting_cases:
+- In free space, environment contact force is zero.
+- With very large environment stiffness, small penetration creates large force and demands adequate damping.
+scenarios:
+  baseline: &id001
+    environment_stiffness_n_m: 800.0
+    virtual_damping_n_s_m: 45.0
+    broken_mode: false
+  sweep_1:
+    environment_stiffness_n_m: 3000.0
+    virtual_damping_n_s_m: 45.0
+    broken_mode: false
+  sweep_2:
+    environment_stiffness_n_m: 800.0
+    virtual_damping_n_s_m: 150.0
+    broken_mode: false
+  broken:
+    environment_stiffness_n_m: 800.0
+    virtual_damping_n_s_m: 45.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

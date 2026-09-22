@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "item_id": "P36",
+  "signature_fields": [
+    {
+      "field": "task_acceleration_error",
+      "unit": "m/s^2"
+    },
+    {
+      "field": "null_torque_leakage",
+      "unit": "N*m"
+    },
+    {
+      "field": "effective_inertia",
+      "unit": "kg"
+    }
+  ],
+  "origin": {
+    "kind": "independent-analytic-python",
+    "item_id": "P36",
+    "independent": true,
+    "imports_production_entrypoint": false,
+    "derived_from_production_output": false,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "task_inertia_kg": 2.0,
+        "jacobian_condition": 5.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.1,
+        0.02,
+        2.5
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "task_inertia_kg": 8.0,
+        "jacobian_condition": 5.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.4,
+        0.08,
+        10.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "task_inertia_kg": 2.0,
+        "jacobian_condition": 30.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.6,
+        0.12,
+        5.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "task_inertia_kg": 2.0,
+        "jacobian_condition": 5.0,
+        "broken_mode": true
+      },
+      "signature": [
+        45.5,
+        36.400000000000006,
+        16.099999999999998
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "task_inertia_kg": 2.0,
+        "jacobian_condition": 5.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.1,
+        0.02,
+        2.5
+      ]
+    }
+  }
+}

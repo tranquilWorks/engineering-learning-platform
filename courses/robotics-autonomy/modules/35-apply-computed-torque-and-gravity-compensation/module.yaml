@@ -1,0 +1,66 @@
+schema_version: 1
+id: 35-apply-computed-torque-and-gravity-compensation
+number: 35
+title: Apply Computed Torque and Gravity Compensation
+summary: Build a deterministic numerical laboratory to apply computed torque and gravity compensation, expose its
+  governing relation, and diagnose a named counterexample before recovery.
+guiding_question: What assumptions and evidence make apply computed torque and gravity compensation defensible?
+status: implemented
+tags:
+- robotics-autonomy
+- native-python
+- control-interaction
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: model_error_fraction
+  type: slider
+  label: Dynamics-model error
+  default: 0.08
+  minimum: 0.0
+  maximum: 0.6
+  step: 0.02
+  unit: '1'
+- id: tracking_bandwidth_per_s
+  type: slider
+  label: Tracking bandwidth
+  default: 3.0
+  minimum: 0.5
+  maximum: 8.0
+  step: 0.25
+  unit: 1/s
+- id: broken_mode
+  type: toggle
+  label: Enable named failure
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Computed torque yields the selected nominal error dynamics only to the extent that inertia, velocity, and
+    gravity models cancel consistently.
+  reveal: Use the equations, units, and mechanism plot to test the prediction.
+- type: controls
+  title: Live model controls
+- type: metrics
+- type: plot_grid
+  title: Response and governing mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

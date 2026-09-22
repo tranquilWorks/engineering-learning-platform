@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P39
+module: 39-preserve-passivity-under-saturation-and-delay
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- E_obs=integral F^T v dt
+- E_tank>=0
+- delay consumes phase and passivity margin
+signature:
+- field: passivity_energy
+  unit: J
+- field: saturation_fraction
+  unit: '1'
+- field: delay_margin
+  unit: ms
+teaching_invariant: A delayed saturated interaction remains within this lesson's claim only when observed net energy
+  and the energy tank stay nonnegative.
+limiting_cases:
+- At zero delay, delay-induced energy injection vanishes in the ideal sampled model.
+- With an infinite force limit, saturation fraction tends to zero but delay risk remains.
+scenarios:
+  baseline: &id001
+    round_trip_delay_ms: 18.0
+    force_limit_n: 25.0
+    broken_mode: false
+  sweep_1:
+    round_trip_delay_ms: 120.0
+    force_limit_n: 25.0
+    broken_mode: false
+  sweep_2:
+    round_trip_delay_ms: 18.0
+    force_limit_n: 80.0
+    broken_mode: false
+  broken:
+    round_trip_delay_ms: 18.0
+    force_limit_n: 25.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

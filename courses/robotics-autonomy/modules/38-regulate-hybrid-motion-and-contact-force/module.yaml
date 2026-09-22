@@ -1,0 +1,66 @@
+schema_version: 1
+id: 38-regulate-hybrid-motion-and-contact-force
+number: 38
+title: Regulate Hybrid Motion and Contact Force
+summary: Build a deterministic numerical laboratory to regulate hybrid motion and contact force, expose its governing
+  relation, and diagnose a named counterexample before recovery.
+guiding_question: What assumptions and evidence make regulate hybrid motion and contact force defensible?
+status: implemented
+tags:
+- robotics-autonomy
+- native-python
+- control-interaction
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: force_setpoint_n
+  type: slider
+  label: Normal-force setpoint
+  default: 12.0
+  minimum: 1.0
+  maximum: 40.0
+  step: 1.0
+  unit: N
+- id: surface_angle_deg
+  type: slider
+  label: Surface angle
+  default: 25.0
+  minimum: 0.0
+  maximum: 80.0
+  step: 5.0
+  unit: deg
+- id: broken_mode
+  type: toggle
+  label: Enable named failure
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Hybrid control must assign complementary motion and force subspaces so normal force regulation does not
+    corrupt tangential motion.
+  reveal: Use the equations, units, and mechanism plot to test the prediction.
+- type: controls
+  title: Live model controls
+- type: metrics
+- type: plot_grid
+  title: Response and governing mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery
