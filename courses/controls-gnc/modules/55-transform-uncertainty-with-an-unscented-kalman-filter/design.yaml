@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P55
+module: 55-transform-uncertainty-with-an-unscented-kalman-filter
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- y=x^2
+- E[y]=sigma^2
+- Var[y]=2 sigma^4
+signature:
+- field: transformed_mean_error
+  unit: '1'
+- field: transformed_variance_error
+  unit: '1'
+- field: minimum_weight
+  unit: '1'
+teaching_invariant: A valid symmetric transform reproduces the declared nonlinear moments within its quadrature
+  order and uses weights that sum to one.
+limiting_cases:
+- As state variance tends to zero, transformed variance tends to zero.
+- "For zero-mean Gaussian x\xB2, mean equals variance of x."
+scenarios:
+  baseline: &id001
+    state_standard_deviation: 0.8
+    sigma_spread: 1.0
+    broken_mode: false
+  sweep_1:
+    state_standard_deviation: 2.0
+    sigma_spread: 1.0
+    broken_mode: false
+  sweep_2:
+    state_standard_deviation: 0.8
+    sigma_spread: 2.0
+    broken_mode: false
+  broken:
+    state_standard_deviation: 0.8
+    sigma_spread: 1.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

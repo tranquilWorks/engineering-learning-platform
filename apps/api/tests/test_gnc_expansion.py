@@ -267,3 +267,51 @@ def test_gnc_nonlinear_robust_and_identification_teaching_invariants() -> None:
     assert adaptation_nominal[0] < adaptation_broken[0]
     assert adaptation_nominal[2] > 0
     assert adaptation_broken[2] == 0
+
+
+def test_gnc_estimation_and_smoothing_teaching_invariants() -> None:
+    catalog = CourseCatalog([ROOT / "courses"])
+    runtime = ExperimentRuntime(catalog)
+
+    def signature(number: int, supplied: dict[str, Any]) -> list[float]:
+        item = NATIVE[number - 25]
+        module_id = _yaml(COURSE_ROOT / item["folder"] / "module.yaml")["id"]
+        return runtime.run("controls-gnc", module_id, supplied).diagnostics["signature"]
+
+    covariance = signature(52, {"broken_mode": False})
+    invalid_covariance = signature(52, {"broken_mode": True})
+    assert covariance[0] > 1
+    assert covariance[1] > 0
+    assert invalid_covariance[0] < 0
+    assert invalid_covariance[1] < 0
+
+    gated = signature(53, {"broken_mode": False})
+    ungated = signature(53, {"broken_mode": True})
+    assert gated[0] > 6.63
+    assert gated[1] > 0
+    assert gated[2] == 0
+    assert ungated[1] > 0
+    assert ungated[2] == 1
+
+    ekf = signature(54, {"broken_mode": False})
+    unobservable_ekf = signature(54, {"broken_mode": True})
+    assert ekf[0] > 0
+    assert ekf[1] < 0.25
+    assert unobservable_ekf[0] == 0
+    assert unobservable_ekf[1] == 0.25
+
+    ukf = signature(55, {"broken_mode": False})
+    invalid_ukf = signature(55, {"broken_mode": True})
+    assert ukf[0] == 0
+    assert ukf[1] == 0
+    assert ukf[2] > 0
+    assert invalid_ukf[0] > 0
+    assert invalid_ukf[1] > 0
+    assert invalid_ukf[2] < 0
+
+    smoother = signature(56, {"broken_mode": False})
+    disabled_smoother = signature(56, {"broken_mode": True})
+    assert smoother[1] < smoother[0]
+    assert smoother[2] > 0
+    assert disabled_smoother[1] == disabled_smoother[0]
+    assert disabled_smoother[2] == 0

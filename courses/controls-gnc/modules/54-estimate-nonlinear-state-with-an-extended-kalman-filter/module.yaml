@@ -1,0 +1,67 @@
+schema_version: 1
+id: 54-estimate-nonlinear-state-with-an-extended-kalman-filter
+number: 54
+title: Estimate Nonlinear State with an Extended Kalman Filter
+summary: "Update a scalar state through z=x\xB2, track the Jacobian and posterior covariance, and expose the unobservable\
+  \ zero-Jacobian initialization."
+guiding_question: When is a first-order measurement linearization informative enough for an EKF update?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- estimation
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: prior_standard_deviation
+  type: slider
+  label: Prior standard deviation
+  default: 0.5
+  unit: '1'
+  minimum: 0.05
+  maximum: 2.0
+  step: 0.05
+- id: linearization_state
+  type: slider
+  label: Linearization state
+  default: 1.0
+  unit: '1'
+  minimum: 0.0
+  maximum: 3.0
+  step: 0.05
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: An EKF update uses the local Jacobian; at xhat=0 the quadratic measurement has zero first-order sensitivity
+    despite nonzero global information.
+  reveal: Move to an observable linearization or use an estimator that represents the nonlinear transform, then
+    recheck innovation consistency.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

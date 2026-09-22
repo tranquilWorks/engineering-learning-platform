@@ -1,0 +1,67 @@
+schema_version: 1
+id: 55-transform-uncertainty-with-an-unscented-kalman-filter
+number: 55
+title: Transform Uncertainty with an Unscented Kalman Filter
+summary: "Transform a zero-mean Gaussian through x\xB2, compare analytic moments with a symmetric sigma set, and\
+  \ expose invalid weights."
+guiding_question: How do sigma points capture nonlinear mean and covariance beyond a first-order Jacobian?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- estimation
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: state_standard_deviation
+  type: slider
+  label: State standard deviation
+  default: 0.8
+  unit: '1'
+  minimum: 0.1
+  maximum: 2.0
+  step: 0.05
+- id: sigma_spread
+  type: slider
+  label: Sigma-point spread
+  default: 1.0
+  unit: '1'
+  minimum: 0.2
+  maximum: 2.0
+  step: 0.05
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: A valid symmetric transform reproduces the declared nonlinear moments within its quadrature order and uses
+    weights that sum to one.
+  reveal: Restore normalized mean/covariance weights and compare transformed moments to an analytic case before
+    filtering data.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

@@ -1,11 +1,10 @@
 schema_version: 1
 batch:
-  id: ELP-GNC-NONLINEAR-ROBUST-ID-P43-P51
-  title: Expand Controls/GNC nonlinear, robust, and identification P43-P51
-  goal: 'Implement P43, P44, P45, P46, P47, P48, P49, P50, P51 as the next coherent issue-439 Controls/GNC batch derived from
-    the reviewed competency map: phase-plane local/global behavior; Lyapunov regions of attraction; barrier constraints; gain
-    scheduling; feedback linearization; structured uncertainty; constrained MPC; system identification and validation; adaptive
-    online estimation.'
+  id: ELP-GNC-ESTIMATION-P52-P56
+  title: Expand Controls/GNC stochastic estimation P52-P56
+  goal: 'Implement P52, P53, P54, P55, P56 as the next coherent issue-439 Controls/GNC batch derived from the reviewed competency
+    map: stochastic process and covariance models; innovations, NIS, NEES, and measurement gates; extended Kalman filtering;
+    unscented transforms; Rauch-Tung-Striebel smoothing.'
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
@@ -13,19 +12,19 @@ sources:
   - products/engineering-learning-platform/course-caliber.yaml
   - products/engineering-learning-platform/competency-maps/controls-gnc.yaml
   - tranquilWorks/portfolio-control#439
-  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-GNC-NONLINEAR-ROBUST-ID-P43-P51
-  baseline_commit: d8244d573560958bba04f3abfcff4ca45ca4e33f
-  baseline_tree: fdfd88642ea3a45be2e9f356bf43aa8a7f0ac1b9
+  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-GNC-ESTIMATION-P52-P56
+  baseline_commit: 617a15d65ba3726273ce95f6eaefe3d65c4f7ae0
+  baseline_tree: d7bcb82234699e81a1b68e071dd5833bc8ecb916
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_baseline: 14647d7f3ffee929f4e4c30bcd6c2081bcfd81cb
-  control_plane_path: products/engineering-learning-platform/batches/ELP-GNC-NONLINEAR-ROBUST-ID-P43-P51.yaml
+  control_plane_baseline: 2ba3fc397b9a3efea89f901c9a3a6308505b70e9
+  control_plane_path: products/engineering-learning-platform/batches/ELP-GNC-ESTIMATION-P52-P56.yaml
   target_repository: tranquilWorks/engineering-learning-platform
   source_repository: tranquilWorks/controls-gnc-learning
   source_pin: ffd6623ee2cf8ccd8599fffd935ef07370750fa3
   source_tree: 471a0afead6f44e875627e7ffe9c088c23f784db
   source_curriculum_sha256: 8763981e20d02a88450956682b4daff9ee0d74bfed5f0ad91b08715f16aea930
 dependencies:
-- ELP-GNC-STATE-DIGITAL-P34-P42
+- ELP-GNC-NONLINEAR-ROBUST-ID-P43-P51
 scope:
   allowed_paths:
   - courses/controls-gnc/course.yaml
@@ -34,15 +33,11 @@ scope:
   - courses/controls-gnc/native-design.schema.json
   - courses/controls-gnc/expansion-map.yaml
   - courses/controls-gnc/expansion_reference_cases.py
-  - courses/controls-gnc/modules/43-*/**
-  - courses/controls-gnc/modules/44-*/**
-  - courses/controls-gnc/modules/45-*/**
-  - courses/controls-gnc/modules/46-*/**
-  - courses/controls-gnc/modules/47-*/**
-  - courses/controls-gnc/modules/48-*/**
-  - courses/controls-gnc/modules/49-*/**
-  - courses/controls-gnc/modules/50-*/**
-  - courses/controls-gnc/modules/51-*/**
+  - courses/controls-gnc/modules/52-*/**
+  - courses/controls-gnc/modules/53-*/**
+  - courses/controls-gnc/modules/54-*/**
+  - courses/controls-gnc/modules/55-*/**
+  - courses/controls-gnc/modules/56-*/**
   - apps/api/tests/test_gnc_expansion.py
   - apps/api/tests/test_gnc_conversion_framework.py
   - apps/api/tests/test_course_caliber_status.py
@@ -55,7 +50,7 @@ scope:
   - docs/CURRENT_STATE.md
   - docs/HANDOFF.md
   - docs/ROADMAP.md
-  - docs/evidence/ELP-GNC-NONLINEAR-ROBUST-ID-P43-P51-*.md
+  - docs/evidence/ELP-GNC-ESTIMATION-P52-P56-*.md
   forbidden_paths:
   - courses/controls-gnc-learning
   - courses/controls-gnc-learning/**
@@ -101,6 +96,15 @@ scope:
   - courses/controls-gnc/modules/40-*/**
   - courses/controls-gnc/modules/41-*/**
   - courses/controls-gnc/modules/42-*/**
+  - courses/controls-gnc/modules/43-*/**
+  - courses/controls-gnc/modules/44-*/**
+  - courses/controls-gnc/modules/45-*/**
+  - courses/controls-gnc/modules/46-*/**
+  - courses/controls-gnc/modules/47-*/**
+  - courses/controls-gnc/modules/48-*/**
+  - courses/controls-gnc/modules/49-*/**
+  - courses/controls-gnc/modules/50-*/**
+  - courses/controls-gnc/modules/51-*/**
   - courses/controls-gnc/source-map.yaml
   - courses/controls-gnc/fidelity-map.yaml
   - courses/controls-gnc/reference_cases.py
@@ -124,15 +128,14 @@ scope:
   - Dockerfile
   - compose.yaml
 acceptance:
-- Start only after the exact control commit containing this contract is merged. Use exact clean target main d8244d573560958bba04f3abfcff4ca45ca4e33f,
-  tree fdfd88642ea3a45be2e9f356bf43aa8a7f0ac1b9; any target, control, source, competency-map, index, or worktree drift stops
+- Start only after the exact control commit containing this contract is merged. Use exact clean target main 617a15d65ba3726273ce95f6eaefe3d65c4f7ae0,
+  tree d7bcb82234699e81a1b68e071dd5833bc8ecb916; any target, control, source, competency-map, index, or worktree drift stops
   implementation.
-- 'Implement exactly P43, P44, P45, P46, P47, P48, P49, P50, P51 from batch ELP-GNC-NONLINEAR-ROBUST-ID-P43-P51: phase-plane
-  local/global behavior; Lyapunov regions of attraction; barrier constraints; gain scheduling; feedback linearization; structured
-  uncertainty; constrained MPC; system identification and validation; adaptive online estimation.'
-- Treat P43, P44, P45, P46, P47, P48, P49, P50, P51 as 9 separately reviewed work items. Each must include a complete learner
-  lesson, unique executable model, baseline, two one-variable sweeps, broken behavior, explicit recovery, limiting cases,
-  domain-specific quantities and units, and named teaching invariants.
+- 'Implement exactly P52, P53, P54, P55, P56 from batch ELP-GNC-ESTIMATION-P52-P56: stochastic process and covariance models;
+  innovations, NIS, NEES, and measurement gates; extended Kalman filtering; unscented transforms; Rauch-Tung-Striebel smoothing.'
+- Treat P52, P53, P54, P55, P56 as 5 separately reviewed work items. Each must include a complete learner lesson, unique executable
+  model, baseline, two one-variable sweeps, broken behavior, explicit recovery, limiting cases, domain-specific quantities
+  and units, and named teaching invariants.
 - Keep every expansion lesson a Python-first native design authorized by the reviewed competency map. Do not modify the immutable
   24-item source map, conversion manifest, source coverage, or source fidelity map; do not claim MATLAB equivalence.
 - Use independent references that import no production experiment, consume no production result, and perturb no production
@@ -140,9 +143,9 @@ acceptance:
   sweep_2, broken, and recovery.
 - Every plot must use domain-specific titles, axes, quantities, and units. Every runtime must be deterministic, finite, bounded,
   and within the trusted Python timeout.
-- Preserve P01-P42, the source gitlink and source evidence, all other courses, generic platform behavior, dependencies, workflows,
+- Preserve P01-P51, the source gitlink and source evidence, all other courses, generic platform behavior, dependencies, workflows,
   and deployment artifacts byte-identically.
-- End with 51 Controls/GNC platform modules and a five-course catalog of 161 modules, all interactive. P52-P68 remain unimplemented;
+- End with 56 Controls/GNC platform modules and a five-course catalog of 166 modules, all interactive. P57-P68 remain unimplemented;
   curriculum_covered and capstone_integrated remain partial, learner_validated remains not_run, and issue 439 remains open.
 - Record exact local verification. Hosted CI is not a completion gate by owner direction; do not claim a hosted result that
   was not run. Keep MATLAB, browser/accessibility, learner, physical HIL/hardware, certification, release, deployment, credentials/settings,
@@ -161,7 +164,7 @@ validation:
   - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic --json
   - .venv/bin/ruff check apps/api/tests/test_gnc_expansion.py apps/api/tests/test_gnc_conversion_framework.py courses/controls-gnc
   - git diff --check
-  - test -z "$(git status --short -- courses/controls-gnc-learning courses/controls-gnc/modules/{01..42}-* courses/dsp-radar
+  - test -z "$(git status --short -- courses/controls-gnc-learning courses/controls-gnc/modules/{01..51}-* courses/dsp-radar
     courses/robotics-autonomy courses/demo-radar courses/platform-showcase)"
   focused_tests_to_add:
   - Validate batch membership, distinct governing equations, prerequisite closure, and Python-first provenance.
@@ -185,11 +188,11 @@ rollback:
     source or prior batches.
 evidence:
   output:
-  - docs/evidence/ELP-GNC-NONLINEAR-ROBUST-ID-P43-P51-2026-09-22.md
+  - docs/evidence/ELP-GNC-ESTIMATION-P52-P56-2026-09-22.md
   - per-item model, oracle, five-scenario, invariant, tolerance, axis, limitation, and residual-risk review
   - focused, regression, full, deterministic catalog, lint, diff, scope, and source-cleanliness results
   - one target squash merge and explicit unperformed evidence
-  claim_boundary: This batch implements only P43, P44, P45, P46, P47, P48, P49, P50, P51 at a deterministic software-only
-    boundary. P52-P68 remain unimplemented; curriculum_covered and capstone_integrated remain partial, learner_validated remains
-    not_run, and issue 439 remains open. It does not execute MATLAB, validate learners or browser accessibility, operate physical
-    HIL/hardware, certify safety, or authorize release, deployment, credentials/settings, or production use.
+  claim_boundary: This batch implements only P52, P53, P54, P55, P56 at a deterministic software-only boundary. P57-P68 remain
+    unimplemented; curriculum_covered and capstone_integrated remain partial, learner_validated remains not_run, and issue
+    439 remains open. It does not execute MATLAB, validate learners or browser accessibility, operate physical HIL/hardware,
+    certify safety, or authorize release, deployment, credentials/settings, or production use.
