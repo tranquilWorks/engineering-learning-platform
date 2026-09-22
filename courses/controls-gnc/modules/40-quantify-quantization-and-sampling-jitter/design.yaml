@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P40
+module: 40-quantify-quantization-and-sampling-jitter
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- Delta=V_FS/2^N
+- e_j approximately x_dot*delta_t
+- SNR=20 log10(rms(x)/rms(e))
+signature:
+- field: quantization_rms
+  unit: V
+- field: jitter_rms
+  unit: V
+- field: combined_snr
+  unit: dB
+teaching_invariant: Quantization error follows converter step size, while jitter error scales with signal slope
+  and timing displacement.
+limiting_cases:
+- With zero jitter, timing error is zero at every sample.
+- Each added ideal bit halves quantization step size.
+scenarios:
+  baseline: &id001
+    converter_bits: 10.0
+    jitter_fraction: 0.03
+    broken_mode: false
+  sweep_1:
+    converter_bits: 16.0
+    jitter_fraction: 0.03
+    broken_mode: false
+  sweep_2:
+    converter_bits: 10.0
+    jitter_fraction: 0.45
+    broken_mode: false
+  broken:
+    converter_bits: 10.0
+    jitter_fraction: 0.03
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

@@ -1,0 +1,67 @@
+schema_version: 1
+id: 42-switch-controllers-bumplessly-with-anti-windup
+number: 42
+title: Switch Controllers Bumplessly with Anti-Windup
+summary: Switch a saturated PI loop from manual to automatic, track the actuator for bumpless initialization, and
+  compare back-calculation recovery with windup.
+guiding_question: How can a controller switch modes without a command jump and recover cleanly from saturation?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- state-space-and-digital-control
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: antiwindup_gain_per_s
+  type: slider
+  label: Back-calculation gain
+  default: 4.0
+  unit: 1/s
+  minimum: 0.0
+  maximum: 12.0
+  step: 0.5
+- id: actuator_limit
+  type: slider
+  label: Actuator limit
+  default: 1.2
+  unit: '1'
+  minimum: 0.4
+  maximum: 3.0
+  step: 0.1
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Tracking initialization makes the auto command equal the manual command at the switch, and positive back-calculation
+    bounds windup during saturation.
+  reveal: Initialize the integral state from the actual manual actuator command and restore back-calculation before
+    enabling automatic control.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

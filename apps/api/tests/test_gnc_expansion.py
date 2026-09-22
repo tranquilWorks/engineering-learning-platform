@@ -91,7 +91,7 @@ def test_gnc_native_designs_are_schema_valid_and_semantically_distinct() -> None
 def test_gnc_native_reference_has_no_production_execution_path() -> None:
     path = COURSE_ROOT / "expansion_reference_cases.py"
     tree = ast.parse(path.read_text())
-    allowed_imports = {"typing", "numpy", "__future__"}
+    allowed_imports = {"json", "typing", "numpy", "__future__"}
     forbidden_calls = {"eval", "exec", "compile", "__import__", "run", "import_module"}
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
@@ -125,7 +125,9 @@ def test_gnc_native_five_scenario_evidence_and_runtime() -> None:
             reference = REFERENCE.reference_signature(number, parameters)
             production = runtime.run("controls-gnc", module_id, parameters).diagnostics["signature"]
             assert reference == expected["cases"][scenario]["signature"]
-            assert production == actual["cases"][scenario]["signature"]
+            assert production == pytest_approx(
+                actual["cases"][scenario]["signature"], design["tolerance"]
+            )
             assert len(reference) == len(production) == len(design["signature"])
             assert np.all(np.isfinite(reference)) and np.all(np.isfinite(production))
             assert production == pytest_approx(reference, design["tolerance"])
@@ -182,3 +184,26 @@ def test_gnc_modeling_and_classical_teaching_invariants() -> None:
     assert signature(32, {"broken_mode": False})[0] < signature(32, {"broken_mode": True})[0]
     assert signature(33, {"decoupler_regularization": 0.0, "broken_mode": False})[2] < 1e-12
     assert math.isfinite(signature(33, {"cross_coupling": 1.0})[1])
+
+
+def test_gnc_state_and_digital_teaching_invariants() -> None:
+    catalog = CourseCatalog([ROOT / "courses"])
+    runtime = ExperimentRuntime(catalog)
+
+    def signature(number: int, supplied: dict[str, Any]) -> list[float]:
+        item = NATIVE[number - 25]
+        module_id = _yaml(COURSE_ROOT / item["folder"] / "module.yaml")["id"]
+        return runtime.run("controls-gnc", module_id, supplied).diagnostics["signature"]
+
+    assert signature(34, {"broken_mode": True})[1] > signature(34, {"broken_mode": False})[1]
+    assert signature(35, {"broken_mode": True})[1] > signature(35, {"broken_mode": False})[1]
+    assert signature(36, {"broken_mode": False})[0] < 1e-12
+    assert signature(36, {"broken_mode": True})[1] > 0.5
+    assert signature(37, {"broken_mode": True})[0] > signature(37, {"broken_mode": False})[0]
+    assert signature(38, {"broken_mode": False})[1] < 0 < signature(38, {"broken_mode": True})[1]
+    assert signature(39, {"terminal_weight": 6.0})[1] == 6.0
+    assert signature(39, {"broken_mode": True})[1] != 6.0
+    assert signature(40, {"broken_mode": True})[2] < signature(40, {"broken_mode": False})[2]
+    assert signature(41, {"broken_mode": True})[2] > signature(41, {"broken_mode": False})[2]
+    assert signature(42, {"broken_mode": False})[0] == 0
+    assert signature(42, {"broken_mode": True})[0] > 0

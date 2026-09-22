@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "item_id": "P40",
+  "signature_fields": [
+    {
+      "field": "quantization_rms",
+      "unit": "V"
+    },
+    {
+      "field": "jitter_rms",
+      "unit": "V"
+    },
+    {
+      "field": "combined_snr",
+      "unit": "dB"
+    }
+  ],
+  "origin": {
+    "kind": "production-experiment",
+    "independent": false,
+    "imports_production_entrypoint": true,
+    "derived_from_production_output": true,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "converter_bits": 10.0,
+        "jitter_fraction": 0.03,
+        "broken_mode": false
+      },
+      "signature": [
+        0.0005675236256323636,
+        0.015927186908898206,
+        32.93035540597862
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "converter_bits": 16.0,
+        "jitter_fraction": 0.03,
+        "broken_mode": false
+      },
+      "signature": [
+        8.722068835139099e-06,
+        0.015927186908898206,
+        32.94719325993279
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "converter_bits": 10.0,
+        "jitter_fraction": 0.45,
+        "broken_mode": false
+      },
+      "signature": [
+        0.0005763313973259444,
+        0.23722362548203732,
+        9.483256750076183
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "converter_bits": 10.0,
+        "jitter_fraction": 0.03,
+        "broken_mode": true
+      },
+      "signature": [
+        0.09009496961473262,
+        0.23722362548203732,
+        9.096849748474687
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "converter_bits": 10.0,
+        "jitter_fraction": 0.03,
+        "broken_mode": false
+      },
+      "signature": [
+        0.0005675236256323636,
+        0.015927186908898206,
+        32.93035540597862
+      ]
+    }
+  }
+}

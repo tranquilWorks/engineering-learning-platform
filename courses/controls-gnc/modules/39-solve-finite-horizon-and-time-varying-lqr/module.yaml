@@ -1,0 +1,67 @@
+schema_version: 1
+id: 39-solve-finite-horizon-and-time-varying-lqr
+number: 39
+title: Solve Finite-Horizon and Time-Varying LQR
+summary: Integrate a scalar time-varying Riccati equation backward from terminal cost and compare its gain schedule
+  with the invalid forward construction.
+guiding_question: How does backward Riccati propagation turn future terminal cost into a time-varying feedback gain?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- state-space-and-digital-control
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: horizon_s
+  type: slider
+  label: Control horizon
+  default: 4.0
+  unit: s
+  minimum: 1.0
+  maximum: 10.0
+  step: 0.5
+- id: terminal_weight
+  type: slider
+  label: Terminal state weight
+  default: 6.0
+  unit: '1'
+  minimum: 0.0
+  maximum: 20.0
+  step: 0.5
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Finite-horizon optimal feedback is obtained from the terminal boundary backward; the terminal Riccati value
+    must equal the declared terminal weight.
+  reveal: Restore backward integration from the actual terminal boundary and verify P(tf)=Sf before interpreting
+    the gain schedule.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

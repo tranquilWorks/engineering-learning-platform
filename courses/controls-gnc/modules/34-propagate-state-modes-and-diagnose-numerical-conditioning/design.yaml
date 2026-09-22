@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P34
+module: 34-propagate-state-modes-and-diagnose-numerical-conditioning
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- x(t)=V exp(Lambda t) V^-1 x(0)
+- Phi(t)=exp(A t)
+- kappa(V)=sigma_max(V)/sigma_min(V)
+signature:
+- field: spectral_abscissa
+  unit: 1/s
+- field: eigenvector_condition
+  unit: '1'
+- field: modal_reconstruction_error
+  unit: '1'
+teaching_invariant: Modal decay rates remain the eigenvalues, while nearly parallel eigenvectors amplify reconstruction
+  sensitivity without moving those eigenvalues.
+limiting_cases:
+- At zero time the state transition is the identity.
+- For an orthogonal modal basis the two-norm condition number is one.
+scenarios:
+  baseline: &id001
+    slow_mode_per_s: 0.8
+    eigenvector_angle_deg: 25.0
+    broken_mode: false
+  sweep_1:
+    slow_mode_per_s: 2.0
+    eigenvector_angle_deg: 25.0
+    broken_mode: false
+  sweep_2:
+    slow_mode_per_s: 0.8
+    eigenvector_angle_deg: 80.0
+    broken_mode: false
+  broken:
+    slow_mode_per_s: 0.8
+    eigenvector_angle_deg: 25.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

@@ -1,0 +1,68 @@
+schema_version: 1
+id: 38-combine-lqr-and-an-observer-with-the-separation-principle
+number: 38
+title: Combine LQR and an Observer with the Separation Principle
+summary: Combine a stabilizing double-integrator feedback law with a full-order observer and verify the block-triangular
+  separation spectrum.
+guiding_question: Why can regulator and observer poles be designed separately, and when does the combined loop still
+  fail?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- state-space-and-digital-control
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: regulator_bandwidth_per_s
+  type: slider
+  label: Regulator bandwidth
+  default: 1.5
+  unit: 1/s
+  minimum: 0.4
+  maximum: 4.0
+  step: 0.1
+- id: observer_speed_ratio
+  type: slider
+  label: Observer speed ratio
+  default: 3.0
+  unit: '1'
+  minimum: 1.2
+  maximum: 8.0
+  step: 0.2
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: For the nominal linear model the combined estimator-controller eigenvalues are exactly the union of regulator
+    and observer eigenvalues.
+  reveal: Restore the innovation sign, keep the observer faster but not arbitrarily ill-conditioned, and check the
+    full augmented spectrum.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

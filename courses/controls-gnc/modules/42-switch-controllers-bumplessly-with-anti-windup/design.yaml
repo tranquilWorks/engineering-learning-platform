@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P42
+module: 42-switch-controllers-bumplessly-with-anti-windup
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- u_sat=clip(k_p e+z)
+- z_dot=k_i e+k_aw(u_sat-u_raw)
+- z_switch=u_manual-k_p e
+signature:
+- field: transfer_bump
+  unit: '1'
+- field: recovery_time
+  unit: s
+- field: peak_integrator_state
+  unit: '1'
+teaching_invariant: Tracking initialization makes the auto command equal the manual command at the switch, and positive
+  back-calculation bounds windup during saturation.
+limiting_cases:
+- With exact tracking initialization the ideal switch bump is zero.
+- Without saturation, the anti-windup correction term is zero.
+scenarios:
+  baseline: &id001
+    antiwindup_gain_per_s: 4.0
+    actuator_limit: 1.2
+    broken_mode: false
+  sweep_1:
+    antiwindup_gain_per_s: 12.0
+    actuator_limit: 1.2
+    broken_mode: false
+  sweep_2:
+    antiwindup_gain_per_s: 4.0
+    actuator_limit: 3.0
+    broken_mode: false
+  broken:
+    antiwindup_gain_per_s: 4.0
+    actuator_limit: 1.2
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

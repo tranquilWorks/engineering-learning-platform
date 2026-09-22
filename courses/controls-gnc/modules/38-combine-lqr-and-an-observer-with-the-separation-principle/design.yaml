@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P38
+module: 38-combine-lqr-and-an-observer-with-the-separation-principle
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- u=-K x_hat
+- x_hat_dot=A x_hat+B u+L(y-C x_hat)
+- eig(A_aug)=eig(A-BK) union eig(A-LC)
+signature:
+- field: regulator_abscissa
+  unit: 1/s
+- field: observer_abscissa
+  unit: 1/s
+- field: separation_spectrum_error
+  unit: 1/s
+teaching_invariant: For the nominal linear model the combined estimator-controller eigenvalues are exactly the union
+  of regulator and observer eigenvalues.
+limiting_cases:
+- With zero initial estimation error, nominal state feedback and observer feedback coincide.
+- Separation guarantees nominal eigenvalues, not robustness to unmodeled dynamics or saturation.
+scenarios:
+  baseline: &id001
+    regulator_bandwidth_per_s: 1.5
+    observer_speed_ratio: 3.0
+    broken_mode: false
+  sweep_1:
+    regulator_bandwidth_per_s: 4.0
+    observer_speed_ratio: 3.0
+    broken_mode: false
+  sweep_2:
+    regulator_bandwidth_per_s: 1.5
+    observer_speed_ratio: 8.0
+    broken_mode: false
+  broken:
+    regulator_bandwidth_per_s: 1.5
+    observer_speed_ratio: 3.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

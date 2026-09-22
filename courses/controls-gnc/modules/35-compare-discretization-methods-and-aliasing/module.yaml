@@ -1,0 +1,68 @@
+schema_version: 1
+id: 35-compare-discretization-methods-and-aliasing
+number: 35
+title: Compare Discretization Methods and Aliasing
+summary: Map a stable pole three ways, expose explicit-Euler instability, and distinguish discrete pole error from
+  input-frequency aliasing.
+guiding_question: Which continuous-time behaviors survive ZOH, Tustin, and Euler discretization at a chosen sample
+  rate?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- state-space-and-digital-control
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: sample_period_s
+  type: slider
+  label: Sample period
+  default: 0.08
+  unit: s
+  minimum: 0.01
+  maximum: 0.6
+  step: 0.01
+- id: input_frequency_hz
+  type: slider
+  label: Input frequency
+  default: 3.0
+  unit: Hz
+  minimum: 0.2
+  maximum: 15.0
+  step: 0.2
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: ZOH maps the autonomous pole exactly, Tustin preserves stability, and any sampled sinusoid is indistinguishable
+    from its Nyquist-folded alias.
+  reveal: Reduce the sample period or use a stability-preserving mapping, then place the antialias boundary before
+    sampling.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

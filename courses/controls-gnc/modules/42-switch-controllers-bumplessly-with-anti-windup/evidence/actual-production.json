@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "item_id": "P42",
+  "signature_fields": [
+    {
+      "field": "transfer_bump",
+      "unit": "1"
+    },
+    {
+      "field": "recovery_time",
+      "unit": "s"
+    },
+    {
+      "field": "peak_integrator_state",
+      "unit": "1"
+    }
+  ],
+  "origin": {
+    "kind": "production-experiment",
+    "independent": false,
+    "imports_production_entrypoint": true,
+    "derived_from_production_output": true,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "antiwindup_gain_per_s": 4.0,
+        "actuator_limit": 1.2,
+        "broken_mode": false
+      },
+      "signature": [
+        0.0,
+        0.68,
+        1.2
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "antiwindup_gain_per_s": 12.0,
+        "actuator_limit": 1.2,
+        "broken_mode": false
+      },
+      "signature": [
+        0.0,
+        0.81,
+        1.2
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "antiwindup_gain_per_s": 4.0,
+        "actuator_limit": 3.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.0,
+        3.58,
+        1.8724226625185703
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "antiwindup_gain_per_s": 4.0,
+        "actuator_limit": 1.2,
+        "broken_mode": true
+      },
+      "signature": [
+        0.5,
+        5.0,
+        0.6795045555550477
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "antiwindup_gain_per_s": 4.0,
+        "actuator_limit": 1.2,
+        "broken_mode": false
+      },
+      "signature": [
+        0.0,
+        0.68,
+        1.2
+      ]
+    }
+  }
+}

@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P37
+module: 37-augment-an-integral-servo-and-limit-commands
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- z_dot=r-y
+- u=clip(k_p(r-y)+k_i z,u_min,u_max)
+- x_dot=-x+u+d
+signature:
+- field: steady_error
+  unit: m
+- field: peak_command
+  unit: m/s^2
+- field: saturation_fraction
+  unit: '1'
+teaching_invariant: When command authority exceeds the constant load, integral state drives steady error toward
+  zero; saturation duration still records feasibility cost.
+limiting_cases:
+- With zero integral gain the load produces proportional steady error.
+- If the command limit is below the load, no controller can remove the bias.
+scenarios:
+  baseline: &id001
+    integral_gain_per_s: 1.2
+    command_limit_m_s2: 2.0
+    broken_mode: false
+  sweep_1:
+    integral_gain_per_s: 4.0
+    command_limit_m_s2: 2.0
+    broken_mode: false
+  sweep_2:
+    integral_gain_per_s: 1.2
+    command_limit_m_s2: 5.0
+    broken_mode: false
+  broken:
+    integral_gain_per_s: 1.2
+    command_limit_m_s2: 2.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.
