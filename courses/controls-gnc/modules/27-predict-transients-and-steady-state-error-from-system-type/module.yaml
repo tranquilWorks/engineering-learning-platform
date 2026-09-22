@@ -1,0 +1,67 @@
+schema_version: 1
+id: 27-predict-transients-and-steady-state-error-from-system-type
+number: 27
+title: Predict Transients and Steady-State Error from System Type
+summary: Measure overshoot and settling from a second-order servo, then connect its integrator and velocity constant
+  to ramp error.
+guiding_question: How do poles set transient specifications while loop type sets steady tracking error?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- modeling-and-classical-control
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: damping_ratio
+  type: slider
+  label: Damping ratio
+  default: 0.55
+  unit: '1'
+  minimum: 0.15
+  maximum: 1.2
+  step: 0.05
+- id: natural_frequency_rad_s
+  type: slider
+  label: Natural frequency
+  default: 3.0
+  unit: rad/s
+  minimum: 0.5
+  maximum: 8.0
+  step: 0.25
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: For stable positive damping, increasing damping reduces overshoot while the type-one loop keeps zero step
+    error and finite ramp error.
+  reveal: Restore positive damping, verify both poles are left-half-plane, and report steady error for the correct
+    input class rather than from a finite snapshot.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

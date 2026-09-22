@@ -1,0 +1,54 @@
+schema_version: 1
+item_id: P30
+module: 30-shape-sensitivity-with-bode-loop-design
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- S=1/(1+L)
+- T=L/(1+L)
+- PS=P*S and CS=C*S
+signature:
+- field: peak_sensitivity
+  unit: '1'
+- field: peak_complementary_sensitivity
+  unit: '1'
+- field: peak_control_sensitivity
+  unit: '1'
+- field: s_plus_t_error
+  unit: '1'
+teaching_invariant: S+T=1 pointwise; lowering low-frequency sensitivity necessarily changes complementary sensitivity
+  and control effort elsewhere.
+limiting_cases:
+- At low frequency the integrator drives S toward zero.
+- At high frequency strictly proper L drives T toward zero and S toward one.
+scenarios:
+  baseline: &id001
+    loop_gain: 5.0
+    lead_zero_rad_s: 1.0
+    broken_mode: false
+  sweep_1:
+    loop_gain: 30.0
+    lead_zero_rad_s: 1.0
+    broken_mode: false
+  sweep_2:
+    loop_gain: 5.0
+    lead_zero_rad_s: 5.0
+    broken_mode: false
+  broken:
+    loop_gain: 5.0
+    lead_zero_rad_s: 1.0
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

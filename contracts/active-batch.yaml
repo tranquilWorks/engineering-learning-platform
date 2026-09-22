@@ -1,20 +1,21 @@
 schema_version: 1
 batch:
-  id: ELP-GNC-FIDELITY-P01-P24
-  title: Repair Controls/GNC P01-P24 fidelity and independent evidence
-  goal: Retain the existing twenty-four Controls/GNC curriculum identities and useful lesson prose while replacing production-derived evidence, closing source-intent gaps, and making every native experiment independently and physically checkable without expanding the curriculum.
+  id: ELP-GNC-MODELING-CLASSICAL-P25-P33
+  title: Expand Controls/GNC modeling and classical control P25-P33
+  goal: Add the nine modeling, classical-control, loop-shaping, and multivariable prerequisites derived by the reviewed Controls/GNC competency matrix, with distinct Python-first models, independently formulated evidence, and no false MATLAB/source-equivalence claim.
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
     - products/engineering-learning-platform/COURSE_CALIBER.md
     - products/engineering-learning-platform/course-caliber.yaml
-    - tranquilWorks/portfolio-control#438
-  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-GNC-FIDELITY-P01-P24
-  baseline_commit: 1506591946ec8e96fe3201e8893b8ad851a1685a
-  baseline_tree: cff72df08f1c37655e912ca1c24f90e27222f6e3
+    - products/engineering-learning-platform/competency-maps/controls-gnc.yaml
+    - tranquilWorks/portfolio-control#439
+  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-GNC-MODELING-CLASSICAL-P25-P33
+  baseline_commit: 88e8f7407ce516a16e9397318c38902a78c11070
+  baseline_tree: b713b922be3bc7a0c6fbe9f0b0bc5c485818b16c
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_baseline: f6745e44f459a52431b81a3f953c8f2e03cbe45e
-  control_plane_path: products/engineering-learning-platform/batches/ELP-GNC-FIDELITY-P01-P24.yaml
+  control_plane_baseline: 0038f6ed725ae2fc7b3eb6647e9621a2ad23db34
+  control_plane_path: products/engineering-learning-platform/batches/ELP-GNC-MODELING-CLASSICAL-P25-P33.yaml
   target_repository: tranquilWorks/engineering-learning-platform
   source_repository: tranquilWorks/controls-gnc-learning
   source_pin: ffd6623ee2cf8ccd8599fffd935ef07370750fa3
@@ -22,12 +23,28 @@ sources:
   source_curriculum_sha256: 8763981e20d02a88450956682b4daff9ee0d74bfed5f0ad91b08715f16aea930
 dependencies:
   - ELP-COURSE-CALIBER-00
+  - ELP-GNC-FIDELITY-P01-P24
 scope:
   allowed_paths:
-    - courses/controls-gnc/**
+    - courses/controls-gnc/course.yaml
+    - courses/controls-gnc/competency-map.yaml
+    - courses/controls-gnc/competency-map.schema.json
+    - courses/controls-gnc/native-design.schema.json
+    - courses/controls-gnc/expansion-map.yaml
+    - courses/controls-gnc/expansion_reference_cases.py
+    - courses/controls-gnc/modules/25-*/**
+    - courses/controls-gnc/modules/26-*/**
+    - courses/controls-gnc/modules/27-*/**
+    - courses/controls-gnc/modules/28-*/**
+    - courses/controls-gnc/modules/29-*/**
+    - courses/controls-gnc/modules/30-*/**
+    - courses/controls-gnc/modules/31-*/**
+    - courses/controls-gnc/modules/32-*/**
+    - courses/controls-gnc/modules/33-*/**
+    - apps/api/tests/test_gnc_expansion.py
     - apps/api/tests/test_gnc_conversion_framework.py
-    - apps/api/tests/test_gnc_course.py
     - apps/api/tests/test_course_caliber_status.py
+    - apps/api/tests/test_robotics_conversion_framework.py
     - contracts/active-batch.yaml
     - contracts/repo-profile.yaml
     - contracts/verification.yaml
@@ -36,10 +53,20 @@ scope:
     - docs/CURRENT_STATE.md
     - docs/HANDOFF.md
     - docs/ROADMAP.md
-    - docs/evidence/ELP-GNC-FIDELITY-P01-P24-*.md
+    - docs/evidence/ELP-GNC-MODELING-CLASSICAL-P25-P33-*.md
   forbidden_paths:
     - courses/controls-gnc-learning
     - courses/controls-gnc-learning/**
+    - courses/controls-gnc/modules/0*/**
+    - courses/controls-gnc/modules/1*/**
+    - courses/controls-gnc/modules/20-*/**
+    - courses/controls-gnc/modules/21-*/**
+    - courses/controls-gnc/modules/22-*/**
+    - courses/controls-gnc/modules/23-*/**
+    - courses/controls-gnc/modules/24-*/**
+    - courses/controls-gnc/source-map.yaml
+    - courses/controls-gnc/fidelity-map.yaml
+    - courses/controls-gnc/reference_cases.py
     - courses/dsp-radar/**
     - courses/robotics-autonomy/**
     - courses/demo-radar/**
@@ -58,59 +85,55 @@ scope:
     - Dockerfile
     - compose.yaml
 acceptance:
-  - Start only after the exact control commit containing this contract is merged. Use exact clean target main 1506591946ec8e96fe3201e8893b8ad851a1685a, tree cff72df08f1c37655e912ca1c24f90e27222f6e3; target, control, source identity, index, or worktree drift stops implementation.
-  - Keep the Controls/GNC source gitlink byte-identical at ffd6623ee2cf8ccd8599fffd935ef07370750fa3, tree 471a0afead6f44e875627e7ffe9c088c23f784db, curriculum SHA-256 8763981e20d02a88450956682b4daff9ee0d74bfed5f0ad91b08715f16aea930. Source inspection is read-only.
-  - Retain exact P01-P24 IDs, numbers, titles, guiding questions, source folders, source hashes, prerequisite order, and 24/24 platform inventory. This remediation adds no lesson and does not implement issue 439.
-  - Treat P01-P24 as twenty-four separately reviewed work items in source order within one target implementation commit and one pull request. Every item must pass its focused semantic mapping, baseline, two one-variable sweeps, broken, recovery, invariant, finite/deterministic, provenance, and cumulative gates before the next item is considered complete.
-  - For every item, retain a semantic mapping from the pinned MATLAB source to Python controls, state equations, observables, sweeps, broken case, limiting cases, and explicitly justified omissions. Refactor production Python only where the mapping or physical interpretation requires it.
-  - Implement independently formulated course-owned reference methods that import no production experiment entrypoint, derive no value from production output, and do not perturb a production value. Record origin metadata, formulation, inputs, units, tolerances, measured errors, and invariant results.
-  - Retain evidence for baseline, one endpoint from each of the two declared one-variable sweeps, broken behavior, and explicit recovery for every item. Expected and production results must be independently generated; file inequality or a harmless epsilon is not evidence.
-  - Give every plot domain-specific variables and units. Use separate axes or separate views when quantities have incompatible units; generic Independent variable, Response, Diagnostic, source units, output, actuator, measurement, units, and cost labels do not pass.
-  - Add assertions for the actual teaching invariant and limiting behavior, not only output inequality or deterministic serialization.
-  - Perform focused correctness review for P03 and P07 classical/frequency behavior; P09-P10 discretization and delay conventions; P11-P12 saturation and anti-windup transitions; P13-P14 rank/tolerance behavior; P15-P16 observer and Kalman covariance behavior; P17 Riccati convergence and actuator authority; P19-P20 uncertainty claims; P21 feasibility; P22 proportional-navigation sign, closing speed, and saturation; and P23-P24 sensor/actuator dynamics and software-HIL event ordering.
-  - Describe P20 narrowly as a fixed-gain comparison over its declared uncertainty family, not a general robust-control synthesis or certification result. Keep P24 software-only and do not call it a cumulative capstone.
-  - MATLAB runtime parity stays not_run unless a named licensed MATLAB runtime actually executes. Python agreement, source inspection, and retained fixtures are not MATLAB execution.
-  - Update course-caliber status to Controls/GNC source_authored passed, platform_converted passed, numerically_verified passed at the repaired software-only evidence boundary, curriculum_covered partial, capstone_integrated partial, and learner_validated not_run. Keep issue 439 as the sole curriculum-expansion owner.
-  - Preserve the five-course, 134-module, 134-interactive catalog; DSP/Radar, Robotics, examples, generic platform behavior, dependencies, workflows, deployment artifacts, and every source gitlink remain byte-identical.
-  - Record exact local verification. Hosted CI is not a completion gate by owner direction; do not claim a hosted result that was not run. Keep browser/accessibility, learner effectiveness, physical hardware/HIL, bench, field, release, deployment, credentials/settings, and production evidence explicitly unperformed.
+  - Start only after the exact control commit containing this contract and the reviewed competency map is merged. Use exact clean target main 88e8f7407ce516a16e9397318c38902a78c11070, tree b713b922be3bc7a0c6fbe9f0b0bc5c485818b16c; target, control, source identity, index, or worktree drift stops implementation.
+  - Validate products/engineering-learning-platform/competency-maps/controls-gnc.yaml against contracts/course-competency-map.schema.json. The planned course count is exactly len(modules)=68, with seven coherent delivery batches of nine, nine, nine, five, six, three, and three new modules; no arbitrary lesson target is used.
+  - "Implement exactly P25-P33 from batch ELP-GNC-MODELING-CLASSICAL-P25-P33: nonlinear operating-point linearization, block reduction and transfer/state realizations, transient and system-type specifications, root locus, Nyquist, Bode sensitivity shaping, lead/lag, notch/prefilter, and MIMO interaction/zeros/decoupling."
+  - Treat P25-P33 as nine separately reviewed work items. Each must include a complete learner lesson, unique executable model, baseline, two one-variable sweeps, broken behavior, explicit recovery, limiting cases, domain-specific quantities and units, and named teaching invariants.
+  - Mark P25-P33 as Python-first native designs authorized by the reviewed competency map. Do not add them to the immutable 24-item source map, source conversion manifest, source coverage, or source fidelity map; do not claim MATLAB equivalence.
+  - Implement independent references that import no production experiment, consume no production result, and perturb no production value. Retain origin metadata, inputs, signature fields/units, tolerances, measured errors, and invariant results for baseline, sweep_1, sweep_2, broken, and recovery.
+  - Every plot must use domain-specific titles, axes, quantities, and units. Incompatible units require separate axes or views. Every runtime remains deterministic, finite, bounded, and within the existing trusted Python timeout.
+  - P25 must distinguish operating-point residual from local linearization error; P26 must prove block/transfer/state realization equivalence and expose an invalid reduction; P27 must connect poles and system type to measured transient and steady error; P28 must preserve root-locus branch/asymptote behavior; P29 must use Nyquist encirclement with the correct open-loop right-half-plane pole count; P30 must calculate sensitivity, complementary sensitivity, disturbance, noise, and effort tradeoffs; P31 must calculate lead/lag phase and magnitude; P32 must distinguish a notch from a reference prefilter; P33 must expose interaction, transmission zeros, relative gain, and decoupling residual.
+  - Preserve P01-P24 module files, source gitlink, source identity, source/fidelity/conversion evidence, and 24/24 source inventory byte-identically. Preserve DSP/Radar, Robotics, examples, platform source/UI/schema/runtime, dependencies, workflows, and deployment artifacts byte-identically.
+  - End with 33 Controls/GNC platform modules and a five-course catalog of 143 modules, all interactive. Keep curriculum_covered and capstone_integrated partial because P34-P68 remain unimplemented; keep learner_validated not_run and issue 439 open.
+  - Record exact local verification. Hosted CI is not a completion gate by owner direction; do not claim a hosted result that was not run. Keep browser/accessibility, learner effectiveness, physical hardware/HIL, bench, field, release, deployment, credentials/settings, certification, and production evidence explicitly unperformed.
 validation:
   local:
-    - ELP_GNC_SOURCE_ROOT=courses/controls-gnc-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_course.py
+    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_gnc_expansion.py apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_course.py apps/api/tests/test_course_caliber_status.py
     - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py
-    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_robotics_conversion_framework.py apps/api/tests/test_robotics_course.py apps/api/tests/test_course_caliber_status.py
+    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_robotics_conversion_framework.py apps/api/tests/test_robotics_course.py
     - ./scripts/agent-verify.sh contract
     - ./scripts/agent-verify.sh quick
     - ./scripts/agent-verify.sh full
     - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic --json
-    - .venv/bin/ruff check apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_course.py courses/controls-gnc
+    - .venv/bin/ruff check apps/api/tests/test_gnc_expansion.py apps/api/tests/test_gnc_conversion_framework.py courses/controls-gnc
     - git diff --check
-    - test -z "$(git status --short -- courses/controls-gnc-learning courses/dsp-radar courses/robotics-autonomy courses/demo-radar courses/platform-showcase)"
+    - test -z "$(git status --short -- courses/controls-gnc-learning courses/controls-gnc/modules/{01..24}-* courses/dsp-radar courses/robotics-autonomy courses/demo-radar courses/platform-showcase)"
   focused_tests_to_add:
-    - Prove every semantic mapping is closed, source-bound, and explicit about omitted behavior and limiting cases.
-    - Prove the independent reference package has no production-course import, production-output derivation, perturbation, dynamic import, or shared expected/actual execution path.
-    - Execute and compare baseline, two one-variable sweeps, broken, and recovery cases for each P01-P24 with finite values, stated units, tolerances, measured errors, and named teaching invariants.
-    - Reject generic axes, incompatible quantities on an unlabeled shared axis, epsilon-only fixture differences, broad robust-control claims for P20, physical-HIL claims for P24, and any curriculum-complete Controls/GNC status.
+    - Validate the reviewed competency map, reference integrity, exact map-derived count, and batch membership.
+    - Prove P25-P33 use nine semantically distinct governing models and independent reference paths.
+    - Execute and compare five scenarios per module with finite values, units, tolerances, measured errors, and teaching invariants.
+    - Reject source-equivalence claims for native modules, generic axes, incompatible shared units, production-derived evidence, broad robust-certification claims, or premature curriculum/capstone completion.
   required_ci: []
 risk:
   class: high
   hazards:
-    - an oracle silently reuses production code or values and recreates the original false-independence defect
-    - compressed Python behavior diverges from the pinned MATLAB intent while signatures still look plausible
-    - mismatched units share axes or generic labels hide the physical quantity being taught
-    - stability, delay, anti-windup, rank, covariance, Riccati, uncertainty, feasibility, guidance, dynamics, or event-order conventions are subtly wrong
-    - issue 438 expands into new curriculum, a capstone claim, source mutation, generic platform changes, or Vehicle Dynamics
+    - a round module target substitutes for reviewed competency coverage
+    - native Python designs are mislabeled as conversions of the pinned MATLAB course
+    - a shared implementation template hides distinct control equations or reference methods
+    - operating-point, realization, root-locus, Nyquist, frequency-shaping, compensator, transmission-zero, relative-gain, or decoupling conventions are subtly wrong
+    - the first expansion batch prematurely claims navigation breadth, curriculum completeness, or an integrated capstone
   stop_conditions:
-    - exact target, control, or source identities drift before implementation
-    - an independent method needs a production entrypoint, production result, or perturbed production result
-    - a lesson requires source mutation, generic runtime/UI/schema changes, a dependency, unsupported plot primitive, unbounded compute, or a new curriculum item
-    - any per-item invariant/reference comparison, focused/cumulative regression, full verification, deterministic catalog, lint, source-cleanliness, or scope check fails or is skipped
-    - any MATLAB, browser/accessibility, learner, physical HIL, bench, field, release, deployment, credential/settings, or production claim exceeds retained evidence
+    - exact target, control, source, competency-map, or worktree identities drift before implementation
+    - a module count is changed without a revised reviewed competency matrix
+    - an independent method needs production code/output or a perturbed production value
+    - any focused/cumulative regression, full verification, deterministic catalog, lint, source-cleanliness, or scope check fails or is skipped
+    - work requires source mutation, generic runtime/UI/schema changes, a dependency, unsupported plot primitive, unbounded compute, or evidence beyond deterministic software simulation
 rollback:
-  strategy: Before merge, close or discard the isolated target branch and pull request. After merge, revert the one target remediation commit to restore the course-caliber baseline; the source repository and issue 439 are never rewritten.
+  strategy: Before merge, close or discard the isolated target branch and pull request. After merge, revert the one target implementation commit to restore the issue-438 baseline; the source repository, reviewed competency map in control, and issue 439 are not rewritten.
 evidence:
   output:
-    - docs/evidence/ELP-GNC-FIDELITY-P01-P24-2026-09-21.md
-    - one P01-P24 row recording source mapping, independent formulation, five scenario comparisons, teaching invariants, tolerances, measured errors, axis review, omissions, and residual limitations
+    - docs/evidence/ELP-GNC-MODELING-CLASSICAL-P25-P33-2026-09-22.md
+    - one P25-P33 row recording competency mapping, governing model, independent formulation, five scenario comparisons, teaching invariants, tolerances, errors, axis review, omissions, and residual limitations
     - focused GNC, DSP, Robotics, course-caliber, contract, quick, full, deterministic catalog, lint, diff, scope, and source-cleanliness results
-    - one target implementation commit, one target pull request, merge identity, rollback path, and explicit unperformed evidence
-  claim_boundary: Twenty-four existing Controls/GNC platform modules are source-mapped and numerically verified at a deterministic software-only boundary by independently formulated references. This batch does not add curriculum, close issue 439, establish curriculum completeness or an integrated capstone, execute MATLAB, validate learners or browser accessibility, operate physical HIL/hardware, or authorize release, deployment, credentials/settings, or production use.
+    - one target implementation commit and pull request for this batch, merge identity, rollback path, and explicit unperformed evidence
+  claim_boundary: P25-P33 extend the source-bound 24-module course with nine reviewed Python-first modeling and classical-control laboratories verified at a deterministic software-only boundary. This batch does not implement P34-P68, close issue 439, establish curriculum completeness or cumulative capstones, execute MATLAB, validate learners or browser accessibility, operate physical hardware/HIL, or authorize certification, release, deployment, credentials/settings, or production use.

@@ -1,0 +1,67 @@
+schema_version: 1
+id: 31-design-lead-and-lag-compensation
+number: 31
+title: Design Lead and Lag Compensation
+summary: Place a lead network around a target frequency, add lag for low-frequency gain, and verify phase and magnitude
+  contributions separately.
+guiding_question: How do lead and lag networks change phase, crossover, and low-frequency authority?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- modeling-and-classical-control
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: lead_alpha
+  type: slider
+  label: Lead alpha
+  default: 0.2
+  unit: '1'
+  minimum: 0.05
+  maximum: 0.8
+  step: 0.05
+- id: lag_beta
+  type: slider
+  label: Lag beta
+  default: 5.0
+  unit: '1'
+  minimum: 1.2
+  maximum: 12.0
+  step: 0.2
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: A correctly ordered lead pole and zero add positive phase, while lag raises low-frequency gain relative
+    to high frequency.
+  reveal: Restore p_lead greater than z_lead, confirm positive phase at the target frequency, then add lag below
+    crossover.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

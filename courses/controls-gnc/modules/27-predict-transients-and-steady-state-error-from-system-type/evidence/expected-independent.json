@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "item_id": "P27",
+  "signature_fields": [
+    {
+      "field": "percent_overshoot",
+      "unit": "%"
+    },
+    {
+      "field": "settling_time",
+      "unit": "s"
+    },
+    {
+      "field": "ramp_error",
+      "unit": "s"
+    }
+  ],
+  "origin": {
+    "kind": "independent-analytic-python",
+    "item_id": "P27",
+    "independent": true,
+    "imports_production_entrypoint": false,
+    "derived_from_production_output": false,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "damping_ratio": 0.55,
+        "natural_frequency_rad_s": 3.0,
+        "broken_mode": false
+      },
+      "signature": [
+        12.632408676149348,
+        2.424242424242424,
+        0.3666666666666667
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "damping_ratio": 1.2,
+        "natural_frequency_rad_s": 3.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.0,
+        1.1111111111111112,
+        0.7999999999999999
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "damping_ratio": 0.55,
+        "natural_frequency_rad_s": 8.0,
+        "broken_mode": false
+      },
+      "signature": [
+        12.632408676149348,
+        0.9090909090909091,
+        0.1375
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "damping_ratio": 0.55,
+        "natural_frequency_rad_s": 3.0,
+        "broken_mode": true
+      },
+      "signature": [
+        128.67527023872202,
+        2.6666666666666665,
+        -0.05333333333333334
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "damping_ratio": 0.55,
+        "natural_frequency_rad_s": 3.0,
+        "broken_mode": false
+      },
+      "signature": [
+        12.632408676149348,
+        2.424242424242424,
+        0.3666666666666667
+      ]
+    }
+  }
+}

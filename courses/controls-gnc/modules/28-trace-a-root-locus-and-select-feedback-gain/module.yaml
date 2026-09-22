@@ -1,0 +1,67 @@
+schema_version: 1
+id: 28-trace-a-root-locus-and-select-feedback-gain
+number: 28
+title: Trace a Root Locus and Select Feedback Gain
+summary: Trace every closed-loop branch for a three-pole plant with a movable zero and select gain from stability
+  and damping evidence.
+guiding_question: How can the root locus turn a gain choice into a pole-location and damping decision?
+status: implemented
+tags:
+- controls-gnc
+- native-python
+- modeling-and-classical-control
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: loop_gain
+  type: slider
+  label: Selected loop gain
+  default: 4.0
+  unit: '1'
+  minimum: 0.1
+  maximum: 60.0
+  step: 0.1
+- id: zero_location_per_s
+  type: slider
+  label: Controller zero location
+  default: 1.0
+  unit: 1/s
+  minimum: 0.2
+  maximum: 4.0
+  step: 0.1
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: All three branches start at open-loop poles, one terminates at the finite zero, and the remaining two follow
+    the asymptotes from the centroid.
+  reveal: Move the gain marker back into the left-half-plane segment and verify dominant damping before accepting
+    the time-domain design.
+- type: controls
+  title: Design controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

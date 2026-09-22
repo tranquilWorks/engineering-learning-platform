@@ -1,33 +1,13 @@
 # Handoff
 
-Controls/GNC P01-P24 fidelity remediation is complete within
-`ELP-GNC-FIDELITY-P01-P24` at source pin
-`ffd6623ee2cf8ccd8599fffd935ef07370750fa3`. The implementation retains one
-target commit and pull request for 24 separately checked work items.
+Issue #439 now has a reviewed competency-derived 68-module Controls/GNC plan and its first implementation batch, P25-P33. The authoritative artifacts are:
 
-The durable course evidence is:
+1. `courses/controls-gnc/competency-map.yaml` — learners, outcomes, prerequisites, 24 competency areas, 68 lesson identities, assessments, exclusions, handoffs, batch derivation, and three capstones.
+2. `courses/controls-gnc/expansion-map.yaml` and each native module's `design.yaml` — implemented native identity, governing equations, five scenarios, signature fields/units, limiting cases, teaching invariant, tolerance, and claim boundary.
+3. `courses/controls-gnc/expansion_reference_cases.py` — independent analytic/numerical signatures that import no production experiment, consume no production result, and perturb no production value.
+4. Each module's `expected-independent.json` and `actual-production.json` — separately generated baseline, two sweep, broken, and recovery vectors.
+5. `docs/evidence/ELP-GNC-MODELING-CLASSICAL-P25-P33-2026-09-22.md` — retained first-batch verification and limitations.
 
-1. `courses/controls-gnc/fidelity-map.yaml` — exact source-model identity,
-   controls, equations, observables, two sweeps, failure/recovery, limiting
-   cases, omissions, reference method, and axes for every P01-P24 item.
-2. `courses/controls-gnc/reference_cases.py` — course-owned closed-form,
-   alternate-algorithm, or separately formulated numerical references that do
-   not import production experiments or consume production output.
-3. Each module's `expected-independent.json` and `actual-production.json` —
-   baseline, sweep 1, sweep 2, broken, and recovery signatures with ordered
-   fields and units.
-4. `docs/evidence/ELP-GNC-FIDELITY-P01-P24-2026-09-21.md` — the retained
-   verification and claim boundary.
+The next authorized work must use a new exact-baseline Portfolio Control contract for P34-P42. Do not modify P01-P33 while adding that batch. The remaining sequence is P34-P42 state/digital, P43-P51 nonlinear/robust/system-ID, P52-P56 estimation, P57-P62 navigation, P63-P65 guidance, and P66-P68 cumulative capstones.
 
-Do not reintroduce production-derived expected vectors or generic axes. Preserve
-P20's narrow two-fixed-gain statement and P24's software-only, non-capstone
-boundary. The next Controls/GNC work is issue #439: create or review the
-competency map, derive the expansion count from it, and authorize coherent
-batches of at most ten new lessons.
-
-Issues #440 and #441 remain separate Robotics and DSP/Radar work. Vehicle
-Dynamics remains blocked until its reviewed competency map, replayable GR86
-CAN/BLE fixtures, and separate first batch are authorized.
-
-Rollback this remediation by reverting its single target merge. The source
-repository and all source gitlinks remain unchanged.
+Issue #439 stays open until all seven batches merge and cumulative verification passes. No native lesson claims MATLAB/source equivalence. Browser/accessibility, learner effectiveness, physical hardware/HIL, certification, release, deployment, credentials/settings, and production validation remain unperformed.

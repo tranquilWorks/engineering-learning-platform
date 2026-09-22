@@ -1,0 +1,52 @@
+schema_version: 1
+item_id: P25
+module: 25-linearize-a-nonlinear-plant-around-an-operating-point
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- tau_g=m*g*l*sin(theta)
+- delta_x_dot=A*delta_x+B*delta_tau
+- A21=-(g/l)*cos(theta_0)
+signature:
+- field: equilibrium_residual
+  unit: N*m
+- field: local_torque_error
+  unit: N*m
+- field: jacobian_a21
+  unit: 1/s^2
+teaching_invariant: The balanced operating point has zero residual, and Taylor error decreases quadratically as
+  the perturbation radius shrinks.
+limiting_cases:
+- At zero perturbation the nonlinear and tangent torques coincide.
+- At theta_0=0 the small-angle stiffness is g/l.
+scenarios:
+  baseline: &id001
+    operating_angle_rad: 0.45
+    perturbation_rad: 0.2
+    broken_mode: false
+  sweep_1:
+    operating_angle_rad: 1.0
+    perturbation_rad: 0.2
+    broken_mode: false
+  sweep_2:
+    operating_angle_rad: 0.45
+    perturbation_rad: 0.8
+    broken_mode: false
+  broken:
+    operating_angle_rad: 0.45
+    perturbation_rad: 0.2
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

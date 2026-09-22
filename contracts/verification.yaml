@@ -1,7 +1,7 @@
 schema_version: 1
 commands:
-  gnc-fidelity:
-    - ELP_GNC_SOURCE_ROOT=courses/controls-gnc-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_course.py
+  gnc-expansion-and-fidelity:
+    - ELP_GNC_SOURCE_ROOT=courses/controls-gnc-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_gnc_expansion.py apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_course.py apps/api/tests/test_course_caliber_status.py
   dsp-regression:
     - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py
   robotics-and-status-regression:
@@ -15,8 +15,8 @@ commands:
   deterministic-catalog:
     - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic --json
   lint:
-    - .venv/bin/ruff check apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_course.py courses/controls-gnc
+    - .venv/bin/ruff check apps/api/tests/test_gnc_expansion.py apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_course.py courses/controls-gnc
   scope:
     - git diff --check
     - test -z "$(git status --short -- courses/controls-gnc-learning courses/dsp-radar courses/robotics-autonomy courses/demo-radar courses/platform-showcase)"
-evidence_boundary: These commands validate twenty-four existing Controls/GNC modules at a deterministic software-only boundary with source-bound semantic maps, five independently originated numerical scenarios per item, units, tolerances, teaching invariants, and cumulative DSP/Robotics/platform regressions. They do not establish curriculum completeness or a capstone, execute MATLAB, validate browser accessibility or learners, operate physical hardware/HIL, or authorize release, deployment, credentials/settings, or production use.
+evidence_boundary: These commands validate twenty-four source-bound Controls/GNC modules plus the nine Python-first P25-P33 modeling/classical-control laboratories at a deterministic software-only boundary with semantic maps, five independently originated numerical scenarios per item, units, tolerances, teaching invariants, and cumulative DSP/Robotics/platform regressions. They do not establish curriculum completeness or a capstone, implement P34-P68, execute MATLAB, validate browser accessibility or learners, operate physical hardware/HIL, or authorize release, deployment, credentials/settings, or production use.

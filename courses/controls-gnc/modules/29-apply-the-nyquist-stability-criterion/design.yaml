@@ -1,0 +1,54 @@
+schema_version: 1
+item_id: P29
+module: 29-apply-the-nyquist-stability-criterion
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- L(s)=K(s+1)/((s-p)(s+2)(s+3))
+- N=Z-P
+- Delta arg(1+L)=2*pi*N
+signature:
+- field: open_loop_rhp_poles
+  unit: count
+- field: closed_loop_rhp_poles
+  unit: count
+- field: required_winding
+  unit: turns
+- field: sampled_winding
+  unit: turns
+teaching_invariant: The winding count of 1+L equals closed-loop right-half-plane poles minus open-loop right-half-plane
+  poles under the stated contour convention.
+limiting_cases:
+- At very high frequency the strictly proper loop approaches the origin.
+- A marginal crossing through -1 invalidates a casual integer winding count and needs a detour.
+scenarios:
+  baseline: &id001
+    loop_gain: 6.0
+    unstable_pole_per_s: 0.5
+    broken_mode: false
+  sweep_1:
+    loop_gain: 20.0
+    unstable_pole_per_s: 0.5
+    broken_mode: false
+  sweep_2:
+    loop_gain: 6.0
+    unstable_pole_per_s: 1.5
+    broken_mode: false
+  broken:
+    loop_gain: 6.0
+    unstable_pole_per_s: 0.5
+    broken_mode: true
+  recovery: *id001
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.
