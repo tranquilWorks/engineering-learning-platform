@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "item_id": "P59",
+  "signature_fields": [
+    {
+      "field": "arrival_time",
+      "unit": "s"
+    },
+    {
+      "field": "acceleration_violation",
+      "unit": "m/s^2"
+    },
+    {
+      "field": "terminal_speed_error",
+      "unit": "m/s"
+    }
+  ],
+  "origin": {
+    "kind": "independent-analytic-python",
+    "item_id": "P59",
+    "independent": true,
+    "imports_production_entrypoint": false,
+    "derived_from_production_output": false,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "acceleration_limit_m_s2": 1.0,
+        "speed_limit_m_s": 2.0,
+        "broken_mode": false
+      },
+      "signature": [
+        6.0,
+        0.0,
+        0.0
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "acceleration_limit_m_s2": 2.0,
+        "speed_limit_m_s": 2.0,
+        "broken_mode": false
+      },
+      "signature": [
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "acceleration_limit_m_s2": 1.0,
+        "speed_limit_m_s": 1.0,
+        "broken_mode": false
+      },
+      "signature": [
+        9.0,
+        0.0,
+        0.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "acceleration_limit_m_s2": 1.0,
+        "speed_limit_m_s": 2.0,
+        "broken_mode": true
+      },
+      "signature": [
+        4.0,
+        3.0,
+        2.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "acceleration_limit_m_s2": 1.0,
+        "speed_limit_m_s": 2.0,
+        "broken_mode": false
+      },
+      "signature": [
+        6.0,
+        0.0,
+        0.0
+      ]
+    }
+  }
+}

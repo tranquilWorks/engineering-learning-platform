@@ -1,0 +1,25 @@
+schema_version: 1
+id: 56-improve-sampled-paths-with-rrt-star
+number: 56
+title: Improve Sampled Paths with RRT-Star
+summary: Grow a deterministic collision-free tree, choose lower-cost parents, rewire nearby descendants, and track the anytime incumbent against a geometric lower bound.
+guiding_question: What additional operations let RRT-Star improve path cost after an ordinary RRT has already found a feasible route?
+status: implemented
+tags: [robotics-autonomy, native-python, planning]
+runtime: {kind: python, entrypoint: 'experiment.py:run', trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: sample_count, type: slider, label: Sample budget, default: 220, minimum: 60, maximum: 400, step: 20, unit: count}
+- {id: rewire_radius_m, type: slider, label: Rewire radius, default: 1.6, minimum: 0.7, maximum: 3.0, step: 0.1, unit: m}
+- {id: broken_mode, type: toggle, label: Enable named failure, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- type: prediction
+  title: Predict before running
+  text: Rewiring should preserve feasibility while lowering the incumbent cost toward a nonattainable straight-line bound.
+  reveal: Inspect rewires, incumbent history, and excess cost.
+- {type: controls, title: Live model controls}
+- {type: metrics}
+- {type: plot_grid, title: Tree solution and anytime mechanism, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken assumption, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}

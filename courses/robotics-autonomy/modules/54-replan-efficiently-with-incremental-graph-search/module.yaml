@@ -1,0 +1,59 @@
+schema_version: 1
+id: 54-replan-efficiently-with-incremental-graph-search
+number: 54
+title: Replan Efficiently with Incremental Graph Search
+summary: Run Lifelong Planning A* before and after a local occupancy change, repair inconsistent vertices, and compare the valid repaired path with a stale cached path.
+guiding_question: Which graph values can an incremental planner safely reuse after a map cell changes, and when must they be repaired?
+status: implemented
+tags: [robotics-autonomy, native-python, planning]
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: grid_resolution_m
+  type: slider
+  label: Grid resolution
+  default: 0.5
+  minimum: 0.25
+  maximum: 1.0
+  step: 0.25
+  unit: m
+- id: heuristic_weight
+  type: slider
+  label: Heuristic weight
+  default: 1.0
+  minimum: 0.0
+  maximum: 1.0
+  step: 0.1
+  unit: '1'
+- id: broken_mode
+  type: toggle
+  label: Enable named failure
+  default: false
+blocks: &blocks
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: A locally changed edge should invalidate a dependency cone, not force every previously consistent graph value to be discarded.
+  reveal: Use the path collision count and repair-expansion comparison to test that prediction.
+- type: controls
+  title: Live model controls
+- type: metrics
+- type: plot_grid
+  title: Repaired route and queue work
+  plots: [response, mechanism]
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken assumption
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

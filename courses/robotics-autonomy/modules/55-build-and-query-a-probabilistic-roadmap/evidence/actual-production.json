@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "item_id": "P55",
+  "signature_fields": [
+    {
+      "field": "roadmap_path_length",
+      "unit": "m"
+    },
+    {
+      "field": "colliding_path_edges",
+      "unit": "count"
+    },
+    {
+      "field": "query_reachability",
+      "unit": "1"
+    }
+  ],
+  "origin": {
+    "kind": "production-experiment",
+    "independent": false,
+    "imports_production_entrypoint": true,
+    "derived_from_production_output": true,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "sample_count": 100.0,
+        "connection_radius_m": 2.0,
+        "broken_mode": false
+      },
+      "signature": [
+        11.283857892556558,
+        0.0,
+        0.9901960784313726
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "sample_count": 50.0,
+        "connection_radius_m": 2.0,
+        "broken_mode": false
+      },
+      "signature": [
+        12.013333777911898,
+        0.0,
+        1.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "sample_count": 100.0,
+        "connection_radius_m": 3.0,
+        "broken_mode": false
+      },
+      "signature": [
+        11.162257822041257,
+        0.0,
+        0.9901960784313726
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "sample_count": 100.0,
+        "connection_radius_m": 2.0,
+        "broken_mode": true
+      },
+      "signature": [
+        10.707607372147443,
+        2.0,
+        0.9901960784313726
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "sample_count": 100.0,
+        "connection_radius_m": 2.0,
+        "broken_mode": false
+      },
+      "signature": [
+        11.283857892556558,
+        0.0,
+        0.9901960784313726
+      ]
+    }
+  }
+}

@@ -1,0 +1,25 @@
+schema_version: 1
+item_id: P59
+module: 59-plan-dynamically-feasible-kinodynamic-motion
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- x_{k+1}=x_k+v_k Delta t+0.5 a_k Delta t^2
+- v_{k+1}=v_k+a_k Delta t with |a_k|<=a_max and 0<=v_k<=v_max
+- goal={(x,v) | |x-x_goal|<=epsilon_x and |v|<=epsilon_v}
+signature:
+- {field: arrival_time, unit: s}
+- {field: acceleration_violation, unit: m/s^2}
+- {field: terminal_speed_error, unit: m/s}
+teaching_invariant: Every accepted lattice edge must obey acceleration and speed bounds, and reaching the goal position does not waive the terminal-velocity constraint.
+limiting_cases:
+- When the speed limit is never reached, arrival time is acceleration-limited and insensitive to a higher speed ceiling.
+- With unbounded acceleration, the state-lattice result approaches geometric time parameterization.
+scenarios:
+  baseline: &baseline {acceleration_limit_m_s2: 1.0, speed_limit_m_s: 2.0, broken_mode: false}
+  sweep_1: {acceleration_limit_m_s2: 2.0, speed_limit_m_s: 2.0, broken_mode: false}
+  sweep_2: {acceleration_limit_m_s2: 1.0, speed_limit_m_s: 1.0, broken_mode: false}
+  broken: {acceleration_limit_m_s2: 1.0, speed_limit_m_s: 2.0, broken_mode: true}
+  recovery: *baseline
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

@@ -1,0 +1,22 @@
+schema_version: 1
+id: 60-avoid-dynamic-obstacles-with-local-predictive-control
+number: 60
+title: Avoid Dynamic Obstacles with Local Predictive Control
+summary: Apply bounded lateral acceleration in a receding-horizon controller that predicts both robot and moving-obstacle trajectories and audits executed separation.
+guiding_question: How much prediction is needed to avoid a crossing obstacle when lateral acceleration is bounded?
+status: implemented
+tags: [robotics-autonomy, native-python, local-planning, predictive-control, safety]
+runtime: {kind: python, entrypoint: 'experiment.py:run', trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: prediction_horizon_steps, type: slider, label: Prediction horizon, default: 15, minimum: 3, maximum: 25, step: 1, unit: count}
+- {id: obstacle_speed_m_s, type: slider, label: Obstacle crossing speed, default: 0.55, minimum: 0.2, maximum: 1.2, step: 0.05, unit: m/s}
+- {id: broken_mode, type: toggle, label: Enable named failure, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- {type: prediction, title: Predict before running, text: A controller that sees the future crossing can begin a bounded maneuver before current separation becomes small., reveal: Compare minimum separation and violation duration.}
+- {type: controls, title: Live model controls}
+- {type: metrics}
+- {type: plot_grid, title: Executed motion and safety audit, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken assumption, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}

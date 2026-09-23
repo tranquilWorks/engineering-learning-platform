@@ -1,0 +1,25 @@
+schema_version: 1
+id: 57-check-collision-geometry-and-smooth-paths
+number: 57
+title: Check Collision Geometry and Smooth Paths
+summary: Inflate circular obstacles by the robot footprint, evaluate exact segment clearance, and accept only collision-free shortcut replacements.
+guiding_question: Why is checking only shortcut endpoints insufficient for a finite-radius robot?
+status: implemented
+tags: [robotics-autonomy, native-python, planning]
+runtime: {kind: python, entrypoint: 'experiment.py:run', trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: robot_radius_m, type: slider, label: Robot radius, default: 0.3, minimum: 0.05, maximum: 0.8, step: 0.05, unit: m}
+- {id: smoothing_iterations, type: slider, label: Shortcut attempts, default: 30, minimum: 0, maximum: 60, step: 1, unit: count}
+- {id: broken_mode, type: toggle, label: Enable named failure, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- type: prediction
+  title: Predict before running
+  text: Path length should decrease monotonically, but never by accepting a negative swept-clearance segment.
+  reveal: Compare length history, clearance, and collision count.
+- {type: controls, title: Live model controls}
+- {type: metrics}
+- {type: plot_grid, title: Smoothed path and clearance mechanism, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken assumption, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}

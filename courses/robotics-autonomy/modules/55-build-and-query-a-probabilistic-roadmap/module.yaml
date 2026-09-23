@@ -1,0 +1,22 @@
+schema_version: 1
+id: 55-build-and-query-a-probabilistic-roadmap
+number: 55
+title: Build and Query a Probabilistic Roadmap
+summary: Construct a deterministic Halton-sampled PRM, collision-check inflated-obstacle edges, and answer a shortest-path query over the retained roadmap.
+guiding_question: Why can a densely connected roadmap still return an unusable path when its local planner is wrong?
+status: implemented
+tags: [robotics-autonomy, native-python, planning]
+runtime: {kind: python, entrypoint: 'experiment.py:run', trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: sample_count, type: slider, label: Roadmap samples, default: 100, minimum: 30, maximum: 250, step: 10, unit: count}
+- {id: connection_radius_m, type: slider, label: Connection radius, default: 2.0, minimum: 0.8, maximum: 3.5, step: 0.1, unit: m}
+- {id: broken_mode, type: toggle, label: Enable named failure, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- {type: prediction, title: Predict before running, text: More graph edges improve connectivity only when the local planner certifies every swept segment., reveal: Compare retained connectivity with colliding path edges.}
+- {type: controls, title: Live model controls}
+- {type: metrics}
+- {type: plot_grid, title: Roadmap query and edge filter, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken assumption, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}

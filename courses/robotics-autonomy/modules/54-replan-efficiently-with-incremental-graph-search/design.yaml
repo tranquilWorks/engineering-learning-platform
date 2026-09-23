@@ -1,0 +1,33 @@
+schema_version: 1
+item_id: P54
+module: 54-replan-efficiently-with-incremental-graph-search
+provenance: &provenance
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- rhs(s_start)=0 and rhs(s)=min_{s' in Pred(s)}(g(s')+c(s',s))
+- key(s)=[min(g,rhs)+w h(s,s_goal), min(g,rhs)]
+- A changed edge is repaired until top_key>=key(goal) and rhs(goal)=g(goal)
+signature:
+- {field: replanned_path_length, unit: m}
+- {field: occupied_path_cells, unit: count}
+- {field: repair_expansion_ratio, unit: '1'}
+teaching_invariant: A replanned path is acceptable only if it is collision-free in the updated graph; zero search work cannot justify stale geometry.
+limiting_cases:
+- With no changed edge, every consistent vertex remains reusable and repair work tends to zero.
+- With heuristic weight zero, the priority key reduces to incremental uniform-cost search.
+scenarios:
+  baseline: &baseline {grid_resolution_m: 0.5, heuristic_weight: 1.0, broken_mode: false}
+  sweep_1: {grid_resolution_m: 1.0, heuristic_weight: 1.0, broken_mode: false}
+  sweep_2: {grid_resolution_m: 0.5, heuristic_weight: 0.0, broken_mode: false}
+  broken: {grid_resolution_m: 0.5, heuristic_weight: 1.0, broken_mode: true}
+  recovery: *baseline
+independent_reference: &reference
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance: &tolerance {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

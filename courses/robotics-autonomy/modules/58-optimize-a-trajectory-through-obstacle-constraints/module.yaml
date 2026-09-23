@@ -1,0 +1,22 @@
+schema_version: 1
+id: 58-optimize-a-trajectory-through-obstacle-constraints
+number: 58
+title: Optimize a Trajectory through Obstacle Constraints
+summary: Minimize a discrete smoothness-and-length objective while enforcing signed-distance clearance over complete trajectory segments.
+guiding_question: Why does a smooth trajectory objective need a separately enforced obstacle-feasibility constraint?
+status: implemented
+tags: [robotics-autonomy, native-python, planning, optimization]
+runtime: {kind: python, entrypoint: 'experiment.py:run', trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: required_clearance_m, type: slider, label: Required clearance, default: 0.35, minimum: 0.05, maximum: 1.0, step: 0.05, unit: m}
+- {id: smoothness_weight, type: slider, label: Smoothness weight, default: 18.0, minimum: 2.0, maximum: 50.0, step: 1.0, unit: '1'}
+- {id: broken_mode, type: toggle, label: Enable named failure, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- {type: prediction, title: Predict before running, text: Unconstrained smoothness favors a straight line even when that line is infeasible., reveal: Compare the converged objective with signed segment clearance.}
+- {type: controls, title: Live model controls}
+- {type: metrics}
+- {type: plot_grid, title: Optimized trajectory and convergence, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken assumption, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}

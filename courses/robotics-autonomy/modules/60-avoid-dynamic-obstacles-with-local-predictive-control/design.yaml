@@ -1,0 +1,25 @@
+schema_version: 1
+item_id: P60
+module: 60-avoid-dynamic-obstacles-with-local-predictive-control
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- y_{k+1}=y_k+v_{y,k+1}Delta t and v_{y,k+1}=sat(v_{y,k}+a_{y,k}Delta t)
+- p^o_{k+j|k}=p^o_k+j Delta t v^o with ||p^r_{k+j|k}-p^o_{k+j|k}||>=r_safe
+- a_k=first(argmin sum_j(J_goal+J_cross-track+J_separation)+J_control)
+signature:
+- {field: minimum_dynamic_separation, unit: m}
+- {field: safety_violation_steps, unit: count}
+- {field: executed_path_length, unit: m}
+teaching_invariant: Executed robot-obstacle separation must remain outside the safety radius under the same motion prediction used to select the first receding-horizon action.
+limiting_cases:
+- A stationary obstacle makes constant-velocity prediction equal to a frozen-obstacle model.
+- A one-step horizon is reactive and cannot compensate for a maneuver whose stopping distance exceeds one sample.
+scenarios:
+  baseline: &baseline {prediction_horizon_steps: 15.0, obstacle_speed_m_s: 0.55, broken_mode: false}
+  sweep_1: {prediction_horizon_steps: 5.0, obstacle_speed_m_s: 0.55, broken_mode: false}
+  sweep_2: {prediction_horizon_steps: 15.0, obstacle_speed_m_s: 1.0, broken_mode: false}
+  broken: {prediction_horizon_steps: 15.0, obstacle_speed_m_s: 0.55, broken_mode: true}
+  recovery: *baseline
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

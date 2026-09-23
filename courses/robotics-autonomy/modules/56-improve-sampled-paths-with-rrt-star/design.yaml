@@ -1,0 +1,25 @@
+schema_version: 1
+item_id: P56
+module: 56-improve-sampled-paths-with-rrt-star
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- q_new=Steer(q_nearest,q_sample,eta) subject to segment(q_nearest,q_new) subset C_free
+- parent(q_new)=argmin_{q in Near}(J(q)+||q-q_new||)
+- Rewire q when J(q_new)+||q_new-q||<J(q) and the connecting edge is free
+signature:
+- {field: best_path_cost, unit: m}
+- {field: rewire_count, unit: count}
+- {field: lower_bound_excess, unit: '1'}
+teaching_invariant: RRT-Star may lower incumbent cost only through collision-free parent changes, and its cost cannot fall below start-to-goal Euclidean distance.
+limiting_cases:
+- With rewiring disabled, the algorithm reduces to a feasible but non-improving RRT.
+- With no obstacles and sufficient samples, the best cost approaches the straight-line lower bound.
+scenarios:
+  baseline: &baseline {sample_count: 220.0, rewire_radius_m: 1.6, broken_mode: false}
+  sweep_1: {sample_count: 100.0, rewire_radius_m: 1.6, broken_mode: false}
+  sweep_2: {sample_count: 220.0, rewire_radius_m: 3.0, broken_mode: false}
+  broken: {sample_count: 220.0, rewire_radius_m: 1.6, broken_mode: true}
+  recovery: *baseline
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.
