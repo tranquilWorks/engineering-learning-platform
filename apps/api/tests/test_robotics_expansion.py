@@ -409,3 +409,37 @@ def test_robotics_planning_teaching_invariants() -> None:
     frozen = signature(60, {"broken_mode": True})
     assert predictive[0] >= 0.9 and predictive[1] == 0
     assert frozen[0] < 0.9 and frozen[1] > 0
+
+
+def test_robotics_manipulation_and_task_autonomy_teaching_invariants() -> None:
+    runtime = ExperimentRuntime(CourseCatalog([ROOT / "courses"]))
+
+    def signature(number: int, supplied: dict[str, Any]) -> list[float]:
+        item = NATIVE[number - 25]
+        module_id = _yaml(COURSE_ROOT / item["folder"] / "module.yaml")["id"]
+        return runtime.run("robotics-autonomy", module_id, supplied).diagnostics["signature"]
+
+    closed = signature(61, {"broken_mode": False})
+    reversed_normal = signature(61, {"broken_mode": True})
+    assert closed[0] > 0 >= reversed_normal[0]
+    assert closed[1] < reversed_normal[1]
+
+    calibrated_pick = signature(62, {"broken_mode": False})
+    wrong_frame_pick = signature(62, {"broken_mode": True})
+    assert calibrated_pick[0] < 0.055 < wrong_frame_pick[0]
+    assert calibrated_pick[2] == 9 > wrong_frame_pick[2]
+
+    coordinated_reach = signature(63, {"broken_mode": False})
+    frozen_base = signature(63, {"broken_mode": True})
+    assert coordinated_reach[0] < 1.0e-9 < frozen_base[0]
+    assert coordinated_reach[1] > frozen_base[1]
+
+    recovered_task = signature(64, {"broken_mode": False})
+    abandoned_task = signature(64, {"broken_mode": True})
+    assert recovered_task[:2] == [1.0, 1.0]
+    assert abandoned_task[:2] == [0.0, 0.0]
+
+    reserved = signature(65, {"broken_mode": False})
+    independent = signature(65, {"broken_mode": True})
+    assert reserved[0] == 0 < independent[0]
+    assert reserved[2] > 0 == independent[2]

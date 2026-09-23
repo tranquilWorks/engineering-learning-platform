@@ -1,0 +1,22 @@
+schema_version: 1
+id: 64-plan-tasks-and-motions-with-recovery
+number: 64
+title: Plan Tasks and Motions with Recovery
+summary: Search a symbolic task graph with motion predicates, monitor actual clearance, and recover by blacklisting a failed carry edge.
+guiding_question: How should a task planner respond when a geometrically plausible action fails during execution?
+status: implemented
+tags: [robotics-autonomy, native-python, task-planning, motion-planning, recovery]
+runtime: {kind: python, entrypoint: 'experiment.py:run', trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: corridor_width_m, type: slider, label: Predicted corridor width, default: 0.27, minimum: 0.18, maximum: 0.36, step: 0.01, unit: m}
+- {id: geometry_error_cm, type: slider, label: Width-model error, default: 5.0, minimum: 0.0, maximum: 10.0, step: 0.5, unit: cm}
+- {id: broken_mode, type: toggle, label: Disable failure recovery, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- {type: prediction, title: Predict before running, text: 'A monitored clearance failure should alter the search graph before execution resumes.', reveal: Inspect the failed margin and replacement branch.}
+- {type: controls, title: Live model controls}
+- {type: metrics}
+- {type: plot_grid, title: Task trace and motion-feasibility evidence, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken assumption, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}

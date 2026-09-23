@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "item_id": "P64",
+  "signature_fields": [
+    {
+      "field": "task_success",
+      "unit": "1"
+    },
+    {
+      "field": "motion_replans",
+      "unit": "count"
+    },
+    {
+      "field": "executed_task_time",
+      "unit": "s"
+    }
+  ],
+  "origin": {
+    "kind": "production-experiment",
+    "independent": false,
+    "imports_production_entrypoint": true,
+    "derived_from_production_output": true,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "corridor_width_m": 0.27,
+        "geometry_error_cm": 5.0,
+        "broken_mode": false
+      },
+      "signature": [
+        1.0,
+        1.0,
+        14.1
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "corridor_width_m": 0.31,
+        "geometry_error_cm": 5.0,
+        "broken_mode": false
+      },
+      "signature": [
+        1.0,
+        0.0,
+        7.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "corridor_width_m": 0.27,
+        "geometry_error_cm": 9.0,
+        "broken_mode": false
+      },
+      "signature": [
+        1.0,
+        1.0,
+        14.1
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "corridor_width_m": 0.27,
+        "geometry_error_cm": 5.0,
+        "broken_mode": true
+      },
+      "signature": [
+        0.0,
+        0.0,
+        7.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "corridor_width_m": 0.27,
+        "geometry_error_cm": 5.0,
+        "broken_mode": false
+      },
+      "signature": [
+        1.0,
+        1.0,
+        14.1
+      ]
+    }
+  }
+}

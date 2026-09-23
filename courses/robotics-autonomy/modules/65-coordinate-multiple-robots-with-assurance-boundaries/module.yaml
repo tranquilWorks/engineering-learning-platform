@@ -1,0 +1,22 @@
+schema_version: 1
+id: 65-coordinate-multiple-robots-with-assurance-boundaries
+number: 65
+title: Coordinate Multiple Robots with Assurance Boundaries
+summary: Plan a second robot through a bounded space-time grid using vertex, edge, and temporal-buffer reservations from the first robot.
+guiding_question: Which conflicts are missed when multiple robots follow independent shortest paths?
+status: implemented
+tags: [robotics-autonomy, native-python, multi-robot, reservations, assurance]
+runtime: {kind: python, entrypoint: 'experiment.py:run', trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: reservation_buffer_steps, type: slider, label: Temporal reservation buffer, default: 1.0, minimum: 0.0, maximum: 3.0, step: 1.0, unit: step}
+- {id: robot_b_start_delay_steps, type: slider, label: Robot B release delay, default: 0.0, minimum: 0.0, maximum: 4.0, step: 1.0, unit: step}
+- {id: broken_mode, type: toggle, label: Plan robots independently, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- {type: prediction, title: Predict before running, text: 'Independent geometric routes can collide because their central-cell occupancy is synchronized.', reveal: Compare conflicts and makespan after space-time reservation.}
+- {type: controls, title: Live model controls}
+- {type: metrics}
+- {type: plot_grid, title: Reserved routes and separation evidence, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken assumption, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}

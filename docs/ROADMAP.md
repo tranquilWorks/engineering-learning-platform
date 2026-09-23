@@ -116,6 +116,14 @@ DSP/Radar remains 84/84, Controls/GNC remains 24/24, and the catalog remains
 4 / 110 / 110. No unfinished course is imported or implemented by this
 administrative lane. The later Robotics authorization below is separate.
 
+## ELP-ROB-MANIPULATION-P61-P65 — Robotics manipulation and task autonomy
+
+**Status:** Implemented and locally verified in its isolated target batch.
+
+**Depends on:** `ELP-ROB-PLANNING-P54-P60`
+
+This issue-440 batch implements grasp force closure, perception-guided pick/place, mobile-manipulator coordination, task-and-motion recovery, and multi-robot space-time reservations. It advances the course to 65 interactive modules and the platform catalog to 219 interactive modules. P66-P69 remain separately authorized systems integration and cumulative capstone work.
+
 ## ELP-ROB — Authorized Robotics P01-P24 native Python lane
 
 **Depends on:** ELP-ORG-IDENTITY

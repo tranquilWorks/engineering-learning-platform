@@ -1,0 +1,25 @@
+schema_version: 1
+item_id: P65
+module: 65-coordinate-multiple-robots-with-assurance-boundaries
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- 'R_v={(p_A(tau),t): abs(tau-t)<=b} reserves vertices across the temporal assurance buffer b'
+- (p_B(t),t)->(p_B(t+1),t+1) is admissible only outside R_v and every opposing edge reservation
+- pi_B*=argmin g+h in the bounded space-time grid and d_min=min_t ||p_A(t)-p_B(t)||_2
+signature:
+- {field: space_time_conflicts, unit: count}
+- {field: coordinated_makespan, unit: step}
+- {field: minimum_robot_separation, unit: cell}
+teaching_invariant: A coordinated schedule must be free of both same-time vertex occupancy and opposing edge swaps under the declared temporal reservation buffer.
+limiting_cases:
+- With disjoint spatial paths, independent shortest paths already satisfy the reservation audit and coordination adds no delay.
+- Increasing the temporal buffer can preserve assurance by adding waits or detours, but cannot prove safety under unmodelled localization error.
+scenarios:
+  baseline: &baseline {reservation_buffer_steps: 1.0, robot_b_start_delay_steps: 0.0, broken_mode: false}
+  sweep_1: {reservation_buffer_steps: 0.0, robot_b_start_delay_steps: 0.0, broken_mode: false}
+  sweep_2: {reservation_buffer_steps: 1.0, robot_b_start_delay_steps: 2.0, broken_mode: false}
+  broken: {reservation_buffer_steps: 1.0, robot_b_start_delay_steps: 0.0, broken_mode: true}
+  recovery: *baseline
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic grid coordination software evidence only; no radio transport, distributed clock, MATLAB runtime, learner, browser/accessibility, physical HIL/hardware, safety, release, deployment, or production claim.

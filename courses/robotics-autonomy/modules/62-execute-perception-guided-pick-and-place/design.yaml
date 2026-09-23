@@ -1,0 +1,25 @@
+schema_version: 1
+item_id: P62
+module: 62-execute-perception-guided-pick-and-place
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- p_b^o=t_b^c+R(theta_b^c+delta theta) p_c^o maps the visual estimate into the robot base frame
+- cos(q_2)=(||p_b^o||^2-l_1^2-l_2^2)/(2 l_1 l_2) with q_1 from the analytic two-link branch
+- grasp_ok=reachable and ||FK(q)-p_true||_2<=epsilon_gripper gates lift and transfer states
+signature:
+- {field: pickup_position_error, unit: m}
+- {field: reachability_margin, unit: m}
+- {field: completed_task_states, unit: count}
+teaching_invariant: A perception-guided grasp may advance beyond contact only when the pose estimate is transformed into the manipulator base frame, is reachable, and satisfies the physical pickup tolerance.
+limiting_cases:
+- Zero visual noise and zero extrinsic yaw error make the analytic IK endpoint coincide with the true object centre.
+- A target on the outer workspace boundary has zero reachability margin and a singular elbow even when its Cartesian residual is zero.
+scenarios:
+  baseline: &baseline {vision_noise_cm: 1.2, camera_yaw_error_deg: 0.8, broken_mode: false}
+  sweep_1: {vision_noise_cm: 5.0, camera_yaw_error_deg: 0.8, broken_mode: false}
+  sweep_2: {vision_noise_cm: 1.2, camera_yaw_error_deg: 5.0, broken_mode: false}
+  broken: {vision_noise_cm: 1.2, camera_yaw_error_deg: 0.8, broken_mode: true}
+  recovery: *baseline
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic planar software evidence only; no live camera, object detector, MATLAB runtime, learner, browser/accessibility, physical HIL/hardware, safety, release, deployment, or production claim.

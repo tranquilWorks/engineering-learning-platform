@@ -1,9 +1,9 @@
 # Current state
 
-`ELP-GNC-CAPSTONES-P66-P68` is the final issue-439 batch from target baseline `c1ed195ec1d9c07c1ed044a9f18a6fee3118d70e` (tree `d5cf9b9c349922ff6217e96733d35e6c486f07ad`) and Portfolio Control merge `322072170f8b25dade7ad7ebfa183cceaebad6b2`.
+`ELP-ROB-MANIPULATION-P61-P65` is the active issue-440 batch from exact target baseline `b84f5b29f5b842584439209e41f79655bbde8d19` (tree `99cd3b2ef13a39639f05eead017c9e52dd209eeb`) and Portfolio Control merge `d018fa3cacce804246420224c731a4e1b267ceea`.
 
-The reviewed map derives 68 Controls/GNC modules, not a quota. P01-P65 cover the prerequisite sequence from source-bound foundations through actuator-aware guidance. P66-P68 now close it with requirements-traced capstones for identification/control/estimation stress, constrained autonomous-survey navigation/guidance, and faulted software-HIL timing and fail-zero response.
+Robotics and Autonomy now has 65 implemented interactive modules. P61-P65 add a planar friction-cone force-closure test and nonnegative load solve, calibrated perception-to-IK pick/place gating, joint base-arm placement optimization, monitored task-and-motion replanning, and time-expanded multi-robot reservations. The five-course catalog contains 219 modules, all interactive.
 
-Controls/GNC has 68 implemented interactive modules; the five-course catalog has 178 modules and 178 interactive modules. Every native item retains distinct equations, two one-variable sweeps, a broken/recovery path, limiting cases, named invariants, physical axes/units, and separate expected/production evidence for five scenarios.
+Every Python-first addition retains a unique governing model, baseline, two one-variable sweeps, intentionally broken behavior, exact recovery, limiting cases, physical axes/units, and independent expected evidence separated from production results. The immutable source gitlink remains pinned at `f8807640258f1a6c1c77f1dcc9e61734551c585b`.
 
-All competency-map items and three cumulative capstones are implemented, so platform curriculum coverage and software capstone integration pass. Learner validation remains not run. P01-P65, source/conversion records, other courses, runtime/UI, dependencies, workflows, and deployment files remain unchanged. No MATLAB, browser/accessibility, learner-effectiveness, physical HIL/hardware, certification, release, deployment, credentials/settings, or production result is claimed.
+P66-P69 remain: robot model/frame/interface integration, timed replay and diagnosis, and two cumulative capstones. MATLAB runtime comparison, learner validation, browser/accessibility validation, physical HIL/hardware, safety certification, release, deployment, credentials/settings, and production validation remain explicitly unperformed.
