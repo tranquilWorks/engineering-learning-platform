@@ -691,7 +691,227 @@ def _p60(p: dict[str, Any]) -> list[float]:
     return [min(separations), float(sum(value < 0.9 for value in separations)), path_length]
 
 
-_DISPATCH = {58: _p58, 59: _p59, 60: _p60, 54: _p54, 55: _p55, 56: _p56, 57: _p57, 49: _p49, 50: _p50, 51: _p51, 52: _p52, 53: _p53, 41: _p41, 42: _p42, 43: _p43, 44: _p44, 45: _p45, 46: _p46, 47: _p47, 48: _p48, 34: _p34, 35: _p35, 36: _p36, 37: _p37, 38: _p38, 39: _p39, 40: _p40, 25: _p25, 26: _p26, 27: _p27, 28: _p28, 29: _p29, 30: _p30, 31: _p31, 32: _p32, 33: _p33, }
+def _p61(p: dict[str, Any]) -> list[float]:
+    friction = float(p["friction_coefficient"])
+    radius = 0.06
+    angles = (np.pi, np.deg2rad(float(p["contact_misalignment_deg"])))
+    columns: list[np.ndarray] = []
+    for index, angle in enumerate(angles):
+        position = radius * np.array([np.cos(angle), np.sin(angle)])
+        normal = -position / radius
+        if p["broken_mode"] and index == 1:
+            normal = -normal
+        tangent = np.array([-normal[1], normal[0]])
+        for sign in (-1.0, 1.0):
+            force = normal + sign * friction * tangent
+            moment = position[0] * force[1] - position[1] * force[0]
+            columns.append(np.array([force[0], force[1], moment / radius]))
+    matrix = np.column_stack(columns)
+    _, singular, right = np.linalg.svd(matrix)
+    rank = int(np.sum(singular > singular[0] * 1.0e-10))
+    equilibrium = right[-1]
+    if np.min(-equilibrium) > np.min(equilibrium):
+        equilibrium = -equilibrium
+    if abs(float(np.sum(equilibrium))) < 1.0e-12:
+        margin = -float(np.linalg.norm(matrix @ equilibrium))
+    else:
+        weights = equilibrium / float(np.sum(equilibrium))
+        residual = float(np.linalg.norm(matrix @ weights))
+        if rank == 3 and np.min(weights) > 1.0e-9 and residual < 1.0e-8:
+            margin = float(np.min(weights))
+        else:
+            margin = -max(residual, float(max(-np.min(weights), 0.0)))
+    target = np.array([0.0, 7.5, -2.0])
+    coefficients = np.zeros(matrix.shape[1])
+    step = 0.8 / max(float(np.linalg.norm(matrix, 2) ** 2), 1.0e-9)
+    for _ in range(240):
+        load_residual = matrix @ coefficients - target
+        coefficients = np.maximum(coefficients - step * matrix.T @ load_residual, 0.0)
+    return [margin, float(np.linalg.norm(matrix @ coefficients - target)),
+            float(np.sum(coefficients))]
+
+
+def _p62(p: dict[str, Any]) -> list[float]:
+    def rotation(angle: float) -> np.ndarray:
+        return np.array([[np.cos(angle), -np.sin(angle)],
+                         [np.sin(angle), np.cos(angle)]])
+
+    translation = np.array([0.28, 0.12])
+    true_yaw = np.deg2rad(25.0)
+    object_camera = np.array([0.72, 0.18])
+    true_object = translation + rotation(true_yaw) @ object_camera
+    noise = 0.01 * float(p["vision_noise_cm"])
+    measured = object_camera + noise * np.array([0.60, -0.35])
+    if p["broken_mode"]:
+        estimate = measured
+    else:
+        estimate = translation + rotation(
+            true_yaw + np.deg2rad(float(p["camera_yaw_error_deg"]))
+        ) @ measured
+    first, second = 0.75, 0.55
+    cosine = (float(estimate @ estimate) - first**2 - second**2) / (2.0 * first * second)
+    reachable = abs(cosine) <= 1.0
+    elbow = -float(np.arccos(np.clip(cosine, -1.0, 1.0)))
+    shoulder = float(np.arctan2(estimate[1], estimate[0])
+                     - np.arctan2(second * np.sin(elbow), first + second * np.cos(elbow)))
+    endpoint = np.array([first * np.cos(shoulder) + second * np.cos(shoulder + elbow),
+                         first * np.sin(shoulder) + second * np.sin(shoulder + elbow)])
+    error = float(np.linalg.norm(endpoint - true_object))
+    margin = first + second - float(np.linalg.norm(estimate))
+    states = 9 if reachable and error <= 0.055 else 4
+    return [error, margin, float(states)]
+
+
+def _p63(p: dict[str, Any]) -> list[float]:
+    first, second = 0.75, 0.55
+    target = np.array([float(p["target_distance_m"]), 0.35])
+
+    def solve(relative: np.ndarray) -> tuple[np.ndarray, float] | None:
+        cosine = (float(relative @ relative) - first**2 - second**2) / (2.0 * first * second)
+        if abs(cosine) > 1.0:
+            return None
+        elbow = -float(np.arccos(np.clip(cosine, -1.0, 1.0)))
+        shoulder = float(np.arctan2(relative[1], relative[0])
+                         - np.arctan2(second * np.sin(elbow), first + second * np.cos(elbow)))
+        return np.array([shoulder, elbow]), first * second * abs(float(np.sin(elbow)))
+
+    if p["broken_mode"]:
+        base = 0.0
+        solution = solve(1.30 * target / float(np.linalg.norm(target)))
+        assert solution is not None
+        joints, manipulability = solution
+    else:
+        candidates: list[tuple[float, float, np.ndarray, float]] = []
+        for base_candidate in np.linspace(0.0, 1.45, 59):
+            solution = solve(target - np.array([base_candidate, 0.0]))
+            if solution is None:
+                continue
+            joints_candidate, manipulability_candidate = solution
+            score = (float(p["base_motion_weight"]) * base_candidate
+                     + 0.18 / max(manipulability_candidate + 0.025, 1.0e-9))
+            candidates.append((score, base_candidate, joints_candidate,
+                               manipulability_candidate))
+        _, base, joints, manipulability = min(candidates, key=lambda item: (item[0], item[1]))
+    endpoint = np.array([
+        base + first * np.cos(joints[0]) + second * np.cos(np.sum(joints)),
+        first * np.sin(joints[0]) + second * np.sin(np.sum(joints)),
+    ])
+    return [float(np.linalg.norm(endpoint - target)), manipulability, abs(base)]
+
+
+def _p64(p: dict[str, Any]) -> list[float]:
+    corridor = float(p["corridor_width_m"])
+    actual = corridor - 0.01 * float(p["geometry_error_cm"])
+
+    def search(blocked: set[tuple[str, str]]) -> list[tuple[str, str, float]]:
+        edges = {"start": [("approach", 2.0)], "approach": [("top", 1.0), ("side", 1.6)],
+                 "top": [("goal", 4.0)], "side": [("goal", 4.5)]}
+        required = {("top", "goal"): 0.24, ("side", "goal"): 0.16}
+        queue: list[tuple[float, str, list[tuple[str, str, float]]]] = [(0.0, "start", [])]
+        best = {"start": 0.0}
+        while queue:
+            entry = min(queue, key=lambda item: (item[0], item[1]))
+            queue.remove(entry)
+            cost, state, path = entry
+            if state == "goal":
+                return path
+            if cost > best.get(state, float("inf")) + 1.0e-12:
+                continue
+            for target, duration in edges.get(state, []):
+                edge = (state, target)
+                if edge in blocked or corridor + 1.0e-12 < required.get(edge, 0.0):
+                    continue
+                candidate = cost + duration
+                if candidate < best.get(target, float("inf")) - 1.0e-12:
+                    best[target] = candidate
+                    queue.append((candidate, target, path + [(state, target, duration)]))
+        raise RuntimeError("independent task graph exhausted")
+
+    blocked: set[tuple[str, str]] = set()
+    plan = search(blocked)
+    replans = 0
+    total = 0.0
+    success = False
+    while True:
+        failure: tuple[str, str] | None = None
+        for source, target, duration in plan:
+            total += duration
+            if target == "goal":
+                required = 0.24 if source == "top" else 0.16
+                if actual - required < -1.0e-12:
+                    failure = (source, target)
+                    break
+                success = True
+        if success or failure is None or p["broken_mode"]:
+            break
+        blocked.add(failure)
+        replans += 1
+        total += 1.0
+        plan = [edge for edge in search(blocked) if edge[0] != "start"]
+    return [float(success), float(replans), total]
+
+
+def _p65(p: dict[str, Any]) -> list[float]:
+    first = [(0, 2), (1, 2), (2, 2), (3, 2), (4, 2)]
+    buffer = round(float(p["reservation_buffer_steps"]))
+    delay = round(float(p["robot_b_start_delay_steps"]))
+
+    def at(path: list[tuple[int, int]], time: int) -> tuple[int, int]:
+        return path[min(max(time, 0), len(path) - 1)]
+
+    def reserved(current: tuple[int, int], candidate: tuple[int, int], time: int) -> bool:
+        if any(candidate == at(first, tau)
+               for tau in range(max(0, time - buffer), time + buffer + 1)):
+            return True
+        return candidate == at(first, time - 1) and current == at(first, time)
+
+    if p["broken_mode"]:
+        second = [(2, 0)] * (delay + 1) + [(2, 1), (2, 2), (2, 3), (2, 4)]
+    else:
+        start, goal = (2, 0), (2, 4)
+        queue: list[tuple[int, int, tuple[int, int], list[tuple[int, int]]]] = [
+            (4, delay, start, [start] * (delay + 1))
+        ]
+        best = {(start, delay): delay}
+        actions = ((0, 0), (0, 1), (1, 0), (-1, 0), (0, -1))
+        second = []
+        while queue:
+            entry = min(queue, key=lambda item: (item[0], item[1], item[2]))
+            queue.remove(entry)
+            _, time, state, path = entry
+            if state == goal:
+                second = path
+                break
+            if time >= 18:
+                continue
+            for dx, dy in actions:
+                candidate = (state[0] + dx, state[1] + dy)
+                next_time = time + 1
+                if not (0 <= candidate[0] <= 4 and 0 <= candidate[1] <= 4):
+                    continue
+                if reserved(state, candidate, next_time):
+                    continue
+                key = (candidate, next_time)
+                if next_time >= best.get(key, 10**9):
+                    continue
+                best[key] = next_time
+                heuristic = abs(candidate[0] - goal[0]) + abs(candidate[1] - goal[1])
+                queue.append((next_time + heuristic, next_time, candidate, path + [candidate]))
+        if not second:
+            raise RuntimeError("independent reservation search found no path")
+    conflicts = 0
+    separations = []
+    for time in range(max(len(first), len(second))):
+        a, b = at(first, time), at(second, time)
+        separations.append(float(np.hypot(a[0] - b[0], a[1] - b[1])))
+        if a == b:
+            conflicts += 1
+        if time > 0 and at(first, time - 1) == b and at(second, time - 1) == a:
+            conflicts += 1
+    return [float(conflicts), float(max(len(first), len(second)) - 1), min(separations)]
+
+
+_DISPATCH = {61: _p61, 62: _p62, 63: _p63, 64: _p64, 65: _p65, 58: _p58, 59: _p59, 60: _p60, 54: _p54, 55: _p55, 56: _p56, 57: _p57, 49: _p49, 50: _p50, 51: _p51, 52: _p52, 53: _p53, 41: _p41, 42: _p42, 43: _p43, 44: _p44, 45: _p45, 46: _p46, 47: _p47, 48: _p48, 34: _p34, 35: _p35, 36: _p36, 37: _p37, 38: _p38, 39: _p39, 40: _p40, 25: _p25, 26: _p26, 27: _p27, 28: _p28, 29: _p29, 30: _p30, 31: _p31, 32: _p32, 33: _p33, }
 
 def origin(number: int) -> dict[str, Any]:
     return {"kind": "independent-analytic-python", "item_id": f"P{number:02d}", "independent": True,

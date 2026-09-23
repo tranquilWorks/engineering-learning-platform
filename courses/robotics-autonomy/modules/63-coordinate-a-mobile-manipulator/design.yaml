@@ -1,0 +1,25 @@
+schema_version: 1
+item_id: P63
+module: 63-coordinate-a-mobile-manipulator
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- p_target=[x_b,0]^T+FK_arm(q) couples base placement and arm inverse kinematics
+- w(q)=l_1 l_2 |sin(q_2)| is the planar arm manipulability retained by each candidate placement
+- (x_b*,q*)=argmin rho_b |x_b|+0.18/(w(q)+0.025) over reachable bounded base candidates
+signature:
+- {field: composite_endpoint_error, unit: m}
+- {field: arm_manipulability, unit: m^2}
+- {field: base_travel, unit: m}
+teaching_invariant: The final world-frame endpoint must be produced by the same synchronized base pose and nonsingular arm configuration selected by the composite reachability search.
+limiting_cases:
+- If the target already lies well inside the arm workspace, increasing base-motion cost can correctly keep the base at its initial pose.
+- At full arm extension the endpoint may be reachable but planar manipulability collapses to zero, making the placement fragile.
+scenarios:
+  baseline: &baseline {target_distance_m: 1.8, base_motion_weight: 0.7, broken_mode: false}
+  sweep_1: {target_distance_m: 2.1, base_motion_weight: 0.7, broken_mode: false}
+  sweep_2: {target_distance_m: 1.8, base_motion_weight: 2.5, broken_mode: false}
+  broken: {target_distance_m: 1.8, base_motion_weight: 0.7, broken_mode: true}
+  recovery: *baseline
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic planar software evidence only; no navigation stack, whole-body dynamics, MATLAB runtime, learner, browser/accessibility, physical HIL/hardware, safety, release, deployment, or production claim.

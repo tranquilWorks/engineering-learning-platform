@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "item_id": "P65",
+  "signature_fields": [
+    {
+      "field": "space_time_conflicts",
+      "unit": "count"
+    },
+    {
+      "field": "coordinated_makespan",
+      "unit": "step"
+    },
+    {
+      "field": "minimum_robot_separation",
+      "unit": "cell"
+    }
+  ],
+  "origin": {
+    "kind": "independent-analytic-python",
+    "item_id": "P65",
+    "independent": true,
+    "imports_production_entrypoint": false,
+    "derived_from_production_output": false,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "reservation_buffer_steps": 1.0,
+        "robot_b_start_delay_steps": 0.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.0,
+        6.0,
+        1.4142135623730951
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "reservation_buffer_steps": 0.0,
+        "robot_b_start_delay_steps": 0.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.0,
+        5.0,
+        1.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "reservation_buffer_steps": 1.0,
+        "robot_b_start_delay_steps": 2.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.0,
+        6.0,
+        1.4142135623730951
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "reservation_buffer_steps": 1.0,
+        "robot_b_start_delay_steps": 0.0,
+        "broken_mode": true
+      },
+      "signature": [
+        1.0,
+        4.0,
+        0.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "reservation_buffer_steps": 1.0,
+        "robot_b_start_delay_steps": 0.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.0,
+        6.0,
+        1.4142135623730951
+      ]
+    }
+  }
+}

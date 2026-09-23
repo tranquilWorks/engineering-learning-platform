@@ -1,0 +1,22 @@
+schema_version: 1
+id: 63-coordinate-a-mobile-manipulator
+number: 63
+title: Coordinate a Mobile Manipulator
+summary: Search bounded base placements and two-link arm configurations jointly, then execute synchronized subsystem trajectories.
+guiding_question: When should a mobile manipulator move its base instead of stretching its arm toward singularity?
+status: implemented
+tags: [robotics-autonomy, native-python, manipulation, mobile-robot, whole-body]
+runtime: {kind: python, entrypoint: 'experiment.py:run', trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: target_distance_m, type: slider, label: Target world x distance, default: 1.8, minimum: 1.35, maximum: 2.4, step: 0.05, unit: m}
+- {id: base_motion_weight, type: slider, label: Base-motion cost weight, default: 0.7, minimum: 0.2, maximum: 3.0, step: 0.1, unit: '1'}
+- {id: broken_mode, type: toggle, label: Freeze base and clip arm reach, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- {type: prediction, title: Predict before running, text: 'A small base translation can replace an unreachable singular arm stretch with a well-conditioned composite reach.', reveal: Compare endpoint error and manipulability.}
+- {type: controls, title: Live model controls}
+- {type: metrics}
+- {type: plot_grid, title: Composite reach and synchronization evidence, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken assumption, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}

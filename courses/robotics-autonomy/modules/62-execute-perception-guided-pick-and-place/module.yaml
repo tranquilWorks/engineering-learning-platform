@@ -1,0 +1,22 @@
+schema_version: 1
+id: 62-execute-perception-guided-pick-and-place
+number: 62
+title: Execute Perception-Guided Pick and Place
+summary: Transform a camera estimate into the robot base frame, solve a two-link IK branch, and gate the pick-place state machine on physical pickup error.
+guiding_question: Which checks turn a visual pose estimate into a trustworthy pick-and-place transition?
+status: implemented
+tags: [robotics-autonomy, native-python, manipulation, perception, pick-place]
+runtime: {kind: python, entrypoint: 'experiment.py:run', trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: vision_noise_cm, type: slider, label: Visual position noise, default: 1.2, minimum: 0.0, maximum: 8.0, step: 0.2, unit: cm}
+- {id: camera_yaw_error_deg, type: slider, label: Camera extrinsic yaw error, default: 0.8, minimum: 0.0, maximum: 8.0, step: 0.2, unit: deg}
+- {id: broken_mode, type: toggle, label: Skip camera-to-base transform, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- {type: prediction, title: Predict before running, text: 'A reachable IK solution can still miss the object when the pose is expressed in the wrong frame.', reveal: Compare endpoint error with the gripper tolerance.}
+- {type: controls, title: Live model controls}
+- {type: metrics}
+- {type: plot_grid, title: Visual approach and transition evidence, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken assumption, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}

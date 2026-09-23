@@ -1,0 +1,25 @@
+schema_version: 1
+item_id: P61
+module: 61-evaluate-grasp-contacts-and-force-closure
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- G_i=[f_{ix},f_{iy},(r_i cross f_i)/r_o]^T for both edges f_i=n_i+-mu t_i
+- G alpha=0 with alpha_j>0 and rank(G)=3 is the planar positive-equilibrium force-closure test
+- lambda*=argmin_{lambda>=0} ||G lambda-w_ext||_2^2 by projected gradient descent
+signature:
+- {field: force_closure_margin, unit: '1'}
+- {field: equivalent_load_residual, unit: N}
+- {field: contact_normal_effort, unit: N}
+teaching_invariant: A full-rank grasp is force closing only when its friction-cone wrench generators also admit a strictly positive self-equilibrating combination.
+limiting_cases:
+- Zero friction collapses each contact cone to a normal ray and removes the tangential moment authority needed for planar force closure.
+- Perfect antipodal contacts make the positive equilibrium symmetric, while large angular misalignment reduces the smallest positive coefficient.
+scenarios:
+  baseline: &baseline {friction_coefficient: 0.6, contact_misalignment_deg: 8.0, broken_mode: false}
+  sweep_1: {friction_coefficient: 0.25, contact_misalignment_deg: 8.0, broken_mode: false}
+  sweep_2: {friction_coefficient: 0.6, contact_misalignment_deg: 25.0, broken_mode: false}
+  broken: {friction_coefficient: 0.6, contact_misalignment_deg: 8.0, broken_mode: true}
+  recovery: *baseline
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic planar software evidence only; no compliant-contact identification, MATLAB runtime, learner, browser/accessibility, physical HIL/hardware, safety, release, deployment, or production claim.

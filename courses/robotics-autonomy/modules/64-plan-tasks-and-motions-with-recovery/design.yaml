@@ -1,0 +1,25 @@
+schema_version: 1
+item_id: P64
+module: 64-plan-tasks-and-motions-with-recovery
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- pi*=argmin_pi sum_{e in pi} c(e) subject to symbolic preconditions and predicted motion clearance
+- m_e=w_actual-w_required(e) is the execution-time geometric feasibility margin for each carry edge
+- E_failed is blacklisted and pi_recovery=search(s_certified,goal,E without E_failed)
+signature:
+- {field: task_success, unit: '1'}
+- {field: motion_replans, unit: count}
+- {field: executed_task_time, unit: s}
+teaching_invariant: A successful task trace may include a detected motion failure only if the failed edge is excluded and replanning resumes from the last certified symbolic and geometric state.
+limiting_cases:
+- When actual corridor width exceeds the top-grasp envelope, the cheapest initial task plan executes without recovery.
+- If no grasp orientation fits the actual corridor, bounded replanning must report exhaustion instead of declaring symbolic success.
+scenarios:
+  baseline: &baseline {corridor_width_m: 0.27, geometry_error_cm: 5.0, broken_mode: false}
+  sweep_1: {corridor_width_m: 0.31, geometry_error_cm: 5.0, broken_mode: false}
+  sweep_2: {corridor_width_m: 0.27, geometry_error_cm: 9.0, broken_mode: false}
+  broken: {corridor_width_m: 0.27, geometry_error_cm: 5.0, broken_mode: true}
+  recovery: *baseline
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic bounded task-and-motion software evidence only; no scene execution, MATLAB runtime, learner, browser/accessibility, physical HIL/hardware, safety, release, deployment, or production claim.

@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "item_id": "P62",
+  "signature_fields": [
+    {
+      "field": "pickup_position_error",
+      "unit": "m"
+    },
+    {
+      "field": "reachability_margin",
+      "unit": "m"
+    },
+    {
+      "field": "completed_task_states",
+      "unit": "count"
+    }
+  ],
+  "origin": {
+    "kind": "production-experiment",
+    "independent": false,
+    "imports_production_entrypoint": true,
+    "derived_from_production_output": true,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "vision_noise_cm": 1.2,
+        "camera_yaw_error_deg": 0.8,
+        "broken_mode": false
+      },
+      "signature": [
+        0.007555763402454272,
+        0.2558435339668168,
+        9.0
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "vision_noise_cm": 5.0,
+        "camera_yaw_error_deg": 0.8,
+        "broken_mode": false
+      },
+      "signature": [
+        0.028540986724321954,
+        0.23525207963680717,
+        9.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "vision_noise_cm": 1.2,
+        "camera_yaw_error_deg": 5.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.05951533179352054,
+        0.2608762917388432,
+        4.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "vision_noise_cm": 1.2,
+        "camera_yaw_error_deg": 0.8,
+        "broken_mode": true
+      },
+      "signature": [
+        0.4314421082814708,
+        0.5518519665199942,
+        4.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "vision_noise_cm": 1.2,
+        "camera_yaw_error_deg": 0.8,
+        "broken_mode": false
+      },
+      "signature": [
+        0.007555763402454272,
+        0.2558435339668168,
+        9.0
+      ]
+    }
+  }
+}
