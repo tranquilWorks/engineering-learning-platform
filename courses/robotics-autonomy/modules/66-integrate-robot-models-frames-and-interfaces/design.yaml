@@ -1,0 +1,25 @@
+schema_version: 1
+item_id: P66
+module: 66-integrate-robot-models-frames-and-interfaces
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- q_rad=c_encoder (2 pi/4096)(1+epsilon_scale) converts the typed joint interface exactly once
+- T_base^tool=T_base^shoulder T_shoulder^elbow(q_1) T_elbow^tool(q_2) composes the declared frame graph
+- e_tool=||p_model-p_measured||_2 and ||T T^{-1}-I||_F audit integration and group consistency separately
+signature:
+- {field: integrated_endpoint_error, unit: m}
+- {field: frame_inverse_residual, unit: '1'}
+- {field: interface_contract_violations, unit: count}
+teaching_invariant: A finite transform chain is accepted only when interface units and timestamps pass their contracts and its composed endpoint agrees with an independent measured pose.
+limiting_cases:
+- Zero encoder-scale error and fresh timestamps reduce the endpoint discrepancy to floating-point transform composition error.
+- An identity camera or base transform can conceal multiplication-order defects, so integration tests require nonzero translation and rotation.
+scenarios:
+  baseline: &baseline {encoder_scale_error_percent: 0.2, timestamp_skew_ms: 8.0, broken_mode: false}
+  sweep_1: {encoder_scale_error_percent: 2.0, timestamp_skew_ms: 8.0, broken_mode: false}
+  sweep_2: {encoder_scale_error_percent: 0.2, timestamp_skew_ms: 35.0, broken_mode: false}
+  broken: {encoder_scale_error_percent: 0.2, timestamp_skew_ms: 8.0, broken_mode: true}
+  recovery: *baseline
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic planar interface software evidence only; no ROS graph, URDF parser, MATLAB runtime, learner, browser/accessibility, physical HIL/hardware, safety, release, deployment, or production claim.

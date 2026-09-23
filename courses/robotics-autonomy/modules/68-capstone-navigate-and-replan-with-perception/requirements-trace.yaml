@@ -1,0 +1,24 @@
+schema_version: 1
+capstone_id: CAP-MOBILE-AUTONOMY
+module_id: P68
+requirements:
+- id: R68-MAP
+  prerequisite_modules: [P47, P53]
+  mechanism: Fuse the perceived occupied cell and reject any executed segment through it.
+  evidence: map requirement margin and executed route
+- id: R68-REPLAN
+  prerequisite_modules: [P54, P57]
+  mechanism: Search the updated bounded grid and retain a collision-free replacement route.
+  evidence: route around the discovered cell
+- id: R68-DYNAMIC
+  prerequisite_modules: [P60]
+  mechanism: Predict synchronized crossing time and delay execution until separation is at least 0.85 m.
+  evidence: minimum_dynamic_separation
+- id: R68-RECOVERY
+  prerequisite_modules: [P64]
+  mechanism: Treat range dropout as a monitored failure and recover without erasing the map requirement.
+  evidence: recovery requirement margin
+- id: R68-REPLAY
+  prerequisite_modules: [P67]
+  mechanism: Retain deterministic mission decisions and fault recovery in source-time order.
+  evidence: replay requirement margin

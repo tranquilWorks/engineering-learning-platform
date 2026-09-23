@@ -1,0 +1,25 @@
+schema_version: 1
+item_id: P68
+module: 68-capstone-navigate-and-replan-with-perception
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- l_i=log(p_i/(1-p_i)) receives the range observation before graph occupancy and route validity are recomputed
+- pi*=argmin_pi sum_e c(e) over the updated grid and t_cross is delayed until |y_obstacle(t_cross)|>=0.85 m
+- success=all(m_map,m_dynamic,m_dropout,m_replay,m_recovery>=0) traces the cumulative mission requirements
+signature:
+- {field: mission_success, unit: '1'}
+- {field: minimum_dynamic_separation, unit: m}
+- {field: capstone_requirement_violations, unit: count}
+teaching_invariant: Mobile-autonomy success requires one retained trace to pass perceived-map validity, replanning, synchronized obstacle separation, dropout recovery, and deterministic replay together.
+limiting_cases:
+- If the perceived obstacle is absent and the dynamic crossing is already clear, the cumulative planner reduces to the direct shortest route.
+- If dropout exceeds the declared recoverable bound or no updated grid path exists, the capstone must fail rather than relax a requirement.
+scenarios:
+  baseline: &baseline {range_dropout_percent: 10.0, dynamic_obstacle_speed_m_s: 0.3, broken_mode: false}
+  sweep_1: {range_dropout_percent: 40.0, dynamic_obstacle_speed_m_s: 0.3, broken_mode: false}
+  sweep_2: {range_dropout_percent: 10.0, dynamic_obstacle_speed_m_s: 0.55, broken_mode: false}
+  broken: {range_dropout_percent: 10.0, dynamic_obstacle_speed_m_s: 0.3, broken_mode: true}
+  recovery: *baseline
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Requirements-traced deterministic mobile-autonomy software capstone only; no MATLAB runtime, learner, browser/accessibility, physical HIL/hardware, safety certification, release, deployment, or production claim.

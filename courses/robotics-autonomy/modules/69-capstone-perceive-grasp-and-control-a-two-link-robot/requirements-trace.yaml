@@ -1,0 +1,24 @@
+schema_version: 1
+capstone_id: CAP-TWO-LINK-MANIPULATION
+module_id: P69
+requirements:
+- id: R69-PERCEPTION
+  prerequisite_modules: [P46, P62]
+  mechanism: Transform the visual object estimate into the base frame and gate pickup on physical error.
+  evidence: pickup_position_error
+- id: R69-KINEMATICS
+  prerequisite_modules: [P29, P40]
+  mechanism: Solve and forward-check a reachable two-link joint configuration.
+  evidence: reach requirement margin and approach trace
+- id: R69-GRASP
+  prerequisite_modules: [P61]
+  mechanism: Require positive frictional closure margin before contact-force control.
+  evidence: closure requirement margin
+- id: R69-CONTACT
+  prerequisite_modules: [P38, P39]
+  mechanism: Regulate final contact force while retaining nonnegative passivity-tank energy.
+  evidence: contact-error and energy requirement margins
+- id: R69-INTERFACE
+  prerequisite_modules: [P66, P67]
+  mechanism: Accept success only after typed frame interfaces and the replayed timing fault recover.
+  evidence: interface recovery requirement margin

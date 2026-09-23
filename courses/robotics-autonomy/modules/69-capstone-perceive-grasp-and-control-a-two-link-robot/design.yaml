@@ -1,0 +1,25 @@
+schema_version: 1
+item_id: P69
+module: 69-capstone-perceive-grasp-and-control-a-two-link-robot
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- p_b^o=t_b^c+R_b^c p_c^o feeds the calibrated object estimate into analytic two-link inverse kinematics
+- gamma_closure=mu-0.22 and |F_final-F_d|<=3 N gate grasp and contact-control requirements
+- E_{k+1}=E_k-max(F_k v_k,0) Delta t>=0 and success=all(m_i>=0) enforce cumulative passivity and integration
+signature:
+- {field: capstone_success, unit: '1'}
+- {field: pickup_position_error, unit: m}
+- {field: minimum_passivity_energy, unit: J}
+teaching_invariant: The manipulation capstone passes only when calibrated perception, reachable kinematics, positive grasp closure, bounded contact error, passivity energy, and timed-interface recovery all pass in one trace.
+limiting_cases:
+- With perfect pose and ample friction, the cumulative outcome is limited by contact-control and interface evidence rather than perception.
+- A zero energy tank permits no positive contact work; the controller must hold or retreat rather than inject unaccounted energy.
+scenarios:
+  baseline: &baseline {vision_noise_cm: 1.0, contact_friction_coefficient: 0.6, broken_mode: false}
+  sweep_1: {vision_noise_cm: 4.0, contact_friction_coefficient: 0.6, broken_mode: false}
+  sweep_2: {vision_noise_cm: 1.0, contact_friction_coefficient: 0.3, broken_mode: false}
+  broken: {vision_noise_cm: 1.0, contact_friction_coefficient: 0.6, broken_mode: true}
+  recovery: *baseline
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Requirements-traced deterministic two-link manipulation software capstone only; no MATLAB runtime, learner, browser/accessibility, physical HIL/hardware, safety certification, release, deployment, or production claim.

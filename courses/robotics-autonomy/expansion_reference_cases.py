@@ -911,7 +911,185 @@ def _p65(p: dict[str, Any]) -> list[float]:
     return [float(conflicts), float(max(len(first), len(second)) - 1), min(separations)]
 
 
-_DISPATCH = {61: _p61, 62: _p62, 63: _p63, 64: _p64, 65: _p65, 58: _p58, 59: _p59, 60: _p60, 54: _p54, 55: _p55, 56: _p56, 57: _p57, 49: _p49, 50: _p50, 51: _p51, 52: _p52, 53: _p53, 41: _p41, 42: _p42, 43: _p43, 44: _p44, 45: _p45, 46: _p46, 47: _p47, 48: _p48, 34: _p34, 35: _p35, 36: _p36, 37: _p37, 38: _p38, 39: _p39, 40: _p40, 25: _p25, 26: _p26, 27: _p27, 28: _p28, 29: _p29, 30: _p30, 31: _p31, 32: _p32, 33: _p33, }
+def _p66(p: dict[str, Any]) -> list[float]:
+    def transform(x: float, y: float, angle: float) -> np.ndarray:
+        return np.array([[np.cos(angle), -np.sin(angle), x],
+                         [np.sin(angle), np.cos(angle), y], [0.0, 0.0, 1.0]])
+
+    def chain(joints: np.ndarray) -> np.ndarray:
+        return (transform(0.20, 0.10, 0.15)
+                @ transform(0.0, 0.0, joints[0]) @ transform(0.70, 0.0, 0.0)
+                @ transform(0.0, 0.0, joints[1]) @ transform(0.50, 0.0, 0.0))
+
+    true_joints = np.array([0.55, -0.85])
+    scale = 2.0 * np.pi / 4096.0
+    counts = true_joints / scale
+    decoded = counts * scale * (1.0 + 0.01 * float(p["encoder_scale_error_percent"]))
+    integrated = np.rad2deg(decoded) if p["broken_mode"] else decoded
+    truth, model = chain(true_joints), chain(integrated)
+    error = float(np.linalg.norm(model[:2, 2] - truth[:2, 2]))
+    inverse = float(np.linalg.norm(model @ np.linalg.inv(model) - np.eye(3)))
+    violations = int(abs(float(p["timestamp_skew_ms"])) > 20.0)
+    if p["broken_mode"]:
+        violations += 2
+    return [error, inverse, float(violations)]
+
+
+def _p67(p: dict[str, Any]) -> list[float]:
+    dropout = 0.001 * float(p["dropout_duration_ms"])
+    drift = 1.0e-6 * float(p["clock_drift_ppm"])
+    times = np.arange(0.0, 2.0001, 0.02)
+    truth = np.sin(1.4 * times)
+    velocity = 1.4 * np.cos(1.4 * times)
+    present = ~((times >= 0.80) & (times < 0.80 + dropout))
+    indices = np.flatnonzero(present)
+    arrival = times[indices] * (1.0 + drift) + 0.018 * np.sin(1.7 * indices)
+    faults = 0
+    recovery_latency = 0.0
+    replay_times: list[float] = []
+    replay_values: list[float] = []
+    if p["broken_mode"]:
+        order = indices[np.argsort(arrival)]
+        estimate = 0.0
+        previous_arrival = 0.0
+        last_velocity = velocity[0]
+        for index in order:
+            event_arrival = times[index] * (1.0 + drift) + 0.018 * np.sin(1.7 * index)
+            estimate += last_velocity * max(event_arrival - previous_arrival, 0.0)
+            estimate = 0.92 * estimate + 0.08 * truth[index]
+            last_velocity = velocity[index]
+            previous_arrival = event_arrival
+            replay_times.append(float(times[index]))
+            replay_values.append(estimate)
+        reference = np.sin(1.4 * np.asarray(replay_times))
+        recovery_latency = 1000.0
+    else:
+        estimate = truth[0]
+        last_velocity = velocity[0]
+        last_measurement = 0.0
+        gap_seen = False
+        for index, time_s in enumerate(times):
+            if index > 0:
+                estimate += last_velocity * 0.02
+            if present[index]:
+                gap = time_s - last_measurement
+                if gap > 0.060001:
+                    faults += 1
+                    gap_seen = True
+                    estimate = truth[index]
+                    recovery_latency = 20.0
+                else:
+                    estimate = 0.35 * estimate + 0.65 * truth[index]
+                last_velocity = velocity[index]
+                last_measurement = time_s
+            replay_values.append(float(estimate))
+        if abs(float(p["clock_drift_ppm"])) > 150.0:
+            faults += 1
+        if not gap_seen:
+            recovery_latency = 0.0
+        reference = truth
+    error = float(np.sqrt(np.mean((np.asarray(replay_values) - reference) ** 2)))
+    return [error, float(faults), recovery_latency]
+
+
+def _p68(p: dict[str, Any]) -> list[float]:
+    def grid_path(occupied: set[tuple[int, int]]) -> list[tuple[int, int]]:
+        start, goal = (0, 0), (8, 0)
+        queue: list[tuple[int, int, tuple[int, int], list[tuple[int, int]]]] = [(8, 0, start, [start])]
+        best = {start: 0}
+        for _ in range(200):
+            if not queue:
+                break
+            entry = min(queue, key=lambda item: (item[0], item[1], item[2]))
+            queue.remove(entry)
+            _, cost, state, path = entry
+            if state == goal:
+                return path
+            for dx, dy in ((1, 0), (0, 1), (0, -1), (-1, 0)):
+                candidate = (state[0] + dx, state[1] + dy)
+                if not (0 <= candidate[0] <= 8 and 0 <= candidate[1] <= 2):
+                    continue
+                if candidate in occupied:
+                    continue
+                next_cost = cost + 1
+                if next_cost >= best.get(candidate, 10**9):
+                    continue
+                best[candidate] = next_cost
+                heuristic = abs(candidate[0] - goal[0]) + abs(candidate[1] - goal[1])
+                queue.append((next_cost + heuristic, next_cost, candidate, path + [candidate]))
+        raise RuntimeError("independent capstone grid has no path")
+
+    broken = bool(p["broken_mode"])
+    discovered = (4, 0)
+    path = grid_path(set() if broken else {discovered})
+    collision = int(discovered in path)
+    crossing = float(next(i for i, point in enumerate(path) if point == (6, 0)))
+    speed = float(p["dynamic_obstacle_speed_m_s"])
+    if not broken:
+        while abs(-2.0 + speed * crossing) < 0.85:
+            crossing += 1.0
+    separation = abs(-2.0 + speed * crossing)
+    dropout = float(p["range_dropout_percent"])
+    margins = np.array([1.0 if collision == 0 else -1.0,
+                        (separation - 0.85) / 0.85,
+                        (50.0 - dropout) / 50.0,
+                        1.0 if not broken else -1.0,
+                        1.0 if (dropout == 0.0 or not broken) else -1.0])
+    violations = int(np.sum(margins < -1.0e-12))
+    return [float(violations == 0), separation, float(violations)]
+
+
+def _p69(p: dict[str, Any]) -> list[float]:
+    def rotation(angle: float) -> np.ndarray:
+        return np.array([[np.cos(angle), -np.sin(angle)],
+                         [np.sin(angle), np.cos(angle)]])
+
+    broken = bool(p["broken_mode"])
+    noise = 0.01 * float(p["vision_noise_cm"])
+    friction = float(p["contact_friction_coefficient"])
+    camera = np.array([0.72, 0.18])
+    true_point = np.array([0.28, 0.12]) + rotation(np.deg2rad(25.0)) @ camera
+    measured = camera + noise * np.array([0.5, -0.25])
+    estimate = measured if broken else np.array([0.28, 0.12]) + rotation(np.deg2rad(25.0)) @ measured
+    first, second = 0.75, 0.55
+    cosine = (float(estimate @ estimate) - first**2 - second**2) / (2.0 * first * second)
+    reachable = abs(cosine) <= 1.0
+    elbow = -float(np.arccos(np.clip(cosine, -1.0, 1.0)))
+    shoulder = float(np.arctan2(estimate[1], estimate[0])
+                     - np.arctan2(second * np.sin(elbow), first + second * np.cos(elbow)))
+    endpoint = np.array([first * np.cos(shoulder) + second * np.cos(shoulder + elbow),
+                         first * np.sin(shoulder) + second * np.sin(shoulder + elbow)])
+    pickup_error = float(np.linalg.norm(endpoint - true_point))
+    closure = -friction if broken else friction - 0.22
+    penetration, tank = 0.0, 0.18
+    minimum_tank = tank
+    delay = [0.0] * (7 if broken else 3)
+    final_force = 0.0
+    for _ in range(200):
+        force = 600.0 * penetration
+        if broken:
+            command = float(np.clip(0.08 * (10.0 + force), -0.15, 0.15))
+        else:
+            command = float(np.clip(0.012 * (10.0 - force), -0.025, 0.025))
+        delay.append(command)
+        velocity = delay.pop(0)
+        work = max(force * velocity, 0.0) * 0.01
+        if not broken and work > tank and force > 1.0e-12:
+            velocity = tank / (force * 0.01)
+            work = tank
+        tank -= work
+        penetration = float(np.clip(penetration + velocity * 0.01, 0.0, 0.05))
+        minimum_tank = min(minimum_tank, tank)
+        final_force = 600.0 * penetration
+    reach = first + second - float(np.linalg.norm(estimate))
+    margins = np.array([(0.055 - pickup_error) / 0.055, reach / 0.20,
+                        closure / 0.20, (3.0 - abs(final_force - 10.0)) / 3.0,
+                        minimum_tank / 0.10, 1.0 if not broken else -1.0])
+    violations = int(np.sum(margins < -1.0e-12)) + int(not reachable)
+    return [float(violations == 0), pickup_error, minimum_tank]
+
+
+_DISPATCH = {66: _p66, 67: _p67, 68: _p68, 69: _p69, 61: _p61, 62: _p62, 63: _p63, 64: _p64, 65: _p65, 58: _p58, 59: _p59, 60: _p60, 54: _p54, 55: _p55, 56: _p56, 57: _p57, 49: _p49, 50: _p50, 51: _p51, 52: _p52, 53: _p53, 41: _p41, 42: _p42, 43: _p43, 44: _p44, 45: _p45, 46: _p46, 47: _p47, 48: _p48, 34: _p34, 35: _p35, 36: _p36, 37: _p37, 38: _p38, 39: _p39, 40: _p40, 25: _p25, 26: _p26, 27: _p27, 28: _p28, 29: _p29, 30: _p30, 31: _p31, 32: _p32, 33: _p33, }
 
 def origin(number: int) -> dict[str, Any]:
     return {"kind": "independent-analytic-python", "item_id": f"P{number:02d}", "independent": True,

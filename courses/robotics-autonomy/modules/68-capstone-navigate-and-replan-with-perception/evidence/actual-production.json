@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "item_id": "P68",
+  "signature_fields": [
+    {
+      "field": "mission_success",
+      "unit": "1"
+    },
+    {
+      "field": "minimum_dynamic_separation",
+      "unit": "m"
+    },
+    {
+      "field": "capstone_requirement_violations",
+      "unit": "count"
+    }
+  ],
+  "origin": {
+    "kind": "production-experiment",
+    "independent": false,
+    "imports_production_entrypoint": true,
+    "derived_from_production_output": true,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "range_dropout_percent": 10.0,
+        "dynamic_obstacle_speed_m_s": 0.3,
+        "broken_mode": false
+      },
+      "signature": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "range_dropout_percent": 40.0,
+        "dynamic_obstacle_speed_m_s": 0.3,
+        "broken_mode": false
+      },
+      "signature": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "range_dropout_percent": 10.0,
+        "dynamic_obstacle_speed_m_s": 0.55,
+        "broken_mode": false
+      },
+      "signature": [
+        1.0,
+        2.4000000000000004,
+        0.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "range_dropout_percent": 10.0,
+        "dynamic_obstacle_speed_m_s": 0.3,
+        "broken_mode": true
+      },
+      "signature": [
+        0.0,
+        0.20000000000000018,
+        4.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "range_dropout_percent": 10.0,
+        "dynamic_obstacle_speed_m_s": 0.3,
+        "broken_mode": false
+      },
+      "signature": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    }
+  }
+}

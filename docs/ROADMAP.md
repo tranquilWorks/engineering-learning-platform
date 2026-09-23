@@ -122,7 +122,15 @@ administrative lane. The later Robotics authorization below is separate.
 
 **Depends on:** `ELP-ROB-PLANNING-P54-P60`
 
-This issue-440 batch implements grasp force closure, perception-guided pick/place, mobile-manipulator coordination, task-and-motion recovery, and multi-robot space-time reservations. It advances the course to 65 interactive modules and the platform catalog to 219 interactive modules. P66-P69 remain separately authorized systems integration and cumulative capstone work.
+This issue-440 batch implements grasp force closure, perception-guided pick/place, mobile-manipulator coordination, task-and-motion recovery, and multi-robot space-time reservations. It advances the course to 65 interactive modules and the platform catalog to 219 interactive modules. P66-P69 are delivered by the final systems/capstones batch below.
+
+## ELP-ROB-SYSTEMS-CAPSTONES-P66-P69 — Robotics systems and capstones
+
+**Status:** Implemented and locally verified in the final issue-440 target batch.
+
+**Depends on:** `ELP-ROB-MANIPULATION-P61-P65`
+
+This final batch implements typed model/frame/interface integration, deterministic timed replay with diagnosis and recovery, and two requirements-traced cumulative software capstones. Robotics closes at 69 interactive modules and the five-course catalog at 223 interactive modules. Curriculum coverage and software capstone integration pass; learner, MATLAB, browser/accessibility, and physical HIL validation remain unperformed.
 
 ## ELP-ROB — Authorized Robotics P01-P24 native Python lane
 

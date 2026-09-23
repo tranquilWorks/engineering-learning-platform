@@ -1,0 +1,22 @@
+schema_version: 1
+id: 66-integrate-robot-models-frames-and-interfaces
+number: 66
+title: Integrate Robot Models, Frames, and Interfaces
+summary: Validate typed joint and timestamp interfaces, compose a nontrivial model frame chain, and compare its tool endpoint with an independent pose.
+guiding_question: How can every subsystem be numerically healthy while the integrated robot pose is still wrong?
+status: implemented
+tags: [robotics-autonomy, native-python, systems-integration, frames, interfaces]
+runtime: {kind: python, entrypoint: 'experiment.py:run', trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: encoder_scale_error_percent, type: slider, label: Encoder scale error, default: 0.2, minimum: 0.0, maximum: 3.0, step: 0.1, unit: '%'}
+- {id: timestamp_skew_ms, type: slider, label: Interface timestamp skew, default: 8.0, minimum: 0.0, maximum: 50.0, step: 1.0, unit: ms}
+- {id: broken_mode, type: toggle, label: Bypass unit and time contracts, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- {type: prediction, title: Predict before running, text: 'Finite homogeneous matrices do not prove that joint units and message ages satisfy the interface contract.', reveal: Compare endpoint error with inverse residual and violations.}
+- {type: controls, title: Live model controls}
+- {type: metrics}
+- {type: plot_grid, title: Model-frame and interface evidence, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken assumption, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}
