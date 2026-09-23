@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "item_id": "P67",
+  "signature_fields": [
+    {
+      "field": "replay_state_rms_error",
+      "unit": "m"
+    },
+    {
+      "field": "diagnosed_timing_faults",
+      "unit": "count"
+    },
+    {
+      "field": "safe_recovery_latency",
+      "unit": "ms"
+    }
+  ],
+  "origin": {
+    "kind": "independent-analytic-python",
+    "item_id": "P67",
+    "independent": true,
+    "imports_production_entrypoint": false,
+    "derived_from_production_output": false,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "dropout_duration_ms": 120.0,
+        "clock_drift_ppm": 50.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.0017321979669573803,
+        1.0,
+        20.0
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "dropout_duration_ms": 240.0,
+        "clock_drift_ppm": 50.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.00894513038086502,
+        1.0,
+        20.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "dropout_duration_ms": 120.0,
+        "clock_drift_ppm": 250.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.0017321979669573803,
+        2.0,
+        20.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "dropout_duration_ms": 120.0,
+        "clock_drift_ppm": 50.0,
+        "broken_mode": true
+      },
+      "signature": [
+        0.014361711165400514,
+        0.0,
+        1000.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "dropout_duration_ms": 120.0,
+        "clock_drift_ppm": 50.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.0017321979669573803,
+        1.0,
+        20.0
+      ]
+    }
+  }
+}

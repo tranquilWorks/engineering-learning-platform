@@ -1,10 +1,10 @@
 schema_version: 1
 batch:
-  id: ELP-ROB-MANIPULATION-P61-P65
-  title: Robotics manipulation and task autonomy expansion P61-P65
-  goal: 'Complete the next coherent issue-440 expansion batch for P61, P62, P63, P64, P65: grasp contacts and force closure;
-    perception-guided pick and place; mobile manipulator coordination; task-and-motion planning with recovery; and multi-robot
-    coordination with assurance boundaries.'
+  id: ELP-ROB-SYSTEMS-CAPSTONES-P66-P69
+  title: Robotics systems integration and capstones P66-P69
+  goal: 'Complete the final issue-440 expansion batch for P66, P67, P68, P69: robot model, frame, and interface integration;
+    deterministic timed replay, diagnosis, and recovery; a cumulative perception-to-replanning mobile-autonomy capstone;
+    and a cumulative perception-to-contact-control two-link manipulation capstone.'
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
@@ -12,19 +12,19 @@ sources:
   - products/engineering-learning-platform/course-caliber.yaml
   - products/engineering-learning-platform/competency-maps/robotics-autonomy.yaml
   - tranquilWorks/portfolio-control#440
-  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-ROB-MANIPULATION-P61-P65
-  baseline_commit: b84f5b29f5b842584439209e41f79655bbde8d19
-  baseline_tree: 99cd3b2ef13a39639f05eead017c9e52dd209eeb
+  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-ROB-SYSTEMS-CAPSTONES-P66-P69
+  baseline_commit: 8cc4a00d325c1098dee832f841e3af373ae8a7e3
+  baseline_tree: 839c0e31c1d5df7ce6a25e33303eb48dbe29beda
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_baseline: 9094bea6df8bace121f0c27e603d38cea795bed8
-  control_plane_path: products/engineering-learning-platform/batches/ELP-ROB-MANIPULATION-P61-P65.yaml
+  control_plane_baseline: 482d1eba3deff82da688cc4feefae25224a312cc
+  control_plane_path: products/engineering-learning-platform/batches/ELP-ROB-SYSTEMS-CAPSTONES-P66-P69.yaml
   target_repository: tranquilWorks/engineering-learning-platform
   source_repository: tranquilWorks/robotics-autonomy-learning
   source_pin: f8807640258f1a6c1c77f1dcc9e61734551c585b
   source_tree: 7f8bc62382ca8d7fbe26ff4413cabf7d00d64bb9
   source_curriculum_sha256: 972eee6b99945f6c2380ba097e443b30c37ca9e4e0acfd2c7f7cde8a7550207d
 dependencies:
-- ELP-ROB-PLANNING-P54-P60
+- ELP-ROB-MANIPULATION-P61-P65
 scope:
   allowed_paths:
   - courses/robotics-autonomy/course.yaml
@@ -34,11 +34,10 @@ scope:
   - courses/robotics-autonomy/native-design.schema.json
   - courses/robotics-autonomy/expansion-map.yaml
   - courses/robotics-autonomy/expansion_reference_cases.py
-  - courses/robotics-autonomy/modules/61-*/**
-  - courses/robotics-autonomy/modules/62-*/**
-  - courses/robotics-autonomy/modules/63-*/**
-  - courses/robotics-autonomy/modules/64-*/**
-  - courses/robotics-autonomy/modules/65-*/**
+  - courses/robotics-autonomy/modules/66-*/**
+  - courses/robotics-autonomy/modules/67-*/**
+  - courses/robotics-autonomy/modules/68-*/**
+  - courses/robotics-autonomy/modules/69-*/**
   - courses/robotics-autonomy/conversion-manifest.yaml
   - courses/robotics-autonomy/coverage.yaml
   - apps/api/tests/test_robotics_expansion.py
@@ -53,7 +52,7 @@ scope:
   - docs/CURRENT_STATE.md
   - docs/HANDOFF.md
   - docs/ROADMAP.md
-  - docs/evidence/ELP-ROB-MANIPULATION-P61-P65-*.md
+  - docs/evidence/ELP-ROB-SYSTEMS-CAPSTONES-P66-P69-*.md
   forbidden_paths:
   - courses/robotics-autonomy-learning
   - courses/robotics-autonomy-learning/**
@@ -117,10 +116,11 @@ scope:
   - courses/robotics-autonomy/modules/58-*/**
   - courses/robotics-autonomy/modules/59-*/**
   - courses/robotics-autonomy/modules/60-*/**
-  - courses/robotics-autonomy/modules/66-*/**
-  - courses/robotics-autonomy/modules/67-*/**
-  - courses/robotics-autonomy/modules/68-*/**
-  - courses/robotics-autonomy/modules/69-*/**
+  - courses/robotics-autonomy/modules/61-*/**
+  - courses/robotics-autonomy/modules/62-*/**
+  - courses/robotics-autonomy/modules/63-*/**
+  - courses/robotics-autonomy/modules/64-*/**
+  - courses/robotics-autonomy/modules/65-*/**
   - courses/robotics-autonomy/source-map.yaml
   - courses/robotics-autonomy/fidelity-map.yaml
   - courses/robotics-autonomy/reference_cases.py
@@ -142,11 +142,11 @@ scope:
   - Dockerfile
   - compose.yaml
 acceptance:
-- Start only after the exact control commit containing this contract is merged. Use exact clean target main b84f5b29f5b842584439209e41f79655bbde8d19,
-  tree 99cd3b2ef13a39639f05eead017c9e52dd209eeb; any target, control, source, map, index, or worktree drift stops implementation.
-- 'Implement exactly P61, P62, P63, P64, P65 as Python-first native modules from the reviewed map: grasp contacts and
-  force closure; perception-guided pick and place; mobile manipulator coordination; task-and-motion planning with recovery;
-  and multi-robot coordination with assurance boundaries.'
+- Start only after the exact control commit containing this contract is merged. Use exact clean target main 8cc4a00d325c1098dee832f841e3af373ae8a7e3,
+  tree 839c0e31c1d5df7ce6a25e33303eb48dbe29beda; any target, control, source, map, index, or worktree drift stops implementation.
+- 'Implement exactly P66, P67, P68, P69 as Python-first native modules from the reviewed map: robot model/frame/interface
+  integration; deterministic timed replay, diagnosis, and recovery; a cumulative perception-to-replanning mobile-autonomy
+  capstone; and a cumulative perception-to-contact-control two-link manipulation capstone.'
 - Treat every ID as a separately reviewed work item with a complete learner lesson, unique executable model, baseline, two
   one-variable sweeps, broken behavior, exact recovery, limiting cases, domain quantities/units, and a named teaching invariant.
 - Use an independent reference that imports no production experiment, consumes no production result, and perturbs no production
@@ -155,10 +155,12 @@ acceptance:
   claim conversion or MATLAB equivalence for native additions.
 - Every plot and metric must retain domain-specific quantities and units. Every runtime must remain deterministic, finite,
   bounded, and within the trusted Python timeout.
-- Preserve every module outside P61, P62, P63, P64, P65, the source gitlink and source evidence, every other course,
+- Preserve every module outside P66, P67, P68, P69, the source gitlink and source evidence, every other course,
   generic platform behavior, dependencies, workflows, and deployment artifacts byte-identically.
-- 'End with 65 implemented/deepened Robotics modules visible at this checkpoint and a five-course catalog of 219 modules,
-  all interactive. P66-P69 remain: systems integration and two cumulative capstones.'
+- 'End with all 69 reviewed Robotics modules implemented/deepened and a five-course catalog of 223 modules, all interactive.
+  Mark curriculum coverage and the two software capstone integrations passed only after their requirement traces and cumulative
+  failure/recovery evidence pass; learner validation remains not run.'
+- P68 and P69 must reuse and trace multiple named prerequisite mechanisms, expose cumulative success/failure criteria, and retain independent capstone evidence rather than concatenate prior outputs.
 - Record exact local verification. Hosted CI is not a completion gate by owner direction; keep MATLAB, browser/accessibility,
   learner, physical HIL/hardware, certification, release, deployment, credentials/settings, and production evidence explicitly
   unperformed.
@@ -187,8 +189,8 @@ risk:
   hazards:
   - a shared template substitutes for a named derivation or unique governing model
   - an independent oracle silently imports or derives from production behavior
-  - a frame, sign, timing, covariance, collision, wrench, recovery, reservation, or assurance convention is subtly wrong
-  - the batch claims systems/capstone integration, learner validation, or physical evidence
+  - a frame, interface, unit, timestamp, replay, fault, requirement-trace, or cumulative capstone convention is subtly wrong
+  - the batch claims learner validation, MATLAB equivalence, browser accessibility, or physical evidence
   stop_conditions:
   - exact target, control, source, map, or worktree identity drifts
   - independent evidence needs production code/output or a perturbed production value
@@ -199,10 +201,10 @@ rollback:
     source or prior batches.
 evidence:
   output:
-  - docs/evidence/ELP-ROB-MANIPULATION-P61-P65-2026-09-23.md
+  - docs/evidence/ELP-ROB-SYSTEMS-CAPSTONES-P66-P69-2026-09-23.md
   - per-item derivation/model, scenario, invariant, tolerance, axis, limitation, and residual-risk review
   - focused, regression, full, deterministic catalog, lint, diff, scope, and source-cleanliness results
   - one target squash merge and explicit unperformed evidence
-  claim_boundary: 'This batch covers only P61, P62, P63, P64, P65 at a deterministic software-only boundary. P66-P69 remain: systems
-    integration and two cumulative capstones. It does not execute MATLAB, validate learners or browser accessibility, operate
-    physical HIL/hardware, certify safety, or authorize release, deployment, credentials/settings, or production use.'
+  claim_boundary: 'This batch completes P66, P67, P68, and P69 at a deterministic software-only boundary and closes the reviewed 69-module
+    Robotics map with two cumulative software capstones. It does not execute MATLAB, validate learners or browser accessibility,
+    operate physical HIL/hardware, certify safety, or authorize release, deployment, credentials/settings, or production use.'

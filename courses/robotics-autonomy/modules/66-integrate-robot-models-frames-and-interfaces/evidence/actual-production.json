@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "item_id": "P66",
+  "signature_fields": [
+    {
+      "field": "integrated_endpoint_error",
+      "unit": "m"
+    },
+    {
+      "field": "frame_inverse_residual",
+      "unit": "1"
+    },
+    {
+      "field": "interface_contract_violations",
+      "unit": "count"
+    }
+  ],
+  "origin": {
+    "kind": "production-experiment",
+    "independent": false,
+    "imports_production_entrypoint": true,
+    "derived_from_production_output": true,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "encoder_scale_error_percent": 0.2,
+        "timestamp_skew_ms": 8.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.000615047056714367,
+        7.718675691083927e-18,
+        0.0
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "encoder_scale_error_percent": 2.0,
+        "timestamp_skew_ms": 8.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.006172072350411869,
+        1.242022874880475e-16,
+        0.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "encoder_scale_error_percent": 0.2,
+        "timestamp_skew_ms": 35.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.000615047056714367,
+        7.718675691083927e-18,
+        1.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "encoder_scale_error_percent": 0.2,
+        "timestamp_skew_ms": 8.0,
+        "broken_mode": true
+      },
+      "signature": [
+        0.5684096377215312,
+        1.5854258962792763e-16,
+        2.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "encoder_scale_error_percent": 0.2,
+        "timestamp_skew_ms": 8.0,
+        "broken_mode": false
+      },
+      "signature": [
+        0.000615047056714367,
+        7.718675691083927e-18,
+        0.0
+      ]
+    }
+  }
+}

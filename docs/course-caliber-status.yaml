@@ -3,7 +3,7 @@ standard:
   id: ELP-COURSE-CALIBER-1
   effective_date: '2026-09-21'
   control_repository: tranquilWorks/portfolio-control
-  control_revision: 322072170f8b25dade7ad7ebfa183cceaebad6b2
+  control_revision: b9603eca1e25a996e8e2e044738be170a725e386
   audit_baseline: 1506591946ec8e96fe3201e8893b8ad851a1685a
 count_semantics: implementation_inventory_not_curriculum_completeness
 maturity_states:
@@ -208,8 +208,8 @@ course_reviews:
   title: Robotics and Autonomy
   inventory:
     source_items: 24
-    platform_modules: 24
-    interactive_modules: 24
+    platform_modules: 69
+    interactive_modules: 69
   maturity:
     source_authored:
       status: partial
@@ -217,42 +217,38 @@ course_reviews:
       limitation: P02-P24 are not fully authored runnable source lessons.
     platform_converted:
       status: passed
-      evidence: The catalog discovers and deterministically executes 24 native modules.
-      limitation: P02-P24 are Python-first platform designs, not source-equivalent conversions.
+      evidence: The catalog discovers and deterministically executes all 69 reviewed modules; P01-P24 retain source/depth provenance and P25-P69 are approved native additions.
+      limitation: P02-P69 include Python-first platform designs and do not claim source or MATLAB equivalence.
     numerically_verified:
       status: passed
-      evidence: P01 retains source-design cases and P02-P24 use analytic, invariant, or separately formulated references that
-        do not import production experiments.
+      evidence: P01 retains source-design cases and P02-P69 use analytic, invariant, or separately formulated references that
+        do not import production experiments; every P25-P69 item retains five-scenario independent and production evidence.
       limitation: Verification is software-only and excludes MATLAB runtime and physical robot/HIL evidence.
     curriculum_covered:
-      status: partial
-      evidence: The sequence covers mobile-robot kinematics, estimation, planning, mission logic, safety, and software-HIL
-        methodology.
-      limitation: Spatial mechanics, manipulator dynamics/control, perception, mapping depth, manipulation, and integrated
-        autonomy remain gaps owned by issue 440.
+      status: passed
+      evidence: The reviewed 69-module competency map closes foundations, geometry, dynamics, control, perception, SLAM, planning, manipulation, task autonomy, systems integration, assessments, and cross-course handoffs.
+      limitation: Passing reviewed curriculum coverage does not establish learner comprehension, accessibility, or physical-robot safety.
     capstone_integrated:
-      status: partial
-      evidence: P24 combines a virtual plant, interface timing, and fault injection.
-      limitation: P24 is a HIL-methodology lesson, not a cumulative robotics/autonomy capstone across the full competency
-        map.
+      status: passed
+      evidence: P68 and P69 retain requirement traces across perception, mapping/SLAM, replanning, dynamic avoidance, manipulation, grasp mechanics, contact/passivity control, interfaces, replay, and recovery.
+      limitation: The capstones are deterministic software integrations; no physical HIL, field, or production evidence is claimed.
     learner_validated:
       status: not_run
       evidence: No representative-learner study is retained.
       limitation: No learning-effectiveness or accessibility acceptance claim is supported.
   rubric:
     foundations_prerequisites:
-      status: partial
-      finding: Mobile-robot foundations are coherent; broader mechanics, probability, perception, and optimization prerequisites
-        need mapping.
+      status: passed
+      finding: The reviewed prerequisite graph covers mobile and manipulator kinematics, mechanics, probability, perception, optimization, control, timing, and safety foundations.
     breadth_sequencing:
-      status: partial
-      finding: The mobile-robot autonomy arc is useful but not a full robotics/autonomy curriculum.
+      status: passed
+      finding: P01-P69 form prerequisite-closed arcs from foundations through planning, manipulation, systems integration, and two cumulative capstones.
     derivation_physical_meaning:
       status: passed
       finding: Native lessons state equations, frames, units, assumptions, and limiting behavior.
     unique_executable_fidelity:
       status: passed
-      finding: The 24 modules use distinct course-specific models and stable result structures.
+      finding: All 69 modules use distinct course-specific models and stable result structures; the 45 additions have unique governing-equation fingerprints.
     sweeps_limits_failure_recovery:
       status: passed
       finding: Each module retains two useful sweeps and a named broken/recovery path.
@@ -260,18 +256,16 @@ course_reviews:
       status: passed
       finding: References do not import production experiments and retain tolerances and measured errors.
     formative_cumulative_assessment:
-      status: partial
-      finding: Focused checks exist; a mapped cumulative assessment program does not.
+      status: passed
+      finding: Focused checks, reviewed assessment mappings, five-scenario evidence, and P68/P69 cumulative requirement traces cover formative and cumulative software assessment.
     capstones:
-      status: failed
-      finding: No traced multi-competency autonomy capstone closes the sequence.
+      status: passed
+      finding: P68 closes mobile autonomy and P69 closes two-link manipulation with multiple named prerequisites, signed requirements, broken integration, and exact recovery.
     exclusions_cross_course_handoffs:
-      status: partial
-      finding: Software and physical boundaries are explicit; controls, estimation, optimization, and vehicle-dynamics handoffs
-        need mapping.
-  disposition: expand
-  follow_up_issues:
-  - 440
+      status: passed
+      finding: Software/physical boundaries and controls, estimation, optimization, embedded/timing, reliability, and vehicle-dynamics handoffs are explicit in the reviewed map and lessons.
+  disposition: maintain
+  follow_up_issues: []
 holds:
 - course_id: vehicle-dynamics
   implementation_status: not_implemented

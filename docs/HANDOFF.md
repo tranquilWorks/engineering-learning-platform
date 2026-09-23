@@ -1,9 +1,9 @@
 # Handoff
 
-Issue #440 is implemented through P65 in prerequisite-closed batches. P61-P65 close the reviewed manipulation and task-autonomy segment with separate grasp mechanics, perception-guided pick/place, mobile manipulation, task-and-motion recovery, and bounded multi-robot coordination models.
+Issue #440 is implemented through P69 in prerequisite-closed batches. All 69 reviewed Robotics/Autonomy modules are interactive, independently evidenced at the software boundary, and covered by the reviewed competency and assessment map.
 
-Retain the reviewed 69-module competency map, P01-P24 depth evidence, cumulative P25-P65 expansion map, unique per-module design contracts, independent references, five-scenario evidence, and the exact Robotics source gitlink. The next and final implementation unit is `ELP-ROB-SYSTEMS-CAPSTONES-P66-P69`; it must be separately authorized from the merged P61-P65 target tree before implementation.
+Retain the reviewed 69-module competency map, P01-P24 depth evidence, cumulative P25-P69 expansion map, unique per-module design contracts, independent references, five-scenario evidence, both capstone requirement traces, and the exact Robotics source gitlink.
 
-P66 and P67 must establish model/frame/interface integration and deterministic timed replay/diagnostics. P68 and P69 must be genuine requirements-traced cumulative capstones for mobile autonomy and two-link manipulation rather than renamed single-topic laboratories.
+No issue-440 implementation item remains. After the final target merge and issue closure evidence, return course work to the separately authorized queue. Vehicle Dynamics remains next only after its existing control-plane hold and release conditions are satisfied.
 
 Native lessons do not claim MATLAB/source equivalence. Browser/accessibility, learner effectiveness, physical HIL/hardware, certification, release, deployment, credentials/settings, and production validation remain unperformed.

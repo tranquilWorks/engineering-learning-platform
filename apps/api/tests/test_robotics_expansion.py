@@ -443,3 +443,63 @@ def test_robotics_manipulation_and_task_autonomy_teaching_invariants() -> None:
     independent = signature(65, {"broken_mode": True})
     assert reserved[0] == 0 < independent[0]
     assert reserved[2] > 0 == independent[2]
+
+
+def test_robotics_systems_and_capstone_teaching_invariants() -> None:
+    runtime = ExperimentRuntime(CourseCatalog([ROOT / "courses"]))
+
+    def signature(number: int, supplied: dict[str, Any]) -> list[float]:
+        item = NATIVE[number - 25]
+        module_id = _yaml(COURSE_ROOT / item["folder"] / "module.yaml")["id"]
+        return runtime.run("robotics-autonomy", module_id, supplied).diagnostics["signature"]
+
+    integrated = signature(66, {"broken_mode": False})
+    wrong_units = signature(66, {"broken_mode": True})
+    assert integrated[0] < wrong_units[0]
+    assert integrated[2] == 0 < wrong_units[2]
+
+    recovered_replay = signature(67, {"broken_mode": False})
+    arrival_replay = signature(67, {"broken_mode": True})
+    assert recovered_replay[0] < arrival_replay[0]
+    assert recovered_replay[1] == 1 > arrival_replay[1]
+    assert recovered_replay[2] < arrival_replay[2]
+
+    mobile_capstone = signature(68, {"broken_mode": False})
+    stale_mobile = signature(68, {"broken_mode": True})
+    assert mobile_capstone[0] == 1 and mobile_capstone[1] >= 0.85
+    assert mobile_capstone[2] == 0 < stale_mobile[2]
+    assert stale_mobile[0] == 0 and stale_mobile[1] < 0.85
+
+    manipulation_capstone = signature(69, {"broken_mode": False})
+    broken_manipulation = signature(69, {"broken_mode": True})
+    assert manipulation_capstone[0] == 1 and manipulation_capstone[1] < 0.055
+    assert manipulation_capstone[2] >= 0
+    assert broken_manipulation[0] == 0 and broken_manipulation[2] < 0
+
+
+def test_robotics_capstone_requirement_traces_close_over_reviewed_dependencies() -> None:
+    mapped = {item["id"]: item for item in MAP["modules"]}
+    capstones = {
+        "P68": ("CAP-MOBILE-AUTONOMY", "68-capstone-navigate-and-replan-with-perception"),
+        "P69": (
+            "CAP-TWO-LINK-MANIPULATION",
+            "69-capstone-perceive-grasp-and-control-a-two-link-robot",
+        ),
+    }
+    for item_id, (capstone_id, folder) in capstones.items():
+        trace = _yaml(COURSE_ROOT / "modules" / folder / "requirements-trace.yaml")
+        assert trace["schema_version"] == 1
+        assert trace["capstone_id"] == capstone_id
+        assert trace["module_id"] == item_id
+        assert len(trace["requirements"]) >= 5
+        prerequisites = {
+            prerequisite
+            for requirement in trace["requirements"]
+            for prerequisite in requirement["prerequisite_modules"]
+        }
+        assert set(mapped[item_id]["depends_on"]) <= prerequisites
+        assert len({requirement["id"] for requirement in trace["requirements"]}) == len(
+            trace["requirements"]
+        )
+        assert all(requirement["mechanism"] and requirement["evidence"]
+                   for requirement in trace["requirements"])

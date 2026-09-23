@@ -1,0 +1,22 @@
+schema_version: 1
+id: 67-replay-diagnose-and-recover-a-timed-robot-system
+number: 67
+title: Replay, Diagnose, and Recover a Timed Robot System
+summary: Replay a deterministic timed state log in source order, diagnose dropout and clock drift, and recover from a retained checkpoint.
+guiding_question: What makes a robot log causally replayable rather than merely readable?
+status: implemented
+tags: [robotics-autonomy, native-python, systems-integration, replay, diagnostics]
+runtime: {kind: python, entrypoint: 'experiment.py:run', trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: dropout_duration_ms, type: slider, label: Sensor dropout duration, default: 120.0, minimum: 0.0, maximum: 300.0, step: 20.0, unit: ms}
+- {id: clock_drift_ppm, type: slider, label: Remote clock drift, default: 50.0, minimum: 0.0, maximum: 300.0, step: 10.0, unit: ppm}
+- {id: broken_mode, type: toggle, label: Replay arrival order without recovery, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- {type: prediction, title: Predict before running, text: 'Arrival-order playback can be deterministic yet violate the source-time causal sequence.', reveal: Compare replay error and diagnosed faults.}
+- {type: controls, title: Live model controls}
+- {type: metrics}
+- {type: plot_grid, title: Replay state and timing evidence, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken assumption, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}

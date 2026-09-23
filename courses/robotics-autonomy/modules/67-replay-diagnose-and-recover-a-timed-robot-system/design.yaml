@@ -1,0 +1,25 @@
+schema_version: 1
+item_id: P67
+module: 67-replay-diagnose-and-recover-a-timed-robot-system
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- x_hat_{k+1}=x_hat_k+v_hat_k Delta t_source propagates replay state in monotonic source time
+- gap_k=t_source,k-t_source,k-1>60 ms and r_clock=t_remote-t_source diagnose missing data and clock drift
+- x_hat_recovery=x_measured at the first valid checkpoint after safe hold bounds replay divergence
+signature:
+- {field: replay_state_rms_error, unit: m}
+- {field: diagnosed_timing_faults, unit: count}
+- {field: safe_recovery_latency, unit: ms}
+teaching_invariant: Deterministic replay must preserve source-time causality, diagnose missing intervals before using their state, and resume only from a retained valid checkpoint.
+limiting_cases:
+- With no dropout and zero drift, source order and arrival order can coincide and the recovery branch is unnecessary.
+- A log with values but no source timestamps cannot establish causal replay even when its serialized bytes are reproducible.
+scenarios:
+  baseline: &baseline {dropout_duration_ms: 120.0, clock_drift_ppm: 50.0, broken_mode: false}
+  sweep_1: {dropout_duration_ms: 240.0, clock_drift_ppm: 50.0, broken_mode: false}
+  sweep_2: {dropout_duration_ms: 120.0, clock_drift_ppm: 250.0, broken_mode: false}
+  broken: {dropout_duration_ms: 120.0, clock_drift_ppm: 50.0, broken_mode: true}
+  recovery: *baseline
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic synthetic-log software evidence only; no deployed middleware log, MATLAB runtime, learner, browser/accessibility, physical HIL/hardware, safety, release, deployment, or production claim.

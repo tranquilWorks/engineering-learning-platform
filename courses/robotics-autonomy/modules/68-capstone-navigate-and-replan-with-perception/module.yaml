@@ -1,0 +1,22 @@
+schema_version: 1
+id: 68-capstone-navigate-and-replan-with-perception
+number: 68
+title: 'Capstone: Navigate and Replan with Perception'
+summary: Fuse a perceived map change, replan a mission route, avoid a timed crossing, recover range dropout, and audit the cumulative requirement trace.
+guiding_question: Can one mobile-autonomy trace preserve map, route, timing, recovery, and replay requirements simultaneously?
+status: implemented
+tags: [robotics-autonomy, native-python, capstone, navigation, perception, replanning]
+runtime: {kind: python, entrypoint: 'experiment.py:run', trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: range_dropout_percent, type: slider, label: Range-data dropout, default: 10.0, minimum: 0.0, maximum: 60.0, step: 5.0, unit: '%'}
+- {id: dynamic_obstacle_speed_m_s, type: slider, label: Crossing-obstacle speed, default: 0.3, minimum: 0.15, maximum: 0.7, step: 0.05, unit: m/s}
+- {id: broken_mode, type: toggle, label: Disable integrated updates and recovery, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- {type: prediction, title: Predict before running, text: 'A mission can reach the goal geometrically and still fail map, timing, recovery, or replay requirements.', reveal: Inspect every cumulative requirement margin.}
+- {type: controls, title: Live capstone controls}
+- {type: metrics}
+- {type: plot_grid, title: Mission route and requirement trace, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken integration, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}
