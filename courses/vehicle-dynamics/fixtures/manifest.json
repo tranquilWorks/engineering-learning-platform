@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "fixture_set_id": "gr86-protocol-replay-v1",
+  "provenance_class": "synthetic_protocol_fixture",
+  "measured_vehicle_data": false,
+  "protocol_source": {
+    "repository": "tranquilWorks/gr86-cca-telemetry",
+    "commit": "f5d13fce5fcfc23a914f7da39e5bb448c56ed6b7",
+    "tree": "3c4edb0083fa93af8114497c145a7248bafd7ade",
+    "files": [
+      {
+        "path": "firmware/cca_telemetry.ino",
+        "sha256": "bd7597f6c6bdcc5f3eff8519d1429d856ab4c2ca3cb6495b8a5cb3d02a686a0b",
+        "retained_behavior": "RaceChrono UUIDs and four-byte little-endian CAN identifier followed by zero to eight CAN data bytes"
+      },
+      {
+        "path": "firmware/pidmaps/gr86_2022.h",
+        "sha256": "d318c65b3a0d1a381b19ba514fdc43eac974f1420869ea7579d24acba7e4144f",
+        "retained_behavior": "GR86 identifier allow-list and forwarding-rate policy"
+      },
+      {
+        "path": "docs/racechrono_preset.md",
+        "sha256": "3c3e0aa7c730e46e931249ec9dc5c9b49a967bd19707b98fa2c90893cffc007a",
+        "retained_behavior": "Documented big-endian signal byte ranges, scale equations, units, and virtual oil-pressure frame"
+      }
+    ]
+  },
+  "generation": {
+    "script": "generate_fixture.py",
+    "script_sha256": "b2bd34a621c97dc5d8e7930014ee2d0281166833f43639d621666c230c68015d",
+    "method": "Deterministic analytic two-second acceleration, cornering, and braking profile encoded with documented GR86 signal equations and the firmware CAN-to-BLE packet layout.",
+    "randomness": "none",
+    "base_tick_us": 20000,
+    "duration_us": 2000000,
+    "record_count": 309
+  },
+  "privacy": {
+    "classification": "public synthetic engineering data",
+    "contains_vin": false,
+    "contains_driver_identity": false,
+    "contains_real_location": false,
+    "contains_precise_route": false,
+    "contains_vehicle_capture": false
+  },
+  "transport": {
+    "can_byte_order": "big-endian per documented signal",
+    "ble_service_uuid": "0x1FF8",
+    "ble_can_characteristic_uuid": "0x0001",
+    "ble_packet": "four-byte little-endian CAN identifier followed by dlc CAN data bytes"
+  },
+  "files": [
+    {
+      "path": "gr86-can-replay-v1.jsonl",
+      "sha256": "b4f2239ade6167cbc02331866ea303d2c0abb580f85e068a29527e5e3b712bd3",
+      "records": 309
+    },
+    {
+      "path": "racechrono-ble-replay-v1.jsonl",
+      "sha256": "ac20b5bd3943c5d6d7713617179c57892e5d976e4c5783117971580b4a4de69e",
+      "records": 309
+    },
+    {
+      "path": "racechrono-ble-fault-plan-v1.json",
+      "sha256": "ee278a9360c0b8b38f227b10ea11371b183cfa4c18c7cc984501f4c6b76607d3",
+      "records": 4
+    }
+  ],
+  "invariants": [
+    "CAN and BLE nominal records have identical sequence and source-time order",
+    "Each BLE payload equals the CAN identifier encoded little-endian in four bytes followed by the exact CAN data bytes",
+    "Every decoded signal uses the documented GR86 RaceChrono byte range, scale, offset, and unit",
+    "Nominal source timestamps are monotonic and replay is deterministic",
+    "The fault plan deterministically exposes one drop, one duplicate, one adjacent inversion, and one malformed packet"
+  ],
+  "limitations": [
+    "The fixture is generated from protocol documentation and analytic profiles; it is not a captured drive and cannot validate actual vehicle signal identity, timing, calibration, noise, or operating range",
+    "No GNSS position or personal/vehicle identifier is present",
+    "Firmware execution, BLE radio behavior, CAN electrical behavior, RaceChrono application behavior, bench hardware, and vehicle behavior are not validated"
+  ]
+}

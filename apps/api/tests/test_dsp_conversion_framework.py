@@ -93,7 +93,7 @@ EXPECTED_GITLINKS = {
     "courses/rf-lab-learning": "5b1650d5ddc42757e14b27b112de1528ce0f7460",
     "courses/robotics-autonomy-learning": "f8807640258f1a6c1c77f1dcc9e61734551c585b",
     "courses/stats-estimation-learning": "c5bc5ab6b723bfd9afd9039379628ceac3cff411",
-    "courses/vehicle-dynamics-learning": "916c3e6a9cbbc9e1c4ede821e894132b13c3b9c8",
+    "courses/vehicle-dynamics-learning": "57264b3ffeb517ee5eb73e8957b9cd190d022457",
 }
 
 

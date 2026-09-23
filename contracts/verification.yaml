@@ -1,7 +1,10 @@
 schema_version: 1
 commands:
-  robotics-map-and-regression:
-    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_robotics_expansion.py apps/api/tests/test_robotics_conversion_framework.py apps/api/tests/test_robotics_course.py apps/api/tests/test_course_caliber_status.py
+  vehicle-prep:
+    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_vehicle_dynamics_framework.py apps/api/tests/test_course_caliber_status.py
+  retained-courses:
+    - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py
+    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_gnc_expansion.py apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_course.py apps/api/tests/test_robotics_expansion.py apps/api/tests/test_robotics_conversion_framework.py apps/api/tests/test_robotics_course.py
   contract:
     - ./scripts/agent-verify.sh contract
   quick:
@@ -11,8 +14,11 @@ commands:
   deterministic-catalog:
     - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic --json
   lint:
-    - .venv/bin/ruff check apps/api/tests/test_robotics_expansion.py apps/api/tests/test_robotics_conversion_framework.py courses/robotics-autonomy
+    - .venv/bin/ruff check apps/api/tests/test_vehicle_dynamics_framework.py apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_course_caliber_status.py
+    - .venv/bin/ruff check --ignore UP038 apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_robotics_conversion_framework.py
+    - .venv/bin/ruff check --ignore I001,E731,RUF007 courses/vehicle-dynamics/fixtures/*.py
   scope:
     - git diff --check
-    - test -z "$(git status --short -- courses/robotics-autonomy-learning courses/controls-gnc courses/dsp-radar courses/demo-radar courses/platform-showcase)"
-evidence_boundary: These commands validate the complete reviewed 69-module Robotics/Autonomy boundary, all 24 retained depth passes, Python-first native expansion P25-P69, and two requirements-traced cumulative software capstones while regressing every source-bound Python laboratory. The forty-five additions have distinct equations, complete lessons, two one-variable sweeps, named failure/recovery, limiting cases, physical axes/units, and separately retained independent/production evidence. Curriculum coverage and software capstone integration pass; learner validation remains not run. The evidence does not execute MATLAB, validate browser accessibility or learners, operate physical hardware/HIL, certify safety, or authorize release, deployment, credentials/settings, or production use.
+    - test -z "$(git status --short -- courses/controls-gnc courses/dsp-radar courses/robotics-autonomy courses/demo-radar courses/platform-showcase)"
+    - test -z "$(git -C courses/vehicle-dynamics-learning status --porcelain=v1 --untracked-files=all)"
+evidence_boundary: The commands validate the empty Vehicle Dynamics course shell, exact read-only source ledger and gitlink, reviewed 67-module competency map, zero-conversion P01-P24 framework, deterministic synthetic GR86 CAN/BLE protocol fixtures, independent raw decode and fault diagnostics, and the retained six-course/223-module/223-interactive catalog. No Vehicle Dynamics lesson is implemented. The evidence does not execute MATLAB, validate browser accessibility or learners, operate firmware, BLE radio, bench, vehicle, track, physical hardware/HIL, certify safety, or authorize release, deployment, credentials/settings, or production use.

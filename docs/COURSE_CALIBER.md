@@ -8,8 +8,8 @@ or learner outcomes.
 
 The authoritative machine-readable projection is
 [`course-caliber-status.yaml`](course-caliber-status.yaml). It implements
-Portfolio Control standard `ELP-COURSE-CALIBER-1` at merged Robotics completion
-control revision `b9603eca1e25a996e8e2e044738be170a725e386`.
+Portfolio Control standard `ELP-COURSE-CALIBER-1` at merged Vehicle Dynamics
+preparation control revision `2fd02a1b72536ee6f4ff59357a74be7dc99c72c8`.
 
 ## Six separately evidenced stages
 
@@ -61,16 +61,17 @@ but they are not independent correctness oracles.
 | DSP/Radar | 84 source / 84 platform / 84 interactive | `platform_converted` | #441: replace the P02-P84 generic execution structure and independently reverify it |
 | Controls/GNC | 24 / 24 / 24 | `numerically_verified` | #439: expand against the reviewed competency map and add cumulative integration |
 | Robotics and Autonomy | 24 source / 69 platform / 69 interactive | `capstone_integrated` | Maintain the reviewed map; learner/accessibility validation remains not run |
+| Vehicle Dynamics | 24 source / 0 platform / 0 interactive | preparation only | #467: authorize the separate P01-P08 implementation batch |
 
 Controls/GNC and Robotics/Autonomy are now marked `curriculum_covered: passed`
 and `capstone_integrated: passed` from their reviewed maps and requirements-traced
 software capstones. Those outcomes do not imply `learner_validated`, which remains
 `not_run`. DSP/Radar remediation remains separately owned by issue #441.
 
-Vehicle Dynamics remains queued and unimplemented. It may proceed only after
-this gate is projected, its reviewed competency map is valid, replayable GR86
-CAN/BLE fixtures have provenance, and a separate coherent batch of at most ten
-lessons is authorized.
+Vehicle Dynamics preparation is complete but the course remains unimplemented.
+The reviewed 67-module map, exact source ledger, and deterministic synthetic
+GR86 CAN/BLE fixtures are installed. Lesson implementation may proceed only
+after a separate coherent P01-P08 batch is authorized.
 
 This projection does not claim MATLAB runtime comparison, browser or
 accessibility acceptance, learner effectiveness, physical hardware/HIL,

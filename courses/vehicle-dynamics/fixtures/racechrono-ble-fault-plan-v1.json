@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "fixture_set_id": "gr86-protocol-replay-v1",
+  "operations": [
+    {
+      "kind": "drop",
+      "sequence": 37
+    },
+    {
+      "kind": "duplicate",
+      "sequence": 52
+    },
+    {
+      "kind": "swap_adjacent",
+      "sequences": [
+        71,
+        72
+      ]
+    },
+    {
+      "kind": "truncate_payload",
+      "sequence": 89,
+      "remove_tail_bytes": 1
+    }
+  ],
+  "expected_diagnostics": {
+    "missing_sequences": [
+      37,
+      89
+    ],
+    "duplicate_sequences": [
+      52
+    ],
+    "out_of_order_pairs": [
+      [
+        72,
+        71
+      ]
+    ],
+    "malformed_sequences": [
+      89
+    ],
+    "recoverable_valid_record_count": 307
+  }
+}

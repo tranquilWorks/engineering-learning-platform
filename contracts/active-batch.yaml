@@ -1,210 +1,146 @@
 schema_version: 1
 batch:
-  id: ELP-ROB-SYSTEMS-CAPSTONES-P66-P69
-  title: Robotics systems integration and capstones P66-P69
-  goal: 'Complete the final issue-440 expansion batch for P66, P67, P68, P69: robot model, frame, and interface integration;
-    deterministic timed replay, diagnosis, and recovery; a cumulative perception-to-replanning mobile-autonomy capstone;
-    and a cumulative perception-to-contact-control two-link manipulation capstone.'
+  id: ELP-VEHICLE-PREP-00
+  title: Establish the governed Vehicle Dynamics conversion boundary and replay fixtures
+  goal: Advance the read-only Vehicle Dynamics source pin, mirror the reviewed 67-module competency map, install a 24-item source-conversion framework, and add deterministic synthetic GR86 CAN/RaceChrono BLE replay fixtures without implementing or editing a lesson.
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
-  - products/engineering-learning-platform/COURSE_CALIBER.md
-  - products/engineering-learning-platform/course-caliber.yaml
-  - products/engineering-learning-platform/competency-maps/robotics-autonomy.yaml
-  - tranquilWorks/portfolio-control#440
-  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-ROB-SYSTEMS-CAPSTONES-P66-P69
-  baseline_commit: 8cc4a00d325c1098dee832f841e3af373ae8a7e3
-  baseline_tree: 839c0e31c1d5df7ce6a25e33303eb48dbe29beda
+    - products/engineering-learning-platform/COURSE_CALIBER.md
+    - products/engineering-learning-platform/course-caliber.yaml
+    - products/engineering-learning-platform/competency-maps/vehicle-dynamics.yaml
+    - tranquilWorks/portfolio-control#467
+  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-VEHICLE-PREP-00
+  baseline_commit: 8e5ff391f75f39218e51ed98aac8bcdb092550a0
+  baseline_tree: bebb8579d33090a64201a7f2c8c4ad86595ada02
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_baseline: 482d1eba3deff82da688cc4feefae25224a312cc
-  control_plane_path: products/engineering-learning-platform/batches/ELP-ROB-SYSTEMS-CAPSTONES-P66-P69.yaml
+  control_plane_baseline: 53c3878760ea0e08255714b1b1ff0456f8d8dfed
+  control_plane_path: products/engineering-learning-platform/batches/ELP-VEHICLE-PREP-00.yaml
   target_repository: tranquilWorks/engineering-learning-platform
-  source_repository: tranquilWorks/robotics-autonomy-learning
-  source_pin: f8807640258f1a6c1c77f1dcc9e61734551c585b
-  source_tree: 7f8bc62382ca8d7fbe26ff4413cabf7d00d64bb9
-  source_curriculum_sha256: 972eee6b99945f6c2380ba097e443b30c37ca9e4e0acfd2c7f7cde8a7550207d
+  source_repository: tranquilWorks/vehicle-dynamics-learning
+  source_pin: 57264b3ffeb517ee5eb73e8957b9cd190d022457
+  source_tree: d9e7267ba02c8d3d836c0ae481b80e91233eb81a
+  source_curriculum_sha256: c452996e5253ec7e547a64cccd4aa8af60dc5f4106311d1dec25ec8d5c48eba6
+  source_file_set_sha256: 15de22f8396cf978e80e55f2ed7541234804913c81dbef71cb85c81508472d11
+  competency_map_sha256: 87dae868d7e3a0181062a4fd42ff316513b0f6f35c053cb56b5d73b9c56bde6d
+  telemetry_repository: tranquilWorks/gr86-cca-telemetry
+  telemetry_pin: f5d13fce5fcfc23a914f7da39e5bb448c56ed6b7
+  telemetry_tree: 3c4edb0083fa93af8114497c145a7248bafd7ade
+  telemetry_files:
+    firmware/cca_telemetry.ino: bd7597f6c6bdcc5f3eff8519d1429d856ab4c2ca3cb6495b8a5cb3d02a686a0b
+    firmware/pidmaps/gr86_2022.h: d318c65b3a0d1a381b19ba514fdc43eac974f1420869ea7579d24acba7e4144f
+    docs/racechrono_preset.md: 3c3e0aa7c730e46e931249ec9dc5c9b49a967bd19707b98fa2c90893cffc007a
+  fixture_files:
+    manifest.json: 5727329535dee3906f3c72acc0aed52219ccab0e5db57b688b99025e556a54f8
+    gr86-can-replay-v1.jsonl: b4f2239ade6167cbc02331866ea303d2c0abb580f85e068a29527e5e3b712bd3
+    racechrono-ble-replay-v1.jsonl: ac20b5bd3943c5d6d7713617179c57892e5d976e4c5783117971580b4a4de69e
+    racechrono-ble-fault-plan-v1.json: ee278a9360c0b8b38f227b10ea11371b183cfa4c18c7cc984501f4c6b76607d3
+    generate_fixture.py: b2bd34a621c97dc5d8e7930014ee2d0281166833f43639d621666c230c68015d
+    verify_fixture.py: 508a1a6a73fd4f5af8049eb07abad9f3b11c1a20dc74a9d466ec978db6159b32
 dependencies:
-- ELP-ROB-MANIPULATION-P61-P65
+  - ELP-ROB-SYSTEMS-CAPSTONES-P66-P69
 scope:
   allowed_paths:
-  - courses/robotics-autonomy/course.yaml
-  - courses/robotics-autonomy/competency-map.yaml
-  - courses/robotics-autonomy/competency-map.schema.json
-  - courses/robotics-autonomy/depth-review.yaml
-  - courses/robotics-autonomy/native-design.schema.json
-  - courses/robotics-autonomy/expansion-map.yaml
-  - courses/robotics-autonomy/expansion_reference_cases.py
-  - courses/robotics-autonomy/modules/66-*/**
-  - courses/robotics-autonomy/modules/67-*/**
-  - courses/robotics-autonomy/modules/68-*/**
-  - courses/robotics-autonomy/modules/69-*/**
-  - courses/robotics-autonomy/conversion-manifest.yaml
-  - courses/robotics-autonomy/coverage.yaml
-  - apps/api/tests/test_robotics_expansion.py
-  - apps/api/tests/test_robotics_conversion_framework.py
-  - apps/api/tests/test_course_caliber_status.py
-  - apps/api/tests/test_gnc_conversion_framework.py
-  - contracts/active-batch.yaml
-  - contracts/repo-profile.yaml
-  - contracts/verification.yaml
-  - docs/COURSE_CALIBER.md
-  - docs/course-caliber-status.yaml
-  - docs/CURRENT_STATE.md
-  - docs/HANDOFF.md
-  - docs/ROADMAP.md
-  - docs/evidence/ELP-ROB-SYSTEMS-CAPSTONES-P66-P69-*.md
+    - courses/vehicle-dynamics-learning
+    - courses/vehicle-dynamics/course.yaml
+    - courses/vehicle-dynamics/competency-map.yaml
+    - courses/vehicle-dynamics/competency-map.schema.json
+    - courses/vehicle-dynamics/source-map.yaml
+    - courses/vehicle-dynamics/conversion-manifest.yaml
+    - courses/vehicle-dynamics/coverage.yaml
+    - courses/vehicle-dynamics/fixtures/**
+    - apps/api/tests/test_vehicle_dynamics_framework.py
+    - apps/api/tests/test_dsp_conversion_framework.py
+    - apps/api/tests/test_gnc_conversion_framework.py
+    - apps/api/tests/test_robotics_conversion_framework.py
+    - apps/api/tests/test_course_caliber_status.py
+    - contracts/active-batch.yaml
+    - contracts/repo-profile.yaml
+    - contracts/verification.yaml
+    - docs/COURSE_CALIBER.md
+    - docs/course-caliber-status.yaml
+    - docs/CURRENT_STATE.md
+    - docs/HANDOFF.md
+    - docs/ROADMAP.md
+    - docs/evidence/ELP-VEHICLE-PREP-00-*.md
   forbidden_paths:
-  - courses/robotics-autonomy-learning
-  - courses/robotics-autonomy-learning/**
-  - courses/robotics-autonomy/modules/01-*/**
-  - courses/robotics-autonomy/modules/02-*/**
-  - courses/robotics-autonomy/modules/03-*/**
-  - courses/robotics-autonomy/modules/04-*/**
-  - courses/robotics-autonomy/modules/05-*/**
-  - courses/robotics-autonomy/modules/06-*/**
-  - courses/robotics-autonomy/modules/07-*/**
-  - courses/robotics-autonomy/modules/08-*/**
-  - courses/robotics-autonomy/modules/09-*/**
-  - courses/robotics-autonomy/modules/10-*/**
-  - courses/robotics-autonomy/modules/11-*/**
-  - courses/robotics-autonomy/modules/12-*/**
-  - courses/robotics-autonomy/modules/13-*/**
-  - courses/robotics-autonomy/modules/14-*/**
-  - courses/robotics-autonomy/modules/15-*/**
-  - courses/robotics-autonomy/modules/16-*/**
-  - courses/robotics-autonomy/modules/17-*/**
-  - courses/robotics-autonomy/modules/18-*/**
-  - courses/robotics-autonomy/modules/19-*/**
-  - courses/robotics-autonomy/modules/20-*/**
-  - courses/robotics-autonomy/modules/21-*/**
-  - courses/robotics-autonomy/modules/22-*/**
-  - courses/robotics-autonomy/modules/23-*/**
-  - courses/robotics-autonomy/modules/24-*/**
-  - courses/robotics-autonomy/modules/25-*/**
-  - courses/robotics-autonomy/modules/26-*/**
-  - courses/robotics-autonomy/modules/27-*/**
-  - courses/robotics-autonomy/modules/28-*/**
-  - courses/robotics-autonomy/modules/29-*/**
-  - courses/robotics-autonomy/modules/30-*/**
-  - courses/robotics-autonomy/modules/31-*/**
-  - courses/robotics-autonomy/modules/32-*/**
-  - courses/robotics-autonomy/modules/33-*/**
-  - courses/robotics-autonomy/modules/34-*/**
-  - courses/robotics-autonomy/modules/35-*/**
-  - courses/robotics-autonomy/modules/36-*/**
-  - courses/robotics-autonomy/modules/37-*/**
-  - courses/robotics-autonomy/modules/38-*/**
-  - courses/robotics-autonomy/modules/39-*/**
-  - courses/robotics-autonomy/modules/40-*/**
-  - courses/robotics-autonomy/modules/41-*/**
-  - courses/robotics-autonomy/modules/42-*/**
-  - courses/robotics-autonomy/modules/43-*/**
-  - courses/robotics-autonomy/modules/44-*/**
-  - courses/robotics-autonomy/modules/45-*/**
-  - courses/robotics-autonomy/modules/46-*/**
-  - courses/robotics-autonomy/modules/47-*/**
-  - courses/robotics-autonomy/modules/48-*/**
-  - courses/robotics-autonomy/modules/49-*/**
-  - courses/robotics-autonomy/modules/50-*/**
-  - courses/robotics-autonomy/modules/51-*/**
-  - courses/robotics-autonomy/modules/52-*/**
-  - courses/robotics-autonomy/modules/53-*/**
-  - courses/robotics-autonomy/modules/54-*/**
-  - courses/robotics-autonomy/modules/55-*/**
-  - courses/robotics-autonomy/modules/56-*/**
-  - courses/robotics-autonomy/modules/57-*/**
-  - courses/robotics-autonomy/modules/58-*/**
-  - courses/robotics-autonomy/modules/59-*/**
-  - courses/robotics-autonomy/modules/60-*/**
-  - courses/robotics-autonomy/modules/61-*/**
-  - courses/robotics-autonomy/modules/62-*/**
-  - courses/robotics-autonomy/modules/63-*/**
-  - courses/robotics-autonomy/modules/64-*/**
-  - courses/robotics-autonomy/modules/65-*/**
-  - courses/robotics-autonomy/source-map.yaml
-  - courses/robotics-autonomy/fidelity-map.yaml
-  - courses/robotics-autonomy/reference_cases.py
-  - courses/dsp-radar/**
-  - courses/controls-gnc/**
-  - courses/demo-radar/**
-  - courses/platform-showcase/**
-  - apps/api/src/**
-  - apps/web/**
-  - packages/**
-  - scripts/**
-  - .github/**
-  - .gitmodules
-  - package.json
-  - package-lock.json
-  - apps/api/pyproject.toml
-  - apps/web/package.json
-  - apps/web/package-lock.json
-  - Dockerfile
-  - compose.yaml
+    - courses/vehicle-dynamics/modules/**
+    - courses/controls-gnc/**
+    - courses/dsp-radar/**
+    - courses/robotics-autonomy/**
+    - courses/demo-radar/**
+    - courses/platform-showcase/**
+    - courses/controls-gnc-learning
+    - courses/controls-gnc-learning/**
+    - courses/dsp-radar-learning
+    - courses/dsp-radar-learning/**
+    - courses/robotics-autonomy-learning
+    - courses/robotics-autonomy-learning/**
+    - apps/api/src/**
+    - apps/web/**
+    - packages/**
+    - scripts/**
+    - .github/**
+    - .gitmodules
+    - package.json
+    - package-lock.json
+    - apps/api/pyproject.toml
+    - apps/web/package.json
+    - apps/web/package-lock.json
+    - Dockerfile
+    - compose.yaml
 acceptance:
-- Start only after the exact control commit containing this contract is merged. Use exact clean target main 8cc4a00d325c1098dee832f841e3af373ae8a7e3,
-  tree 839c0e31c1d5df7ce6a25e33303eb48dbe29beda; any target, control, source, map, index, or worktree drift stops implementation.
-- 'Implement exactly P66, P67, P68, P69 as Python-first native modules from the reviewed map: robot model/frame/interface
-  integration; deterministic timed replay, diagnosis, and recovery; a cumulative perception-to-replanning mobile-autonomy
-  capstone; and a cumulative perception-to-contact-control two-link manipulation capstone.'
-- Treat every ID as a separately reviewed work item with a complete learner lesson, unique executable model, baseline, two
-  one-variable sweeps, broken behavior, exact recovery, limiting cases, domain quantities/units, and a named teaching invariant.
-- Use an independent reference that imports no production experiment, consumes no production result, and perturbs no production
-  value. Retain origin, inputs, fields/units, tolerances, and finite results for baseline, sweep_1, sweep_2, broken, and recovery.
-- Do not modify the immutable source map, source coverage meaning, source fidelity map, or source-bound reference; do not
-  claim conversion or MATLAB equivalence for native additions.
-- Every plot and metric must retain domain-specific quantities and units. Every runtime must remain deterministic, finite,
-  bounded, and within the trusted Python timeout.
-- Preserve every module outside P66, P67, P68, P69, the source gitlink and source evidence, every other course,
-  generic platform behavior, dependencies, workflows, and deployment artifacts byte-identically.
-- 'End with all 69 reviewed Robotics modules implemented/deepened and a five-course catalog of 223 modules, all interactive.
-  Mark curriculum coverage and the two software capstone integrations passed only after their requirement traces and cumulative
-  failure/recovery evidence pass; learner validation remains not run.'
-- P68 and P69 must reuse and trace multiple named prerequisite mechanisms, expose cumulative success/failure criteria, and retain independent capstone evidence rather than concatenate prior outputs.
-- Record exact local verification. Hosted CI is not a completion gate by owner direction; keep MATLAB, browser/accessibility,
-  learner, physical HIL/hardware, certification, release, deployment, credentials/settings, and production evidence explicitly
-  unperformed.
+  - Start only after the exact control commit containing this contract is merged. Use exact clean target main 8e5ff391f75f39218e51ed98aac8bcdb092550a0, tree bebb8579d33090a64201a7f2c8c4ad86595ada02; any target, control, source, map, fixture, index, or worktree drift stops implementation.
+  - Advance only the read-only courses/vehicle-dynamics-learning gitlink from 916c3e6a9cbbc9e1c4ede821e894132b13c3b9c8 to exact source commit 57264b3ffeb517ee5eb73e8957b9cd190d022457, tree d9e7267ba02c8d3d836c0ae481b80e91233eb81a, and retain its exact 150-file source map and aggregate digest. Do not edit source repository bytes.
+  - Mirror the reviewed 67-module control-plane competency map byte-for-byte at SHA-256 87dae868d7e3a0181062a4fd42ff316513b0f6f35c053cb56b5d73b9c56bde6d and validate its schema, count derivation, graph/reference closure, ordered eight-batch partition, assessment references, and two capstones.
+  - Install a platform-owned Vehicle Dynamics course shell and exact P01-P24 conversion records with total=24, converted=0, remaining=24, blocked=0, placeholder=0. Record P01 and P02 as implemented in the pinned source and P03-P24 as source scaffolds without converting, deepening, or authoring any module.
+  - Install the exact deterministic synthetic GR86 CAN and RaceChrono BLE fixture set. Prove 309 CAN records map one-to-one and byte-exactly to 309 BLE notifications, independently decode documented signals with separately formulated equations, and deterministically diagnose the declared drop, duplicate, reorder, and truncation faults.
+  - Preserve the fixture claim boundary: synthetic protocol fixture, measured_vehicle_data=false, no VIN, driver, real location, precise route, or vehicle capture. Record exact telemetry repository/file provenance without claiming execution on firmware, BLE radio, bench, vehicle, track, physical HIL, or measured hardware.
+  - Preserve all 223 existing modules and interactive experiments byte-identically. The prep catalog is exactly six courses, 223 modules, and 223 interactive modules; Vehicle Dynamics remains empty and unavailable as a completed curriculum until a separate first-batch authorization merges.
+  - Update only the generic gitlink expectation needed for the authorized Vehicle Dynamics source-pin advance and the retained GNC/Robotics catalog course-count assertions from five to six. Preserve every other source gitlink, completed course, module, executable, generic platform behavior, dependency, workflow, and deployment artifact byte-identically.
+  - Do not implement P01-P08 or any lesson in this batch. A separate exact-baseline control contract is required before the first coherent batch begins.
+  - Record exact local verification. Hosted CI is not a completion gate by owner direction; keep MATLAB comparison, browser/accessibility, learner validation, physical HIL/hardware, firmware/radio execution, certification, release, deployment, credentials/settings, and production evidence explicitly unperformed.
 validation:
   local:
-  - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_robotics_expansion.py apps/api/tests/test_robotics_conversion_framework.py
-    apps/api/tests/test_robotics_course.py apps/api/tests/test_course_caliber_status.py
-  - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest
-    -q apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py
-  - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_gnc_expansion.py apps/api/tests/test_gnc_conversion_framework.py
-    apps/api/tests/test_gnc_course.py
-  - ./scripts/agent-verify.sh contract
-  - ./scripts/agent-verify.sh quick
-  - ./scripts/agent-verify.sh full
-  - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic --json
-  - .venv/bin/ruff check apps/api/tests/test_robotics_expansion.py apps/api/tests/test_robotics_conversion_framework.py courses/robotics-autonomy
-  - git diff --check
+    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_vehicle_dynamics_framework.py apps/api/tests/test_course_caliber_status.py
+    - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py
+    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_gnc_expansion.py apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_course.py apps/api/tests/test_robotics_expansion.py apps/api/tests/test_robotics_conversion_framework.py apps/api/tests/test_robotics_course.py
+    - ./scripts/agent-verify.sh contract
+    - ./scripts/agent-verify.sh quick
+    - ./scripts/agent-verify.sh full
+    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic --json
+    - .venv/bin/ruff check apps/api/tests/test_vehicle_dynamics_framework.py apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_course_caliber_status.py
+    - .venv/bin/ruff check --ignore UP038 apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_robotics_conversion_framework.py
+    - .venv/bin/ruff check --ignore I001,E731,RUF007 courses/vehicle-dynamics/fixtures/*.py
+    - git diff --check
+    - test -z "$(git status --short -- courses/controls-gnc courses/dsp-radar courses/robotics-autonomy courses/demo-radar courses/platform-showcase)"
+    - test -z "$(git -C courses/vehicle-dynamics-learning status --porcelain=v1 --untracked-files=all)"
   focused_tests_to_add:
-  - Validate exact batch membership, map identity, prerequisite closure, and source/native provenance.
-  - Execute deterministic baseline, two sweeps, broken, recovery, invalid-input, resource, axis/unit, and evidence-independence
-    checks where applicable.
-  - Assert topic-specific derivations, teaching invariants, limits, failure/recovery, formative checks, and cross-course boundaries.
+    - Validate exact target/control/source/map/protocol/fixture identities, source cleanliness, and the 150-file source map.
+    - Validate P01-P24 order and identities, P01-P02 implemented-source versus P03-P24 scaffold status, zero converted/placeholder modules, and absence of a module directory.
+    - Validate CAN/BLE packet identity, independent signal decode, deterministic fault diagnostics, provenance, and privacy exclusions without importing the generator or trusting generated decoded values.
+    - Validate the six-course, 223-module, 223-interactive prep catalog and every unchanged source gitlink.
   required_ci: []
 risk:
   class: high
   hazards:
-  - a shared template substitutes for a named derivation or unique governing model
-  - an independent oracle silently imports or derives from production behavior
-  - a frame, interface, unit, timestamp, replay, fault, requirement-trace, or cumulative capstone convention is subtly wrong
-  - the batch claims learner validation, MATLAB equivalence, browser accessibility, or physical evidence
+    - synthetic telemetry is mislabeled as measured vehicle evidence
+    - a replay verifier reuses generator equations or trusts embedded decoded values
+    - a source scaffold is mislabeled as implemented or converted
+    - prep work silently authors a lesson or changes generic runtime behavior
+    - a CAN ID, byte order, scaling, packet boundary, sequence fault, privacy claim, or source identity is wrong
   stop_conditions:
-  - exact target, control, source, map, or worktree identity drifts
-  - independent evidence needs production code/output or a perturbed production value
-  - any focused, cumulative, full, deterministic, lint, scope, or source-cleanliness gate fails or is skipped
-  - work requires source mutation, generic runtime/UI changes, a dependency, unbounded compute, or unsupported evidence
+    - exact target, control, source, competency-map, telemetry, fixture, index, or worktree identity drifts
+    - any module or lesson is implemented before separate P01-P08 authorization
+    - independent verification imports the fixture generator or derives expected decoded values from production output
+    - work requires source mutation, generic runtime/UI changes, a dependency, network access, or unsupported evidence
+    - any focused, regression, contract, quick, full, deterministic, lint, scope, or source-cleanliness gate fails or is skipped
 rollback:
-  strategy: Before merge, close the isolated target pull request. After merge, revert its one squash commit; do not rewrite
-    source or prior batches.
+  strategy: Before merge, close the isolated target pull request. After merge, revert its one squash commit; this restores the prior source gitlink and removes only the Vehicle Dynamics prep shell, map, conversion records, fixtures, tests, and prep documentation.
 evidence:
   output:
-  - docs/evidence/ELP-ROB-SYSTEMS-CAPSTONES-P66-P69-2026-09-23.md
-  - per-item derivation/model, scenario, invariant, tolerance, axis, limitation, and residual-risk review
-  - focused, regression, full, deterministic catalog, lint, diff, scope, and source-cleanliness results
-  - one target squash merge and explicit unperformed evidence
-  claim_boundary: 'This batch completes P66, P67, P68, and P69 at a deterministic software-only boundary and closes the reviewed 69-module
-    Robotics map with two cumulative software capstones. It does not execute MATLAB, validate learners or browser accessibility,
-    operate physical HIL/hardware, certify safety, or authorize release, deployment, credentials/settings, or production use.'
+    - docs/evidence/ELP-VEHICLE-PREP-00-2026-09-23.md
+    - exact target, control, source, map, telemetry-source, fixture, and source-cleanliness identities
+    - map/schema/closure, source-map/status, CAN/BLE identity, independent-decode, fault-diagnostic, privacy, catalog, regression, full, deterministic, lint, diff, and scope results
+    - one target squash merge, the exact resulting commit/tree, and explicit unperformed evidence
+  claim_boundary: This batch establishes a six-course, 223-module prep state with an empty Vehicle Dynamics shell, a reviewed 67-module plan, exact read-only source evidence, and deterministic synthetic protocol fixtures. It implements no Vehicle Dynamics lesson and does not execute MATLAB, browser/accessibility, learner, firmware, BLE radio, bench, vehicle, track, physical HIL/hardware, certification, release, deployment, credentials/settings, or production validation.

@@ -3,7 +3,7 @@ standard:
   id: ELP-COURSE-CALIBER-1
   effective_date: '2026-09-21'
   control_repository: tranquilWorks/portfolio-control
-  control_revision: b9603eca1e25a996e8e2e044738be170a725e386
+  control_revision: 2fd02a1b72536ee6f4ff59357a74be7dc99c72c8
   audit_baseline: 1506591946ec8e96fe3201e8893b8ad851a1685a
 count_semantics: implementation_inventory_not_curriculum_completeness
 maturity_states:
@@ -268,11 +268,12 @@ course_reviews:
   follow_up_issues: []
 holds:
 - course_id: vehicle-dynamics
-  implementation_status: not_implemented
-  authorization_status: blocked
-  reason: Vehicle Dynamics is queued and cannot be sized or converted from an arbitrary lesson target.
-  release_conditions:
+  implementation_status: preparation_complete
+  authorization_status: first_batch_required
+  reason: The governed course shell, reviewed 67-module map, exact source ledger, and synthetic GR86 CAN/BLE replay package are installed; no Vehicle Dynamics lesson is implemented.
+  completed_release_conditions:
   - Issue 437 course-caliber gate is merged and projected into the target repository.
-  - A reviewed Vehicle Dynamics competency-to-module matrix validates against the control-plane schema.
-  - Replayable GR86 CAN/BLE fixtures and their provenance are available for authorized software evidence.
-  - A separately authorized first batch forms a coherent unit and contains at most ten new lessons.
+  - The reviewed Vehicle Dynamics competency-to-module matrix validates against the control-plane schema.
+  - Replayable synthetic GR86 CAN/BLE fixtures and exact protocol provenance are available for authorized software evidence.
+  release_conditions:
+  - A separately authorized P01-P08 first batch forms a coherent unit and contains at most ten new lessons.
