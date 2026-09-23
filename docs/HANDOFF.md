@@ -1,9 +1,9 @@
 # Handoff
 
-Issue #440 is implemented through P69 in prerequisite-closed batches. All 69 reviewed Robotics/Autonomy modules are interactive, independently evidenced at the software boundary, and covered by the reviewed competency and assessment map.
+Issue #467 is prepared but not implemented. Retain the exact Vehicle Dynamics source gitlink, 150-file source ledger, reviewed 67-module competency map, P01-P24 conversion records, and deterministic synthetic GR86 CAN/BLE fixture identities.
 
-Retain the reviewed 69-module competency map, P01-P24 depth evidence, cumulative P25-P69 expansion map, unique per-module design contracts, independent references, five-scenario evidence, both capstone requirement traces, and the exact Robotics source gitlink.
+The only authorized target state in `ELP-VEHICLE-PREP-00` is preparation: six catalog courses, 223 existing modules, 223 interactive modules, and zero Vehicle Dynamics modules. Do not add or edit a Vehicle Dynamics lesson under this contract.
 
-No issue-440 implementation item remains. After the final target merge and issue closure evidence, return course work to the separately authorized queue. Vehicle Dynamics remains next only after its existing control-plane hold and release conditions are satisfied.
+Next, publish a separate `ELP-VEHICLE-P01-P08` control contract against the exact merged prep target commit and tree. That first coherent batch covers P01-P08 and remains bounded to eight lessons.
 
-Native lessons do not claim MATLAB/source equivalence. Browser/accessibility, learner effectiveness, physical HIL/hardware, certification, release, deployment, credentials/settings, and production validation remain unperformed.
+Synthetic fixtures do not establish measured vehicle behavior. MATLAB, browser/accessibility, learner, firmware/radio, bench, vehicle, track, physical HIL/hardware, certification, release, deployment, credentials/settings, and production evidence remain unperformed.

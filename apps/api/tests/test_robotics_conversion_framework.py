@@ -188,7 +188,7 @@ def test_reference_oracle_is_independent_and_native_lessons_are_not_placeholders
 def test_robotics_final_catalog_shape() -> None:
     catalog = CourseCatalog([ROOT / "courses"])
     courses = catalog.summaries()
-    assert len(courses) == 5
+    assert len(courses) == 6
     modules = sum(len(course.modules) for course in courses)
     interactive = sum(module.interactive for course in courses for module in course.modules)
     native_count = len(EXPANSION["implemented_native_modules"])

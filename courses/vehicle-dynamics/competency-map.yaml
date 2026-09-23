@@ -1,0 +1,1605 @@
+{
+  "schema_version": 1,
+  "course": {
+    "id": "vehicle-dynamics",
+    "title": "Vehicle Dynamics and Motorsport Engineering",
+    "authority": "tranquilWorks/portfolio-control#467 and the pinned vehicle-dynamics-learning source",
+    "baseline": "57264b3ffeb517ee5eb73e8957b9cd190d022457"
+  },
+  "scope": {
+    "target_learners": [
+      "Engineers and advanced learners who know algebra, trigonometry, introductory calculus, and basic mechanics",
+      "Motorsport practitioners who need traceable models from telemetry through setup and lap performance"
+    ],
+    "prerequisites": [
+      "Algebra, trigonometry, derivatives, integrals, vectors, and ordinary differential equations",
+      "Introductory Newtonian mechanics, energy, power, and free-body diagrams",
+      "Basic programming and numerical-array literacy",
+      "Controls/GNC and Statistics/Estimation cross-links when general controller or estimator theory is required"
+    ],
+    "outcomes": [
+      "Derive and execute bounded vehicle, tire, suspension, powertrain, brake, aero, and lap-performance models with explicit assumptions and units",
+      "Decode and replay privacy-safe GR86 CAN/BLE telemetry, reconstruct state, identify parameters, and quantify residuals and uncertainty",
+      "Predict and compare handling, ride, acceleration, braking, thermal, setup, racing-line, and lap-time behavior without hiding validity limits",
+      "Integrate telemetry-to-model validation and a requirements-traced GR86 digital twin with named failure and recovery paths"
+    ],
+    "exclusions": [
+      "No claim of licensed MATLAB parity unless MATLAB actually executes or retained source-runtime vectors are reviewed",
+      "No live vehicle control, actuation, autonomous driving, ECU calibration write, safety certification, or road/track operating authority",
+      "No private VIN, driver identity, precise real route, or unnecessary location trace in replay fixtures",
+      "No detailed general control, estimator, optimizer, real-time scheduler, embedded bus, or HIL theory duplicated from its owning course",
+      "No browser/accessibility, representative-learner, physical HIL/hardware, bench, vehicle, field, release, deployment, or production claim without separate evidence"
+    ],
+    "cross_course_handoffs": [
+      "Controls/GNC owns general feedback, observers, Kalman filtering, constrained control, and implementation-effect theory; Vehicle Dynamics applies bounded vehicle-specific instances",
+      "Statistics/Estimation owns general probability, experiment design, regression, uncertainty, and inference theory; Vehicle Dynamics owns vehicle-specific excitation, residuals, and validation",
+      "Numerical Optimization owns general nonlinear programming and solver theory; Vehicle Dynamics owns racing-line, setup, and lap constraints",
+      "Embedded RT/HIL and HWIL Systems own real-time scheduling, electrical buses, interfaces, physical HIL, and hardware qualification; Vehicle Dynamics consumes offline timestamped data only",
+      "Robotics/Autonomy owns general localization, mapping, and planning; Vehicle Dynamics owns closed-course motion reconstruction and performance modeling"
+    ]
+  },
+  "competencies": [
+    {
+      "id": "VD-MOTION-FRAMES",
+      "outcome": "Transform and differentiate vehicle motion with explicit body, wheel, path, and inertial frames, units, and signs.",
+      "prerequisite_ids": [],
+      "module_ids": [
+        "P01",
+        "P02",
+        "P03",
+        "P25",
+        "P55"
+      ],
+      "assessment_ids": [
+        "A-MOTION-FORCES",
+        "A-STATE"
+      ]
+    },
+    {
+      "id": "VD-FORCE-BALANCE",
+      "outcome": "Close longitudinal, lateral, vertical, and moment balances while separating request, road load, contact-patch delivery, and saturation.",
+      "prerequisite_ids": [
+        "VD-MOTION-FRAMES"
+      ],
+      "module_ids": [
+        "P02",
+        "P03",
+        "P04",
+        "P38",
+        "P48"
+      ],
+      "assessment_ids": [
+        "A-MOTION-FORCES"
+      ]
+    },
+    {
+      "id": "VD-TIRE-LONG",
+      "outcome": "Relate longitudinal slip, normal load, combined demand, transient response, and thermal state to tire force and uncertainty.",
+      "prerequisite_ids": [
+        "VD-FORCE-BALANCE"
+      ],
+      "module_ids": [
+        "P05",
+        "P26",
+        "P27",
+        "P29",
+        "P30",
+        "P31",
+        "P32",
+        "P33"
+      ],
+      "assessment_ids": [
+        "A-TIRE-LONG",
+        "A-CAP-DIGITAL"
+      ]
+    },
+    {
+      "id": "VD-TIRE-LAT",
+      "outcome": "Relate slip angle, camber, normal load, combined demand, transient response, and thermal state to lateral force and aligning behavior.",
+      "prerequisite_ids": [
+        "VD-FORCE-BALANCE"
+      ],
+      "module_ids": [
+        "P06",
+        "P26",
+        "P28",
+        "P29",
+        "P30",
+        "P31",
+        "P32",
+        "P33"
+      ],
+      "assessment_ids": [
+        "A-TIRE-LAT",
+        "A-CAP-DIGITAL"
+      ]
+    },
+    {
+      "id": "VD-HANDLING-LINEAR",
+      "outcome": "Derive and interpret kinematic and linear dynamic handling models, understeer gradient, characteristic speed, yaw, and sideslip response.",
+      "prerequisite_ids": [
+        "VD-TIRE-LAT",
+        "VD-MOTION-FRAMES"
+      ],
+      "module_ids": [
+        "P07",
+        "P08",
+        "P34",
+        "P35",
+        "P36"
+      ],
+      "assessment_ids": [
+        "A-HANDLING"
+      ]
+    },
+    {
+      "id": "VD-HANDLING-NONLINEAR",
+      "outcome": "Analyze load-transfer-coupled nonlinear limit handling, saturation, stability loss, and recovery without extending a linear model beyond its boundary.",
+      "prerequisite_ids": [
+        "VD-TIRE-LONG",
+        "VD-TIRE-LAT",
+        "VD-HANDLING-LINEAR"
+      ],
+      "module_ids": [
+        "P29",
+        "P37",
+        "P38"
+      ],
+      "assessment_ids": [
+        "A-HANDLING",
+        "A-CAP-DIGITAL"
+      ]
+    },
+    {
+      "id": "VD-RIDE-SUSPENSION",
+      "outcome": "Model ride, heave, pitch, roll, road inputs, damping, elastic and geometric load transfer, suspension kinematics, compliance, and anti geometry.",
+      "prerequisite_ids": [
+        "VD-FORCE-BALANCE"
+      ],
+      "module_ids": [
+        "P09",
+        "P10",
+        "P11",
+        "P12",
+        "P38",
+        "P39",
+        "P40",
+        "P41",
+        "P42",
+        "P43"
+      ],
+      "assessment_ids": [
+        "A-RIDE",
+        "A-PERFORMANCE"
+      ]
+    },
+    {
+      "id": "VD-POWERTRAIN",
+      "outcome": "Map engine output through inertia, gearing, launch, shift, and differential constraints to wheel force and corner-exit performance.",
+      "prerequisite_ids": [
+        "VD-TIRE-LONG",
+        "VD-FORCE-BALANCE"
+      ],
+      "module_ids": [
+        "P13",
+        "P14",
+        "P44",
+        "P45",
+        "P46",
+        "P47"
+      ],
+      "assessment_ids": [
+        "A-POWERTRAIN",
+        "A-CAP-DIGITAL"
+      ]
+    },
+    {
+      "id": "VD-BRAKES",
+      "outcome": "Allocate braking force with load transfer and simulate wheel slip, ABS behavior, stopping distance, energy, temperature, fade, and cooling.",
+      "prerequisite_ids": [
+        "VD-TIRE-LONG",
+        "VD-FORCE-BALANCE"
+      ],
+      "module_ids": [
+        "P15",
+        "P48",
+        "P49",
+        "P50"
+      ],
+      "assessment_ids": [
+        "A-BRAKES",
+        "A-CAP-DIGITAL"
+      ]
+    },
+    {
+      "id": "VD-AERO-ENERGY",
+      "outcome": "Couple drag, lift or downforce, aero balance, ride height, tire load sensitivity, work, and thermal or stint limits.",
+      "prerequisite_ids": [
+        "VD-TIRE-LONG",
+        "VD-TIRE-LAT",
+        "VD-RIDE-SUSPENSION"
+      ],
+      "module_ids": [
+        "P16",
+        "P31",
+        "P32",
+        "P50",
+        "P51",
+        "P52"
+      ],
+      "assessment_ids": [
+        "A-AERO",
+        "A-CAP-DIGITAL"
+      ]
+    },
+    {
+      "id": "VD-TELEMETRY-PROTOCOL",
+      "outcome": "Decode, replay, time-order, validate, and recover documented GR86 CAN frames and RaceChrono BLE notifications from provenance-bearing offline fixtures.",
+      "prerequisite_ids": [],
+      "module_ids": [
+        "P17",
+        "P53",
+        "P54",
+        "P60"
+      ],
+      "assessment_ids": [
+        "A-TELEMETRY",
+        "A-CAP-TELEMETRY"
+      ]
+    },
+    {
+      "id": "VD-STATE-RECONSTRUCTION",
+      "outcome": "Calibrate measured axes and reconstruct trajectory, velocity, yaw, sideslip, and vehicle state from multi-rate GNSS, IMU, wheel-speed, steering, and drivetrain signals.",
+      "prerequisite_ids": [
+        "VD-MOTION-FRAMES",
+        "VD-TELEMETRY-PROTOCOL",
+        "VD-HANDLING-LINEAR"
+      ],
+      "module_ids": [
+        "P18",
+        "P19",
+        "P25",
+        "P55",
+        "P56",
+        "P57"
+      ],
+      "assessment_ids": [
+        "A-STATE",
+        "A-CAP-TELEMETRY"
+      ]
+    },
+    {
+      "id": "VD-IDENTIFICATION-UNCERTAINTY",
+      "outcome": "Design train/validation identification, test excitation and identifiability, analyze residuals, quantify uncertainty, and recover from corrupt or incomplete data.",
+      "prerequisite_ids": [
+        "VD-STATE-RECONSTRUCTION"
+      ],
+      "module_ids": [
+        "P20",
+        "P33",
+        "P58",
+        "P59",
+        "P60",
+        "P66"
+      ],
+      "assessment_ids": [
+        "A-ID",
+        "A-CAP-TELEMETRY"
+      ]
+    },
+    {
+      "id": "VD-PERFORMANCE-OPTIMIZATION",
+      "outcome": "Build track and g-g-v constraints, optimize a racing line, simulate lap time, and compare setup changes with sensitivity and designed experiments.",
+      "prerequisite_ids": [
+        "VD-HANDLING-NONLINEAR",
+        "VD-POWERTRAIN",
+        "VD-BRAKES",
+        "VD-AERO-ENERGY"
+      ],
+      "module_ids": [
+        "P21",
+        "P22",
+        "P23",
+        "P61",
+        "P62",
+        "P63",
+        "P64",
+        "P65",
+        "P67"
+      ],
+      "assessment_ids": [
+        "A-PERFORMANCE",
+        "A-CAP-DIGITAL"
+      ]
+    },
+    {
+      "id": "VD-SYSTEM-INTEGRATION",
+      "outcome": "Calibrate, validate, fault, recover, and trace an integrated vehicle model and GR86 digital twin from telemetry through lap prediction.",
+      "prerequisite_ids": [
+        "VD-IDENTIFICATION-UNCERTAINTY",
+        "VD-PERFORMANCE-OPTIMIZATION"
+      ],
+      "module_ids": [
+        "P24",
+        "P52",
+        "P60",
+        "P66",
+        "P67"
+      ],
+      "assessment_ids": [
+        "A-CAP-TELEMETRY",
+        "A-CAP-DIGITAL"
+      ]
+    }
+  ],
+  "modules": [
+    {
+      "id": "P01",
+      "title": "Turn Steering and Speed into a Vehicle Path",
+      "competency_ids": [
+        "VD-MOTION-FRAMES"
+      ],
+      "depends_on": [],
+      "lesson_kind": "foundation"
+    },
+    {
+      "id": "P02",
+      "title": "Relate Acceleration to Tire Force",
+      "competency_ids": [
+        "VD-MOTION-FRAMES",
+        "VD-FORCE-BALANCE"
+      ],
+      "depends_on": [
+        "P01"
+      ],
+      "lesson_kind": "foundation"
+    },
+    {
+      "id": "P03",
+      "title": "See Longitudinal Weight Transfer",
+      "competency_ids": [
+        "VD-MOTION-FRAMES",
+        "VD-FORCE-BALANCE"
+      ],
+      "depends_on": [
+        "P02"
+      ],
+      "lesson_kind": "concept"
+    },
+    {
+      "id": "P04",
+      "title": "Use the Friction Circle",
+      "competency_ids": [
+        "VD-FORCE-BALANCE"
+      ],
+      "depends_on": [
+        "P03"
+      ],
+      "lesson_kind": "concept"
+    },
+    {
+      "id": "P05",
+      "title": "Build Slip-Ratio Intuition",
+      "competency_ids": [
+        "VD-TIRE-LONG"
+      ],
+      "depends_on": [
+        "P04"
+      ],
+      "lesson_kind": "concept"
+    },
+    {
+      "id": "P06",
+      "title": "Build Slip-Angle Intuition",
+      "competency_ids": [
+        "VD-TIRE-LAT"
+      ],
+      "depends_on": [
+        "P05"
+      ],
+      "lesson_kind": "concept"
+    },
+    {
+      "id": "P07",
+      "title": "Use the Bicycle Model",
+      "competency_ids": [
+        "VD-HANDLING-LINEAR"
+      ],
+      "depends_on": [
+        "P06"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P08",
+      "title": "Separate Understeer from Oversteer",
+      "competency_ids": [
+        "VD-HANDLING-LINEAR"
+      ],
+      "depends_on": [
+        "P07"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P09",
+      "title": "Choose Spring Rate and Ride Frequency",
+      "competency_ids": [
+        "VD-RIDE-SUSPENSION"
+      ],
+      "depends_on": [
+        "P08"
+      ],
+      "lesson_kind": "concept"
+    },
+    {
+      "id": "P10",
+      "title": "See Damping Change Transient Motion",
+      "competency_ids": [
+        "VD-RIDE-SUSPENSION"
+      ],
+      "depends_on": [
+        "P09"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P11",
+      "title": "Distribute Roll Stiffness",
+      "competency_ids": [
+        "VD-RIDE-SUSPENSION"
+      ],
+      "depends_on": [
+        "P10"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P12",
+      "title": "Explore Camber and Toe Geometry",
+      "competency_ids": [
+        "VD-RIDE-SUSPENSION"
+      ],
+      "depends_on": [
+        "P11"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P13",
+      "title": "Map Engine Torque through Gearing",
+      "competency_ids": [
+        "VD-POWERTRAIN"
+      ],
+      "depends_on": [
+        "P12"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P14",
+      "title": "Choose Shift Points",
+      "competency_ids": [
+        "VD-POWERTRAIN"
+      ],
+      "depends_on": [
+        "P13"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P15",
+      "title": "Model Braking Distance and Heat",
+      "competency_ids": [
+        "VD-BRAKES"
+      ],
+      "depends_on": [
+        "P14"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P16",
+      "title": "Balance Drag and Downforce",
+      "competency_ids": [
+        "VD-AERO-ENERGY"
+      ],
+      "depends_on": [
+        "P15"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P17",
+      "title": "Decode and Plot CAN Signals",
+      "competency_ids": [
+        "VD-TELEMETRY-PROTOCOL"
+      ],
+      "depends_on": [
+        "P16"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P18",
+      "title": "Fuse GPS and IMU Motion",
+      "competency_ids": [
+        "VD-STATE-RECONSTRUCTION"
+      ],
+      "depends_on": [
+        "P17"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P19",
+      "title": "Estimate Vehicle State",
+      "competency_ids": [
+        "VD-STATE-RECONSTRUCTION"
+      ],
+      "depends_on": [
+        "P18"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P20",
+      "title": "Identify Parameters from a Real Drive",
+      "competency_ids": [
+        "VD-IDENTIFICATION-UNCERTAINTY"
+      ],
+      "depends_on": [
+        "P19"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P21",
+      "title": "Optimize a Racing Line",
+      "competency_ids": [
+        "VD-PERFORMANCE-OPTIMIZATION"
+      ],
+      "depends_on": [
+        "P20"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P22",
+      "title": "Build a Lap-Time Simulator",
+      "competency_ids": [
+        "VD-PERFORMANCE-OPTIMIZATION"
+      ],
+      "depends_on": [
+        "P21"
+      ],
+      "lesson_kind": "integration"
+    },
+    {
+      "id": "P23",
+      "title": "Compare Setup Changes Quantitatively",
+      "competency_ids": [
+        "VD-PERFORMANCE-OPTIMIZATION"
+      ],
+      "depends_on": [
+        "P22"
+      ],
+      "lesson_kind": "integration"
+    },
+    {
+      "id": "P24",
+      "title": "Construct a GR86 Digital Twin",
+      "competency_ids": [
+        "VD-SYSTEM-INTEGRATION"
+      ],
+      "depends_on": [
+        "P23"
+      ],
+      "lesson_kind": "integration"
+    },
+    {
+      "id": "P25",
+      "title": "Measure Motion in Body, Path, and Wheel Frames",
+      "competency_ids": [
+        "VD-MOTION-FRAMES",
+        "VD-STATE-RECONSTRUCTION"
+      ],
+      "depends_on": [
+        "P01",
+        "P18"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P26",
+      "title": "Quantify Tire Load Sensitivity",
+      "competency_ids": [
+        "VD-TIRE-LONG",
+        "VD-TIRE-LAT"
+      ],
+      "depends_on": [
+        "P03",
+        "P04"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P27",
+      "title": "Fit Longitudinal Force versus Slip Ratio",
+      "competency_ids": [
+        "VD-TIRE-LONG"
+      ],
+      "depends_on": [
+        "P05",
+        "P26"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P28",
+      "title": "Fit Lateral Force versus Slip Angle and Camber",
+      "competency_ids": [
+        "VD-TIRE-LAT"
+      ],
+      "depends_on": [
+        "P06",
+        "P26"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P29",
+      "title": "Combine Longitudinal and Lateral Slip",
+      "competency_ids": [
+        "VD-TIRE-LONG",
+        "VD-TIRE-LAT",
+        "VD-HANDLING-NONLINEAR"
+      ],
+      "depends_on": [
+        "P04",
+        "P27",
+        "P28"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P30",
+      "title": "Model Tire Relaxation and Transient Force",
+      "competency_ids": [
+        "VD-TIRE-LONG",
+        "VD-TIRE-LAT"
+      ],
+      "depends_on": [
+        "P27",
+        "P28"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P31",
+      "title": "Track Tire Temperature, Pressure, and Grip",
+      "competency_ids": [
+        "VD-TIRE-LONG",
+        "VD-TIRE-LAT",
+        "VD-AERO-ENERGY"
+      ],
+      "depends_on": [
+        "P26",
+        "P27",
+        "P28"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P32",
+      "title": "Accumulate Tire Work and Thermal Energy",
+      "competency_ids": [
+        "VD-TIRE-LONG",
+        "VD-TIRE-LAT",
+        "VD-AERO-ENERGY"
+      ],
+      "depends_on": [
+        "P29",
+        "P31"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P33",
+      "title": "Validate a Tire Model with Uncertainty",
+      "competency_ids": [
+        "VD-TIRE-LONG",
+        "VD-TIRE-LAT",
+        "VD-IDENTIFICATION-UNCERTAINTY"
+      ],
+      "depends_on": [
+        "P20",
+        "P29",
+        "P30",
+        "P32"
+      ],
+      "lesson_kind": "integration"
+    },
+    {
+      "id": "P34",
+      "title": "Derive the Dynamic Bicycle State Model",
+      "competency_ids": [
+        "VD-HANDLING-LINEAR"
+      ],
+      "depends_on": [
+        "P07",
+        "P28"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P35",
+      "title": "Analyze Yaw and Sideslip Frequency Response",
+      "competency_ids": [
+        "VD-HANDLING-LINEAR"
+      ],
+      "depends_on": [
+        "P34"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P36",
+      "title": "Measure Understeer Gradient and Characteristic Speed",
+      "competency_ids": [
+        "VD-HANDLING-LINEAR"
+      ],
+      "depends_on": [
+        "P08",
+        "P34"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P37",
+      "title": "Test Nonlinear Limit Handling and Stability",
+      "competency_ids": [
+        "VD-HANDLING-NONLINEAR"
+      ],
+      "depends_on": [
+        "P29",
+        "P34",
+        "P36"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P38",
+      "title": "Partition Lateral Load Transfer",
+      "competency_ids": [
+        "VD-FORCE-BALANCE",
+        "VD-HANDLING-NONLINEAR",
+        "VD-RIDE-SUSPENSION"
+      ],
+      "depends_on": [
+        "P03",
+        "P11",
+        "P26"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P39",
+      "title": "Couple Heave, Pitch, and Roll Modes",
+      "competency_ids": [
+        "VD-RIDE-SUSPENSION"
+      ],
+      "depends_on": [
+        "P09",
+        "P10",
+        "P11"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P40",
+      "title": "Predict Road-Input Ride Transmissibility",
+      "competency_ids": [
+        "VD-RIDE-SUSPENSION"
+      ],
+      "depends_on": [
+        "P09",
+        "P10"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P41",
+      "title": "Shape Digressive Damper Force-Velocity Response",
+      "competency_ids": [
+        "VD-RIDE-SUSPENSION"
+      ],
+      "depends_on": [
+        "P10",
+        "P40"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P42",
+      "title": "Trace Suspension Kinematics and Compliance",
+      "competency_ids": [
+        "VD-RIDE-SUSPENSION"
+      ],
+      "depends_on": [
+        "P12",
+        "P38"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P43",
+      "title": "Evaluate Anti-Dive and Anti-Squat Geometry",
+      "competency_ids": [
+        "VD-RIDE-SUSPENSION"
+      ],
+      "depends_on": [
+        "P03",
+        "P12",
+        "P42"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P44",
+      "title": "Convert Engine Torque into a Traction Envelope",
+      "competency_ids": [
+        "VD-POWERTRAIN"
+      ],
+      "depends_on": [
+        "P13",
+        "P27"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P45",
+      "title": "Model Rotating Inertia and Launch Dynamics",
+      "competency_ids": [
+        "VD-POWERTRAIN"
+      ],
+      "depends_on": [
+        "P13",
+        "P27",
+        "P44"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P46",
+      "title": "Compare Open and Limited-Slip Differentials",
+      "competency_ids": [
+        "VD-POWERTRAIN"
+      ],
+      "depends_on": [
+        "P29",
+        "P44"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P47",
+      "title": "Optimize Gear Ratios and Shift Strategy",
+      "competency_ids": [
+        "VD-POWERTRAIN"
+      ],
+      "depends_on": [
+        "P14",
+        "P44",
+        "P45"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P48",
+      "title": "Allocate Brake Bias with Dynamic Load Transfer",
+      "competency_ids": [
+        "VD-FORCE-BALANCE",
+        "VD-BRAKES"
+      ],
+      "depends_on": [
+        "P03",
+        "P15"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P49",
+      "title": "Simulate ABS Slip Control and Wheel Lockup",
+      "competency_ids": [
+        "VD-BRAKES"
+      ],
+      "depends_on": [
+        "P05",
+        "P15",
+        "P48"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P50",
+      "title": "Predict Brake Temperature, Fade, and Cooling",
+      "competency_ids": [
+        "VD-BRAKES",
+        "VD-AERO-ENERGY"
+      ],
+      "depends_on": [
+        "P15",
+        "P48"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P51",
+      "title": "Map Aero Balance and Ride-Height Sensitivity",
+      "competency_ids": [
+        "VD-AERO-ENERGY"
+      ],
+      "depends_on": [
+        "P16",
+        "P39"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P52",
+      "title": "Couple Downforce, Drag, Tires, and Stint Limits",
+      "competency_ids": [
+        "VD-AERO-ENERGY",
+        "VD-SYSTEM-INTEGRATION"
+      ],
+      "depends_on": [
+        "P16",
+        "P29",
+        "P31",
+        "P50",
+        "P51"
+      ],
+      "lesson_kind": "integration"
+    },
+    {
+      "id": "P53",
+      "title": "Replay and Decode GR86 CAN/BLE Telemetry",
+      "competency_ids": [
+        "VD-TELEMETRY-PROTOCOL"
+      ],
+      "depends_on": [
+        "P17"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P54",
+      "title": "Align Clocks, Rates, and Dropped Packets",
+      "competency_ids": [
+        "VD-TELEMETRY-PROTOCOL"
+      ],
+      "depends_on": [
+        "P17",
+        "P53"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P55",
+      "title": "Calibrate Sensors and Transform Measured Axes",
+      "competency_ids": [
+        "VD-MOTION-FRAMES",
+        "VD-STATE-RECONSTRUCTION"
+      ],
+      "depends_on": [
+        "P18",
+        "P25",
+        "P54"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P56",
+      "title": "Reconstruct a Driven Trajectory",
+      "competency_ids": [
+        "VD-STATE-RECONSTRUCTION"
+      ],
+      "depends_on": [
+        "P18",
+        "P55"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P57",
+      "title": "Estimate Sideslip and Vehicle State",
+      "competency_ids": [
+        "VD-STATE-RECONSTRUCTION"
+      ],
+      "depends_on": [
+        "P19",
+        "P34",
+        "P55",
+        "P56"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P58",
+      "title": "Identify Vehicle Parameters with Validation Splits",
+      "competency_ids": [
+        "VD-IDENTIFICATION-UNCERTAINTY"
+      ],
+      "depends_on": [
+        "P20",
+        "P57"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P59",
+      "title": "Quantify Identifiability, Residuals, and Uncertainty",
+      "competency_ids": [
+        "VD-IDENTIFICATION-UNCERTAINTY"
+      ],
+      "depends_on": [
+        "P20",
+        "P33",
+        "P58"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P60",
+      "title": "Diagnose and Recover Corrupt Telemetry",
+      "competency_ids": [
+        "VD-TELEMETRY-PROTOCOL",
+        "VD-IDENTIFICATION-UNCERTAINTY",
+        "VD-SYSTEM-INTEGRATION"
+      ],
+      "depends_on": [
+        "P53",
+        "P54",
+        "P59"
+      ],
+      "lesson_kind": "integration"
+    },
+    {
+      "id": "P61",
+      "title": "Build Track Geometry and Curvature",
+      "competency_ids": [
+        "VD-PERFORMANCE-OPTIMIZATION"
+      ],
+      "depends_on": [
+        "P21",
+        "P56"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P62",
+      "title": "Construct a Speed-Dependent G-G-V Envelope",
+      "competency_ids": [
+        "VD-PERFORMANCE-OPTIMIZATION"
+      ],
+      "depends_on": [
+        "P29",
+        "P44",
+        "P48",
+        "P51"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P63",
+      "title": "Optimize a Racing Line under Coupled Constraints",
+      "competency_ids": [
+        "VD-PERFORMANCE-OPTIMIZATION"
+      ],
+      "depends_on": [
+        "P21",
+        "P61",
+        "P62"
+      ],
+      "lesson_kind": "laboratory"
+    },
+    {
+      "id": "P64",
+      "title": "Run a Forward-Backward Lap-Time Simulation",
+      "competency_ids": [
+        "VD-PERFORMANCE-OPTIMIZATION"
+      ],
+      "depends_on": [
+        "P22",
+        "P47",
+        "P50",
+        "P52",
+        "P62",
+        "P63"
+      ],
+      "lesson_kind": "integration"
+    },
+    {
+      "id": "P65",
+      "title": "Compare Setups with Designed Experiments",
+      "competency_ids": [
+        "VD-PERFORMANCE-OPTIMIZATION"
+      ],
+      "depends_on": [
+        "P23",
+        "P33",
+        "P42",
+        "P47",
+        "P52",
+        "P64"
+      ],
+      "lesson_kind": "integration"
+    },
+    {
+      "id": "P66",
+      "title": "Capstone: Validate a Vehicle Model from Telemetry",
+      "competency_ids": [
+        "VD-IDENTIFICATION-UNCERTAINTY",
+        "VD-SYSTEM-INTEGRATION"
+      ],
+      "depends_on": [
+        "P24",
+        "P53",
+        "P54",
+        "P55",
+        "P56",
+        "P57",
+        "P58",
+        "P59",
+        "P60"
+      ],
+      "lesson_kind": "capstone"
+    },
+    {
+      "id": "P67",
+      "title": "Capstone: Calibrate and Predict with a GR86 Digital Twin",
+      "competency_ids": [
+        "VD-PERFORMANCE-OPTIMIZATION",
+        "VD-SYSTEM-INTEGRATION"
+      ],
+      "depends_on": [
+        "P24",
+        "P52",
+        "P61",
+        "P62",
+        "P63",
+        "P64",
+        "P65",
+        "P66"
+      ],
+      "lesson_kind": "capstone"
+    }
+  ],
+  "assessments": [
+    {
+      "id": "A-MOTION-FORCES",
+      "type": "formative",
+      "competency_ids": [
+        "VD-MOTION-FRAMES",
+        "VD-FORCE-BALANCE"
+      ],
+      "evidence": "Close independent frame, unit, load-transfer, and force/moment balance checks including saturation and zero-input limits."
+    },
+    {
+      "id": "A-TIRE-LONG",
+      "type": "cumulative",
+      "competency_ids": [
+        "VD-TIRE-LONG"
+      ],
+      "evidence": "Fit and cross-check a longitudinal tire model over load, slip, temperature, and transient sweeps with held-out residuals."
+    },
+    {
+      "id": "A-TIRE-LAT",
+      "type": "cumulative",
+      "competency_ids": [
+        "VD-TIRE-LAT"
+      ],
+      "evidence": "Fit and cross-check a lateral/combined-slip tire model over slip angle, camber, load, and relaxation sweeps."
+    },
+    {
+      "id": "A-HANDLING",
+      "type": "cumulative",
+      "competency_ids": [
+        "VD-HANDLING-LINEAR",
+        "VD-HANDLING-NONLINEAR"
+      ],
+      "evidence": "Predict steady and transient yaw/sideslip behavior, locate linear-model limits, and recover a stable nonlinear case."
+    },
+    {
+      "id": "A-RIDE",
+      "type": "cumulative",
+      "competency_ids": [
+        "VD-RIDE-SUSPENSION"
+      ],
+      "evidence": "Compare modal, road-input, damping, roll-transfer, kinematic, compliance, and anti-geometry consequences with physical axes and limits."
+    },
+    {
+      "id": "A-POWERTRAIN",
+      "type": "cumulative",
+      "competency_ids": [
+        "VD-POWERTRAIN"
+      ],
+      "evidence": "Reconcile torque, inertia, gearing, traction, differential, and shift constraints over a bounded acceleration scenario."
+    },
+    {
+      "id": "A-BRAKES",
+      "type": "cumulative",
+      "competency_ids": [
+        "VD-BRAKES"
+      ],
+      "evidence": "Balance axles, simulate slip control, and close stopping-energy and brake-temperature budgets including fade recovery."
+    },
+    {
+      "id": "A-AERO",
+      "type": "cumulative",
+      "competency_ids": [
+        "VD-AERO-ENERGY"
+      ],
+      "evidence": "Couple drag, balance, ride height, tire load sensitivity, and thermal limits without double-counting available grip."
+    },
+    {
+      "id": "A-TELEMETRY",
+      "type": "cumulative",
+      "competency_ids": [
+        "VD-TELEMETRY-PROTOCOL"
+      ],
+      "evidence": "Replay exact synthetic GR86 CAN and BLE fixtures, verify packet/decode identity, detect ordering/dropout faults, and recover the canonical signal table."
+    },
+    {
+      "id": "A-STATE",
+      "type": "cumulative",
+      "competency_ids": [
+        "VD-MOTION-FRAMES",
+        "VD-STATE-RECONSTRUCTION"
+      ],
+      "evidence": "Reconstruct a driven trajectory and state with calibration, frame, timing, and independent kinematic residual checks."
+    },
+    {
+      "id": "A-ID",
+      "type": "cumulative",
+      "competency_ids": [
+        "VD-IDENTIFICATION-UNCERTAINTY"
+      ],
+      "evidence": "Use separated estimation and validation windows, report identifiability and uncertainty, and reject a misleading fit."
+    },
+    {
+      "id": "A-PERFORMANCE",
+      "type": "cumulative",
+      "competency_ids": [
+        "VD-RIDE-SUSPENSION",
+        "VD-PERFORMANCE-OPTIMIZATION"
+      ],
+      "evidence": "Construct track and g-g-v constraints, close a forward/backward lap simulation, and compare setup changes with a designed experiment."
+    },
+    {
+      "id": "A-CAP-TELEMETRY",
+      "type": "capstone",
+      "competency_ids": [
+        "VD-TELEMETRY-PROTOCOL",
+        "VD-STATE-RECONSTRUCTION",
+        "VD-IDENTIFICATION-UNCERTAINTY",
+        "VD-SYSTEM-INTEGRATION"
+      ],
+      "evidence": "Trace requirements from replay integrity through state reconstruction, held-out model validation, fault diagnosis, and recovery in P66."
+    },
+    {
+      "id": "A-CAP-DIGITAL",
+      "type": "capstone",
+      "competency_ids": [
+        "VD-TIRE-LONG",
+        "VD-TIRE-LAT",
+        "VD-HANDLING-NONLINEAR",
+        "VD-POWERTRAIN",
+        "VD-BRAKES",
+        "VD-AERO-ENERGY",
+        "VD-PERFORMANCE-OPTIMIZATION",
+        "VD-SYSTEM-INTEGRATION"
+      ],
+      "evidence": "Trace requirements from calibrated subsystems through coupled lap prediction, uncertainty, setup comparison, a cumulative failure, and exact recovery in P67."
+    }
+  ],
+  "capstones": [
+    {
+      "id": "CAP-TELEMETRY-VALIDATION",
+      "module_ids": [
+        "P66"
+      ],
+      "competency_ids": [
+        "VD-MOTION-FRAMES",
+        "VD-TELEMETRY-PROTOCOL",
+        "VD-STATE-RECONSTRUCTION",
+        "VD-IDENTIFICATION-UNCERTAINTY",
+        "VD-SYSTEM-INTEGRATION"
+      ],
+      "integration_claim": "P66 replays provenance-bearing GR86 data, aligns and calibrates signals, reconstructs state, identifies parameters on one window, validates on another, diagnoses a cumulative data/model fault, and recovers the requirement set."
+    },
+    {
+      "id": "CAP-GR86-DIGITAL-TWIN",
+      "module_ids": [
+        "P67"
+      ],
+      "competency_ids": [
+        "VD-TIRE-LONG",
+        "VD-TIRE-LAT",
+        "VD-HANDLING-NONLINEAR",
+        "VD-RIDE-SUSPENSION",
+        "VD-POWERTRAIN",
+        "VD-BRAKES",
+        "VD-AERO-ENERGY",
+        "VD-PERFORMANCE-OPTIMIZATION",
+        "VD-SYSTEM-INTEGRATION"
+      ],
+      "integration_claim": "P67 couples calibrated tires, handling, chassis, propulsion, brakes, aero, track, line, and lap constraints; propagates uncertainty; compares a setup; injects an integrated failure; and restores all traced software requirements."
+    }
+  ],
+  "evidence_plan": [
+    {
+      "claim_id": "A-MOTION-FORCES",
+      "origin": "closed_form",
+      "independent": true,
+      "method": "Independent Newton-Euler and coordinate-transform calculations check signs, units, limiting cases, and force/moment residuals.",
+      "tolerance": "Absolute and relative tolerances are named per physical quantity.",
+      "imports_production_entrypoint": false,
+      "derived_from_production_output": false,
+      "perturbs_production_output": false
+    },
+    {
+      "claim_id": "A-TIRE-LONG",
+      "origin": "alternative_algorithm",
+      "independent": true,
+      "method": "A separately formulated brush/empirical calculation checks force-slip trends, load sensitivity, peak location, and transients without importing production code.",
+      "tolerance": "Force, slip, time-constant, and energy tolerances are retained per scenario.",
+      "imports_production_entrypoint": false,
+      "derived_from_production_output": false,
+      "perturbs_production_output": false
+    },
+    {
+      "claim_id": "A-TIRE-LAT",
+      "origin": "alternative_algorithm",
+      "independent": true,
+      "method": "A separately formulated lateral/combined-slip calculation checks cornering stiffness, saturation, camber contribution, and relaxation behavior.",
+      "tolerance": "Force, moment, angle, and transient tolerances are retained per scenario.",
+      "imports_production_entrypoint": false,
+      "derived_from_production_output": false,
+      "perturbs_production_output": false
+    },
+    {
+      "claim_id": "A-HANDLING",
+      "origin": "closed_form",
+      "independent": true,
+      "method": "Steady-state gains, eigenvalues, and independently integrated state equations check linear and nonlinear handling cases.",
+      "tolerance": "State, gain, pole, and stability tolerances are retained per case.",
+      "imports_production_entrypoint": false,
+      "derived_from_production_output": false,
+      "perturbs_production_output": false
+    },
+    {
+      "claim_id": "A-RIDE",
+      "origin": "closed_form",
+      "independent": true,
+      "method": "Modal frequencies, damping ratios, transmissibility limits, load-transfer sums, and geometry invariants are checked independently.",
+      "tolerance": "Frequency, displacement, force, and ratio tolerances are retained per case.",
+      "imports_production_entrypoint": false,
+      "derived_from_production_output": false,
+      "perturbs_production_output": false
+    },
+    {
+      "claim_id": "A-POWERTRAIN",
+      "origin": "invariant",
+      "independent": true,
+      "method": "Power, torque, energy, speed-continuity, and axle-force identities independently constrain launch, gearing, shift, and differential results.",
+      "tolerance": "Torque, force, speed, energy, and event-time tolerances are retained per case.",
+      "imports_production_entrypoint": false,
+      "derived_from_production_output": false,
+      "perturbs_production_output": false
+    },
+    {
+      "claim_id": "A-BRAKES",
+      "origin": "separately_formulated_numerical",
+      "independent": true,
+      "method": "An independently integrated wheel/vehicle/thermal model checks brake allocation, slip control, stopping, heat, fade, and recovery.",
+      "tolerance": "Distance, slip, pressure, energy, and temperature tolerances are retained per case.",
+      "imports_production_entrypoint": false,
+      "derived_from_production_output": false,
+      "perturbs_production_output": false
+    },
+    {
+      "claim_id": "A-AERO",
+      "origin": "closed_form",
+      "independent": true,
+      "method": "Independent dynamic-pressure, force, moment-balance, work, and thermal-budget calculations check aero and stint coupling.",
+      "tolerance": "Force, balance, power, energy, and temperature tolerances are retained per case.",
+      "imports_production_entrypoint": false,
+      "derived_from_production_output": false,
+      "perturbs_production_output": false
+    },
+    {
+      "claim_id": "A-TELEMETRY",
+      "origin": "invariant",
+      "independent": true,
+      "method": "Exact byte-level CAN-to-BLE packet identity, documented scale equations, monotonic source-time replay, digest checks, and canonical recovery validate the synthetic protocol fixtures.",
+      "tolerance": "Packet bytes and digests are exact; decoded signal tolerances follow documented resolution.",
+      "imports_production_entrypoint": false,
+      "derived_from_production_output": false,
+      "perturbs_production_output": false
+    },
+    {
+      "claim_id": "A-STATE",
+      "origin": "alternative_algorithm",
+      "independent": true,
+      "method": "Independent kinematic integration and observation residuals check calibration, transforms, trajectory, sideslip, and state estimates.",
+      "tolerance": "Position, velocity, angle, rate, and covariance tolerances are retained per case.",
+      "imports_production_entrypoint": false,
+      "derived_from_production_output": false,
+      "perturbs_production_output": false
+    },
+    {
+      "claim_id": "A-ID",
+      "origin": "separately_formulated_numerical",
+      "independent": true,
+      "method": "A separately formulated batch solve and held-out residual calculation checks parameters, excitation, identifiability, uncertainty, and corrupt-data recovery.",
+      "tolerance": "Parameter, singular-value, interval, and validation-residual tolerances are retained per case.",
+      "imports_production_entrypoint": false,
+      "derived_from_production_output": false,
+      "perturbs_production_output": false
+    },
+    {
+      "claim_id": "A-PERFORMANCE",
+      "origin": "alternative_algorithm",
+      "independent": true,
+      "method": "Independent curvature, envelope, forward/backward speed, integration, and finite-difference sensitivity checks constrain lap and setup results.",
+      "tolerance": "Geometry, speed, time, constraint, and sensitivity tolerances are retained per case.",
+      "imports_production_entrypoint": false,
+      "derived_from_production_output": false,
+      "perturbs_production_output": false
+    },
+    {
+      "claim_id": "A-CAP-TELEMETRY",
+      "origin": "invariant",
+      "independent": true,
+      "method": "Signed requirement traces and independently recomputed replay, state, identification, validation, fault, and recovery criteria close P66 cumulatively.",
+      "tolerance": "Every requirement passes its named physical or exact-byte tolerance.",
+      "imports_production_entrypoint": false,
+      "derived_from_production_output": false,
+      "perturbs_production_output": false
+    },
+    {
+      "claim_id": "A-CAP-DIGITAL",
+      "origin": "alternative_algorithm",
+      "independent": true,
+      "method": "A separate bounded quasi-steady lap calculation and requirement audit check calibrated subsystem coupling, uncertainty, failure, and recovery in P67.",
+      "tolerance": "Every requirement passes its named force, state, time, energy, or uncertainty tolerance.",
+      "imports_production_entrypoint": false,
+      "derived_from_production_output": false,
+      "perturbs_production_output": false
+    }
+  ],
+  "batch_plan": [
+    {
+      "id": "ELP-VEHICLE-P01-P08",
+      "module_ids": [
+        "P01",
+        "P02",
+        "P03",
+        "P04",
+        "P05",
+        "P06",
+        "P07",
+        "P08"
+      ],
+      "coherence": "Convert and deepen the source-bound motion/force and tire/handling foundations as one prerequisite-closed learner arc."
+    },
+    {
+      "id": "ELP-VEHICLE-P09-P16",
+      "module_ids": [
+        "P09",
+        "P10",
+        "P11",
+        "P12",
+        "P13",
+        "P14",
+        "P15",
+        "P16"
+      ],
+      "coherence": "Convert and deepen the source-bound suspension/chassis, powertrain, braking, and aero foundations."
+    },
+    {
+      "id": "ELP-VEHICLE-P17-P24",
+      "module_ids": [
+        "P17",
+        "P18",
+        "P19",
+        "P20",
+        "P21",
+        "P22",
+        "P23",
+        "P24"
+      ],
+      "coherence": "Convert and deepen source-bound telemetry, estimation, identification, performance, and baseline digital-twin integration."
+    },
+    {
+      "id": "ELP-VEHICLE-TIRES-P25-P33",
+      "module_ids": [
+        "P25",
+        "P26",
+        "P27",
+        "P28",
+        "P29",
+        "P30",
+        "P31",
+        "P32",
+        "P33"
+      ],
+      "coherence": "Close advanced tire frames, load sensitivity, empirical force laws, combined slip, transients, thermal state, energy, and uncertainty."
+    },
+    {
+      "id": "ELP-VEHICLE-CHASSIS-P34-P43",
+      "module_ids": [
+        "P34",
+        "P35",
+        "P36",
+        "P37",
+        "P38",
+        "P39",
+        "P40",
+        "P41",
+        "P42",
+        "P43"
+      ],
+      "coherence": "Close dynamic handling, nonlinear stability, coupled ride/attitude modes, road input, damping, suspension kinematics/compliance, and anti geometry."
+    },
+    {
+      "id": "ELP-VEHICLE-PROPULSION-P44-P52",
+      "module_ids": [
+        "P44",
+        "P45",
+        "P46",
+        "P47",
+        "P48",
+        "P49",
+        "P50",
+        "P51",
+        "P52"
+      ],
+      "coherence": "Close traction, launch, differential, gearing, brake allocation/control/thermal behavior, aero balance, and stint coupling."
+    },
+    {
+      "id": "ELP-VEHICLE-TELEMETRY-P53-P60",
+      "module_ids": [
+        "P53",
+        "P54",
+        "P55",
+        "P56",
+        "P57",
+        "P58",
+        "P59",
+        "P60"
+      ],
+      "coherence": "Close provenance-bearing GR86 replay, time alignment, calibration, state reconstruction, identification, uncertainty, and fault recovery."
+    },
+    {
+      "id": "ELP-VEHICLE-PERFORMANCE-P61-P67",
+      "module_ids": [
+        "P61",
+        "P62",
+        "P63",
+        "P64",
+        "P65",
+        "P66",
+        "P67"
+      ],
+      "coherence": "Close track/envelope/line/lap/setup analysis and two requirements-traced cumulative software capstones."
+    }
+  ],
+  "count_derivation": {
+    "planned_module_count": 67,
+    "source": "len(modules)",
+    "rationale": "The 67 modules retain all 24 source identities and add 43 items only where the reviewed competency graph needs distinct governing models, prerequisite transitions, data/replay work, integration, or cumulative assessment. The total is the length of that mapped set, not a portfolio quota."
+  }
+}

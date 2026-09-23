@@ -273,7 +273,7 @@ def test_gnc_records_are_schema_valid_bounded_and_fidelity_linked() -> None:
 def test_gnc_final_catalog_shape() -> None:
     catalog = CourseCatalog([ROOT / "courses"])
     courses = catalog.summaries()
-    assert len(courses) == 5
+    assert len(courses) == 6
     modules = sum(len(course.modules) for course in courses)
     interactive = sum(module.interactive for course in courses for module in course.modules)
     robotics_expansion = _yaml(ROOT / "courses/robotics-autonomy/expansion-map.yaml")

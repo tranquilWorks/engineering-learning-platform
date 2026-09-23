@@ -175,9 +175,9 @@ defined in `docs/COURSE_CALIBER.md` and projected in
 The audit itself created no child implementation. Controls/GNC fidelity (#438)
 is completed by the separately authorized remediation below. Controls/GNC
 expansion (#439), Robotics expansion (#440), and DSP/Radar fidelity (#441)
-remain separately owned work. Vehicle Dynamics stays queued and unimplemented
-until its reviewed map, replayable GR86 CAN/BLE fixtures, and a separate
-at-most-ten-lesson batch are ready.
+remain separately owned work. Vehicle Dynamics preparation is now separately
+authorized under issue #467; lesson work still requires its own coherent
+at-most-ten-lesson batch.
 
 ## ELP-GNC-FIDELITY — Controls/GNC P01-P24 remediation
 
@@ -204,6 +204,24 @@ release, deployment, credentials/settings, or production use.
 Issue #439 derives a 68-module course from a reviewed competency and prerequisite map rather than a fixed lesson quota. The 44 native Python additions are divided into coherent batches of 9, 9, 9, 5, 6, 3, and 3 lessons. P25-P68 now implement the complete mapped sequence, including three requirements-traced cumulative capstones, with independent five-scenario evidence.
 
 The final three lessons are cumulative capstones: identification/control/estimation under uncertainty; navigation/guidance of a constrained survey; and a requirements-traced faulted software-HIL GNC loop. Every issue-439 batch and capstone is implemented and locally verified. Native additions do not claim MATLAB/source equivalence, and the entire lane remains software-only.
+
+## ELP-VEHICLE-PREP-00 — Vehicle Dynamics governed preparation
+
+**Status:** Prepared; no Vehicle Dynamics lesson is implemented.
+
+**Depends on:** `ELP-ROB-SYSTEMS-CAPSTONES-P66-P69`
+
+Issue #467 derives 67 modules from the reviewed competency graph and partitions
+them into eight coherent batches of at most ten lessons. This prep batch advances
+only the read-only source gitlink, installs the exact 24-item source and coverage
+ledgers, mirrors the reviewed map, and adds deterministic synthetic GR86
+CAN/RaceChrono BLE protocol fixtures with independent decode and fault checks.
+
+The prep catalog has six courses, 223 modules, and 223 interactive modules;
+Vehicle Dynamics contributes zero modules. The fixture is not measured vehicle
+data and does not validate firmware, radio, bench, vehicle, track, or physical
+HIL behavior. `ELP-VEHICLE-P01-P08` requires a separate Portfolio Control
+authorization against the exact merged prep target commit and tree.
 
 ## B020 — Course ingestion and migration tooling
 

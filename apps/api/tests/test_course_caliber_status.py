@@ -96,7 +96,7 @@ def test_status_has_closed_top_level_shape_and_exact_standard_identity() -> None
         "id": "ELP-COURSE-CALIBER-1",
         "effective_date": "2026-09-21",
         "control_repository": "tranquilWorks/portfolio-control",
-            "control_revision": "b9603eca1e25a996e8e2e044738be170a725e386",
+        "control_revision": "2fd02a1b72536ee6f4ff59357a74be7dc99c72c8",
         "audit_baseline": "1506591946ec8e96fe3201e8893b8ad851a1685a",
     }
     assert status["count_semantics"] == (
@@ -185,16 +185,18 @@ def test_follow_up_ownership_is_exact_and_remains_unimplemented_here() -> None:
     )
 
 
-def test_vehicle_dynamics_hold_is_explicit_and_complete() -> None:
+def test_vehicle_dynamics_prep_hold_is_explicit_and_complete() -> None:
     holds = _status()["holds"]
     assert len(holds) == 1
     hold = holds[0]
     assert hold["course_id"] == "vehicle-dynamics"
-    assert hold["implementation_status"] == "not_implemented"
-    assert hold["authorization_status"] == "blocked"
+    assert hold["implementation_status"] == "preparation_complete"
+    assert hold["authorization_status"] == "first_batch_required"
+    completed = " ".join(hold["completed_release_conditions"])
     conditions = " ".join(hold["release_conditions"])
-    assert "competency-to-module matrix" in conditions
-    assert "GR86 CAN/BLE" in conditions
+    assert "competency-to-module matrix" in completed
+    assert "GR86 CAN/BLE" in completed
+    assert "P01-P08" in conditions
     assert "at most ten new lessons" in conditions
 
 
