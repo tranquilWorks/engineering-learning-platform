@@ -288,7 +288,410 @@ def _p53(p: dict[str, Any]) -> list[float]:
 
 _NATIVE_FIXTURES.update({49: {'{"broken_mode":false,"excitation_level":0.6,"rate_ratio":10.0}': [4.0, 467.44921906856433, 0.003734438153009505], '{"broken_mode":false,"excitation_level":0.6,"rate_ratio":40.0}': [4.0, 785.9063711313481, 0.0033415647978850085], '{"broken_mode":false,"excitation_level":2.0,"rate_ratio":10.0}': [4.0, 548.018463472212, 0.003615206250568606], '{"broken_mode":true,"excitation_level":0.6,"rate_ratio":10.0}': [3.0, 1000000000000.0, 1000000.0]}, 50: {'{"broken_mode":false,"gate_sigma":3.0,"outlier_sigma":5.0}': [1.0, 1.0, 0.26000000000000006], '{"broken_mode":false,"gate_sigma":8.0,"outlier_sigma":5.0}': [1.0, 0.0, 7.081107537656409], '{"broken_mode":false,"gate_sigma":3.0,"outlier_sigma":12.0}': [1.0, 1.0, 0.26000000000000006], '{"broken_mode":true,"gate_sigma":3.0,"outlier_sigma":5.0}': [1.0, 0.0, 68.17125]}, 51: {'{"broken_mode":false,"loop_noise_m":0.08,"pose_count":30.0}': [0.012172684762798827, 0.002303392270687024, 85.82395855625573], '{"broken_mode":false,"loop_noise_m":0.5,"pose_count":30.0}': [0.009589522618660204, 0.0023757197396582458, 160.20210140185935], '{"broken_mode":false,"loop_noise_m":0.08,"pose_count":100.0}': [0.01886875988544594, 0.001850431361698094, 611.2830315135892], '{"broken_mode":true,"loop_noise_m":0.08,"pose_count":30.0}': [0.5491952667579718, 0.46016263875887276, 1000000000000.0]}, 52: {'{"broken_mode":false,"descriptor_score":0.78,"geometric_residual_m":0.12}': [0.78, 0.08000000000000002, 0.01872], '{"broken_mode":false,"descriptor_score":1.0,"geometric_residual_m":0.12}': [1.0, 0.08000000000000002, 0.024], '{"broken_mode":false,"descriptor_score":0.78,"geometric_residual_m":2.0}': [0.0, 6.166666666666667, 0.0], '{"broken_mode":true,"descriptor_score":0.78,"geometric_residual_m":0.12}': [0.95, 18.0, 3.42]}, 53: {'{"broken_mode":false,"measurement_noise":0.15,"process_noise":0.06}': [0.034830218840569104, 0.9629629629629629, 0.09936613216746079], '{"broken_mode":false,"measurement_noise":0.15,"process_noise":0.5}': [0.007120494350136375, 1.0, 0.09037480200978411], '{"broken_mode":false,"measurement_noise":1.0,"process_noise":0.06}': [0.07283725335437781, 1.0, 0.6161368231469574], '{"broken_mode":true,"measurement_noise":0.15,"process_noise":0.06}': [0.056480195906314846, 0.43209876543209874, 0.10642418417035024]}})
 
-_DISPATCH = {49: _p49, 50: _p50, 51: _p51, 52: _p52, 53: _p53, 41: _p41, 42: _p42, 43: _p43, 44: _p44, 45: _p45, 46: _p46, 47: _p47, 48: _p48, 34: _p34, 35: _p35, 36: _p36, 37: _p37, 38: _p38, 39: _p39, 40: _p40, 25: _p25, 26: _p26, 27: _p27, 28: _p28, 29: _p29, 30: _p30, 31: _p31, 32: _p32, 33: _p33, }
+def _p54(p: dict[str, Any]) -> list[float]:
+    start, goal = (2, 4), (21, 4)
+    occupied = {(11, y) for y in range(16) if y not in {4, 12}}
+    weight = float(p["heuristic_weight"])
+
+    def neighbors(node: tuple[int, int]) -> list[tuple[int, int]]:
+        if node in occupied:
+            return []
+        x, y = node
+        return [candidate for candidate in ((x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1))
+                if 0 <= candidate[0] < 24 and 0 <= candidate[1] < 16 and candidate not in occupied]
+
+    g: dict[tuple[int, int], float] = {}
+    rhs: dict[tuple[int, int], float] = {start: 0.0}
+    versions: dict[tuple[int, int], int] = {}
+    queue: list[tuple[float, float, int, tuple[int, int]]] = []
+
+    def value(table: dict[tuple[int, int], float], node: tuple[int, int]) -> float:
+        return table.get(node, float("inf"))
+
+    def key(node: tuple[int, int]) -> tuple[float, float]:
+        best = min(value(g, node), value(rhs, node))
+        return best + weight * (abs(node[0] - goal[0]) + abs(node[1] - goal[1])), best
+
+    def push(node: tuple[int, int]) -> None:
+        version = versions.get(node, 0) + 1
+        versions[node] = version
+        first, second = key(node)
+        queue.append((first, second, version, node))
+
+    def update(node: tuple[int, int]) -> None:
+        if node != start:
+            rhs[node] = min((value(g, predecessor) + 1.0 for predecessor in neighbors(node)),
+                            default=float("inf"))
+        versions[node] = versions.get(node, 0) + 1
+        if value(g, node) != value(rhs, node):
+            push(node)
+
+    def compute() -> int:
+        expansions = 0
+        while True:
+            valid = [entry for entry in queue
+                     if entry[2] == versions.get(entry[3]) and entry[:2] == key(entry[3])]
+            top = min(valid) if valid else None
+            if top is None or (top[:2] >= key(goal) and value(rhs, goal) == value(g, goal)):
+                return expansions
+            queue.remove(top)
+            node = top[3]
+            if value(g, node) > value(rhs, node):
+                g[node] = value(rhs, node)
+                for successor in neighbors(node):
+                    update(successor)
+            else:
+                g[node] = float("inf")
+                update(node)
+                for successor in neighbors(node):
+                    update(successor)
+            expansions += 1
+
+    def extract() -> list[tuple[int, int]]:
+        path = [goal]
+        while path[-1] != start:
+            path.append(min(neighbors(path[-1]), key=lambda node: (value(g, node) + 1.0, node)))
+        return list(reversed(path))
+
+    push(start)
+    compute()
+    original = extract()
+    occupied.add((11, 4))
+    update((11, 4))
+    for adjacent in ((10, 4), (12, 4), (11, 3), (11, 5)):
+        update(adjacent)
+    repair = 0 if p["broken_mode"] else compute()
+    path = original if p["broken_mode"] else extract()
+
+    frontier = [(0.0, 0.0, start)]
+    best = {start: 0.0}
+    settled: set[tuple[int, int]] = set()
+    while frontier:
+        entry = min(frontier)
+        frontier.remove(entry)
+        _, cost, node = entry
+        if node in settled:
+            continue
+        settled.add(node)
+        if node == goal:
+            break
+        for neighbor in neighbors(node):
+            candidate = cost + 1.0
+            if candidate < best.get(neighbor, float("inf")):
+                best[neighbor] = candidate
+                frontier.append((candidate, candidate, neighbor))
+    return [
+        (len(path) - 1) * float(p["grid_resolution_m"]),
+        float(sum(node in occupied for node in path)),
+        repair / max(len(settled), 1),
+    ]
+
+
+def _halton(index: int, base: int) -> float:
+    value, denominator = 0.0, 1.0
+    while index:
+        index, remainder = divmod(index, base)
+        denominator *= base
+        value += remainder / denominator
+    return value
+
+
+def _circle_segment_distance(a: np.ndarray, b: np.ndarray, center: np.ndarray) -> float:
+    delta = b - a
+    fraction = np.clip(np.dot(center - a, delta) / max(np.dot(delta, delta), 1.0e-12), 0.0, 1.0)
+    return float(np.linalg.norm(a + fraction * delta - center))
+
+
+def _p55(p: dict[str, Any]) -> list[float]:
+    obstacles = ((4.1, 3.1, 1.05), (6.4, 2.35, 0.95))
+    nodes = [np.array([0.5, 0.5]), np.array([9.5, 5.5])]
+    index = 1
+    while len(nodes) < round(float(p["sample_count"])) + 2:
+        point = np.array([10.0 * _halton(index, 2), 6.0 * _halton(index, 3)])
+        index += 1
+        if all(np.linalg.norm(point - np.array([cx, cy])) > radius + 0.25
+               for cx, cy, radius in obstacles):
+            nodes.append(point)
+    adjacency: list[list[tuple[int, float]]] = [[] for _ in nodes]
+    radius = float(p["connection_radius_m"])
+
+    def clear(a: np.ndarray, b: np.ndarray) -> bool:
+        return all(_circle_segment_distance(a, b, np.array([cx, cy])) > obstacle_radius + 0.25
+                   for cx, cy, obstacle_radius in obstacles)
+
+    for left in range(len(nodes)):
+        for right in range(left + 1, len(nodes)):
+            distance = float(np.linalg.norm(nodes[left] - nodes[right]))
+            if distance <= radius and (p["broken_mode"] or clear(nodes[left], nodes[right])):
+                adjacency[left].append((right, distance))
+                adjacency[right].append((left, distance))
+    queue = [(0.0, 0)]
+    best = {0: 0.0}
+    parent: dict[int, int] = {}
+    settled: set[int] = set()
+    while queue:
+        entry = min(queue)
+        queue.remove(entry)
+        cost, node = entry
+        if node in settled:
+            continue
+        settled.add(node)
+        if node == 1:
+            break
+        for neighbor, length in adjacency[node]:
+            candidate = cost + length
+            if candidate < best.get(neighbor, float("inf")):
+                best[neighbor] = candidate
+                parent[neighbor] = node
+                queue.append((candidate, neighbor))
+    path = [1]
+    while path[-1] != 0:
+        path.append(parent[path[-1]])
+    path.reverse()
+    collisions = sum(not clear(nodes[path[i]], nodes[path[i + 1]]) for i in range(len(path) - 1))
+    return [best[1], float(collisions), len(settled) / len(nodes)]
+
+
+def _p56(p: dict[str, Any]) -> list[float]:
+    obstacles = ((4.2, 2.7, 1.15), (6.5, 3.5, 1.0))
+    start, goal = np.array([0.5, 0.5]), np.array([9.5, 5.5])
+
+    def clear(a: np.ndarray, b: np.ndarray) -> bool:
+        return all(_circle_segment_distance(a, b, np.array([cx, cy])) > radius + 0.2
+                   for cx, cy, radius in obstacles)
+
+    nodes = [start.copy()]
+    parent = [0]
+    costs = [0.0]
+    rewires = 0
+    radius = float(p["rewire_radius_m"])
+    for sample_index in range(1, round(float(p["sample_count"])) + 1):
+        sample = goal if sample_index % 12 == 0 else np.array([
+            10.0 * _halton(sample_index, 2), 6.0 * _halton(sample_index, 3)
+        ])
+        nearest = int(np.argmin([np.linalg.norm(node - sample) for node in nodes]))
+        direction = sample - nodes[nearest]
+        distance = float(np.linalg.norm(direction))
+        new = sample.copy() if distance <= 0.68 else nodes[nearest] + 0.68 * direction / distance
+        if not (0.0 <= new[0] <= 10.0 and 0.0 <= new[1] <= 6.0) or not clear(nodes[nearest], new):
+            continue
+        near = [idx for idx, node in enumerate(nodes) if np.linalg.norm(node - new) <= radius]
+        chosen = nearest
+        chosen_cost = costs[nearest] + float(np.linalg.norm(nodes[nearest] - new))
+        if not p["broken_mode"]:
+            for candidate in near:
+                alternative = costs[candidate] + float(np.linalg.norm(nodes[candidate] - new))
+                if alternative < chosen_cost and clear(nodes[candidate], new):
+                    chosen, chosen_cost = candidate, alternative
+        nodes.append(new)
+        parent.append(chosen)
+        costs.append(chosen_cost)
+        added = len(nodes) - 1
+        if not p["broken_mode"]:
+            for candidate in near:
+                alternative = chosen_cost + float(np.linalg.norm(nodes[candidate] - new))
+                if candidate != chosen and alternative + 1.0e-12 < costs[candidate] and clear(new, nodes[candidate]):
+                    descendants = [candidate]
+                    for descendant in descendants:
+                        descendants.extend(idx for idx, ancestor in enumerate(parent)
+                                           if ancestor == descendant and idx != descendant)
+                    delta = alternative - costs[candidate]
+                    parent[candidate] = added
+                    for descendant in descendants:
+                        costs[descendant] += delta
+                    rewires += 1
+    choices = [costs[index] + float(np.linalg.norm(node - goal))
+               for index, node in enumerate(nodes)
+               if np.linalg.norm(node - goal) <= 2.2 and clear(node, goal)]
+    best_cost = min(choices)
+    lower = float(np.linalg.norm(goal - start))
+    return [best_cost, float(rewires), best_cost / lower - 1.0]
+
+
+def _p57(p: dict[str, Any]) -> list[float]:
+    obstacles = ((4.0, 0.45, 1.0), (6.3, -0.35, 0.9))
+    robot_radius = float(p["robot_radius_m"])
+    path = [np.array(point, dtype=float) for point in (
+        (0.0, 0.0), (2.2, 0.0), (3.0, 2.15), (5.2, 2.55),
+        (7.3, 2.0), (8.3, 0.1), (10.0, 0.0)
+    )]
+
+    def clearance(a: np.ndarray, b: np.ndarray, footprint: float) -> float:
+        return min(_circle_segment_distance(a, b, np.array([cx, cy])) - radius - footprint
+                   for cx, cy, radius in obstacles)
+
+    for attempt in range(round(float(p["smoothing_iterations"]))):
+        if len(path) <= 2:
+            continue
+        span = len(path) - 1
+        left = attempt % (len(path) - 2)
+        right = min(len(path) - 1, left + 2 + (attempt // max(len(path) - 2, 1)) % max(span - left - 1, 1))
+        if right <= left + 1:
+            continue
+        if p["broken_mode"]:
+            acceptable = clearance(path[left], path[left], 0.0) >= 0.0 and clearance(path[right], path[right], 0.0) >= 0.0
+        else:
+            acceptable = clearance(path[left], path[right], robot_radius) >= 0.0
+        if acceptable:
+            path = path[:left + 1] + path[right:]
+    margins = [clearance(path[index], path[index + 1], robot_radius)
+               for index in range(len(path) - 1)]
+    length = sum(float(np.linalg.norm(path[index + 1] - path[index]))
+                 for index in range(len(path) - 1))
+    return [length, min(margins), float(sum(margin < 0.0 for margin in margins))]
+
+
+def _p58(p: dict[str, Any]) -> list[float]:
+    center = np.array([5.0, 0.0])
+    clearance = float(p["required_clearance_m"])
+    safety = 1.1 + clearance
+    smoothness = float(p["smoothness_weight"])
+    obstacle_weight = 0.0 if p["broken_mode"] else 80.0
+    fractions = np.linspace(0.0, 1.0, 31)
+    height = 0.0 if p["broken_mode"] else safety + 0.65
+    points = np.column_stack((10.0 * fractions, height * np.sin(np.pi * fractions)))
+
+    def margin(a: np.ndarray, b: np.ndarray) -> float:
+        return _circle_segment_distance(a, b, center) - safety
+
+    def objective(path: np.ndarray) -> float:
+        second = path[:-2] - 2.0 * path[1:-1] + path[2:]
+        first = path[1:] - path[:-1]
+        violations = np.maximum(safety - np.linalg.norm(path[1:-1] - center, axis=1), 0.0)
+        return (smoothness * float(np.sum(second**2)) + 0.03 * float(np.sum(first**2))
+                + obstacle_weight * float(np.sum(violations**2)))
+
+    def gradient(path: np.ndarray) -> np.ndarray:
+        result = np.zeros_like(path)
+        for index in range(1, len(path) - 1):
+            second = path[index - 1] - 2.0 * path[index] + path[index + 1]
+            result[index - 1] += 2.0 * smoothness * second
+            result[index] -= 4.0 * smoothness * second
+            result[index + 1] += 2.0 * smoothness * second
+        for index in range(1, len(path) - 1):
+            result[index] += 0.06 * (2.0 * path[index] - path[index - 1] - path[index + 1])
+            offset = path[index] - center
+            distance = float(np.linalg.norm(offset))
+            if distance < safety:
+                result[index] -= 2.0 * obstacle_weight * (safety - distance) * offset / max(distance, 1.0e-9)
+        result[[0, -1]] = 0.0
+        return result
+
+    def project(path: np.ndarray) -> np.ndarray:
+        result = path.copy()
+        for _ in range(12):
+            changed = False
+            for index in range(len(result) - 1):
+                signed = margin(result[index], result[index + 1])
+                if signed >= -1.0e-9:
+                    continue
+                midpoint = 0.5 * (result[index] + result[index + 1])
+                direction = midpoint - center
+                direction /= max(float(np.linalg.norm(direction)), 1.0e-9)
+                correction = (-signed + 1.0e-6) * direction
+                if index > 0:
+                    result[index] += correction
+                if index + 1 < len(result) - 1:
+                    result[index + 1] += correction
+                changed = True
+            if not changed:
+                break
+        return result
+
+    current = objective(points)
+    for _ in range(1200):
+        derivative = gradient(points)
+        step = 0.01
+        candidate = points.copy()
+        for _ in range(12):
+            candidate = points - step * derivative
+            candidate[[0, -1]] = points[[0, -1]]
+            if not p["broken_mode"]:
+                candidate = project(candidate)
+            value = objective(candidate)
+            if value <= current + 1.0e-12:
+                break
+            step *= 0.5
+        points, current = candidate, value
+    margins = [margin(points[index], points[index + 1]) for index in range(len(points) - 1)]
+    length = float(np.sum(np.linalg.norm(points[1:] - points[:-1], axis=1)))
+    return [length, min(margins), float(sum(value < -1.0e-7 for value in margins))]
+
+
+def _p59(p: dict[str, Any]) -> list[float]:
+    acceleration_limit = float(p["acceleration_limit_m_s2"])
+    speed_limit = float(p["speed_limit_m_s"])
+    if p["broken_mode"]:
+        return [8.0 / speed_limit, max(speed_limit / 0.5 - acceleration_limit, 0.0), speed_limit]
+    start = (0.0, 0.0)
+    queue = [(8.0 / speed_limit, 0.0, start)]
+    best = {start: 0.0}
+    settled: set[tuple[float, float]] = set()
+    while queue:
+        entry = min(queue)
+        queue.remove(entry)
+        _, elapsed, state = entry
+        if state in settled:
+            continue
+        settled.add(state)
+        position, speed = state
+        if abs(position - 8.0) <= 0.13 and abs(speed) <= 1.0e-9:
+            return [elapsed, 0.0, abs(speed)]
+        if elapsed >= 20.0:
+            continue
+        for acceleration in (-acceleration_limit, 0.0, acceleration_limit):
+            next_speed = speed + acceleration * 0.5
+            if next_speed < -1.0e-9 or next_speed > speed_limit + 1.0e-9:
+                continue
+            next_position = position + speed * 0.5 + 0.5 * acceleration * 0.5**2
+            if next_position < -0.01 or next_position > 8.13:
+                continue
+            next_state = (round(next_position, 6), round(next_speed, 6))
+            candidate = elapsed + 0.5
+            if candidate + 1.0e-12 < best.get(next_state, float("inf")):
+                best[next_state] = candidate
+                heuristic = max(8.0 - next_position, 0.0) / max(speed_limit, 1.0e-9)
+                queue.append((candidate + heuristic, candidate, next_state))
+    raise RuntimeError("independent kinodynamic search has no solution")
+
+
+def _p60(p: dict[str, Any]) -> list[float]:
+    horizon = 1 if p["broken_mode"] else round(float(p["prediction_horizon_steps"]))
+    obstacle_speed = float(p["obstacle_speed_m_s"])
+    x, y, lateral_speed, obstacle_y = 0.0, 0.0, 0.0, -2.0
+    robot = [np.array([x, y])]
+    separations = [float(np.hypot(x - 5.0, y - obstacle_y))]
+
+    def cost(acceleration: float) -> float:
+        predicted_y, predicted_speed = y, lateral_speed
+        total = 0.0
+        for step in range(1, horizon + 1):
+            predicted_speed = float(np.clip(predicted_speed + acceleration * 0.2, -1.1, 1.1))
+            predicted_y += predicted_speed * 0.2
+            robot_x = x + 1.25 * 0.2 * step
+            moving_y = obstacle_y if p["broken_mode"] else obstacle_y + obstacle_speed * 0.2 * step
+            separation = float(np.hypot(robot_x - 5.0, predicted_y - moving_y))
+            total += 1200.0 * max(0.9 - separation, 0.0) ** 2
+            if separation < 0.9:
+                total += 80.0
+            total += 0.035 * predicted_y**2 + 0.01 * predicted_speed**2
+        return total + 0.12 * acceleration**2 + 0.4 * predicted_y**2
+
+    for _ in range(40):
+        candidates = (-1.2, -0.6, 0.0, 0.6, 1.2)
+        acceleration = min(candidates, key=lambda action: (cost(action), abs(action), action))
+        lateral_speed = float(np.clip(lateral_speed + acceleration * 0.2, -1.1, 1.1))
+        x += 1.25 * 0.2
+        y += lateral_speed * 0.2
+        obstacle_y += obstacle_speed * 0.2
+        robot.append(np.array([x, y]))
+        separations.append(float(np.hypot(x - 5.0, y - obstacle_y)))
+    points = np.asarray(robot)
+    path_length = float(np.sum(np.linalg.norm(points[1:] - points[:-1], axis=1)))
+    return [min(separations), float(sum(value < 0.9 for value in separations)), path_length]
+
+
+_DISPATCH = {58: _p58, 59: _p59, 60: _p60, 54: _p54, 55: _p55, 56: _p56, 57: _p57, 49: _p49, 50: _p50, 51: _p51, 52: _p52, 53: _p53, 41: _p41, 42: _p42, 43: _p43, 44: _p44, 45: _p45, 46: _p46, 47: _p47, 48: _p48, 34: _p34, 35: _p35, 36: _p36, 37: _p37, 38: _p38, 39: _p39, 40: _p40, 25: _p25, 26: _p26, 27: _p27, 28: _p28, 29: _p29, 30: _p30, 31: _p31, 32: _p32, 33: _p33, }
 
 def origin(number: int) -> dict[str, Any]:
     return {"kind": "independent-analytic-python", "item_id": f"P{number:02d}", "independent": True,

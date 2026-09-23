@@ -1,0 +1,25 @@
+schema_version: 1
+item_id: P58
+module: 58-optimize-a-trajectory-through-obstacle-constraints
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- J(Q)=w_s sum_i||q_{i-1}-2q_i+q_{i+1}||^2+w_l sum_i||q_{i+1}-q_i||^2
+- phi_i=max(0,r_obstacle+r_clearance-||q_i-c||)^2
+- Q_{k+1}=Project_Cfree(Q_k-alpha grad(J+w_o sum_i phi_i)) with fixed endpoints
+signature:
+- {field: optimized_length, unit: m}
+- {field: minimum_constraint_margin, unit: m}
+- {field: violated_segments, unit: count}
+teaching_invariant: Objective reduction is acceptable only while fixed endpoints and nonnegative swept-segment clearance remain feasible.
+limiting_cases:
+- With no obstacle term or projection, the smoothness optimum is the straight start-to-goal line.
+- Increasing required clearance expands the configuration-space obstacle and lengthens the shortest feasible homotopy.
+scenarios:
+  baseline: &baseline {required_clearance_m: 0.35, smoothness_weight: 18.0, broken_mode: false}
+  sweep_1: {required_clearance_m: 0.8, smoothness_weight: 18.0, broken_mode: false}
+  sweep_2: {required_clearance_m: 0.35, smoothness_weight: 3.0, broken_mode: false}
+  broken: {required_clearance_m: 0.35, smoothness_weight: 18.0, broken_mode: true}
+  recovery: *baseline
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

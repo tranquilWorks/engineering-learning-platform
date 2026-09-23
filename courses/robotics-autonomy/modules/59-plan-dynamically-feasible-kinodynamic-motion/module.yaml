@@ -1,0 +1,25 @@
+schema_version: 1
+id: 59-plan-dynamically-feasible-kinodynamic-motion
+number: 59
+title: Plan Dynamically Feasible Kinodynamic Motion
+summary: Search a double-integrator state lattice with bounded acceleration and speed, requiring the terminal node to reach the goal at rest.
+guiding_question: How does planning in position-velocity state prevent a geometrically valid path from demanding impossible acceleration?
+status: implemented
+tags: [robotics-autonomy, native-python, kinodynamic-planning]
+runtime: {kind: python, entrypoint: 'experiment.py:run', trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: acceleration_limit_m_s2, type: slider, label: Acceleration limit, default: 1.0, minimum: 1.0, maximum: 3.0, step: 1.0, unit: m/s^2}
+- {id: speed_limit_m_s, type: slider, label: Speed limit, default: 2.0, minimum: 1.0, maximum: 4.0, step: 1.0, unit: m/s}
+- {id: broken_mode, type: toggle, label: Enable named failure, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- type: prediction
+  title: Predict before running
+  text: A shorter geometric traversal can be dynamically invalid when start and stop velocity jumps are included.
+  reveal: Inspect arrival time, acceleration violation, and terminal speed.
+- {type: controls, title: Live model controls}
+- {type: metrics}
+- {type: plot_grid, title: State-lattice plan and speed profile, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken assumption, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}

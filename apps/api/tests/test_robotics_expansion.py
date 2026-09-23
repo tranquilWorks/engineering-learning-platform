@@ -367,3 +367,45 @@ def test_robotics_slam_teaching_invariants() -> None:
     consistent = signature(53, {"broken_mode": False})
     inconsistent = signature(53, {"broken_mode": True})
     assert consistent[1] > inconsistent[1] and consistent[2] < inconsistent[2]
+
+
+def test_robotics_planning_teaching_invariants() -> None:
+    runtime = ExperimentRuntime(CourseCatalog([ROOT / "courses"]))
+
+    def signature(number: int, supplied: dict[str, Any]) -> list[float]:
+        item = NATIVE[number - 25]
+        module_id = _yaml(COURSE_ROOT / item["folder"] / "module.yaml")["id"]
+        return runtime.run("robotics-autonomy", module_id, supplied).diagnostics["signature"]
+
+    repaired = signature(54, {"broken_mode": False})
+    stale = signature(54, {"broken_mode": True})
+    assert repaired[1] == 0 < stale[1]
+
+    roadmap = signature(55, {"broken_mode": False})
+    unchecked = signature(55, {"broken_mode": True})
+    assert roadmap[1] == 0 < unchecked[1]
+
+    rewired = signature(56, {"broken_mode": False})
+    unrewired = signature(56, {"broken_mode": True})
+    assert rewired[0] < unrewired[0]
+    assert rewired[1] > unrewired[1] == 0
+
+    swept = signature(57, {"broken_mode": False})
+    endpoints_only = signature(57, {"broken_mode": True})
+    assert swept[1] >= 0 and swept[2] == 0
+    assert endpoints_only[1] < 0 and endpoints_only[2] > 0
+
+    constrained = signature(58, {"broken_mode": False})
+    unconstrained = signature(58, {"broken_mode": True})
+    assert constrained[1] >= 0 and constrained[2] == 0
+    assert unconstrained[1] < 0 and unconstrained[2] > 0
+
+    kinodynamic = signature(59, {"broken_mode": False})
+    geometric = signature(59, {"broken_mode": True})
+    assert kinodynamic[1:] == [0.0, 0.0]
+    assert geometric[1] > 0 and geometric[2] > 0
+
+    predictive = signature(60, {"broken_mode": False})
+    frozen = signature(60, {"broken_mode": True})
+    assert predictive[0] >= 0.9 and predictive[1] == 0
+    assert frozen[0] < 0.9 and frozen[1] > 0

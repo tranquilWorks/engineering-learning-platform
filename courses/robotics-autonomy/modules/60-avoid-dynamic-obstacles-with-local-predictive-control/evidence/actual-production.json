@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "item_id": "P60",
+  "signature_fields": [
+    {
+      "field": "minimum_dynamic_separation",
+      "unit": "m"
+    },
+    {
+      "field": "safety_violation_steps",
+      "unit": "count"
+    },
+    {
+      "field": "executed_path_length",
+      "unit": "m"
+    }
+  ],
+  "origin": {
+    "kind": "production-experiment",
+    "independent": false,
+    "imports_production_entrypoint": true,
+    "derived_from_production_output": true,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "prediction_horizon_steps": 15.0,
+        "obstacle_speed_m_s": 0.55,
+        "broken_mode": false
+      },
+      "signature": [
+        0.9114954744813607,
+        0.0,
+        10.260474792731047
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "prediction_horizon_steps": 5.0,
+        "obstacle_speed_m_s": 0.55,
+        "broken_mode": false
+      },
+      "signature": [
+        0.9114954744813607,
+        0.0,
+        10.407091243882999
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "prediction_horizon_steps": 15.0,
+        "obstacle_speed_m_s": 1.0,
+        "broken_mode": false
+      },
+      "signature": [
+        1.5620499351813306,
+        0.0,
+        10.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "prediction_horizon_steps": 15.0,
+        "obstacle_speed_m_s": 0.55,
+        "broken_mode": true
+      },
+      "signature": [
+        0.27999999999999914,
+        6.0,
+        10.90812041052801
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "prediction_horizon_steps": 15.0,
+        "obstacle_speed_m_s": 0.55,
+        "broken_mode": false
+      },
+      "signature": [
+        0.9114954744813607,
+        0.0,
+        10.260474792731047
+      ]
+    }
+  }
+}

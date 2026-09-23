@@ -1,0 +1,25 @@
+schema_version: 1
+item_id: P57
+module: 57-check-collision-geometry-and-smooth-paths
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- t*=clip(((c-a)^T(b-a))/||b-a||^2,0,1)
+- clearance(a,b)=min_j ||a+t*(b-a)-c_j||-r_j-r_robot
+- Replace q_i...q_j by segment(q_i,q_j) only when clearance>=0 and length decreases
+signature:
+- {field: smoothed_path_length, unit: m}
+- {field: minimum_swept_clearance, unit: m}
+- {field: colliding_segments, unit: count}
+teaching_invariant: Shortcut smoothing may reduce length only when the full swept robot footprint has nonnegative obstacle clearance.
+limiting_cases:
+- With robot radius zero, obstacle inflation reduces to point-robot collision geometry.
+- With zero shortcut attempts, the verified input polyline is returned unchanged.
+scenarios:
+  baseline: &baseline {robot_radius_m: 0.3, smoothing_iterations: 30.0, broken_mode: false}
+  sweep_1: {robot_radius_m: 0.6, smoothing_iterations: 30.0, broken_mode: false}
+  sweep_2: {robot_radius_m: 0.3, smoothing_iterations: 1.0, broken_mode: false}
+  broken: {robot_radius_m: 0.3, smoothing_iterations: 30.0, broken_mode: true}
+  recovery: *baseline
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

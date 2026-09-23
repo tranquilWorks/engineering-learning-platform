@@ -1,0 +1,25 @@
+schema_version: 1
+item_id: P55
+module: 55-build-and-query-a-probabilistic-roadmap
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- V_free={q_i from a deterministic Halton sequence | d(q_i,O)>r_robot}
+- E={(i,j) | ||q_i-q_j||<=r_connect and segment(q_i,q_j) subset C_free}
+- J(path)=sum_{(i,j) in path}||q_i-q_j|| solved by Dijkstra search
+signature:
+- {field: roadmap_path_length, unit: m}
+- {field: colliding_path_edges, unit: count}
+- {field: query_reachability, unit: '1'}
+teaching_invariant: PRM graph reachability implies executable motion only when sampling and every local edge share the same configuration-space collision model.
+limiting_cases:
+- As the connection radius tends to zero, the graph fragments even when all samples are individually free.
+- An obstacle-free workspace makes every within-radius edge locally valid.
+scenarios:
+  baseline: &baseline {sample_count: 100.0, connection_radius_m: 2.0, broken_mode: false}
+  sweep_1: {sample_count: 50.0, connection_radius_m: 2.0, broken_mode: false}
+  sweep_2: {sample_count: 100.0, connection_radius_m: 3.0, broken_mode: false}
+  broken: {sample_count: 100.0, connection_radius_m: 2.0, broken_mode: true}
+  recovery: *baseline
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.
