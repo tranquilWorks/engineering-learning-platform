@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "id": "14-choose-shift-points",
+  "number": 14,
+  "title": "Choose Shift Points",
+  "summary": "Choose an adjacent-gear shift from wheel-force crossover or redline on a bounded torque curve.",
+  "guiding_question": "When should the current gear be exchanged for the next gear to maximize wheel force?",
+  "status": "implemented",
+  "tags": [
+    "vehicle-dynamics",
+    "phase-4",
+    "python-first-native"
+  ],
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0
+  },
+  "controls": [
+    {
+      "id": "current_gear_ratio",
+      "type": "slider",
+      "label": "Current gear ratio",
+      "default": 2.188,
+      "minimum": 1.4,
+      "maximum": 3.7,
+      "step": 0.05,
+      "unit": "ratio",
+      "description": "Change the primary physical input while holding the secondary input fixed."
+    },
+    {
+      "id": "next_gear_ratio",
+      "type": "slider",
+      "label": "Next gear ratio",
+      "default": 1.541,
+      "minimum": 0.8,
+      "maximum": 2.4,
+      "step": 0.05,
+      "unit": "ratio",
+      "description": "Change the secondary physical input while holding the primary input fixed."
+    },
+    {
+      "id": "broken_mode",
+      "type": "toggle",
+      "label": "Activate the named broken behavior",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "markdown",
+      "source": "lesson.md"
+    },
+    {
+      "type": "prediction",
+      "title": "Predict before running",
+      "text": "Predict the sign, trend, conserved quantity, and validity boundary before changing one input.",
+      "reveal": "Use the governing relation, then verify one variable at a time."
+    },
+    {
+      "type": "controls",
+      "title": "Vehicle-model controls"
+    },
+    {
+      "type": "metrics"
+    },
+    {
+      "type": "plot",
+      "title": "Physical response",
+      "plot": "response"
+    },
+    {
+      "type": "plot_grid",
+      "title": "One-variable sweeps",
+      "plots": [
+        "primary_sweep",
+        "secondary_sweep"
+      ]
+    },
+    {
+      "type": "plot",
+      "title": "Broken behavior and exact recovery",
+      "plot": "broken_recovery"
+    },
+    {
+      "type": "callout",
+      "tone": "info",
+      "title": "Observation",
+      "source": "observation"
+    },
+    {
+      "type": "callout",
+      "tone": "warning",
+      "title": "Broken",
+      "source": "broken"
+    },
+    {
+      "type": "callout",
+      "tone": "success",
+      "title": "Recovery",
+      "source": "recovery"
+    }
+  ]
+}

@@ -24,7 +24,7 @@ SOURCE_TREE = "d9e7267ba02c8d3d836c0ae481b80e91233eb81a"
 CURRICULUM_SHA256 = "c452996e5253ec7e547a64cccd4aa8af60dc5f4106311d1dec25ec8d5c48eba6"
 SOURCE_FILE_SET_SHA256 = "15de22f8396cf978e80e55f2ed7541234804913c81dbef71cb85c81508472d11"
 MAP_SHA256 = "87dae868d7e3a0181062a4fd42ff316513b0f6f35c053cb56b5d73b9c56bde6d"
-ACTIVE_CONTRACT_SHA256 = "7c9be1f7da5b8b4c34a745e48d3b831483480d1365cc163ad9676fb8ea423987"
+ACTIVE_CONTRACT_SHA256 = "76ea6428012f1c3765b737f822971de4d29abb24d51037a61e9765ca3877b7bd"
 FRAMEWORK_SHA256 = {
     "source-map.yaml": "1533c3a5f78447adb3008796530796ade0da18a4c4bda57e565c82548ff4c298",
     "course.yaml": "8b25d17589cb56bf8c1e2501298d092d9db11aeb6a42f5673f956029d15b5681",
@@ -40,12 +40,8 @@ FIXTURE_SHA256 = {
     "racechrono-ble-fault-plan-v1.json": (
         "ee278a9360c0b8b38f227b10ea11371b183cfa4c18c7cc984501f4c6b76607d3"
     ),
-    "generate_fixture.py": (
-        "b2bd34a621c97dc5d8e7930014ee2d0281166833f43639d621666c230c68015d"
-    ),
-    "verify_fixture.py": (
-        "508a1a6a73fd4f5af8049eb07abad9f3b11c1a20dc74a9d466ec978db6159b32"
-    ),
+    "generate_fixture.py": ("b2bd34a621c97dc5d8e7930014ee2d0281166833f43639d621666c230c68015d"),
+    "verify_fixture.py": ("508a1a6a73fd4f5af8049eb07abad9f3b11c1a20dc74a9d466ec978db6159b32"),
 }
 
 
@@ -116,9 +112,7 @@ def _decode(can_id: int, data: bytes) -> dict[str, float]:
 
 def test_reviewed_map_identity_schema_graph_batches_and_capstones() -> None:
     mapping = _load(COURSE_ROOT / "competency-map.yaml")
-    schema = json.loads(
-        (COURSE_ROOT / "competency-map.schema.json").read_text(encoding="utf-8")
-    )
+    schema = json.loads((COURSE_ROOT / "competency-map.schema.json").read_text(encoding="utf-8"))
     helper_path = ROOT / "apps/api/tests/test_dsp_conversion_framework.py"
     spec = importlib.util.spec_from_file_location("vehicle_schema_helper", helper_path)
     assert spec is not None and spec.loader is not None
@@ -149,11 +143,7 @@ def test_reviewed_map_identity_schema_graph_batches_and_capstones() -> None:
         for module_id in competency["module_ids"]:
             assert competency["id"] in module_by_id[module_id]["competency_ids"]
 
-    flattened = [
-        module_id
-        for batch in mapping["batch_plan"]
-        for module_id in batch["module_ids"]
-    ]
+    flattened = [module_id for batch in mapping["batch_plan"] for module_id in batch["module_ids"]]
     assert Counter(flattened) == Counter(module_by_id.keys())
     assert [len(item["module_ids"]) for item in mapping["batch_plan"]] == [
         8,
@@ -213,18 +203,21 @@ def test_exact_source_map_and_read_only_gitlink() -> None:
     if (SOURCE_ROOT / ".git").exists():
         assert _git("rev-parse", "HEAD", cwd=SOURCE_ROOT).stdout.strip() == SOURCE_COMMIT
         assert _git("rev-parse", "HEAD^{tree}", cwd=SOURCE_ROOT).stdout.strip() == SOURCE_TREE
-        assert _git(
-            "status",
-            "--porcelain=v1",
-            "--untracked-files=all",
-            cwd=SOURCE_ROOT,
-        ).stdout == ""
+        assert (
+            _git(
+                "status",
+                "--porcelain=v1",
+                "--untracked-files=all",
+                cwd=SOURCE_ROOT,
+            ).stdout
+            == ""
+        )
         assert _sha256(SOURCE_ROOT / "curriculum/modules.json") == CURRICULUM_SHA256
         for identity in identities:
             assert _sha256(SOURCE_ROOT / identity["path"]) == identity["sha256"]
 
 
-def test_conversion_ledgers_record_exact_first_batch_transition() -> None:
+def test_conversion_ledgers_record_exact_second_batch_transition() -> None:
     for name, expected in FRAMEWORK_SHA256.items():
         assert _sha256(COURSE_ROOT / name) == expected
     source_map = _load(COURSE_ROOT / "source-map.yaml")
@@ -234,8 +227,8 @@ def test_conversion_ledgers_record_exact_first_batch_transition() -> None:
     assert coverage["source_map_sha256"] == FRAMEWORK_SHA256["source-map.yaml"]
     assert coverage["summary"] == {
         "total": 24,
-        "pending": 16,
-        "converted": 8,
+        "pending": 8,
+        "converted": 16,
         "blocked": 0,
         "placeholder": 0,
     }
@@ -249,22 +242,23 @@ def test_conversion_ledgers_record_exact_first_batch_transition() -> None:
         "phase_title",
         "source_status",
     )
-    for index, (source_item, conversion_item, coverage_item) in enumerate(zip(
-        source_map["items"], conversion["items"], coverage["items"], strict=True
-    ), 1):
+    for index, (source_item, conversion_item, coverage_item) in enumerate(
+        zip(source_map["items"], conversion["items"], coverage["items"], strict=True), 1
+    ):
         assert {key: conversion_item[key] for key in stable_keys} == {
             key: source_item[key] for key in stable_keys
         }
-        expected_status = "converted" if index <= 8 else "pending"
+        expected_status = "converted" if index <= 16 else "pending"
         assert coverage_item["status"] == expected_status
-        if index <= 8:
-            assert coverage_item["conversion_record"]["batch_id"] == "ELP-VEHICLE-P01-P08"
+        if index <= 16:
+            expected_batch = "ELP-VEHICLE-P01-P08" if index <= 8 else "ELP-VEHICLE-P09-P16"
+            assert coverage_item["conversion_record"]["batch_id"] == expected_batch
             assert len(coverage_item["target_content_digest"]) == 64
         else:
             assert coverage_item["conversion_record"] is None
             assert coverage_item["target_content_digest"] is None
         assert coverage_item["blocker"] is None
-    assert len(list((COURSE_ROOT / "modules").glob("*/module.yaml"))) == 8
+    assert len(list((COURSE_ROOT / "modules").glob("*/module.yaml"))) == 16
 
 
 def test_fixture_identity_provenance_and_privacy_boundary() -> None:
@@ -275,12 +269,8 @@ def test_fixture_identity_provenance_and_privacy_boundary() -> None:
     assert manifest["provenance_class"] == "synthetic_protocol_fixture"
     assert manifest["measured_vehicle_data"] is False
     assert manifest["protocol_source"]["repository"] == "tranquilWorks/gr86-cca-telemetry"
-    assert manifest["protocol_source"]["commit"] == (
-        "f5d13fce5fcfc23a914f7da39e5bb448c56ed6b7"
-    )
-    assert manifest["protocol_source"]["tree"] == (
-        "3c4edb0083fa93af8114497c145a7248bafd7ade"
-    )
+    assert manifest["protocol_source"]["commit"] == ("f5d13fce5fcfc23a914f7da39e5bb448c56ed6b7")
+    assert manifest["protocol_source"]["tree"] == ("3c4edb0083fa93af8114497c145a7248bafd7ade")
     privacy = manifest["privacy"]
     assert privacy["classification"] == "public synthetic engineering data"
     assert all(value is False for key, value in privacy.items() if key.startswith("contains_"))
@@ -375,14 +365,9 @@ def test_fault_plan_has_independently_diagnosed_exact_outcome() -> None:
     malformed = sorted(
         item["sequence"]
         for item in corrupted
-        if len(bytes.fromhex(item["payload_hex"]))
-        != 4 + can_by_sequence[item["sequence"]]["dlc"]
+        if len(bytes.fromhex(item["payload_hex"])) != 4 + can_by_sequence[item["sequence"]]["dlc"]
     )
-    valid_sequences = {
-        item["sequence"]
-        for item in corrupted
-        if item["sequence"] not in malformed
-    }
+    valid_sequences = {item["sequence"] for item in corrupted if item["sequence"] not in malformed}
     missing = sorted(set(range(309)) - valid_sequences)
     assert missing == [37, 89]
     assert duplicates == [52]
@@ -414,28 +399,24 @@ def test_fixture_verifier_is_generator_independent_and_passes(capsys: Any) -> No
     }
 
 
-def test_first_batch_catalog_is_six_courses_with_eight_vehicle_modules() -> None:
+def test_second_batch_catalog_is_six_courses_with_sixteen_vehicle_modules() -> None:
     catalog = CourseCatalog([ROOT / "courses"])
     summaries = {item.id: item for item in catalog.summaries()}
     assert len(summaries) == 6
-    assert sum(len(item.modules) for item in summaries.values()) == 231
-    assert sum(
-        module.interactive
-        for course in summaries.values()
-        for module in course.modules
-    ) == 231
-    assert len(summaries["vehicle-dynamics"].modules) == 8
+    assert sum(len(item.modules) for item in summaries.values()) == 239
+    assert (
+        sum(module.interactive for course in summaries.values() for module in course.modules) == 239
+    )
+    assert len(summaries["vehicle-dynamics"].modules) == 16
 
 
-def test_active_contract_is_exact_merged_first_batch_authorization() -> None:
+def test_active_contract_is_exact_merged_second_batch_authorization() -> None:
     contract_path = ROOT / "contracts/active-batch.yaml"
     contract = yaml.safe_load(contract_path.read_text(encoding="utf-8"))
     assert _sha256(contract_path) == ACTIVE_CONTRACT_SHA256
-    assert contract["batch"]["id"] == "ELP-VEHICLE-P01-P08"
-    assert contract["sources"]["baseline_commit"] == (
-        "7188d370b52dd9812634ae431fa652525d081634"
-    )
+    assert contract["batch"]["id"] == "ELP-VEHICLE-P09-P16"
+    assert contract["sources"]["baseline_commit"] == ("408870fbd43a739fcb16e4be3f416841036ca115")
     assert contract["sources"]["competency_map_sha256"] == MAP_SHA256
-    assert "courses/vehicle-dynamics/modules/01-*/**" in contract["scope"]["allowed_paths"]
-    assert "courses/vehicle-dynamics/modules/09-*/**" in contract["scope"]["forbidden_paths"]
+    assert "courses/vehicle-dynamics/modules/09-*/**" in contract["scope"]["allowed_paths"]
+    assert "courses/vehicle-dynamics/modules/17-*/**" in contract["scope"]["forbidden_paths"]
     assert contract["validation"]["required_ci"] == []

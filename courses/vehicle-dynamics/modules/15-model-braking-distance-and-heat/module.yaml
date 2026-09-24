@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "id": "15-model-braking-distance-and-heat",
+  "number": 15,
+  "title": "Model Braking Distance and Heat",
+  "summary": "Couple tire-limited brake force to stopping distance, load transfer, kinetic energy, and bounded rotor heating.",
+  "guiding_question": "How do tire-limited braking force, load transfer, distance, and rotor heat connect?",
+  "status": "implemented",
+  "tags": [
+    "vehicle-dynamics",
+    "phase-4",
+    "python-first-native"
+  ],
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0
+  },
+  "controls": [
+    {
+      "id": "initial_speed_m_s",
+      "type": "slider",
+      "label": "Initial speed",
+      "default": 30.0,
+      "minimum": 5.0,
+      "maximum": 55.0,
+      "step": 1.0,
+      "unit": "m/s",
+      "description": "Change the primary physical input while holding the secondary input fixed."
+    },
+    {
+      "id": "requested_brake_force_n",
+      "type": "slider",
+      "label": "Requested brake force",
+      "default": 10000.0,
+      "minimum": 1000.0,
+      "maximum": 18000.0,
+      "step": 500.0,
+      "unit": "N",
+      "description": "Change the secondary physical input while holding the primary input fixed."
+    },
+    {
+      "id": "broken_mode",
+      "type": "toggle",
+      "label": "Activate the named broken behavior",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "markdown",
+      "source": "lesson.md"
+    },
+    {
+      "type": "prediction",
+      "title": "Predict before running",
+      "text": "Predict the sign, trend, conserved quantity, and validity boundary before changing one input.",
+      "reveal": "Use the governing relation, then verify one variable at a time."
+    },
+    {
+      "type": "controls",
+      "title": "Vehicle-model controls"
+    },
+    {
+      "type": "metrics"
+    },
+    {
+      "type": "plot",
+      "title": "Physical response",
+      "plot": "response"
+    },
+    {
+      "type": "plot_grid",
+      "title": "One-variable sweeps",
+      "plots": [
+        "primary_sweep",
+        "secondary_sweep"
+      ]
+    },
+    {
+      "type": "plot",
+      "title": "Broken behavior and exact recovery",
+      "plot": "broken_recovery"
+    },
+    {
+      "type": "callout",
+      "tone": "info",
+      "title": "Observation",
+      "source": "observation"
+    },
+    {
+      "type": "callout",
+      "tone": "warning",
+      "title": "Broken",
+      "source": "broken"
+    },
+    {
+      "type": "callout",
+      "tone": "success",
+      "title": "Recovery",
+      "source": "recovery"
+    }
+  ]
+}

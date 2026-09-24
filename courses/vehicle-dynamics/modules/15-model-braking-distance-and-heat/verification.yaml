@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "item_id": "P15",
+  "provenance": "Python-first native",
+  "reference": {
+    "path": "../../reference_cases.py",
+    "origin": "separately formulated scalar analytic or bounded numerical oracle",
+    "imports_production": false,
+    "consumes_production_output": false,
+    "tolerance_abs": "1e-10",
+    "fields": [
+      "applied_brake_force_n",
+      "deceleration_m_s2",
+      "stopping_distance_m",
+      "stop_time_s",
+      "kinetic_energy_j",
+      "rotor_delta_t_c",
+      "front_load_n",
+      "rear_load_n",
+      "invalid"
+    ]
+  },
+  "governing_relation": "a=F_b/m; s=V0^2/(2*a); E_k=0.5*m*V0^2; DeltaT=eta_h*E_k/(m_rotor*c_p)",
+  "teaching_invariant": "Stopping work equals initial kinetic energy in the constant-force model.",
+  "limitation": "The stop uses constant friction and lumped rotor heat capacity; it omits cooling, pad fade, ABS cycling, and road grade.",
+  "scenarios": [
+    {
+      "name": "baseline",
+      "inputs": {
+        "initial_speed_m_s": 30.0,
+        "requested_brake_force_n": 10000.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_1",
+      "inputs": {
+        "initial_speed_m_s": 5.0,
+        "requested_brake_force_n": 10000.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_2",
+      "inputs": {
+        "initial_speed_m_s": 30.0,
+        "requested_brake_force_n": 18000.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "broken",
+      "inputs": {
+        "initial_speed_m_s": 30.0,
+        "requested_brake_force_n": 10000.0,
+        "broken_mode": true
+      },
+      "status": "passed"
+    },
+    {
+      "name": "recovery",
+      "inputs": {
+        "initial_speed_m_s": 30.0,
+        "requested_brake_force_n": 10000.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    }
+  ],
+  "unperformed": [
+    "MATLAB runtime comparison",
+    "learner validation",
+    "browser accessibility",
+    "measured vehicle data",
+    "firmware/radio/bench/vehicle/track execution",
+    "physical HIL/hardware"
+  ]
+}
+

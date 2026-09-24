@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "item_id": "P12",
+  "provenance": "Python-first native",
+  "reference": {
+    "path": "../../reference_cases.py",
+    "origin": "separately formulated scalar analytic or bounded numerical oracle",
+    "imports_production": false,
+    "consumes_production_output": false,
+    "tolerance_abs": "1e-10",
+    "fields": [
+      "camber_rad",
+      "toe_rad",
+      "camber_thrust_n",
+      "scrub_force_n",
+      "scrub_power_w",
+      "effective_heading_rad",
+      "invalid"
+    ]
+  },
+  "governing_relation": "F_gamma=-C_gamma*gamma; F_scrub=F_z*|tan(toe)|; P_scrub=F_scrub*V",
+  "teaching_invariant": "Zero camber removes camber thrust and zero toe removes this model's scrub loss.",
+  "limitation": "The alignment model is not a complete tire/contact-patch model and excludes compliance steer and temperature.",
+  "scenarios": [
+    {
+      "name": "baseline",
+      "inputs": {
+        "camber_deg": -2.0,
+        "toe_deg": 0.1,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_1",
+      "inputs": {
+        "camber_deg": -5.0,
+        "toe_deg": 0.1,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_2",
+      "inputs": {
+        "camber_deg": -2.0,
+        "toe_deg": 0.5,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "broken",
+      "inputs": {
+        "camber_deg": -2.0,
+        "toe_deg": 0.1,
+        "broken_mode": true
+      },
+      "status": "passed"
+    },
+    {
+      "name": "recovery",
+      "inputs": {
+        "camber_deg": -2.0,
+        "toe_deg": 0.1,
+        "broken_mode": false
+      },
+      "status": "passed"
+    }
+  ],
+  "unperformed": [
+    "MATLAB runtime comparison",
+    "learner validation",
+    "browser accessibility",
+    "measured vehicle data",
+    "firmware/radio/bench/vehicle/track execution",
+    "physical HIL/hardware"
+  ]
+}
+

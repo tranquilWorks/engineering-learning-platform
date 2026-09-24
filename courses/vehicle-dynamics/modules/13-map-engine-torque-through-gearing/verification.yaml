@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "item_id": "P13",
+  "provenance": "Python-first native",
+  "reference": {
+    "path": "../../reference_cases.py",
+    "origin": "separately formulated scalar analytic or bounded numerical oracle",
+    "imports_production": false,
+    "consumes_production_output": false,
+    "tolerance_abs": "1e-10",
+    "fields": [
+      "engine_speed_rpm",
+      "requested_wheel_force_n",
+      "applied_wheel_force_n",
+      "traction_limit_n",
+      "wheel_power_w",
+      "power_residual_w",
+      "invalid"
+    ]
+  },
+  "governing_relation": "F_w=T_e*i_g*i_f*eta/r_w; rpm=V*i_g*i_f*60/(2*pi*r_w)",
+  "teaching_invariant": "Power after efficiency equals wheel force times vehicle speed when rotational acceleration is neglected.",
+  "limitation": "The steady driveline model omits rotating inertia, clutch slip, differential behavior, and transient engine response.",
+  "scenarios": [
+    {
+      "name": "baseline",
+      "inputs": {
+        "engine_torque_n_m": 250.0,
+        "gear_ratio": 3.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_1",
+      "inputs": {
+        "engine_torque_n_m": 80.0,
+        "gear_ratio": 3.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_2",
+      "inputs": {
+        "engine_torque_n_m": 250.0,
+        "gear_ratio": 4.2,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "broken",
+      "inputs": {
+        "engine_torque_n_m": 250.0,
+        "gear_ratio": 3.0,
+        "broken_mode": true
+      },
+      "status": "passed"
+    },
+    {
+      "name": "recovery",
+      "inputs": {
+        "engine_torque_n_m": 250.0,
+        "gear_ratio": 3.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    }
+  ],
+  "unperformed": [
+    "MATLAB runtime comparison",
+    "learner validation",
+    "browser accessibility",
+    "measured vehicle data",
+    "firmware/radio/bench/vehicle/track execution",
+    "physical HIL/hardware"
+  ]
+}
+

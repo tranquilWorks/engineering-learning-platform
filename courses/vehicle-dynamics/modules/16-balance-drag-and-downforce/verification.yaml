@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "item_id": "P16",
+  "provenance": "Python-first native",
+  "reference": {
+    "path": "../../reference_cases.py",
+    "origin": "separately formulated scalar analytic or bounded numerical oracle",
+    "imports_production": false,
+    "consumes_production_output": false,
+    "tolerance_abs": "1e-10",
+    "fields": [
+      "dynamic_pressure_pa",
+      "drag_n",
+      "downforce_n",
+      "tire_capacity_n",
+      "drag_power_w",
+      "front_aero_share",
+      "invalid"
+    ]
+  },
+  "governing_relation": "q=0.5*rho*V^2; D=q*CdA; L_down=q*ClA; F_grip=mu*(m*g+L_down)",
+  "teaching_invariant": "At fixed coefficients, drag and downforce scale with speed squared.",
+  "limitation": "The steady aero map omits ride-height sensitivity, yaw, blockage, transient flow, and lap-time integration.",
+  "scenarios": [
+    {
+      "name": "baseline",
+      "inputs": {
+        "speed_m_s": 40.0,
+        "wing_angle_deg": 8.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_1",
+      "inputs": {
+        "speed_m_s": 10.0,
+        "wing_angle_deg": 8.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_2",
+      "inputs": {
+        "speed_m_s": 40.0,
+        "wing_angle_deg": 18.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "broken",
+      "inputs": {
+        "speed_m_s": 40.0,
+        "wing_angle_deg": 8.0,
+        "broken_mode": true
+      },
+      "status": "passed"
+    },
+    {
+      "name": "recovery",
+      "inputs": {
+        "speed_m_s": 40.0,
+        "wing_angle_deg": 8.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    }
+  ],
+  "unperformed": [
+    "MATLAB runtime comparison",
+    "learner validation",
+    "browser accessibility",
+    "measured vehicle data",
+    "firmware/radio/bench/vehicle/track execution",
+    "physical HIL/hardware"
+  ]
+}
+

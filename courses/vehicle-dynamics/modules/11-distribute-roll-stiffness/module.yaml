@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "id": "11-distribute-roll-stiffness",
+  "number": 11,
+  "title": "Distribute Roll Stiffness",
+  "summary": "Allocate a conserved lateral load transfer between axles using front and rear elastic roll stiffness.",
+  "guiding_question": "How does front/rear roll-stiffness distribution allocate lateral load transfer?",
+  "status": "implemented",
+  "tags": [
+    "vehicle-dynamics",
+    "phase-3",
+    "python-first-native"
+  ],
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0
+  },
+  "controls": [
+    {
+      "id": "front_roll_stiffness_n_m_rad",
+      "type": "slider",
+      "label": "Front roll stiffness",
+      "default": 32000.0,
+      "minimum": 10000.0,
+      "maximum": 60000.0,
+      "step": 2500.0,
+      "unit": "N*m/rad",
+      "description": "Change the primary physical input while holding the secondary input fixed."
+    },
+    {
+      "id": "rear_roll_stiffness_n_m_rad",
+      "type": "slider",
+      "label": "Rear roll stiffness",
+      "default": 26000.0,
+      "minimum": 10000.0,
+      "maximum": 60000.0,
+      "step": 2500.0,
+      "unit": "N*m/rad",
+      "description": "Change the secondary physical input while holding the primary input fixed."
+    },
+    {
+      "id": "broken_mode",
+      "type": "toggle",
+      "label": "Activate the named broken behavior",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "markdown",
+      "source": "lesson.md"
+    },
+    {
+      "type": "prediction",
+      "title": "Predict before running",
+      "text": "Predict the sign, trend, conserved quantity, and validity boundary before changing one input.",
+      "reveal": "Use the governing relation, then verify one variable at a time."
+    },
+    {
+      "type": "controls",
+      "title": "Vehicle-model controls"
+    },
+    {
+      "type": "metrics"
+    },
+    {
+      "type": "plot",
+      "title": "Physical response",
+      "plot": "response"
+    },
+    {
+      "type": "plot_grid",
+      "title": "One-variable sweeps",
+      "plots": [
+        "primary_sweep",
+        "secondary_sweep"
+      ]
+    },
+    {
+      "type": "plot",
+      "title": "Broken behavior and exact recovery",
+      "plot": "broken_recovery"
+    },
+    {
+      "type": "callout",
+      "tone": "info",
+      "title": "Observation",
+      "source": "observation"
+    },
+    {
+      "type": "callout",
+      "tone": "warning",
+      "title": "Broken",
+      "source": "broken"
+    },
+    {
+      "type": "callout",
+      "tone": "success",
+      "title": "Recovery",
+      "source": "recovery"
+    }
+  ]
+}

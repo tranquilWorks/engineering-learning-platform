@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "item_id": "P11",
+  "provenance": "Python-first native",
+  "reference": {
+    "path": "../../reference_cases.py",
+    "origin": "separately formulated scalar analytic or bounded numerical oracle",
+    "imports_production": false,
+    "consumes_production_output": false,
+    "tolerance_abs": "1e-10",
+    "fields": [
+      "roll_angle_rad",
+      "front_transfer_n",
+      "rear_transfer_n",
+      "front_share",
+      "moment_residual_n_m",
+      "balance_indicator",
+      "invalid"
+    ]
+  },
+  "governing_relation": "phi=M_roll/(K_phi_f+K_phi_r); DeltaF_f=K_phi_f*phi/t_f; DeltaF_r=K_phi_r*phi/t_r",
+  "teaching_invariant": "Front and rear transfer sum to M_roll/t, so their elastic roll moments sum to the applied roll moment.",
+  "limitation": "The elastic distribution excludes geometric load transfer, roll-center migration, and tire load sensitivity.",
+  "scenarios": [
+    {
+      "name": "baseline",
+      "inputs": {
+        "front_roll_stiffness_n_m_rad": 32000.0,
+        "rear_roll_stiffness_n_m_rad": 26000.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_1",
+      "inputs": {
+        "front_roll_stiffness_n_m_rad": 10000.0,
+        "rear_roll_stiffness_n_m_rad": 26000.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_2",
+      "inputs": {
+        "front_roll_stiffness_n_m_rad": 32000.0,
+        "rear_roll_stiffness_n_m_rad": 60000.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "broken",
+      "inputs": {
+        "front_roll_stiffness_n_m_rad": 32000.0,
+        "rear_roll_stiffness_n_m_rad": 26000.0,
+        "broken_mode": true
+      },
+      "status": "passed"
+    },
+    {
+      "name": "recovery",
+      "inputs": {
+        "front_roll_stiffness_n_m_rad": 32000.0,
+        "rear_roll_stiffness_n_m_rad": 26000.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    }
+  ],
+  "unperformed": [
+    "MATLAB runtime comparison",
+    "learner validation",
+    "browser accessibility",
+    "measured vehicle data",
+    "firmware/radio/bench/vehicle/track execution",
+    "physical HIL/hardware"
+  ]
+}

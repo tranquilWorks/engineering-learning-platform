@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "id": "09-choose-spring-rate-and-ride-frequency",
+  "number": 9,
+  "title": "Choose Spring Rate and Ride Frequency",
+  "summary": "Relate spring rate and suspension motion ratio to wheel rate, static deflection, and quarter-car ride frequency.",
+  "guiding_question": "How do spring rate, motion ratio, and sprung mass set wheel rate and ride frequency?",
+  "status": "implemented",
+  "tags": [
+    "vehicle-dynamics",
+    "phase-3",
+    "python-first-native"
+  ],
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0
+  },
+  "controls": [
+    {
+      "id": "spring_rate_n_m",
+      "type": "slider",
+      "label": "Spring rate",
+      "default": 35000.0,
+      "minimum": 15000.0,
+      "maximum": 80000.0,
+      "step": 2500.0,
+      "unit": "N/m",
+      "description": "Change the primary physical input while holding the secondary input fixed."
+    },
+    {
+      "id": "motion_ratio",
+      "type": "slider",
+      "label": "Spring-travel / wheel-travel ratio",
+      "default": 0.9,
+      "minimum": 0.6,
+      "maximum": 1.1,
+      "step": 0.025,
+      "unit": "ratio",
+      "description": "Change the secondary physical input while holding the primary input fixed."
+    },
+    {
+      "id": "broken_mode",
+      "type": "toggle",
+      "label": "Activate the named broken behavior",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "markdown",
+      "source": "lesson.md"
+    },
+    {
+      "type": "prediction",
+      "title": "Predict before running",
+      "text": "Predict the sign, trend, conserved quantity, and validity boundary before changing one input.",
+      "reveal": "Use the governing relation, then verify one variable at a time."
+    },
+    {
+      "type": "controls",
+      "title": "Vehicle-model controls"
+    },
+    {
+      "type": "metrics"
+    },
+    {
+      "type": "plot",
+      "title": "Physical response",
+      "plot": "response"
+    },
+    {
+      "type": "plot_grid",
+      "title": "One-variable sweeps",
+      "plots": [
+        "primary_sweep",
+        "secondary_sweep"
+      ]
+    },
+    {
+      "type": "plot",
+      "title": "Broken behavior and exact recovery",
+      "plot": "broken_recovery"
+    },
+    {
+      "type": "callout",
+      "tone": "info",
+      "title": "Observation",
+      "source": "observation"
+    },
+    {
+      "type": "callout",
+      "tone": "warning",
+      "title": "Broken",
+      "source": "broken"
+    },
+    {
+      "type": "callout",
+      "tone": "success",
+      "title": "Recovery",
+      "source": "recovery"
+    }
+  ]
+}

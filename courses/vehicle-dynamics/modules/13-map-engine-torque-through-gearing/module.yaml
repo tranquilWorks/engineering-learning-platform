@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "id": "13-map-engine-torque-through-gearing",
+  "number": 13,
+  "title": "Map Engine Torque through Gearing",
+  "summary": "Map engine torque and selected gear through final drive, efficiency, wheel radius, speed, rpm, and a tire-force cap.",
+  "guiding_question": "How do gearing, efficiency, and wheel radius turn engine torque into bounded wheel force?",
+  "status": "implemented",
+  "tags": [
+    "vehicle-dynamics",
+    "phase-4",
+    "python-first-native"
+  ],
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0
+  },
+  "controls": [
+    {
+      "id": "engine_torque_n_m",
+      "type": "slider",
+      "label": "Engine torque",
+      "default": 250.0,
+      "minimum": 80.0,
+      "maximum": 320.0,
+      "step": 10.0,
+      "unit": "N*m",
+      "description": "Change the primary physical input while holding the secondary input fixed."
+    },
+    {
+      "id": "gear_ratio",
+      "type": "slider",
+      "label": "Selected gear ratio",
+      "default": 3.0,
+      "minimum": 0.8,
+      "maximum": 4.2,
+      "step": 0.1,
+      "unit": "ratio",
+      "description": "Change the secondary physical input while holding the primary input fixed."
+    },
+    {
+      "id": "broken_mode",
+      "type": "toggle",
+      "label": "Activate the named broken behavior",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "markdown",
+      "source": "lesson.md"
+    },
+    {
+      "type": "prediction",
+      "title": "Predict before running",
+      "text": "Predict the sign, trend, conserved quantity, and validity boundary before changing one input.",
+      "reveal": "Use the governing relation, then verify one variable at a time."
+    },
+    {
+      "type": "controls",
+      "title": "Vehicle-model controls"
+    },
+    {
+      "type": "metrics"
+    },
+    {
+      "type": "plot",
+      "title": "Physical response",
+      "plot": "response"
+    },
+    {
+      "type": "plot_grid",
+      "title": "One-variable sweeps",
+      "plots": [
+        "primary_sweep",
+        "secondary_sweep"
+      ]
+    },
+    {
+      "type": "plot",
+      "title": "Broken behavior and exact recovery",
+      "plot": "broken_recovery"
+    },
+    {
+      "type": "callout",
+      "tone": "info",
+      "title": "Observation",
+      "source": "observation"
+    },
+    {
+      "type": "callout",
+      "tone": "warning",
+      "title": "Broken",
+      "source": "broken"
+    },
+    {
+      "type": "callout",
+      "tone": "success",
+      "title": "Recovery",
+      "source": "recovery"
+    }
+  ]
+}

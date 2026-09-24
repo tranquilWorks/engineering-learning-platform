@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "id": "10-see-damping-change-transient-motion",
+  "number": 10,
+  "title": "See Damping Change Transient Motion",
+  "summary": "Connect wheel rate and damper coefficient to modal frequency, damping ratio, overshoot, decay, and settling time.",
+  "guiding_question": "How does damping ratio change overshoot, decay rate, and settling time?",
+  "status": "implemented",
+  "tags": [
+    "vehicle-dynamics",
+    "phase-3",
+    "python-first-native"
+  ],
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0
+  },
+  "controls": [
+    {
+      "id": "damping_n_s_m",
+      "type": "slider",
+      "label": "Damper coefficient",
+      "default": 3200.0,
+      "minimum": 400.0,
+      "maximum": 8000.0,
+      "step": 200.0,
+      "unit": "N*s/m",
+      "description": "Change the primary physical input while holding the secondary input fixed."
+    },
+    {
+      "id": "spring_rate_n_m",
+      "type": "slider",
+      "label": "Wheel rate",
+      "default": 35000.0,
+      "minimum": 15000.0,
+      "maximum": 70000.0,
+      "step": 2500.0,
+      "unit": "N/m",
+      "description": "Change the secondary physical input while holding the primary input fixed."
+    },
+    {
+      "id": "broken_mode",
+      "type": "toggle",
+      "label": "Activate the named broken behavior",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "markdown",
+      "source": "lesson.md"
+    },
+    {
+      "type": "prediction",
+      "title": "Predict before running",
+      "text": "Predict the sign, trend, conserved quantity, and validity boundary before changing one input.",
+      "reveal": "Use the governing relation, then verify one variable at a time."
+    },
+    {
+      "type": "controls",
+      "title": "Vehicle-model controls"
+    },
+    {
+      "type": "metrics"
+    },
+    {
+      "type": "plot",
+      "title": "Physical response",
+      "plot": "response"
+    },
+    {
+      "type": "plot_grid",
+      "title": "One-variable sweeps",
+      "plots": [
+        "primary_sweep",
+        "secondary_sweep"
+      ]
+    },
+    {
+      "type": "plot",
+      "title": "Broken behavior and exact recovery",
+      "plot": "broken_recovery"
+    },
+    {
+      "type": "callout",
+      "tone": "info",
+      "title": "Observation",
+      "source": "observation"
+    },
+    {
+      "type": "callout",
+      "tone": "warning",
+      "title": "Broken",
+      "source": "broken"
+    },
+    {
+      "type": "callout",
+      "tone": "success",
+      "title": "Recovery",
+      "source": "recovery"
+    }
+  ]
+}
