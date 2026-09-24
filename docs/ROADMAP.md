@@ -207,7 +207,7 @@ The final three lessons are cumulative capstones: identification/control/estimat
 
 ## ELP-VEHICLE-PREP-00 — Vehicle Dynamics governed preparation
 
-**Status:** Prepared; no Vehicle Dynamics lesson is implemented.
+**Status:** Prep complete; P01-P08 implemented in the separately authorized first batch.
 
 **Depends on:** `ELP-ROB-SYSTEMS-CAPSTONES-P66-P69`
 
@@ -217,11 +217,13 @@ only the read-only source gitlink, installs the exact 24-item source and coverag
 ledgers, mirrors the reviewed map, and adds deterministic synthetic GR86
 CAN/RaceChrono BLE protocol fixtures with independent decode and fault checks.
 
-The prep catalog has six courses, 223 modules, and 223 interactive modules;
-Vehicle Dynamics contributes zero modules. The fixture is not measured vehicle
+The first implementation catalog has six courses, 231 modules, and 231 interactive modules;
+Vehicle Dynamics contributes P01-P08. The fixture is not measured vehicle
 data and does not validate firmware, radio, bench, vehicle, track, or physical
 HIL behavior. `ELP-VEHICLE-P01-P08` requires a separate Portfolio Control
-authorization against the exact merged prep target commit and tree.
+authorization against the exact merged prep target commit and tree. P01-P08 now
+provide distinct bounded models, independent scalar references, five-scenario
+evidence, named failures, and exact recoveries. P09-P16 remains separately gated.
 
 ## B020 — Course ingestion and migration tooling
 

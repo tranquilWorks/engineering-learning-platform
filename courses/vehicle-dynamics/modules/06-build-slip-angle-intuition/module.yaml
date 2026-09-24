@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "id": "06-build-slip-angle-intuition",
+  "number": 6,
+  "title": "Build Slip-Angle Intuition",
+  "summary": "A bounded deterministic vehicle model with two sweeps and named failure/recovery.",
+  "guiding_question": "What physical inputs and limits matter when you build slip-angle intuition?",
+  "status": "implemented",
+  "tags": [
+    "vehicle-dynamics",
+    "phase-2",
+    "python-first-native"
+  ],
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0
+  },
+  "controls": [
+    {
+      "id": "slip_angle_deg",
+      "type": "slider",
+      "label": "slip_angle_deg",
+      "default": 4.0,
+      "minimum": -14.0,
+      "maximum": 14.0,
+      "step": 1.4,
+      "unit": "deg",
+      "description": "Change one physical input while holding the other fixed."
+    },
+    {
+      "id": "normal_load_n",
+      "type": "slider",
+      "label": "normal_load_n",
+      "default": 3600.0,
+      "minimum": 1000.0,
+      "maximum": 6000.0,
+      "step": 250.0,
+      "unit": "N",
+      "description": "Change one physical input while holding the other fixed."
+    },
+    {
+      "id": "broken_mode",
+      "type": "toggle",
+      "label": "Activate named broken behavior",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "markdown",
+      "source": "lesson.md"
+    },
+    {
+      "type": "prediction",
+      "title": "Predict before running",
+      "text": "Predict sign, trend, and boundary before changing one input.",
+      "reveal": "Use the governing equation, then verify one variable at a time."
+    },
+    {
+      "type": "controls",
+      "title": "Vehicle model controls"
+    },
+    {
+      "type": "metrics"
+    },
+    {
+      "type": "plot",
+      "title": "Model response",
+      "plot": "response"
+    },
+    {
+      "type": "plot_grid",
+      "title": "One-variable sweeps",
+      "plots": [
+        "primary_sweep",
+        "secondary_sweep"
+      ]
+    },
+    {
+      "type": "plot",
+      "title": "Broken behavior and recovery",
+      "plot": "broken_recovery"
+    },
+    {
+      "type": "callout",
+      "tone": "info",
+      "title": "Observation",
+      "source": "observation"
+    },
+    {
+      "type": "callout",
+      "tone": "warning",
+      "title": "Broken",
+      "source": "broken"
+    },
+    {
+      "type": "callout",
+      "tone": "success",
+      "title": "Recovery",
+      "source": "recovery"
+    }
+  ]
+}
+

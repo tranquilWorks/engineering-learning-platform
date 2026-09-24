@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "id": "01-turn-steering-and-speed-into-a-vehicle-path",
+  "number": 1,
+  "title": "Turn Steering and Speed into a Vehicle Path",
+  "summary": "A bounded deterministic vehicle model with two sweeps and named failure/recovery.",
+  "guiding_question": "What physical inputs and limits matter when you turn steering and speed into a vehicle path?",
+  "status": "implemented",
+  "tags": [
+    "vehicle-dynamics",
+    "phase-1",
+    "implemented-source"
+  ],
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0
+  },
+  "controls": [
+    {
+      "id": "steering_deg",
+      "type": "slider",
+      "label": "steering_deg",
+      "default": 5.0,
+      "minimum": -20.0,
+      "maximum": 20.0,
+      "step": 2.0,
+      "unit": "deg",
+      "description": "Change one physical input while holding the other fixed."
+    },
+    {
+      "id": "speed_mps",
+      "type": "slider",
+      "label": "speed_mps",
+      "default": 15.0,
+      "minimum": 1.0,
+      "maximum": 45.0,
+      "step": 2.2,
+      "unit": "m/s",
+      "description": "Change one physical input while holding the other fixed."
+    },
+    {
+      "id": "broken_mode",
+      "type": "toggle",
+      "label": "Activate named broken behavior",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "markdown",
+      "source": "lesson.md"
+    },
+    {
+      "type": "prediction",
+      "title": "Predict before running",
+      "text": "Predict sign, trend, and boundary before changing one input.",
+      "reveal": "Use the governing equation, then verify one variable at a time."
+    },
+    {
+      "type": "controls",
+      "title": "Vehicle model controls"
+    },
+    {
+      "type": "metrics"
+    },
+    {
+      "type": "plot",
+      "title": "Model response",
+      "plot": "response"
+    },
+    {
+      "type": "plot_grid",
+      "title": "One-variable sweeps",
+      "plots": [
+        "primary_sweep",
+        "secondary_sweep"
+      ]
+    },
+    {
+      "type": "plot",
+      "title": "Broken behavior and recovery",
+      "plot": "broken_recovery"
+    },
+    {
+      "type": "callout",
+      "tone": "info",
+      "title": "Observation",
+      "source": "observation"
+    },
+    {
+      "type": "callout",
+      "tone": "warning",
+      "title": "Broken",
+      "source": "broken"
+    },
+    {
+      "type": "callout",
+      "tone": "success",
+      "title": "Recovery",
+      "source": "recovery"
+    }
+  ]
+}
+

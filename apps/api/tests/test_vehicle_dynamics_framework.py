@@ -24,13 +24,9 @@ SOURCE_TREE = "d9e7267ba02c8d3d836c0ae481b80e91233eb81a"
 CURRICULUM_SHA256 = "c452996e5253ec7e547a64cccd4aa8af60dc5f4106311d1dec25ec8d5c48eba6"
 SOURCE_FILE_SET_SHA256 = "15de22f8396cf978e80e55f2ed7541234804913c81dbef71cb85c81508472d11"
 MAP_SHA256 = "87dae868d7e3a0181062a4fd42ff316513b0f6f35c053cb56b5d73b9c56bde6d"
-ACTIVE_CONTRACT_SHA256 = "3bea637ff64175cb2f9d0a5e6010a1466bae25e0416662adf06bb56adfe8f61e"
+ACTIVE_CONTRACT_SHA256 = "7c9be1f7da5b8b4c34a745e48d3b831483480d1365cc163ad9676fb8ea423987"
 FRAMEWORK_SHA256 = {
     "source-map.yaml": "1533c3a5f78447adb3008796530796ade0da18a4c4bda57e565c82548ff4c298",
-    "conversion-manifest.yaml": (
-        "4b4b4caa08c05260f900c9d5f5dd1addb0068f134b81c0292bf7a575a60681d9"
-    ),
-    "coverage.yaml": "3419cb1eabaaafaa9dcaddd3d221af65674e2ef731df6eddd0ee2b859fd14cc4",
     "course.yaml": "8b25d17589cb56bf8c1e2501298d092d9db11aeb6a42f5673f956029d15b5681",
 }
 FIXTURE_SHA256 = {
@@ -228,7 +224,7 @@ def test_exact_source_map_and_read_only_gitlink() -> None:
             assert _sha256(SOURCE_ROOT / identity["path"]) == identity["sha256"]
 
 
-def test_conversion_ledgers_are_exactly_pending_and_module_free() -> None:
+def test_conversion_ledgers_record_exact_first_batch_transition() -> None:
     for name, expected in FRAMEWORK_SHA256.items():
         assert _sha256(COURSE_ROOT / name) == expected
     source_map = _load(COURSE_ROOT / "source-map.yaml")
@@ -236,13 +232,10 @@ def test_conversion_ledgers_are_exactly_pending_and_module_free() -> None:
     coverage = _load(COURSE_ROOT / "coverage.yaml")
     assert conversion["source_map_sha256"] == FRAMEWORK_SHA256["source-map.yaml"]
     assert coverage["source_map_sha256"] == FRAMEWORK_SHA256["source-map.yaml"]
-    assert coverage["conversion_manifest_sha256"] == FRAMEWORK_SHA256[
-        "conversion-manifest.yaml"
-    ]
     assert coverage["summary"] == {
         "total": 24,
-        "pending": 24,
-        "converted": 0,
+        "pending": 16,
+        "converted": 8,
         "blocked": 0,
         "placeholder": 0,
     }
@@ -256,17 +249,22 @@ def test_conversion_ledgers_are_exactly_pending_and_module_free() -> None:
         "phase_title",
         "source_status",
     )
-    for source_item, conversion_item, coverage_item in zip(
+    for index, (source_item, conversion_item, coverage_item) in enumerate(zip(
         source_map["items"], conversion["items"], coverage["items"], strict=True
-    ):
+    ), 1):
         assert {key: conversion_item[key] for key in stable_keys} == {
             key: source_item[key] for key in stable_keys
         }
-        assert coverage_item["status"] == "pending"
-        assert coverage_item["conversion_record"] is None
-        assert coverage_item["target_content_digest"] is None
+        expected_status = "converted" if index <= 8 else "pending"
+        assert coverage_item["status"] == expected_status
+        if index <= 8:
+            assert coverage_item["conversion_record"]["batch_id"] == "ELP-VEHICLE-P01-P08"
+            assert len(coverage_item["target_content_digest"]) == 64
+        else:
+            assert coverage_item["conversion_record"] is None
+            assert coverage_item["target_content_digest"] is None
         assert coverage_item["blocker"] is None
-    assert not (COURSE_ROOT / "modules").exists()
+    assert len(list((COURSE_ROOT / "modules").glob("*/module.yaml"))) == 8
 
 
 def test_fixture_identity_provenance_and_privacy_boundary() -> None:
@@ -416,28 +414,28 @@ def test_fixture_verifier_is_generator_independent_and_passes(capsys: Any) -> No
     }
 
 
-def test_prep_catalog_is_six_courses_with_no_vehicle_modules() -> None:
+def test_first_batch_catalog_is_six_courses_with_eight_vehicle_modules() -> None:
     catalog = CourseCatalog([ROOT / "courses"])
     summaries = {item.id: item for item in catalog.summaries()}
     assert len(summaries) == 6
-    assert sum(len(item.modules) for item in summaries.values()) == 223
+    assert sum(len(item.modules) for item in summaries.values()) == 231
     assert sum(
         module.interactive
         for course in summaries.values()
         for module in course.modules
-    ) == 223
-    assert summaries["vehicle-dynamics"].modules == []
+    ) == 231
+    assert len(summaries["vehicle-dynamics"].modules) == 8
 
 
-def test_active_contract_is_exact_merged_prep_authorization() -> None:
+def test_active_contract_is_exact_merged_first_batch_authorization() -> None:
     contract_path = ROOT / "contracts/active-batch.yaml"
     contract = yaml.safe_load(contract_path.read_text(encoding="utf-8"))
     assert _sha256(contract_path) == ACTIVE_CONTRACT_SHA256
-    assert contract["batch"]["id"] == "ELP-VEHICLE-PREP-00"
+    assert contract["batch"]["id"] == "ELP-VEHICLE-P01-P08"
     assert contract["sources"]["baseline_commit"] == (
-        "8e5ff391f75f39218e51ed98aac8bcdb092550a0"
+        "7188d370b52dd9812634ae431fa652525d081634"
     )
     assert contract["sources"]["competency_map_sha256"] == MAP_SHA256
-    assert contract["sources"]["fixture_files"] == FIXTURE_SHA256
-    assert "courses/vehicle-dynamics/modules/**" in contract["scope"]["forbidden_paths"]
+    assert "courses/vehicle-dynamics/modules/01-*/**" in contract["scope"]["allowed_paths"]
+    assert "courses/vehicle-dynamics/modules/09-*/**" in contract["scope"]["forbidden_paths"]
     assert contract["validation"]["required_ci"] == []

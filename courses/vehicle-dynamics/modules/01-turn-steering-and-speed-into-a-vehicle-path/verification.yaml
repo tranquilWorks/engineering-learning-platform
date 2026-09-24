@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "item_id": "P01",
+  "provenance": "implemented-source comparison",
+  "reference": {
+    "path": "../../reference_cases.py",
+    "origin": "separately formulated scalar analytic oracle",
+    "imports_production": false,
+    "consumes_production_output": false,
+    "tolerance_abs": "1e-10",
+    "fields": "ordered finite SI signature"
+  },
+  "governing_relation": "curvature = tan(steering/ratio)/wheelbase; yaw_rate = speed*curvature; lateral_acceleration = speed*yaw_rate",
+  "teaching_invariant": "Absolute lateral acceleration cannot exceed mu*g without sliding.",
+  "limitation": "Kinematic bicycle behavior omits tire compliance and transients.",
+  "scenarios": [
+    {
+      "name": "baseline",
+      "inputs": {
+        "steering_deg": 5.0,
+        "speed_mps": 15.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_1",
+      "inputs": {
+        "steering_deg": -20.0,
+        "speed_mps": 15.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_2",
+      "inputs": {
+        "steering_deg": 5.0,
+        "speed_mps": 45.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "broken",
+      "inputs": {
+        "steering_deg": 5.0,
+        "speed_mps": 15.0,
+        "broken_mode": true
+      },
+      "status": "passed"
+    },
+    {
+      "name": "recovery",
+      "inputs": {
+        "steering_deg": 5.0,
+        "speed_mps": 15.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    }
+  ],
+  "unperformed": [
+    "MATLAB runtime comparison",
+    "learner validation",
+    "browser accessibility",
+    "measured vehicle data",
+    "firmware/radio/bench/vehicle/track execution",
+    "physical HIL/hardware"
+  ]
+}
+

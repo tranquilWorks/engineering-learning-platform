@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "item_id": "P05",
+  "provenance": "Python-first native",
+  "reference": {
+    "path": "../../reference_cases.py",
+    "origin": "separately formulated scalar analytic oracle",
+    "imports_production": false,
+    "consumes_production_output": false,
+    "tolerance_abs": "1e-10",
+    "fields": "ordered finite SI signature"
+  },
+  "governing_relation": "Fx = mu*Fz*tanh(Ck*kappa/(mu*Fz))",
+  "teaching_invariant": "Force is zero at zero slip, linear near zero, then saturates.",
+  "limitation": "The curve omits temperature, pressure, speed, and load sensitivity.",
+  "scenarios": [
+    {
+      "name": "baseline",
+      "inputs": {
+        "slip_ratio": 0.08,
+        "normal_load_n": 3600.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_1",
+      "inputs": {
+        "slip_ratio": -0.3,
+        "normal_load_n": 3600.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_2",
+      "inputs": {
+        "slip_ratio": 0.08,
+        "normal_load_n": 6000.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "broken",
+      "inputs": {
+        "slip_ratio": 0.08,
+        "normal_load_n": 3600.0,
+        "broken_mode": true
+      },
+      "status": "passed"
+    },
+    {
+      "name": "recovery",
+      "inputs": {
+        "slip_ratio": 0.08,
+        "normal_load_n": 3600.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    }
+  ],
+  "unperformed": [
+    "MATLAB runtime comparison",
+    "learner validation",
+    "browser accessibility",
+    "measured vehicle data",
+    "firmware/radio/bench/vehicle/track execution",
+    "physical HIL/hardware"
+  ]
+}
+

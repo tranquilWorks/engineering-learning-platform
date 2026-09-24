@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "item_id": "P03",
+  "provenance": "Python-first native",
+  "reference": {
+    "path": "../../reference_cases.py",
+    "origin": "separately formulated scalar analytic oracle",
+    "imports_production": false,
+    "consumes_production_output": false,
+    "tolerance_abs": "1e-10",
+    "fields": "ordered finite SI signature"
+  },
+  "governing_relation": "load transfer = mass*acceleration*CG height/wheelbase",
+  "teaching_invariant": "Front plus rear axle load remains mass*g.",
+  "limitation": "Quasi-static pitch omits suspension compliance and pitch inertia.",
+  "scenarios": [
+    {
+      "name": "baseline",
+      "inputs": {
+        "acceleration_mps2": 4.0,
+        "cg_height_m": 0.5,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_1",
+      "inputs": {
+        "acceleration_mps2": -9.0,
+        "cg_height_m": 0.5,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_2",
+      "inputs": {
+        "acceleration_mps2": 4.0,
+        "cg_height_m": 0.85,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "broken",
+      "inputs": {
+        "acceleration_mps2": 4.0,
+        "cg_height_m": 0.5,
+        "broken_mode": true
+      },
+      "status": "passed"
+    },
+    {
+      "name": "recovery",
+      "inputs": {
+        "acceleration_mps2": 4.0,
+        "cg_height_m": 0.5,
+        "broken_mode": false
+      },
+      "status": "passed"
+    }
+  ],
+  "unperformed": [
+    "MATLAB runtime comparison",
+    "learner validation",
+    "browser accessibility",
+    "measured vehicle data",
+    "firmware/radio/bench/vehicle/track execution",
+    "physical HIL/hardware"
+  ]
+}
+
