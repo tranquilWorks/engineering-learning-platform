@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "item_id": "P60",
+  "signature_fields": [
+    {
+      "field": "missing_sequences",
+      "unit": "record"
+    },
+    {
+      "field": "duplicate_sequences",
+      "unit": "record"
+    },
+    {
+      "field": "out_of_order_pairs",
+      "unit": "pair"
+    },
+    {
+      "field": "malformed_payloads",
+      "unit": "record"
+    },
+    {
+      "field": "recovered_valid_records",
+      "unit": "record"
+    },
+    {
+      "field": "fixture_provenance_verified",
+      "unit": "1"
+    },
+    {
+      "field": "diagnostic_ledger_residual",
+      "unit": "record"
+    }
+  ],
+  "origin": {
+    "kind": "production-experiment",
+    "independent": false,
+    "imports_production_entrypoint": true,
+    "derived_from_production_output": true,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "inspection_limit": 309,
+        "reorder_window": 2,
+        "broken_mode": false
+      },
+      "signature": [
+        2.0,
+        1.0,
+        1.0,
+        1.0,
+        307.0,
+        1.0,
+        0.0
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "inspection_limit": 180,
+        "reorder_window": 2,
+        "broken_mode": false
+      },
+      "signature": [
+        2.0,
+        1.0,
+        1.0,
+        1.0,
+        178.0,
+        1.0,
+        0.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "inspection_limit": 309,
+        "reorder_window": 0,
+        "broken_mode": false
+      },
+      "signature": [
+        2.0,
+        1.0,
+        1.0,
+        1.0,
+        306.0,
+        1.0,
+        0.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "inspection_limit": 309,
+        "reorder_window": 2,
+        "broken_mode": true
+      },
+      "signature": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        309.0,
+        0.0,
+        8.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "inspection_limit": 309,
+        "reorder_window": 2,
+        "broken_mode": false
+      },
+      "signature": [
+        2.0,
+        1.0,
+        1.0,
+        1.0,
+        307.0,
+        1.0,
+        0.0
+      ]
+    }
+  }
+}

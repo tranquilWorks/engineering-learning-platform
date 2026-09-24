@@ -1,0 +1,22 @@
+schema_version: 1
+id: 59-quantify-identifiability-residuals-and-uncertainty
+number: 59
+title: Quantify Identifiability, Residuals, and Uncertainty
+summary: Audit singular values, residual structure, covariance scale, and interval coverage for a two-parameter vehicle fit.
+guiding_question: Why do small residuals fail to prove that fitted parameters are identifiable?
+status: implemented
+tags: [vehicle-dynamics, native-python, identification, uncertainty, residuals]
+runtime: {kind: python, entrypoint: "experiment.py:run", trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: excitation_level, type: slider, label: Maneuver excitation, default: 0.70, unit: "1", minimum: 0.20, maximum: 1.00, step: 0.05}
+- {id: noise_sigma_n, type: slider, label: Declared force noise, default: 80, unit: N, minimum: 20, maximum: 150, step: 5}
+- {id: broken_mode, type: toggle, label: Enable the intentionally broken case, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- {type: prediction, title: Predict before running, text: Poor excitation can leave parameters uncertain despite a small fit residual., reveal: "Audit singular values, residual correlation, covariance, and coverage together."}
+- {type: controls, title: Identifiability controls}
+- {type: metrics}
+- {type: plot_grid, title: Response and mechanism, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken-case interpretation, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}

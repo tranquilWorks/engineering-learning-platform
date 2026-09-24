@@ -1,0 +1,22 @@
+schema_version: 1
+id: 56-reconstruct-a-driven-trajectory
+number: 56
+title: Reconstruct a Driven Trajectory
+summary: Integrate speed and yaw rate into a planar path and apply bounded synthetic position corrections.
+guiding_question: Which timing and angle conventions make a reconstructed path close against a reference trajectory?
+status: implemented
+tags: [vehicle-dynamics, native-python, telemetry, trajectory, dead-reckoning]
+runtime: {kind: python, entrypoint: "experiment.py:run", trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: initial_heading_deg, type: slider, label: Initial heading, default: 15, unit: deg, minimum: -30, maximum: 30, step: 1}
+- {id: gps_blend, type: slider, label: Position correction gain, default: 0.12, unit: "1/s", minimum: 0, maximum: 0.30, step: 0.01}
+- {id: broken_mode, type: toggle, label: Enable the intentionally broken case, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- {type: prediction, title: Predict before running, text: Degree-valued rates cannot enter radian trigonometry directly., reveal: Convert once and integrate on the timestamp grid before bounded correction.}
+- {type: controls, title: Trajectory controls}
+- {type: metrics}
+- {type: plot_grid, title: Response and mechanism, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken-case interpretation, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}

@@ -1,0 +1,28 @@
+schema_version: 1
+item_id: P54
+module: 54-align-clocks-rates-and-dropped-packets
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- t_aligned=t_source-delta_t
+- missing={k where t_k is absent from the declared grid}
+- x_grid=bounded_linear_interpolation(t_aligned,x)
+signature:
+- {field: recovered_clock_offset, unit: ms}
+- {field: dropped_samples, unit: sample}
+- {field: aligned_samples, unit: sample}
+- {field: maximum_gap, unit: ms}
+- {field: alignment_rmse, unit: "1"}
+- {field: clock_residual, unit: ms}
+teaching_invariant: Clock epochs must align before interpolation, and every repaired interval must stay within a declared maximum gap.
+limiting_cases:
+- With zero clock offset the epoch correction vanishes but gap detection remains active.
+- Longer drop periods reduce missing samples without changing the reference-grid sample count.
+scenarios:
+  baseline: {clock_offset_ms: 12, drop_period: 7, broken_mode: false}
+  sweep_1: {clock_offset_ms: -18, drop_period: 7, broken_mode: false}
+  sweep_2: {clock_offset_ms: 12, drop_period: 10, broken_mode: false}
+  broken: {clock_offset_ms: 12, drop_period: 7, broken_mode: true}
+  recovery: {clock_offset_ms: 12, drop_period: 7, broken_mode: false}
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic synthetic timing software only; no measured clock, receiver, network, vehicle, MATLAB, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

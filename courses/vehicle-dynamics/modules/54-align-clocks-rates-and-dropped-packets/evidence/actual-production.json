@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "item_id": "P54",
+  "signature_fields": [
+    {
+      "field": "recovered_clock_offset",
+      "unit": "ms"
+    },
+    {
+      "field": "dropped_samples",
+      "unit": "sample"
+    },
+    {
+      "field": "aligned_samples",
+      "unit": "sample"
+    },
+    {
+      "field": "maximum_gap",
+      "unit": "ms"
+    },
+    {
+      "field": "alignment_rmse",
+      "unit": "1"
+    },
+    {
+      "field": "clock_residual",
+      "unit": "ms"
+    }
+  ],
+  "origin": {
+    "kind": "production-experiment",
+    "independent": false,
+    "imports_production_entrypoint": true,
+    "derived_from_production_output": true,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "clock_offset_ms": 12,
+        "drop_period": 7,
+        "broken_mode": false
+      },
+      "signature": [
+        12.0,
+        14.0,
+        101.0,
+        40.000000000000036,
+        0.0012044249281097622,
+        0.0
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "clock_offset_ms": -18,
+        "drop_period": 7,
+        "broken_mode": false
+      },
+      "signature": [
+        -18.0,
+        14.0,
+        101.0,
+        40.000000000000036,
+        0.0012044249281097622,
+        0.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "clock_offset_ms": 12,
+        "drop_period": 10,
+        "broken_mode": false
+      },
+      "signature": [
+        12.0,
+        10.0,
+        101.0,
+        40.000000000000036,
+        0.005253407237284978,
+        0.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "clock_offset_ms": 12,
+        "drop_period": 7,
+        "broken_mode": true
+      },
+      "signature": [
+        0.0,
+        14.0,
+        101.0,
+        40.000000000000036,
+        0.03735060224134858,
+        12.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "clock_offset_ms": 12,
+        "drop_period": 7,
+        "broken_mode": false
+      },
+      "signature": [
+        12.0,
+        14.0,
+        101.0,
+        40.000000000000036,
+        0.0012044249281097622,
+        0.0
+      ]
+    }
+  }
+}

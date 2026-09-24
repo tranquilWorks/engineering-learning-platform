@@ -1,0 +1,22 @@
+schema_version: 1
+id: 54-align-clocks-rates-and-dropped-packets
+number: 54
+title: Align Clocks, Rates, and Dropped Packets
+summary: Recover a clock offset, detect dropped samples, and reconstruct a bounded asynchronous stream on a reference time grid.
+guiding_question: When does interpolation repair sampling gaps, and when does it hide clock error?
+status: implemented
+tags: [vehicle-dynamics, native-python, telemetry, timing, interpolation]
+runtime: {kind: python, entrypoint: "experiment.py:run", trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: clock_offset_ms, type: slider, label: Source clock offset, default: 12, unit: ms, minimum: -25, maximum: 25, step: 1}
+- {id: drop_period, type: slider, label: Drop period, default: 7, unit: sample, minimum: 4, maximum: 12, step: 1}
+- {id: broken_mode, type: toggle, label: Enable the intentionally broken case, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- {type: prediction, title: Predict before running, text: Timestamp offset remains visible even after interpolation., reveal: Normalize epochs before filling only bounded gaps.}
+- {type: controls, title: Clock and gap controls}
+- {type: metrics}
+- {type: plot_grid, title: Response and mechanism, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken-case interpretation, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}

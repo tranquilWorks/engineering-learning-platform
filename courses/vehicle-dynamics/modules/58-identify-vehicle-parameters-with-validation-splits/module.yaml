@@ -1,0 +1,22 @@
+schema_version: 1
+id: 58-identify-vehicle-parameters-with-validation-splits
+number: 58
+title: Identify Vehicle Parameters with Validation Splits
+summary: Estimate two vehicle parameters from chronological training data and score a held-out future segment.
+guiding_question: How does chronological leakage make an identification result look better than it is?
+status: implemented
+tags: [vehicle-dynamics, native-python, identification, validation, leakage]
+runtime: {kind: python, entrypoint: "experiment.py:run", trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: training_fraction, type: slider, label: Training fraction, default: 0.65, unit: fraction, minimum: 0.50, maximum: 0.80, step: 0.05}
+- {id: observation_noise_n, type: slider, label: Force disturbance, default: 50, unit: N, minimum: 10, maximum: 120, step: 5}
+- {id: broken_mode, type: toggle, label: Enable the intentionally broken case, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- {type: prediction, title: Predict before running, text: A split made after fitting cannot validate future performance., reveal: Freeze chronological training rows before estimating parameters.}
+- {type: controls, title: Identification controls}
+- {type: metrics}
+- {type: plot_grid, title: Response and mechanism, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken-case interpretation, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}

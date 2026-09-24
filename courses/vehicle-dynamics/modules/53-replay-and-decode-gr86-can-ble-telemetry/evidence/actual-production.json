@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "item_id": "P53",
+  "signature_fields": [
+    {
+      "field": "replayed_records",
+      "unit": "record"
+    },
+    {
+      "field": "last_engine_speed",
+      "unit": "rpm"
+    },
+    {
+      "field": "mean_wheel_speed",
+      "unit": "km/h"
+    },
+    {
+      "field": "parity_failures",
+      "unit": "record"
+    },
+    {
+      "field": "synthetic_fixture_provenance_verified",
+      "unit": "1"
+    },
+    {
+      "field": "decode_rmse",
+      "unit": "engineering_unit"
+    }
+  ],
+  "origin": {
+    "kind": "production-experiment",
+    "independent": false,
+    "imports_production_entrypoint": true,
+    "derived_from_production_output": true,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "record_limit": 60,
+        "engine_scale_rpm_count": 0.25,
+        "broken_mode": false
+      },
+      "signature": [
+        60.0,
+        2924.0,
+        39.05016447368421,
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "record_limit": 96,
+        "engine_scale_rpm_count": 0.25,
+        "broken_mode": false
+      },
+      "signature": [
+        96.0,
+        3140.0,
+        40.85017641129032,
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "record_limit": 60,
+        "engine_scale_rpm_count": 0.27,
+        "broken_mode": false
+      },
+      "signature": [
+        60.0,
+        3157.92,
+        39.05016447368421,
+        0.0,
+        1.0,
+        129.84307557918555
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "record_limit": 60,
+        "engine_scale_rpm_count": 0.25,
+        "broken_mode": true
+      },
+      "signature": [
+        60.0,
+        11275.25,
+        242.04358552631578,
+        0.0,
+        1.0,
+        3855.401963562428
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "record_limit": 60,
+        "engine_scale_rpm_count": 0.25,
+        "broken_mode": false
+      },
+      "signature": [
+        60.0,
+        2924.0,
+        39.05016447368421,
+        0.0,
+        1.0,
+        0.0
+      ]
+    }
+  }
+}
