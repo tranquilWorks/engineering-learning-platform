@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "id": "20-identify-parameters-from-a-real-drive",
+  "number": 20,
+  "title": "Identify Parameters from a Real Drive",
+  "summary": "Fit rolling resistance and drag area from a deterministic synthetic offline coastdown stand-in with separate validation samples.",
+  "guiding_question": "What excitation, residual, and uncertainty evidence is required before coastdown parameters are identifiable?",
+  "status": "implemented",
+  "tags": ["vehicle-dynamics", "phase-5", "python-first-native", "synthetic-data"],
+  "runtime": {"kind": "python", "entrypoint": "experiment.py:run", "trust": "local-trusted", "timeout_seconds": 3.0},
+  "controls": [
+    {"id": "speed_span_m_s", "type": "slider", "label": "Synthetic speed span", "default": 20.0, "minimum": 2.0, "maximum": 25.0, "step": 1.0, "unit": "m/s", "description": "Change regression excitation while keeping the 12-sample offline dataset bounded."},
+    {"id": "force_noise_n", "type": "slider", "label": "Deterministic force disturbance", "default": 20.0, "minimum": 0.0, "maximum": 100.0, "step": 5.0, "unit": "N", "description": "Scale a fixed zero-randomness disturbance pattern."},
+    {"id": "broken_mode", "type": "toggle", "label": "Collapse training excitation", "default": false}
+  ],
+  "blocks": [
+    {"type": "markdown", "source": "lesson.md"},
+    {"type": "prediction", "title": "Predict identifiability", "text": "Predict how speed-squared span and force disturbance affect slope uncertainty and validation error.", "reveal": "A low residual does not identify drag when the regressor has no span."},
+    {"type": "controls", "title": "Synthetic identification controls"}, {"type": "metrics"},
+    {"type": "plot", "title": "Synthetic force and identified model", "plot": "response"},
+    {"type": "plot_grid", "title": "Excitation and disturbance sweeps", "plots": ["primary_sweep", "secondary_sweep"]},
+    {"type": "plot", "title": "Under-excitation and recovery", "plot": "broken_recovery"},
+    {"type": "callout", "tone": "info", "title": "Observation", "source": "observation"},
+    {"type": "callout", "tone": "warning", "title": "Broken", "source": "broken"},
+    {"type": "callout", "tone": "success", "title": "Recovery", "source": "recovery"}
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "item_id": "P17",
+  "provenance": "Python-first native",
+  "reference": {
+    "path": "../../reference_cases.py",
+    "origin": "separately formulated scalar analytic or bounded numerical oracle",
+    "imports_production": false,
+    "consumes_production_output": false,
+    "tolerance_abs": "1e-10",
+    "fields": [
+      "wheel_speed_kmh",
+      "wheel_speed_m_s",
+      "round_trip_count_error",
+      "frame_age_ms",
+      "freshness_limit_ms",
+      "can_identifier_decimal",
+      "dlc_bytes",
+      "trace_points",
+      "invalid"
+    ]
+  },
+  "governing_relation": "count=256*byte0+byte1; speed_kmh=count/128; speed_m_s=speed_kmh/3.6",
+  "teaching_invariant": "A correct big-endian decode round-trips the unsigned raw count exactly; freshness changes validity, not payload value.",
+  "limitation": "One synthetic documented field omits bus arbitration, electrical timing, CRC/counter policy, multiplexing, and a complete DBC.",
+  "scenarios": [
+    {
+      "name": "baseline",
+      "inputs": {
+        "raw_count": 4608,
+        "frame_age_ms": 40,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_1",
+      "inputs": {
+        "raw_count": 0,
+        "frame_age_ms": 40,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_2",
+      "inputs": {
+        "raw_count": 4608,
+        "frame_age_ms": 250,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "broken",
+      "inputs": {
+        "raw_count": 4608,
+        "frame_age_ms": 40,
+        "broken_mode": true
+      },
+      "status": "passed"
+    },
+    {
+      "name": "recovery",
+      "inputs": {
+        "raw_count": 4608,
+        "frame_age_ms": 40,
+        "broken_mode": false
+      },
+      "status": "passed"
+    }
+  ],
+  "unperformed": [
+    "MATLAB runtime comparison",
+    "learner validation",
+    "browser accessibility",
+    "measured vehicle data",
+    "firmware/radio/bench/vehicle/track execution",
+    "physical HIL/hardware"
+  ]
+}

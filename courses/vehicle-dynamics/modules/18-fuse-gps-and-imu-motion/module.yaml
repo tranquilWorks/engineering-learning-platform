@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "id": "18-fuse-gps-and-imu-motion",
+  "number": 18,
+  "title": "Fuse GPS and IMU Motion",
+  "summary": "Fuse deterministic half-second GPS fixes with biased IMU acceleration and expose innovation, drift, and timestamp alignment.",
+  "guiding_question": "How does a complementary correction bound inertial drift without hiding sensor bias or timestamp skew?",
+  "status": "implemented",
+  "tags": ["vehicle-dynamics", "phase-5", "python-first-native"],
+  "runtime": {"kind": "python", "entrypoint": "experiment.py:run", "trust": "local-trusted", "timeout_seconds": 3.0},
+  "controls": [
+    {"id": "gps_weight", "type": "slider", "label": "GPS correction weight", "default": 0.25, "minimum": 0.0, "maximum": 1.0, "step": 0.05, "unit": "ratio", "description": "Change how much of each aligned GPS innovation corrects the inertial position."},
+    {"id": "imu_bias_m_s2", "type": "slider", "label": "IMU acceleration bias", "default": 0.05, "minimum": -0.30, "maximum": 0.30, "step": 0.05, "unit": "m/s²", "description": "Change the fixed accelerometer bias while preserving the deterministic truth motion."},
+    {"id": "broken_mode", "type": "toggle", "label": "Use GPS from one second earlier", "default": false}
+  ],
+  "blocks": [
+    {"type": "markdown", "source": "lesson.md"},
+    {"type": "prediction", "title": "Predict drift and correction", "text": "Predict which sweep reduces position drift and how a one-second skew changes innovation.", "reveal": "Timestamp alignment is a prerequisite; a larger correction weight is not a remedy for old data."},
+    {"type": "controls", "title": "Fusion controls"}, {"type": "metrics"},
+    {"type": "plot", "title": "Fused position trace", "plot": "response"},
+    {"type": "plot_grid", "title": "Weight and bias sweeps", "plots": ["primary_sweep", "secondary_sweep"]},
+    {"type": "plot", "title": "Time-skew failure and recovery", "plot": "broken_recovery"},
+    {"type": "callout", "tone": "info", "title": "Observation", "source": "observation"},
+    {"type": "callout", "tone": "warning", "title": "Broken", "source": "broken"},
+    {"type": "callout", "tone": "success", "title": "Recovery", "source": "recovery"}
+  ]
+}

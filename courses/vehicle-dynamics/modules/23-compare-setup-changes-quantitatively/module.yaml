@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "id": "23-compare-setup-changes-quantitatively",
+  "number": 23,
+  "title": "Compare Setup Changes Quantitatively",
+  "summary": "Use paired deterministic sectors to separate aero, tire, and interaction effects and apply a declared decision threshold.",
+  "guiding_question": "How can a setup comparison preserve pairing, quantify uncertainty, and avoid a confounded lap-time verdict?",
+  "status": "implemented",
+  "tags": ["vehicle-dynamics", "phase-6", "python-first-native"],
+  "runtime": {"kind": "python", "entrypoint": "experiment.py:run", "trust": "local-trusted", "timeout_seconds": 3.0},
+  "controls": [
+    {"id": "aero_change_percent", "type": "slider", "label": "Aero change", "default": 10.0, "minimum": -20.0, "maximum": 30.0, "step": 2.5, "unit": "%", "description": "Change the modeled aero contribution while preserving sector pairing."},
+    {"id": "tire_mu_change_percent", "type": "slider", "label": "Tire friction change", "default": 5.0, "minimum": -10.0, "maximum": 15.0, "step": 2.5, "unit": "%", "description": "Change the tire contribution and its interaction with aero."},
+    {"id": "broken_mode", "type": "toggle", "label": "Rotate candidate sector labels", "default": false}
+  ],
+  "blocks": [
+    {"type": "markdown", "source": "lesson.md"},
+    {"type": "prediction", "title": "Predict main and interaction effects", "text": "Predict the lap delta and which sectors should be compared before applying the threshold.", "reveal": "Sum the paired deltas, retain interaction, and keep uncertainty separate from effect size."},
+    {"type": "controls", "title": "Setup-comparison controls"}, {"type": "metrics"},
+    {"type": "plot", "title": "Paired sector times", "plot": "response"},
+    {"type": "plot_grid", "title": "Aero and tire sweeps", "plots": ["primary_sweep", "secondary_sweep"]},
+    {"type": "plot", "title": "Confounded pairing and recovery", "plot": "broken_recovery"},
+    {"type": "callout", "tone": "info", "title": "Observation", "source": "observation"},
+    {"type": "callout", "tone": "warning", "title": "Broken", "source": "broken"},
+    {"type": "callout", "tone": "success", "title": "Recovery", "source": "recovery"}
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "id": "22-build-a-lap-time-simulator",
+  "number": 22,
+  "title": "Build a Lap-Time Simulator",
+  "summary": "Apply curvature limits, a forward acceleration pass, and a backward braking pass before integrating time over bounded segments.",
+  "guiding_question": "Why must future braking constraints propagate backward before segment times are credible?",
+  "status": "implemented",
+  "tags": ["vehicle-dynamics", "phase-6", "python-first-native"],
+  "runtime": {"kind": "python", "entrypoint": "experiment.py:run", "trust": "local-trusted", "timeout_seconds": 3.0},
+  "controls": [
+    {"id": "friction_coefficient", "type": "slider", "label": "Tire friction coefficient", "default": 1.05, "minimum": 0.70, "maximum": 1.40, "step": 0.05, "unit": "ratio", "description": "Change each curvature-derived speed ceiling."},
+    {"id": "acceleration_limit_m_s2", "type": "slider", "label": "Acceleration limit", "default": 3.5, "minimum": 1.0, "maximum": 6.0, "step": 0.5, "unit": "m/s²", "description": "Change the forward reachability pass while braking remains fixed."},
+    {"id": "broken_mode", "type": "toggle", "label": "Omit the backward braking pass", "default": false}
+  ],
+  "blocks": [
+    {"type": "markdown", "source": "lesson.md"},
+    {"type": "prediction", "title": "Predict active constraints", "text": "Predict where grip, acceleration, and braking limits become active on the 12 segments.", "reveal": "A locally legal speed can still be impossible to shed before the next corner."},
+    {"type": "controls", "title": "Lap-simulation controls"}, {"type": "metrics"},
+    {"type": "plot", "title": "Constrained speed profile", "plot": "response"},
+    {"type": "plot_grid", "title": "Grip and acceleration sweeps", "plots": ["primary_sweep", "secondary_sweep"]},
+    {"type": "plot", "title": "Forward-only failure and recovery", "plot": "broken_recovery"},
+    {"type": "callout", "tone": "info", "title": "Observation", "source": "observation"},
+    {"type": "callout", "tone": "warning", "title": "Broken", "source": "broken"},
+    {"type": "callout", "tone": "success", "title": "Recovery", "source": "recovery"}
+  ]
+}

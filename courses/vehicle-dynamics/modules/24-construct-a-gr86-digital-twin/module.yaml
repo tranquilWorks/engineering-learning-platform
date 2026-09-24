@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "id": "24-construct-a-gr86-digital-twin",
+  "number": 24,
+  "title": "Construct a GR86 Digital Twin",
+  "summary": "Integrate a bounded software-only GR86 baseline from synthetic telemetry and trace speed, path, yaw, and lap-proxy residual requirements.",
+  "guiding_question": "How should a baseline digital twin connect interfaces, residuals, and requirements without claiming physical-vehicle validation?",
+  "status": "implemented",
+  "tags": ["vehicle-dynamics", "phase-6", "python-first-native", "synthetic-data"],
+  "runtime": {"kind": "python", "entrypoint": "experiment.py:run", "trust": "local-trusted", "timeout_seconds": 3.0},
+  "controls": [
+    {"id": "vehicle_mass_kg", "type": "slider", "label": "Vehicle mass", "default": 1320.0, "minimum": 1150.0, "maximum": 1500.0, "step": 25.0, "unit": "kg", "description": "Change longitudinal response against the fixed synthetic observation baseline."},
+    {"id": "tire_friction_coefficient", "type": "slider", "label": "Tire friction coefficient", "default": 1.0, "minimum": 0.70, "maximum": 1.30, "step": 0.05, "unit": "ratio", "description": "Change traction and yaw bounds while preserving the input history."},
+    {"id": "broken_mode", "type": "toggle", "label": "Treat steering degrees as radians", "default": false}
+  ],
+  "blocks": [
+    {"type": "markdown", "source": "lesson.md"},
+    {"type": "prediction", "title": "Predict residual propagation", "text": "Predict which residuals react to mass, grip, and a steering-interface unit defect.", "reveal": "Trace each input through force, speed, yaw, path, residual, and requirement."},
+    {"type": "controls", "title": "Digital-twin controls"}, {"type": "metrics"},
+    {"type": "plot", "title": "Bounded twin speed trace", "plot": "response"},
+    {"type": "plot_grid", "title": "Mass and grip sweeps", "plots": ["primary_sweep", "secondary_sweep"]},
+    {"type": "plot", "title": "Interface-unit failure and recovery", "plot": "broken_recovery"},
+    {"type": "callout", "tone": "info", "title": "Observation", "source": "observation"},
+    {"type": "callout", "tone": "warning", "title": "Broken", "source": "broken"},
+    {"type": "callout", "tone": "success", "title": "Recovery", "source": "recovery"}
+  ]
+}
