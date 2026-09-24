@@ -1,0 +1,66 @@
+schema_version: 1
+id: 41-shape-digressive-damper-force-velocity-response
+number: 41
+title: Shape Digressive Damper Force-Velocity Response
+summary: Evaluate a continuous odd-symmetric digressive damper law, its low/high-speed slopes, and dissipated energy over a velocity cycle.
+guiding_question: How can a damper retain strong low-speed control while limiting the rate of force growth at high shaft speed?
+status: implemented
+tags:
+- vehicle-dynamics
+- native-python
+- ride
+- damping
+- force-velocity
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: knee_velocity_m_s
+  type: slider
+  label: Digressive knee velocity
+  default: 0.12
+  unit: m/s
+  minimum: 0.05
+  maximum: 0.3
+  step: 0.01
+- id: high_speed_coefficient_n_s_m
+  type: slider
+  label: High-speed damping coefficient
+  default: 1800
+  unit: N*s/m
+  minimum: 500
+  maximum: 3500
+  step: 100
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: The damper law is continuous, odd-symmetric, and dissipative, with the tangent slope transitioning from the low-speed coefficient toward the declared high-speed coefficient.
+  reveal: Keep shaft velocity in metres per second for both the force law and the energy integral.
+- type: controls
+  title: Chassis model controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

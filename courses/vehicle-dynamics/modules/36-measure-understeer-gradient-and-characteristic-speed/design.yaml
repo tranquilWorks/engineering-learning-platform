@@ -1,0 +1,57 @@
+schema_version: 1
+item_id: P36
+module: 36-measure-understeer-gradient-and-characteristic-speed
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- K=W_f/C_f-W_r/C_r
+- delta=L/R+K a_y/g
+- V_char=sqrt(g L/K) for K>0
+signature:
+- field: understeer_gradient
+  unit: "deg/g"
+- field: characteristic_speed
+  unit: "m/s"
+- field: steer_at_point_seven_g
+  unit: "deg"
+- field: handling_class_code
+  unit: "1"
+- field: steer_relation_residual
+  unit: "deg"
+teaching_invariant: Characteristic speed is reported only for positive understeer gradient, and the steer law uses axle stiffness in newtons per radian.
+limiting_cases:
+- At zero gradient the steer demand is purely geometric and characteristic speed is not finite.
+- For negative gradient the instructional model classifies oversteer and does not invent a real characteristic speed.
+scenarios:
+  baseline:
+    front_cornering_n_rad: 65000
+    rear_cornering_n_rad: 80000
+    broken_mode: false
+  sweep_1:
+    front_cornering_n_rad: 90000
+    rear_cornering_n_rad: 80000
+    broken_mode: false
+  sweep_2:
+    front_cornering_n_rad: 65000
+    rear_cornering_n_rad: 60000
+    broken_mode: false
+  broken:
+    front_cornering_n_rad: 65000
+    rear_cornering_n_rad: 80000
+    broken_mode: true
+  recovery:
+    front_cornering_n_rad: 65000
+    rear_cornering_n_rad: 80000
+    broken_mode: false
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software and synthetic parameters only; no source or MATLAB equivalence, measured damper, suspension, rig, track, or vehicle result, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

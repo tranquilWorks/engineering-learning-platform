@@ -207,7 +207,7 @@ The final three lessons are cumulative capstones: identification/control/estimat
 
 ## ELP-VEHICLE-PREP-00 — Vehicle Dynamics governed preparation
 
-**Status:** Prep complete; P01-P33 implemented in four separately authorized batches.
+**Status:** Prep complete; P01-P43 implemented in five separately authorized batches.
 
 **Depends on:** `ELP-ROB-SYSTEMS-CAPSTONES-P66-P69`
 
@@ -217,18 +217,19 @@ only the read-only source gitlink, installs the exact 24-item source and coverag
 ledgers, mirrors the reviewed map, and adds deterministic synthetic GR86
 CAN/RaceChrono BLE protocol fixtures with independent decode and fault checks.
 
-The tire-depth implementation catalog has six courses, 256 modules, and 256 interactive modules;
-Vehicle Dynamics contributes P01-P33. The fixture and all identification inputs are synthetic, not measured vehicle
+The chassis-depth implementation catalog has six courses, 266 modules, and 266 interactive modules;
+Vehicle Dynamics contributes P01-P43. The fixture and all identification inputs are synthetic, not measured vehicle
 data, and do not validate firmware, radio, bench, vehicle, track, or physical
 HIL behavior. `ELP-VEHICLE-P01-P08`, `ELP-VEHICLE-P09-P16`, and
-`ELP-VEHICLE-P17-P24`, and `ELP-VEHICLE-TIRES-P25-P33` each have exact Portfolio Control authorization against
-their merged predecessor. P01-P33 now
+`ELP-VEHICLE-P17-P24`, `ELP-VEHICLE-TIRES-P25-P33`, and
+`ELP-VEHICLE-CHASSIS-P34-P43` each have exact Portfolio Control authorization against
+their merged predecessor. P01-P43 now
 provide distinct bounded models, independent scalar references, five-scenario
 evidence, named failures, and exact recoveries. P20 is explicitly a synthetic
 offline stand-in despite its retained title, and P24 is a software-only GR86
-baseline. P25-P33 deepen frames, tire force, transient, thermal, energy, and
-uncertainty competencies without altering the source-bound ledger. P34-P43
-remains separately gated.
+baseline. P25-P33 deepen tire competencies; P34-P43 deepen handling, stability,
+load-transfer, ride, damping, suspension, and anti-geometry competencies without
+altering the source-bound ledger. P44-P52 remains separately gated.
 
 ## B020 — Course ingestion and migration tooling
 

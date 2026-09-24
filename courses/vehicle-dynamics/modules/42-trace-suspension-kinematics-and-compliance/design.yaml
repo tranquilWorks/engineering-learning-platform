@@ -1,0 +1,57 @@
+schema_version: 1
+item_id: P42
+module: 42-trace-suspension-kinematics-and-compliance
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- gamma=gamma_0+g_gamma z+c_gamma F_y
+- toe=toe_0+g_toe z+c_toe F_y
+- k_wheel=k_spring MR(z)^2
+signature:
+- field: wheel_camber
+  unit: "deg"
+- field: wheel_toe
+  unit: "deg"
+- field: motion_ratio
+  unit: "1"
+- field: wheel_rate
+  unit: "N/m"
+- field: travel_unit_residual
+  unit: "deg"
+teaching_invariant: Kinematic gradients act on millimetres of wheel travel, compliance gradients act on newtons, and the two contributions superpose only under the declared sign convention.
+limiting_cases:
+- At zero travel and zero lateral force, alignment returns to the declared static camber and toe.
+- With zero lateral force, the compliance contribution vanishes while bump kinematics and motion ratio remain.
+scenarios:
+  baseline:
+    bump_travel_mm: 25
+    lateral_force_n: 3000
+    broken_mode: false
+  sweep_1:
+    bump_travel_mm: 50
+    lateral_force_n: 3000
+    broken_mode: false
+  sweep_2:
+    bump_travel_mm: 25
+    lateral_force_n: 4500
+    broken_mode: false
+  broken:
+    bump_travel_mm: 25
+    lateral_force_n: 3000
+    broken_mode: true
+  recovery:
+    bump_travel_mm: 25
+    lateral_force_n: 3000
+    broken_mode: false
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software and synthetic parameters only; no source or MATLAB equivalence, measured damper, suspension, rig, track, or vehicle result, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

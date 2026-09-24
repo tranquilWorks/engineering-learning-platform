@@ -185,19 +185,19 @@ def test_follow_up_ownership_is_exact_and_remains_unimplemented_here() -> None:
     )
 
 
-def test_vehicle_dynamics_next_batch_hold_is_explicit_and_complete() -> None:
+def test_vehicle_dynamics_next_propulsion_batch_hold_is_explicit_and_complete() -> None:
     holds = _status()["holds"]
     assert len(holds) == 1
     hold = holds[0]
     assert hold["course_id"] == "vehicle-dynamics"
-    assert hold["implementation_status"] == "p25_p33_complete"
-    assert hold["authorization_status"] == "p34_p43_required"
+    assert hold["implementation_status"] == "p34_p43_complete"
+    assert hold["authorization_status"] == "p44_p52_required"
     completed = " ".join(hold["completed_release_conditions"])
     conditions = " ".join(hold["release_conditions"])
     assert "competency-to-module matrix" in completed
     assert "GR86 CAN/BLE" in completed
-    assert "P25-P33" in completed
-    assert "P34-P43" in conditions
+    assert "P34-P43" in completed
+    assert "P44-P52" in conditions
     assert "at most ten new lessons" in conditions
 
 
