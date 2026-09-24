@@ -1,0 +1,28 @@
+schema_version: 1
+item_id: P49
+module: 49-simulate-abs-slip-control-and-wheel-lockup
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- kappa=(v-r omega)/max(v,0.5)
+- I omega_dot=F_x r-T_brake and m v_dot=-F_x
+- T_brake=F_x r+(I/r)[v k(kappa_target-kappa)-(1-kappa)v_dot]
+signature:
+- {field: peak_slip, unit: "1"}
+- {field: mean_target_error, unit: "1"}
+- {field: speed_reduction, unit: m/s}
+- {field: stopping_distance, unit: m}
+- {field: wheel_lock_flag, unit: "1"}
+- {field: wheel_dynamics_residual, unit: "N*m"}
+teaching_invariant: ABS must modulate brake torque from signed wheel slip so the tire remains near target slip without sustained wheel lock.
+limiting_cases:
+- With zero brake torque, wheel slip and vehicle deceleration both tend to zero.
+- With modulation disabled and torque above tire reaction, wheel speed tends to zero before vehicle speed.
+scenarios:
+  baseline: {target_slip: 0.15, brake_torque_nm: 2200, broken_mode: false}
+  sweep_1: {target_slip: 0.2, brake_torque_nm: 2200, broken_mode: false}
+  sweep_2: {target_slip: 0.15, brake_torque_nm: 3000, broken_mode: false}
+  broken: {target_slip: 0.15, brake_torque_nm: 2200, broken_mode: true}
+  recovery: {target_slip: 0.15, brake_torque_nm: 2200, broken_mode: false}
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic Python software and synthetic parameters only; no source or MATLAB equivalence, measured ABS, brake, tire, rig, track, or vehicle result, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

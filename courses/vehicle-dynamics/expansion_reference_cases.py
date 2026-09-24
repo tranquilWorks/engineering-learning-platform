@@ -1,4 +1,4 @@
-"""Independent Vehicle Dynamics P25-P43 references.
+"""Independent Vehicle Dynamics P25-P52 references.
 
 This module imports no production experiment, consumes no production result, and
 perturbs no production value. It independently evaluates the retained scalar
@@ -568,6 +568,396 @@ def _p43(p: dict[str, Any]) -> list[float]:
     ]
 
 
+def _p44(p: dict[str, Any]) -> list[float]:
+    rpm = float(p["engine_rpm"])
+    gear = float(p["gear_ratio"])
+    torque = 220.0 - 6.0e-6 * (rpm - 4500.0) ** 2
+    engine_force = torque * gear * 4.10 * 0.92 / 0.31
+    tire_capacity = 1.15 * 1450.0 * 9.81 * 0.45
+    physical_delivery = min(engine_force, tire_capacity)
+    delivered = engine_force if bool(p["broken_mode"]) else physical_delivery
+    return [
+        float(torque),
+        float(engine_force),
+        float(tire_capacity),
+        float(delivered),
+        float(abs(delivered - physical_delivery)),
+    ]
+
+
+def _p45(p: dict[str, Any]) -> list[float]:
+    torque = float(p["launch_torque_nm"])
+    driveline_inertia = float(p["driveline_inertia_kg_m2"])
+    broken = bool(p["broken_mode"])
+    mass, radius, ratio, efficiency = 1450.0, 0.31, 3.60 * 4.10, 0.90
+    wheel_inertia = 1.20
+    physical_equivalent = (
+        4.0 * wheel_inertia / radius**2
+        + driveline_inertia * (ratio / radius) ** 2
+    )
+    used_equivalent = (
+        driveline_inertia / (ratio * radius) ** 2
+        if broken
+        else physical_equivalent
+    )
+    effective_mass = mass + used_equivalent
+    tire_capacity = 1.15 * mass * 9.81 * 0.45
+    drive_force = min(torque * ratio * efficiency / radius, tire_capacity)
+    step, samples = 0.01, 1501
+    speed = np.zeros(samples)
+    distance = np.zeros(samples)
+    time = np.arange(samples) * step
+    target_time = time[-1]
+    for index in range(1, samples):
+        resistance = 180.0 + 0.38 * speed[index - 1] ** 2
+        acceleration = max(0.0, (drive_force - resistance) / effective_mass)
+        speed[index] = speed[index - 1] + acceleration * step
+        distance[index] = distance[index - 1] + speed[index - 1] * step
+        if speed[index] >= 27.78 and target_time == time[-1]:
+            target_time = time[index]
+    work = drive_force * distance[-1]
+    resistance_work = np.trapezoid(180.0 + 0.38 * speed**2, distance)
+    physical_energy = 0.5 * (mass + physical_equivalent) * speed[-1] ** 2
+    return [
+        float(physical_equivalent if not broken else used_equivalent),
+        float((drive_force - 180.0) / effective_mass),
+        float(target_time),
+        float(speed[-1]),
+        float(abs(work - resistance_work - physical_energy)),
+    ]
+
+
+def _p46(p: dict[str, Any]) -> list[float]:
+    left_mu = float(p["left_friction_mu"])
+    bias = float(p["torque_bias_ratio"])
+    wheel_load, right_mu, demand = 3200.0, 1.15, 9000.0
+    left_capacity = left_mu * wheel_load
+    right_capacity = right_mu * wheel_load
+    open_each = min(demand / 2.0, left_capacity, right_capacity)
+    open_total = 2.0 * open_each
+    left_force = min(left_capacity, demand / (1.0 + bias))
+    if demand > (1.0 + bias) * left_force:
+        left_force = left_capacity
+    right_force = bias * left_force
+    if not bool(p["broken_mode"]):
+        right_force = min(right_force, right_capacity, demand - left_force)
+    total = left_force + right_force
+    residual = max(
+        0.0,
+        left_force - left_capacity,
+        right_force - right_capacity,
+        total - demand,
+    )
+    return [
+        float(open_total),
+        float(total),
+        float(left_force),
+        float(right_force),
+        float(residual),
+    ]
+
+
+_REFERENCE_GEARS = np.array((3.60, 2.20, 1.50, 1.15))
+
+
+def _reference_gear_state(
+    speed: float,
+    final_drive: float,
+    broken: bool,
+) -> tuple[int, float, float]:
+    rpm_values = (
+        speed / 0.31 * _REFERENCE_GEARS * final_drive * 60.0 / (2.0 * np.pi)
+    )
+    if broken:
+        rpm = rpm_values[0]
+        limited_rpm = min(rpm, 7000.0)
+        torque = max(120.0, 220.0 - 6.0e-6 * (limited_rpm - 4500.0) ** 2)
+        return (
+            0,
+            float(rpm),
+            float(torque * _REFERENCE_GEARS[0] * final_drive * 0.92 / 0.31),
+        )
+    candidates = np.full(4, -np.inf)
+    for index, rpm in enumerate(rpm_values):
+        if 1500.0 <= rpm <= 7000.0:
+            torque = 220.0 - 6.0e-6 * (float(rpm) - 4500.0) ** 2
+            candidates[index] = (
+                torque * _REFERENCE_GEARS[index] * final_drive * 0.92 / 0.31
+            )
+    if not np.any(np.isfinite(candidates)):
+        selected = int(np.argmin(np.abs(rpm_values - 4250.0)))
+        return selected, float(rpm_values[selected]), 0.0
+    selected = int(np.argmax(candidates))
+    return selected, float(rpm_values[selected]), float(candidates[selected])
+
+
+def _p47(p: dict[str, Any]) -> list[float]:
+    final_drive = float(p["final_drive_ratio"])
+    delay = float(p["shift_delay_s"])
+    broken = bool(p["broken_mode"])
+    step, samples = 0.01, 4001
+    time = np.arange(samples) * step
+    speed = np.zeros(samples)
+    speed[0] = 5.0
+    selected, _, _ = _reference_gear_state(speed[0], final_drive, broken)
+    interruption = 0.0
+    shift_speeds: list[float] = []
+    peak_acceleration = 0.0
+    max_redline_excess = 0.0
+    finish_time = time[-1]
+    for index in range(1, samples):
+        desired, rpm, force = _reference_gear_state(
+            speed[index - 1], final_drive, broken
+        )
+        max_redline_excess = max(max_redline_excess, rpm - 7000.0)
+        if not broken and desired != selected and interruption <= 0.0:
+            selected = desired
+            interruption = delay
+            shift_speeds.append(speed[index - 1])
+        if interruption > 0.0:
+            force = 0.0
+            interruption = max(0.0, interruption - step)
+        resistance = 180.0 + 0.38 * speed[index - 1] ** 2
+        acceleration = max(0.0, (force - resistance) / 1450.0)
+        peak_acceleration = max(peak_acceleration, acceleration)
+        speed[index] = speed[index - 1] + acceleration * step
+        if speed[index] >= 27.78 and finish_time == time[-1]:
+            finish_time = time[index]
+    first_shift = shift_speeds[0] * 3.6 if shift_speeds else 0.0
+    second_shift = shift_speeds[1] * 3.6 if len(shift_speeds) > 1 else 0.0
+    return [
+        float(finish_time),
+        float(first_shift),
+        float(second_shift),
+        float(peak_acceleration),
+        float(max(0.0, max_redline_excess)),
+    ]
+
+
+def _p48(p: dict[str, Any]) -> list[float]:
+    deceleration = float(p["deceleration_g"])
+    front_bias = float(p["front_brake_bias"])
+    mass, gravity, a, b, height = 1450.0, 9.81, 1.20, 1.50, 0.52
+    wheelbase, friction = a + b, 1.10
+    transfer = mass * deceleration * gravity * height / wheelbase
+    front_dynamic = mass * gravity * b / wheelbase + transfer
+    rear_dynamic = mass * gravity * a / wheelbase - transfer
+    if bool(p["broken_mode"]):
+        front_used = mass * gravity * b / wheelbase
+        rear_used = mass * gravity * a / wheelbase
+    else:
+        front_used, rear_used = front_dynamic, rear_dynamic
+    requested = mass * deceleration * gravity
+    front_force = min(front_bias * requested, friction * front_used)
+    rear_force = min((1.0 - front_bias) * requested, friction * rear_used)
+    front_utilization = front_force / (friction * front_dynamic)
+    rear_utilization = rear_force / (friction * rear_dynamic)
+    achieved = (front_force + rear_force) / (mass * gravity)
+    residual = max(0.0, front_utilization - 1.0, rear_utilization - 1.0)
+    residual *= mass * gravity
+    return [
+        float(front_dynamic),
+        float(front_dynamic / (mass * gravity)),
+        float(front_utilization),
+        float(rear_utilization),
+        float(achieved),
+        float(residual),
+    ]
+
+
+def _p49(p: dict[str, Any]) -> list[float]:
+    target = float(p["target_slip"])
+    requested_torque = float(p["brake_torque_nm"])
+    broken = bool(p["broken_mode"])
+    mass, inertia, radius, gravity = 360.0, 1.20, 0.31, 9.81
+    peak_force = 1.05 * mass * gravity
+    step, samples = 0.002, 2001
+    time = np.arange(samples, dtype=float) * step
+    speed = np.empty(samples)
+    wheel_speed = np.empty(samples)
+    slip = np.empty(samples)
+    speed[0], wheel_speed[0], slip[0] = 30.0, 30.0 / radius, 0.0
+    stopping_distance = 0.0
+    maximum_residual = 0.0
+    for index in range(1, samples):
+        prior_slip = max(
+            0.0,
+            (speed[index - 1] - radius * wheel_speed[index - 1])
+            / max(speed[index - 1], 0.5),
+        )
+        normalized_slip = prior_slip / target
+        tire_force = (
+            peak_force * normalized_slip * np.exp(1.0 - normalized_slip)
+            if prior_slip > 0.0
+            else 0.0
+        )
+        tire_force = max(0.0, float(tire_force))
+        vehicle_acceleration = -tire_force / mass
+        if broken:
+            brake_torque = requested_torque
+        else:
+            requested_rate = 10.0 * (target - prior_slip)
+            brake_torque = np.clip(
+                tire_force * radius
+                + inertia
+                / radius
+                * (
+                    speed[index - 1] * requested_rate
+                    - (1.0 - prior_slip) * vehicle_acceleration
+                ),
+                0.0,
+                requested_torque,
+            )
+        wheel_acceleration = (tire_force * radius - brake_torque) / inertia
+        unconstrained_wheel_speed = (
+            wheel_speed[index - 1] + step * wheel_acceleration
+        )
+        wheel_speed[index] = max(0.0, unconstrained_wheel_speed)
+        speed[index] = max(0.1, speed[index - 1] + step * vehicle_acceleration)
+        stopping_distance += 0.5 * step * (speed[index - 1] + speed[index])
+        slip[index] = np.clip(
+            (speed[index] - radius * wheel_speed[index]) / max(speed[index], 0.5),
+            0.0,
+            1.0,
+        )
+        actual_wheel_acceleration = (
+            wheel_speed[index] - wheel_speed[index - 1]
+        ) / step
+        if speed[index] > 2.0:
+            maximum_residual = max(
+                maximum_residual,
+                abs(
+                    inertia * actual_wheel_acceleration
+                    - (tire_force * radius - brake_torque)
+                ),
+            )
+    active = (time >= 0.5) & (speed > 2.0)
+    lock = np.any((wheel_speed < 0.5) & (speed > 2.0))
+    return [
+        float(np.max(slip[speed > 2.0])),
+        float(np.mean(np.abs(slip[active] - target))),
+        float(speed[0] - speed[-1]),
+        float(stopping_distance),
+        float(lock),
+        float(maximum_residual),
+    ]
+
+
+def _p50(p: dict[str, Any]) -> list[float]:
+    stop_energy = 1000.0 * float(p["stop_energy_kj"])
+    cooling = float(p["cooling_coefficient_w_k"])
+    broken = bool(p["broken_mode"])
+    absorbed_fraction, capacity = 0.75, 45000.0
+    ambient, interval, step = 25.0, 45.0, 0.25
+    stops, cooling_steps = 6, int(interval / step)
+    temperature = ambient
+    rejected = 0.0
+    input_energy = 0.0
+    peak_temperature = temperature
+    for _ in range(stops):
+        absorbed = absorbed_fraction * stop_energy
+        input_energy += absorbed
+        temperature += absorbed / capacity
+        peak_temperature = max(peak_temperature, temperature)
+        for _ in range(cooling_steps):
+            heat_loss = cooling * (temperature - ambient)
+            rejected += heat_loss * step
+            if not broken:
+                temperature -= heat_loss * step / capacity
+    fade_factor = np.clip(
+        1.0 - 0.0018 * max(0.0, peak_temperature - 350.0),
+        0.45,
+        1.0,
+    )
+    stored = capacity * (temperature - ambient)
+    return [
+        float(peak_temperature),
+        float(temperature),
+        float(rejected / 1000.0),
+        float(fade_factor),
+        float(abs(input_energy - stored - rejected) / 1000.0),
+    ]
+
+
+def _reference_aero_forces(
+    speed: float,
+    height_mm: float,
+    broken: bool,
+) -> tuple[float, float, float]:
+    height = height_mm if broken else height_mm / 1000.0
+    front_coefficient = 0.58 - 2.2 * (height - 0.080)
+    rear_coefficient = 0.72
+    drag_coefficient = 0.34 + 0.06 * (front_coefficient + rear_coefficient)
+    pressure_area = 0.5 * 1.225 * 2.0 * speed**2
+    return (
+        pressure_area * front_coefficient,
+        pressure_area * rear_coefficient,
+        pressure_area * drag_coefficient,
+    )
+
+
+def _p51(p: dict[str, Any]) -> list[float]:
+    speed = float(p["speed_m_s"])
+    height_mm = float(p["front_ride_height_mm"])
+    front, rear, drag = _reference_aero_forces(
+        speed,
+        height_mm,
+        bool(p["broken_mode"]),
+    )
+    total = front + rear
+    balance = front / total if abs(total) > 1.0e-12 else 0.0
+    pitch_moment = rear * 1.50 - front * 1.20
+    physical_front = _reference_aero_forces(speed, height_mm, False)[0]
+    return [
+        float(front),
+        float(rear),
+        float(drag),
+        float(balance),
+        float(pitch_moment),
+        float(abs(front - physical_front)),
+    ]
+
+
+def _p52(p: dict[str, Any]) -> list[float]:
+    speed = float(p["speed_m_s"])
+    energy_mj = float(p["stint_energy_mj"])
+    broken = bool(p["broken_mode"])
+    mass, gravity, lap_length = 1450.0, 9.81, 4200.0
+    pressure_area = 0.5 * 1.225 * 2.0 * speed**2
+    downforce = 1.30 * pressure_area
+    drag = 0.42 * pressure_area
+    used_downforce = 2.0 * downforce if broken else downforce
+    reference_load = mass * gravity
+    tire_capacity = 1.22 * reference_load * (
+        (reference_load + used_downforce) / reference_load
+    ) ** 0.86
+    power_force = 210000.0 / speed
+    tractive_force = min(tire_capacity, power_force)
+    used_drag = 0.0 if broken else drag
+    usable_acceleration = max(0.0, (tractive_force - used_drag) / mass)
+    lap_energy = (3.60e6 + used_drag * lap_length) / 1.0e6
+    thermal_laps = 34.0 / (1.0 + 0.00012 * downforce + 0.00008 * drag)
+    stint_laps = min(energy_mj / lap_energy, thermal_laps)
+    physical_capacity = 1.22 * reference_load * (
+        (reference_load + downforce) / reference_load
+    ) ** 0.86
+    physical_force = min(physical_capacity, power_force)
+    physical_acceleration = max(0.0, (physical_force - drag) / mass)
+    physical_lap_energy = (3.60e6 + drag * lap_length) / 1.0e6
+    physical_stint = min(energy_mj / physical_lap_energy, thermal_laps)
+    residual = abs(usable_acceleration - physical_acceleration) + abs(
+        stint_laps - physical_stint
+    )
+    return [
+        float(downforce),
+        float(drag),
+        float(usable_acceleration),
+        float(lap_energy),
+        float(stint_laps),
+        float(residual),
+    ]
+
+
 _DISPATCH = {
     25: _p25,
     26: _p26,
@@ -588,6 +978,15 @@ _DISPATCH = {
     41: _p41,
     42: _p42,
     43: _p43,
+    44: _p44,
+    45: _p45,
+    46: _p46,
+    47: _p47,
+    48: _p48,
+    49: _p49,
+    50: _p50,
+    51: _p51,
+    52: _p52,
 }
 
 

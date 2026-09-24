@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "item_id": "P44",
+  "signature_fields": [
+    {
+      "field": "engine_torque",
+      "unit": "N*m"
+    },
+    {
+      "field": "engine_limited_force",
+      "unit": "N"
+    },
+    {
+      "field": "tire_capacity",
+      "unit": "N"
+    },
+    {
+      "field": "delivered_force",
+      "unit": "N"
+    },
+    {
+      "field": "envelope_residual",
+      "unit": "N"
+    }
+  ],
+  "origin": {
+    "kind": "independent-analytic-and-numerical-python",
+    "item_id": "P44",
+    "independent": true,
+    "imports_production_entrypoint": false,
+    "derived_from_production_output": false,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "engine_rpm": 5000,
+        "gear_ratio": 3.2,
+        "broken_mode": false
+      },
+      "signature": [
+        218.5,
+        8507.685161290323,
+        7361.17875,
+        7361.17875,
+        0.0
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "engine_rpm": 6200,
+        "gear_ratio": 3.2,
+        "broken_mode": false
+      },
+      "signature": [
+        202.66,
+        7890.926658064516,
+        7361.17875,
+        7361.17875,
+        0.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "engine_rpm": 5000,
+        "gear_ratio": 2.2,
+        "broken_mode": false
+      },
+      "signature": [
+        218.5,
+        5849.033548387098,
+        7361.17875,
+        5849.033548387098,
+        0.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "engine_rpm": 5000,
+        "gear_ratio": 3.2,
+        "broken_mode": true
+      },
+      "signature": [
+        218.5,
+        8507.685161290323,
+        7361.17875,
+        8507.685161290323,
+        1146.5064112903228
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "engine_rpm": 5000,
+        "gear_ratio": 3.2,
+        "broken_mode": false
+      },
+      "signature": [
+        218.5,
+        8507.685161290323,
+        7361.17875,
+        7361.17875,
+        0.0
+      ]
+    }
+  }
+}

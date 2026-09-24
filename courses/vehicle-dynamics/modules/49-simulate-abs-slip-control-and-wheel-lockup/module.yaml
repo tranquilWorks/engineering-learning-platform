@@ -1,0 +1,22 @@
+schema_version: 1
+id: 49-simulate-abs-slip-control-and-wheel-lockup
+number: 49
+title: Simulate ABS Slip Control and Wheel Lockup
+summary: Integrate wheel-slip dynamics and compare deterministic ABS modulation with an unmodulated wheel-lock case.
+guiding_question: How does brake-torque modulation keep the tire near peak slip without locking the wheel?
+status: implemented
+tags: [vehicle-dynamics, native-python, braking, abs, slip-control]
+runtime: {kind: python, entrypoint: "experiment.py:run", trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: target_slip, type: slider, label: ABS target slip, default: 0.15, unit: "1", minimum: 0.08, maximum: 0.25, step: 0.01}
+- {id: brake_torque_nm, type: slider, label: Requested brake torque, default: 2200, unit: "N*m", minimum: 1000, maximum: 3500, step: 100}
+- {id: broken_mode, type: toggle, label: Enable the intentionally broken case, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- {type: prediction, title: Predict before running, text: Sustained torque above the tire reaction locks the wheel and loses peak-slip force., reveal: Modulate torque from slip feedback and verify wheel-speed dynamics.}
+- {type: controls, title: ABS model controls}
+- {type: metrics}
+- {type: plot_grid, title: Response and mechanism, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken-case interpretation, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}

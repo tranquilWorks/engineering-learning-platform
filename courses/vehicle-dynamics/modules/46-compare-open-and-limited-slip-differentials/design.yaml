@@ -1,0 +1,27 @@
+schema_version: 1
+item_id: P46
+module: 46-compare-open-and-limited-slip-differentials
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- F_open=2 min(F_demand/2,mu_L F_z,mu_R F_z)
+- F_R<=TBR F_L
+- F_L+F_R<=F_demand and F_k<=mu_k F_z
+signature:
+- {field: open_total_force, unit: N}
+- {field: lsd_total_force, unit: N}
+- {field: lsd_left_force, unit: N}
+- {field: lsd_right_force, unit: N}
+- {field: wheel_capacity_residual, unit: N}
+teaching_invariant: Torque bias can redistribute demand between wheels but cannot exceed either wheel capacity or total driveshaft demand.
+limiting_cases:
+- At a torque-bias ratio of one, the limited-slip allocation tends toward equal wheel force.
+- When both wheel capacities exceed half the demand, the open differential can deliver the entire demand.
+scenarios:
+  baseline: {left_friction_mu: 0.35, torque_bias_ratio: 4, broken_mode: false}
+  sweep_1: {left_friction_mu: 0.6, torque_bias_ratio: 4, broken_mode: false}
+  sweep_2: {left_friction_mu: 0.35, torque_bias_ratio: 2, broken_mode: false}
+  broken: {left_friction_mu: 0.35, torque_bias_ratio: 4, broken_mode: true}
+  recovery: {left_friction_mu: 0.35, torque_bias_ratio: 4, broken_mode: false}
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic Python software and synthetic parameters only; no source or MATLAB equivalence, measured differential, driveline, tire, rig, track, or vehicle result, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

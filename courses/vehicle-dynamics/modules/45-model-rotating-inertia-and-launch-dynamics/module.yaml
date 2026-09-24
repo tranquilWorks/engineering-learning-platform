@@ -1,0 +1,22 @@
+schema_version: 1
+id: 45-model-rotating-inertia-and-launch-dynamics
+number: 45
+title: Model Rotating Inertia and Launch Dynamics
+summary: Reflect driveline inertias to the road and integrate a bounded traction-limited launch.
+guiding_question: How much launch performance is lost when rotating inertia is reflected through the driveline correctly?
+status: implemented
+tags: [vehicle-dynamics, native-python, propulsion, inertia, launch]
+runtime: {kind: python, entrypoint: "experiment.py:run", trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: launch_torque_nm, type: slider, label: Launch engine torque, default: 220, unit: "N*m", minimum: 120, maximum: 300, step: 5}
+- {id: driveline_inertia_kg_m2, type: slider, label: Driveline inertia, default: 0.35, unit: "kg*m^2", minimum: 0.1, maximum: 0.8, step: 0.05}
+- {id: broken_mode, type: toggle, label: Enable the intentionally broken case, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- {type: prediction, title: Predict before running, text: "Reflected inertia grows with the square of rotational speed ratio.", reveal: "Include engine-side, driveline, and wheel inertia in launch energy."}
+- {type: controls, title: Launch model controls}
+- {type: metrics}
+- {type: plot_grid, title: Response and mechanism, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken-case interpretation, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}

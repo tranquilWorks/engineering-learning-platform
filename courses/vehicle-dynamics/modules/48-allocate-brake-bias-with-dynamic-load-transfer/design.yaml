@@ -1,0 +1,28 @@
+schema_version: 1
+item_id: P48
+module: 48-allocate-brake-bias-with-dynamic-load-transfer
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- Delta F_z=m a_x h/L
+- F_zf=m g b/L+Delta F_z and F_zr=m g a/L-Delta F_z
+- F_b,k<=mu F_z,k and a_achieved=(F_bf+F_br)/(m g)
+signature:
+- {field: dynamic_front_normal_load, unit: N}
+- {field: ideal_front_bias, unit: "1"}
+- {field: front_utilization, unit: "1"}
+- {field: rear_utilization, unit: "1"}
+- {field: achieved_deceleration, unit: g}
+- {field: axle_capacity_residual, unit: N}
+teaching_invariant: Front and rear brake capacity must be allocated from deceleration-dependent dynamic axle loads, not static weights.
+limiting_cases:
+- At zero deceleration, dynamic axle loads tend to their static values.
+- As center-of-gravity height tends to zero, longitudinal load transfer tends to zero.
+scenarios:
+  baseline: {deceleration_g: 0.9, front_brake_bias: 0.62, broken_mode: false}
+  sweep_1: {deceleration_g: 1.1, front_brake_bias: 0.62, broken_mode: false}
+  sweep_2: {deceleration_g: 0.9, front_brake_bias: 0.72, broken_mode: false}
+  broken: {deceleration_g: 0.9, front_brake_bias: 0.62, broken_mode: true}
+  recovery: {deceleration_g: 0.9, front_brake_bias: 0.62, broken_mode: false}
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic Python software and synthetic parameters only; no source or MATLAB equivalence, measured brake, tire, rig, track, or vehicle result, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

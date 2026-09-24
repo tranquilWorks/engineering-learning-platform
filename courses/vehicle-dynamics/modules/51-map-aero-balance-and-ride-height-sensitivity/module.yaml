@@ -1,0 +1,22 @@
+schema_version: 1
+id: 51-map-aero-balance-and-ride-height-sensitivity
+number: 51
+title: Map Aero Balance and Ride-Height Sensitivity
+summary: Map front and rear downforce, drag, balance, and pitch moment across speed and front ride height.
+guiding_question: How does front ride height move aerodynamic balance while forces retain speed-squared scaling?
+status: implemented
+tags: [vehicle-dynamics, native-python, aerodynamics, ride-height, balance]
+runtime: {kind: python, entrypoint: "experiment.py:run", trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: speed_m_s, type: slider, label: Vehicle speed, default: 45, unit: m/s, minimum: 20, maximum: 70, step: 1}
+- {id: front_ride_height_mm, type: slider, label: Front ride height, default: 80, unit: mm, minimum: 50, maximum: 120, step: 2}
+- {id: broken_mode, type: toggle, label: Enable the intentionally broken case, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- {type: prediction, title: Predict before running, text: Ride-height sensitivity changes front coefficient and therefore aero balance and pitch moment., reveal: Convert millimetres to metres before evaluating the coefficient law.}
+- {type: controls, title: Aerodynamic map controls}
+- {type: metrics}
+- {type: plot_grid, title: Response and mechanism, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken-case interpretation, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}

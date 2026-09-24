@@ -1,0 +1,22 @@
+schema_version: 1
+id: 48-allocate-brake-bias-with-dynamic-load-transfer
+number: 48
+title: Allocate Brake Bias with Dynamic Load Transfer
+summary: Compute deceleration-dependent axle loads, capacities, utilization, and achievable braking force.
+guiding_question: Why must brake bias follow dynamic rather than static axle load?
+status: implemented
+tags: [vehicle-dynamics, native-python, braking, load-transfer]
+runtime: {kind: python, entrypoint: "experiment.py:run", trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: deceleration_g, type: slider, label: Requested deceleration, default: 0.9, unit: g, minimum: 0.3, maximum: 1.2, step: 0.05}
+- {id: front_brake_bias, type: slider, label: Selected front brake bias, default: 0.62, unit: "1", minimum: 0.45, maximum: 0.85, step: 0.01}
+- {id: broken_mode, type: toggle, label: Enable the intentionally broken case, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- {type: prediction, title: Predict before running, text: Braking raises front normal load and reduces rear capacity., reveal: Cap both axle forces using the dynamically transferred loads.}
+- {type: controls, title: Brake allocation controls}
+- {type: metrics}
+- {type: plot_grid, title: Response and mechanism, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken-case interpretation, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}

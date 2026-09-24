@@ -1,0 +1,28 @@
+schema_version: 1
+item_id: P52
+module: 52-couple-downforce-drag-tires-and-stint-limits
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- F_tire=mu_ref F_z,ref[(m g+F_down)/F_z,ref]^0.86
+- a_usable=[min(F_tire,P/v)-F_drag]/m
+- N_stint=min(E_stint/E_lap,N_thermal)
+signature:
+- {field: total_downforce, unit: N}
+- {field: aerodynamic_drag, unit: N}
+- {field: usable_acceleration, unit: "m/s^2"}
+- {field: lap_energy, unit: MJ}
+- {field: limiting_stint_laps, unit: lap}
+- {field: coupled_constraint_residual, unit: "1"}
+teaching_invariant: Downforce enters tire load once while drag is subtracted from tractive force and debited from every lap's finite energy budget.
+limiting_cases:
+- As speed tends to zero, modeled aerodynamic downforce and drag both tend to zero.
+- With an unlimited energy budget, the declared thermal lap limit remains binding.
+scenarios:
+  baseline: {speed_m_s: 55, stint_energy_mj: 120, broken_mode: false}
+  sweep_1: {speed_m_s: 70, stint_energy_mj: 120, broken_mode: false}
+  sweep_2: {speed_m_s: 55, stint_energy_mj: 180, broken_mode: false}
+  broken: {speed_m_s: 55, stint_energy_mj: 120, broken_mode: true}
+  recovery: {speed_m_s: 55, stint_energy_mj: 120, broken_mode: false}
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic Python software and synthetic parameters only; no source or MATLAB equivalence, measured aero, tire, powertrain, energy, thermal, track, or vehicle result, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

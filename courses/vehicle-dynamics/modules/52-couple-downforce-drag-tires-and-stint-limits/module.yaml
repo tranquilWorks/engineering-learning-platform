@@ -1,0 +1,22 @@
+schema_version: 1
+id: 52-couple-downforce-drag-tires-and-stint-limits
+number: 52
+title: Couple Downforce, Drag, Tires, and Stint Limits
+summary: Couple aerodynamic load and drag with tire load sensitivity, propulsion force, energy per lap, and a bounded stint limit.
+guiding_question: When do aerodynamic gains become constrained by drag, tire sensitivity, energy, or thermal limits?
+status: implemented
+tags: [vehicle-dynamics, native-python, aerodynamics, tires, stint]
+runtime: {kind: python, entrypoint: "experiment.py:run", trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: speed_m_s, type: slider, label: Vehicle speed, default: 55, unit: m/s, minimum: 30, maximum: 75, step: 1}
+- {id: stint_energy_mj, type: slider, label: Available stint energy, default: 120, unit: MJ, minimum: 60, maximum: 200, step: 5}
+- {id: broken_mode, type: toggle, label: Enable the intentionally broken case, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- {type: prediction, title: Predict before running, text: Downforce increases tire capacity while drag reduces force and consumes lap energy., reveal: Count each aero contribution once and enforce the earliest stint constraint.}
+- {type: controls, title: Coupled stint controls}
+- {type: metrics}
+- {type: plot_grid, title: Response and mechanism, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken-case interpretation, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}

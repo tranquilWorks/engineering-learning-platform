@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "item_id": "P46",
+  "signature_fields": [
+    {
+      "field": "open_total_force",
+      "unit": "N"
+    },
+    {
+      "field": "lsd_total_force",
+      "unit": "N"
+    },
+    {
+      "field": "lsd_left_force",
+      "unit": "N"
+    },
+    {
+      "field": "lsd_right_force",
+      "unit": "N"
+    },
+    {
+      "field": "wheel_capacity_residual",
+      "unit": "N"
+    }
+  ],
+  "origin": {
+    "kind": "independent-analytic-and-numerical-python",
+    "item_id": "P46",
+    "independent": true,
+    "imports_production_entrypoint": false,
+    "derived_from_production_output": false,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "left_friction_mu": 0.35,
+        "torque_bias_ratio": 4,
+        "broken_mode": false
+      },
+      "signature": [
+        2240.0,
+        4800.0,
+        1120.0,
+        3679.9999999999995,
+        0.0
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "left_friction_mu": 0.6,
+        "torque_bias_ratio": 4,
+        "broken_mode": false
+      },
+      "signature": [
+        3840.0,
+        5480.0,
+        1800.0,
+        3679.9999999999995,
+        0.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "left_friction_mu": 0.35,
+        "torque_bias_ratio": 2,
+        "broken_mode": false
+      },
+      "signature": [
+        2240.0,
+        3360.0,
+        1120.0,
+        2240.0,
+        0.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "left_friction_mu": 0.35,
+        "torque_bias_ratio": 4,
+        "broken_mode": true
+      },
+      "signature": [
+        2240.0,
+        5600.0,
+        1120.0,
+        4480.0,
+        800.0000000000005
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "left_friction_mu": 0.35,
+        "torque_bias_ratio": 4,
+        "broken_mode": false
+      },
+      "signature": [
+        2240.0,
+        4800.0,
+        1120.0,
+        3679.9999999999995,
+        0.0
+      ]
+    }
+  }
+}

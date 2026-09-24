@@ -1,0 +1,28 @@
+schema_version: 1
+item_id: P51
+module: 51-map-aero-balance-and-ride-height-sensitivity
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- C_Lf=0.58-2.2(h_f[m]-0.080)
+- F_df=0.5 rho A v^2 C_Lf and F_dr=0.5 rho A v^2 C_Lr
+- balance_f=F_df/(F_df+F_dr) and M_pitch=1.50 F_dr-1.20 F_df
+signature:
+- {field: front_downforce, unit: N}
+- {field: rear_downforce, unit: N}
+- {field: aerodynamic_drag, unit: N}
+- {field: front_aero_balance, unit: "1"}
+- {field: aerodynamic_pitch_moment, unit: "N*m"}
+- {field: ride_height_unit_residual, unit: N}
+teaching_invariant: Ride height is converted from millimetres to metres once before front and rear aerodynamic forces are combined into balance and pitch moment.
+limiting_cases:
+- As vehicle speed tends to zero, downforce, drag, and aerodynamic pitch moment all tend to zero.
+- At the reference front ride height, the front coefficient equals its declared reference value.
+scenarios:
+  baseline: {speed_m_s: 45, front_ride_height_mm: 80, broken_mode: false}
+  sweep_1: {speed_m_s: 65, front_ride_height_mm: 80, broken_mode: false}
+  sweep_2: {speed_m_s: 45, front_ride_height_mm: 110, broken_mode: false}
+  broken: {speed_m_s: 45, front_ride_height_mm: 80, broken_mode: true}
+  recovery: {speed_m_s: 45, front_ride_height_mm: 80, broken_mode: false}
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic Python software and synthetic parameters only; no source or MATLAB equivalence, measured aero, wind-tunnel, ride-height, track, or vehicle result, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

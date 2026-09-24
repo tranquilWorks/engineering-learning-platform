@@ -1,0 +1,22 @@
+schema_version: 1
+id: 47-optimize-gear-ratios-and-shift-strategy
+number: 47
+title: Optimize Gear Ratios and Shift Strategy
+summary: Select valid wheel-force gears and include redline and deterministic shift interruptions in an acceleration run.
+guiding_question: Where should shifts occur when wheel-force crossover and interruption both matter?
+status: implemented
+tags: [vehicle-dynamics, native-python, propulsion, gearing, shift-strategy]
+runtime: {kind: python, entrypoint: "experiment.py:run", trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: final_drive_ratio, type: slider, label: Final-drive ratio, default: 4.1, unit: "1", minimum: 3.5, maximum: 4.8, step: 0.1}
+- {id: shift_delay_s, type: slider, label: Shift interruption, default: 0.25, unit: s, minimum: 0.05, maximum: 0.6, step: 0.05}
+- {id: broken_mode, type: toggle, label: Enable the intentionally broken case, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- {type: prediction, title: Predict before running, text: The best valid gear maximizes wheel force inside the engine-speed band., reveal: Pay the declared torque interruption whenever the selected gear changes.}
+- {type: controls, title: Gear strategy controls}
+- {type: metrics}
+- {type: plot_grid, title: Response and mechanism, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken-case interpretation, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}

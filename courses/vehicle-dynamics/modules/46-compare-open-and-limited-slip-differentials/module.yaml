@@ -1,0 +1,22 @@
+schema_version: 1
+id: 46-compare-open-and-limited-slip-differentials
+number: 46
+title: Compare Open and Limited-Slip Differentials
+summary: Compare open and torque-biasing differential force delivery on a deterministic split-friction axle.
+guiding_question: How does torque bias recover propulsion without exceeding either wheel's capacity?
+status: implemented
+tags: [vehicle-dynamics, native-python, propulsion, differential]
+runtime: {kind: python, entrypoint: "experiment.py:run", trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: left_friction_mu, type: slider, label: Low-grip wheel friction, default: 0.35, unit: "1", minimum: 0.2, maximum: 1.2, step: 0.05}
+- {id: torque_bias_ratio, type: slider, label: Torque-bias ratio, default: 4, unit: "1", minimum: 1, maximum: 5, step: 0.25}
+- {id: broken_mode, type: toggle, label: Enable the intentionally broken case, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- {type: prediction, title: Predict before running, text: Torque bias redistributes available demand but cannot create tire capacity., reveal: Enforce low- and high-grip wheel caps plus total input demand.}
+- {type: controls, title: Differential model controls}
+- {type: metrics}
+- {type: plot_grid, title: Response and mechanism, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken-case interpretation, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}
