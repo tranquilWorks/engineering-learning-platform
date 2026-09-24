@@ -304,6 +304,376 @@ def _p16(a: float, b: float, broken: bool) -> list[float]:
     ]
 
 
+def _p17(a: float, b: float, broken: bool) -> list[float]:
+    raw = round(a)
+    first_byte, second_byte = divmod(raw, 256)
+    restored = second_byte * 256 + first_byte if broken else first_byte * 256 + second_byte
+    speed_kmh = restored / 128.0
+    return [
+        speed_kmh,
+        speed_kmh / 3.6,
+        speed_kmh * 128.0 - raw,
+        b,
+        100.0,
+        float(0x139),
+        8.0,
+        9.0,
+        float(broken or b > 100.0),
+    ]
+
+
+def _p18(a: float, b: float, broken: bool) -> list[float]:
+    sample_period = 0.5
+    truth_acceleration = 0.4
+    times = [sample_period * index for index in range(21)]
+    truth_positions = [truth_acceleration * time * time / 2.0 for time in times]
+    gps_positions = [
+        position + 0.6 * math.sin(0.7 * time)
+        for position, time in zip(truth_positions, times, strict=True)
+    ]
+    estimate = 0.0
+    velocity = 0.0
+    estimates = [estimate]
+    absolute_innovations: list[float] = []
+    for index in range(1, len(times)):
+        sensed_acceleration = truth_acceleration + b
+        prediction = (
+            estimate
+            + velocity * sample_period
+            + sensed_acceleration * sample_period * sample_period / 2.0
+        )
+        velocity += sensed_acceleration * sample_period
+        measurement_index = max(0, index - 2) if broken else index
+        innovation = gps_positions[measurement_index] - prediction
+        estimate = prediction + a * innovation
+        estimates.append(estimate)
+        absolute_innovations.append(abs(innovation))
+    errors = [
+        estimated - truth
+        for estimated, truth in zip(estimates, truth_positions, strict=True)
+    ]
+    return [
+        errors[-1],
+        velocity - truth_acceleration * times[-1],
+        math.sqrt(sum(error**2 for error in errors) / len(errors)),
+        sum(absolute_innovations) / len(absolute_innovations),
+        estimate - gps_positions[-1],
+        1.0 if broken else 0.0,
+        float(len(times)),
+        float(broken),
+    ]
+
+
+def _p19(a: float, b: float, broken: bool) -> list[float]:
+    step = 0.1
+    yaw_rate = b if broken else b * math.pi / 180.0
+    x_position = 0.0
+    y_position = 0.0
+    heading = 0.0
+    for _ in range(100):
+        middle_heading = heading + yaw_rate * step / 2.0
+        x_position += a * math.cos(middle_heading) * step
+        y_position += a * math.sin(middle_heading) * step
+        heading += yaw_rate * step
+    curvature = yaw_rate / a
+    radius = 0.0 if abs(curvature) < 1e-12 else 1.0 / abs(curvature)
+    return [
+        x_position,
+        y_position,
+        heading * 180.0 / math.pi,
+        curvature,
+        radius,
+        a * yaw_rate,
+        a * 10.0,
+        float(broken),
+    ]
+
+
+def _p20(a: float, b: float, broken: bool) -> list[float]:
+    density = 1.225
+    disturbance = [0.0, 0.7, -0.4, 0.2, -0.8, 0.5, -0.1, 0.9, -0.6, 0.3, -0.2, 0.4]
+    speeds = [10.0 + a * index / 11.0 for index in range(12)]
+    observations = [
+        180.0 + 0.5 * density * 0.64 * speed**2 + b * disturbance[index]
+        for index, speed in enumerate(speeds)
+    ]
+    fit_indices = list(range(0, 12, 2))
+    check_indices = list(range(1, 12, 2))
+    regressors = [225.0 if broken else speeds[index] ** 2 for index in fit_indices]
+    responses = [observations[index] for index in fit_indices]
+    center_x = sum(regressors) / len(regressors)
+    center_y = sum(responses) / len(responses)
+    information = sum((value - center_x) ** 2 for value in regressors)
+    if information <= 1e-12:
+        gradient = 0.0
+        offset = center_y
+    else:
+        gradient = sum(
+            (x_value - center_x) * (y_value - center_y)
+            for x_value, y_value in zip(regressors, responses, strict=True)
+        ) / information
+        offset = center_y - gradient * center_x
+    fit_errors = [
+        response - offset - gradient * regressor
+        for regressor, response in zip(regressors, responses, strict=True)
+    ]
+    check_errors = [
+        observations[index] - offset - gradient * speeds[index] ** 2
+        for index in check_indices
+    ]
+    variance = sum(error**2 for error in fit_errors) / max(1, len(fit_errors) - 2)
+    parameter_error = (
+        0.0
+        if information <= 1e-12
+        else 2.0 * math.sqrt(variance / information) / density
+    )
+    return [
+        offset,
+        2.0 * gradient / density,
+        math.sqrt(sum(error**2 for error in fit_errors) / len(fit_errors)),
+        math.sqrt(sum(error**2 for error in check_errors) / len(check_errors)),
+        max(regressors) - min(regressors),
+        information / max(1.0, sum(value**2 for value in regressors)),
+        parameter_error,
+        float(broken or information <= 1e-12),
+    ]
+
+
+def _p21_score(offset: float, friction: float) -> tuple[float, float, float, float]:
+    effective_radius = 45.0 + offset
+    distance = math.pi * 45.0 / 2.0 + 0.08 * offset**2
+    speed = math.sqrt(friction * 9.81 * effective_radius)
+    return effective_radius, distance, speed, distance / speed + 200.0 / 45.0
+
+
+def _p21(a: float, b: float, broken: bool) -> list[float]:
+    candidates = [-b + 2.0 * b * index / 40.0 for index in range(41)]
+    if broken:
+        selected = b + 1.0
+    else:
+        selected = min(candidates, key=lambda offset: _p21_score(offset, a)[3])
+    radius, distance, speed, elapsed = _p21_score(selected, a)
+    center_elapsed = _p21_score(0.0, a)[3]
+    margin = b - abs(selected)
+    return [
+        selected,
+        radius,
+        distance,
+        speed,
+        elapsed,
+        center_elapsed - elapsed,
+        margin,
+        41.0,
+        float(broken or margin < -1e-12),
+    ]
+
+
+def _p22(a: float, b: float, broken: bool) -> list[float]:
+    curvatures = [
+        0.0,
+        0.0,
+        0.012,
+        0.025,
+        0.045,
+        0.045,
+        0.020,
+        0.0,
+        0.0,
+        0.035,
+        0.050,
+        0.015,
+        0.0,
+    ]
+    spacing = 25.0
+    ceilings = [
+        50.0
+        if curvature == 0.0
+        else min(50.0, math.sqrt(a * 9.81 / curvature))
+        for curvature in curvatures
+    ]
+    speeds = [15.0]
+    for ceiling in ceilings[1:]:
+        speeds.append(min(ceiling, math.sqrt(speeds[-1] ** 2 + 2.0 * b * spacing)))
+    if not broken:
+        speeds[-1] = min(speeds[-1], 15.0)
+        for index in range(len(speeds) - 2, -1, -1):
+            speeds[index] = min(
+                speeds[index], math.sqrt(speeds[index + 1] ** 2 + 12.0 * spacing)
+            )
+    braking_residual = max(
+        max(
+            0.0,
+            speeds[index] ** 2
+            - speeds[index + 1] ** 2
+            - 12.0 * spacing,
+        )
+        for index in range(len(speeds) - 1)
+    )
+    elapsed = sum(
+        2.0 * spacing / (speeds[index] + speeds[index + 1])
+        for index in range(len(speeds) - 1)
+    )
+    binding = sum(
+        abs(speed - ceiling) < 1e-9
+        for speed, ceiling in zip(speeds, ceilings, strict=True)
+    )
+    return [
+        elapsed,
+        max(speeds),
+        speeds[8],
+        braking_residual,
+        float(binding),
+        min(speeds),
+        12.0,
+        float(broken or braking_residual > 1e-9),
+    ]
+
+
+def _p23(a: float, b: float, broken: bool) -> list[float]:
+    original = [28.0, 35.0, 22.0, 31.0]
+    aero_response = [1.0, 0.4, 1.2, 0.6]
+    tire_response = [0.8, 1.2, 0.7, 1.1]
+    changed = [
+        base
+        * (
+            1.0
+            - 0.0008 * a * aero_gain
+            - 0.002 * b * tire_gain
+            - 0.00001 * a * b
+        )
+        for base, aero_gain, tire_gain in zip(
+            original, aero_response, tire_response, strict=True
+        )
+    ]
+    paired_candidate = changed[1:] + changed[:1] if broken else changed
+    paired_delta = [
+        candidate - baseline
+        for candidate, baseline in zip(paired_candidate, original, strict=True)
+    ]
+    mean_delta = sum(paired_delta) / len(paired_delta)
+    standard_error = math.sqrt(
+        sum((delta - mean_delta) ** 2 for delta in paired_delta)
+        / (len(paired_delta) - 1)
+    ) / math.sqrt(len(paired_delta))
+    total_delta = sum(changed) - sum(original)
+    aero_effect = sum(
+        -base * 0.0008 * a * gain
+        for base, gain in zip(original, aero_response, strict=True)
+    )
+    tire_effect = sum(
+        -base * 0.002 * b * gain
+        for base, gain in zip(original, tire_response, strict=True)
+    )
+    interaction = sum(-base * 0.00001 * a * b for base in original)
+    return [
+        sum(original),
+        sum(changed),
+        total_delta,
+        aero_effect,
+        tire_effect,
+        interaction,
+        standard_error,
+        -0.20 - total_delta,
+        float(total_delta < -0.20 and not broken),
+        float(broken),
+    ]
+
+
+def _p24_trajectory(
+    mass: float, friction: float, broken: bool
+) -> tuple[list[float], list[float], list[float], list[float], list[float]]:
+    time_step = 0.2
+    speed = 10.0
+    heading = 0.0
+    east = 0.0
+    north = 0.0
+    times = [0.0]
+    speed_history = [speed]
+    east_history = [east]
+    north_history = [north]
+    yaw_history = [0.0]
+    for index in range(1, 61):
+        time = index * time_step
+        propulsion = 4000.0 + 600.0 * math.sin(0.22 * time)
+        resistance = 0.5 * 1.225 * 0.65 * speed**2
+        acceleration = min((propulsion - resistance) / mass, 0.35 * friction * 9.81)
+        speed = max(0.0, speed + acceleration * time_step)
+        steering_degrees = 12.0 * math.sin(0.35 * time)
+        road_wheel_angle = (
+            steering_degrees / 13.0
+            if broken
+            else steering_degrees * math.pi / (180.0 * 13.0)
+        )
+        unconstrained_yaw = speed * math.tan(road_wheel_angle) / 2.57
+        yaw_bound = friction * 9.81 / max(speed, 1.0)
+        yaw = max(-yaw_bound, min(yaw_bound, unconstrained_yaw))
+        midpoint = heading + yaw * time_step / 2.0
+        east += speed * math.cos(midpoint) * time_step
+        north += speed * math.sin(midpoint) * time_step
+        heading += yaw * time_step
+        times.append(time)
+        speed_history.append(speed)
+        east_history.append(east)
+        north_history.append(north)
+        yaw_history.append(yaw)
+    return times, speed_history, east_history, north_history, yaw_history
+
+
+def _p24(a: float, b: float, broken: bool) -> list[float]:
+    times, speeds, east, north, yaws = _p24_trajectory(a, b, broken)
+    _, nominal_speed, nominal_east, nominal_north, nominal_yaw = _p24_trajectory(
+        1320.0, 1.0, False
+    )
+    speed_observation = [
+        value + 0.05 * math.sin(0.4 * time)
+        for value, time in zip(nominal_speed, times, strict=True)
+    ]
+    east_observation = [
+        value + 0.10 * math.sin(0.3 * time)
+        for value, time in zip(nominal_east, times, strict=True)
+    ]
+    north_observation = [
+        value + 0.10 * math.cos(0.3 * time)
+        for value, time in zip(nominal_north, times, strict=True)
+    ]
+    yaw_observation = [
+        value + 0.001 * math.sin(0.6 * time)
+        for value, time in zip(nominal_yaw, times, strict=True)
+    ]
+    speed_error = [
+        model - observed
+        for model, observed in zip(speeds, speed_observation, strict=True)
+    ]
+    position_error = [
+        math.hypot(x_model - x_observed, y_model - y_observed)
+        for x_model, y_model, x_observed, y_observed in zip(
+            east, north, east_observation, north_observation, strict=True
+        )
+    ]
+    yaw_error = [
+        model - observed
+        for model, observed in zip(yaws, yaw_observation, strict=True)
+    ]
+    speed_rmse = math.sqrt(sum(value**2 for value in speed_error) / len(speed_error))
+    position_rmse = math.sqrt(
+        sum(value**2 for value in position_error) / len(position_error)
+    )
+    yaw_rmse = math.sqrt(sum(value**2 for value in yaw_error) / len(yaw_error))
+    distance = sum(0.2 * value for value in speeds[1:])
+    mean_speed = distance / (times[-1] - times[0])
+    return [
+        speed_rmse,
+        position_rmse,
+        yaw_rmse,
+        speeds[-1],
+        distance,
+        2400.0 / mean_speed,
+        float(sum((speed_rmse < 1.0, position_rmse < 3.0, yaw_rmse < 0.05))),
+        max(abs(value) for value in yaw_error),
+        float(broken),
+    ]
+
+
 _MODELS = {
     "P01": _p01,
     "P02": _p02,
@@ -321,6 +691,14 @@ _MODELS = {
     "P14": _p14,
     "P15": _p15,
     "P16": _p16,
+    "P17": _p17,
+    "P18": _p18,
+    "P19": _p19,
+    "P20": _p20,
+    "P21": _p21,
+    "P22": _p22,
+    "P23": _p23,
+    "P24": _p24,
 }
 
 

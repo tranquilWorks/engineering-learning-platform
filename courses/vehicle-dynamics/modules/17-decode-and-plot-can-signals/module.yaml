@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "id": "17-decode-and-plot-can-signals",
+  "number": 17,
+  "title": "Decode and Plot CAN Signals",
+  "summary": "Decode a documented big-endian wheel-speed field, verify its engineering-unit round trip, and reject stale or malformed telemetry.",
+  "guiding_question": "How do byte order, scale, DLC, and freshness turn a raw CAN frame into a trustworthy engineering signal?",
+  "status": "implemented",
+  "tags": ["vehicle-dynamics", "phase-5", "python-first-native"],
+  "runtime": {"kind": "python", "entrypoint": "experiment.py:run", "trust": "local-trusted", "timeout_seconds": 3.0},
+  "controls": [
+    {"id": "raw_count", "type": "slider", "label": "Raw wheel-speed count", "default": 4608, "minimum": 0, "maximum": 65535, "step": 128, "unit": "count", "description": "Change the unsigned 16-bit field while holding frame age fixed."},
+    {"id": "frame_age_ms", "type": "slider", "label": "Frame age", "default": 40.0, "minimum": 0.0, "maximum": 250.0, "step": 10.0, "unit": "ms", "description": "Cross the declared 100 ms freshness boundary without changing payload bytes."},
+    {"id": "broken_mode", "type": "toggle", "label": "Reverse the two payload bytes", "default": false}
+  ],
+  "blocks": [
+    {"type": "markdown", "source": "lesson.md"},
+    {"type": "prediction", "title": "Predict the decoded value", "text": "Predict the 0x1200 result and whether 250 ms is fresh before running.", "reveal": "Decode high byte first, apply 1/128 km/h per count, then evaluate freshness separately."},
+    {"type": "controls", "title": "CAN decode controls"}, {"type": "metrics"},
+    {"type": "plot", "title": "Bounded decoded trace", "plot": "response"},
+    {"type": "plot_grid", "title": "Count and freshness sweeps", "plots": ["primary_sweep", "secondary_sweep"]},
+    {"type": "plot", "title": "Endian failure and recovery", "plot": "broken_recovery"},
+    {"type": "callout", "tone": "info", "title": "Observation", "source": "observation"},
+    {"type": "callout", "tone": "warning", "title": "Broken", "source": "broken"},
+    {"type": "callout", "tone": "success", "title": "Recovery", "source": "recovery"}
+  ]
+}

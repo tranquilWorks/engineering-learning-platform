@@ -207,7 +207,7 @@ The final three lessons are cumulative capstones: identification/control/estimat
 
 ## ELP-VEHICLE-PREP-00 — Vehicle Dynamics governed preparation
 
-**Status:** Prep complete; P01-P16 implemented in two separately authorized batches.
+**Status:** Prep complete; P01-P24 implemented in three separately authorized batches.
 
 **Depends on:** `ELP-ROB-SYSTEMS-CAPSTONES-P66-P69`
 
@@ -217,13 +217,16 @@ only the read-only source gitlink, installs the exact 24-item source and coverag
 ledgers, mirrors the reviewed map, and adds deterministic synthetic GR86
 CAN/RaceChrono BLE protocol fixtures with independent decode and fault checks.
 
-The second implementation catalog has six courses, 239 modules, and 239 interactive modules;
-Vehicle Dynamics contributes P01-P16. The fixture is not measured vehicle
+The third implementation catalog has six courses, 247 modules, and 247 interactive modules;
+Vehicle Dynamics contributes P01-P24. The fixture and all P17-P24 inputs are synthetic, not measured vehicle
 data and does not validate firmware, radio, bench, vehicle, track, or physical
-HIL behavior. `ELP-VEHICLE-P01-P08` and `ELP-VEHICLE-P09-P16` each have exact
-Portfolio Control authorization against their merged predecessor. P01-P16 now
+HIL behavior. `ELP-VEHICLE-P01-P08`, `ELP-VEHICLE-P09-P16`, and
+`ELP-VEHICLE-P17-P24` each have exact Portfolio Control authorization against
+their merged predecessor. P01-P24 now
 provide distinct bounded models, independent scalar references, five-scenario
-evidence, named failures, and exact recoveries. P17-P24 remains separately gated.
+evidence, named failures, and exact recoveries. P20 is explicitly a synthetic
+offline stand-in despite its retained title, and P24 is a software-only GR86
+baseline. P25-P33 remains separately gated.
 
 ## B020 — Course ingestion and migration tooling
 

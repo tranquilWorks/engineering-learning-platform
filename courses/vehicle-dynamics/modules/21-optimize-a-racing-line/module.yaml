@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "id": "21-optimize-a-racing-line",
+  "number": 21,
+  "title": "Optimize a Racing Line",
+  "summary": "Search a bounded set of track offsets while trading curvature speed against added path distance and feasibility margin.",
+  "guiding_question": "When does a wider-radius line repay its added distance, and how is track-boundary feasibility enforced?",
+  "status": "implemented",
+  "tags": ["vehicle-dynamics", "phase-6", "python-first-native"],
+  "runtime": {"kind": "python", "entrypoint": "experiment.py:run", "trust": "local-trusted", "timeout_seconds": 3.0},
+  "controls": [
+    {"id": "friction_coefficient", "type": "slider", "label": "Tire friction coefficient", "default": 1.05, "minimum": 0.70, "maximum": 1.40, "step": 0.05, "unit": "ratio", "description": "Change the lateral grip speed limit across the same candidate lines."},
+    {"id": "track_half_width_m", "type": "slider", "label": "Usable track half-width", "default": 4.0, "minimum": 2.0, "maximum": 6.0, "step": 0.5, "unit": "m", "description": "Change the feasible offset envelope while retaining 41 search points."},
+    {"id": "broken_mode", "type": "toggle", "label": "Select a line beyond track limits", "default": false}
+  ],
+  "blocks": [
+    {"type": "markdown", "source": "lesson.md"},
+    {"type": "prediction", "title": "Predict the optimal trade", "text": "Predict whether wider radius or shorter distance dominates before searching.", "reveal": "Compare time, not radius alone, and require a nonnegative boundary margin."},
+    {"type": "controls", "title": "Racing-line controls"}, {"type": "metrics"},
+    {"type": "plot", "title": "Feasible offset search", "plot": "response"},
+    {"type": "plot_grid", "title": "Grip and width sweeps", "plots": ["primary_sweep", "secondary_sweep"]},
+    {"type": "plot", "title": "Infeasible selection and recovery", "plot": "broken_recovery"},
+    {"type": "callout", "tone": "info", "title": "Observation", "source": "observation"},
+    {"type": "callout", "tone": "warning", "title": "Broken", "source": "broken"},
+    {"type": "callout", "tone": "success", "title": "Recovery", "source": "recovery"}
+  ]
+}

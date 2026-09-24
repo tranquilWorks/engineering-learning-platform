@@ -24,7 +24,7 @@ SOURCE_TREE = "d9e7267ba02c8d3d836c0ae481b80e91233eb81a"
 CURRICULUM_SHA256 = "c452996e5253ec7e547a64cccd4aa8af60dc5f4106311d1dec25ec8d5c48eba6"
 SOURCE_FILE_SET_SHA256 = "15de22f8396cf978e80e55f2ed7541234804913c81dbef71cb85c81508472d11"
 MAP_SHA256 = "87dae868d7e3a0181062a4fd42ff316513b0f6f35c053cb56b5d73b9c56bde6d"
-ACTIVE_CONTRACT_SHA256 = "76ea6428012f1c3765b737f822971de4d29abb24d51037a61e9765ca3877b7bd"
+ACTIVE_CONTRACT_SHA256 = "62972676e406d4fceda0e42bf645335480fafa50859a997117771f4b91dcf89d"
 FRAMEWORK_SHA256 = {
     "source-map.yaml": "1533c3a5f78447adb3008796530796ade0da18a4c4bda57e565c82548ff4c298",
     "course.yaml": "8b25d17589cb56bf8c1e2501298d092d9db11aeb6a42f5673f956029d15b5681",
@@ -217,7 +217,7 @@ def test_exact_source_map_and_read_only_gitlink() -> None:
             assert _sha256(SOURCE_ROOT / identity["path"]) == identity["sha256"]
 
 
-def test_conversion_ledgers_record_exact_second_batch_transition() -> None:
+def test_conversion_ledgers_record_exact_third_batch_transition() -> None:
     for name, expected in FRAMEWORK_SHA256.items():
         assert _sha256(COURSE_ROOT / name) == expected
     source_map = _load(COURSE_ROOT / "source-map.yaml")
@@ -227,8 +227,8 @@ def test_conversion_ledgers_record_exact_second_batch_transition() -> None:
     assert coverage["source_map_sha256"] == FRAMEWORK_SHA256["source-map.yaml"]
     assert coverage["summary"] == {
         "total": 24,
-        "pending": 8,
-        "converted": 16,
+        "pending": 0,
+        "converted": 24,
         "blocked": 0,
         "placeholder": 0,
     }
@@ -248,17 +248,17 @@ def test_conversion_ledgers_record_exact_second_batch_transition() -> None:
         assert {key: conversion_item[key] for key in stable_keys} == {
             key: source_item[key] for key in stable_keys
         }
-        expected_status = "converted" if index <= 16 else "pending"
-        assert coverage_item["status"] == expected_status
-        if index <= 16:
-            expected_batch = "ELP-VEHICLE-P01-P08" if index <= 8 else "ELP-VEHICLE-P09-P16"
-            assert coverage_item["conversion_record"]["batch_id"] == expected_batch
-            assert len(coverage_item["target_content_digest"]) == 64
+        assert coverage_item["status"] == "converted"
+        if index <= 8:
+            expected_batch = "ELP-VEHICLE-P01-P08"
+        elif index <= 16:
+            expected_batch = "ELP-VEHICLE-P09-P16"
         else:
-            assert coverage_item["conversion_record"] is None
-            assert coverage_item["target_content_digest"] is None
+            expected_batch = "ELP-VEHICLE-P17-P24"
+        assert coverage_item["conversion_record"]["batch_id"] == expected_batch
+        assert len(coverage_item["target_content_digest"]) == 64
         assert coverage_item["blocker"] is None
-    assert len(list((COURSE_ROOT / "modules").glob("*/module.yaml"))) == 16
+    assert len(list((COURSE_ROOT / "modules").glob("*/module.yaml"))) == 24
 
 
 def test_fixture_identity_provenance_and_privacy_boundary() -> None:
@@ -399,24 +399,24 @@ def test_fixture_verifier_is_generator_independent_and_passes(capsys: Any) -> No
     }
 
 
-def test_second_batch_catalog_is_six_courses_with_sixteen_vehicle_modules() -> None:
+def test_third_batch_catalog_is_six_courses_with_twenty_four_vehicle_modules() -> None:
     catalog = CourseCatalog([ROOT / "courses"])
     summaries = {item.id: item for item in catalog.summaries()}
     assert len(summaries) == 6
-    assert sum(len(item.modules) for item in summaries.values()) == 239
+    assert sum(len(item.modules) for item in summaries.values()) == 247
     assert (
-        sum(module.interactive for course in summaries.values() for module in course.modules) == 239
+        sum(module.interactive for course in summaries.values() for module in course.modules) == 247
     )
-    assert len(summaries["vehicle-dynamics"].modules) == 16
+    assert len(summaries["vehicle-dynamics"].modules) == 24
 
 
-def test_active_contract_is_exact_merged_second_batch_authorization() -> None:
+def test_active_contract_is_exact_merged_third_batch_authorization() -> None:
     contract_path = ROOT / "contracts/active-batch.yaml"
     contract = yaml.safe_load(contract_path.read_text(encoding="utf-8"))
     assert _sha256(contract_path) == ACTIVE_CONTRACT_SHA256
-    assert contract["batch"]["id"] == "ELP-VEHICLE-P09-P16"
-    assert contract["sources"]["baseline_commit"] == ("408870fbd43a739fcb16e4be3f416841036ca115")
+    assert contract["batch"]["id"] == "ELP-VEHICLE-P17-P24"
+    assert contract["sources"]["baseline_commit"] == ("509f6b71d6b4fc51532b7bcd1bffd628cc7bfebc")
     assert contract["sources"]["competency_map_sha256"] == MAP_SHA256
-    assert "courses/vehicle-dynamics/modules/09-*/**" in contract["scope"]["allowed_paths"]
-    assert "courses/vehicle-dynamics/modules/17-*/**" in contract["scope"]["forbidden_paths"]
+    assert "courses/vehicle-dynamics/modules/17-*/**" in contract["scope"]["allowed_paths"]
+    assert "courses/vehicle-dynamics/modules/2[5-9]-*/**" in contract["scope"]["forbidden_paths"]
     assert contract["validation"]["required_ci"] == []

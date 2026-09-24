@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "item_id": "P21",
+  "provenance": "Python-first native",
+  "reference": {
+    "path": "../../reference_cases.py",
+    "origin": "separately formulated scalar analytic or bounded numerical oracle",
+    "imports_production": false,
+    "consumes_production_output": false,
+    "tolerance_abs": "1e-10",
+    "fields": [
+      "best_offset_m",
+      "effective_radius_m",
+      "corner_path_length_m",
+      "grip_speed_limit_m_s",
+      "lap_time_proxy_s",
+      "gain_from_center_s",
+      "constraint_margin_m",
+      "evaluated_candidates",
+      "invalid"
+    ]
+  },
+  "governing_relation": "R=45+d; L=pi*45/2+0.08*d^2; v=sqrt(mu*g*R); t=L/v+200/45",
+  "teaching_invariant": "The selected line minimizes the declared time proxy over exactly 41 candidates with nonnegative track-boundary margin.",
+  "limitation": "The bounded single-corner proxy omits linked-corner continuity, vehicle width, curbs, transient tires, power, braking, and surveyed geometry.",
+  "scenarios": [
+    {
+      "name": "baseline",
+      "inputs": {
+        "friction_coefficient": 1.05,
+        "track_half_width_m": 4,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_1",
+      "inputs": {
+        "friction_coefficient": 0.7,
+        "track_half_width_m": 4,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_2",
+      "inputs": {
+        "friction_coefficient": 1.05,
+        "track_half_width_m": 6,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "broken",
+      "inputs": {
+        "friction_coefficient": 1.05,
+        "track_half_width_m": 4,
+        "broken_mode": true
+      },
+      "status": "passed"
+    },
+    {
+      "name": "recovery",
+      "inputs": {
+        "friction_coefficient": 1.05,
+        "track_half_width_m": 4,
+        "broken_mode": false
+      },
+      "status": "passed"
+    }
+  ],
+  "unperformed": [
+    "MATLAB runtime comparison",
+    "learner validation",
+    "browser accessibility",
+    "measured vehicle data",
+    "firmware/radio/bench/vehicle/track execution",
+    "physical HIL/hardware"
+  ]
+}

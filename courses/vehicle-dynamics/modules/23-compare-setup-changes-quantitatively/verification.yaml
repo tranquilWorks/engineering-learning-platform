@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "item_id": "P23",
+  "provenance": "Python-first native",
+  "reference": {
+    "path": "../../reference_cases.py",
+    "origin": "separately formulated scalar analytic or bounded numerical oracle",
+    "imports_production": false,
+    "consumes_production_output": false,
+    "tolerance_abs": "1e-10",
+    "fields": [
+      "baseline_lap_s",
+      "candidate_lap_s",
+      "paired_delta_s",
+      "aero_main_effect_s",
+      "tire_main_effect_s",
+      "interaction_effect_s",
+      "paired_standard_error_s",
+      "decision_margin_s",
+      "worthwhile",
+      "invalid"
+    ]
+  },
+  "governing_relation": "delta_i=t_i,candidate-t_i,baseline; delta_lap=sum(delta_i)=aero+tire+interaction",
+  "teaching_invariant": "Stable sector pairing is preserved before aggregation, and the reported component effects sum to the lap delta.",
+  "limitation": "The deterministic four-sector response surface omits repeated laps, randomization, driver learning, weather, thermal state, and real sampling uncertainty.",
+  "scenarios": [
+    {
+      "name": "baseline",
+      "inputs": {
+        "aero_change_percent": 10,
+        "tire_mu_change_percent": 5,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_1",
+      "inputs": {
+        "aero_change_percent": -20,
+        "tire_mu_change_percent": 5,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_2",
+      "inputs": {
+        "aero_change_percent": 10,
+        "tire_mu_change_percent": 15,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "broken",
+      "inputs": {
+        "aero_change_percent": 10,
+        "tire_mu_change_percent": 5,
+        "broken_mode": true
+      },
+      "status": "passed"
+    },
+    {
+      "name": "recovery",
+      "inputs": {
+        "aero_change_percent": 10,
+        "tire_mu_change_percent": 5,
+        "broken_mode": false
+      },
+      "status": "passed"
+    }
+  ],
+  "unperformed": [
+    "MATLAB runtime comparison",
+    "learner validation",
+    "browser accessibility",
+    "measured vehicle data",
+    "firmware/radio/bench/vehicle/track execution",
+    "physical HIL/hardware"
+  ]
+}

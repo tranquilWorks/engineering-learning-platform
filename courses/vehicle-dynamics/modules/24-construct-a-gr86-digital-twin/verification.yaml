@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "item_id": "P24",
+  "provenance": "Python-first native",
+  "reference": {
+    "path": "../../reference_cases.py",
+    "origin": "separately formulated scalar analytic or bounded numerical oracle",
+    "imports_production": false,
+    "consumes_production_output": false,
+    "tolerance_abs": "1e-10",
+    "fields": [
+      "speed_rmse_m_s",
+      "position_rmse_m",
+      "yaw_rate_rmse_rad_s",
+      "final_speed_m_s",
+      "path_distance_m",
+      "lap_time_proxy_s",
+      "requirements_passed",
+      "maximum_yaw_residual_rad_s",
+      "invalid"
+    ]
+  },
+  "governing_relation": "a=min((F_drive-0.5*rho*CdA*v^2)/m,0.35*mu*g); r=clip(v*tan(delta/13)/L,+/-mu*g/v)",
+  "teaching_invariant": "Every declared input crosses a unit-explicit interface before speed, yaw, path, residual, and requirement evaluation.",
+  "limitation": "The deterministic software baseline uses synthetic telemetry and omits physical GR86 calibration, subsystem fidelity, uncertainty propagation, and closed-loop validation.",
+  "scenarios": [
+    {
+      "name": "baseline",
+      "inputs": {
+        "vehicle_mass_kg": 1320,
+        "tire_friction_coefficient": 1,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_1",
+      "inputs": {
+        "vehicle_mass_kg": 1150,
+        "tire_friction_coefficient": 1,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_2",
+      "inputs": {
+        "vehicle_mass_kg": 1320,
+        "tire_friction_coefficient": 1.3,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "broken",
+      "inputs": {
+        "vehicle_mass_kg": 1320,
+        "tire_friction_coefficient": 1,
+        "broken_mode": true
+      },
+      "status": "passed"
+    },
+    {
+      "name": "recovery",
+      "inputs": {
+        "vehicle_mass_kg": 1320,
+        "tire_friction_coefficient": 1,
+        "broken_mode": false
+      },
+      "status": "passed"
+    }
+  ],
+  "unperformed": [
+    "MATLAB runtime comparison",
+    "learner validation",
+    "browser accessibility",
+    "measured vehicle data",
+    "firmware/radio/bench/vehicle/track execution",
+    "physical HIL/hardware"
+  ]
+}

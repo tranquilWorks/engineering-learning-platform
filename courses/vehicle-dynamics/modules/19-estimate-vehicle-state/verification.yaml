@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "item_id": "P19",
+  "provenance": "Python-first native",
+  "reference": {
+    "path": "../../reference_cases.py",
+    "origin": "separately formulated scalar analytic or bounded numerical oracle",
+    "imports_production": false,
+    "consumes_production_output": false,
+    "tolerance_abs": "1e-10",
+    "fields": [
+      "final_x_m",
+      "final_y_m",
+      "final_heading_deg",
+      "curvature_1_m",
+      "turn_radius_m",
+      "lateral_acceleration_m_s2",
+      "path_distance_m",
+      "invalid"
+    ]
+  },
+  "governing_relation": "kappa=r/v; a_y=v*r; x_dot=v*cos(psi); y_dot=v*sin(psi); psi_dot=r",
+  "teaching_invariant": "Over the fixed horizon, path distance is v*T and heading change is r*T in consistent radian units.",
+  "limitation": "The constant-input planar kinematic estimate omits sideslip, tire forces, sensor error, road grade, and force-limit validation.",
+  "scenarios": [
+    {
+      "name": "baseline",
+      "inputs": {
+        "speed_m_s": 20,
+        "yaw_rate_deg_s": 8,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_1",
+      "inputs": {
+        "speed_m_s": 5,
+        "yaw_rate_deg_s": 8,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_2",
+      "inputs": {
+        "speed_m_s": 20,
+        "yaw_rate_deg_s": 30,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "broken",
+      "inputs": {
+        "speed_m_s": 20,
+        "yaw_rate_deg_s": 8,
+        "broken_mode": true
+      },
+      "status": "passed"
+    },
+    {
+      "name": "recovery",
+      "inputs": {
+        "speed_m_s": 20,
+        "yaw_rate_deg_s": 8,
+        "broken_mode": false
+      },
+      "status": "passed"
+    }
+  ],
+  "unperformed": [
+    "MATLAB runtime comparison",
+    "learner validation",
+    "browser accessibility",
+    "measured vehicle data",
+    "firmware/radio/bench/vehicle/track execution",
+    "physical HIL/hardware"
+  ]
+}

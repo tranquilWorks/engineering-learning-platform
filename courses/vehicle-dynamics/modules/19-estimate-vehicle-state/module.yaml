@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "id": "19-estimate-vehicle-state",
+  "number": 19,
+  "title": "Estimate Vehicle State",
+  "summary": "Integrate speed and yaw rate into a bounded global path while tracking curvature, heading, radius, and lateral acceleration.",
+  "guiding_question": "How do measured speed and yaw rate become a frame-consistent estimate of position, heading, and curvature?",
+  "status": "implemented",
+  "tags": ["vehicle-dynamics", "phase-5", "python-first-native"],
+  "runtime": {"kind": "python", "entrypoint": "experiment.py:run", "trust": "local-trusted", "timeout_seconds": 3.0},
+  "controls": [
+    {"id": "speed_m_s", "type": "slider", "label": "Vehicle speed", "default": 20.0, "minimum": 5.0, "maximum": 45.0, "step": 2.5, "unit": "m/s", "description": "Change path distance and lateral acceleration at fixed yaw rate."},
+    {"id": "yaw_rate_deg_s", "type": "slider", "label": "Yaw rate", "default": 8.0, "minimum": -30.0, "maximum": 30.0, "step": 2.0, "unit": "deg/s", "description": "Change turn direction and curvature at fixed speed."},
+    {"id": "broken_mode", "type": "toggle", "label": "Treat degrees per second as radians per second", "default": false}
+  ],
+  "blocks": [
+    {"type": "markdown", "source": "lesson.md"},
+    {"type": "prediction", "title": "Predict path and frame", "text": "Predict curvature, turn direction, and distance after ten seconds before integrating.", "reveal": "Convert yaw rate once, use a midpoint heading, and keep the global frame explicit."},
+    {"type": "controls", "title": "State-estimation controls"}, {"type": "metrics"},
+    {"type": "plot", "title": "Estimated global path", "plot": "response"},
+    {"type": "plot_grid", "title": "Speed and yaw-rate sweeps", "plots": ["primary_sweep", "secondary_sweep"]},
+    {"type": "plot", "title": "Angle-unit failure and recovery", "plot": "broken_recovery"},
+    {"type": "callout", "tone": "info", "title": "Observation", "source": "observation"},
+    {"type": "callout", "tone": "warning", "title": "Broken", "source": "broken"},
+    {"type": "callout", "tone": "success", "title": "Recovery", "source": "recovery"}
+  ]
+}

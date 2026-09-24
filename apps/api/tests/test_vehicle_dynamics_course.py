@@ -29,6 +29,14 @@ IDS = [
     "14-choose-shift-points",
     "15-model-braking-distance-and-heat",
     "16-balance-drag-and-downforce",
+    "17-decode-and-plot-can-signals",
+    "18-fuse-gps-and-imu-motion",
+    "19-estimate-vehicle-state",
+    "20-identify-parameters-from-a-real-drive",
+    "21-optimize-a-racing-line",
+    "22-build-a-lap-time-simulator",
+    "23-compare-setup-changes-quantitatively",
+    "24-construct-a-gr86-digital-twin",
 ]
 
 
@@ -122,8 +130,8 @@ def test_lessons_and_catalog_boundary() -> None:
             assert phrase in lesson
     summaries = CourseCatalog([ROOT / "courses"]).summaries()
     assert len(summaries) == 6
-    assert sum(len(course.modules) for course in summaries) == 239
-    assert sum(module.interactive for course in summaries for module in course.modules) == 239
+    assert sum(len(course.modules) for course in summaries) == 247
+    assert sum(module.interactive for course in summaries for module in course.modules) == 247
 
 
 def _run(number: int, **overrides: float | bool) -> list[float]:
@@ -176,3 +184,45 @@ def test_p09_p16_topic_relations_boundaries_and_failures() -> None:
     assert p16[4] == pytest.approx(p16[1] * 40.0)
     assert p16[3] - 1320.0 * 9.81 == pytest.approx(p16[2])
     assert _run(16, broken_mode=True)[-1] == 1.0
+
+
+def test_p17_p24_topic_relations_boundaries_and_failures() -> None:
+    p17 = _run(17)
+    assert p17[:3] == pytest.approx([36.0, 10.0, 0.0])
+    assert _run(17, frame_age_ms=250.0)[-1] == 1.0
+    assert _run(17, broken_mode=True)[2] != 0.0
+
+    p18 = _run(18)
+    p18_broken = _run(18, broken_mode=True)
+    assert p18[5] == 0.0 and p18_broken[5] == 1.0
+    assert p18_broken[2] > p18[2] and p18_broken[-1] == 1.0
+
+    p19 = _run(19)
+    assert p19[3] * p19[4] == pytest.approx(1.0)
+    assert p19[6] == pytest.approx(20.0 * 10.0)
+    assert _run(19, broken_mode=True)[2] > 4000.0
+
+    p20_exact = _run(20, force_noise_n=0.0)
+    assert p20_exact[:2] == pytest.approx([180.0, 0.64], abs=1e-10)
+    assert p20_exact[2:4] == pytest.approx([0.0, 0.0], abs=1e-10)
+    assert _run(20, broken_mode=True)[4:6] == [0.0, 0.0]
+
+    p21 = _run(21)
+    assert p21[6] >= 0.0 and p21[7] == 41.0
+    assert _run(21, broken_mode=True)[6] < 0.0
+
+    p22 = _run(22)
+    p22_broken = _run(22, broken_mode=True)
+    assert p22[3] == pytest.approx(0.0) and p22[-1] == 0.0
+    assert p22_broken[3] > 0.0 and p22_broken[-1] == 1.0
+
+    p23 = _run(23)
+    assert sum(p23[3:6]) == pytest.approx(p23[2])
+    assert p23[7] > 0.0 and p23[8] == 1.0
+    assert _run(23, broken_mode=True)[6] > p23[6]
+
+    p24 = _run(24)
+    p24_broken = _run(24, broken_mode=True)
+    assert p24[6] == 3.0 and p24[-1] == 0.0
+    assert p24_broken[1] > p24[1] and p24_broken[2] > p24[2]
+    assert p24_broken[-1] == 1.0

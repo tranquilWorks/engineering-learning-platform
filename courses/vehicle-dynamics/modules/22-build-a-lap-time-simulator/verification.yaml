@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "item_id": "P22",
+  "provenance": "Python-first native",
+  "reference": {
+    "path": "../../reference_cases.py",
+    "origin": "separately formulated scalar analytic or bounded numerical oracle",
+    "imports_production": false,
+    "consumes_production_output": false,
+    "tolerance_abs": "1e-10",
+    "fields": [
+      "lap_time_s",
+      "peak_speed_m_s",
+      "corner_entry_speed_m_s",
+      "maximum_braking_violation_m2_s2",
+      "active_grip_limits",
+      "minimum_speed_m_s",
+      "segments",
+      "invalid"
+    ]
+  },
+  "governing_relation": "v_grip=sqrt(mu*g/|kappa|); v_i^2<=v_prev^2+2*a*ds; v_i^2<=v_next^2+2*b*ds; dt=2*ds/(v_i+v_next)",
+  "teaching_invariant": "After forward and backward passes, every node satisfies local grip, upstream acceleration, and downstream braking reachability.",
+  "limitation": "The 12-segment instructional course omits power curves, shifts, combined tire force, aero, grade, thermal state, and periodic closed-lap convergence.",
+  "scenarios": [
+    {
+      "name": "baseline",
+      "inputs": {
+        "friction_coefficient": 1.05,
+        "acceleration_limit_m_s2": 3.5,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_1",
+      "inputs": {
+        "friction_coefficient": 0.7,
+        "acceleration_limit_m_s2": 3.5,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_2",
+      "inputs": {
+        "friction_coefficient": 1.05,
+        "acceleration_limit_m_s2": 6,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "broken",
+      "inputs": {
+        "friction_coefficient": 1.05,
+        "acceleration_limit_m_s2": 3.5,
+        "broken_mode": true
+      },
+      "status": "passed"
+    },
+    {
+      "name": "recovery",
+      "inputs": {
+        "friction_coefficient": 1.05,
+        "acceleration_limit_m_s2": 3.5,
+        "broken_mode": false
+      },
+      "status": "passed"
+    }
+  ],
+  "unperformed": [
+    "MATLAB runtime comparison",
+    "learner validation",
+    "browser accessibility",
+    "measured vehicle data",
+    "firmware/radio/bench/vehicle/track execution",
+    "physical HIL/hardware"
+  ]
+}
