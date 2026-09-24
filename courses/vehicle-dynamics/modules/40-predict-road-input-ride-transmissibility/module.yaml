@@ -1,0 +1,66 @@
+schema_version: 1
+id: 40-predict-road-input-ride-transmissibility
+number: 40
+title: Predict Road-Input Ride Transmissibility
+summary: Map road wavelength and speed into excitation frequency and evaluate base-excited displacement transmissibility, phase, and body acceleration.
+guiding_question: Which road wavelengths amplify sprung-mass motion at a given speed, and how does that change when speed changes?
+status: implemented
+tags:
+- vehicle-dynamics
+- native-python
+- ride
+- transmissibility
+- road-input
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: speed_m_s
+  type: slider
+  label: Vehicle speed
+  default: 22
+  unit: m/s
+  minimum: 5
+  maximum: 45
+  step: 1
+- id: road_wavelength_m
+  type: slider
+  label: Road wavelength
+  default: 8
+  unit: m
+  minimum: 2
+  maximum: 30
+  step: 0.5
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Road spatial frequency becomes temporal hertz through speed divided by wavelength, then angular frequency enters the base-excitation equation as two pi times hertz.
+  reveal: Compute hertz from road speed and wavelength, convert to radians per second, and reevaluate the complex transfer function.
+- type: controls
+  title: Chassis model controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

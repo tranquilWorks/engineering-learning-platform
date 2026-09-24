@@ -1,0 +1,66 @@
+schema_version: 1
+id: 38-partition-lateral-load-transfer
+number: 38
+title: Partition Lateral Load Transfer
+summary: Partition geometric and elastic lateral load transfer by axle, close roll moment, and connect the result to tire load sensitivity.
+guiding_question: How do roll-center geometry and elastic roll stiffness distribute load transfer without creating extra roll moment?
+status: implemented
+tags:
+- vehicle-dynamics
+- native-python
+- chassis
+- load-transfer
+- roll
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: lateral_accel_g
+  type: slider
+  label: Lateral acceleration
+  default: 1
+  unit: g
+  minimum: 0.2
+  maximum: 1.5
+  step: 0.05
+- id: front_roll_stiffness_fraction
+  type: slider
+  label: Front elastic roll-stiffness fraction
+  default: 0.58
+  unit: "1"
+  minimum: 0.3
+  maximum: 0.75
+  step: 0.01
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Front and rear geometric plus elastic transfer must reconstruct exactly one total roll moment before tire load sensitivity is evaluated.
+  reveal: Subtract geometric roll moment once, distribute only the elastic remainder, and verify moment closure.
+- type: controls
+  title: Chassis model controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

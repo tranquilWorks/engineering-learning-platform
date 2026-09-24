@@ -1,0 +1,57 @@
+schema_version: 1
+item_id: P37
+module: 37-test-nonlinear-limit-handling-and-stability
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- F_y=mu F_z tanh(C_alpha alpha/(mu F_z))
+- M_z=a F_yf-b F_yr
+- S=-partial M_z/partial beta
+signature:
+- field: front_utilization
+  unit: "1"
+- field: rear_utilization
+  unit: "1"
+- field: yaw_moment_imbalance
+  unit: "N*m"
+- field: restoring_moment_slope
+  unit: "N*m/rad"
+- field: capacity_excess
+  unit: "1"
+teaching_invariant: A limit-handling verdict requires both a restoring yaw-moment slope and axle utilizations no greater than the declared friction boundary.
+limiting_cases:
+- At small steer the bounded force law approaches the linear cornering-stiffness relation.
+- At very large slip the bounded axle force approaches but does not exceed its friction capacity.
+scenarios:
+  baseline:
+    steer_deg: 6
+    friction_mu: 1.15
+    broken_mode: false
+  sweep_1:
+    steer_deg: 9
+    friction_mu: 1.15
+    broken_mode: false
+  sweep_2:
+    steer_deg: 6
+    friction_mu: 0.8
+    broken_mode: false
+  broken:
+    steer_deg: 6
+    friction_mu: 1.15
+    broken_mode: true
+  recovery:
+    steer_deg: 6
+    friction_mu: 1.15
+    broken_mode: false
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software and synthetic parameters only; no source or MATLAB equivalence, measured damper, suspension, rig, track, or vehicle result, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

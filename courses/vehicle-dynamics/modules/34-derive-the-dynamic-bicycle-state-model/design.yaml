@@ -1,0 +1,57 @@
+schema_version: 1
+item_id: P34
+module: 34-derive-the-dynamic-bicycle-state-model
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- m U (beta_dot+r)=F_yf+F_yr
+- I_z r_dot=a F_yf-b F_yr
+- x_dot=A(U,C_f,C_r)x+B delta
+signature:
+- field: steady_sideslip
+  unit: "deg"
+- field: steady_yaw_rate
+  unit: "deg/s"
+- field: largest_pole_real_part
+  unit: "1/s"
+- field: force_balance_residual
+  unit: "N"
+- field: yaw_moment_residual
+  unit: "N*m"
+teaching_invariant: With the declared SAE-style lateral-force signs, the steady state closes both lateral-force and yaw-moment balance and stable poles have negative real part.
+limiting_cases:
+- At zero steer the linear equilibrium is zero sideslip and zero yaw rate.
+- As speed approaches the lower model boundary, the steady linear solution remains finite but is not a parking-speed model.
+scenarios:
+  baseline:
+    speed_m_s: 25
+    front_cornering_n_rad: 70000
+    broken_mode: false
+  sweep_1:
+    speed_m_s: 40
+    front_cornering_n_rad: 70000
+    broken_mode: false
+  sweep_2:
+    speed_m_s: 25
+    front_cornering_n_rad: 95000
+    broken_mode: false
+  broken:
+    speed_m_s: 25
+    front_cornering_n_rad: 70000
+    broken_mode: true
+  recovery:
+    speed_m_s: 25
+    front_cornering_n_rad: 70000
+    broken_mode: false
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software and synthetic parameters only; no source or MATLAB equivalence, measured damper, suspension, rig, track, or vehicle result, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

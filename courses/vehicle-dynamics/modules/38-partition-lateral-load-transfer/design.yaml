@@ -1,0 +1,57 @@
+schema_version: 1
+item_id: P38
+module: 38-partition-lateral-load-transfer
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- M_roll=m a_y h
+- Delta F_z,f t_f+Delta F_z,r t_r=M_roll
+- M_elastic=M_roll-M_geometric
+signature:
+- field: front_lateral_load_transfer
+  unit: "N"
+- field: rear_lateral_load_transfer
+  unit: "N"
+- field: geometric_roll_moment_fraction
+  unit: "1"
+- field: roll_moment_closure_residual
+  unit: "N*m"
+- field: front_pair_capacity_loss
+  unit: "N"
+teaching_invariant: Front and rear geometric plus elastic transfer must reconstruct exactly one total roll moment before tire load sensitivity is evaluated.
+limiting_cases:
+- At zero lateral acceleration every transfer contribution and capacity loss tends to zero.
+- With all elastic stiffness assigned to one axle, geometric transfer still remains at both axles.
+scenarios:
+  baseline:
+    lateral_accel_g: 1
+    front_roll_stiffness_fraction: 0.58
+    broken_mode: false
+  sweep_1:
+    lateral_accel_g: 1.4
+    front_roll_stiffness_fraction: 0.58
+    broken_mode: false
+  sweep_2:
+    lateral_accel_g: 1
+    front_roll_stiffness_fraction: 0.7
+    broken_mode: false
+  broken:
+    lateral_accel_g: 1
+    front_roll_stiffness_fraction: 0.58
+    broken_mode: true
+  recovery:
+    lateral_accel_g: 1
+    front_roll_stiffness_fraction: 0.58
+    broken_mode: false
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software and synthetic parameters only; no source or MATLAB equivalence, measured damper, suspension, rig, track, or vehicle result, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

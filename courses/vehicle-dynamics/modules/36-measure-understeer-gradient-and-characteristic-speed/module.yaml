@@ -1,0 +1,66 @@
+schema_version: 1
+id: 36-measure-understeer-gradient-and-characteristic-speed
+number: 36
+title: Measure Understeer Gradient and Characteristic Speed
+summary: Derive the understeer gradient from axle loads and cornering stiffness and enforce the valid domain of characteristic speed.
+guiding_question: How do axle load and cornering stiffness set steer demand, handling class, and characteristic speed?
+status: implemented
+tags:
+- vehicle-dynamics
+- native-python
+- handling
+- understeer
+- characteristic-speed
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: front_cornering_n_rad
+  type: slider
+  label: Front axle cornering stiffness
+  default: 65000
+  unit: N/rad
+  minimum: 40000
+  maximum: 100000
+  step: 2500
+- id: rear_cornering_n_rad
+  type: slider
+  label: Rear axle cornering stiffness
+  default: 80000
+  unit: N/rad
+  minimum: 40000
+  maximum: 100000
+  step: 2500
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Characteristic speed is reported only for positive understeer gradient, and the steer law uses axle stiffness in newtons per radian.
+  reveal: Restore stiffness units, classify the gradient sign, and compute characteristic speed only for the understeer case.
+- type: controls
+  title: Chassis model controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

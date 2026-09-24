@@ -1,0 +1,66 @@
+schema_version: 1
+id: 35-analyze-yaw-and-sideslip-frequency-response
+number: 35
+title: Analyze Yaw and Sideslip Frequency Response
+summary: Solve the complex bicycle-model response to sinusoidal steer and inspect yaw/sideslip magnitude, phase, DC gain, and equation residual.
+guiding_question: When do yaw rate and sideslip stop following steering quasi-statically as excitation frequency rises?
+status: implemented
+tags:
+- vehicle-dynamics
+- native-python
+- handling
+- frequency-response
+- yaw
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: speed_m_s
+  type: slider
+  label: Vehicle speed
+  default: 25
+  unit: m/s
+  minimum: 10
+  maximum: 50
+  step: 1
+- id: frequency_hz
+  type: slider
+  label: Steering excitation frequency
+  default: 1
+  unit: Hz
+  minimum: 0.1
+  maximum: 4
+  step: 0.1
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Every reported complex response must satisfy the declared state equation at omega equal to two pi times the excitation frequency in hertz.
+  reveal: Apply omega equals two pi f before the complex solve and recheck magnitude, phase, and residual.
+- type: controls
+  title: Chassis model controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

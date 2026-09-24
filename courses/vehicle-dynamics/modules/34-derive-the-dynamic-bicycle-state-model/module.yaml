@@ -1,0 +1,66 @@
+schema_version: 1
+id: 34-derive-the-dynamic-bicycle-state-model
+number: 34
+title: Derive the Dynamic Bicycle State Model
+summary: Build the linear beta/yaw-rate bicycle equations and verify steady force balance, yaw-moment balance, and state-matrix stability.
+guiding_question: How do axle cornering stiffness, speed, mass, and yaw inertia determine the coupled sideslip and yaw-rate response?
+status: implemented
+tags:
+- vehicle-dynamics
+- native-python
+- handling
+- state-space
+- bicycle-model
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: speed_m_s
+  type: slider
+  label: Vehicle speed
+  default: 25
+  unit: m/s
+  minimum: 10
+  maximum: 50
+  step: 1
+- id: front_cornering_n_rad
+  type: slider
+  label: Front axle cornering stiffness
+  default: 70000
+  unit: N/rad
+  minimum: 30000
+  maximum: 120000
+  step: 2500
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: With the declared SAE-style lateral-force signs, the steady state closes both lateral-force and yaw-moment balance and stable poles have negative real part.
+  reveal: Restore the rear-force sign, solve the two-state equilibrium, and confirm both residuals return to numerical zero.
+- type: controls
+  title: Chassis model controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

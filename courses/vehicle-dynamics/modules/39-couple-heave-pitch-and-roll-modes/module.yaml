@@ -1,0 +1,66 @@
+schema_version: 1
+id: 39-couple-heave-pitch-and-roll-modes
+number: 39
+title: Couple Heave, Pitch, and Roll Modes
+summary: Assemble a corner-based generalized stiffness matrix and solve coupled heave, pitch, and roll natural modes with eigenpair residuals.
+guiding_question: How do axle rates and corner asymmetry mix nominal heave, pitch, and roll coordinates into physical chassis modes?
+status: implemented
+tags:
+- vehicle-dynamics
+- native-python
+- ride
+- modal-analysis
+- chassis
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: front_spring_rate_n_m
+  type: slider
+  label: Front corner spring rate
+  default: 42000
+  unit: N/m
+  minimum: 25000
+  maximum: 65000
+  step: 1000
+- id: rear_spring_rate_n_m
+  type: slider
+  label: Rear corner spring rate
+  default: 38000
+  unit: N/m
+  minimum: 25000
+  maximum: 65000
+  step: 1000
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Every reported coupled mode must satisfy the full physical generalized eigen-equation, including the off-diagonal terms created by corner geometry and rate asymmetry.
+  reveal: Reassemble stiffness from all four corner geometry vectors and verify each eigenpair against the full physical matrix.
+- type: controls
+  title: Chassis model controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

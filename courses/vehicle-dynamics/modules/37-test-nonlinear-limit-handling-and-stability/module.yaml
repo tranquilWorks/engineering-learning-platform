@@ -1,0 +1,66 @@
+schema_version: 1
+id: 37-test-nonlinear-limit-handling-and-stability
+number: 37
+title: Test Nonlinear Limit Handling and Stability
+summary: Couple bounded nonlinear axle forces to yaw moment, utilization, and local stability instead of extending linear force indefinitely.
+guiding_question: Can a locally restoring yaw response still be invalid because one axle has exceeded tire capacity?
+status: implemented
+tags:
+- vehicle-dynamics
+- native-python
+- handling
+- nonlinear
+- stability
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: steer_deg
+  type: slider
+  label: Road-wheel steer
+  default: 6
+  unit: deg
+  minimum: 1
+  maximum: 10
+  step: 0.25
+- id: friction_mu
+  type: slider
+  label: Tire-road friction coefficient
+  default: 1.15
+  unit: "1"
+  minimum: 0.7
+  maximum: 1.5
+  step: 0.05
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: A limit-handling verdict requires both a restoring yaw-moment slope and axle utilizations no greater than the declared friction boundary.
+  reveal: Restore the bounded nonlinear force law and recompute utilization and local yaw-moment slope together.
+- type: controls
+  title: Chassis model controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

@@ -1,0 +1,57 @@
+schema_version: 1
+item_id: P35
+module: 35-analyze-yaw-and-sideslip-frequency-response
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- (j omega I-A) X=B Delta
+- G_r(j omega)=r/Delta
+- omega=2 pi f
+signature:
+- field: yaw_rate_gain
+  unit: "1/s"
+- field: sideslip_gain
+  unit: "1"
+- field: yaw_rate_phase
+  unit: "deg"
+- field: dc_yaw_rate_gain
+  unit: "1/s"
+- field: complex_equation_residual
+  unit: "1/s"
+teaching_invariant: Every reported complex response must satisfy the declared state equation at omega equal to two pi times the excitation frequency in hertz.
+limiting_cases:
+- As frequency approaches zero, the complex solution approaches the steady-state gain.
+- At high frequency, state magnitudes diminish while phase lag grows within the bounded linear model.
+scenarios:
+  baseline:
+    speed_m_s: 25
+    frequency_hz: 1
+    broken_mode: false
+  sweep_1:
+    speed_m_s: 40
+    frequency_hz: 1
+    broken_mode: false
+  sweep_2:
+    speed_m_s: 25
+    frequency_hz: 2
+    broken_mode: false
+  broken:
+    speed_m_s: 25
+    frequency_hz: 1
+    broken_mode: true
+  recovery:
+    speed_m_s: 25
+    frequency_hz: 1
+    broken_mode: false
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software and synthetic parameters only; no source or MATLAB equivalence, measured damper, suspension, rig, track, or vehicle result, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

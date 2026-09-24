@@ -78,9 +78,11 @@ def test_vehicle_expansion_matches_reviewed_map_and_declares_pending_depth() -> 
     ]
     assert EXPANSION["source_bound_modules"] == 24
     assert EXPANSION["planned_modules"] == 67
-    assert [item["id"] for item in NATIVE] == [f"P{number:02d}" for number in range(25, 34)]
+    assert [item["id"] for item in NATIVE] == [
+        f"P{number:02d}" for number in range(25, 44)
+    ]
     assert EXPANSION["pending_native_modules"] == [
-        f"P{number:02d}" for number in range(34, 68)
+        f"P{number:02d}" for number in range(44, 68)
     ]
     map_by_id = {item["id"]: item for item in mapping["modules"]}
     assert [map_by_id[item["id"]]["title"] for item in NATIVE] == [
@@ -93,6 +95,16 @@ def test_vehicle_expansion_matches_reviewed_map_and_declares_pending_depth() -> 
         "Track Tire Temperature, Pressure, and Grip",
         "Accumulate Tire Work and Thermal Energy",
         "Validate a Tire Model with Uncertainty",
+        "Derive the Dynamic Bicycle State Model",
+        "Analyze Yaw and Sideslip Frequency Response",
+        "Measure Understeer Gradient and Characteristic Speed",
+        "Test Nonlinear Limit Handling and Stability",
+        "Partition Lateral Load Transfer",
+        "Couple Heave, Pitch, and Roll Modes",
+        "Predict Road-Input Ride Transmissibility",
+        "Shape Digressive Damper Force-Velocity Response",
+        "Trace Suspension Kinematics and Compliance",
+        "Evaluate Anti-Dive and Anti-Squat Geometry",
     ]
 
 
@@ -272,6 +284,60 @@ def test_vehicle_tire_teaching_invariants_and_named_failures() -> None:
     assert validation_broken[4] > validation[4]
 
 
+def test_vehicle_chassis_teaching_invariants_and_named_failures() -> None:
+    runtime = ExperimentRuntime(CourseCatalog([ROOT / "courses"]))
+
+    bicycle = _signature(runtime, 34, {"broken_mode": False})
+    bicycle_broken = _signature(runtime, 34, {"broken_mode": True})
+    assert bicycle[2] < 0.0 and bicycle[3] < 1e-8 and bicycle[4] < 1e-8
+    assert bicycle_broken[2] > 0.0 and bicycle_broken[3] > 100.0
+
+    frequency = _signature(runtime, 35, {"broken_mode": False})
+    frequency_broken = _signature(runtime, 35, {"broken_mode": True})
+    assert frequency[0] > 0.0 and frequency[4] < 1e-10
+    assert frequency_broken[4] > 1.0
+
+    understeer = _signature(runtime, 36, {"broken_mode": False})
+    understeer_broken = _signature(runtime, 36, {"broken_mode": True})
+    assert understeer[0] > 0.0 and understeer[1] > 0.0 and understeer[4] < 1e-10
+    assert understeer_broken[4] > 10.0
+
+    limit = _signature(runtime, 37, {"broken_mode": False})
+    limit_broken = _signature(runtime, 37, {"broken_mode": True})
+    assert limit[0] <= 1.0 and limit[1] <= 1.0 and limit[4] == 0.0
+    assert limit_broken[4] > 0.0
+
+    transfer = _signature(runtime, 38, {"broken_mode": False})
+    transfer_broken = _signature(runtime, 38, {"broken_mode": True})
+    assert transfer[0] > 0.0 and transfer[1] > 0.0 and transfer[3] < 1e-8
+    assert transfer_broken[3] > 100.0
+
+    modes = _signature(runtime, 39, {"broken_mode": False})
+    modes_broken = _signature(runtime, 39, {"broken_mode": True})
+    assert 0.0 < modes[0] < modes[1] < modes[2] and modes[4] < 1e-10
+    assert modes_broken[4] > 0.01
+
+    ride = _signature(runtime, 40, {"broken_mode": False})
+    ride_broken = _signature(runtime, 40, {"broken_mode": True})
+    assert ride[0] > 0.0 and ride[2] > 0.0 and ride[4] < 1e-10
+    assert ride_broken[4] > 0.5
+
+    damper = _signature(runtime, 41, {"broken_mode": False})
+    damper_broken = _signature(runtime, 41, {"broken_mode": True})
+    assert damper[0] > 0.0 and damper[1] > damper[0] and damper[3] > 0.0
+    assert damper[4] == 0.0 and damper_broken[4] > 1000.0
+
+    suspension = _signature(runtime, 42, {"broken_mode": False})
+    suspension_broken = _signature(runtime, 42, {"broken_mode": True})
+    assert suspension[2] > 0.0 and suspension[3] > 0.0 and suspension[4] == 0.0
+    assert suspension_broken[4] > 0.5
+
+    anti = _signature(runtime, 43, {"broken_mode": False})
+    anti_broken = _signature(runtime, 43, {"broken_mode": True})
+    assert 0.0 < anti[0] < anti[1] < 100.0 and anti[4] < 1e-10
+    assert abs(anti_broken[0]) > 100.0 and anti_broken[4] > 1000.0
+
+
 def test_vehicle_native_experiments_reject_nonfinite_and_out_of_range_inputs() -> None:
     for item in NATIVE:
         root = COURSE_ROOT / item["folder"]
@@ -287,7 +353,7 @@ def test_vehicle_native_experiments_reject_nonfinite_and_out_of_range_inputs() -
 def test_vehicle_expansion_catalog_shape() -> None:
     summaries = CourseCatalog([ROOT / "courses"]).summaries()
     assert len(summaries) == 6
-    assert sum(len(course.modules) for course in summaries) == 256
-    assert sum(module.interactive for course in summaries for module in course.modules) == 256
+    assert sum(len(course.modules) for course in summaries) == 266
+    assert sum(module.interactive for course in summaries for module in course.modules) == 266
     vehicle = next(course for course in summaries if course.id == "vehicle-dynamics")
-    assert [module.number for module in vehicle.modules] == list(range(1, 34))
+    assert [module.number for module in vehicle.modules] == list(range(1, 44))

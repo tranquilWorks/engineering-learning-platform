@@ -1,0 +1,57 @@
+schema_version: 1
+item_id: P43
+module: 43-evaluate-anti-dive-and-anti-squat-geometry
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- anti_dive=eta_b tan(theta) L/h
+- anti_squat=eta_d tan(theta) L/h
+- Delta F_z=Delta F_geometry+Delta F_spring
+signature:
+- field: anti_dive_percentage
+  unit: "%"
+- field: anti_squat_percentage
+  unit: "%"
+- field: spring_supported_transfer
+  unit: "N"
+- field: geometry_supported_transfer
+  unit: "N"
+- field: pitch_transfer_closure_residual
+  unit: "N"
+teaching_invariant: Anti geometry partitions one longitudinal load-transfer total between suspension links and spring-supported pitch; it does not create or remove load transfer.
+limiting_cases:
+- At zero force-line angle, both anti percentages tend to zero and the spring-supported path carries the modeled transfer.
+- As anti percentage approaches one within the non-lifting domain, the spring-supported share tends to zero.
+scenarios:
+  baseline:
+    sideview_angle_deg: 5
+    cg_height_m: 0.52
+    broken_mode: false
+  sweep_1:
+    sideview_angle_deg: 7
+    cg_height_m: 0.52
+    broken_mode: false
+  sweep_2:
+    sideview_angle_deg: 5
+    cg_height_m: 0.65
+    broken_mode: false
+  broken:
+    sideview_angle_deg: 5
+    cg_height_m: 0.52
+    broken_mode: true
+  recovery:
+    sideview_angle_deg: 5
+    cg_height_m: 0.52
+    broken_mode: false
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software and synthetic parameters only; no source or MATLAB equivalence, measured damper, suspension, rig, track, or vehicle result, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

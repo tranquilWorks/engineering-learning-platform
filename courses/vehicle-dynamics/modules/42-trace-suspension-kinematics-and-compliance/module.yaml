@@ -1,0 +1,66 @@
+schema_version: 1
+id: 42-trace-suspension-kinematics-and-compliance
+number: 42
+title: Trace Suspension Kinematics and Compliance
+summary: Superpose bump kinematics and lateral-force compliance to trace camber, toe, motion ratio, and wheel rate with explicit units.
+guiding_question: How much of an alignment change comes from wheel travel geometry versus force-driven compliance?
+status: implemented
+tags:
+- vehicle-dynamics
+- native-python
+- suspension
+- kinematics
+- compliance
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: bump_travel_mm
+  type: slider
+  label: Wheel bump travel
+  default: 25
+  unit: mm
+  minimum: -40
+  maximum: 60
+  step: 1
+- id: lateral_force_n
+  type: slider
+  label: Lateral tire force
+  default: 3000
+  unit: N
+  minimum: -5000
+  maximum: 5000
+  step: 100
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Kinematic gradients act on millimetres of wheel travel, compliance gradients act on newtons, and the two contributions superpose only under the declared sign convention.
+  reveal: Apply each gradient to its declared millimetre or newton input and recompute wheel rate from the recovered motion ratio.
+- type: controls
+  title: Chassis model controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

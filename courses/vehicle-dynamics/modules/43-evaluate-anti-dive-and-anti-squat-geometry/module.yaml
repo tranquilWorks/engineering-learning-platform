@@ -1,0 +1,66 @@
+schema_version: 1
+id: 43-evaluate-anti-dive-and-anti-squat-geometry
+number: 43
+title: Evaluate Anti-Dive and Anti-Squat Geometry
+summary: Derive anti-dive and anti-squat from side-view force-line geometry and close the longitudinal pitch load-transfer partition.
+guiding_question: How does side-view suspension geometry redirect pitch load transfer without changing its total magnitude?
+status: implemented
+tags:
+- vehicle-dynamics
+- native-python
+- suspension
+- anti-geometry
+- load-transfer
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: sideview_angle_deg
+  type: slider
+  label: Side-view force-line angle
+  default: 5
+  unit: deg
+  minimum: 1
+  maximum: 8
+  step: 0.25
+- id: cg_height_m
+  type: slider
+  label: Center-of-gravity height
+  default: 0.52
+  unit: m
+  minimum: 0.4
+  maximum: 0.7
+  step: 0.01
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Anti geometry partitions one longitudinal load-transfer total between suspension links and spring-supported pitch; it does not create or remove load transfer.
+  reveal: Convert the force-line angle to radians once, bound the instructional geometry below lift, and partition the total transfer exactly once.
+- type: controls
+  title: Chassis model controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

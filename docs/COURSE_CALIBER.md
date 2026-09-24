@@ -61,21 +61,22 @@ but they are not independent correctness oracles.
 | DSP/Radar | 84 source / 84 platform / 84 interactive | `platform_converted` | #441: replace the P02-P84 generic execution structure and independently reverify it |
 | Controls/GNC | 24 / 24 / 24 | `numerically_verified` | #439: expand against the reviewed competency map and add cumulative integration |
 | Robotics and Autonomy | 24 source / 69 platform / 69 interactive | `capstone_integrated` | Maintain the reviewed map; learner/accessibility validation remains not run |
-| Vehicle Dynamics | 24 source / 33 platform / 33 interactive | P01-P33 numerically verified | #467: authorize P34-P43 chassis depth against the merged tire-batch baseline |
+| Vehicle Dynamics | 24 source / 43 platform / 43 interactive | P01-P43 numerically verified | #467: authorize P44-P52 propulsion depth against the merged chassis-batch baseline |
 
 Controls/GNC and Robotics/Autonomy are now marked `curriculum_covered: passed`
 and `capstone_integrated: passed` from their reviewed maps and requirements-traced
 software capstones. Those outcomes do not imply `learner_validated`, which remains
 `not_run`. DSP/Radar remediation remains separately owned by issue #441.
 
-Vehicle Dynamics preparation, the three source-bound arcs, and the first
-competency-derived tire-depth arc are complete.
+Vehicle Dynamics preparation, the three source-bound arcs, and the first two
+competency-derived tire- and chassis-depth arcs are complete.
 The reviewed 67-module map, exact source ledger, and deterministic synthetic
 GR86 CAN/BLE fixtures are installed. P01-P24 are deterministic software-only
 lessons with independent scalar references; P25-P33 add independently evidenced
-frames, tire force laws, combined slip, relaxation, thermal/energy state, and
-uncertainty validation. P20 does not use a real drive and P24 is not physical
-GR86 validation. P34-P67 remain separately gated.
+advanced tire models, while P34-P43 add dynamic handling, nonlinear stability,
+load-transfer, ride-mode, damper, suspension, and anti-geometry models. P20 does
+not use a real drive and P24 is not physical GR86 validation. P44-P67 remain
+separately gated.
 
 This projection does not claim MATLAB runtime comparison, browser or
 accessibility acceptance, learner effectiveness, physical hardware/HIL,

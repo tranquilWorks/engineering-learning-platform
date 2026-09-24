@@ -1,0 +1,57 @@
+schema_version: 1
+item_id: P40
+module: 40-predict-road-input-ride-transmissibility
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- f=v/lambda_road
+- H=(k+j c omega)/(k-m omega^2+j c omega)
+- a_body=|H| z_road omega^2
+signature:
+- field: displacement_transmissibility
+  unit: "1"
+- field: body_displacement_phase
+  unit: "deg"
+- field: body_acceleration_amplitude
+  unit: "m/s^2"
+- field: excitation_to_natural_frequency_ratio
+  unit: "1"
+- field: base_excitation_residual
+  unit: "1"
+teaching_invariant: Road spatial frequency becomes temporal hertz through speed divided by wavelength, then angular frequency enters the base-excitation equation as two pi times hertz.
+limiting_cases:
+- At zero temporal frequency, displacement transmissibility tends to one and acceleration tends to zero.
+- Far above resonance, sprung displacement attenuates even though acceleration weighting by omega squared can remain important.
+scenarios:
+  baseline:
+    speed_m_s: 22
+    road_wavelength_m: 8
+    broken_mode: false
+  sweep_1:
+    speed_m_s: 35
+    road_wavelength_m: 8
+    broken_mode: false
+  sweep_2:
+    speed_m_s: 22
+    road_wavelength_m: 16
+    broken_mode: false
+  broken:
+    speed_m_s: 22
+    road_wavelength_m: 8
+    broken_mode: true
+  recovery:
+    speed_m_s: 22
+    road_wavelength_m: 8
+    broken_mode: false
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software and synthetic parameters only; no source or MATLAB equivalence, measured damper, suspension, rig, track, or vehicle result, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.
