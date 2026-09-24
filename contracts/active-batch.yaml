@@ -1,22 +1,22 @@
 schema_version: 1
 batch:
-  id: ELP-VEHICLE-P01-P08
-  title: Vehicle Dynamics motion, force, tire, and linear-handling foundations
-  goal: Implement the first prerequisite-closed Vehicle Dynamics learner arc, P01-P08, as eight complete deterministic Python modules with source-traceable P01-P02 behavior and independently verified Python-first designs for scaffolded P03-P08.
+  id: ELP-VEHICLE-P09-P16
+  title: Vehicle Dynamics suspension, powertrain, braking, and aero foundations
+  goal: Implement the second prerequisite-closed Vehicle Dynamics learner arc, P09-P16, as eight complete deterministic Python-first modules with independently formulated analytic and numerical references.
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
     - products/engineering-learning-platform/COURSE_CALIBER.md
     - products/engineering-learning-platform/course-caliber.yaml
     - products/engineering-learning-platform/competency-maps/vehicle-dynamics.yaml
-    - products/engineering-learning-platform/batches/ELP-VEHICLE-PREP-00.yaml
+    - products/engineering-learning-platform/batches/ELP-VEHICLE-P01-P08.yaml
     - tranquilWorks/portfolio-control#467
-  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-VEHICLE-P01-P08
-  baseline_commit: 7188d370b52dd9812634ae431fa652525d081634
-  baseline_tree: 3953708c5c04c18a53ede4adda021f0612874aba
+  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-VEHICLE-P09-P16
+  baseline_commit: 408870fbd43a739fcb16e4be3f416841036ca115
+  baseline_tree: c5736ac588c7e20bab512a0f3cebeb1db7e6303d
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_baseline: 2fd02a1b72536ee6f4ff59357a74be7dc99c72c8
-  control_plane_path: products/engineering-learning-platform/batches/ELP-VEHICLE-P01-P08.yaml
+  control_plane_baseline: 99ffd8b564e9510ea97490447d19f289ff0be470
+  control_plane_path: products/engineering-learning-platform/batches/ELP-VEHICLE-P09-P16.yaml
   target_repository: tranquilWorks/engineering-learning-platform
   source_repository: tranquilWorks/vehicle-dynamics-learning
   source_pin: 57264b3ffeb517ee5eb73e8957b9cd190d022457
@@ -25,18 +25,17 @@ sources:
   competency_map_sha256: 87dae868d7e3a0181062a4fd42ff316513b0f6f35c053cb56b5d73b9c56bde6d
   source_map_sha256: 1533c3a5f78447adb3008796530796ade0da18a4c4bda57e565c82548ff4c298
 dependencies:
-  - ELP-VEHICLE-PREP-00
+  - ELP-VEHICLE-P01-P08
 scope:
   allowed_paths:
-    - courses/vehicle-dynamics/course.yaml
-    - courses/vehicle-dynamics/modules/01-*/**
-    - courses/vehicle-dynamics/modules/02-*/**
-    - courses/vehicle-dynamics/modules/03-*/**
-    - courses/vehicle-dynamics/modules/04-*/**
-    - courses/vehicle-dynamics/modules/05-*/**
-    - courses/vehicle-dynamics/modules/06-*/**
-    - courses/vehicle-dynamics/modules/07-*/**
-    - courses/vehicle-dynamics/modules/08-*/**
+    - courses/vehicle-dynamics/modules/09-*/**
+    - courses/vehicle-dynamics/modules/10-*/**
+    - courses/vehicle-dynamics/modules/11-*/**
+    - courses/vehicle-dynamics/modules/12-*/**
+    - courses/vehicle-dynamics/modules/13-*/**
+    - courses/vehicle-dynamics/modules/14-*/**
+    - courses/vehicle-dynamics/modules/15-*/**
+    - courses/vehicle-dynamics/modules/16-*/**
     - courses/vehicle-dynamics/reference_cases.py
     - courses/vehicle-dynamics/conversion-manifest.yaml
     - courses/vehicle-dynamics/coverage.yaml
@@ -52,7 +51,7 @@ scope:
     - docs/CURRENT_STATE.md
     - docs/HANDOFF.md
     - docs/ROADMAP.md
-    - docs/evidence/ELP-VEHICLE-P01-P08-*.md
+    - docs/evidence/ELP-VEHICLE-P09-P16-*.md
   forbidden_paths:
     - courses/vehicle-dynamics-learning
     - courses/vehicle-dynamics-learning/**
@@ -60,8 +59,17 @@ scope:
     - courses/vehicle-dynamics/competency-map.schema.json
     - courses/vehicle-dynamics/source-map.yaml
     - courses/vehicle-dynamics/fixtures/**
-    - courses/vehicle-dynamics/modules/09-*/**
-    - courses/vehicle-dynamics/modules/1[0-9]-*/**
+    - courses/vehicle-dynamics/modules/01-*/**
+    - courses/vehicle-dynamics/modules/02-*/**
+    - courses/vehicle-dynamics/modules/03-*/**
+    - courses/vehicle-dynamics/modules/04-*/**
+    - courses/vehicle-dynamics/modules/05-*/**
+    - courses/vehicle-dynamics/modules/06-*/**
+    - courses/vehicle-dynamics/modules/07-*/**
+    - courses/vehicle-dynamics/modules/08-*/**
+    - courses/vehicle-dynamics/modules/17-*/**
+    - courses/vehicle-dynamics/modules/18-*/**
+    - courses/vehicle-dynamics/modules/19-*/**
     - courses/vehicle-dynamics/modules/2[0-4]-*/**
     - courses/controls-gnc/**
     - courses/dsp-radar/**
@@ -82,18 +90,19 @@ scope:
     - Dockerfile
     - compose.yaml
 acceptance:
-  - Start only after the exact control commit containing this contract is merged. Use exact clean target main 7188d370b52dd9812634ae431fa652525d081634, tree 3953708c5c04c18a53ede4adda021f0612874aba; any target, control, source, map, fixture, index, or worktree drift stops implementation.
-  - Implement exactly P01-P08 in source order: steering/speed to path; acceleration to tire force; longitudinal load transfer; friction-circle allocation; longitudinal slip ratio; lateral slip angle; the linear bicycle model; and understeer versus oversteer.
-  - Preserve exact source identities, titles, guiding questions, prerequisite order, and read-only gitlink. P01-P02 retain implemented-source provenance and separately formulated source-behavior comparisons; P03-P08 retain scaffold provenance and are labeled Python-first native designs, not source or MATLAB equivalence.
+  - Start only after the exact control commit containing this contract is merged. Use exact clean target main 408870fbd43a739fcb16e4be3f416841036ca115, tree c5736ac588c7e20bab512a0f3cebeb1db7e6303d; any target, control, source, map, fixture, index, or worktree drift stops implementation.
+  - Implement exactly P09-P16 in source order: spring rate and ride frequency; damping and transient motion; roll-stiffness distribution; camber and toe geometry; engine torque through gearing; shift-point selection; braking distance and heat; drag and downforce balance.
+  - Preserve exact source identities, titles, guiding questions, prerequisite order, read-only gitlink, reviewed map, source map, fixtures, and P01-P08 byte-identically. P09-P16 retain scaffold provenance and are labeled Python-first native designs, not source or MATLAB equivalence.
   - Treat all eight IDs as separately reviewed work items. Every module must include a complete learner lesson, unique bounded executable model, default baseline, two useful one-variable sweeps, one named broken behavior, exact recovery, limiting cases, coordinate/sign conventions, physical quantities and units, common mistakes, formative checks, and teach-back completion.
   - Use a course-owned independent reference implementation that imports no production experiment, consumes no production result, and perturbs no production value. Retain origin, inputs, fields/units, tolerances, and finite expected versus actual evidence for baseline, sweep_1, sweep_2, broken, and recovery.
-  - P01 must expose curvature, yaw rate, lateral acceleration, and a friction-limited path boundary. P02 must close force balance through tractive force, rolling resistance, aerodynamic drag, acceleration, and a tire-force limit. P03 must conserve total axle load while showing acceleration, center-of-mass height, and wheelbase effects.
-  - P04 must enforce the combined longitudinal/lateral friction boundary and expose utilization. P05 and P06 must define slip-ratio and slip-angle sign conventions, low-slip stiffness, saturation, and zero-slip limits. P07 must expose linear-bicycle yaw/sideslip dynamics and its low-angle boundary. P08 must derive understeer gradient, characteristic or critical speed behavior, and a recoverable unstable/invalid setup.
+  - P09 must distinguish spring rate, wheel rate, motion ratio, sprung mass, and ride frequency. P10 must expose natural frequency, damping ratio, overshoot or decay, settling behavior, and an invalid negative/nonphysical damping case.
+  - P11 must conserve total lateral load transfer while exposing front/rear roll-stiffness distribution and its handling implication. P12 must define camber and toe sign conventions and show their separate contact/thrust and scrub effects without claiming a full tire model.
+  - P13 must map engine torque, selected gear, final drive, efficiency, wheel radius, vehicle speed, engine speed, wheel force, and the tire-force boundary. P14 must select shift points from adjacent-gear wheel-force crossover or redline and expose an invalid gear/curve setup.
+  - P15 must couple braking force, load transfer, stopping distance, kinetic energy, and a bounded rotor-temperature estimate. P16 must expose dynamic pressure, drag, downforce, aero balance, straight-line cost, and grip benefit without treating a steady aero map as track evidence.
   - Validate inputs before allocation; cap samples and integration horizon; return finite deterministic Plotly-compatible results; perform no network, source write, subprocess, dynamic install/import, eval, learner-code execution, wall-clock dependence, or shared mutable state.
-  - Update conversion and coverage ledgers to total=24, pending=16, converted=8, blocked=0, placeholder=0 with exact content digests and closed per-item verification records. Do not create P09-P24 target folders or placeholders.
-  - End with exactly six courses, 231 modules, and 231 interactive modules. Update only the retained GNC/Robotics catalog-total assertions needed for this authorized eight-module increase; preserve all completed course content and every other source gitlink byte-identically.
-  - Preserve the reviewed map, source map, synthetic GR86 CAN/BLE fixture package, generic platform behavior, dependencies, workflows, and deployment artifacts byte-identically.
-  - Record exact local verification. Hosted CI is not a completion gate by owner direction; keep MATLAB comparison, browser/accessibility, learner validation, firmware/radio/bench/vehicle/track execution, physical HIL/hardware, certification, release, deployment, credentials/settings, and production evidence explicitly unperformed.
+  - Update conversion and coverage ledgers to total=24, pending=8, converted=16, blocked=0, placeholder=0 with exact content digests and closed per-item verification records. Do not create P17-P24 target folders or placeholders.
+  - End with exactly six courses, 239 modules, and 239 interactive modules. Update only retained catalog-total assertions needed for this authorized eight-module increase; preserve every completed course and source gitlink byte-identically.
+  - Record exact local verification. Hosted CI is not a completion gate by owner direction; keep MATLAB comparison, browser/accessibility, learner validation, measured vehicle data, firmware/radio/bench/vehicle/track execution, physical HIL/hardware, certification, release, deployment, credentials/settings, and production evidence explicitly unperformed.
 validation:
   local:
     - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_vehicle_dynamics_framework.py apps/api/tests/test_vehicle_dynamics_course.py apps/api/tests/test_course_caliber_status.py
@@ -103,37 +112,37 @@ validation:
     - ./scripts/agent-verify.sh quick
     - ./scripts/agent-verify.sh full
     - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic --json
-    - .venv/bin/ruff check apps/api/tests/test_vehicle_dynamics_framework.py apps/api/tests/test_vehicle_dynamics_course.py apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_course_caliber_status.py courses/vehicle-dynamics/modules courses/vehicle-dynamics/reference_cases.py
+    - .venv/bin/ruff check apps/api/tests/test_vehicle_dynamics_framework.py apps/api/tests/test_vehicle_dynamics_course.py apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_course_caliber_status.py courses/vehicle-dynamics/modules/09-* courses/vehicle-dynamics/modules/10-* courses/vehicle-dynamics/modules/11-* courses/vehicle-dynamics/modules/12-* courses/vehicle-dynamics/modules/13-* courses/vehicle-dynamics/modules/14-* courses/vehicle-dynamics/modules/15-* courses/vehicle-dynamics/modules/16-* courses/vehicle-dynamics/reference_cases.py
     - .venv/bin/ruff check --ignore UP038 apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_robotics_conversion_framework.py
     - git diff --check
-    - test -z "$(git status --short -- courses/controls-gnc courses/dsp-radar courses/robotics-autonomy courses/demo-radar courses/platform-showcase courses/vehicle-dynamics/fixtures)"
+    - test -z "$(git status --short -- courses/controls-gnc courses/dsp-radar courses/robotics-autonomy courses/demo-radar courses/platform-showcase courses/vehicle-dynamics/fixtures courses/vehicle-dynamics/modules/01-* courses/vehicle-dynamics/modules/02-* courses/vehicle-dynamics/modules/03-* courses/vehicle-dynamics/modules/04-* courses/vehicle-dynamics/modules/05-* courses/vehicle-dynamics/modules/06-* courses/vehicle-dynamics/modules/07-* courses/vehicle-dynamics/modules/08-*)"
     - test -z "$(git -C courses/vehicle-dynamics-learning status --porcelain=v1 --untracked-files=all)"
   focused_tests_to_add:
-    - Validate exact P01-P08 membership, source/map identity, prerequisite closure, provenance classification, coverage transition, content digests, and absence of later modules.
-    - Execute baseline, two one-variable sweeps, broken, recovery, invalid-input, resource-bound, finite, deterministic, axis/unit, and evidence-independence checks for every module.
+    - Validate exact P09-P16 membership, prerequisite closure, scaffold provenance, coverage transition, content digests, and absence of later modules.
+    - Execute baseline, two one-variable sweeps, broken, recovery, invalid-input, resource-bound, finite, deterministic, axis/unit, and evidence-independence checks for every new module.
     - Assert topic-specific equations, sign/frame conventions, teaching invariants, limiting cases, physical boundaries, formative checks, and exact recovery.
-    - Compare P01-P02 against separately formulated implemented-source behavior and P03-P08 against analytic, invariant, or separately formulated numerical references without relabeling source scaffolds as executed designs.
-    - Validate the six-course, 231-module, 231-interactive catalog and regress every retained course.
+    - Compare P09-P16 against analytic, invariant, or separately formulated numerical references without relabeling source scaffolds as executed designs.
+    - Validate the six-course, 239-module, 239-interactive catalog and regress every retained course.
   required_ci: []
 risk:
   class: high
   hazards:
     - a shared vehicle template substitutes for eight distinct governing models
-    - a sign, frame, wheelbase split, load-transfer direction, friction utilization, slip definition, cornering-stiffness convention, or understeer-gradient unit is subtly wrong
+    - motion-ratio exponents, damping convention, load-transfer conservation, alignment signs, gearing units, shift crossover, brake energy, or aero signs are subtly wrong
     - an independent oracle imports or derives from production behavior
     - source scaffolds are mislabeled as implemented MATLAB or source-equivalent behavior
-    - an invalid or unstable setup yields plausible finite plots instead of an explicit broken/recovery verdict
+    - invalid setups yield plausible finite plots instead of explicit broken/recovery verdicts
   stop_conditions:
     - exact target, control, source, map, fixture, index, or worktree identity drifts
     - an independent reference needs production code/output or a perturbed production value
     - work requires source mutation, fixture mutation, generic runtime/UI changes, a dependency, network access, or unsupported evidence
     - any focused, retained-course, contract, quick, full, deterministic, lint, scope, or source-cleanliness gate fails or is skipped
 rollback:
-  strategy: Before merge, close the isolated target pull request. After merge, revert its one squash commit; this removes only Vehicle Dynamics P01-P08, their independent reference/tests/evidence, and their ledger/documentation transitions while retaining the governed prep state.
+  strategy: Before merge, close the isolated target pull request. After merge, revert its one squash commit; this removes only Vehicle Dynamics P09-P16, their independent reference/tests/evidence, and their ledger/documentation transitions while retaining P01-P08.
 evidence:
   output:
-    - docs/evidence/ELP-VEHICLE-P01-P08-2026-09-23.md
-    - one P01-P08 row per work item with governing relation, source/native provenance, scenarios, teaching invariant, tolerance, axes/units, limitation, and residual risk
+    - docs/evidence/ELP-VEHICLE-P09-P16-2026-09-24.md
+    - one P09-P16 row per work item with governing relation, provenance, scenarios, teaching invariant, tolerance, axes/units, limitation, and residual risk
     - focused, retained-course, contract, quick, full, deterministic catalog, lint, diff, scope, and source-cleanliness results
     - one target squash merge, exact resulting commit/tree, and explicit unperformed evidence
-  claim_boundary: This batch implements and independently verifies eight deterministic software-only Vehicle Dynamics lessons. P01-P02 retain implemented-source comparisons; P03-P08 are Python-first native designs derived from source identities and reviewed competencies. No MATLAB runtime comparison, browser/accessibility or learner validation, measured vehicle data, firmware/radio/bench/vehicle/track execution, physical HIL/hardware, certification, release, deployment, credentials/settings, or production use is implied.
+  claim_boundary: This batch implements and independently verifies eight deterministic software-only Vehicle Dynamics lessons. P09-P16 are Python-first native designs derived from source identities and reviewed competencies. No MATLAB runtime comparison, browser/accessibility or learner validation, measured vehicle data, firmware/radio/bench/vehicle/track execution, physical HIL/hardware, certification, release, deployment, credentials/settings, or production use is implied.

@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "id": "12-explore-camber-and-toe-geometry",
+  "number": 12,
+  "title": "Explore Camber and Toe Geometry",
+  "summary": "Separate signed camber thrust from toe-induced scrub force, heading change, and power loss.",
+  "guiding_question": "How do camber and toe create distinct lateral-force and scrub effects?",
+  "status": "implemented",
+  "tags": [
+    "vehicle-dynamics",
+    "phase-3",
+    "python-first-native"
+  ],
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0
+  },
+  "controls": [
+    {
+      "id": "camber_deg",
+      "type": "slider",
+      "label": "Camber angle",
+      "default": -2.0,
+      "minimum": -5.0,
+      "maximum": 2.0,
+      "step": 0.25,
+      "unit": "deg",
+      "description": "Change the primary physical input while holding the secondary input fixed."
+    },
+    {
+      "id": "toe_deg",
+      "type": "slider",
+      "label": "Toe angle",
+      "default": 0.1,
+      "minimum": -0.5,
+      "maximum": 0.5,
+      "step": 0.05,
+      "unit": "deg",
+      "description": "Change the secondary physical input while holding the primary input fixed."
+    },
+    {
+      "id": "broken_mode",
+      "type": "toggle",
+      "label": "Activate the named broken behavior",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "markdown",
+      "source": "lesson.md"
+    },
+    {
+      "type": "prediction",
+      "title": "Predict before running",
+      "text": "Predict the sign, trend, conserved quantity, and validity boundary before changing one input.",
+      "reveal": "Use the governing relation, then verify one variable at a time."
+    },
+    {
+      "type": "controls",
+      "title": "Vehicle-model controls"
+    },
+    {
+      "type": "metrics"
+    },
+    {
+      "type": "plot",
+      "title": "Physical response",
+      "plot": "response"
+    },
+    {
+      "type": "plot_grid",
+      "title": "One-variable sweeps",
+      "plots": [
+        "primary_sweep",
+        "secondary_sweep"
+      ]
+    },
+    {
+      "type": "plot",
+      "title": "Broken behavior and exact recovery",
+      "plot": "broken_recovery"
+    },
+    {
+      "type": "callout",
+      "tone": "info",
+      "title": "Observation",
+      "source": "observation"
+    },
+    {
+      "type": "callout",
+      "tone": "warning",
+      "title": "Broken",
+      "source": "broken"
+    },
+    {
+      "type": "callout",
+      "tone": "success",
+      "title": "Recovery",
+      "source": "recovery"
+    }
+  ]
+}

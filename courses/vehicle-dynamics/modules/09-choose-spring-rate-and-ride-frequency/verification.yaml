@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "item_id": "P09",
+  "provenance": "Python-first native",
+  "reference": {
+    "path": "../../reference_cases.py",
+    "origin": "separately formulated scalar analytic or bounded numerical oracle",
+    "imports_production": false,
+    "consumes_production_output": false,
+    "tolerance_abs": "1e-10",
+    "fields": [
+      "wheel_rate_n_m",
+      "ride_frequency_hz",
+      "static_deflection_m",
+      "spring_rate_n_m",
+      "motion_ratio",
+      "invalid"
+    ]
+  },
+  "governing_relation": "k_w = k_s i^2; f_n = (1/(2*pi))*sqrt(k_w/m_s)",
+  "teaching_invariant": "Wheel rate follows the square of motion ratio, and static load equals wheel rate times static deflection.",
+  "limitation": "The quarter-car ride-frequency model omits tire stiffness, unsprung mass, and suspension friction.",
+  "scenarios": [
+    {
+      "name": "baseline",
+      "inputs": {
+        "spring_rate_n_m": 35000.0,
+        "motion_ratio": 0.9,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_1",
+      "inputs": {
+        "spring_rate_n_m": 15000.0,
+        "motion_ratio": 0.9,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_2",
+      "inputs": {
+        "spring_rate_n_m": 35000.0,
+        "motion_ratio": 1.1,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "broken",
+      "inputs": {
+        "spring_rate_n_m": 35000.0,
+        "motion_ratio": 0.9,
+        "broken_mode": true
+      },
+      "status": "passed"
+    },
+    {
+      "name": "recovery",
+      "inputs": {
+        "spring_rate_n_m": 35000.0,
+        "motion_ratio": 0.9,
+        "broken_mode": false
+      },
+      "status": "passed"
+    }
+  ],
+  "unperformed": [
+    "MATLAB runtime comparison",
+    "learner validation",
+    "browser accessibility",
+    "measured vehicle data",
+    "firmware/radio/bench/vehicle/track execution",
+    "physical HIL/hardware"
+  ]
+}
+

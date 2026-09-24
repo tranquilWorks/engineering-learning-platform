@@ -9,7 +9,7 @@ or learner outcomes.
 The authoritative machine-readable projection is
 [`course-caliber-status.yaml`](course-caliber-status.yaml). It implements
 Portfolio Control standard `ELP-COURSE-CALIBER-1` at merged Vehicle Dynamics
-P01-P08 authorization revision `4f5f5078297df9713a97eb2459c6909aa6965f5b`.
+P09-P16 authorization revision `a4428e7591e9da90223698f006eb26fd11e3ebed`.
 
 ## Six separately evidenced stages
 
@@ -61,16 +61,16 @@ but they are not independent correctness oracles.
 | DSP/Radar | 84 source / 84 platform / 84 interactive | `platform_converted` | #441: replace the P02-P84 generic execution structure and independently reverify it |
 | Controls/GNC | 24 / 24 / 24 | `numerically_verified` | #439: expand against the reviewed competency map and add cumulative integration |
 | Robotics and Autonomy | 24 source / 69 platform / 69 interactive | `capstone_integrated` | Maintain the reviewed map; learner/accessibility validation remains not run |
-| Vehicle Dynamics | 24 source / 8 platform / 8 interactive | P01-P08 numerically verified | #467: authorize P09-P16 against the merged first-batch baseline |
+| Vehicle Dynamics | 24 source / 16 platform / 16 interactive | P01-P16 numerically verified | #467: authorize P17-P24 against the merged second-batch baseline |
 
 Controls/GNC and Robotics/Autonomy are now marked `curriculum_covered: passed`
 and `capstone_integrated: passed` from their reviewed maps and requirements-traced
 software capstones. Those outcomes do not imply `learner_validated`, which remains
 `not_run`. DSP/Radar remediation remains separately owned by issue #441.
 
-Vehicle Dynamics preparation and the first eight-module arc are complete.
+Vehicle Dynamics preparation and the first two eight-module arcs are complete.
 The reviewed 67-module map, exact source ledger, and deterministic synthetic
-GR86 CAN/BLE fixtures are installed. P01-P08 are deterministic software-only
+GR86 CAN/BLE fixtures are installed. P01-P16 are deterministic software-only
 lessons with independent scalar references; later lessons remain separately gated.
 
 This projection does not claim MATLAB runtime comparison, browser or
