@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "id": "03-see-longitudinal-weight-transfer",
+  "number": 3,
+  "title": "See Longitudinal Weight Transfer",
+  "summary": "A bounded deterministic vehicle model with two sweeps and named failure/recovery.",
+  "guiding_question": "What physical inputs and limits matter when you see longitudinal weight transfer?",
+  "status": "implemented",
+  "tags": [
+    "vehicle-dynamics",
+    "phase-1",
+    "python-first-native"
+  ],
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0
+  },
+  "controls": [
+    {
+      "id": "acceleration_mps2",
+      "type": "slider",
+      "label": "acceleration_mps2",
+      "default": 4.0,
+      "minimum": -9.0,
+      "maximum": 9.0,
+      "step": 0.9,
+      "unit": "m/s^2",
+      "description": "Change one physical input while holding the other fixed."
+    },
+    {
+      "id": "cg_height_m",
+      "type": "slider",
+      "label": "cg_height_m",
+      "default": 0.5,
+      "minimum": 0.25,
+      "maximum": 0.85,
+      "step": 0.03,
+      "unit": "m",
+      "description": "Change one physical input while holding the other fixed."
+    },
+    {
+      "id": "broken_mode",
+      "type": "toggle",
+      "label": "Activate named broken behavior",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "markdown",
+      "source": "lesson.md"
+    },
+    {
+      "type": "prediction",
+      "title": "Predict before running",
+      "text": "Predict sign, trend, and boundary before changing one input.",
+      "reveal": "Use the governing equation, then verify one variable at a time."
+    },
+    {
+      "type": "controls",
+      "title": "Vehicle model controls"
+    },
+    {
+      "type": "metrics"
+    },
+    {
+      "type": "plot",
+      "title": "Model response",
+      "plot": "response"
+    },
+    {
+      "type": "plot_grid",
+      "title": "One-variable sweeps",
+      "plots": [
+        "primary_sweep",
+        "secondary_sweep"
+      ]
+    },
+    {
+      "type": "plot",
+      "title": "Broken behavior and recovery",
+      "plot": "broken_recovery"
+    },
+    {
+      "type": "callout",
+      "tone": "info",
+      "title": "Observation",
+      "source": "observation"
+    },
+    {
+      "type": "callout",
+      "tone": "warning",
+      "title": "Broken",
+      "source": "broken"
+    },
+    {
+      "type": "callout",
+      "tone": "success",
+      "title": "Recovery",
+      "source": "recovery"
+    }
+  ]
+}
+

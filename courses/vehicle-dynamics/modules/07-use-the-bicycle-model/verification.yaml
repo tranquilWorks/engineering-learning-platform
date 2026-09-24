@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "item_id": "P07",
+  "provenance": "Python-first native",
+  "reference": {
+    "path": "../../reference_cases.py",
+    "origin": "separately formulated scalar analytic oracle",
+    "imports_production": false,
+    "consumes_production_output": false,
+    "tolerance_abs": "1e-10",
+    "fields": "ordered finite SI signature"
+  },
+  "governing_relation": "Solve steady linear-bicycle force and yaw-moment balance for sideslip and yaw rate.",
+  "teaching_invariant": "Axle forces balance m*V*r and yaw moments balance zero.",
+  "limitation": "Linear tires require small angles and constant speed.",
+  "scenarios": [
+    {
+      "name": "baseline",
+      "inputs": {
+        "steering_deg": 3.0,
+        "speed_mps": 18.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_1",
+      "inputs": {
+        "steering_deg": -8.0,
+        "speed_mps": 18.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_2",
+      "inputs": {
+        "steering_deg": 3.0,
+        "speed_mps": 40.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "broken",
+      "inputs": {
+        "steering_deg": 3.0,
+        "speed_mps": 18.0,
+        "broken_mode": true
+      },
+      "status": "passed"
+    },
+    {
+      "name": "recovery",
+      "inputs": {
+        "steering_deg": 3.0,
+        "speed_mps": 18.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    }
+  ],
+  "unperformed": [
+    "MATLAB runtime comparison",
+    "learner validation",
+    "browser accessibility",
+    "measured vehicle data",
+    "firmware/radio/bench/vehicle/track execution",
+    "physical HIL/hardware"
+  ]
+}
+

@@ -1,9 +1,9 @@
 # Handoff
 
-Issue #467 is prepared but not implemented. Retain the exact Vehicle Dynamics source gitlink, 150-file source ledger, reviewed 67-module competency map, P01-P24 conversion records, and deterministic synthetic GR86 CAN/BLE fixture identities.
+Issue #467 has its first eight-module learner arc implemented. Retain the exact source gitlink, source ledger, reviewed map, conversion records, and synthetic fixture identities.
 
-The only authorized target state in `ELP-VEHICLE-PREP-00` is preparation: six catalog courses, 223 existing modules, 223 interactive modules, and zero Vehicle Dynamics modules. Do not add or edit a Vehicle Dynamics lesson under this contract.
+The authorized `ELP-VEHICLE-P01-P08` state is six courses, 231 modules, 231 interactive modules, and exactly Vehicle Dynamics P01-P08. Do not create P09 or later modules under this contract.
 
-Next, publish a separate `ELP-VEHICLE-P01-P08` control contract against the exact merged prep target commit and tree. That first coherent batch covers P01-P08 and remains bounded to eight lessons.
+Next, authorize `ELP-VEHICLE-P09-P16` against the exact merged P01-P08 target commit and tree.
 
 Synthetic fixtures do not establish measured vehicle behavior. MATLAB, browser/accessibility, learner, firmware/radio, bench, vehicle, track, physical HIL/hardware, certification, release, deployment, credentials/settings, and production evidence remain unperformed.

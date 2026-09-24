@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "id": "08-separate-understeer-from-oversteer",
+  "number": 8,
+  "title": "Separate Understeer from Oversteer",
+  "summary": "A bounded deterministic vehicle model with two sweeps and named failure/recovery.",
+  "guiding_question": "What physical inputs and limits matter when you separate understeer from oversteer?",
+  "status": "implemented",
+  "tags": [
+    "vehicle-dynamics",
+    "phase-2",
+    "python-first-native"
+  ],
+  "runtime": {
+    "kind": "python",
+    "entrypoint": "experiment.py:run",
+    "trust": "local-trusted",
+    "timeout_seconds": 3.0
+  },
+  "controls": [
+    {
+      "id": "front_cornering_stiffness_n_rad",
+      "type": "slider",
+      "label": "front_cornering_stiffness_n_rad",
+      "default": 90000.0,
+      "minimum": 45000.0,
+      "maximum": 140000.0,
+      "step": 4750.0,
+      "unit": "N/rad",
+      "description": "Change one physical input while holding the other fixed."
+    },
+    {
+      "id": "rear_cornering_stiffness_n_rad",
+      "type": "slider",
+      "label": "rear_cornering_stiffness_n_rad",
+      "default": 100000.0,
+      "minimum": 45000.0,
+      "maximum": 140000.0,
+      "step": 4750.0,
+      "unit": "N/rad",
+      "description": "Change one physical input while holding the other fixed."
+    },
+    {
+      "id": "broken_mode",
+      "type": "toggle",
+      "label": "Activate named broken behavior",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "markdown",
+      "source": "lesson.md"
+    },
+    {
+      "type": "prediction",
+      "title": "Predict before running",
+      "text": "Predict sign, trend, and boundary before changing one input.",
+      "reveal": "Use the governing equation, then verify one variable at a time."
+    },
+    {
+      "type": "controls",
+      "title": "Vehicle model controls"
+    },
+    {
+      "type": "metrics"
+    },
+    {
+      "type": "plot",
+      "title": "Model response",
+      "plot": "response"
+    },
+    {
+      "type": "plot_grid",
+      "title": "One-variable sweeps",
+      "plots": [
+        "primary_sweep",
+        "secondary_sweep"
+      ]
+    },
+    {
+      "type": "plot",
+      "title": "Broken behavior and recovery",
+      "plot": "broken_recovery"
+    },
+    {
+      "type": "callout",
+      "tone": "info",
+      "title": "Observation",
+      "source": "observation"
+    },
+    {
+      "type": "callout",
+      "tone": "warning",
+      "title": "Broken",
+      "source": "broken"
+    },
+    {
+      "type": "callout",
+      "tone": "success",
+      "title": "Recovery",
+      "source": "recovery"
+    }
+  ]
+}
+

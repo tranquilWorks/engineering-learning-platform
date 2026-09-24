@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "item_id": "P08",
+  "provenance": "Python-first native",
+  "reference": {
+    "path": "../../reference_cases.py",
+    "origin": "separately formulated scalar analytic oracle",
+    "imports_production": false,
+    "consumes_production_output": false,
+    "tolerance_abs": "1e-10",
+    "fields": "ordered finite SI signature"
+  },
+  "governing_relation": "K=m/L*(b/Cf-a/Cr); delta=L/R+K*V^2/R",
+  "teaching_invariant": "K>0 understeers; K=0 is neutral; K<0 has finite critical speed.",
+  "limitation": "The steady linear result omits nonlinear saturation.",
+  "scenarios": [
+    {
+      "name": "baseline",
+      "inputs": {
+        "front_cornering_stiffness_n_rad": 90000.0,
+        "rear_cornering_stiffness_n_rad": 100000.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_1",
+      "inputs": {
+        "front_cornering_stiffness_n_rad": 45000.0,
+        "rear_cornering_stiffness_n_rad": 100000.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_2",
+      "inputs": {
+        "front_cornering_stiffness_n_rad": 90000.0,
+        "rear_cornering_stiffness_n_rad": 140000.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "broken",
+      "inputs": {
+        "front_cornering_stiffness_n_rad": 90000.0,
+        "rear_cornering_stiffness_n_rad": 100000.0,
+        "broken_mode": true
+      },
+      "status": "passed"
+    },
+    {
+      "name": "recovery",
+      "inputs": {
+        "front_cornering_stiffness_n_rad": 90000.0,
+        "rear_cornering_stiffness_n_rad": 100000.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    }
+  ],
+  "unperformed": [
+    "MATLAB runtime comparison",
+    "learner validation",
+    "browser accessibility",
+    "measured vehicle data",
+    "firmware/radio/bench/vehicle/track execution",
+    "physical HIL/hardware"
+  ]
+}
+

@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "item_id": "P06",
+  "provenance": "Python-first native",
+  "reference": {
+    "path": "../../reference_cases.py",
+    "origin": "separately formulated scalar analytic oracle",
+    "imports_production": false,
+    "consumes_production_output": false,
+    "tolerance_abs": "1e-10",
+    "fields": "ordered finite SI signature"
+  },
+  "governing_relation": "Fy = -mu*Fz*tanh(Calpha*alpha/(mu*Fz))",
+  "teaching_invariant": "Force is zero at zero slip angle and opposes positive slip angle.",
+  "limitation": "The curve omits combined slip, camber, and relaxation length.",
+  "scenarios": [
+    {
+      "name": "baseline",
+      "inputs": {
+        "slip_angle_deg": 4.0,
+        "normal_load_n": 3600.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_1",
+      "inputs": {
+        "slip_angle_deg": -14.0,
+        "normal_load_n": 3600.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "sweep_2",
+      "inputs": {
+        "slip_angle_deg": 4.0,
+        "normal_load_n": 6000.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    },
+    {
+      "name": "broken",
+      "inputs": {
+        "slip_angle_deg": 4.0,
+        "normal_load_n": 3600.0,
+        "broken_mode": true
+      },
+      "status": "passed"
+    },
+    {
+      "name": "recovery",
+      "inputs": {
+        "slip_angle_deg": 4.0,
+        "normal_load_n": 3600.0,
+        "broken_mode": false
+      },
+      "status": "passed"
+    }
+  ],
+  "unperformed": [
+    "MATLAB runtime comparison",
+    "learner validation",
+    "browser accessibility",
+    "measured vehicle data",
+    "firmware/radio/bench/vehicle/track execution",
+    "physical HIL/hardware"
+  ]
+}
+
