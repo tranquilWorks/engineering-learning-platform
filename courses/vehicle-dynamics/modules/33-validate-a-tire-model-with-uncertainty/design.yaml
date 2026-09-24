@@ -1,0 +1,58 @@
+schema_version: 1
+item_id: P33
+module: 33-validate-a-tire-model-with-uncertainty
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- theta_hat=argmin sum_train(y-theta*x)^2
+- r_i=y_i-theta_hat*x_i
+- z_i=r_i/sigma
+- coverage=mean(|z_i|<=1.96)
+signature:
+- field: fitted_force_scale
+  unit: "1"
+- field: validation_bias
+  unit: N
+- field: validation_rmse
+  unit: N
+- field: prediction_interval_coverage
+  unit: "1"
+- field: maximum_normalized_residual
+  unit: "1"
+teaching_invariant: Model fitting uses training rows only, and held-out residual coverage is interpreted against the same declared observation uncertainty.
+limiting_cases:
+- With zero residual every held-out point is covered by any positive interval.
+- As declared uncertainty shrinks, normalized residual magnitude grows for unchanged observations.
+scenarios:
+  baseline:
+    observation_sigma_n: 80
+    validation_fraction: 0.35
+    broken_mode: false
+  sweep_1:
+    observation_sigma_n: 220
+    validation_fraction: 0.35
+    broken_mode: false
+  sweep_2:
+    observation_sigma_n: 80
+    validation_fraction: 0.6
+    broken_mode: false
+  broken:
+    observation_sigma_n: 80
+    validation_fraction: 0.35
+    broken_mode: true
+  recovery:
+    observation_sigma_n: 80
+    validation_fraction: 0.35
+    broken_mode: false
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software and synthetic observations only; no source or MATLAB equivalence, measured tire or vehicle, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

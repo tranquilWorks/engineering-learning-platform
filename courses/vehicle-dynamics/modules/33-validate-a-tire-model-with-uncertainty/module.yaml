@@ -1,0 +1,64 @@
+schema_version: 1
+id: 33-validate-a-tire-model-with-uncertainty
+number: 33
+title: Validate a Tire Model with Uncertainty
+summary: Fit on deterministic synthetic training data and judge held-out bias, RMSE, normalized residuals, and interval coverage.
+guiding_question: When does a small residual become statistically inconsistent with the uncertainty claimed by a tire model?
+status: implemented
+tags:
+- vehicle-dynamics
+- native-python
+- tire-modeling
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: observation_sigma_n
+  type: slider
+  label: Declared observation sigma
+  default: 80
+  unit: N
+  minimum: 20
+  maximum: 250
+  step: 5
+- id: validation_fraction
+  type: slider
+  label: Held-out validation fraction
+  default: 0.35
+  unit: "1"
+  minimum: 0.2
+  maximum: 0.6
+  step: 0.05
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Model fitting uses training rows only, and held-out residual coverage is interpreted against the same declared observation uncertainty.
+  reveal: Restore the train/validation boundary, use the declared positive sigma unchanged, and recompute held-out bias, RMSE, normalized residuals, and coverage.
+- type: controls
+  title: Tire model controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

@@ -1,0 +1,57 @@
+schema_version: 1
+item_id: P31
+module: 31-track-tire-temperature-pressure-and-grip
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- C_th*dT/dt=Q_in-h*(T-T_amb)
+- p/p_0=T_K/T_0K
+- mu=mu_peak*exp(-((T-T_opt)/w_T)^2)*(1-k_p*(p-p_opt)^2)
+signature:
+- field: final_temperature
+  unit: degC
+- field: final_pressure
+  unit: kPa
+- field: peak_grip
+  unit: "1"
+- field: pressure_relation_residual
+  unit: kPa
+- field: thermal_balance_residual
+  unit: J
+teaching_invariant: Gas pressure scales with absolute Kelvin temperature, while stored thermal energy plus rejected heat equals supplied heat.
+limiting_cases:
+- With zero heat input the tire remains at ambient temperature.
+- At thermal steady state heat input equals convective loss.
+scenarios:
+  baseline:
+    heat_input_w: 900
+    ambient_temp_c: 25
+    broken_mode: false
+  sweep_1:
+    heat_input_w: 2200
+    ambient_temp_c: 25
+    broken_mode: false
+  sweep_2:
+    heat_input_w: 900
+    ambient_temp_c: -5
+    broken_mode: false
+  broken:
+    heat_input_w: 900
+    ambient_temp_c: 25
+    broken_mode: true
+  recovery:
+    heat_input_w: 900
+    ambient_temp_c: 25
+    broken_mode: false
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software and synthetic observations only; no source or MATLAB equivalence, measured tire or vehicle, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

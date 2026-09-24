@@ -192,6 +192,6 @@ def test_robotics_final_catalog_shape() -> None:
     modules = sum(len(course.modules) for course in courses)
     interactive = sum(module.interactive for course in courses for module in course.modules)
     native_count = len(EXPANSION["implemented_native_modules"])
-    assert (modules, interactive) == (202 + native_count, 202 + native_count)
+    assert (modules, interactive) == (211 + native_count, 211 + native_count)
     robotics = next(course for course in courses if course.id == "robotics-autonomy")
     assert [module.number for module in robotics.modules] == list(range(1, 25 + native_count))

@@ -1,0 +1,64 @@
+schema_version: 1
+id: 29-combine-longitudinal-and-lateral-slip
+number: 29
+title: Combine Longitudinal and Lateral Slip
+summary: Project simultaneous longitudinal and lateral tire demands onto a friction-circle constraint and inspect the remaining margin.
+guiding_question: Why can two individually valid pure-slip forces become impossible when requested together?
+status: implemented
+tags:
+- vehicle-dynamics
+- native-python
+- tire-modeling
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: slip_ratio
+  type: slider
+  label: Longitudinal slip ratio
+  default: 0.12
+  unit: "1"
+  minimum: -0.3
+  maximum: 0.3
+  step: 0.01
+- id: slip_angle_deg
+  type: slider
+  label: Slip angle
+  default: 8
+  unit: deg
+  minimum: -18
+  maximum: 18
+  step: 0.5
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: The delivered combined-force vector never exceeds unit friction utilization when both pure-slip demands share one contact patch.
+  reveal: Compute the joint utilization before delivery, apply one common radial scale factor, and verify nonpositive constraint residual.
+- type: controls
+  title: Tire model controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

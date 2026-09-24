@@ -1,0 +1,58 @@
+schema_version: 1
+item_id: P29
+module: 29-combine-longitudinal-and-lateral-slip
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- F_x0=mu*F_z*tanh(C_kappa*kappa/(mu*F_z))
+- F_y0=-mu*F_z*tanh(C_alpha*alpha/(mu*F_z))
+- u_0=sqrt((F_x0/(mu*F_z))^2+(F_y0/(mu*F_z))^2)
+- "[F_x,F_y]=min(1,1/u_0)*[F_x0,F_y0]"
+signature:
+- field: combined_longitudinal_force
+  unit: N
+- field: combined_lateral_force
+  unit: N
+- field: combined_utilization
+  unit: "1"
+- field: force_scale
+  unit: "1"
+- field: constraint_violation
+  unit: "1"
+teaching_invariant: The delivered combined-force vector never exceeds unit friction utilization when both pure-slip demands share one contact patch.
+limiting_cases:
+- With zero slip angle the combined model reduces to the pure longitudinal law.
+- With zero slip ratio the combined model reduces to the pure lateral law.
+scenarios:
+  baseline:
+    slip_ratio: 0.12
+    slip_angle_deg: 8
+    broken_mode: false
+  sweep_1:
+    slip_ratio: 0.28
+    slip_angle_deg: 8
+    broken_mode: false
+  sweep_2:
+    slip_ratio: 0.12
+    slip_angle_deg: 17
+    broken_mode: false
+  broken:
+    slip_ratio: 0.12
+    slip_angle_deg: 8
+    broken_mode: true
+  recovery:
+    slip_ratio: 0.12
+    slip_angle_deg: 8
+    broken_mode: false
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software and synthetic observations only; no source or MATLAB equivalence, measured tire or vehicle, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

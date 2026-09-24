@@ -1,8 +1,8 @@
 schema_version: 1
 batch:
-  id: ELP-VEHICLE-P17-P24
-  title: Vehicle Dynamics telemetry, estimation, identification, performance, and digital-twin baseline
-  goal: Implement the third prerequisite-closed Vehicle Dynamics learner arc, P17-P24, as eight complete deterministic Python-first modules with independently formulated analytic and numerical references.
+  id: ELP-VEHICLE-TIRES-P25-P33
+  title: Vehicle Dynamics tire frames, force laws, transients, thermal state, energy, and uncertainty
+  goal: Implement the first competency-derived Vehicle Dynamics depth arc, P25-P33, as nine distinct deterministic Python-first modules with independently formulated analytic and numerical references.
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
@@ -11,13 +11,14 @@ sources:
     - products/engineering-learning-platform/competency-maps/vehicle-dynamics.yaml
     - products/engineering-learning-platform/batches/ELP-VEHICLE-P01-P08.yaml
     - products/engineering-learning-platform/batches/ELP-VEHICLE-P09-P16.yaml
+    - products/engineering-learning-platform/batches/ELP-VEHICLE-P17-P24.yaml
     - tranquilWorks/portfolio-control#467
-  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-VEHICLE-P17-P24
-  baseline_commit: 509f6b71d6b4fc51532b7bcd1bffd628cc7bfebc
-  baseline_tree: 85c81a80aa523764de15072559fe1ba21382f8b3
+  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-VEHICLE-TIRES-P25-P33
+  baseline_commit: c14c2d3d7376a2f06cb12c55e91ad8bb98ae8088
+  baseline_tree: 3959fa6915484ed8e3d8563c7dc4a3f7c1448183
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_baseline: a4428e7591e9da90223698f006eb26fd11e3ebed
-  control_plane_path: products/engineering-learning-platform/batches/ELP-VEHICLE-P17-P24.yaml
+  control_plane_baseline: d5ddaf4c0d7af08e469fd0bd4e799151c62a4304
+  control_plane_path: products/engineering-learning-platform/batches/ELP-VEHICLE-TIRES-P25-P33.yaml
   target_repository: tranquilWorks/engineering-learning-platform
   source_repository: tranquilWorks/vehicle-dynamics-learning
   source_pin: 57264b3ffeb517ee5eb73e8957b9cd190d022457
@@ -28,23 +29,28 @@ sources:
 dependencies:
   - ELP-VEHICLE-P01-P08
   - ELP-VEHICLE-P09-P16
+  - ELP-VEHICLE-P17-P24
 scope:
   allowed_paths:
-    - courses/vehicle-dynamics/modules/17-*/**
-    - courses/vehicle-dynamics/modules/18-*/**
-    - courses/vehicle-dynamics/modules/19-*/**
-    - courses/vehicle-dynamics/modules/20-*/**
-    - courses/vehicle-dynamics/modules/21-*/**
-    - courses/vehicle-dynamics/modules/22-*/**
-    - courses/vehicle-dynamics/modules/23-*/**
-    - courses/vehicle-dynamics/modules/24-*/**
-    - courses/vehicle-dynamics/reference_cases.py
-    - courses/vehicle-dynamics/conversion-manifest.yaml
-    - courses/vehicle-dynamics/coverage.yaml
+    - courses/vehicle-dynamics/modules/25-*/**
+    - courses/vehicle-dynamics/modules/26-*/**
+    - courses/vehicle-dynamics/modules/27-*/**
+    - courses/vehicle-dynamics/modules/28-*/**
+    - courses/vehicle-dynamics/modules/29-*/**
+    - courses/vehicle-dynamics/modules/30-*/**
+    - courses/vehicle-dynamics/modules/31-*/**
+    - courses/vehicle-dynamics/modules/32-*/**
+    - courses/vehicle-dynamics/modules/33-*/**
+    - courses/vehicle-dynamics/expansion-map.yaml
+    - courses/vehicle-dynamics/expansion_reference_cases.py
+    - courses/vehicle-dynamics/native-design.schema.json
+    - apps/api/tests/test_vehicle_dynamics_expansion.py
     - apps/api/tests/test_vehicle_dynamics_framework.py
     - apps/api/tests/test_vehicle_dynamics_course.py
     - apps/api/tests/test_gnc_conversion_framework.py
+    - apps/api/tests/test_gnc_expansion.py
     - apps/api/tests/test_robotics_conversion_framework.py
+    - apps/api/tests/test_robotics_expansion.py
     - contracts/active-batch.yaml
     - contracts/repo-profile.yaml
     - contracts/verification.yaml
@@ -53,32 +59,22 @@ scope:
     - docs/CURRENT_STATE.md
     - docs/HANDOFF.md
     - docs/ROADMAP.md
-    - docs/evidence/ELP-VEHICLE-P17-P24-*.md
+    - docs/evidence/ELP-VEHICLE-TIRES-P25-P33-*.md
   forbidden_paths:
     - courses/vehicle-dynamics-learning
     - courses/vehicle-dynamics-learning/**
     - courses/vehicle-dynamics/competency-map.yaml
     - courses/vehicle-dynamics/competency-map.schema.json
     - courses/vehicle-dynamics/source-map.yaml
+    - courses/vehicle-dynamics/conversion-manifest.yaml
+    - courses/vehicle-dynamics/coverage.yaml
+    - courses/vehicle-dynamics/reference_cases.py
     - courses/vehicle-dynamics/fixtures/**
-    - courses/vehicle-dynamics/modules/01-*/**
-    - courses/vehicle-dynamics/modules/02-*/**
-    - courses/vehicle-dynamics/modules/03-*/**
-    - courses/vehicle-dynamics/modules/04-*/**
-    - courses/vehicle-dynamics/modules/05-*/**
-    - courses/vehicle-dynamics/modules/06-*/**
-    - courses/vehicle-dynamics/modules/07-*/**
-    - courses/vehicle-dynamics/modules/08-*/**
-    - courses/vehicle-dynamics/modules/09-*/**
-    - courses/vehicle-dynamics/modules/10-*/**
-    - courses/vehicle-dynamics/modules/11-*/**
-    - courses/vehicle-dynamics/modules/12-*/**
-    - courses/vehicle-dynamics/modules/13-*/**
-    - courses/vehicle-dynamics/modules/14-*/**
-    - courses/vehicle-dynamics/modules/15-*/**
-    - courses/vehicle-dynamics/modules/16-*/**
-    - courses/vehicle-dynamics/modules/2[5-9]-*/**
-    - courses/vehicle-dynamics/modules/[3-9][0-9]-*/**
+    - courses/vehicle-dynamics/modules/0[1-9]-*/**
+    - courses/vehicle-dynamics/modules/1[0-9]-*/**
+    - courses/vehicle-dynamics/modules/2[0-4]-*/**
+    - courses/vehicle-dynamics/modules/3[4-9]-*/**
+    - courses/vehicle-dynamics/modules/[4-9][0-9]-*/**
     - courses/controls-gnc/**
     - courses/dsp-radar/**
     - courses/robotics-autonomy/**
@@ -98,63 +94,63 @@ scope:
     - Dockerfile
     - compose.yaml
 acceptance:
-  - Start only after the exact control commit containing this contract is merged. Use exact clean target main 509f6b71d6b4fc51532b7bcd1bffd628cc7bfebc, tree 85c81a80aa523764de15072559fe1ba21382f8b3; any target, control, source, map, fixture, index, or worktree drift stops implementation.
-  - Implement exactly P17-P24 in source order: decode and plot CAN signals; fuse GPS and IMU motion; estimate vehicle state; identify parameters from a real drive; optimize a racing line; build a lap-time simulator; compare setup changes quantitatively; construct a GR86 digital twin.
-  - Preserve exact source identities, titles, guiding questions, prerequisite order, read-only gitlink, reviewed map, source map, fixtures, and P01-P16 byte-identically. P17-P24 retain scaffold provenance and are labeled Python-first native designs, not source or MATLAB equivalence.
-  - Treat all eight IDs as separately reviewed work items. Every module must include a complete learner lesson, unique bounded executable model, default baseline, two useful one-variable sweeps, one named broken behavior, exact recovery, limiting cases, coordinate/sign conventions, physical quantities and units, common mistakes, formative checks, and teach-back completion.
-  - Use a course-owned independent reference implementation that imports no production experiment, consumes no production result, and perturbs no production value. Retain origin, inputs, fields/units, tolerances, and finite expected versus actual evidence for baseline, sweep_1, sweep_2, broken, and recovery.
-  - P17 must decode documented byte order, raw counts, scale, CAN identifier, DLC, timestamps, freshness, malformed frames, engineering units, round-trip residual, and a bounded signal trace. Its broken case must make the endian defect visible and invalid.
-  - P18 must fuse bounded deterministic synthetic GPS and IMU motion with explicit timestamps, bias, interpolation or alignment, innovation, error, and recovery. Its broken case must expose a time-alignment defect rather than conceal it in a plausible trace.
-  - P19 must reconstruct a two-dimensional vehicle state from speed and yaw rate with explicit frames, heading units, curvature, path coordinates, lateral acceleration, and integration limits. Its broken case must expose a degrees-versus-radians defect.
-  - P20 must retain the exact title "Identify Parameters from a Real Drive" while explicitly using deterministic synthetic offline coastdown data as a software stand-in. Fit rolling resistance and aerodynamic drag with separate train and validation samples; expose excitation, conditioning, residuals, uncertainty, and an invalid under-excited fit. Do not claim measured or real-drive evidence.
-  - P21 must optimize a racing line over a bounded, deterministic feasible set while exposing path offset, curvature or radius, path length, grip limit, lap-time proxy, constraint margin, and the trade between a wider radius and added distance. Its broken case must select or score an infeasible line explicitly.
-  - P22 must build a bounded segment lap-time simulator with curvature speed limits plus forward acceleration and backward braking constraints. Expose segment speeds, lap time, active limits, residuals, and an invalid corner-entry overspeed when the backward pass is removed.
-  - P23 must compare baseline and candidate setup changes with paired deterministic sectors, main effects, interaction, sensitivity, uncertainty or decision threshold, and an explicit quantitative verdict. Its broken case must make an unpaired or confounded comparison invalid.
-  - P24 must integrate the prior software concepts into a bounded baseline GR86 digital twin driven only by deterministic synthetic telemetry. Expose longitudinal speed, path or yaw response, residuals, requirement traceability, error metrics, and a lap-time proxy. Its broken case must reveal a steering-angle unit or equivalent interface defect. Do not claim validation against a physical GR86.
-  - Validate inputs before allocation; cap samples, searches, and integration horizon; return finite deterministic Plotly-compatible results; perform no network, source write, subprocess, dynamic install/import, eval, learner-code execution, wall-clock dependence, or shared mutable state.
-  - Update conversion and coverage ledgers to total=24, pending=0, converted=24, blocked=0, placeholder=0 with exact content digests and closed per-item verification records. Do not create P25 or later target folders or placeholders.
-  - End with exactly six courses, 247 modules, and 247 interactive modules. Update only retained catalog-total assertions needed for this authorized eight-module increase; preserve every completed course and source gitlink byte-identically.
+  - Start only after the exact control commit containing this contract is merged. Use exact clean target main c14c2d3d7376a2f06cb12c55e91ad8bb98ae8088, tree 3959fa6915484ed8e3d8563c7dc4a3f7c1448183; any target, source, map, fixture, index, or worktree drift stops implementation.
+  - Implement exactly reviewed-map P25-P33 in order: measure body/path/wheel frames; quantify tire load sensitivity; fit longitudinal force versus slip ratio; fit lateral force versus slip angle and camber; combine longitudinal and lateral slip; model tire relaxation and transient force; track tire temperature, pressure, and grip; accumulate tire work and thermal energy; validate a tire model with uncertainty.
+  - Preserve the source-bound P01-P24 inventory, source identities, titles, guiding questions, prerequisite order, read-only gitlink, reviewed competency map, source map, fixtures, conversion manifest, coverage ledger, and source-bound reference byte-identically. P25-P33 are competency-derived Python-first native designs and claim neither source implementation nor MATLAB-runtime equivalence.
+  - Treat all nine IDs as separately reviewed work items. Every module must include a complete learner lesson, unique bounded executable model, default baseline, two useful one-variable sweeps, one named broken behavior, exact recovery, limiting cases, coordinate and sign conventions, physical quantities and units, common mistakes, formative checks, and teach-back completion.
+  - Use a course-owned independent reference implementation that imports no production experiment, consumes no production result, and perturbs no production value. Retain origin, inputs, fields and units, tolerances, and finite expected versus actual evidence for baseline, sweep_1, sweep_2, broken, and recovery.
+  - P25 must transform deterministic planar motion among inertial, path, body, and steered-wheel frames, expose round-trip and norm invariants, compute wheel-frame longitudinal/lateral velocity and slip angle, and make a degrees-versus-radians or inverse-rotation defect explicitly invalid.
+  - P26 must model sublinear peak tire force versus normal load, distinguish friction coefficient from force capacity, quantify load-transfer loss for equal-total-load split pairs, and make a linear-load assumption visibly violate the load-sensitivity invariant.
+  - P27 must fit a bounded saturating longitudinal-force law from deterministic synthetic offline slip-ratio data with separate fit and validation samples, expose stiffness, peak force, residuals and identifiability, and reject a percent-versus-ratio or collapsed-excitation defect.
+  - P28 must fit a bounded lateral force law versus slip angle and camber from deterministic synthetic offline data, expose cornering stiffness, camber stiffness, saturation and residuals, and reject an angle-unit or sign-convention defect.
+  - P29 must enforce a combined-slip friction-circle or friction-ellipse constraint, expose pure and combined force demands, utilization, scale factor and constraint residual, and make independent uncapped longitudinal/lateral saturation explicitly invalid.
+  - P30 must model first-order tire-force relaxation in distance or time with explicit speed, relaxation length, steady-state target, transient force, 63-percent response and bounded integration; its broken case must expose an omitted speed conversion or nonphysical relaxation parameter.
+  - P31 must track a bounded synthetic tire thermal state, absolute pressure relation, and temperature/pressure-dependent grip with explicit Celsius/Kelvin boundaries, heat input and cooling; its broken case must expose Celsius used as an absolute temperature or an omitted loss path.
+  - P32 must integrate longitudinal and lateral slip power into cumulative tire work, heat storage and loss, expose energy-balance residual and temperature rise, and make a sign, unit, or missing-loss defect explicitly invalid.
+  - P33 must validate a tire model on held-out deterministic synthetic data with explicit observation uncertainty, residual bias, RMSE, normalized residuals and prediction-interval coverage; its broken case must expose training/validation leakage or deliberately underreported uncertainty.
+  - Validate inputs before allocation; cap samples, searches, and integration horizon; return finite deterministic Plotly-compatible results; perform no network, source write, subprocess, dynamic install or import, eval, learner-code execution, wall-clock dependence, or shared mutable state.
+  - Add a competency expansion ledger that declares 24 source-bound modules, all 67 reviewed planned modules, exactly P25-P33 implemented natively, and P34-P67 pending. Keep source-bound conversion and coverage totals at total=24, converted=24, pending=0, blocked=0, placeholder=0.
+  - End with exactly six courses, 256 modules, and 256 interactive modules. Update only retained catalog-total assertions needed for this authorized nine-module increase; preserve every completed course and source gitlink byte-identically.
   - Record exact local verification. Hosted CI is not a completion gate by owner direction; keep MATLAB comparison, browser/accessibility, learner validation, measured vehicle data, firmware/radio/bench/vehicle/track execution, physical HIL/hardware, certification, release, deployment, credentials/settings, and production evidence explicitly unperformed.
 validation:
   local:
-    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_vehicle_dynamics_framework.py apps/api/tests/test_vehicle_dynamics_course.py apps/api/tests/test_course_caliber_status.py
+    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_vehicle_dynamics_expansion.py apps/api/tests/test_vehicle_dynamics_framework.py apps/api/tests/test_vehicle_dynamics_course.py apps/api/tests/test_course_caliber_status.py
     - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py
     - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_gnc_expansion.py apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_course.py apps/api/tests/test_robotics_expansion.py apps/api/tests/test_robotics_conversion_framework.py apps/api/tests/test_robotics_course.py
     - ./scripts/agent-verify.sh contract
     - ./scripts/agent-verify.sh quick
     - ./scripts/agent-verify.sh full
     - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic --json
-    - .venv/bin/ruff check apps/api/tests/test_vehicle_dynamics_framework.py apps/api/tests/test_vehicle_dynamics_course.py apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_course_caliber_status.py courses/vehicle-dynamics/modules/17-* courses/vehicle-dynamics/modules/18-* courses/vehicle-dynamics/modules/19-* courses/vehicle-dynamics/modules/20-* courses/vehicle-dynamics/modules/21-* courses/vehicle-dynamics/modules/22-* courses/vehicle-dynamics/modules/23-* courses/vehicle-dynamics/modules/24-* courses/vehicle-dynamics/reference_cases.py
-    - .venv/bin/ruff check --ignore UP038 apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_robotics_conversion_framework.py
+    - .venv/bin/ruff check apps/api/tests/test_vehicle_dynamics_expansion.py apps/api/tests/test_vehicle_dynamics_framework.py apps/api/tests/test_vehicle_dynamics_course.py apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_expansion.py apps/api/tests/test_robotics_conversion_framework.py apps/api/tests/test_robotics_expansion.py courses/vehicle-dynamics/modules/25-* courses/vehicle-dynamics/modules/26-* courses/vehicle-dynamics/modules/27-* courses/vehicle-dynamics/modules/28-* courses/vehicle-dynamics/modules/29-* courses/vehicle-dynamics/modules/30-* courses/vehicle-dynamics/modules/31-* courses/vehicle-dynamics/modules/32-* courses/vehicle-dynamics/modules/33-* courses/vehicle-dynamics/expansion_reference_cases.py
     - git diff --check
-    - test -z "$(git status --short -- courses/controls-gnc courses/dsp-radar courses/robotics-autonomy courses/demo-radar courses/platform-showcase courses/vehicle-dynamics/fixtures courses/vehicle-dynamics/modules/01-* courses/vehicle-dynamics/modules/02-* courses/vehicle-dynamics/modules/03-* courses/vehicle-dynamics/modules/04-* courses/vehicle-dynamics/modules/05-* courses/vehicle-dynamics/modules/06-* courses/vehicle-dynamics/modules/07-* courses/vehicle-dynamics/modules/08-* courses/vehicle-dynamics/modules/09-* courses/vehicle-dynamics/modules/10-* courses/vehicle-dynamics/modules/11-* courses/vehicle-dynamics/modules/12-* courses/vehicle-dynamics/modules/13-* courses/vehicle-dynamics/modules/14-* courses/vehicle-dynamics/modules/15-* courses/vehicle-dynamics/modules/16-*)"
+    - test -z "$(git status --short -- courses/controls-gnc courses/dsp-radar courses/robotics-autonomy courses/demo-radar courses/platform-showcase courses/vehicle-dynamics/fixtures courses/vehicle-dynamics/modules/0[1-9]-* courses/vehicle-dynamics/modules/1[0-9]-* courses/vehicle-dynamics/modules/2[0-4]-*)"
     - test -z "$(git -C courses/vehicle-dynamics-learning status --porcelain=v1 --untracked-files=all)"
   focused_tests_to_add:
-    - Validate exact P17-P24 membership, prerequisite closure, scaffold provenance, coverage transition, content digests, and absence of later modules.
+    - Validate exact P25-P33 membership, reviewed-map identities, prerequisite closure, native provenance, expansion-ledger transition, distinct governing-equation fingerprints, and absence of P34 or later folders.
     - Execute baseline, two one-variable sweeps, broken, recovery, invalid-input, resource-bound, finite, deterministic, axis/unit, and evidence-independence checks for every new module.
-    - Assert topic-specific equations, frames, timestamp and unit conventions, teaching invariants, limiting cases, physical boundaries, formative checks, and exact recovery.
-    - Compare P17-P24 against analytic, invariant, or separately formulated numerical references without relabeling source scaffolds as executed designs.
-    - Validate the six-course, 247-module, 247-interactive catalog and regress every retained course.
+    - Assert topic-specific frame transforms, force laws, fitting boundaries, friction constraint, relaxation response, thermodynamics, energy balance, uncertainty metrics, teaching invariants, limiting cases, and exact recovery.
+    - Compare P25-P33 against analytic, invariant, or separately formulated numerical references without importing or deriving from production experiments.
+    - Validate the six-course, 256-module, 256-interactive catalog and regress every retained course.
   required_ci: []
 risk:
   class: high
   hazards:
-    - a shared vehicle template substitutes for eight distinct governing or computational models
-    - byte order, time alignment, angle units, regression conditioning, racing-line feasibility, braking constraints, paired comparisons, or digital-twin interfaces are subtly wrong
-    - synthetic data is mislabeled as a real drive, measured vehicle evidence, source behavior, or physical GR86 validation
+    - a shared tire template substitutes for nine distinct governing or computational models
+    - frame rotation, slip signs, normal-load scaling, saturation, fitting identifiability, combined-slip constraints, relaxation discretization, absolute temperature, energy units, or uncertainty coverage are subtly wrong
+    - deterministic synthetic observations are mislabeled as measured tire, rig, track, or vehicle evidence
     - an independent oracle imports or derives from production behavior
-    - invalid setups yield plausible finite plots instead of explicit broken/recovery verdicts
+    - invalid setups yield plausible finite plots instead of explicit broken and recovery verdicts
   stop_conditions:
-    - exact target, control, source, map, fixture, index, or worktree identity drifts
-    - an independent reference needs production code/output or a perturbed production value
-    - work requires source mutation, fixture mutation, generic runtime/UI changes, a dependency, network access, or unsupported evidence
+    - exact target, source, map, fixture, index, or worktree identity drifts
+    - an independent reference needs production code, production output, or a perturbed production value
+    - work requires source-bound ledger mutation, source mutation, fixture mutation, generic runtime or UI changes, a dependency, network access, or unsupported evidence
     - any focused, retained-course, contract, quick, full, deterministic, lint, scope, or source-cleanliness gate fails or is skipped
 rollback:
-  strategy: Before merge, close the isolated target pull request. After merge, revert its one squash commit; this removes only Vehicle Dynamics P17-P24, their independent reference/tests/evidence, and their ledger/documentation transitions while retaining P01-P16.
+  strategy: Before merge, close the isolated target pull request. After merge, revert its one squash commit; this removes only the Vehicle Dynamics P25-P33 native expansion, independent reference, tests, evidence, and expansion ledger while retaining the complete P01-P24 source-bound course.
 evidence:
   output:
-    - docs/evidence/ELP-VEHICLE-P17-P24-2026-09-24.md
-    - one P17-P24 row per work item with governing relation, provenance, scenarios, teaching invariant, tolerance, axes/units, limitation, and residual risk
+    - docs/evidence/ELP-VEHICLE-TIRES-P25-P33-2026-09-24.md
+    - one P25-P33 row per work item with governing relation, provenance, scenarios, teaching invariant, tolerance, axes and units, limitation, and residual risk
     - focused, retained-course, contract, quick, full, deterministic catalog, lint, diff, scope, and source-cleanliness results
-    - one target squash merge, exact resulting commit/tree, and explicit unperformed evidence
-  claim_boundary: This batch implements and independently verifies eight deterministic software-only Vehicle Dynamics lessons. P17-P24 are Python-first native designs derived from source identities and reviewed competencies. P20 uses synthetic offline data despite its retained source title, and P24 is a software-only baseline integration rather than physical GR86 validation. No MATLAB runtime comparison, browser/accessibility or learner validation, measured vehicle data, firmware/radio/bench/vehicle/track execution, physical HIL/hardware, certification, release, deployment, credentials/settings, or production use is implied.
+    - one target squash merge, exact resulting commit and tree, and explicit unperformed evidence
+  claim_boundary: This batch implements and independently verifies nine deterministic software-only Vehicle Dynamics tire lessons. P25-P33 are Python-first native designs derived from the reviewed competency map and deterministic synthetic observations. No source or MATLAB-runtime equivalence, measured tire or vehicle validation, browser/accessibility or learner validation, firmware/radio/bench/vehicle/track execution, physical HIL/hardware, certification, release, deployment, credentials/settings, or production use is implied.

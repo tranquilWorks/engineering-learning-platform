@@ -1,0 +1,57 @@
+schema_version: 1
+item_id: P28
+module: 28-fit-lateral-force-versus-slip-angle-and-camber
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- F_y=clip(-(C_alpha*alpha+C_gamma*gamma),-mu*F_z,mu*F_z)
+- "[C_alpha_hat,C_gamma_hat]=argmin ||F_y+X*C||_2"
+- alpha_rad=pi*alpha_deg/180
+signature:
+- field: fitted_cornering_stiffness
+  unit: N/rad
+- field: fitted_camber_stiffness
+  unit: N/rad
+- field: validation_rmse
+  unit: N
+- field: peak_utilization
+  unit: "1"
+- field: angle_unit_error
+  unit: "1"
+teaching_invariant: With independently varied slip angle and camber, the unsaturated design matrix separates cornering stiffness from camber stiffness in radians.
+limiting_cases:
+- At zero slip angle and zero camber the lateral force is zero.
+- At zero camber stiffness only the slip-angle column contributes force.
+scenarios:
+  baseline:
+    cornering_stiffness_n_rad: 70000
+    camber_stiffness_n_rad: 9000
+    broken_mode: false
+  sweep_1:
+    cornering_stiffness_n_rad: 120000
+    camber_stiffness_n_rad: 9000
+    broken_mode: false
+  sweep_2:
+    cornering_stiffness_n_rad: 70000
+    camber_stiffness_n_rad: 18000
+    broken_mode: false
+  broken:
+    cornering_stiffness_n_rad: 70000
+    camber_stiffness_n_rad: 9000
+    broken_mode: true
+  recovery:
+    cornering_stiffness_n_rad: 70000
+    camber_stiffness_n_rad: 9000
+    broken_mode: false
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software and synthetic observations only; no source or MATLAB equivalence, measured tire or vehicle, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

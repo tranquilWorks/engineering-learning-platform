@@ -1,0 +1,64 @@
+schema_version: 1
+id: 31-track-tire-temperature-pressure-and-grip
+number: 31
+title: Track Tire Temperature, Pressure, and Grip
+summary: Integrate a bounded thermal state, convert absolute temperature to pressure, and evaluate a temperature-pressure grip envelope.
+guiding_question: How do heat input, cooling, absolute pressure, and the grip window interact over a run?
+status: implemented
+tags:
+- vehicle-dynamics
+- native-python
+- tire-modeling
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: heat_input_w
+  type: slider
+  label: Tire heat input
+  default: 900
+  unit: W
+  minimum: 0
+  maximum: 2500
+  step: 50
+- id: ambient_temp_c
+  type: slider
+  label: Ambient temperature
+  default: 25
+  unit: degC
+  minimum: -10
+  maximum: 45
+  step: 1
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Gas pressure scales with absolute Kelvin temperature, while stored thermal energy plus rejected heat equals supplied heat.
+  reveal: Convert both initial and current gas temperatures to Kelvin at the pressure boundary, then close the integrated thermal-energy balance.
+- type: controls
+  title: Tire model controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

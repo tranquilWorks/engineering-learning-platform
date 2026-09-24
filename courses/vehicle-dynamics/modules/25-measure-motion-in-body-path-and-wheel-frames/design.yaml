@@ -1,0 +1,58 @@
+schema_version: 1
+item_id: P25
+module: 25-measure-motion-in-body-path-and-wheel-frames
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- v_path=R(-psi_path)*v_inertial
+- v_body=R(-psi_body)*v_inertial
+- v_wheel=R(-delta)*v_body
+- "||R(theta)*v||_2=||v||_2"
+signature:
+- field: path_longitudinal_velocity
+  unit: m/s
+- field: path_lateral_velocity
+  unit: m/s
+- field: wheel_slip_angle
+  unit: deg
+- field: speed_norm_residual
+  unit: m/s
+- field: frame_convention_error
+  unit: m/s
+teaching_invariant: A proper planar rotation preserves speed norm, and a transform followed by its inverse recovers the original vector in the same angle unit.
+limiting_cases:
+- At zero path heading the path and inertial axes coincide.
+- At zero wheel steer the wheel and body velocity components coincide.
+scenarios:
+  baseline:
+    path_heading_deg: 32
+    wheel_steer_deg: 8
+    broken_mode: false
+  sweep_1:
+    path_heading_deg: 90
+    wheel_steer_deg: 8
+    broken_mode: false
+  sweep_2:
+    path_heading_deg: 32
+    wheel_steer_deg: 25
+    broken_mode: false
+  broken:
+    path_heading_deg: 32
+    wheel_steer_deg: 8
+    broken_mode: true
+  recovery:
+    path_heading_deg: 32
+    wheel_steer_deg: 8
+    broken_mode: false
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software and synthetic observations only; no source or MATLAB equivalence, measured tire or vehicle, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

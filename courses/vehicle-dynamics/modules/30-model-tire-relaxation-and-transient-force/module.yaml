@@ -1,0 +1,64 @@
+schema_version: 1
+id: 30-model-tire-relaxation-and-transient-force
+number: 30
+title: Model Tire Relaxation and Transient Force
+summary: Relate relaxation length, vehicle speed, time constant, and the 63-percent transient-force distance.
+guiding_question: Why is tire-force lag naturally a distance-domain effect even when data are timestamped?
+status: implemented
+tags:
+- vehicle-dynamics
+- native-python
+- tire-modeling
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: relaxation_length_m
+  type: slider
+  label: Relaxation length
+  default: 0.45
+  unit: m
+  minimum: 0.1
+  maximum: 1.5
+  step: 0.05
+- id: speed_m_s
+  type: slider
+  label: Vehicle speed
+  default: 20
+  unit: m/s
+  minimum: 2
+  maximum: 60
+  step: 1
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: A first-order tire reaches one minus e to the minus one of steady force after one relaxation length, while the time constant scales inversely with speed.
+  reveal: Use tau equals relaxation length divided by speed, then check both the one-length force fraction and the speed-invariant response distance.
+- type: controls
+  title: Tire model controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery
