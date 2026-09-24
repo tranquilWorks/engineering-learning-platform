@@ -1,10 +1,10 @@
 # Current state
 
-`ELP-VEHICLE-P17-P24` is the authorized issue-467 third implementation batch from exact target baseline `509f6b71d6b4fc51532b7bcd1bffd628cc7bfebc` (tree `85c81a80aa523764de15072559fe1ba21382f8b3`) and Portfolio Control authorization `16699cf63ab5dc85413acd4eacf44e9b914fe68d`.
+`ELP-VEHICLE-TIRES-P25-P33` is the authorized issue-467 first competency-derived depth batch from exact target baseline `c14c2d3d7376a2f06cb12c55e91ad8bb98ae8088` (tree `3959fa6915484ed8e3d8563c7dc4a3f7c1448183`) and Portfolio Control authorization `85c062604e5dba94d97fd95d07b65a0949fc1d2a`.
 
-Vehicle Dynamics implements P01-P24. The third arc adds documented CAN decoding and freshness, timestamp-aligned GPS/IMU fusion, two-dimensional state reconstruction, synthetic offline coastdown identification, bounded racing-line optimization, forward/backward lap-time simulation, paired setup comparison, and a software-only baseline GR86 digital twin. P01-P02 retain implemented-source comparison provenance; P03-P24 are Python-first native designs from reviewed scaffold identities.
+Vehicle Dynamics implements P01-P33. P25-P33 add explicit body/path/wheel frames, sublinear tire load sensitivity, longitudinal and lateral parameter fits, combined-slip saturation, relaxation length, temperature/pressure/grip state, contact-patch energy accounting, and held-out uncertainty validation. P01-P02 retain implemented-source comparison provenance; P03-P24 are Python-first designs from reviewed source scaffold identities; P25-P33 are competency-derived Python-first native designs.
 
-Coverage is 24 converted, zero pending, zero blocked, and zero placeholder items for the source-bound inventory. The catalog contains six courses, 247 modules, and 247 interactive experiments. P25-P33 is the next competency-derived batch and requires separate exact-baseline authorization.
+Coverage remains 24 converted, zero pending, zero blocked, and zero placeholder items for the closed source-bound inventory. The expansion ledger records 67 reviewed modules, P25-P33 implemented, and P34-P67 pending. The catalog contains six courses, 256 modules, and 256 interactive experiments. P34-P43 is next and requires separate exact-baseline authorization.
 
 P20 retains its source title but uses deterministic synthetic offline data, not a real drive. P24 uses deterministic synthetic telemetry and is not physical GR86 validation. The replay data is synthetic protocol evidence and contains no VIN, driver identity, real location, precise route, or vehicle capture.
 

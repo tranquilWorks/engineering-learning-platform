@@ -1,0 +1,64 @@
+schema_version: 1
+id: 32-accumulate-tire-work-and-thermal-energy
+number: 32
+title: Accumulate Tire Work and Thermal Energy
+summary: Integrate longitudinal and lateral slip power into tire work, stored heat, rejected heat, and an energy-balance residual.
+guiding_question: Where does contact-patch slip work go, and how can an energy ledger reveal a missing loss path?
+status: implemented
+tags:
+- vehicle-dynamics
+- native-python
+- tire-modeling
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: slip_ratio
+  type: slider
+  label: Longitudinal slip ratio
+  default: 0.08
+  unit: "1"
+  minimum: 0
+  maximum: 0.2
+  step: 0.01
+- id: slip_angle_deg
+  type: slider
+  label: Slip angle
+  default: 5
+  unit: deg
+  minimum: 0
+  maximum: 15
+  step: 0.5
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Cumulative nonnegative slip work must equal stored thermal energy plus rejected heat over the same bounded interval.
+  reveal: Restore heat rejection inside the same integration loop and verify work equals stored energy plus accumulated loss.
+- type: controls
+  title: Tire model controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

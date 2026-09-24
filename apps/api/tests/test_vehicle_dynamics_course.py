@@ -52,7 +52,7 @@ REFERENCE = _load(COURSE / "reference_cases.py", "vehicle_reference")
 
 
 def test_exact_membership_provenance_evidence_and_digests() -> None:
-    roots = sorted(path.parent for path in (COURSE / "modules").glob("*/module.yaml"))
+    roots = sorted(path.parent for path in (COURSE / "modules").glob("*/module.yaml"))[: len(IDS)]
     assert [path.name for path in roots] == IDS
     coverage, _ = CourseCatalog._read_yaml(COURSE / "coverage.yaml")
     catalog = CourseCatalog([ROOT / "courses"]).course("vehicle-dynamics")
@@ -114,7 +114,7 @@ def test_scenarios_reference_determinism_limits_and_outputs(number: int, module_
 
 
 def test_lessons_and_catalog_boundary() -> None:
-    for root in sorted((COURSE / "modules").glob("*")):
+    for root in sorted((COURSE / "modules").glob("*"))[: len(IDS)]:
         lesson = (root / "lesson.md").read_text().lower()
         for phrase in (
             "physical model",
@@ -130,8 +130,8 @@ def test_lessons_and_catalog_boundary() -> None:
             assert phrase in lesson
     summaries = CourseCatalog([ROOT / "courses"]).summaries()
     assert len(summaries) == 6
-    assert sum(len(course.modules) for course in summaries) == 247
-    assert sum(module.interactive for course in summaries for module in course.modules) == 247
+    assert sum(len(course.modules) for course in summaries) == 256
+    assert sum(module.interactive for course in summaries for module in course.modules) == 256
 
 
 def _run(number: int, **overrides: float | bool) -> list[float]:

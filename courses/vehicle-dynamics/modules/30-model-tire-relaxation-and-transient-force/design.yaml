@@ -1,0 +1,57 @@
+schema_version: 1
+item_id: P30
+module: 30-model-tire-relaxation-and-transient-force
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- dF/ds=(F_ss-F)/sigma
+- tau=sigma/v
+- F(s)=F_ss*(1-exp(-s/sigma))
+signature:
+- field: force_at_one_relaxation_length
+  unit: N
+- field: distance_to_63_percent
+  unit: m
+- field: time_constant
+  unit: s
+- field: final_force_error
+  unit: N
+- field: speed_conversion_error
+  unit: "1"
+teaching_invariant: A first-order tire reaches one minus e to the minus one of steady force after one relaxation length, while the time constant scales inversely with speed.
+limiting_cases:
+- As relaxation length tends to zero the force approaches the steady law immediately.
+- At fixed relaxation length, speed changes response time but not response distance.
+scenarios:
+  baseline:
+    relaxation_length_m: 0.45
+    speed_m_s: 20
+    broken_mode: false
+  sweep_1:
+    relaxation_length_m: 1.35
+    speed_m_s: 20
+    broken_mode: false
+  sweep_2:
+    relaxation_length_m: 0.45
+    speed_m_s: 55
+    broken_mode: false
+  broken:
+    relaxation_length_m: 0.45
+    speed_m_s: 20
+    broken_mode: true
+  recovery:
+    relaxation_length_m: 0.45
+    speed_m_s: 20
+    broken_mode: false
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software and synthetic observations only; no source or MATLAB equivalence, measured tire or vehicle, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

@@ -1,0 +1,57 @@
+schema_version: 1
+item_id: P32
+module: 32-accumulate-tire-work-and-thermal-energy
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- P_slip=|F_x*v*kappa|+|F_y*v*tan(alpha)|
+- E_work=integral(P_slip dt)
+- E_work=Delta_E_thermal+E_loss
+signature:
+- field: slip_power
+  unit: W
+- field: cumulative_work
+  unit: J
+- field: temperature_rise
+  unit: degC
+- field: rejected_heat
+  unit: J
+- field: energy_balance_residual
+  unit: J
+teaching_invariant: Cumulative nonnegative slip work must equal stored thermal energy plus rejected heat over the same bounded interval.
+limiting_cases:
+- At zero slip ratio and zero slip angle the slip power is zero.
+- With zero heat-transfer coefficient all slip work remains stored as thermal energy.
+scenarios:
+  baseline:
+    slip_ratio: 0.08
+    slip_angle_deg: 5
+    broken_mode: false
+  sweep_1:
+    slip_ratio: 0.18
+    slip_angle_deg: 5
+    broken_mode: false
+  sweep_2:
+    slip_ratio: 0.08
+    slip_angle_deg: 14
+    broken_mode: false
+  broken:
+    slip_ratio: 0.08
+    slip_angle_deg: 5
+    broken_mode: true
+  recovery:
+    slip_ratio: 0.08
+    slip_angle_deg: 5
+    broken_mode: false
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software and synthetic observations only; no source or MATLAB equivalence, measured tire or vehicle, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

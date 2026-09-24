@@ -1,0 +1,64 @@
+schema_version: 1
+id: 27-fit-longitudinal-force-versus-slip-ratio
+number: 27
+title: Fit Longitudinal Force versus Slip Ratio
+summary: Identify stiffness and peak friction from deterministic synthetic offline slip data, then validate on held-out slip ratios.
+guiding_question: How do low-slip slope and saturated force identify different parts of a longitudinal tire law?
+status: implemented
+tags:
+- vehicle-dynamics
+- native-python
+- tire-modeling
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: longitudinal_stiffness_n
+  type: slider
+  label: True longitudinal stiffness
+  default: 80000
+  unit: N
+  minimum: 30000
+  maximum: 140000
+  step: 1000
+- id: peak_friction
+  type: slider
+  label: True peak friction coefficient
+  default: 1.15
+  unit: "1"
+  minimum: 0.7
+  maximum: 1.5
+  step: 0.01
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: Low-slip samples identify longitudinal stiffness while saturated samples identify peak friction; slip ratio is dimensionless, not percent.
+  reveal: Use dimensionless slip ratio at both fit and validation boundaries, retain low-slip and saturated samples, and recheck the held-out residual.
+- type: controls
+  title: Tire model controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

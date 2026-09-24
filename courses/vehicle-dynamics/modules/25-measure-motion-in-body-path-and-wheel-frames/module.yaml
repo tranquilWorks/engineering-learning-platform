@@ -1,0 +1,64 @@
+schema_version: 1
+id: 25-measure-motion-in-body-path-and-wheel-frames
+number: 25
+title: Measure Motion in Body, Path, and Wheel Frames
+summary: Resolve one planar velocity through inertial, path, body, and steered-wheel frames while checking round-trip and norm invariants.
+guiding_question: Which frame owns each velocity component, and how can invariants expose a silent angle-unit error?
+status: implemented
+tags:
+- vehicle-dynamics
+- native-python
+- tire-modeling
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: path_heading_deg
+  type: slider
+  label: Path heading
+  default: 32
+  unit: deg
+  minimum: -180
+  maximum: 180
+  step: 1
+- id: wheel_steer_deg
+  type: slider
+  label: Wheel steer angle
+  default: 8
+  unit: deg
+  minimum: -35
+  maximum: 35
+  step: 1
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: A proper planar rotation preserves speed norm, and a transform followed by its inverse recovers the original vector in the same angle unit.
+  reveal: Convert every declared degree angle exactly once at the frame boundary, then verify both the expected path components and the rotation norm invariant.
+- type: controls
+  title: Tire model controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

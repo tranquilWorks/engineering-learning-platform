@@ -1,0 +1,64 @@
+schema_version: 1
+id: 28-fit-lateral-force-versus-slip-angle-and-camber
+number: 28
+title: Fit Lateral Force versus Slip Angle and Camber
+summary: Separate cornering and camber stiffness in a bounded lateral-force fit with an explicit SAE-style sign convention.
+guiding_question: How can a two-input experiment distinguish slip-angle force from camber thrust?
+status: implemented
+tags:
+- vehicle-dynamics
+- native-python
+- tire-modeling
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: cornering_stiffness_n_rad
+  type: slider
+  label: True cornering stiffness
+  default: 70000
+  unit: N/rad
+  minimum: 30000
+  maximum: 130000
+  step: 1000
+- id: camber_stiffness_n_rad
+  type: slider
+  label: True camber stiffness
+  default: 9000
+  unit: N/rad
+  minimum: 0
+  maximum: 20000
+  step: 500
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: With independently varied slip angle and camber, the unsaturated design matrix separates cornering stiffness from camber stiffness in radians.
+  reveal: Convert measured degrees to radians before constructing the regression matrix, retain independent alpha and camber excitation, and re-run held-out validation.
+- type: controls
+  title: Tire model controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

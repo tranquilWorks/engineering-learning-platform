@@ -1,0 +1,57 @@
+schema_version: 1
+item_id: P27
+module: 27-fit-longitudinal-force-versus-slip-ratio
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- F_x=clip(C_kappa*kappa,-mu*F_z,mu*F_z)
+- C_kappa_hat=argmin sum(F_x-C*kappa)^2 on unsaturated samples
+- mu_hat=max(|F_x|)/F_z
+signature:
+- field: fitted_longitudinal_stiffness
+  unit: N
+- field: fitted_peak_friction
+  unit: "1"
+- field: validation_rmse
+  unit: N
+- field: peak_force
+  unit: N
+- field: stiffness_relative_error
+  unit: "1"
+teaching_invariant: Low-slip samples identify longitudinal stiffness while saturated samples identify peak friction; slip ratio is dimensionless, not percent.
+limiting_cases:
+- At zero slip ratio the longitudinal force is zero.
+- With no saturated samples peak friction is not independently identifiable.
+scenarios:
+  baseline:
+    longitudinal_stiffness_n: 80000
+    peak_friction: 1.15
+    broken_mode: false
+  sweep_1:
+    longitudinal_stiffness_n: 130000
+    peak_friction: 1.15
+    broken_mode: false
+  sweep_2:
+    longitudinal_stiffness_n: 80000
+    peak_friction: 0.75
+    broken_mode: false
+  broken:
+    longitudinal_stiffness_n: 80000
+    peak_friction: 1.15
+    broken_mode: true
+  recovery:
+    longitudinal_stiffness_n: 80000
+    peak_friction: 1.15
+    broken_mode: false
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software and synthetic observations only; no source or MATLAB equivalence, measured tire or vehicle, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

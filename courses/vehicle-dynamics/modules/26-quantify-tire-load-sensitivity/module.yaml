@@ -1,0 +1,64 @@
+schema_version: 1
+id: 26-quantify-tire-load-sensitivity
+number: 26
+title: Quantify Tire Load Sensitivity
+summary: Use a sublinear peak-force law to distinguish friction coefficient from force capacity and expose load-transfer loss.
+guiding_question: Why can the total tire capacity fall when axle load is redistributed but its total stays fixed?
+status: implemented
+tags:
+- vehicle-dynamics
+- native-python
+- tire-modeling
+runtime:
+  kind: python
+  entrypoint: experiment.py:run
+  trust: local-trusted
+  timeout_seconds: 3
+controls:
+- id: normal_load_n
+  type: slider
+  label: Reference tire normal load
+  default: 3500
+  unit: N
+  minimum: 1000
+  maximum: 7000
+  step: 100
+- id: load_exponent
+  type: slider
+  label: Load-sensitivity exponent
+  default: 0.88
+  unit: "1"
+  minimum: 0.7
+  maximum: 1
+  step: 0.01
+- id: broken_mode
+  type: toggle
+  label: Enable the intentionally broken case
+  default: false
+blocks:
+- type: markdown
+  source: lesson.md
+- type: prediction
+  title: Predict before running
+  text: For an exponent below one, peak force grows with normal load while effective friction falls, and unequal load sharing reduces paired capacity.
+  reveal: Restore the reviewed exponent, compare equal and split pairs at identical total load, and verify the documented power-law scaling ratio.
+- type: controls
+  title: Tire model controls
+- type: metrics
+- type: plot_grid
+  title: Response and mechanism
+  plots:
+  - response
+  - mechanism
+- type: callout
+  tone: info
+  title: Current interpretation
+  source: observation
+- type: callout
+  tone: warning
+  title: Broken-case interpretation
+  source: broken
+- type: callout
+  tone: success
+  title: Recovery
+  source: recovery

@@ -1,0 +1,57 @@
+schema_version: 1
+item_id: P26
+module: 26-quantify-tire-load-sensitivity
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
+governing_equations:
+- F_peak(F_z)=mu_ref*F_ref*(F_z/F_ref)^n
+- mu(F_z)=F_peak(F_z)/F_z
+- Delta_F=2*F_peak(F_z)-F_peak(F_z*(1-lambda))-F_peak(F_z*(1+lambda))
+signature:
+- field: peak_force
+  unit: N
+- field: effective_friction
+  unit: "1"
+- field: load_transfer_loss
+  unit: N
+- field: scaling_residual
+  unit: "1"
+- field: invalid_linear_assumption
+  unit: "1"
+teaching_invariant: For an exponent below one, peak force grows with normal load while effective friction falls, and unequal load sharing reduces paired capacity.
+limiting_cases:
+- At exponent one the force law is linear and load-transfer loss is zero.
+- At zero load-transfer fraction the even and split paired capacities are identical.
+scenarios:
+  baseline:
+    normal_load_n: 3500
+    load_exponent: 0.88
+    broken_mode: false
+  sweep_1:
+    normal_load_n: 6500
+    load_exponent: 0.88
+    broken_mode: false
+  sweep_2:
+    normal_load_n: 3500
+    load_exponent: 0.72
+    broken_mode: false
+  broken:
+    normal_load_n: 3500
+    load_exponent: 0.88
+    broken_mode: true
+  recovery:
+    normal_load_n: 3500
+    load_exponent: 0.88
+    broken_mode: false
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic Python software and synthetic observations only; no source or MATLAB equivalence, measured tire or vehicle, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.
