@@ -79,10 +79,10 @@ def test_vehicle_expansion_matches_reviewed_map_and_declares_pending_depth() -> 
     assert EXPANSION["source_bound_modules"] == 24
     assert EXPANSION["planned_modules"] == 67
     assert [item["id"] for item in NATIVE] == [
-        f"P{number:02d}" for number in range(25, 44)
+        f"P{number:02d}" for number in range(25, 53)
     ]
     assert EXPANSION["pending_native_modules"] == [
-        f"P{number:02d}" for number in range(44, 68)
+        f"P{number:02d}" for number in range(53, 68)
     ]
     map_by_id = {item["id"]: item for item in mapping["modules"]}
     assert [map_by_id[item["id"]]["title"] for item in NATIVE] == [
@@ -105,7 +105,30 @@ def test_vehicle_expansion_matches_reviewed_map_and_declares_pending_depth() -> 
         "Shape Digressive Damper Force-Velocity Response",
         "Trace Suspension Kinematics and Compliance",
         "Evaluate Anti-Dive and Anti-Squat Geometry",
+        "Convert Engine Torque into a Traction Envelope",
+        "Model Rotating Inertia and Launch Dynamics",
+        "Compare Open and Limited-Slip Differentials",
+        "Optimize Gear Ratios and Shift Strategy",
+        "Allocate Brake Bias with Dynamic Load Transfer",
+        "Simulate ABS Slip Control and Wheel Lockup",
+        "Predict Brake Temperature, Fade, and Cooling",
+        "Map Aero Balance and Ride-Height Sensitivity",
+        "Couple Downforce, Drag, Tires, and Stint Limits",
     ]
+    assert {
+        item_id: map_by_id[item_id]["depends_on"]
+        for item_id in [f"P{number:02d}" for number in range(44, 53)]
+    } == {
+        "P44": ["P13", "P27"],
+        "P45": ["P13", "P27", "P44"],
+        "P46": ["P29", "P44"],
+        "P47": ["P14", "P44", "P45"],
+        "P48": ["P03", "P15"],
+        "P49": ["P05", "P15", "P48"],
+        "P50": ["P15", "P48"],
+        "P51": ["P16", "P39"],
+        "P52": ["P16", "P29", "P31", "P50", "P51"],
+    }
 
 
 def test_vehicle_native_designs_are_schema_valid_and_semantically_distinct() -> None:
@@ -338,6 +361,57 @@ def test_vehicle_chassis_teaching_invariants_and_named_failures() -> None:
     assert abs(anti_broken[0]) > 100.0 and anti_broken[4] > 1000.0
 
 
+def test_vehicle_propulsion_braking_aero_invariants_and_named_failures() -> None:
+    runtime = ExperimentRuntime(CourseCatalog([ROOT / "courses"]))
+
+    traction = _signature(runtime, 44, {"broken_mode": False})
+    traction_broken = _signature(runtime, 44, {"broken_mode": True})
+    assert traction[3] == min(traction[1], traction[2]) and traction[4] == 0.0
+    assert traction_broken[3] > traction_broken[2] and traction_broken[4] > 100.0
+
+    launch = _signature(runtime, 45, {"broken_mode": False})
+    launch_broken = _signature(runtime, 45, {"broken_mode": True})
+    assert launch[0] > 100.0 and launch[1] > 0.0 and launch[4] < 2000.0
+    assert launch_broken[0] < 1.0 and launch_broken[4] > 1.0e6
+
+    differential = _signature(runtime, 46, {"broken_mode": False})
+    differential_broken = _signature(runtime, 46, {"broken_mode": True})
+    assert differential[1] > differential[0] and differential[4] == 0.0
+    assert differential_broken[3] > 3680.0 and differential_broken[4] > 100.0
+
+    gearing = _signature(runtime, 47, {"broken_mode": False})
+    gearing_broken = _signature(runtime, 47, {"broken_mode": True})
+    assert gearing[0] > 0.0 and gearing[1] > 0.0 and gearing[4] < 2.0
+    assert gearing_broken[4] > 10000.0
+
+    bias = _signature(runtime, 48, {"broken_mode": False})
+    bias_broken = _signature(runtime, 48, {"broken_mode": True})
+    assert 0.0 < bias[2] <= 1.0 and 0.0 < bias[3] <= 1.0 and bias[5] == 0.0
+    assert bias_broken[3] > 1.0 and bias_broken[5] > 1000.0
+
+    abs_control = _signature(runtime, 49, {"broken_mode": False})
+    abs_broken = _signature(runtime, 49, {"broken_mode": True})
+    assert abs_control[0] < 0.16 and abs_control[1] < 0.001
+    assert abs_control[4] == 0.0 and abs_control[5] < 1e-8
+    assert abs_broken[0] == 1.0 and abs_broken[4] == 1.0
+
+    brake_thermal = _signature(runtime, 50, {"broken_mode": False})
+    brake_thermal_broken = _signature(runtime, 50, {"broken_mode": True})
+    assert brake_thermal[0] > brake_thermal[1] and brake_thermal[4] < 1e-8
+    assert brake_thermal_broken[4] > 100.0
+
+    aero = _signature(runtime, 51, {"broken_mode": False})
+    aero_broken = _signature(runtime, 51, {"broken_mode": True})
+    assert aero[0] > 0.0 and aero[1] > 0.0 and 0.0 < aero[3] < 1.0
+    assert aero[5] == 0.0 and aero_broken[5] > 1.0e5
+
+    stint = _signature(runtime, 52, {"broken_mode": False})
+    stint_broken = _signature(runtime, 52, {"broken_mode": True})
+    assert stint[0] > stint[1] > 0.0 and stint[2] > 0.0 and stint[5] == 0.0
+    assert stint_broken[2] > stint[2] and stint_broken[4] > stint[4]
+    assert stint_broken[5] > 1.0
+
+
 def test_vehicle_native_experiments_reject_nonfinite_and_out_of_range_inputs() -> None:
     for item in NATIVE:
         root = COURSE_ROOT / item["folder"]
@@ -353,7 +427,7 @@ def test_vehicle_native_experiments_reject_nonfinite_and_out_of_range_inputs() -
 def test_vehicle_expansion_catalog_shape() -> None:
     summaries = CourseCatalog([ROOT / "courses"]).summaries()
     assert len(summaries) == 6
-    assert sum(len(course.modules) for course in summaries) == 266
-    assert sum(module.interactive for course in summaries for module in course.modules) == 266
+    assert sum(len(course.modules) for course in summaries) == 275
+    assert sum(module.interactive for course in summaries for module in course.modules) == 275
     vehicle = next(course for course in summaries if course.id == "vehicle-dynamics")
-    assert [module.number for module in vehicle.modules] == list(range(1, 44))
+    assert [module.number for module in vehicle.modules] == list(range(1, 53))

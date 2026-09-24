@@ -1,0 +1,27 @@
+schema_version: 1
+item_id: P45
+module: 45-model-rotating-inertia-and-launch-dynamics
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- m_eq=sum(J_k i_k^2/r_t^2)
+- a=(min(T_e i_g i_0 eta/r_t,F_tire)-F_resist)/(m+m_eq)
+- W_drive-W_resist=Delta(E_translation+E_rotation)
+signature:
+- {field: equivalent_rotating_mass, unit: kg}
+- {field: initial_acceleration, unit: "m/s^2"}
+- {field: time_to_100_km_h, unit: s}
+- {field: final_speed, unit: m/s}
+- {field: launch_energy_residual, unit: J}
+teaching_invariant: Every rotating inertia must be reflected through the square of its speed ratio before it is combined with vehicle mass.
+limiting_cases:
+- As all rotating inertias tend to zero, effective mass tends to the translational vehicle mass.
+- When tire capacity is lower than geared torque demand, added engine torque does not raise initial launch force.
+scenarios:
+  baseline: {launch_torque_nm: 220, driveline_inertia_kg_m2: 0.35, broken_mode: false}
+  sweep_1: {launch_torque_nm: 270, driveline_inertia_kg_m2: 0.35, broken_mode: false}
+  sweep_2: {launch_torque_nm: 220, driveline_inertia_kg_m2: 0.65, broken_mode: false}
+  broken: {launch_torque_nm: 220, driveline_inertia_kg_m2: 0.35, broken_mode: true}
+  recovery: {launch_torque_nm: 220, driveline_inertia_kg_m2: 0.35, broken_mode: false}
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic Python software and synthetic parameters only; no source or MATLAB equivalence, measured engine, clutch, driveline, launch, rig, track, or vehicle result, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

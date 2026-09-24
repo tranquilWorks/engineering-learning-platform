@@ -1,0 +1,22 @@
+schema_version: 1
+id: 50-predict-brake-temperature-fade-and-cooling
+number: 50
+title: Predict Brake Temperature, Fade, and Cooling
+summary: Integrate repeated-stop heat input, convective cooling, fade, and the brake thermal-energy ledger.
+guiding_question: How do stop energy and cooling determine peak temperature and fade across a sequence?
+status: implemented
+tags: [vehicle-dynamics, native-python, braking, thermal, fade]
+runtime: {kind: python, entrypoint: "experiment.py:run", trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: stop_energy_kj, type: slider, label: Energy per stop, default: 450, unit: kJ, minimum: 200, maximum: 700, step: 25}
+- {id: cooling_coefficient_w_k, type: slider, label: Cooling coefficient, default: 65, unit: W/K, minimum: 20, maximum: 120, step: 5}
+- {id: broken_mode, type: toggle, label: Enable the intentionally broken case, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- {type: prediction, title: Predict before running, text: Peak rotor temperature follows accumulated absorbed energy minus convective rejection., reveal: Close the ledger against stored plus rejected heat after every stop.}
+- {type: controls, title: Brake thermal controls}
+- {type: metrics}
+- {type: plot_grid, title: Response and mechanism, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken-case interpretation, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}

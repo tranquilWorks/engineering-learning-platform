@@ -1,8 +1,8 @@
 schema_version: 1
 batch:
-  id: ELP-VEHICLE-CHASSIS-P34-P43
-  title: Vehicle Dynamics dynamic handling, ride modes, damping, suspension kinematics, and anti geometry
-  goal: Implement the reviewed Vehicle Dynamics chassis-depth arc, P34-P43, as ten distinct deterministic Python-first modules with independently formulated analytic and numerical references.
+  id: ELP-VEHICLE-PROPULSION-P44-P52
+  title: Vehicle Dynamics traction, launch, differential, gearing, braking, aero balance, and stint limits
+  goal: Implement the reviewed Vehicle Dynamics propulsion-depth arc, P44-P52, as nine distinct deterministic Python-first modules with independently formulated analytic and numerical references.
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
@@ -13,13 +13,14 @@ sources:
     - products/engineering-learning-platform/batches/ELP-VEHICLE-P09-P16.yaml
     - products/engineering-learning-platform/batches/ELP-VEHICLE-P17-P24.yaml
     - products/engineering-learning-platform/batches/ELP-VEHICLE-TIRES-P25-P33.yaml
+    - products/engineering-learning-platform/batches/ELP-VEHICLE-CHASSIS-P34-P43.yaml
     - tranquilWorks/portfolio-control#467
-  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-VEHICLE-CHASSIS-P34-P43
-  baseline_commit: d7486da7a0207cebcee17de2825879495bce66d8
-  baseline_tree: f700ddc5fbb9b392a06db7a818d84e7406ac3492
+  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-VEHICLE-PROPULSION-P44-P52
+  baseline_commit: e33d1356f15f88c876fb41a482bb3882dcb20783
+  baseline_tree: 607ddefbbe9dc2fdabd9b01bed60a47f5131379f
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_baseline: 5e447cd44bfd5935d5d0053d7872f85db7dceeb4
-  control_plane_path: products/engineering-learning-platform/batches/ELP-VEHICLE-CHASSIS-P34-P43.yaml
+  control_plane_baseline: 7487b57cc31fd01926fac8cbd888ebf5a29af5a0
+  control_plane_path: products/engineering-learning-platform/batches/ELP-VEHICLE-PROPULSION-P44-P52.yaml
   target_repository: tranquilWorks/engineering-learning-platform
   source_repository: tranquilWorks/vehicle-dynamics-learning
   source_pin: 57264b3ffeb517ee5eb73e8957b9cd190d022457
@@ -32,18 +33,18 @@ dependencies:
   - ELP-VEHICLE-P09-P16
   - ELP-VEHICLE-P17-P24
   - ELP-VEHICLE-TIRES-P25-P33
+  - ELP-VEHICLE-CHASSIS-P34-P43
 scope:
   allowed_paths:
-    - courses/vehicle-dynamics/modules/34-*/**
-    - courses/vehicle-dynamics/modules/35-*/**
-    - courses/vehicle-dynamics/modules/36-*/**
-    - courses/vehicle-dynamics/modules/37-*/**
-    - courses/vehicle-dynamics/modules/38-*/**
-    - courses/vehicle-dynamics/modules/39-*/**
-    - courses/vehicle-dynamics/modules/40-*/**
-    - courses/vehicle-dynamics/modules/41-*/**
-    - courses/vehicle-dynamics/modules/42-*/**
-    - courses/vehicle-dynamics/modules/43-*/**
+    - courses/vehicle-dynamics/modules/44-*/**
+    - courses/vehicle-dynamics/modules/45-*/**
+    - courses/vehicle-dynamics/modules/46-*/**
+    - courses/vehicle-dynamics/modules/47-*/**
+    - courses/vehicle-dynamics/modules/48-*/**
+    - courses/vehicle-dynamics/modules/49-*/**
+    - courses/vehicle-dynamics/modules/50-*/**
+    - courses/vehicle-dynamics/modules/51-*/**
+    - courses/vehicle-dynamics/modules/52-*/**
     - courses/vehicle-dynamics/expansion-map.yaml
     - courses/vehicle-dynamics/expansion_reference_cases.py
     - apps/api/tests/test_vehicle_dynamics_expansion.py
@@ -62,7 +63,7 @@ scope:
     - docs/CURRENT_STATE.md
     - docs/HANDOFF.md
     - docs/ROADMAP.md
-    - docs/evidence/ELP-VEHICLE-CHASSIS-P34-P43-*.md
+    - docs/evidence/ELP-VEHICLE-PROPULSION-P44-P52-*.md
   forbidden_paths:
     - courses/vehicle-dynamics-learning
     - courses/vehicle-dynamics-learning/**
@@ -77,9 +78,10 @@ scope:
     - courses/vehicle-dynamics/modules/0[1-9]-*/**
     - courses/vehicle-dynamics/modules/1[0-9]-*/**
     - courses/vehicle-dynamics/modules/2[0-9]-*/**
-    - courses/vehicle-dynamics/modules/3[0-3]-*/**
-    - courses/vehicle-dynamics/modules/4[4-9]-*/**
-    - courses/vehicle-dynamics/modules/[5-9][0-9]-*/**
+    - courses/vehicle-dynamics/modules/3[0-9]-*/**
+    - courses/vehicle-dynamics/modules/4[0-3]-*/**
+    - courses/vehicle-dynamics/modules/5[3-9]-*/**
+    - courses/vehicle-dynamics/modules/[6-9][0-9]-*/**
     - courses/controls-gnc/**
     - courses/dsp-radar/**
     - courses/robotics-autonomy/**
@@ -99,24 +101,23 @@ scope:
     - Dockerfile
     - compose.yaml
 acceptance:
-  - Start only after the exact control commit containing this contract is merged. Use exact clean target main d7486da7a0207cebcee17de2825879495bce66d8, tree f700ddc5fbb9b392a06db7a818d84e7406ac3492; any target, source, map, fixture, index, or worktree drift stops implementation.
-  - Implement exactly reviewed-map P34-P43 in order: derive the dynamic bicycle state model; analyze yaw and sideslip frequency response; measure understeer gradient and characteristic speed; test nonlinear limit handling and stability; partition lateral load transfer; couple heave, pitch, and roll modes; predict road-input ride transmissibility; shape digressive damper force-velocity response; trace suspension kinematics and compliance; evaluate anti-dive and anti-squat geometry.
-  - Preserve the source-bound P01-P24 inventory and P25-P33 tire-depth batch, source identities, titles, guiding questions, prerequisite order, read-only gitlink, reviewed competency map, source map, fixtures, conversion manifest, coverage ledger, source-bound reference, and native-design schema byte-identically. P34-P43 are competency-derived Python-first native designs and claim neither source implementation nor MATLAB-runtime equivalence.
-  - Treat all ten IDs as separately reviewed work items. Every module must include a complete learner lesson, unique bounded executable model, default baseline, two useful one-variable sweeps, one named broken behavior, exact recovery, limiting cases, coordinate and sign conventions, physical quantities and units, common mistakes, formative checks, and teach-back completion.
+  - Start only after the exact control commit containing this contract is merged. Use exact clean target main e33d1356f15f88c876fb41a482bb3882dcb20783, tree 607ddefbbe9dc2fdabd9b01bed60a47f5131379f; any target, source, map, fixture, index, or worktree drift stops implementation.
+  - Implement exactly reviewed-map P44-P52 in order: convert engine torque into a traction envelope; model rotating inertia and launch dynamics; compare open and limited-slip differentials; optimize gear ratios and shift strategy; allocate brake bias with dynamic load transfer; simulate ABS slip control and wheel lockup; predict brake temperature, fade, and cooling; map aero balance and ride-height sensitivity; couple downforce, drag, tires, and stint limits.
+  - Preserve P01-P43, source identities, titles, guiding questions, prerequisite order, read-only gitlink, reviewed competency map, native-design schema, source map, fixtures, conversion manifest, coverage ledger, and source-bound reference byte-identically. P44-P52 are competency-derived Python-first native designs and claim neither source implementation nor MATLAB-runtime equivalence.
+  - Treat all nine IDs as separately reviewed work items. Every module must include a complete learner lesson, unique bounded executable model, default baseline, two useful one-variable sweeps, one named broken behavior, exact recovery, limiting cases, coordinate and sign conventions, physical quantities and units, common mistakes, formative checks, and teach-back completion.
   - Use the course-owned independent reference implementation, extended without importing a production experiment, consuming a production result, or perturbing a production value. Retain origin, inputs, fields and units, tolerances, and finite expected versus actual evidence for baseline, sweep_1, sweep_2, broken, and recovery.
-  - P34 must formulate the linear dynamic bicycle beta/yaw-rate state equations from mass, yaw inertia, axle distances, speed, and axle cornering stiffness; expose the state matrix, steady response, eigenvalue stability, and force/moment residuals; its broken case must expose a force-sign or angle-unit defect.
-  - P35 must compute bounded complex frequency response of yaw rate and sideslip to steering from the P34 state-space model; expose DC gains, bandwidth or peak, phase, and complex-equation residual; its broken case must expose hertz-versus-radian-frequency misuse or an omitted dynamic term.
-  - P36 must derive understeer gradient from axle loads and cornering stiffness, distinguish understeer, neutral steer, and oversteer, compute characteristic speed only in its valid domain, and retain steer-versus-lateral-acceleration evidence; its broken case must expose stiffness/load placement or unit misuse.
-  - P37 must couple nonlinear bounded axle tire forces to lateral/yaw equilibrium, expose front and rear utilization, yaw-moment or equilibrium residual, a stability slope or margin, and a recoverable limit-handling verdict; its broken case must extend an uncapped linear force or otherwise violate the tire-capacity boundary.
-  - P38 must partition total lateral load transfer into geometric and elastic front/rear contributions with explicit track, center-of-gravity and roll-center geometry, roll stiffness distribution, exact closure, and tire-load-sensitivity consequence; its broken case must omit or double-count a transfer path.
-  - P39 must assemble and solve a bounded coupled heave/pitch/roll mass and stiffness eigenproblem, expose natural frequencies, modal participation or orthogonality, and eigen-equation residual; its broken case must erase physical coupling or misuse inertia/angle units.
-  - P40 must map bounded road spatial frequency and speed to temporal excitation, evaluate sprung-mass transmissibility and acceleration near and away from resonance, and expose equation and limiting-case checks; its broken case must confuse hertz with radians per second or omit base-motion forcing.
-  - P41 must implement a continuous odd-symmetric digressive damper force-velocity law, expose low- and high-speed slopes, knee behavior, bounded cyclic dissipated energy, and symmetry/continuity residuals; its broken case must expose a velocity-unit or asymmetric-law defect.
-  - P42 must combine bounded suspension bump kinematics and lateral-force compliance for camber, toe, and motion or wheel-rate response with explicit millimeter, meter, degree, and force boundaries; its broken case must expose a millimeter-versus-meter or sign-convention defect.
-  - P43 must derive anti-dive and anti-squat percentages from bounded side-view geometry and force lines, partition pitch load transfer into suspension and spring-supported paths, expose moment closure, and keep geometry within a stated non-lifting validity range; its broken case must expose angle-unit or double-counting behavior.
-  - Validate inputs before allocation; cap samples, frequency grids, eigenproblems, searches, and integration horizons; return finite deterministic Plotly-compatible results; perform no network, source write, subprocess, dynamic install or import, eval, learner-code execution, wall-clock dependence, or shared mutable state.
-  - Update the competency expansion ledger to declare 24 source-bound modules, all 67 reviewed planned modules, exactly P25-P43 implemented natively, and P44-P67 pending. Keep source-bound conversion and coverage totals at total=24, converted=24, pending=0, blocked=0, placeholder=0.
-  - End with exactly six courses, 266 modules, and 266 interactive modules. Update only retained catalog-total assertions needed for this authorized ten-module increase; preserve every completed course and source gitlink byte-identically.
+  - P44 must map a bounded engine torque curve through selected gear, final drive, efficiency, and tire radius into wheel force versus road speed; expose engine-limited force, tire capacity, delivered force, utilization, and governing-envelope residual; its broken case must omit radius/efficiency or ignore the tire boundary.
+  - P45 must reflect engine, clutch, gearbox, shaft, and wheel inertia to an equivalent translational mass, integrate a bounded traction-limited launch, and expose acceleration, time or speed, inertia contribution, energy or force residual; its broken case must reflect inertia through the wrong ratio direction or omit it.
+  - P46 must compare open and torque-biasing limited-slip differential delivery on deterministic split-friction wheel capacities, expose wheel torques, total delivered force, unused capacity, bias ratio, and capacity residual; its broken case must exceed a wheel capacity or apply torque-bias ratio backward.
+  - P47 must evaluate bounded gear/final-drive candidates and a deterministic shift strategy using wheel-force crossovers, engine-speed limits, and shift interruption; expose selected ratios or shift speeds, acceleration envelope, zero-to-speed time, and strategy residual; its broken case must ignore crossover, redline, or shift delay.
+  - P48 must compute dynamic front/rear normal load under deceleration, axle friction capacities, ideal and selected brake bias, achievable deceleration, axle utilization, and force/load closure; its broken case must use static load or exceed one axle capacity.
+  - P49 must simulate bounded wheel-slip dynamics with explicit vehicle/wheel speed, tire force, brake torque, sample interval, and deterministic ABS modulation; expose target tracking, peak slip, stopping distance or speed reduction, lockup verdict, and dynamic residual; its broken case must disable modulation or use the wrong slip sign and lock the wheel.
+  - P50 must integrate brake thermal energy over deterministic repeated stops and cooling intervals, expose peak/final temperature, convective rejection, fade factor, and energy-balance residual; its broken case must omit cooling, use an invalid thermal unit, or hide fade.
+  - P51 must map front/rear downforce, total drag, aerodynamic balance, pitch moment, and ride-height sensitivity with explicit speed and millimeter/meter boundaries; its broken case must misuse ride-height units or omit an axle contribution.
+  - P52 must couple speed-dependent downforce and drag with tire load sensitivity, propulsion/brake demand, thermal or energy accumulation, and a bounded stint limit; expose force balance, usable acceleration or speed, energy per lap, limiting lap count, and constraint residual; its broken case must double-count downforce, ignore drag, or exceed a tire/thermal boundary.
+  - Validate inputs before allocation; cap samples, time steps, searches, gear candidates, stops, and stint horizon; return finite deterministic Plotly-compatible results; perform no network, source write, subprocess, dynamic install or import, eval, learner-code execution, wall-clock dependence, or shared mutable state.
+  - Update the competency expansion ledger to declare 24 source-bound modules, all 67 reviewed planned modules, exactly P25-P52 implemented natively, and P53-P67 pending. Keep source-bound conversion and coverage totals at total=24, converted=24, pending=0, blocked=0, placeholder=0.
+  - End with exactly six courses, 275 modules, and 275 interactive modules. Update only retained catalog-total assertions needed for this authorized nine-module increase; preserve every completed course and source gitlink byte-identically.
   - Record exact local verification. Hosted CI is not a completion gate by owner direction; keep MATLAB comparison, browser/accessibility, learner validation, measured vehicle data, firmware/radio/bench/vehicle/track execution, physical HIL/hardware, certification, release, deployment, credentials/settings, and production evidence explicitly unperformed.
 validation:
   local:
@@ -127,23 +128,23 @@ validation:
     - ./scripts/agent-verify.sh quick
     - ./scripts/agent-verify.sh full
     - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic --json
-    - .venv/bin/ruff check apps/api/tests/test_vehicle_dynamics_expansion.py apps/api/tests/test_vehicle_dynamics_framework.py apps/api/tests/test_vehicle_dynamics_course.py apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_expansion.py apps/api/tests/test_robotics_conversion_framework.py apps/api/tests/test_robotics_expansion.py courses/vehicle-dynamics/modules/34-* courses/vehicle-dynamics/modules/35-* courses/vehicle-dynamics/modules/36-* courses/vehicle-dynamics/modules/37-* courses/vehicle-dynamics/modules/38-* courses/vehicle-dynamics/modules/39-* courses/vehicle-dynamics/modules/40-* courses/vehicle-dynamics/modules/41-* courses/vehicle-dynamics/modules/42-* courses/vehicle-dynamics/modules/43-* courses/vehicle-dynamics/expansion_reference_cases.py
+    - .venv/bin/ruff check apps/api/tests/test_vehicle_dynamics_expansion.py apps/api/tests/test_vehicle_dynamics_framework.py apps/api/tests/test_vehicle_dynamics_course.py apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_expansion.py apps/api/tests/test_robotics_conversion_framework.py apps/api/tests/test_robotics_expansion.py courses/vehicle-dynamics/modules/44-* courses/vehicle-dynamics/modules/45-* courses/vehicle-dynamics/modules/46-* courses/vehicle-dynamics/modules/47-* courses/vehicle-dynamics/modules/48-* courses/vehicle-dynamics/modules/49-* courses/vehicle-dynamics/modules/50-* courses/vehicle-dynamics/modules/51-* courses/vehicle-dynamics/modules/52-* courses/vehicle-dynamics/expansion_reference_cases.py
     - git diff --check
-    - test -z "$(git status --short -- courses/controls-gnc courses/dsp-radar courses/robotics-autonomy courses/demo-radar courses/platform-showcase courses/vehicle-dynamics/fixtures courses/vehicle-dynamics/modules/0[1-9]-* courses/vehicle-dynamics/modules/1[0-9]-* courses/vehicle-dynamics/modules/2[0-9]-* courses/vehicle-dynamics/modules/3[0-3]-*)"
+    - test -z "$(git status --short -- courses/controls-gnc courses/dsp-radar courses/robotics-autonomy courses/demo-radar courses/platform-showcase courses/vehicle-dynamics/fixtures courses/vehicle-dynamics/modules/0[1-9]-* courses/vehicle-dynamics/modules/1[0-9]-* courses/vehicle-dynamics/modules/2[0-9]-* courses/vehicle-dynamics/modules/3[0-9]-* courses/vehicle-dynamics/modules/4[0-3]-*)"
     - test -z "$(git -C courses/vehicle-dynamics-learning status --porcelain=v1 --untracked-files=all)"
   focused_tests_to_add:
-    - Validate exact P25-P43 native membership, reviewed-map P34-P43 identities and prerequisite closure, native provenance, expansion-ledger transition, distinct governing-equation fingerprints, and absence of P44 or later folders.
+    - Validate exact P25-P52 native membership, reviewed-map P44-P52 identities and prerequisite closure, native provenance, expansion-ledger transition, distinct governing-equation fingerprints, and absence of P53 or later folders.
     - Execute baseline, two one-variable sweeps, broken, recovery, invalid-input, resource-bound, finite, deterministic, axis/unit, and evidence-independence checks for every new module.
-    - Assert topic-specific state-space balance, complex response, understeer domains, nonlinear capacity and stability, load-transfer closure, coupled modes, road transmissibility, digressive damping, kinematics/compliance, anti-geometry, teaching invariants, limiting cases, and exact recovery.
-    - Compare P34-P43 against analytic, invariant, or separately formulated numerical references without importing or deriving from production experiments.
-    - Validate the six-course, 266-module, 266-interactive catalog and regress every retained course.
+    - Assert topic-specific torque/traction envelopes, reflected inertia and launch energy, differential wheel capacities, gear/shift bounds, dynamic brake allocation, ABS slip dynamics, brake thermal balance/fade, aero balance/ride height, coupled stint constraints, teaching invariants, limiting cases, and exact recovery.
+    - Compare P44-P52 against analytic, invariant, or separately formulated numerical references without importing or deriving from production experiments.
+    - Validate the six-course, 275-module, 275-interactive catalog and regress every retained course.
   required_ci: []
 risk:
   class: high
   hazards:
-    - a shared chassis template substitutes for ten distinct governing or computational models
-    - sign, axle convention, frequency units, stability domain, transfer partition, generalized inertia, damping units, compliance units, or anti-geometry moment closure is subtly wrong
-    - deterministic synthetic observations are mislabeled as measured damper, suspension, rig, track, or vehicle evidence
+    - a shared propulsion template substitutes for nine distinct governing or computational models
+    - torque/radius, reflected-inertia ratio, differential capacity, shift crossover, load-transfer sign, slip sign, thermal energy, aero balance, ride-height unit, or stint constraint is subtly wrong
+    - deterministic synthetic observations are mislabeled as measured engine, driveline, brake, aero, rig, track, or vehicle evidence
     - an independent oracle imports or derives from production behavior
     - invalid setups yield plausible finite plots instead of explicit broken and recovery verdicts
   stop_conditions:
@@ -152,11 +153,11 @@ risk:
     - work requires prior-module mutation, source-bound ledger mutation, source mutation, fixture mutation, generic runtime or UI changes, a dependency, network access, or unsupported evidence
     - any focused, retained-course, contract, quick, full, deterministic, lint, scope, or source-cleanliness gate fails or is skipped
 rollback:
-  strategy: Before merge, close the isolated target pull request. After merge, revert its one squash commit; this removes only the Vehicle Dynamics P34-P43 native chassis expansion, independent reference additions, tests, evidence, and ledger transition while retaining P01-P33.
+  strategy: Before merge, close the isolated target pull request. After merge, revert its one squash commit; this removes only the Vehicle Dynamics P44-P52 native propulsion expansion, independent reference additions, tests, evidence, and ledger transition while retaining P01-P43.
 evidence:
   output:
-    - docs/evidence/ELP-VEHICLE-CHASSIS-P34-P43-2026-09-24.md
-    - one P34-P43 row per work item with governing relation, provenance, scenarios, teaching invariant, tolerance, axes and units, limitation, and residual risk
+    - docs/evidence/ELP-VEHICLE-PROPULSION-P44-P52-2026-09-24.md
+    - one P44-P52 row per work item with governing relation, provenance, scenarios, teaching invariant, tolerance, axes and units, limitation, and residual risk
     - focused, retained-course, contract, quick, full, deterministic catalog, lint, diff, scope, and source-cleanliness results
     - one target squash merge, exact resulting commit and tree, and explicit unperformed evidence
-  claim_boundary: This batch implements and independently verifies ten deterministic software-only Vehicle Dynamics chassis lessons. P34-P43 are Python-first native designs derived from the reviewed competency map and deterministic synthetic parameters. No source or MATLAB-runtime equivalence, measured damper, suspension, rig, track, or vehicle validation, browser/accessibility or learner validation, firmware/radio/bench/vehicle/track execution, physical HIL/hardware, certification, release, deployment, credentials/settings, or production use is implied.
+  claim_boundary: This batch implements and independently verifies nine deterministic software-only Vehicle Dynamics propulsion, braking, aero, and stint lessons. P44-P52 are Python-first native designs derived from the reviewed competency map and deterministic synthetic parameters. No source or MATLAB-runtime equivalence, measured engine, driveline, brake, aero, rig, track, or vehicle validation, browser/accessibility or learner validation, firmware/radio/bench/vehicle/track execution, physical HIL/hardware, certification, release, deployment, credentials/settings, or production use is implied.

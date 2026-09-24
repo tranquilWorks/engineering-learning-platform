@@ -1,0 +1,27 @@
+schema_version: 1
+item_id: P44
+module: 44-convert-engine-torque-into-a-traction-envelope
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- T_e=220-6e-6(n_e-4500)^2
+- F_engine=T_e i_g i_0 eta/r_t
+- F_delivered=min(F_engine,mu F_z_driven)
+signature:
+- {field: engine_torque, unit: "N*m"}
+- {field: engine_limited_force, unit: N}
+- {field: tire_capacity, unit: N}
+- {field: delivered_force, unit: N}
+- {field: envelope_residual, unit: N}
+teaching_invariant: Delivered tractive force is the lower of the geared engine-force curve and the driven-tire force capacity.
+limiting_cases:
+- With zero engine torque, engine-limited and delivered force both tend to zero.
+- With tire capacity above engine force, gearing and efficiency alone govern delivered force.
+scenarios:
+  baseline: {engine_rpm: 5000, gear_ratio: 3.2, broken_mode: false}
+  sweep_1: {engine_rpm: 6200, gear_ratio: 3.2, broken_mode: false}
+  sweep_2: {engine_rpm: 5000, gear_ratio: 2.2, broken_mode: false}
+  broken: {engine_rpm: 5000, gear_ratio: 3.2, broken_mode: true}
+  recovery: {engine_rpm: 5000, gear_ratio: 3.2, broken_mode: false}
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic Python software and synthetic parameters only; no source or MATLAB equivalence, measured engine, driveline, tire, rig, track, or vehicle result, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

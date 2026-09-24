@@ -1,0 +1,27 @@
+schema_version: 1
+item_id: P50
+module: 50-predict-brake-temperature-fade-and-cooling
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- Delta T_stop=eta E_stop/C_brake
+- C_brake dT/dt=-h_c(T-T_ambient)
+- E_absorbed=Delta E_stored+E_rejected
+signature:
+- {field: peak_rotor_temperature, unit: degC}
+- {field: final_rotor_temperature, unit: degC}
+- {field: rejected_heat, unit: kJ}
+- {field: brake_fade_factor, unit: "1"}
+- {field: thermal_energy_residual, unit: kJ}
+teaching_invariant: Absorbed stop energy must equal stored rotor energy plus convective rejection across the complete stop sequence.
+limiting_cases:
+- With zero absorbed stop energy, rotor temperature remains at ambient.
+- As cooling coefficient tends to zero, rejected heat tends to zero and peak temperature rises monotonically with stop count.
+scenarios:
+  baseline: {stop_energy_kj: 450, cooling_coefficient_w_k: 65, broken_mode: false}
+  sweep_1: {stop_energy_kj: 650, cooling_coefficient_w_k: 65, broken_mode: false}
+  sweep_2: {stop_energy_kj: 450, cooling_coefficient_w_k: 110, broken_mode: false}
+  broken: {stop_energy_kj: 450, cooling_coefficient_w_k: 65, broken_mode: true}
+  recovery: {stop_energy_kj: 450, cooling_coefficient_w_k: 65, broken_mode: false}
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic Python software and synthetic parameters only; no source or MATLAB equivalence, measured brake temperature, fade, cooling, rig, track, or vehicle result, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

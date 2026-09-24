@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "item_id": "P50",
+  "signature_fields": [
+    {
+      "field": "peak_rotor_temperature",
+      "unit": "degC"
+    },
+    {
+      "field": "final_rotor_temperature",
+      "unit": "degC"
+    },
+    {
+      "field": "rejected_heat",
+      "unit": "kJ"
+    },
+    {
+      "field": "brake_fade_factor",
+      "unit": "1"
+    },
+    {
+      "field": "thermal_energy_residual",
+      "unit": "kJ"
+    }
+  ],
+  "origin": {
+    "kind": "production-experiment",
+    "independent": false,
+    "imports_production_entrypoint": true,
+    "derived_from_production_output": true,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "stop_energy_kj": 450,
+        "cooling_coefficient_w_k": 65,
+        "broken_mode": false
+      },
+      "signature": [
+        63.485779654647764,
+        61.06334856921226,
+        402.1493143854494,
+        1.0,
+        1.0477378964424133e-12
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "stop_energy_kj": 650,
+        "cooling_coefficient_w_k": 65,
+        "broken_mode": false
+      },
+      "signature": [
+        80.59057061226895,
+        77.09150348886203,
+        580.882343001203,
+        1.0,
+        5.704350769519806e-12
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "stop_energy_kj": 450,
+        "cooling_coefficient_w_k": 110,
+        "broken_mode": false
+      },
+      "signature": [
+        59.78442013147834,
+        56.16002316277509,
+        622.798957675118,
+        1.0,
+        3.026798367500305e-12
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "stop_energy_kj": 450,
+        "cooling_coefficient_w_k": 65,
+        "broken_mode": true
+      },
+      "signature": [
+        70.0,
+        70.0,
+        460.6875,
+        1.0,
+        460.6875
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "stop_energy_kj": 450,
+        "cooling_coefficient_w_k": 65,
+        "broken_mode": false
+      },
+      "signature": [
+        63.485779654647764,
+        61.06334856921226,
+        402.1493143854494,
+        1.0,
+        1.0477378964424133e-12
+      ]
+    }
+  }
+}

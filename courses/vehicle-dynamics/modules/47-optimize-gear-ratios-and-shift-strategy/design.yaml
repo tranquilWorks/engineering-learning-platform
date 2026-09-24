@@ -1,0 +1,27 @@
+schema_version: 1
+item_id: P47
+module: 47-optimize-gear-ratios-and-shift-strategy
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- n_e=60 v i_g i_0/(2 pi r_t)
+- g_selected=argmax_g F_wheel(g) subject to 1500<=n_e<=7000
+- v_dot=(F_selected-F_resist)/m with F_selected=0 during shift delay
+signature:
+- {field: zero_to_100_time, unit: s}
+- {field: first_shift_speed, unit: km/h}
+- {field: second_shift_speed, unit: km/h}
+- {field: peak_acceleration, unit: "m/s^2"}
+- {field: redline_excess, unit: rpm}
+teaching_invariant: A valid shift strategy chooses the largest in-band wheel force and includes every declared torque interruption.
+limiting_cases:
+- As shift delay tends to zero, interruption loss tends to zero but engine-speed limits remain binding.
+- A shorter final drive raises low-speed wheel force while reaching each engine-speed limit sooner.
+scenarios:
+  baseline: {final_drive_ratio: 4.1, shift_delay_s: 0.25, broken_mode: false}
+  sweep_1: {final_drive_ratio: 4.6, shift_delay_s: 0.25, broken_mode: false}
+  sweep_2: {final_drive_ratio: 4.1, shift_delay_s: 0.5, broken_mode: false}
+  broken: {final_drive_ratio: 4.1, shift_delay_s: 0.25, broken_mode: true}
+  recovery: {final_drive_ratio: 4.1, shift_delay_s: 0.25, broken_mode: false}
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic Python software and synthetic parameters only; no source or MATLAB equivalence, measured engine, gearbox, shift, rig, track, or vehicle result, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.
