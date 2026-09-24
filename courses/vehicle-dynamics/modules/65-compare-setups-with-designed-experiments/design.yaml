@@ -1,0 +1,29 @@
+schema_version: 1
+item_id: P65
+module: 65-compare-setups-with-designed-experiments
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- y=b0+bA A+bT T+bAT AT
+- b=(X^T X)^-1 X^T y
+- rank(X)=4
+signature:
+- {field: aero_main_effect, unit: "1"}
+- {field: tire_main_effect, unit: "1"}
+- {field: interaction_effect, unit: "1"}
+- {field: residual_rms, unit: "1"}
+- {field: best_lap, unit: "1"}
+- {field: design_rank, unit: "1"}
+- {field: heldout_error, unit: "1"}
+teaching_invariant: A balanced factorial must separate main effects from interaction and expose residual error.
+limiting_cases:
+- At the lower first-control bound, the governing constraint remains finite and auditable.
+- At the upper second-control bound, the coupled residual remains the decisive validity check.
+scenarios:
+  baseline: {aero_scale: 1, tire_scale: 1, broken_mode: false}
+  sweep_1: {aero_scale: 0.8, tire_scale: 1, broken_mode: false}
+  sweep_2: {aero_scale: 1, tire_scale: 1.15, broken_mode: false}
+  broken: {aero_scale: 1, tire_scale: 1, broken_mode: true}
+  recovery: {aero_scale: 1, tire_scale: 1, broken_mode: false}
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic synthetic software only; no measured vehicle validation, MATLAB, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

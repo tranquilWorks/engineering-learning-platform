@@ -1,0 +1,29 @@
+schema_version: 1
+item_id: P66
+module: 66-capstone-validate-a-vehicle-model-from-telemetry
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- coverage=sum signed/9
+- r_val=y_val-yhat_val
+- pass=all(requirements)
+signature:
+- {field: requirements_passed, unit: "1"}
+- {field: requirements_total, unit: "1"}
+- {field: heldout_residual, unit: "1"}
+- {field: trace_coverage, unit: "1"}
+- {field: fault_count, unit: "1"}
+- {field: trace_residual, unit: "1"}
+- {field: recovery_verdict, unit: "1"}
+teaching_invariant: All nine replay-through-recovery requirements must be independently signed.
+limiting_cases:
+- At the lower first-control bound, the governing constraint remains finite and auditable.
+- At the upper second-control bound, the coupled residual remains the decisive validity check.
+scenarios:
+  baseline: {validation_fraction: 0.3, fault_severity: 1, broken_mode: false}
+  sweep_1: {validation_fraction: 0.2, fault_severity: 1, broken_mode: false}
+  sweep_2: {validation_fraction: 0.3, fault_severity: 2, broken_mode: false}
+  broken: {validation_fraction: 0.3, fault_severity: 1, broken_mode: true}
+  recovery: {validation_fraction: 0.3, fault_severity: 1, broken_mode: false}
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic synthetic software only; no measured vehicle validation, MATLAB, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

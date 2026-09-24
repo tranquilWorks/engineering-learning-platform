@@ -1,0 +1,28 @@
+schema_version: 1
+item_id: P62
+module: 62-construct-a-speed-dependent-g-g-v-envelope
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- Fz=mg+0.5 rho Cl A v^2
+- Fx=min(Ftire,(P/v-Fdrag))
+- (ax/axmax)^2+(ay/aymax)^2<=1
+signature:
+- {field: downforce, unit: "1"}
+- {field: drag, unit: "1"}
+- {field: acceleration_limit, unit: "1"}
+- {field: braking_limit, unit: "1"}
+- {field: lateral_limit, unit: "1"}
+- {field: coupled_utilization_residual, unit: "1"}
+teaching_invariant: The g-g-v boundary must reconcile tire, propulsion, braking, aerodynamic, and coupled-friction limits.
+limiting_cases:
+- At the lower first-control bound, the governing constraint remains finite and auditable.
+- At the upper second-control bound, the coupled residual remains the decisive validity check.
+scenarios:
+  baseline: {speed_m_s: 45, friction_coefficient: 1.2, broken_mode: false}
+  sweep_1: {speed_m_s: 20, friction_coefficient: 1.2, broken_mode: false}
+  sweep_2: {speed_m_s: 45, friction_coefficient: 1.5, broken_mode: false}
+  broken: {speed_m_s: 45, friction_coefficient: 1.2, broken_mode: true}
+  recovery: {speed_m_s: 45, friction_coefficient: 1.2, broken_mode: false}
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic synthetic software only; no measured vehicle validation, MATLAB, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

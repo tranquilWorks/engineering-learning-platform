@@ -61,7 +61,7 @@ but they are not independent correctness oracles.
 | DSP/Radar | 84 source / 84 platform / 84 interactive | `platform_converted` | #441: replace the P02-P84 generic execution structure and independently reverify it |
 | Controls/GNC | 24 / 24 / 24 | `numerically_verified` | #439: expand against the reviewed competency map and add cumulative integration |
 | Robotics and Autonomy | 24 source / 69 platform / 69 interactive | `capstone_integrated` | Maintain the reviewed map; learner/accessibility validation remains not run |
-| Vehicle Dynamics | 24 source / 60 platform / 60 interactive | P01-P60 numerically verified | #467: authorize P61-P67 performance and capstone depth against the merged telemetry-batch baseline |
+| Vehicle Dynamics | 24 source / 67 platform / 67 interactive | P01-P67 numerically verified; curriculum and capstones passed | Maintain; learner validation remains not run |
 
 Controls/GNC and Robotics/Autonomy are now marked `curriculum_covered: passed`
 and `capstone_integrated: passed` from their reviewed maps and requirements-traced
@@ -76,7 +76,7 @@ lessons with independent scalar references; P25-P33 add independently evidenced
 advanced tire models, while P34-P43 add dynamic handling, nonlinear stability,
 load-transfer, ride-mode, damper, suspension, and anti-geometry models. P44-P52
 add traction, launch, differential, gearing, braking, aero, and stint models. P53-P60 add replay, alignment, calibration, reconstruction, estimation, identification, uncertainty, and recovery. P20 does
-not use a real drive and P24 is not physical GR86 validation. P61-P67 remain
+not use a real drive and P24 is not physical GR86 validation. P61-P67 complete
 separately gated.
 
 This projection does not claim MATLAB runtime comparison, browser or

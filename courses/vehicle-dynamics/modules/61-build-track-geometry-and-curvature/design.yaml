@@ -1,0 +1,28 @@
+schema_version: 1
+item_id: P61
+module: 61-build-track-geometry-and-curvature
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- L=sum ds
+- kappa=(x'y''-y'x'')/(x'^2+y'^2)^(3/2)
+- integral kappa ds=2 pi
+signature:
+- {field: track_length, unit: "1"}
+- {field: peak_curvature, unit: "1"}
+- {field: mean_curvature, unit: "1"}
+- {field: heading_closure, unit: "1"}
+- {field: position_closure, unit: "1"}
+- {field: curvature_integral_residual, unit: "1"}
+teaching_invariant: Closed geometry must satisfy position, heading, and signed-curvature closure.
+limiting_cases:
+- At the lower first-control bound, the governing constraint remains finite and auditable.
+- At the upper second-control bound, the coupled residual remains the decisive validity check.
+scenarios:
+  baseline: {major_radius_m: 60, point_count: 181, broken_mode: false}
+  sweep_1: {major_radius_m: 40, point_count: 181, broken_mode: false}
+  sweep_2: {major_radius_m: 60, point_count: 301, broken_mode: false}
+  broken: {major_radius_m: 60, point_count: 181, broken_mode: true}
+  recovery: {major_radius_m: 60, point_count: 181, broken_mode: false}
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic synthetic software only; no measured vehicle validation, MATLAB, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

@@ -1,8 +1,8 @@
 schema_version: 1
 batch:
-  id: ELP-VEHICLE-TELEMETRY-P53-P60
-  title: Vehicle Dynamics telemetry replay, alignment, calibration, reconstruction, identification, uncertainty, and recovery
-  goal: Implement the reviewed Vehicle Dynamics telemetry-depth arc, P53-P60, as eight distinct deterministic Python-first modules with independently formulated analytic and numerical references.
+  id: ELP-VEHICLE-PERFORMANCE-P61-P67
+  title: Vehicle Dynamics track geometry, performance envelopes, lap simulation, setup experiments, and cumulative capstones
+  goal: Implement the final reviewed Vehicle Dynamics arc, P61-P67, as five distinct performance modules and two requirements-traced cumulative software capstones with independently formulated references.
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
@@ -15,13 +15,14 @@ sources:
     - products/engineering-learning-platform/batches/ELP-VEHICLE-TIRES-P25-P33.yaml
     - products/engineering-learning-platform/batches/ELP-VEHICLE-CHASSIS-P34-P43.yaml
     - products/engineering-learning-platform/batches/ELP-VEHICLE-PROPULSION-P44-P52.yaml
+    - products/engineering-learning-platform/batches/ELP-VEHICLE-TELEMETRY-P53-P60.yaml
     - tranquilWorks/portfolio-control#467
-  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-VEHICLE-TELEMETRY-P53-P60
-  baseline_commit: 8b9f93a1efa279edad6914afbf28283ee0007ee6
-  baseline_tree: 38ec2b37002f95ad2fac5c21549f650dc77a592f
+  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-VEHICLE-PERFORMANCE-P61-P67
+  baseline_commit: a917fc6174d18a845f9658ce881ba9138c660c76
+  baseline_tree: 0b935a289b8d73aa95fd4d20cf49ced6847fbe37
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_baseline: 7ae96819e00c1f893955b7e8bde94023b23ea393
-  control_plane_path: products/engineering-learning-platform/batches/ELP-VEHICLE-TELEMETRY-P53-P60.yaml
+  control_plane_baseline: 49b134215e74b2d6f27ae1cab3801ac9dc8c139d
+  control_plane_path: products/engineering-learning-platform/batches/ELP-VEHICLE-PERFORMANCE-P61-P67.yaml
   target_repository: tranquilWorks/engineering-learning-platform
   source_repository: tranquilWorks/vehicle-dynamics-learning
   source_pin: 57264b3ffeb517ee5eb73e8957b9cd190d022457
@@ -36,16 +37,16 @@ dependencies:
   - ELP-VEHICLE-TIRES-P25-P33
   - ELP-VEHICLE-CHASSIS-P34-P43
   - ELP-VEHICLE-PROPULSION-P44-P52
+  - ELP-VEHICLE-TELEMETRY-P53-P60
 scope:
   allowed_paths:
-    - courses/vehicle-dynamics/modules/53-*/**
-    - courses/vehicle-dynamics/modules/54-*/**
-    - courses/vehicle-dynamics/modules/55-*/**
-    - courses/vehicle-dynamics/modules/56-*/**
-    - courses/vehicle-dynamics/modules/57-*/**
-    - courses/vehicle-dynamics/modules/58-*/**
-    - courses/vehicle-dynamics/modules/59-*/**
-    - courses/vehicle-dynamics/modules/60-*/**
+    - courses/vehicle-dynamics/modules/61-*/**
+    - courses/vehicle-dynamics/modules/62-*/**
+    - courses/vehicle-dynamics/modules/63-*/**
+    - courses/vehicle-dynamics/modules/64-*/**
+    - courses/vehicle-dynamics/modules/65-*/**
+    - courses/vehicle-dynamics/modules/66-*/**
+    - courses/vehicle-dynamics/modules/67-*/**
     - courses/vehicle-dynamics/expansion-map.yaml
     - courses/vehicle-dynamics/expansion_reference_cases.py
     - apps/api/tests/test_vehicle_dynamics_expansion.py
@@ -64,7 +65,7 @@ scope:
     - docs/CURRENT_STATE.md
     - docs/HANDOFF.md
     - docs/ROADMAP.md
-    - docs/evidence/ELP-VEHICLE-TELEMETRY-P53-P60-*.md
+    - docs/evidence/ELP-VEHICLE-PERFORMANCE-P61-P67-*.md
   forbidden_paths:
     - courses/vehicle-dynamics-learning
     - courses/vehicle-dynamics-learning/**
@@ -81,8 +82,8 @@ scope:
     - courses/vehicle-dynamics/modules/2[0-9]-*/**
     - courses/vehicle-dynamics/modules/3[0-9]-*/**
     - courses/vehicle-dynamics/modules/4[0-9]-*/**
-    - courses/vehicle-dynamics/modules/5[0-2]-*/**
-    - courses/vehicle-dynamics/modules/6[1-9]-*/**
+    - courses/vehicle-dynamics/modules/5[0-9]-*/**
+    - courses/vehicle-dynamics/modules/60-*/**
     - courses/vehicle-dynamics/modules/[7-9][0-9]-*/**
     - courses/controls-gnc/**
     - courses/dsp-radar/**
@@ -103,23 +104,23 @@ scope:
     - Dockerfile
     - compose.yaml
 acceptance:
-  - Start only after the exact control commit containing this contract is merged. Use exact clean target main 8b9f93a1efa279edad6914afbf28283ee0007ee6, tree 38ec2b37002f95ad2fac5c21549f650dc77a592f; any target, source, map, fixture, index, or worktree drift stops implementation.
-  - Implement exactly reviewed-map P53-P60 in order: replay and decode GR86 CAN/BLE telemetry; align clocks, rates, and dropped packets; calibrate sensors and transform measured axes; reconstruct a driven trajectory; estimate sideslip and vehicle state; identify vehicle parameters with validation splits; quantify identifiability, residuals, and uncertainty; diagnose and recover corrupt telemetry.
-  - Preserve P01-P52, source identities, titles, guiding questions, prerequisite order, read-only gitlink, reviewed competency map, native-design schema, source map, fixtures, conversion manifest, coverage ledger, and source-bound reference byte-identically. P53-P60 are competency-derived Python-first native designs and claim neither source implementation nor MATLAB-runtime equivalence.
-  - Treat all eight IDs as separately reviewed work items. Every module must include a complete learner lesson, unique bounded executable model, default baseline, two useful one-variable sweeps, one named broken behavior, exact recovery, limiting cases, coordinate and sign conventions, physical quantities and units, common mistakes, formative checks, and teach-back completion.
+  - Start only after the exact control commit containing this contract is merged. Use exact clean target main a917fc6174d18a845f9658ce881ba9138c660c76, tree 0b935a289b8d73aa95fd4d20cf49ced6847fbe37; any target, source, map, fixture, index, or worktree drift stops implementation.
+  - Implement exactly reviewed-map P61-P67 in order: build track geometry and curvature; construct a speed-dependent g-g-v envelope; optimize a racing line under coupled constraints; run a forward-backward lap-time simulation; compare setups with designed experiments; validate a vehicle model from telemetry; calibrate and predict with a GR86 digital twin.
+  - Preserve P01-P60, source identities, titles, guiding questions, prerequisite order, read-only gitlink, reviewed competency map, native-design schema, source map, fixtures, conversion manifest, coverage ledger, and source-bound reference byte-identically. P61-P67 are competency-derived Python-first native designs and claim neither source implementation nor MATLAB-runtime equivalence.
+  - Treat all seven IDs as separately reviewed work items. Every module must include a complete learner lesson, unique bounded executable model, default baseline, two useful one-variable sweeps, one named broken behavior, exact recovery, limiting cases, coordinate and sign conventions, physical quantities and units, common mistakes, formative checks, and teach-back completion.
   - Use the course-owned independent reference implementation, extended without importing a production experiment, consuming a production result, or perturbing a production value. Retain origin, inputs, fields and units, tolerances, and finite expected versus actual evidence for baseline, sweep_1, sweep_2, broken, and recovery.
-  - P53 must replay the immutable synthetic GR86 CAN and RaceChrono BLE fixture protocol without writing it, validate sequence/timestamp/payload parity, decode bounded declared signals from raw bytes, expose record or frame counts, decoded engineering values, provenance/parity status, and decode residual; its broken case must use wrong endianness/scaling or omit the BLE framing boundary.
-  - P54 must align deterministic asynchronous clocks and rates, expose source offset, dropped samples, aligned sample count, maximum gap, reconstruction error, and time-grid residual; its broken case must ignore clock offset, interpolate across an invalid gap, or silently hide a dropped packet.
-  - P55 must apply deterministic sensor bias/scale calibration and an explicit sensor-to-body axis transform with declared degree/radian and sign boundaries, expose calibrated components, transform closure, and calibration residual; its broken case must omit bias, reverse an axis, or use degrees directly in trigonometry.
-  - P56 must integrate bounded speed and yaw-rate telemetry into a planar trajectory and apply deterministic position correction, expose final position/heading, path length, endpoint error, and kinematic closure; its broken case must misuse yaw units, timestamp spacing, or body/inertial rotation.
-  - P57 must estimate sideslip, yaw rate, and at least one supporting vehicle state with a bounded deterministic observer or filter, expose state error, covariance or innovation behavior, observability or stability, and estimator residual; its broken case must reverse a force/measurement sign or omit the measurement correction.
-  - P58 must identify at least two meaningful vehicle parameters from deterministic synthetic observations with an explicit chronological training/validation split, expose parameter estimates, train and held-out errors, sample counts, and split or prediction residual; its broken case must leak validation data, fit an invalid unit, or report training error as validation.
-  - P59 must quantify excitation-conditioned identifiability, residual structure, parameter covariance or confidence, and empirical uncertainty coverage with bounded deterministic observations, expose condition number or singular value, residual metric, parameter uncertainty, coverage, and uncertainty residual; its broken case must invert an ill-conditioned normal matrix without checks, understate noise, or hide correlated residuals.
-  - P60 must diagnose deterministic missing, duplicate, out-of-order, and malformed telemetry records against the immutable synthetic fault plan, recover only valid ordered records, expose each fault count, recovered record count, provenance verdict, and recovery residual; its broken case must trust corrupt packets, silently reorder without diagnosis, or count malformed data as valid.
-  - Validate inputs before allocation or fixture read; cap records, samples, interpolation grids, integrations, matrix sizes, searches, and recovery horizons; return finite deterministic Plotly-compatible results; perform no network, source write, subprocess, dynamic install or import, eval, learner-code execution, wall-clock dependence, or shared mutable state.
-  - Update the competency expansion ledger to declare 24 source-bound modules, all 67 reviewed planned modules, exactly P25-P60 implemented natively, and P61-P67 pending. Keep source-bound conversion and coverage totals at total=24, converted=24, pending=0, blocked=0, placeholder=0.
-  - End with exactly six courses, 283 modules, and 283 interactive modules. Update only retained catalog-total assertions needed for this authorized eight-module increase; preserve every completed course and source gitlink byte-identically.
-  - Record exact local verification. Hosted CI is not a completion gate by owner direction; keep MATLAB comparison, browser/accessibility, learner validation, measured vehicle data, firmware/radio/bench/vehicle/track execution, physical HIL/hardware, certification, release, deployment, credentials/settings, and production evidence explicitly unperformed.
+  - P61 must construct a closed deterministic track from bounded segment geometry, compute arc length, heading, signed curvature, closure error, and a curvature-integral invariant; its broken case must confuse degrees/radians, omit closure, or use a wrong curvature sign.
+  - P62 must build a speed-dependent longitudinal/lateral acceleration envelope from tire, powertrain, brake, aero, load, and friction constraints; expose acceleration bounds, lateral capacity, utilization, and constraint residual; its broken case must combine limits independently, omit drag/downforce, or exceed the friction boundary.
+  - P63 must optimize a bounded racing-line offset against curvature, track width, and the P62 coupled envelope; expose line length, peak curvature, minimum speed, objective improvement, boundary margin, and feasibility residual; its broken case must leave the track, ignore coupling, or optimize an invalid signed distance.
+  - P64 must execute a deterministic forward/backward speed pass and lap-time integration with acceleration, braking, curvature, power, tire, and thermal/energy constraints; expose lap time, speed extrema, energy or thermal budget, pass-closure residual, and active constraints; its broken case must use only a forward pass, violate braking reachability, or double-count available force.
+  - P65 must compare at least two setup factors with a balanced designed experiment, expose main and interaction effects, replicate or residual error, ranking, and a held-out or finite-difference consistency check; its broken case must confound factors, omit an interaction, or compare one-at-a-time changes as causal effects.
+  - P66 must be a cumulative telemetry-validation capstone with signed requirements covering provenance replay, clock alignment, calibration, trajectory and state reconstruction, chronological identification/validation, identifiability/uncertainty, corrupt-data diagnosis, and exact recovery. Expose requirement pass count, held-out residual, uncertainty or coverage, fault count, and trace residual; its broken case must inject one cumulative data/model fault and fail named requirements.
+  - P67 must be a cumulative GR86 digital-twin capstone with signed requirements covering calibrated tire, handling, chassis, propulsion, brake, aero, track, racing-line, lap, uncertainty, and setup-comparison behavior. Expose requirement pass count, lap prediction, uncertainty bound, setup delta, coupled constraint residual, and recovery verdict; its broken case must inject an integrated coupling failure and recovery must restore every traced requirement.
+  - Validate inputs before allocation; cap geometry points, envelope grid, optimization candidates, integration steps, experiment cells, capstone requirements, and horizons; return finite deterministic Plotly-compatible results; perform no network, source write, subprocess, dynamic install or import, eval, learner-code execution, wall-clock dependence, or shared mutable state.
+  - Update the competency expansion ledger to declare 24 source-bound modules, all 67 reviewed planned modules, exactly P25-P67 implemented natively, and no pending native modules. Keep source-bound conversion and coverage totals at total=24, converted=24, pending=0, blocked=0, placeholder=0.
+  - End with exactly six courses, 290 modules, and 290 interactive modules. Update only retained catalog-total assertions needed for this authorized seven-module increase; preserve every completed course and source gitlink byte-identically.
+  - Mark Vehicle Dynamics `platform_converted`, `numerically_verified`, `curriculum_covered`, and `capstone_integrated` passed only if P61-P67 and both reviewed capstone traces pass. Keep `learner_validated` not_run.
+  - Record exact local verification. Hosted CI is not a completion gate by owner direction; keep MATLAB comparison, browser/accessibility, learner validation, measured vehicle or rig data, firmware/radio/bench/vehicle/track execution, physical HIL/hardware, certification, release, deployment, credentials/settings, and production evidence explicitly unperformed.
 validation:
   local:
     - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_vehicle_dynamics_expansion.py apps/api/tests/test_vehicle_dynamics_framework.py apps/api/tests/test_vehicle_dynamics_course.py apps/api/tests/test_course_caliber_status.py
@@ -129,36 +130,37 @@ validation:
     - ./scripts/agent-verify.sh quick
     - ./scripts/agent-verify.sh full
     - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic --json
-    - .venv/bin/ruff check apps/api/tests/test_vehicle_dynamics_expansion.py apps/api/tests/test_vehicle_dynamics_framework.py apps/api/tests/test_vehicle_dynamics_course.py apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_expansion.py apps/api/tests/test_robotics_conversion_framework.py apps/api/tests/test_robotics_expansion.py courses/vehicle-dynamics/modules/53-* courses/vehicle-dynamics/modules/54-* courses/vehicle-dynamics/modules/55-* courses/vehicle-dynamics/modules/56-* courses/vehicle-dynamics/modules/57-* courses/vehicle-dynamics/modules/58-* courses/vehicle-dynamics/modules/59-* courses/vehicle-dynamics/modules/60-* courses/vehicle-dynamics/expansion_reference_cases.py
+    - .venv/bin/ruff check apps/api/tests/test_vehicle_dynamics_expansion.py apps/api/tests/test_vehicle_dynamics_framework.py apps/api/tests/test_vehicle_dynamics_course.py apps/api/tests/test_course_caliber_status.py apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_expansion.py apps/api/tests/test_robotics_conversion_framework.py apps/api/tests/test_robotics_expansion.py courses/vehicle-dynamics/modules/61-* courses/vehicle-dynamics/modules/62-* courses/vehicle-dynamics/modules/63-* courses/vehicle-dynamics/modules/64-* courses/vehicle-dynamics/modules/65-* courses/vehicle-dynamics/modules/66-* courses/vehicle-dynamics/modules/67-* courses/vehicle-dynamics/expansion_reference_cases.py
     - git diff --check
-    - test -z "$(git status --short -- courses/controls-gnc courses/dsp-radar courses/robotics-autonomy courses/demo-radar courses/platform-showcase courses/vehicle-dynamics/fixtures courses/vehicle-dynamics/modules/0[1-9]-* courses/vehicle-dynamics/modules/1[0-9]-* courses/vehicle-dynamics/modules/2[0-9]-* courses/vehicle-dynamics/modules/3[0-9]-* courses/vehicle-dynamics/modules/4[0-9]-* courses/vehicle-dynamics/modules/5[0-2]-*)"
+    - test -z "$(git status --short -- courses/controls-gnc courses/dsp-radar courses/robotics-autonomy courses/demo-radar courses/platform-showcase courses/vehicle-dynamics/fixtures courses/vehicle-dynamics/modules/0[1-9]-* courses/vehicle-dynamics/modules/1[0-9]-* courses/vehicle-dynamics/modules/2[0-9]-* courses/vehicle-dynamics/modules/3[0-9]-* courses/vehicle-dynamics/modules/4[0-9]-* courses/vehicle-dynamics/modules/5[0-9]-* courses/vehicle-dynamics/modules/60-*)"
     - test -z "$(git -C courses/vehicle-dynamics-learning status --porcelain=v1 --untracked-files=all)"
   focused_tests_to_add:
-    - Validate exact P25-P60 native membership, reviewed-map P53-P60 identities and prerequisite closure, native provenance, expansion-ledger transition, distinct governing-equation fingerprints, and absence of P61 or later folders.
+    - Validate exact P25-P67 native membership, reviewed-map P61-P67 identities and prerequisite closure, native provenance, expansion-ledger completion, distinct governing-equation fingerprints, and no pending or P68 folder.
     - Execute baseline, two one-variable sweeps, broken, recovery, invalid-input, resource-bound, finite, deterministic, axis/unit, and evidence-independence checks for every new module.
-    - Assert topic-specific raw CAN/BLE decode parity, clock/rate alignment, calibration and axis transforms, trajectory closure, sideslip/state estimation, chronological identification splits, identifiability and uncertainty, corruption diagnosis/recovery, teaching invariants, limiting cases, and exact recovery.
-    - Compare P53-P60 against analytic, invariant, or separately formulated numerical references without importing or deriving from production experiments.
-    - Validate the six-course, 283-module, 283-interactive catalog and regress every retained course.
+    - Assert track closure/curvature, g-g-v coupling, racing-line feasibility, forward/backward lap closure, designed-experiment effects, both requirements-traced capstones, teaching invariants, limiting cases, named failures, and exact recovery.
+    - Compare P61-P67 against analytic, invariant, or separately formulated numerical references without importing or deriving from production experiments.
+    - Validate the six-course, 290-module, 290-interactive catalog and regress every retained course.
   required_ci: []
 risk:
   class: high
   hazards:
-    - a shared telemetry template substitutes for eight distinct governing or computational models
-    - byte order, scaling, BLE framing, timestamp units, interpolation gaps, axis signs, yaw units, estimator correction, split leakage, covariance conditioning, or recovery accounting is subtly wrong
-    - immutable synthetic protocol observations are mislabeled as measured drive or vehicle evidence
+    - a shared performance template substitutes for seven distinct governing or computational models
+    - track closure, curvature sign, combined acceleration, racing-line boundary, forward/backward reachability, lap integration, setup confounding, requirement trace, or subsystem coupling is subtly wrong
+    - deterministic synthetic results are mislabeled as measured track, driver, rig, or vehicle evidence
     - an independent oracle imports or derives from production behavior
-    - corrupt or invalid inputs yield plausible finite plots instead of explicit diagnosis and recovery verdicts
+    - a capstone passes aggregate metrics while a named prerequisite requirement fails
   stop_conditions:
     - exact target, source, map, fixture, index, or worktree identity drifts
     - an independent reference needs production code, production output, or a perturbed production value
     - work requires prior-module mutation, source-bound ledger mutation, source or fixture mutation, generic runtime or UI changes, a dependency, network access, or unsupported evidence
-    - any focused, retained-course, contract, quick, full, deterministic, lint, scope, or source-cleanliness gate fails or is skipped
+    - any focused, retained-course, contract, quick, full, deterministic, lint, scope, source-cleanliness, or capstone requirement gate fails or is skipped
 rollback:
-  strategy: Before merge, close the isolated target pull request. After merge, revert its one squash commit; this removes only the Vehicle Dynamics P53-P60 native telemetry expansion, independent reference additions, tests, evidence, and ledger transition while retaining P01-P52.
+  strategy: Before merge, close the isolated target pull request. After merge, revert its one squash commit; this removes only the Vehicle Dynamics P61-P67 performance and capstone expansion, independent reference additions, tests, evidence, and ledger completion while retaining P01-P60.
 evidence:
   output:
-    - docs/evidence/ELP-VEHICLE-TELEMETRY-P53-P60-2026-09-24.md
-    - one P53-P60 row per work item with governing relation, provenance, scenarios, teaching invariant, tolerance, axes and units, limitation, and residual risk
+    - docs/evidence/ELP-VEHICLE-PERFORMANCE-P61-P67-2026-09-24.md
+    - one P61-P67 row per work item with governing relation, provenance, scenarios, teaching invariant, tolerance, axes and units, limitation, and residual risk
+    - signed requirement traces for CAP-TELEMETRY-VALIDATION and CAP-GR86-DIGITAL-TWIN
     - focused, retained-course, contract, quick, full, deterministic catalog, lint, diff, scope, and source-cleanliness results
-    - one target squash merge, exact resulting commit and tree, and explicit unperformed evidence
-  claim_boundary: This batch implements and independently verifies eight deterministic software-only Vehicle Dynamics telemetry, estimation, identification, uncertainty, and recovery lessons. P53-P60 are Python-first native designs derived from the reviewed competency map and immutable synthetic protocol fixtures or deterministic synthetic parameters. No source or MATLAB-runtime equivalence, measured vehicle validation, browser/accessibility or learner validation, firmware/radio/bench/vehicle/track execution, physical HIL/hardware, certification, release, deployment, credentials/settings, or production use is implied.
+    - one target squash merge, exact resulting commit and tree, issue closure, and explicit unperformed evidence
+  claim_boundary: This batch completes and independently verifies seven deterministic software-only Vehicle Dynamics performance and capstone lessons. P61-P67 are Python-first native designs derived from the reviewed competency map and deterministic synthetic parameters or immutable synthetic protocol fixtures. No source or MATLAB-runtime equivalence, measured track, driver, rig, or vehicle validation, browser/accessibility or learner validation, firmware/radio/bench/vehicle/track execution, physical HIL/hardware, certification, release, deployment, credentials/settings, or production use is implied.

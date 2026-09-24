@@ -1,10 +1,10 @@
 # Current state
 
-`ELP-VEHICLE-TELEMETRY-P53-P60` is the authorized issue-467 fourth competency-derived depth batch from exact target baseline `8b9f93a1efa279edad6914afbf28283ee0007ee6` (tree `38ec2b37002f95ad2fac5c21549f650dc77a592f`) and final Portfolio Control authorization `af1ccb82fe327e58ed7ff7a982a4ffb34f4e404e`.
+`ELP-VEHICLE-PERFORMANCE-P61-P67` completes issue 467 from exact target baseline `a917fc6174d18a845f9658ce881ba9138c660c76` (tree `0b935a289b8d73aa95fd4d20cf49ced6847fbe37`) and final Portfolio Control authorization `5e49d1db70efb7c1e532d4f62a747546d82ebb87`.
 
-Vehicle Dynamics implements P01-P60. P53-P60 add provenance-bearing GR86 CAN/BLE replay, clock and packet alignment, sensor calibration, trajectory reconstruction, sideslip and state estimation, split-safe parameter identification, uncertainty auditing, and corrupt-telemetry recovery. P01-P02 retain implemented-source comparison provenance; P03-P24 are Python-first designs from reviewed source scaffold identities; P25-P60 are competency-derived Python-first native designs.
+Vehicle Dynamics implements P01-P67. P61-P65 add track geometry, g-g-v envelopes, racing-line optimization, forward-backward lap simulation, and designed setup experiments; P66-P67 are cumulative telemetry-validation and GR86 digital-twin capstones.
 
-Coverage remains 24 converted, zero pending, zero blocked, and zero placeholder items for the closed source-bound inventory. The expansion ledger records 67 reviewed modules, P25-P60 implemented, and P61-P67 pending. The catalog contains six courses, 283 modules, and 283 interactive experiments. P61-P67 is next and requires separate exact-baseline authorization.
+Coverage remains 24 converted, zero pending, zero blocked, and zero placeholder items for the closed source-bound inventory. All 67 reviewed modules are implemented; the catalog contains six courses, 290 modules, and 290 interactive experiments. Curriculum coverage and capstone integration pass; learner validation remains not run.
 
 P20 retains its source title but uses deterministic synthetic offline data, not a real drive. P24 uses deterministic synthetic telemetry and is not physical GR86 validation. The replay data is synthetic protocol evidence and contains no VIN, driver identity, real location, precise route, or vehicle capture.
 

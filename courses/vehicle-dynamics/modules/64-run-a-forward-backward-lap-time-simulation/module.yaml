@@ -1,0 +1,22 @@
+schema_version: 1
+id: 64-run-a-forward-backward-lap-time-simulation
+number: 64
+title: Run a Forward-Backward Lap-Time Simulation
+summary: Explore run a forward-backward lap-time simulation with deterministic equations, independent evidence, a broken case, and exact recovery.
+guiding_question: Which coupled constraint controls the result, and how can the evidence prove it?
+status: implemented
+tags: [vehicle-dynamics, native-python, performance, validation]
+runtime: {kind: python, entrypoint: "experiment.py:run", trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: grip_scale, type: slider, label: Grip scale, default: 1.15, unit: "1", minimum: 0.8, maximum: 1.4, step: 0.05}
+- {id: energy_limit_mj, type: slider, label: Energy limit, default: 18, unit: "MJ", minimum: 10, maximum: 30, step: 1}
+- {id: broken_mode, type: toggle, label: Enable the intentionally broken case, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- {type: prediction, title: Predict before running, text: Predict which constraint will become active before inspecting the result., reveal: "Use the signed residual and limiting-case ledger."}
+- {type: controls, title: Experiment controls}
+- {type: metrics}
+- {type: plot_grid, title: Response and mechanism, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken-case interpretation, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}

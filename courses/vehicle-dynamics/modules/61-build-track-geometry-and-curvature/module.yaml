@@ -1,0 +1,22 @@
+schema_version: 1
+id: 61-build-track-geometry-and-curvature
+number: 61
+title: Build Track Geometry and Curvature
+summary: Explore build track geometry and curvature with deterministic equations, independent evidence, a broken case, and exact recovery.
+guiding_question: Which coupled constraint controls the result, and how can the evidence prove it?
+status: implemented
+tags: [vehicle-dynamics, native-python, performance, validation]
+runtime: {kind: python, entrypoint: "experiment.py:run", trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: major_radius_m, type: slider, label: Major radius, default: 60, unit: "m", minimum: 40, maximum: 80, step: 1}
+- {id: point_count, type: slider, label: Point count, default: 181, unit: "count", minimum: 61, maximum: 301, step: 20}
+- {id: broken_mode, type: toggle, label: Enable the intentionally broken case, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- {type: prediction, title: Predict before running, text: Predict which constraint will become active before inspecting the result., reveal: "Use the signed residual and limiting-case ledger."}
+- {type: controls, title: Experiment controls}
+- {type: metrics}
+- {type: plot_grid, title: Response and mechanism, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken-case interpretation, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}

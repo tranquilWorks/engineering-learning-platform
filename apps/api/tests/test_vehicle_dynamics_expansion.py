@@ -78,12 +78,8 @@ def test_vehicle_expansion_matches_reviewed_map_and_declares_pending_depth() -> 
     ]
     assert EXPANSION["source_bound_modules"] == 24
     assert EXPANSION["planned_modules"] == 67
-    assert [item["id"] for item in NATIVE] == [
-        f"P{number:02d}" for number in range(25, 61)
-    ]
-    assert EXPANSION["pending_native_modules"] == [
-        f"P{number:02d}" for number in range(61, 68)
-    ]
+    assert [item["id"] for item in NATIVE] == [f"P{number:02d}" for number in range(25, 68)]
+    assert EXPANSION["pending_native_modules"] == []
     map_by_id = {item["id"]: item for item in mapping["modules"]}
     assert [map_by_id[item["id"]]["title"] for item in NATIVE] == [
         "Measure Motion in Body, Path, and Wheel Frames",
@@ -122,6 +118,13 @@ def test_vehicle_expansion_matches_reviewed_map_and_declares_pending_depth() -> 
         "Identify Vehicle Parameters with Validation Splits",
         "Quantify Identifiability, Residuals, and Uncertainty",
         "Diagnose and Recover Corrupt Telemetry",
+        "Build Track Geometry and Curvature",
+        "Construct a Speed-Dependent G-G-V Envelope",
+        "Optimize a Racing Line under Coupled Constraints",
+        "Run a Forward-Backward Lap-Time Simulation",
+        "Compare Setups with Designed Experiments",
+        "Capstone: Validate a Vehicle Model from Telemetry",
+        "Capstone: Calibrate and Predict with a GR86 Digital Twin",
     ]
     assert {
         item_id: map_by_id[item_id]["depends_on"]
@@ -496,7 +499,26 @@ def test_vehicle_native_experiments_reject_nonfinite_and_out_of_range_inputs() -
 def test_vehicle_expansion_catalog_shape() -> None:
     summaries = CourseCatalog([ROOT / "courses"]).summaries()
     assert len(summaries) == 6
-    assert sum(len(course.modules) for course in summaries) == 283
-    assert sum(module.interactive for course in summaries for module in course.modules) == 283
+    assert sum(len(course.modules) for course in summaries) == 290
+    assert sum(module.interactive for course in summaries for module in course.modules) == 290
     vehicle = next(course for course in summaries if course.id == "vehicle-dynamics")
-    assert [module.number for module in vehicle.modules] == list(range(1, 61))
+    assert [module.number for module in vehicle.modules] == list(range(1, 68))
+
+
+def test_vehicle_capstones_close_unique_signed_requirement_traces() -> None:
+    expected = {
+        66: ("CAP-TELEMETRY-VALIDATION", 9, {f"P{n:02d}" for n in range(53, 61)}),
+        67: (
+            "CAP-GR86-DIGITAL-TWIN",
+            11,
+            {"P33", "P37", "P43", "P47", "P50", "P51", "P61", "P63", "P64", "P65", "P66"},
+        ),
+    }
+    for number, (capstone, count, dependencies) in expected.items():
+        root = next((COURSE_ROOT / "modules").glob(f"{number}-*"))
+        trace = _yaml(root / "requirements-trace.yaml")
+        assert trace["capstone"] == capstone
+        assert len(trace["requirements"]) == count
+        assert len({item["id"] for item in trace["requirements"]}) == count
+        traced = {dep for item in trace["requirements"] for dep in item["dependencies"]}
+        assert dependencies <= traced

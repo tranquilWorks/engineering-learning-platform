@@ -24,7 +24,7 @@ SOURCE_TREE = "d9e7267ba02c8d3d836c0ae481b80e91233eb81a"
 CURRICULUM_SHA256 = "c452996e5253ec7e547a64cccd4aa8af60dc5f4106311d1dec25ec8d5c48eba6"
 SOURCE_FILE_SET_SHA256 = "15de22f8396cf978e80e55f2ed7541234804913c81dbef71cb85c81508472d11"
 MAP_SHA256 = "87dae868d7e3a0181062a4fd42ff316513b0f6f35c053cb56b5d73b9c56bde6d"
-ACTIVE_CONTRACT_SHA256 = "cf4f1c64651dc02bda77a41f7e577b5929a8757d293e77babbea58ea8fb4aabd"
+ACTIVE_CONTRACT_SHA256 = "a765bc64aeb6d3a37fd51cfd4f9ea7990aaaaa193d023eccdf24efff07a21064"
 FRAMEWORK_SHA256 = {
     "source-map.yaml": "1533c3a5f78447adb3008796530796ade0da18a4c4bda57e565c82548ff4c298",
     "course.yaml": "8b25d17589cb56bf8c1e2501298d092d9db11aeb6a42f5673f956029d15b5681",
@@ -260,7 +260,7 @@ def test_conversion_ledgers_record_exact_telemetry_batch_transition() -> None:
         assert coverage_item["blocker"] is None
     module_paths = sorted((COURSE_ROOT / "modules").glob("*/module.yaml"))
     assert len([path for path in module_paths if int(path.parent.name[:2]) <= 24]) == 24
-    assert len(module_paths) == 60
+    assert len(module_paths) == 67
 
 
 def test_fixture_identity_provenance_and_privacy_boundary() -> None:
@@ -401,24 +401,24 @@ def test_fixture_verifier_is_generator_independent_and_passes(capsys: Any) -> No
     }
 
 
-def test_telemetry_depth_catalog_is_six_courses_with_sixty_vehicle_modules() -> None:
+def test_completed_vehicle_catalog_is_six_courses_with_sixty_seven_vehicle_modules() -> None:
     catalog = CourseCatalog([ROOT / "courses"])
     summaries = {item.id: item for item in catalog.summaries()}
     assert len(summaries) == 6
-    assert sum(len(item.modules) for item in summaries.values()) == 283
+    assert sum(len(item.modules) for item in summaries.values()) == 290
     assert (
-        sum(module.interactive for course in summaries.values() for module in course.modules) == 283
+        sum(module.interactive for course in summaries.values() for module in course.modules) == 290
     )
-    assert len(summaries["vehicle-dynamics"].modules) == 60
+    assert len(summaries["vehicle-dynamics"].modules) == 67
 
 
-def test_active_contract_is_exact_merged_telemetry_depth_authorization() -> None:
+def test_active_contract_is_exact_merged_terminal_authorization() -> None:
     contract_path = ROOT / "contracts/active-batch.yaml"
     contract = yaml.safe_load(contract_path.read_text(encoding="utf-8"))
     assert _sha256(contract_path) == ACTIVE_CONTRACT_SHA256
-    assert contract["batch"]["id"] == "ELP-VEHICLE-TELEMETRY-P53-P60"
-    assert contract["sources"]["baseline_commit"] == ("8b9f93a1efa279edad6914afbf28283ee0007ee6")
+    assert contract["batch"]["id"] == "ELP-VEHICLE-PERFORMANCE-P61-P67"
+    assert contract["sources"]["baseline_commit"] == ("a917fc6174d18a845f9658ce881ba9138c660c76")
     assert contract["sources"]["competency_map_sha256"] == MAP_SHA256
-    assert "courses/vehicle-dynamics/modules/53-*/**" in contract["scope"]["allowed_paths"]
-    assert "courses/vehicle-dynamics/modules/6[1-9]-*/**" in contract["scope"]["forbidden_paths"]
+    assert "courses/vehicle-dynamics/modules/61-*/**" in contract["scope"]["allowed_paths"]
+    assert "courses/vehicle-dynamics/modules/60-*/**" in contract["scope"]["forbidden_paths"]
     assert contract["validation"]["required_ci"] == []
