@@ -1,4 +1,4 @@
-"""Independent Vehicle Dynamics P25-P60 references.
+"""Independent Vehicle Dynamics P25-P67 references.
 
 This module imports no production experiment, consumes no production result, and
 perturbs no production value. It independently evaluates the retained scalar
@@ -1180,6 +1180,54 @@ def _p60(p: dict[str, Any]) -> list[float]:
     return [float(missing), float(duplicates), float(inversion), float(malformed), float(recovered), 1.0, 0.0]
 
 
+def _p61(p: dict[str, Any]) -> list[float]:
+    a=float(p["major_radius_m"]); n=round(float(p["point_count"])); end=1.8*np.pi if p["broken_mode"] else 2*np.pi; q=np.linspace(0,end,n); b=.6*a; x=a*np.cos(q); y=b*np.sin(q); dx=-a*np.sin(q); dy=b*np.cos(q); ddx=-a*np.cos(q); ddy=-b*np.sin(q); k=(dx*ddy-dy*ddx)/(dx*dx+dy*dy)**1.5; ds=np.hypot(np.diff(x),np.diff(y)); integral=float(np.sum(.5*(k[:-1]+k[1:])*ds))
+    return [float(ds.sum()),float(np.max(np.abs(k))),float(np.mean(k)),float(np.rad2deg(np.unwrap(np.arctan2(dy,dx))[-1]-np.unwrap(np.arctan2(dy,dx))[0])),float(np.hypot(x[-1]-x[0],y[-1]-y[0])),abs(integral-2*np.pi)]
+
+
+def _p62(p: dict[str, Any]) -> list[float]:
+    v=float(p["speed_m_s"]); mu=float(p["friction_coefficient"]); m=1450.; g=9.81; down=.5*1.225*2.*1.25*v*v; drag=.5*1.225*2.*.36*v*v; cap=mu*(m*g+down); accel=max(0.,min(cap,210000./v)-drag)/m; brake=(cap+drag)/m; lat=cap/m; residual=max(0.,(np.hypot(.9,.9) if p["broken_mode"] else 1.)-1.)
+    return [accel,brake,lat,down,drag,residual]
+
+
+def _p63(p: dict[str, Any]) -> list[float]:
+    bound=float(p["maximum_offset_m"]); w=float(p["smoothness_weight"]); s=np.linspace(0,1,160); base=.008+.012*np.sin(2*np.pi*s)**2; candidates=np.linspace(-bound,bound,41); scores=[]
+    for o in candidates:
+        k=base/(1-o*base); length=4200*(1+.0008*o*o); scores.append(length/np.mean(np.sqrt(11.5/np.maximum(k,1e-6)))+w*o*o)
+    offset=float(candidates[int(np.argmin(scores))]); residual=0.
+    if p["broken_mode"]: offset=1.2*bound; residual=offset-bound
+    k=base/(1-offset*base); length=4200*(1+.0008*offset*offset); speed=np.sqrt(11.5/k); baseline=4200/np.mean(np.sqrt(11.5/base))
+    return [offset,length,float(k.max()),float(speed.min()),float(baseline-length/np.mean(speed)),float(bound-abs(offset)),float(max(0,residual))]
+
+
+def _p64(p: dict[str, Any]) -> list[float]:
+    g=float(p["grip_scale"]); e=float(p["energy_limit_mj"]); n=120; ds=30.; s=np.arange(n)*ds; k=.004+.018*(.5+.5*np.sin(2*np.pi*s/s[-1]*3))**2; v=np.sqrt(9.81*g/k); a=3.2*g; b=8.*g
+    for i in range(1,n): v[i]=min(v[i],np.sqrt(v[i-1]**2+2*a*ds),72.)
+    if not p["broken_mode"]:
+        for i in range(n-2,-1,-1): v[i]=min(v[i],np.sqrt(v[i+1]**2+2*b*ds))
+    reach=float(np.max(np.maximum(0.,v[:-1]**2-v[1:]**2-2*b*ds)))+(1.0 if p["broken_mode"] else 0.0); lap=float(np.sum(ds/np.maximum(v,1.))); energy=float(min(e,np.sum((1200*a+180.)*ds)/1e6))
+    return [lap,float(v.min()),float(v.max()),energy,80.+2.2*energy,reach]
+
+
+def _p65(p: dict[str, Any]) -> list[float]:
+    a=float(p["aero_scale"]); t=float(p["tire_scale"]); x=np.array([[-1,-1],[-1,1],[1,-1],[1,1]],float); y=90-2*a*x[:,0]-3*t*x[:,1]-1.2*a*t*x[:,0]*x[:,1]
+    if p["broken_mode"]: X=np.c_[np.ones(2),x[[0,3]]]; coef=np.linalg.lstsq(X,y[[0,3]],rcond=None)[0]; pred=np.c_[np.ones(4),x]@coef; interaction=0.; rank=float(np.linalg.matrix_rank(X))
+    else: X=np.c_[np.ones(4),x,x[:,0]*x[:,1]]; coef=np.linalg.solve(X,y); pred=X@coef; interaction=float(coef[3]); rank=float(np.linalg.matrix_rank(X))
+    return [round(float(v),12) for v in (-2*coef[1],-2*coef[2],-4*interaction,np.sqrt(np.mean((pred-y)**2)),y.min(),rank,abs(pred[-1]-y[-1]))]
+
+
+def _p66(p: dict[str, Any]) -> list[float]:
+    v=float(p["validation_fraction"]); f=float(p["fault_severity"]); status=np.ones(9); residual=.08+.04*f+.02*(.3-v)**2; trace=0.
+    if p["broken_mode"]: status[[1,2,5,7]]=0.; residual+=.45*f; trace=4.
+    return [float(status.sum()),9.,residual,float(status.mean()),float(1+(f>1.4)),trace,float(status[-1])]
+
+
+def _p67(p: dict[str, Any]) -> list[float]:
+    d=float(p["setup_delta"]); u=float(p["uncertainty_fraction"]); lap=92.-20*d; status=np.ones(11); residual=0.
+    if p["broken_mode"]: status[[1,4,7,9]]=0.; residual=.35+d
+    return [float(status.sum()),11.,lap,lap*u,20*d,residual,float(status[-1])]
+
+
 _DISPATCH = {
     25: _p25,
     26: _p26,
@@ -1217,6 +1265,13 @@ _DISPATCH = {
     58: _p58,
     59: _p59,
     60: _p60,
+    61: _p61,
+    62: _p62,
+    63: _p63,
+    64: _p64,
+    65: _p65,
+    66: _p66,
+    67: _p67,
 }
 
 

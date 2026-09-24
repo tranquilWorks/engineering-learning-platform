@@ -130,8 +130,8 @@ def test_lessons_and_catalog_boundary() -> None:
             assert phrase in lesson
     summaries = CourseCatalog([ROOT / "courses"]).summaries()
     assert len(summaries) == 6
-    assert sum(len(course.modules) for course in summaries) == 283
-    assert sum(module.interactive for course in summaries for module in course.modules) == 283
+    assert sum(len(course.modules) for course in summaries) == 290
+    assert sum(module.interactive for course in summaries for module in course.modules) == 290
 
 
 def _run(number: int, **overrides: float | bool) -> list[float]:

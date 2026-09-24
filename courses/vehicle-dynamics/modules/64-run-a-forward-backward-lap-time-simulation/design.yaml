@@ -1,0 +1,28 @@
+schema_version: 1
+item_id: P64
+module: 64-run-a-forward-backward-lap-time-simulation
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- v_curve=sqrt(ay_max/|kappa|)
+- v_next^2<=v^2+2 ax ds
+- t_lap=sum ds/v
+signature:
+- {field: lap_time, unit: "1"}
+- {field: minimum_speed, unit: "1"}
+- {field: maximum_speed, unit: "1"}
+- {field: energy_used, unit: "1"}
+- {field: peak_temperature, unit: "1"}
+- {field: reachability_residual, unit: "1"}
+teaching_invariant: Every segment speed must be reachable through both forward acceleration and backward braking passes.
+limiting_cases:
+- At the lower first-control bound, the governing constraint remains finite and auditable.
+- At the upper second-control bound, the coupled residual remains the decisive validity check.
+scenarios:
+  baseline: {grip_scale: 1.15, energy_limit_mj: 18, broken_mode: false}
+  sweep_1: {grip_scale: 0.8, energy_limit_mj: 18, broken_mode: false}
+  sweep_2: {grip_scale: 1.15, energy_limit_mj: 30, broken_mode: false}
+  broken: {grip_scale: 1.15, energy_limit_mj: 18, broken_mode: true}
+  recovery: {grip_scale: 1.15, energy_limit_mj: 18, broken_mode: false}
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic synthetic software only; no measured vehicle validation, MATLAB, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

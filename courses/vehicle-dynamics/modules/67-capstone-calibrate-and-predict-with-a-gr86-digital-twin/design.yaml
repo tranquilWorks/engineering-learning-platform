@@ -1,0 +1,29 @@
+schema_version: 1
+item_id: P67
+module: 67-capstone-calibrate-and-predict-with-a-gr86-digital-twin
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- t_setup=t_base-Delta t
+- u_t=f_u t
+- pass=all(subsystem ledgers)
+signature:
+- {field: requirements_passed, unit: "1"}
+- {field: requirements_total, unit: "1"}
+- {field: predicted_lap, unit: "1"}
+- {field: uncertainty_bound, unit: "1"}
+- {field: setup_delta_time, unit: "1"}
+- {field: coupled_residual, unit: "1"}
+- {field: recovery_verdict, unit: "1"}
+teaching_invariant: All eleven subsystem-through-prediction requirements must reconcile and be signed.
+limiting_cases:
+- At the lower first-control bound, the governing constraint remains finite and auditable.
+- At the upper second-control bound, the coupled residual remains the decisive validity check.
+scenarios:
+  baseline: {setup_delta: 0.08, uncertainty_fraction: 0.05, broken_mode: false}
+  sweep_1: {setup_delta: 0.02, uncertainty_fraction: 0.05, broken_mode: false}
+  sweep_2: {setup_delta: 0.08, uncertainty_fraction: 0.1, broken_mode: false}
+  broken: {setup_delta: 0.08, uncertainty_fraction: 0.05, broken_mode: true}
+  recovery: {setup_delta: 0.08, uncertainty_fraction: 0.05, broken_mode: false}
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic synthetic software only; no measured vehicle validation, MATLAB, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

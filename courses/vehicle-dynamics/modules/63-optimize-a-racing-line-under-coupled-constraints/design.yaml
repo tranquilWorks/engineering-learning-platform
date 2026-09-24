@@ -1,0 +1,29 @@
+schema_version: 1
+item_id: P63
+module: 63-optimize-a-racing-line-under-coupled-constraints
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- r_line=r_center+n d
+- kappa_line=d psi/ds
+- J=sum ds/v(kappa)+lambda sum Delta d^2
+signature:
+- {field: selected_offset, unit: "1"}
+- {field: line_length, unit: "1"}
+- {field: peak_curvature, unit: "1"}
+- {field: minimum_speed, unit: "1"}
+- {field: time_improvement, unit: "1"}
+- {field: boundary_margin, unit: "1"}
+- {field: feasibility_residual, unit: "1"}
+teaching_invariant: A faster line must remain within track bounds while respecting the speed-dependent envelope.
+limiting_cases:
+- At the lower first-control bound, the governing constraint remains finite and auditable.
+- At the upper second-control bound, the coupled residual remains the decisive validity check.
+scenarios:
+  baseline: {maximum_offset_m: 3, smoothness_weight: 0.5, broken_mode: false}
+  sweep_1: {maximum_offset_m: 1, smoothness_weight: 0.5, broken_mode: false}
+  sweep_2: {maximum_offset_m: 3, smoothness_weight: 1.5, broken_mode: false}
+  broken: {maximum_offset_m: 3, smoothness_weight: 0.5, broken_mode: true}
+  recovery: {maximum_offset_m: 3, smoothness_weight: 0.5, broken_mode: false}
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic synthetic software only; no measured vehicle validation, MATLAB, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.
