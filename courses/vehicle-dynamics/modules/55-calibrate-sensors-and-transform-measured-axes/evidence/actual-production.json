@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "item_id": "P55",
+  "signature_fields": [
+    {
+      "field": "body_longitudinal_acceleration",
+      "unit": "m/s^2"
+    },
+    {
+      "field": "body_lateral_acceleration",
+      "unit": "m/s^2"
+    },
+    {
+      "field": "calibrated_yaw_rate",
+      "unit": "deg/s"
+    },
+    {
+      "field": "rotation_norm_closure",
+      "unit": "m/s^2"
+    },
+    {
+      "field": "calibration_residual",
+      "unit": "mixed"
+    }
+  ],
+  "origin": {
+    "kind": "production-experiment",
+    "independent": false,
+    "imports_production_entrypoint": true,
+    "derived_from_production_output": true,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "yaw_bias_deg_s": 1.5,
+        "mounting_yaw_deg": 8,
+        "broken_mode": false
+      },
+      "signature": [
+        1.2,
+        4.500000000000001,
+        12.0,
+        0.0,
+        8.881784197001252e-16
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "yaw_bias_deg_s": -1.2,
+        "mounting_yaw_deg": 8,
+        "broken_mode": false
+      },
+      "signature": [
+        1.2,
+        4.500000000000001,
+        12.0,
+        0.0,
+        8.881784197001252e-16
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "yaw_bias_deg_s": 1.5,
+        "mounting_yaw_deg": -12,
+        "broken_mode": false
+      },
+      "signature": [
+        1.2,
+        4.5,
+        12.0,
+        0.0,
+        0.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "yaw_bias_deg_s": 1.5,
+        "mounting_yaw_deg": 8,
+        "broken_mode": true
+      },
+      "signature": [
+        -4.313721987361567,
+        1.4246992654998167,
+        13.5,
+        8.881784197001252e-16,
+        7.813367149273971
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "yaw_bias_deg_s": 1.5,
+        "mounting_yaw_deg": 8,
+        "broken_mode": false
+      },
+      "signature": [
+        1.2,
+        4.500000000000001,
+        12.0,
+        0.0,
+        8.881784197001252e-16
+      ]
+    }
+  }
+}

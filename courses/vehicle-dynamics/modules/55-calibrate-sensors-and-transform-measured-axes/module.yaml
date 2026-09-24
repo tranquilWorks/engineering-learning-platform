@@ -1,0 +1,22 @@
+schema_version: 1
+id: 55-calibrate-sensors-and-transform-measured-axes
+number: 55
+title: Calibrate Sensors and Transform Measured Axes
+summary: Remove deterministic sensor bias and rotate measured acceleration and yaw rate into declared vehicle body axes.
+guiding_question: In what order should bias removal, unit conversion, and coordinate rotation occur?
+status: implemented
+tags: [vehicle-dynamics, native-python, telemetry, calibration, frames]
+runtime: {kind: python, entrypoint: "experiment.py:run", trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: yaw_bias_deg_s, type: slider, label: Yaw-rate bias, default: 1.5, unit: deg/s, minimum: -3, maximum: 3, step: 0.1}
+- {id: mounting_yaw_deg, type: slider, label: Sensor mounting yaw, default: 8, unit: deg, minimum: -15, maximum: 15, step: 1}
+- {id: broken_mode, type: toggle, label: Enable the intentionally broken case, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- {type: prediction, title: Predict before running, text: A pure rotation preserves vector norm after sensor bias is removed., reveal: Calibrate in sensor coordinates and rotate with radians exactly once.}
+- {type: controls, title: Sensor calibration controls}
+- {type: metrics}
+- {type: plot_grid, title: Response and mechanism, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken-case interpretation, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}

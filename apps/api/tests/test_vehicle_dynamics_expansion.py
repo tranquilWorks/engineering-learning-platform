@@ -79,10 +79,10 @@ def test_vehicle_expansion_matches_reviewed_map_and_declares_pending_depth() -> 
     assert EXPANSION["source_bound_modules"] == 24
     assert EXPANSION["planned_modules"] == 67
     assert [item["id"] for item in NATIVE] == [
-        f"P{number:02d}" for number in range(25, 53)
+        f"P{number:02d}" for number in range(25, 61)
     ]
     assert EXPANSION["pending_native_modules"] == [
-        f"P{number:02d}" for number in range(53, 68)
+        f"P{number:02d}" for number in range(61, 68)
     ]
     map_by_id = {item["id"]: item for item in mapping["modules"]}
     assert [map_by_id[item["id"]]["title"] for item in NATIVE] == [
@@ -114,6 +114,14 @@ def test_vehicle_expansion_matches_reviewed_map_and_declares_pending_depth() -> 
         "Predict Brake Temperature, Fade, and Cooling",
         "Map Aero Balance and Ride-Height Sensitivity",
         "Couple Downforce, Drag, Tires, and Stint Limits",
+        "Replay and Decode GR86 CAN/BLE Telemetry",
+        "Align Clocks, Rates, and Dropped Packets",
+        "Calibrate Sensors and Transform Measured Axes",
+        "Reconstruct a Driven Trajectory",
+        "Estimate Sideslip and Vehicle State",
+        "Identify Vehicle Parameters with Validation Splits",
+        "Quantify Identifiability, Residuals, and Uncertainty",
+        "Diagnose and Recover Corrupt Telemetry",
     ]
     assert {
         item_id: map_by_id[item_id]["depends_on"]
@@ -128,6 +136,19 @@ def test_vehicle_expansion_matches_reviewed_map_and_declares_pending_depth() -> 
         "P50": ["P15", "P48"],
         "P51": ["P16", "P39"],
         "P52": ["P16", "P29", "P31", "P50", "P51"],
+    }
+    assert {
+        item_id: map_by_id[item_id]["depends_on"]
+        for item_id in [f"P{number:02d}" for number in range(53, 61)]
+    } == {
+        "P53": ["P17"],
+        "P54": ["P17", "P53"],
+        "P55": ["P18", "P25", "P54"],
+        "P56": ["P18", "P55"],
+        "P57": ["P19", "P34", "P55", "P56"],
+        "P58": ["P20", "P57"],
+        "P59": ["P20", "P33", "P58"],
+        "P60": ["P53", "P54", "P59"],
     }
 
 
@@ -412,6 +433,54 @@ def test_vehicle_propulsion_braking_aero_invariants_and_named_failures() -> None
     assert stint_broken[5] > 1.0
 
 
+def test_vehicle_telemetry_estimation_identification_invariants_and_failures() -> None:
+    runtime = ExperimentRuntime(CourseCatalog([ROOT / "courses"]))
+
+    replay = _signature(runtime, 53, {"broken_mode": False})
+    replay_broken = _signature(runtime, 53, {"broken_mode": True})
+    assert replay[3] == replay[5] == 0.0 and replay[4] == 1.0
+    assert replay_broken[3] == 0.0 and replay_broken[4] == 1.0
+    assert replay_broken[5] > 1000.0
+
+    alignment = _signature(runtime, 54, {"broken_mode": False})
+    alignment_broken = _signature(runtime, 54, {"broken_mode": True})
+    assert alignment[5] == 0.0 and alignment[4] < alignment_broken[4]
+    assert alignment_broken[5] == 12.0
+
+    calibration = _signature(runtime, 55, {"broken_mode": False})
+    calibration_broken = _signature(runtime, 55, {"broken_mode": True})
+    assert calibration[3] < 1e-12 and calibration[4] < 1e-12
+    assert calibration_broken[4] > 5.0
+
+    trajectory = _signature(runtime, 56, {"broken_mode": False})
+    trajectory_broken = _signature(runtime, 56, {"broken_mode": True})
+    assert trajectory[4] < 0.1 and trajectory[5] < 0.1
+    assert trajectory_broken[4] > 50.0 and trajectory_broken[5] > 50.0
+
+    state = _signature(runtime, 57, {"broken_mode": False})
+    state_broken = _signature(runtime, 57, {"broken_mode": True})
+    assert state[0] < 0.0 < state_broken[0]
+    assert state_broken[6] > state[6]
+
+    identification = _signature(runtime, 58, {"broken_mode": False})
+    identification_broken = _signature(runtime, 58, {"broken_mode": True})
+    assert identification[5] == 0.0
+    assert identification_broken[5] > 0.0
+    assert identification_broken[2] == identification_broken[3]
+
+    uncertainty = _signature(runtime, 59, {"broken_mode": False})
+    uncertainty_broken = _signature(runtime, 59, {"broken_mode": True})
+    assert uncertainty[6] == 0.0 and uncertainty[5] == 1.0
+    assert uncertainty_broken[4] < uncertainty[4]
+    assert uncertainty_broken[5] < uncertainty[5] and uncertainty_broken[6] > 1e6
+
+    recovery = _signature(runtime, 60, {"broken_mode": False})
+    recovery_broken = _signature(runtime, 60, {"broken_mode": True})
+    assert recovery == [2.0, 1.0, 1.0, 1.0, 307.0, 1.0, 0.0]
+    assert recovery_broken[:4] == [0.0, 0.0, 0.0, 0.0]
+    assert recovery_broken[4] == 309.0 and recovery_broken[6] > 0.0
+
+
 def test_vehicle_native_experiments_reject_nonfinite_and_out_of_range_inputs() -> None:
     for item in NATIVE:
         root = COURSE_ROOT / item["folder"]
@@ -427,7 +496,7 @@ def test_vehicle_native_experiments_reject_nonfinite_and_out_of_range_inputs() -
 def test_vehicle_expansion_catalog_shape() -> None:
     summaries = CourseCatalog([ROOT / "courses"]).summaries()
     assert len(summaries) == 6
-    assert sum(len(course.modules) for course in summaries) == 275
-    assert sum(module.interactive for course in summaries for module in course.modules) == 275
+    assert sum(len(course.modules) for course in summaries) == 283
+    assert sum(module.interactive for course in summaries for module in course.modules) == 283
     vehicle = next(course for course in summaries if course.id == "vehicle-dynamics")
-    assert [module.number for module in vehicle.modules] == list(range(1, 53))
+    assert [module.number for module in vehicle.modules] == list(range(1, 61))

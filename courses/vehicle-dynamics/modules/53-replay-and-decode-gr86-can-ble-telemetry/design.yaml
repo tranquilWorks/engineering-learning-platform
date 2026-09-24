@@ -1,0 +1,28 @@
+schema_version: 1
+item_id: P53
+module: 53-replay-and-decode-gr86-can-ble-telemetry
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- BLE=[CAN_ID_little_endian(4 bytes),CAN_payload]
+- engine_speed=uint16_big_endian(bytes[0:2]) scale
+- parity=(sequence,time,CAN_ID,payload)_CAN==(sequence,time,CAN_ID,payload)_BLE
+signature:
+- {field: replayed_records, unit: record}
+- {field: last_engine_speed, unit: rpm}
+- {field: mean_wheel_speed, unit: km/h}
+- {field: parity_failures, unit: record}
+- {field: synthetic_fixture_provenance_verified, unit: "1"}
+- {field: decode_rmse, unit: engineering_unit}
+teaching_invariant: Transport byte identity is necessary but does not prove that signal byte order, scale, and unit interpretation are correct.
+limiting_cases:
+- At the minimum limit the replay remains ordered and includes both engine and wheel-speed frames.
+- With documented scale and byte order the engineering-value residual is zero to numerical precision.
+scenarios:
+  baseline: {record_limit: 60, engine_scale_rpm_count: 0.25, broken_mode: false}
+  sweep_1: {record_limit: 96, engine_scale_rpm_count: 0.25, broken_mode: false}
+  sweep_2: {record_limit: 60, engine_scale_rpm_count: 0.27, broken_mode: false}
+  broken: {record_limit: 60, engine_scale_rpm_count: 0.25, broken_mode: true}
+  recovery: {record_limit: 60, engine_scale_rpm_count: 0.25, broken_mode: false}
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic synthetic protocol-fixture software only; no captured vehicle, firmware, BLE radio, CAN electrical, RaceChrono, MATLAB, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

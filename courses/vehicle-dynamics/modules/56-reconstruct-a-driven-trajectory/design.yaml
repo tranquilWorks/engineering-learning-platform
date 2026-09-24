@@ -1,0 +1,28 @@
+schema_version: 1
+item_id: P56
+module: 56-reconstruct-a-driven-trajectory
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- psi[k+1]=psi[k]+r[k]Delta_t
+- p_predict[k+1]=p[k]+v[k][cos(psi[k]),sin(psi[k])]Delta_t
+- p[k+1]=p_predict[k+1]+K_gps(p_gps[k+1]-p_predict[k+1])Delta_t
+signature:
+- {field: final_east_position, unit: m}
+- {field: final_north_position, unit: m}
+- {field: final_heading, unit: deg}
+- {field: integrated_path_length, unit: m}
+- {field: endpoint_error, unit: m}
+- {field: trajectory_closure_rms, unit: m}
+teaching_invariant: Timestamp spacing, yaw-rate units, heading convention, and body-to-inertial rotation remain consistent through every integration step.
+limiting_cases:
+- With zero position-correction gain the result is pure dead reckoning on the declared grid.
+- With zero yaw rate the reconstructed path is straight along the initial heading.
+scenarios:
+  baseline: {initial_heading_deg: 15, gps_blend: 0.12, broken_mode: false}
+  sweep_1: {initial_heading_deg: -10, gps_blend: 0.12, broken_mode: false}
+  sweep_2: {initial_heading_deg: 15, gps_blend: 0.25, broken_mode: false}
+  broken: {initial_heading_deg: 15, gps_blend: 0.12, broken_mode: true}
+  recovery: {initial_heading_deg: 15, gps_blend: 0.12, broken_mode: false}
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic synthetic trajectory software only; no real GNSS, IMU, route, driver, vehicle, MATLAB, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

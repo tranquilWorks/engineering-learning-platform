@@ -1,4 +1,4 @@
-"""Independent Vehicle Dynamics P25-P52 references.
+"""Independent Vehicle Dynamics P25-P60 references.
 
 This module imports no production experiment, consumes no production result, and
 perturbs no production value. It independently evaluates the retained scalar
@@ -958,6 +958,228 @@ def _p52(p: dict[str, Any]) -> list[float]:
     ]
 
 
+def _encode_u16(value: float) -> tuple[int, int]:
+    integer = round(value)
+    return integer, ((integer & 255) << 8) + (integer >> 8)
+
+
+def _p53(p: dict[str, Any]) -> list[float]:
+    limit = round(float(p["record_limit"]))
+    scale = float(p["engine_scale_rpm_count"])
+    broken = bool(p["broken_mode"])
+    engine_decoded: list[float] = []
+    engine_expected: list[float] = []
+    wheel_decoded: list[float] = []
+    wheel_expected: list[float] = []
+    sequence = 0
+    for tick in range(101):
+        time = 0.02 * tick
+        for identifier, divisor in (
+            (0x118, 2),
+            (0x139, 1),
+            (0x241, 2),
+            (0x2D2, 3),
+            (0x390, 5),
+            (0x710, 2),
+        ):
+            if tick % divisor:
+                continue
+            if sequence >= limit:
+                residuals = np.concatenate(
+                    (
+                        np.asarray(engine_decoded) - engine_expected,
+                        np.asarray(wheel_decoded) - wheel_expected,
+                    )
+                )
+                return [
+                    float(limit),
+                    float(engine_decoded[-1]),
+                    float(np.mean(wheel_decoded)),
+                    0.0,
+                    1.0,
+                    float(np.sqrt(np.mean(residuals**2))),
+                ]
+            if identifier == 0x118:
+                rpm = 2600.0 + 900.0 * time if time <= 1.15 else 3635.0 - 700.0 * (time - 1.15)
+                big, little = _encode_u16(4.0 * np.clip(rpm, 0.0, 16000.0))
+                raw = little if broken else big
+                engine_decoded.append(raw * scale)
+                engine_expected.append(big / 4.0)
+            elif identifier == 0x139:
+                center = 36.0 + 15.0 * time if time <= 1.2 else 54.0 - 10.0 * (time - 1.2)
+                turn = np.sin(np.pi * time / 2.0)
+                slip = 0.7 if time < 1.0 else 0.0
+                speeds = (
+                    center - 0.35 * turn,
+                    center + 0.35 * turn,
+                    center - 0.45 * turn + slip,
+                    center + 0.45 * turn + slip,
+                )
+                encoded = [_encode_u16(128.0 * np.clip(value, 0.0, 511.99)) for value in speeds]
+                wheel_decoded.append(float(np.mean([(little if broken else big) / 128.0 for big, little in encoded])))
+                wheel_expected.append(float(np.mean([big / 128.0 for big, _ in encoded])))
+            sequence += 1
+    raise AssertionError("record limit exceeds independent fixture schedule")
+
+
+def _p54(p: dict[str, Any]) -> list[float]:
+    offset = float(p["clock_offset_ms"]) / 1000.0
+    period = round(float(p["drop_period"]))
+    reference_time = np.arange(101, dtype=float) * 0.02
+    truth = np.sin(2.0 * np.pi * 0.7 * reference_time) + 0.2 * np.cos(2.0 * np.pi * 1.3 * reference_time)
+    source_time = reference_time + offset
+    keep = np.ones(reference_time.size, dtype=bool)
+    keep[period::period] = False
+    observed_time = source_time[keep]
+    aligned_time = observed_time if bool(p["broken_mode"]) else observed_time - offset
+    reconstructed = np.interp(reference_time, aligned_time, truth[keep])
+    recovered_offset = 0.0 if bool(p["broken_mode"]) else offset
+    return [
+        1000.0 * recovered_offset,
+        float(np.count_nonzero(~keep)),
+        float(reference_time.size),
+        1000.0 * float(np.max(np.diff(aligned_time))),
+        float(np.sqrt(np.mean((reconstructed - truth) ** 2))),
+        1000.0 * abs(recovered_offset - offset),
+    ]
+
+
+def _p55(p: dict[str, Any]) -> list[float]:
+    bias = float(p["yaw_bias_deg_s"])
+    mounting = float(p["mounting_yaw_deg"])
+    broken = bool(p["broken_mode"])
+    truth = np.array((1.20, 4.50))
+    sensor_bias = np.array((0.15, -0.10))
+    sensor_scale = np.array((1.04, 0.97))
+    measured = sensor_scale * _rotation(-np.deg2rad(mounting)).dot(truth) + sensor_bias
+    used_angle = mounting if broken else np.deg2rad(mounting)
+    used_vector = measured if broken else (measured - sensor_bias) / sensor_scale
+    body = _rotation(used_angle).dot(used_vector)
+    yaw = 12.0 + bias if broken else 12.0
+    return [
+        float(body[0]),
+        float(body[1]),
+        yaw,
+        float(abs(np.linalg.norm(body) - np.linalg.norm(used_vector))),
+        float(np.linalg.norm(body - truth) + abs(yaw - 12.0)),
+    ]
+
+
+def _p56(p: dict[str, Any]) -> list[float]:
+    initial = float(p["initial_heading_deg"])
+    blend = float(p["gps_blend"])
+    broken = bool(p["broken_mode"])
+    step, samples = 0.05, 241
+    time = np.arange(samples, dtype=float) * step
+    speed = 15.0 + 2.0 * np.sin(0.35 * time)
+    yaw_deg_s = 8.0 * np.sin(0.28 * time) + 1.5
+    truth_x, truth_y, truth_heading = np.zeros(samples), np.zeros(samples), np.zeros(samples)
+    truth_heading[0] = np.deg2rad(initial)
+    for index in range(1, samples):
+        truth_heading[index] = truth_heading[index - 1] + np.deg2rad(yaw_deg_s[index - 1]) * step
+        truth_x[index] = truth_x[index - 1] + speed[index - 1] * np.cos(truth_heading[index - 1]) * step
+        truth_y[index] = truth_y[index - 1] + speed[index - 1] * np.sin(truth_heading[index - 1]) * step
+    gps_x = truth_x + 0.40 * np.sin(0.9 * time)
+    gps_y = truth_y + 0.35 * np.cos(0.7 * time)
+    x, y, heading = np.zeros(samples), np.zeros(samples), np.zeros(samples)
+    heading[0] = initial if broken else np.deg2rad(initial)
+    for index in range(1, samples):
+        yaw = yaw_deg_s[index - 1] if broken else np.deg2rad(yaw_deg_s[index - 1])
+        heading[index] = heading[index - 1] + yaw * step
+        x_predict = x[index - 1] + speed[index - 1] * np.cos(heading[index - 1]) * step
+        y_predict = y[index - 1] + speed[index - 1] * np.sin(heading[index - 1]) * step
+        x[index] = x_predict + blend * (gps_x[index] - x_predict) * step
+        y[index] = y_predict + blend * (gps_y[index] - y_predict) * step
+    return [
+        float(x[-1]),
+        float(y[-1]),
+        float(heading[-1] if broken else np.rad2deg(heading[-1])),
+        float(np.sum(speed[:-1]) * step),
+        float(np.hypot(x[-1] - truth_x[-1], y[-1] - truth_y[-1])),
+        float(np.sqrt(np.mean((x - truth_x) ** 2 + (y - truth_y) ** 2))),
+    ]
+
+
+def _p57(p: dict[str, Any]) -> list[float]:
+    gain = float(p["observer_gain"])
+    noise = float(p["measurement_noise"])
+    step, samples = 0.02, 301
+    time = np.arange(samples, dtype=float) * step
+    matrix = np.array(((-1.10, -0.35, 0.20), (0.80, -1.60, 0.10), (0.0, 0.0, -0.25)))
+    vector = np.array((0.70, 1.30, 0.12))
+    steering = 0.045 * np.sin(0.85 * time) + 0.018 * np.sin(1.90 * time)
+    truth = np.zeros((samples, 3), dtype=float)
+    for index in range(1, samples):
+        truth[index] = truth[index - 1] + step * (matrix.dot(truth[index - 1]) + vector * steering[index - 1])
+    pattern = np.column_stack((np.sin(2.7 * time) + 0.35 * np.cos(5.1 * time), np.cos(2.2 * time) - 0.25 * np.sin(4.6 * time), 0.45 * np.sin(1.4 * time)))
+    measured = truth + noise * pattern
+    if bool(p["broken_mode"]):
+        measured[:, 0] *= -1.0
+    estimate, innovation = np.zeros_like(truth), np.zeros_like(truth)
+    covariance = np.eye(3) * 0.25
+    used_gain = np.diag((gain, 0.75 * gain, 0.45 * gain))
+    for index in range(1, samples):
+        predicted = estimate[index - 1] + step * (matrix.dot(estimate[index - 1]) + vector * steering[index - 1])
+        innovation[index] = measured[index] - predicted
+        estimate[index] = predicted + used_gain.dot(innovation[index])
+        covariance = (np.eye(3) - used_gain).dot(covariance + np.diag((2.0e-5, 4.0e-5, 1.0e-5)))
+    error = estimate - truth
+    return [
+        float(np.rad2deg(estimate[-1, 0])),
+        float(np.rad2deg(estimate[-1, 1])),
+        float(np.rad2deg(estimate[-1, 2])),
+        float(np.rad2deg(np.sqrt(np.mean(error[:, 0] ** 2)))),
+        float(np.rad2deg(np.sqrt(np.mean(error[:, 1] ** 2)))),
+        float(np.trace(covariance)),
+        float(np.sqrt(np.mean(innovation**2))),
+    ]
+
+
+def _p58(p: dict[str, Any]) -> list[float]:
+    fraction, noise = float(p["training_fraction"]), float(p["observation_noise_n"])
+    index = np.arange(80, dtype=float)
+    matrix = np.column_stack((0.032 * np.sin(0.19 * index) + 0.011 * np.cos(0.47 * index), 0.025 * np.cos(0.17 * index) - 0.009 * np.sin(0.41 * index)))
+    observed = matrix.dot(np.array((80000.0, 70000.0))) + noise * (np.sin(1.73 * index) + 0.4 * np.cos(0.63 * index))
+    train_count = round(80 * fraction)
+    fit_matrix = matrix if bool(p["broken_mode"]) else matrix[:train_count]
+    fit_observed = observed if bool(p["broken_mode"]) else observed[:train_count]
+    estimate = np.linalg.lstsq(fit_matrix, fit_observed, rcond=None)[0]
+    predicted = matrix.dot(estimate)
+    train_rmse = float(np.sqrt(np.mean((predicted[:train_count] - observed[:train_count]) ** 2)))
+    validation_rmse = train_rmse if bool(p["broken_mode"]) else float(np.sqrt(np.mean((predicted[train_count:] - observed[train_count:]) ** 2)))
+    return [float(estimate[0]), float(estimate[1]), train_rmse, validation_rmse, float(train_count), float(80 - train_count if bool(p["broken_mode"]) else 0)]
+
+
+def _p59(p: dict[str, Any]) -> list[float]:
+    excitation, sigma = float(p["excitation_level"]), float(p["noise_sigma_n"])
+    index = np.arange(60, dtype=float)
+    matrix = np.column_stack((excitation * (0.030 * np.sin(0.25 * index) + 0.008 * np.cos(0.53 * index)), excitation * (0.028 * np.sin(0.25 * index + 0.16) + 0.004 * np.cos(0.91 * index))))
+    truth = np.array((78000.0, 68000.0))
+    observed = matrix.dot(truth) + sigma * (0.75 * np.sin(1.31 * index) + 0.35 * np.cos(0.29 * index))
+    estimate, _, _, singular = np.linalg.lstsq(matrix, observed, rcond=None)
+    residual = observed - matrix.dot(estimate)
+    used_sigma = 0.10 * sigma if bool(p["broken_mode"]) else sigma
+    covariance = used_sigma**2 * (np.linalg.inv(matrix.T.dot(matrix)) if bool(p["broken_mode"]) else np.linalg.pinv(matrix.T.dot(matrix)))
+    standard = np.sqrt(np.diag(covariance))
+    physical_covariance = sigma**2 * np.linalg.pinv(matrix.T.dot(matrix))
+    return [float(singular[0] / singular[-1]), float(singular[-1]), float(np.sqrt(np.mean(residual**2))), float(np.corrcoef(residual[:-1], residual[1:])[0, 1]), float(np.mean(standard)), float(np.mean(np.abs(estimate - truth) <= 1.96 * standard)), float(np.linalg.norm(covariance - physical_covariance))]
+
+
+def _p60(p: dict[str, Any]) -> list[float]:
+    limit = round(float(p["inspection_limit"]))
+    window = round(float(p["reorder_window"]))
+    missing = int(limit > 37) + int(limit > 89)
+    duplicates = int(limit > 52)
+    inversion = int(limit > 72)
+    malformed = int(limit > 89)
+    corrupted_count = limit - int(limit > 37) + duplicates
+    recovered = limit - missing - int(inversion and window < 1)
+    if bool(p["broken_mode"]):
+        residual = 2 + 1 + 1 + 1 + abs(corrupted_count - (limit - 2)) + 1
+        return [0.0, 0.0, 0.0, 0.0, float(corrupted_count), 0.0, float(residual)]
+    return [float(missing), float(duplicates), float(inversion), float(malformed), float(recovered), 1.0, 0.0]
+
+
 _DISPATCH = {
     25: _p25,
     26: _p26,
@@ -987,6 +1209,14 @@ _DISPATCH = {
     50: _p50,
     51: _p51,
     52: _p52,
+    53: _p53,
+    54: _p54,
+    55: _p55,
+    56: _p56,
+    57: _p57,
+    58: _p58,
+    59: _p59,
+    60: _p60,
 }
 
 

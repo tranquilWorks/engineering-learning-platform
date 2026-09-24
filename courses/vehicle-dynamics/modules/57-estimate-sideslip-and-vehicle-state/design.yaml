@@ -1,0 +1,29 @@
+schema_version: 1
+item_id: P57
+module: 57-estimate-sideslip-and-vehicle-state
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- x_predict[k+1]=x_hat[k]+Delta_t(A x_hat[k]+B delta[k])
+- innovation[k+1]=z[k+1]-x_predict[k+1]
+- x_hat[k+1]=x_predict[k+1]+K innovation[k+1]
+signature:
+- {field: final_sideslip, unit: deg}
+- {field: final_yaw_rate, unit: deg/s}
+- {field: estimated_steering_bias_state, unit: deg}
+- {field: sideslip_rmse, unit: deg}
+- {field: yaw_rate_rmse, unit: deg/s}
+- {field: covariance_trace, unit: "rad^2"}
+- {field: innovation_rms, unit: rad}
+teaching_invariant: State order, measurement sign, update timing, and uncertainty propagation must agree with the physical sideslip and yaw definitions.
+limiting_cases:
+- At the minimum gain the observer relies more heavily on model prediction and responds slowly to measurements.
+- As measurement disturbance increases the innovation and state errors increase for fixed gain.
+scenarios:
+  baseline: {observer_gain: 0.35, measurement_noise: 0.08, broken_mode: false}
+  sweep_1: {observer_gain: 0.65, measurement_noise: 0.08, broken_mode: false}
+  sweep_2: {observer_gain: 0.35, measurement_noise: 0.15, broken_mode: false}
+  broken: {observer_gain: 0.35, measurement_noise: 0.08, broken_mode: true}
+  recovery: {observer_gain: 0.35, measurement_noise: 0.08, broken_mode: false}
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic synthetic state-estimation software only; no measured sensor, observer tuning, vehicle validation, MATLAB, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

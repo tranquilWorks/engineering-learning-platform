@@ -1,0 +1,29 @@
+schema_version: 1
+item_id: P60
+module: 60-diagnose-and-recover-corrupt-telemetry
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- missing=expected_sequences-valid_unique_sequences
+- malformed={k where payload_length(k)!=4+DLC(k)}
+- recovered=sort(unique(valid_packets)) subject to bounded reorder window
+signature:
+- {field: missing_sequences, unit: record}
+- {field: duplicate_sequences, unit: record}
+- {field: out_of_order_pairs, unit: pair}
+- {field: malformed_payloads, unit: record}
+- {field: recovered_valid_records, unit: record}
+- {field: fixture_provenance_verified, unit: "1"}
+- {field: diagnostic_ledger_residual, unit: record}
+teaching_invariant: Missing, duplicate, inverted, and malformed records remain distinct diagnostics, and recovery never fabricates an absent valid payload.
+limiting_cases:
+- Before a fault sequence enters the inspection window that fault count remains zero.
+- A zero reorder window cannot accept an adjacent inversion as a recovered ordered record.
+scenarios:
+  baseline: {inspection_limit: 309, reorder_window: 2, broken_mode: false}
+  sweep_1: {inspection_limit: 180, reorder_window: 2, broken_mode: false}
+  sweep_2: {inspection_limit: 309, reorder_window: 0, broken_mode: false}
+  broken: {inspection_limit: 309, reorder_window: 2, broken_mode: true}
+  recovery: {inspection_limit: 309, reorder_window: 2, broken_mode: false}
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic synthetic fixture-recovery software only; no captured drive, firmware, BLE radio, CAN electrical, vehicle validation, MATLAB, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

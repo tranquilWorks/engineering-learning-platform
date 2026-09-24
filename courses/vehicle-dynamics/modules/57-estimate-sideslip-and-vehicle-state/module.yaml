@@ -1,0 +1,22 @@
+schema_version: 1
+id: 57-estimate-sideslip-and-vehicle-state
+number: 57
+title: Estimate Sideslip and Vehicle State
+summary: Estimate coupled sideslip and yaw rate with a bounded predictor-corrector observer and uncertainty ledger.
+guiding_question: Why can a stable observer still estimate the wrong physical state?
+status: implemented
+tags: [vehicle-dynamics, native-python, estimation, sideslip, observer]
+runtime: {kind: python, entrypoint: "experiment.py:run", trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: observer_gain, type: slider, label: Innovation gain, default: 0.35, unit: "1", minimum: 0.10, maximum: 0.80, step: 0.05}
+- {id: measurement_noise, type: slider, label: Measurement disturbance, default: 0.08, unit: rad, minimum: 0.02, maximum: 0.20, step: 0.01}
+- {id: broken_mode, type: toggle, label: Enable the intentionally broken case, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- {type: prediction, title: Predict before running, text: Stability does not repair a reversed measurement sign., reveal: Preserve state order and sign while closing the innovation and covariance ledgers.}
+- {type: controls, title: State-estimation controls}
+- {type: metrics}
+- {type: plot_grid, title: Response and mechanism, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken-case interpretation, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}

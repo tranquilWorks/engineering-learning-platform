@@ -1,0 +1,22 @@
+schema_version: 1
+id: 60-diagnose-and-recover-corrupt-telemetry
+number: 60
+title: Diagnose and Recover Corrupt Telemetry
+summary: Inject and diagnose missing, duplicate, inverted, and malformed telemetry before bounded deterministic recovery.
+guiding_question: Which corruptions can be recovered without inventing measurements?
+status: implemented
+tags: [vehicle-dynamics, native-python, telemetry, diagnostics, recovery]
+runtime: {kind: python, entrypoint: "experiment.py:run", trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: inspection_limit, type: slider, label: Inspected record limit, default: 309, unit: record, minimum: 100, maximum: 309, step: 1}
+- {id: reorder_window, type: slider, label: Reorder window, default: 2, unit: sequence, minimum: 0, maximum: 4, step: 1}
+- {id: broken_mode, type: toggle, label: Enable the intentionally broken case, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- {type: prediction, title: Predict before running, text: Deduplication and reordering cannot repair a malformed payload., reveal: Diagnose each fault class separately and never invent the missing measurement.}
+- {type: controls, title: Fault-recovery controls}
+- {type: metrics}
+- {type: plot_grid, title: Response and mechanism, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken-case interpretation, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}

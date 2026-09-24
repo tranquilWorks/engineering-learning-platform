@@ -1,0 +1,28 @@
+schema_version: 1
+item_id: P58
+module: 58-identify-vehicle-parameters-with-validation-splits
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- F_y=X[C_front,C_rear]^T+epsilon
+- theta_hat=argmin_theta ||X_train theta-y_train||_2
+- RMSE_validation=sqrt(mean((X_validation theta_hat-y_validation)^2))
+signature:
+- {field: front_stiffness_estimate, unit: N/rad}
+- {field: rear_stiffness_estimate, unit: N/rad}
+- {field: training_rmse, unit: N}
+- {field: validation_rmse, unit: N}
+- {field: training_samples, unit: sample}
+- {field: leaked_future_samples, unit: sample}
+teaching_invariant: The chronological validation segment remains untouched until all model fitting and parameter selection are complete.
+limiting_cases:
+- A larger training fraction leaves fewer future samples for the independent validation score.
+- With vanishing disturbance and sufficient excitation both stiffness estimates approach their declared synthetic values.
+scenarios:
+  baseline: {training_fraction: 0.65, observation_noise_n: 50, broken_mode: false}
+  sweep_1: {training_fraction: 0.75, observation_noise_n: 50, broken_mode: false}
+  sweep_2: {training_fraction: 0.65, observation_noise_n: 100, broken_mode: false}
+  broken: {training_fraction: 0.65, observation_noise_n: 50, broken_mode: true}
+  recovery: {training_fraction: 0.65, observation_noise_n: 50, broken_mode: false}
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic synthetic identification software only; no measured force, parameter validity, vehicle validation, MATLAB, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "item_id": "P58",
+  "signature_fields": [
+    {
+      "field": "front_stiffness_estimate",
+      "unit": "N/rad"
+    },
+    {
+      "field": "rear_stiffness_estimate",
+      "unit": "N/rad"
+    },
+    {
+      "field": "training_rmse",
+      "unit": "N"
+    },
+    {
+      "field": "validation_rmse",
+      "unit": "N"
+    },
+    {
+      "field": "training_samples",
+      "unit": "sample"
+    },
+    {
+      "field": "leaked_future_samples",
+      "unit": "sample"
+    }
+  ],
+  "origin": {
+    "kind": "independent-analytic-and-numerical-python",
+    "item_id": "P58",
+    "independent": true,
+    "imports_production_entrypoint": false,
+    "derived_from_production_output": false,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "training_fraction": 0.65,
+        "observation_noise_n": 50,
+        "broken_mode": false
+      },
+      "signature": [
+        79988.14498135369,
+        70044.06777942451,
+        37.94791401318336,
+        38.24206302057825,
+        52.0,
+        0.0
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "training_fraction": 0.75,
+        "observation_noise_n": 50,
+        "broken_mode": false
+      },
+      "signature": [
+        79941.7480507164,
+        70082.01838316827,
+        38.534531866436446,
+        36.517570405920246,
+        60.0,
+        0.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "training_fraction": 0.65,
+        "observation_noise_n": 100,
+        "broken_mode": false
+      },
+      "signature": [
+        79976.28996270735,
+        70088.13555884898,
+        75.89582802636664,
+        76.48412604115651,
+        52.0,
+        0.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "training_fraction": 0.65,
+        "observation_noise_n": 50,
+        "broken_mode": true
+      },
+      "signature": [
+        79937.40121702936,
+        70076.29592101678,
+        37.96048496142637,
+        37.96048496142637,
+        52.0,
+        28.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "training_fraction": 0.65,
+        "observation_noise_n": 50,
+        "broken_mode": false
+      },
+      "signature": [
+        79988.14498135369,
+        70044.06777942451,
+        37.94791401318336,
+        38.24206302057825,
+        52.0,
+        0.0
+      ]
+    }
+  }
+}

@@ -1,0 +1,22 @@
+schema_version: 1
+id: 53-replay-and-decode-gr86-can-ble-telemetry
+number: 53
+title: Replay and Decode GR86 CAN/BLE Telemetry
+summary: Replay a provenance-bearing synthetic GR86 protocol fixture, verify CAN/BLE packet identity, and decode engineering values.
+guiding_question: How can transport parity pass while engineering-value decoding is still wrong?
+status: implemented
+tags: [vehicle-dynamics, native-python, telemetry, can, ble]
+runtime: {kind: python, entrypoint: "experiment.py:run", trust: local-trusted, timeout_seconds: 3}
+controls:
+- {id: record_limit, type: slider, label: Replay record limit, default: 60, unit: record, minimum: 12, maximum: 120, step: 1}
+- {id: engine_scale_rpm_count, type: slider, label: Engine-speed scale, default: 0.25, unit: rpm/count, minimum: 0.20, maximum: 0.30, step: 0.01}
+- {id: broken_mode, type: toggle, label: Enable the intentionally broken case, default: false}
+blocks:
+- {type: markdown, source: lesson.md}
+- {type: prediction, title: Predict before running, text: Packet equality and correct signal decoding are separate invariants., reveal: Check framing first and then apply documented byte order and scale.}
+- {type: controls, title: Replay and decode controls}
+- {type: metrics}
+- {type: plot_grid, title: Response and mechanism, plots: [response, mechanism]}
+- {type: callout, tone: info, title: Current interpretation, source: observation}
+- {type: callout, tone: warning, title: Broken-case interpretation, source: broken}
+- {type: callout, tone: success, title: Recovery, source: recovery}

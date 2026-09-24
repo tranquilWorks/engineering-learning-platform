@@ -1,0 +1,29 @@
+schema_version: 1
+item_id: P59
+module: 59-quantify-identifiability-residuals-and-uncertainty
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- kappa(X)=sigma_max(X)/sigma_min(X)
+- r=y-X theta_hat
+- Cov(theta_hat)=sigma_force^2 pinv(X^T X)
+signature:
+- {field: design_condition_number, unit: "1"}
+- {field: minimum_singular_value, unit: rad}
+- {field: residual_rms, unit: N}
+- {field: residual_lag_one_correlation, unit: "1"}
+- {field: mean_parameter_standard_uncertainty, unit: N/rad}
+- {field: nominal_interval_coverage, unit: fraction}
+- {field: covariance_ledger_residual, unit: "(N/rad)^2"}
+teaching_invariant: Parameter claims require sufficient excitation, structured-residual inspection, declared noise scale, and covariance coverage rather than fit error alone.
+limiting_cases:
+- Lower excitation reduces singular values and increases parameter uncertainty for fixed observation noise.
+- Understating force-noise scale narrows intervals without changing the least-squares point estimate.
+scenarios:
+  baseline: {excitation_level: 0.70, noise_sigma_n: 80, broken_mode: false}
+  sweep_1: {excitation_level: 0.35, noise_sigma_n: 80, broken_mode: false}
+  sweep_2: {excitation_level: 0.70, noise_sigma_n: 140, broken_mode: false}
+  broken: {excitation_level: 0.70, noise_sigma_n: 80, broken_mode: true}
+  recovery: {excitation_level: 0.70, noise_sigma_n: 80, broken_mode: false}
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic synthetic uncertainty software only; no measured noise distribution, parameter confidence, vehicle validation, MATLAB, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.

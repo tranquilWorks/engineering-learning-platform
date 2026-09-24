@@ -1,0 +1,27 @@
+schema_version: 1
+item_id: P55
+module: 55-calibrate-sensors-and-transform-measured-axes
+provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+governing_equations:
+- a_sensor=S_sensor R(-psi_mount)a_body+b_sensor
+- a_body_hat=R(psi_mount)S_sensor^-1(a_sensor-b_sensor)
+- yaw_body=yaw_measured-b_yaw
+signature:
+- {field: body_longitudinal_acceleration, unit: "m/s^2"}
+- {field: body_lateral_acceleration, unit: "m/s^2"}
+- {field: calibrated_yaw_rate, unit: deg/s}
+- {field: rotation_norm_closure, unit: "m/s^2"}
+- {field: calibration_residual, unit: mixed}
+teaching_invariant: Bias is removed in sensor coordinates before a radian-valued orthonormal rotation maps the measurement into forward-left body axes.
+limiting_cases:
+- At zero mounting angle only bias removal changes the acceleration components.
+- A correct rotation preserves the calibrated acceleration-vector norm for every allowed angle.
+scenarios:
+  baseline: {yaw_bias_deg_s: 1.5, mounting_yaw_deg: 8, broken_mode: false}
+  sweep_1: {yaw_bias_deg_s: -1.2, mounting_yaw_deg: 8, broken_mode: false}
+  sweep_2: {yaw_bias_deg_s: 1.5, mounting_yaw_deg: -12, broken_mode: false}
+  broken: {yaw_bias_deg_s: 1.5, mounting_yaw_deg: 8, broken_mode: true}
+  recovery: {yaw_bias_deg_s: 1.5, mounting_yaw_deg: 8, broken_mode: false}
+independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
+tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
+claim_boundary: Deterministic synthetic calibration software only; no measured sensor, mounting survey, vehicle, MATLAB, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.
