@@ -89,6 +89,18 @@ marks P11-P84 pending. Course-level numerical verification, curriculum coverage,
 and capstone integration remain blocked until later issue-441 batches repair the
 remaining generic modules and separately close the competency and P84 capstone gates.
 
+### ELP-DSP-FIDELITY-P11-P20 — Fourier, spectral, and I/Q fidelity repair
+
+**Status:** Implemented and locally verified as the second fidelity-remediation group.
+
+P11-P20 replace ten more generic runtimes with distinct source-faithful experiments
+covering FFT bins, leakage/windows, zero padding, PSD estimation, STFTs, analytic
+signals, complex downconversion, signed complex sampling, I/Q correction, and noisy
+tone estimation. Each item retains five independently formulated scenarios and a
+named failure/recovery invariant. The ledger now records P01 already distinct,
+P02-P10 repaired previously, P11-P20 repaired here, and P21-P84 pending. Issue 441
+remains open and all full-course DSP/Radar maturity claims remain blocked.
+
 ## ELP-GNC — Authorized Controls/GNC conversion lane
 
 **Depends on:** ELP-DSP-P01-P84

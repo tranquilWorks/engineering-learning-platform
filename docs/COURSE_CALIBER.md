@@ -58,7 +58,7 @@ but they are not independent correctness oracles.
 
 | Course | Inventory | Highest unblocked stage | Required follow-up |
 | --- | ---: | --- | --- |
-| DSP/Radar | 84 source / 84 platform / 84 interactive | `platform_converted`; P02-P10 fidelity repaired | #441: continue source-faithful repair and independent verification for P11-P84 |
+| DSP/Radar | 84 source / 84 platform / 84 interactive | `platform_converted`; P02-P20 fidelity repaired | #441: continue source-faithful repair and independent verification for P21-P84 |
 | Controls/GNC | 24 / 24 / 24 | `numerically_verified` | #439: expand against the reviewed competency map and add cumulative integration |
 | Robotics and Autonomy | 24 source / 69 platform / 69 interactive | `capstone_integrated` | Maintain the reviewed map; learner/accessibility validation remains not run |
 | Vehicle Dynamics | 24 source / 67 platform / 67 interactive | P01-P67 numerically verified; curriculum and capstones passed | Maintain; learner validation remains not run |
@@ -66,8 +66,8 @@ but they are not independent correctness oracles.
 Controls/GNC and Robotics/Autonomy are now marked `curriculum_covered: passed`
 and `capstone_integrated: passed` from their reviewed maps and requirements-traced
 software capstones. Those outcomes do not imply `learner_validated`, which remains
-`not_run`. DSP/Radar P02-P10 now have distinct source-faithful runtimes and
-five-scenario independent evidence; P11-P84 remain generic and issue #441 remains open.
+`not_run`. DSP/Radar P02-P20 now have distinct source-faithful runtimes and
+five-scenario independent evidence; P21-P84 remain generic and issue #441 remains open.
 
 Vehicle Dynamics preparation, the three source-bound arcs, and the first four
 competency-derived tire, chassis, propulsion, and telemetry-depth arcs are complete.

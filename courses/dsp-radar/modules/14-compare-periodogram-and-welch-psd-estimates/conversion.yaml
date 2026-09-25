@@ -33,43 +33,39 @@
     ]
   },
   "target": {
-    "content_digest": "f872448912827e94580b868ace7a6863404f060d59669866322bc1d307980b22",
+    "content_digest": "48061a677c796ebc2bcf6b0561454e41e65626ed4454a8246a20fbc92edab10a",
     "files": [
       {
         "path": "modules/14-compare-periodogram-and-welch-psd-estimates/experiment.py",
-        "sha256": "2ea5f22a332a0df135530d0578910218f5e1464f2df70904e294ad715c06d58b"
+        "sha256": "4f897e2a7374642903a3a0e892037ad9ba4e138d26b38ed8152419360188940a"
       },
       {
         "path": "modules/14-compare-periodogram-and-welch-psd-estimates/lesson.md",
-        "sha256": "445b27324977a010c6e224231fd9b97d3575a19dbc2e95692315941cb6c9bdd7"
+        "sha256": "8d34b1e15394f49113882f3a5e16a8a2f763c2525f750698ca01d26e498c9290"
       },
       {
         "path": "modules/14-compare-periodogram-and-welch-psd-estimates/module.yaml",
-        "sha256": "5f8f28bf941f4b44b10ff8f04c3e44c2b93e6d8a4cb844addc4e664449a81f91"
+        "sha256": "ee1ca10e1e6b57f30ed85957a125971f05fcfca645871020987db027b510a664"
       }
     ]
   },
   "content": {
     "guiding_question": "Why does averaging make a noise spectrum easier to interpret?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "A periodogram estimates one record; Welch averages correctly scaled Hann-windowed segment powers and trades resolution for lower realization variance.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary Welch segment count while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Retained from the pinned source: form one-sided V^2/Hz periodograms; segment and Hann-window the same record explicitly; average segment power in linear units; repeat a tone-free probe across 24 fixed seeds.",
+      "Named failure: Average logarithmic dB samples and introduce Jensen bias.",
+      "Exact recovery: Average V^2/Hz linearly, then apply 10 log10 once.",
+      "Deliberately omitted: MATLAB figure-window behavior; the claim remains deterministic software-only."
     ],
     "equations": [
       {
-        "latex": "X_w[k]=\\sum_{n=0}^{M-1}x[n]w[n]e^{-j2\\pi kn/M}.",
-        "meaning": "Pinned source equation used to interpret the experiment response."
+        "latex": "S_{xx}[k]=|X[k]|^2/(f_s\\sum_n w^2[n])",
+        "meaning": "Window-energy-normalized PSD before one-sided doubling."
       },
       {
-        "latex": "P_2[k]=\\frac{|X_w[k]|^2}{f_s U}\\quad[\\mathrm{V^2/Hz}].",
-        "meaning": "Pinned source equation used to interpret the experiment response."
-      },
-      {
-        "latex": "\\sum_k P_1[k]\\,\\Delta f =\\frac{\\sum_n|x[n]w[n]|^2}{\\sum_n w^2[n]}, \\qquad \\Delta f=\\frac{f_s}{M}.",
-        "meaning": "Pinned source equation used to interpret the experiment response."
+        "latex": "\\bar S[k]=K^{-1}\\sum_{r=1}^{K}S_r[k]",
+        "meaning": "Linear-power Welch average."
       }
     ],
     "equation_order": "before_toolbox_shortcuts",
@@ -77,146 +73,194 @@
       "seed": 1014,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
+          "name": "bounded_scenario_count",
+          "value": 5,
+          "unit": "cases"
+        },
+        {
+          "name": "absolute_tolerance",
+          "value": 0.0001,
+          "unit": "signature units"
+        },
+        {
+          "name": "relative_tolerance",
+          "value": 0.0001,
           "unit": "ratio"
-        },
-        {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "bac7c75a12f2d4605bf98585e6bbf18b6b49afba7ceedb2998e37680fd68a1a0",
-          "unit": "mixed numeric signature"
+          "sha256": "b84884f9ff84f4f1765764b6bfdd871cf8c7732fc2d5927739d20b6ef3f65303",
+          "unit": "source-specific numeric signature"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline independent actual signature",
+          "provenance": "generated",
+          "sha256": "51b9331789be5240831adb69023b1a46ebc615d41a46d9a50540747a2b074af6",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "746598fc795fa5662c9b9abc7ceb27e57b6430e2a68b3f333c686ddddec0c443",
-          "unit": "mixed numeric signature"
+          "sha256": "994bbf1bbaef03d38738527f3906ae99b05a2e01d72b3251296500c9bec2a2a9",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent actual signature",
+          "provenance": "generated",
+          "sha256": "77d2e20eb07ec1c81993b7ea7938f82813cc12d76e892a39a8081fe13af69358",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "050a85a0c8cdc7580da92cdee45f6213357f1be4a489dce56417a678c71be516",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent actual signature",
+          "provenance": "generated",
+          "sha256": "024fabae1e74bdf91bffa60eacf9abd9dac8211b02b9e87b0da7652d9f93c12c",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "0eb383c82fd298186a6ecb78e39081ac3f6c39540f5a3eed68131ebdfa64b207",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent actual signature",
+          "provenance": "generated",
+          "sha256": "1f3ab018c75952b5e94f14434515ae92d4860859a7dfb0b7af495f3b52b1658b",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "b84884f9ff84f4f1765764b6bfdd871cf8c7732fc2d5927739d20b6ef3f65303",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent actual signature",
+          "provenance": "generated",
+          "sha256": "51b9331789be5240831adb69023b1a46ebc615d41a46d9a50540747a2b074af6",
+          "unit": "source-specific numeric signature"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P14 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P14 source processing and plot sequence",
+        "target_plot_key": "psd_comparison",
+        "title": "Psd Comparison",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Frequency",
+            "unit": "Hz"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "PSD",
+            "unit": "dB V^2/Hz"
           }
         ],
-        "interpretation": "This view answers the Compare Periodogram and Welch PSD Estimates guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P14 evidence with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P14 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P14 source processing and plot sequence",
+        "target_plot_key": "segment_sweep",
+        "title": "Segment Sweep",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Segment length",
+            "unit": "samples"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Noise-band ripple",
+            "unit": "dB std"
           }
         ],
-        "interpretation": "This view answers the Compare Periodogram and Welch PSD Estimates guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P14 evidence with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P14 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P14 source processing and plot sequence",
+        "target_plot_key": "overlap_sweep",
+        "title": "Overlap Sweep",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Overlap fraction",
+            "unit": "ratio"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Raw / effective averages",
+            "unit": "count"
           }
         ],
-        "interpretation": "This view answers the Compare Periodogram and Welch PSD Estimates guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P14 evidence with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P14 source processing/plot sequence",
+        "source_figure": "Pinned P14 source processing and plot sequence",
         "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "title": "Broken Case",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Averaging method",
+            "unit": "case"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "PSD",
+            "unit": "dB V^2/Hz"
           }
         ],
-        "interpretation": "This view answers the Compare Periodogram and Welch PSD Estimates guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P14 evidence with explicit physical axes and bounded deterministic data."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "segment_length",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          1024,
+          512,
+          256
         ],
-        "expected_observation": "Changing Welch segment count moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Shorter segments increase averages but widen the spectral response."
       },
       {
-        "control": "secondary_scale",
+        "control": "overlap_fraction",
         "values": [
           0.0,
           0.5,
-          1.0
+          0.75
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Overlap raises raw count faster than independent information."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode with the retained broken-case parameters.",
+      "failure": "Average logarithmic dB samples and introduce Jensen bias.",
+      "recovery": "Average V^2/Hz linearly, then apply 10 log10 once.",
+      "expected_observation": "The named invariant fails in broken mode and returns within the recorded numeric tolerance after recovery."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Changing more than one source parameter at a time.",
+      "Average logarithmic dB samples and introduce Jensen bias.",
+      "Treating deterministic software evidence as MATLAB runtime, learner, browser, or physical hardware validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
+      "Answer the exact guiding question from the pinned source equations.",
       "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Name the failure and demonstrate exact recovery.",
+      "Teach back retained behavior, deliberate omissions, and the software-only claim boundary."
     ]
   },
   "runtime": {
@@ -224,83 +268,145 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 8192,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P14 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py",
     "seed": 1014,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "segment_length",
+        "value": 512,
+        "unit": "source units"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "overlap_fraction",
+        "value": 0.5,
+        "unit": "source units"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/14-compare-periodogram-and-welch-psd-estimates/evidence/expected-baseline.json",
-          "sha256": "bac7c75a12f2d4605bf98585e6bbf18b6b49afba7ceedb2998e37680fd68a1a0"
+          "sha256": "b84884f9ff84f4f1765764b6bfdd871cf8c7732fc2d5927739d20b6ef3f65303"
         },
         "actual": {
           "path": "modules/14-compare-periodogram-and-welch-psd-estimates/evidence/actual-baseline.json",
-          "sha256": "a57e32759ab4aa110d02dc04ca40adac29f83a786c8538ffcf231877c2c71d40"
+          "sha256": "51b9331789be5240831adb69023b1a46ebc615d41a46d9a50540747a2b074af6"
         },
-        "max_absolute_error": 1.8263168755083825e-13,
-        "max_relative_error": 1.8263168755083825e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
         "passed": true
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/14-compare-periodogram-and-welch-psd-estimates/evidence/expected-sweep-1.json",
+          "sha256": "994bbf1bbaef03d38738527f3906ae99b05a2e01d72b3251296500c9bec2a2a9"
+        },
+        "actual": {
+          "path": "modules/14-compare-periodogram-and-welch-psd-estimates/evidence/actual-sweep-1.json",
+          "sha256": "77d2e20eb07ec1c81993b7ea7938f82813cc12d76e892a39a8081fe13af69358"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "sweep_2",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/14-compare-periodogram-and-welch-psd-estimates/evidence/expected-sweep-2.json",
+          "sha256": "050a85a0c8cdc7580da92cdee45f6213357f1be4a489dce56417a678c71be516"
+        },
+        "actual": {
+          "path": "modules/14-compare-periodogram-and-welch-psd-estimates/evidence/actual-sweep-2.json",
+          "sha256": "024fabae1e74bdf91bffa60eacf9abd9dac8211b02b9e87b0da7652d9f93c12c"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/14-compare-periodogram-and-welch-psd-estimates/evidence/expected-broken.json",
-          "sha256": "746598fc795fa5662c9b9abc7ceb27e57b6430e2a68b3f333c686ddddec0c443"
+          "sha256": "0eb383c82fd298186a6ecb78e39081ac3f6c39540f5a3eed68131ebdfa64b207"
         },
         "actual": {
           "path": "modules/14-compare-periodogram-and-welch-psd-estimates/evidence/actual-broken.json",
-          "sha256": "6b0cdc8d0c4dad05561e97965d46122d2dc3c5977ff19ab389f14d575e130e69"
+          "sha256": "1f3ab018c75952b5e94f14434515ae92d4860859a7dfb0b7af495f3b52b1658b"
         },
-        "max_absolute_error": 4.438671652451376e-13,
-        "max_relative_error": 4.438671652451376e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "recovery",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/14-compare-periodogram-and-welch-psd-estimates/evidence/expected-recovery.json",
+          "sha256": "b84884f9ff84f4f1765764b6bfdd871cf8c7732fc2d5927739d20b6ef3f65303"
+        },
+        "actual": {
+          "path": "modules/14-compare-periodogram-and-welch-psd-estimates/evidence/actual-recovery.json",
+          "sha256": "51b9331789be5240831adb69023b1a46ebc615d41a46d9a50540747a2b074af6"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
         "passed": true
       }
     ]
   },
   "matlab_runtime_parity": {
     "status": "not_run",
-    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+    "reason": "A licensed MATLAB runtime is unavailable; independent Python/source evidence is retained separately from MATLAB execution parity."
   },
   "claims": {
     "profile": "elp-dsp-item-software-v1",
     "browser_visual_review": {
       "status": "not_run",
-      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+      "reason": "Browser visual validation is explicitly outside this software-only repair batch."
     },
     "accessibility_review": {
       "status": "not_run",
-      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+      "reason": "Browser accessibility validation is explicitly outside this software-only repair batch."
     },
     "learner_effectiveness": {
       "status": "not_run",
-      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+      "reason": "Representative learner validation requires a separate human study."
     }
   }
 }

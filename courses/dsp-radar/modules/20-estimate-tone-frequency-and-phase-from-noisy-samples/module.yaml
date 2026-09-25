@@ -3,7 +3,7 @@
   "id": "20-estimate-tone-frequency-and-phase-from-noisy-samples",
   "number": 20,
   "title": "Estimate Tone Frequency and Phase from Noisy Samples",
-  "summary": "Explore estimate tone frequency and phase from noisy samples with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "Compare peak-bin, interpolated-FFT, and coherent phase-increment estimators across SNR and record length.",
   "guiding_question": "How accurately can frequency and phase be estimated from a finite noisy record?",
   "status": "implemented",
   "tags": [
@@ -19,41 +19,63 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Record Snr",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "snr_db",
+      "type": "segmented",
+      "label": "Record SNR",
+      "default": 8.0,
+      "options": [
+        {
+          "label": "-10",
+          "value": -10.0
+        },
+        {
+          "label": "0",
+          "value": 0.0
+        },
+        {
+          "label": "8 baseline",
+          "value": 8.0
+        },
+        {
+          "label": "10",
+          "value": 10.0
+        },
+        {
+          "label": "20",
+          "value": 20.0
+        }
+      ],
+      "unit": "dB"
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "record_sample_count",
+      "type": "segmented",
+      "label": "Coherent record length",
+      "default": 256,
+      "options": [
+        {
+          "label": "64",
+          "value": 64
+        },
+        {
+          "label": "128",
+          "value": 128
+        },
+        {
+          "label": "256",
+          "value": 256
+        },
+        {
+          "label": "512",
+          "value": 512
+        }
+      ],
+      "unit": "samples"
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named source failure",
       "default": false
     }
   ],
@@ -65,8 +87,8 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing record snr, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict each estimator's bias and spread before changing SNR or coherent record length.",
+      "reveal": "Use the retained source equations, change one control at a time, and compare the named invariant."
     },
     {
       "type": "controls",
@@ -77,21 +99,21 @@
     },
     {
       "type": "plot_grid",
-      "title": "Model and response",
+      "title": "Physical model and primary evidence",
       "plots": [
-        "model_view",
-        "response_view"
+        "frequency_estimators",
+        "phase_estimators"
       ]
     },
     {
       "type": "plot",
       "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "plot": "snr_and_length_sweeps"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Named failure and exact recovery",
+      "plot": "broken_and_gate"
     },
     {
       "type": "callout",

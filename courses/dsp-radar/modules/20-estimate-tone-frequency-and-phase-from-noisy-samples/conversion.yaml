@@ -33,43 +33,43 @@
     ]
   },
   "target": {
-    "content_digest": "8c4e85a1844cac6a79ae0f675b736b9b03e8f88f1e45c1ebb5cab7634da31edc",
+    "content_digest": "cd524e5a5734f810169b088e3668eb385b6889b29228c1f950e027cf7474a5ca",
     "files": [
       {
         "path": "modules/20-estimate-tone-frequency-and-phase-from-noisy-samples/experiment.py",
-        "sha256": "b5d5ebaa37e0153ca536127866a25d9fb9ff71853251db2f049329c9535ed137"
+        "sha256": "0d4db3b4ae1f3939668cdeda30f2db45ea5de1ec0c2f147b35ce893c86957b75"
       },
       {
         "path": "modules/20-estimate-tone-frequency-and-phase-from-noisy-samples/lesson.md",
-        "sha256": "eb6116b2faf53a0c393ba33dd54ec8a7f8188da33d33ddd93304ea4923f7cddf"
+        "sha256": "a2b4d8f3e2d3e30de5731fae72ca12590aa049490e298537c60bfaa1ba9294da"
       },
       {
         "path": "modules/20-estimate-tone-frequency-and-phase-from-noisy-samples/module.yaml",
-        "sha256": "da5d7fa7c5d8f9c5d1e57a70f48f381934284b131e816e580835e3af53237770"
+        "sha256": "0c53ed8190ae2f7ffcbe676ca02614ab0af1083315afcd9e0943902a5021fef4"
       }
     ]
   },
   "content": {
     "guiding_question": "How accurately can frequency and phase be estimated from a finite noisy record?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "A noisy rotating complex phasor supports grid, sub-bin, and coherent phase-step frequency estimates plus de-rotated circular initial-phase estimates.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary record SNR while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Retained from the pinned source: form the retained fractional-bin complex tone and seeded noise; compute peak-bin and three-bin interpolated FFT estimates; coherently sum adjacent phase increments; de-rotate for initial phase and apply a coherence reporting gate.",
+      "Named failure: Divide a wrapped first-to-last endpoint phase and report a many-turn record as less than one turn.",
+      "Exact recovery: Use coherent adjacent increments, circular phase error, and reject low-coherence amplitude evidence.",
+      "Deliberately omitted: MATLAB figure-window behavior; the claim remains deterministic software-only."
     ],
     "equations": [
       {
-        "latex": "x[n] = A e^{j(2\\pi f_0 n/f_s + \\phi_0)} + w[n],\\quad n=0,\\ldots,N-1,",
-        "meaning": "Pinned source equation used to interpret the experiment response."
+        "latex": "\\hat f_{bin}=k_{max}f_s/N",
+        "meaning": "Peak-bin estimate."
       },
       {
-        "latex": "\\hat f_{\\rm bin}=k_{\\max}\\frac{f_s}{N}.",
-        "meaning": "Pinned source equation used to interpret the experiment response."
+        "latex": "\\delta=\\tfrac12(L_{-1}-L_{+1})/(L_{-1}-2L_0+L_{+1})",
+        "meaning": "Three-bin logarithmic interpolation."
       },
       {
-        "latex": "\\delta=\\frac{1}{2}\\frac{L_{-1}-L_{+1}} {L_{-1}-2L_0+L_{+1}},\\qquad \\hat f_{\\rm int}=(k_{\\max}+\\delta)\\frac{f_s}{N}.",
-        "meaning": "Pinned source equation used to interpret the experiment response."
+        "latex": "\\hat f_{PI}=f_s\\angle(\\sum_n x^*[n]x[n+1])/(2\\pi)",
+        "meaning": "Coherent adjacent-phase estimator."
       }
     ],
     "equation_order": "before_toolbox_shortcuts",
@@ -77,146 +77,196 @@
       "seed": 1020,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
+          "name": "bounded_scenario_count",
+          "value": 5,
+          "unit": "cases"
+        },
+        {
+          "name": "absolute_tolerance",
+          "value": 0.0001,
+          "unit": "signature units"
+        },
+        {
+          "name": "relative_tolerance",
+          "value": 0.0001,
           "unit": "ratio"
-        },
-        {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "8ae88eb2b2d9892f10847b3a0b86c335bdd83ef9ccefa9f44de959c1bcaea0de",
-          "unit": "mixed numeric signature"
+          "sha256": "60e53a5ec2ba31f7b91045d3940699e307da90c98d1686b1ab16e858074ebd56",
+          "unit": "source-specific numeric signature"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline independent actual signature",
+          "provenance": "generated",
+          "sha256": "47ea5f2c0ad203efc79797a187fbcf094a39dd87b37b674d6f0a231161479c04",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "671e32f032ae8401dd2f346a87c3be49008690027a85d686c87461472dfec7b3",
-          "unit": "mixed numeric signature"
+          "sha256": "06221faf71abb3ebd93a56649f72347e5b2b46dc24c413ac9ab279a44a813e5e",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent actual signature",
+          "provenance": "generated",
+          "sha256": "6f3fdc190e9eace17e5c89d8de02bf55604690b987b86367ad310245b8992699",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "3ae9ee14f9014fc2b78daa08e753aace64a1b1b94633506c3cc2d500a3609e47",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent actual signature",
+          "provenance": "generated",
+          "sha256": "ec4115e42837dfdb5221acaa90b51d0c3239ec7d2101d47829084f1a3145784d",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "dc158633dab53ee6ca5e1d528e1c2f1b30e6cafe047ab4b5b8ade6150b320396",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent actual signature",
+          "provenance": "generated",
+          "sha256": "ebb66c36c3d8ebeef0de345a508cf1b0e97577f5e95e8762d2882079f493079f",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "60e53a5ec2ba31f7b91045d3940699e307da90c98d1686b1ab16e858074ebd56",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent actual signature",
+          "provenance": "generated",
+          "sha256": "47ea5f2c0ad203efc79797a187fbcf094a39dd87b37b674d6f0a231161479c04",
+          "unit": "source-specific numeric signature"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P20 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P20 source processing and plot sequence",
+        "target_plot_key": "frequency_estimators",
+        "title": "Frequency Estimators",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Estimator",
+            "unit": "case"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Frequency",
+            "unit": "Hz"
           }
         ],
-        "interpretation": "This view answers the Estimate Tone Frequency and Phase from Noisy Samples guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P20 evidence with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P20 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P20 source processing and plot sequence",
+        "target_plot_key": "phase_estimators",
+        "title": "Phase Estimators",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Estimator",
+            "unit": "case"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Circular phase error",
+            "unit": "rad"
           }
         ],
-        "interpretation": "This view answers the Estimate Tone Frequency and Phase from Noisy Samples guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P20 evidence with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P20 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P20 source processing and plot sequence",
+        "target_plot_key": "snr_and_length_sweeps",
+        "title": "Snr And Length Sweeps",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "SNR / record length",
+            "unit": "mixed"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Frequency spread",
+            "unit": "Hz"
           }
         ],
-        "interpretation": "This view answers the Estimate Tone Frequency and Phase from Noisy Samples guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P20 evidence with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P20 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P20 source processing and plot sequence",
+        "target_plot_key": "broken_and_gate",
+        "title": "Broken And Gate",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Case",
+            "unit": "case"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Frequency / coherence",
+            "unit": "mixed"
           }
         ],
-        "interpretation": "This view answers the Estimate Tone Frequency and Phase from Noisy Samples guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P20 evidence with explicit physical axes and bounded deterministic data."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "snr_db",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          -10.0,
+          0.0,
+          10.0,
+          20.0
         ],
-        "expected_observation": "Changing record SNR moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Forty deterministic trials expose estimator bias and spread versus SNR."
       },
       {
-        "control": "secondary_scale",
+        "control": "record_sample_count",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          64,
+          128,
+          256,
+          512
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Longer coherent records reduce estimator spread under the retained model."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode with the retained broken-case parameters.",
+      "failure": "Divide a wrapped first-to-last endpoint phase and report a many-turn record as less than one turn.",
+      "recovery": "Use coherent adjacent increments, circular phase error, and reject low-coherence amplitude evidence.",
+      "expected_observation": "The named invariant fails in broken mode and returns within the recorded numeric tolerance after recovery."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Changing more than one source parameter at a time.",
+      "Divide a wrapped first-to-last endpoint phase and report a many-turn record as less than one turn.",
+      "Treating deterministic software evidence as MATLAB runtime, learner, browser, or physical hardware validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
+      "Answer the exact guiding question from the pinned source equations.",
       "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Name the failure and demonstrate exact recovery.",
+      "Teach back retained behavior, deliberate omissions, and the software-only claim boundary."
     ]
   },
   "runtime": {
@@ -224,83 +274,145 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 8192,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P20 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py",
     "seed": 1020,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "snr_db",
+        "value": 8.0,
+        "unit": "source units"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "record_sample_count",
+        "value": 256,
+        "unit": "source units"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/20-estimate-tone-frequency-and-phase-from-noisy-samples/evidence/expected-baseline.json",
-          "sha256": "8ae88eb2b2d9892f10847b3a0b86c335bdd83ef9ccefa9f44de959c1bcaea0de"
+          "sha256": "60e53a5ec2ba31f7b91045d3940699e307da90c98d1686b1ab16e858074ebd56"
         },
         "actual": {
           "path": "modules/20-estimate-tone-frequency-and-phase-from-noisy-samples/evidence/actual-baseline.json",
-          "sha256": "5863e80828363aa17faf716f0addba01ec2ced0ff5df0b4552748429ca586185"
+          "sha256": "47ea5f2c0ad203efc79797a187fbcf094a39dd87b37b674d6f0a231161479c04"
         },
-        "max_absolute_error": 4.4924133857371373e-13,
-        "max_relative_error": 4.4924133857371373e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
         "passed": true
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/20-estimate-tone-frequency-and-phase-from-noisy-samples/evidence/expected-sweep-1.json",
+          "sha256": "06221faf71abb3ebd93a56649f72347e5b2b46dc24c413ac9ab279a44a813e5e"
+        },
+        "actual": {
+          "path": "modules/20-estimate-tone-frequency-and-phase-from-noisy-samples/evidence/actual-sweep-1.json",
+          "sha256": "6f3fdc190e9eace17e5c89d8de02bf55604690b987b86367ad310245b8992699"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "sweep_2",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/20-estimate-tone-frequency-and-phase-from-noisy-samples/evidence/expected-sweep-2.json",
+          "sha256": "3ae9ee14f9014fc2b78daa08e753aace64a1b1b94633506c3cc2d500a3609e47"
+        },
+        "actual": {
+          "path": "modules/20-estimate-tone-frequency-and-phase-from-noisy-samples/evidence/actual-sweep-2.json",
+          "sha256": "ec4115e42837dfdb5221acaa90b51d0c3239ec7d2101d47829084f1a3145784d"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/20-estimate-tone-frequency-and-phase-from-noisy-samples/evidence/expected-broken.json",
-          "sha256": "671e32f032ae8401dd2f346a87c3be49008690027a85d686c87461472dfec7b3"
+          "sha256": "dc158633dab53ee6ca5e1d528e1c2f1b30e6cafe047ab4b5b8ade6150b320396"
         },
         "actual": {
           "path": "modules/20-estimate-tone-frequency-and-phase-from-noisy-samples/evidence/actual-broken.json",
-          "sha256": "9b31eef45e1ddfcc0625c0fbef83e2ffedc7c2049c445a779024cb37e98efb4c"
+          "sha256": "ebb66c36c3d8ebeef0de345a508cf1b0e97577f5e95e8762d2882079f493079f"
         },
-        "max_absolute_error": 4.645173135031655e-13,
-        "max_relative_error": 4.645173135031655e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "recovery",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/20-estimate-tone-frequency-and-phase-from-noisy-samples/evidence/expected-recovery.json",
+          "sha256": "60e53a5ec2ba31f7b91045d3940699e307da90c98d1686b1ab16e858074ebd56"
+        },
+        "actual": {
+          "path": "modules/20-estimate-tone-frequency-and-phase-from-noisy-samples/evidence/actual-recovery.json",
+          "sha256": "47ea5f2c0ad203efc79797a187fbcf094a39dd87b37b674d6f0a231161479c04"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
         "passed": true
       }
     ]
   },
   "matlab_runtime_parity": {
     "status": "not_run",
-    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+    "reason": "A licensed MATLAB runtime is unavailable; independent Python/source evidence is retained separately from MATLAB execution parity."
   },
   "claims": {
     "profile": "elp-dsp-item-software-v1",
     "browser_visual_review": {
       "status": "not_run",
-      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+      "reason": "Browser visual validation is explicitly outside this software-only repair batch."
     },
     "accessibility_review": {
       "status": "not_run",
-      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+      "reason": "Browser accessibility validation is explicitly outside this software-only repair batch."
     },
     "learner_effectiveness": {
       "status": "not_run",
-      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+      "reason": "Representative learner validation requires a separate human study."
     }
   }
 }

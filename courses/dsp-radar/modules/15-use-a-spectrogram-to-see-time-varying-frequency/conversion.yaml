@@ -33,43 +33,39 @@
     ]
   },
   "target": {
-    "content_digest": "3c3d95b2351452c36a7e3ab556a9ad1ea5dd4e1c3bba2a7dd46cf032125543df",
+    "content_digest": "7b583bc99f05b1e99d56ff9da990495b86e03a3d94ebb009f35df0f779607c1e",
     "files": [
       {
         "path": "modules/15-use-a-spectrogram-to-see-time-varying-frequency/experiment.py",
-        "sha256": "06c006c173f3cbbef9a7ef6b5c84b9a59f980fef2f920b0dfcf7444ac78674a6"
+        "sha256": "780002c33a60851ceb7f7384df7987d375475bc26cc28010da9a0063434e5537"
       },
       {
         "path": "modules/15-use-a-spectrogram-to-see-time-varying-frequency/lesson.md",
-        "sha256": "2105e11b7b3ba5fb74b6f2d73eda53b12f60d693d439ceb3ec65adeb0c407ab5"
+        "sha256": "b1419e4ef51880e57b80608489926a5f30506577092a539deab507cb04f962e0"
       },
       {
         "path": "modules/15-use-a-spectrogram-to-see-time-varying-frequency/module.yaml",
-        "sha256": "797957d266e1ff1b170729b18ce78d443790bb07cbc265676edf353ef7621280"
+        "sha256": "8195e869260430db258a3a129703910b366f4296f0e6977ee2f09d29cd327b01"
       }
     ]
   },
   "content": {
     "guiding_question": "How do window duration and overlap control time-frequency visibility?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "An explicit sliding-window DFT turns a composite time record into local PSD frames whose window length controls time-frequency tradeoff.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary spectrogram window while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Retained from the pinned source: form the steady tone, gated chirp, short burst, and continuous-phase hop; apply retained Hann windows at bounded frame starts; compute one-sided local PSD; measure burst timing, chirp ridge, and hop contrast.",
+      "Named failure: Zero-pad a 64-sample window to 512 and call its 2 Hz grid physical resolution.",
+      "Exact recovery: Use the 64-sample Hann main-lobe scale for physical resolution.",
+      "Deliberately omitted: MATLAB figure-window behavior; the claim remains deterministic software-only."
     ],
     "equations": [
       {
-        "latex": "X_r[k] = \\sum_{m=0}^{M-1} x[rH+m]w[m]e^{-j2\\pi km/M}.",
-        "meaning": "Pinned source equation used to interpret the experiment response."
+        "latex": "X_m[k]=\\sum_n x[n+mH]w[n]e^{-j2\\pi kn/N}",
+        "meaning": "Explicit STFT frame."
       },
       {
-        "latex": "t_r = \\frac{rH+(M-1)/2}{f_s},",
-        "meaning": "Pinned source equation used to interpret the experiment response."
-      },
-      {
-        "latex": "P_r[k] = \\frac{|X_r[k]|^2}{f_s\\sum_m w^2[m]} \\quad \\text{V}^2/\\text{Hz},",
-        "meaning": "Pinned source equation used to interpret the experiment response."
+        "latex": "t_m=(mH+(N-1)/2)/f_s",
+        "meaning": "Frame-center time."
       }
     ],
     "equation_order": "before_toolbox_shortcuts",
@@ -77,146 +73,194 @@
       "seed": 1015,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
+          "name": "bounded_scenario_count",
+          "value": 5,
+          "unit": "cases"
+        },
+        {
+          "name": "absolute_tolerance",
+          "value": 0.0001,
+          "unit": "signature units"
+        },
+        {
+          "name": "relative_tolerance",
+          "value": 0.0001,
           "unit": "ratio"
-        },
-        {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "8f080373c88eaf5d052c20a13b1b50d87fab8d4551aac762624a315f93337a14",
-          "unit": "mixed numeric signature"
+          "sha256": "303ed7a0abbb1e5503b72b76f5e1f74d93c427e4ffe9e17037974a1a9d33d08b",
+          "unit": "source-specific numeric signature"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline independent actual signature",
+          "provenance": "generated",
+          "sha256": "9676ff9cd17569826c904d1d06169d0f93a8414bfccc033bc551b3692e2f7794",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "e7aea878c4ae5dbf7ffee52c3957ee8b44b0d908ac1bc02fe0b2fb0f02228eb7",
-          "unit": "mixed numeric signature"
+          "sha256": "26ea37792416917f137ccc64c1d87905483d36888646a9c45cdc6627694b9476",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent actual signature",
+          "provenance": "generated",
+          "sha256": "290e56abeaa7f2d915678ebd03aa5b441361ad0b84afa8cadc090663cc4f37d9",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "f941b5a3fcdd70b68cd2046467e28e1993cff1c640f3a6a1201332c5e048187c",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent actual signature",
+          "provenance": "generated",
+          "sha256": "0420b17868a3401095263ed55f16334c803f0bdc614109dc6bb9dac4adb87f6d",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "4f5a19eb1b1213111b5e43cb76842b82761b5fbdcc2abd841b3859e37a5be867",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent actual signature",
+          "provenance": "generated",
+          "sha256": "536b6a0b17a8642d28005e41f11d35aebe0c4f9a846115dd1247442b9a855a04",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "ddc03f91a6c62b366d555e5efb23271da06f1f0b61a1c54f5c1323806cb35341",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent actual signature",
+          "provenance": "generated",
+          "sha256": "2f76fb1f9f8623d9bf5ec4dd00f4eae19944857831a6d687c375f4c57852990f",
+          "unit": "source-specific numeric signature"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P15 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P15 source processing and plot sequence",
+        "target_plot_key": "time_record",
+        "title": "Time Record",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Time",
+            "unit": "s"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Amplitude",
+            "unit": "V"
           }
         ],
-        "interpretation": "This view answers the Use a Spectrogram to See Time-Varying Frequency guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P15 evidence with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P15 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P15 source processing and plot sequence",
+        "target_plot_key": "spectrogram",
+        "title": "Spectrogram",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Frame-center time",
+            "unit": "s"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Frequency",
+            "unit": "Hz"
           }
         ],
-        "interpretation": "This view answers the Use a Spectrogram to See Time-Varying Frequency guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P15 evidence with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P15 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P15 source processing and plot sequence",
+        "target_plot_key": "window_sweep",
+        "title": "Window Sweep",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Window length",
+            "unit": "samples"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Localization / width",
+            "unit": "mixed"
           }
         ],
-        "interpretation": "This view answers the Use a Spectrogram to See Time-Varying Frequency guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P15 evidence with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P15 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P15 source processing and plot sequence",
+        "target_plot_key": "overlap_and_broken",
+        "title": "Overlap And Broken",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Overlap / case",
+            "unit": "mixed"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Spacing / resolution",
+            "unit": "mixed"
           }
         ],
-        "interpretation": "This view answers the Use a Spectrogram to See Time-Varying Frequency guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P15 evidence with explicit physical axes and bounded deterministic data."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "window_length",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          512,
+          128,
+          64
         ],
-        "expected_observation": "Changing spectrogram window moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Short windows improve burst timing and broaden physical frequency response."
       },
       {
-        "control": "secondary_scale",
+        "control": "overlap_fraction",
         "values": [
           0.0,
           0.5,
-          1.0
+          0.75
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Overlap changes frame density without changing the window's physical width."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode with the retained broken-case parameters.",
+      "failure": "Zero-pad a 64-sample window to 512 and call its 2 Hz grid physical resolution.",
+      "recovery": "Use the 64-sample Hann main-lobe scale for physical resolution.",
+      "expected_observation": "The named invariant fails in broken mode and returns within the recorded numeric tolerance after recovery."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Changing more than one source parameter at a time.",
+      "Zero-pad a 64-sample window to 512 and call its 2 Hz grid physical resolution.",
+      "Treating deterministic software evidence as MATLAB runtime, learner, browser, or physical hardware validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
+      "Answer the exact guiding question from the pinned source equations.",
       "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Name the failure and demonstrate exact recovery.",
+      "Teach back retained behavior, deliberate omissions, and the software-only claim boundary."
     ]
   },
   "runtime": {
@@ -224,83 +268,145 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 8192,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P15 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py",
     "seed": 1015,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "window_length",
+        "value": 128,
+        "unit": "source units"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "overlap_fraction",
+        "value": 0.5,
+        "unit": "source units"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/15-use-a-spectrogram-to-see-time-varying-frequency/evidence/expected-baseline.json",
-          "sha256": "8f080373c88eaf5d052c20a13b1b50d87fab8d4551aac762624a315f93337a14"
+          "sha256": "303ed7a0abbb1e5503b72b76f5e1f74d93c427e4ffe9e17037974a1a9d33d08b"
         },
         "actual": {
           "path": "modules/15-use-a-spectrogram-to-see-time-varying-frequency/evidence/actual-baseline.json",
-          "sha256": "3ebd426d8e1851563b4ebfd0b2c16774016c88085a7055c2fc54068aeaaa5b0f"
+          "sha256": "9676ff9cd17569826c904d1d06169d0f93a8414bfccc033bc551b3692e2f7794"
         },
-        "max_absolute_error": 4.5274894944213884e-13,
-        "max_relative_error": 4.5274894944213884e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
         "passed": true
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/15-use-a-spectrogram-to-see-time-varying-frequency/evidence/expected-sweep-1.json",
+          "sha256": "26ea37792416917f137ccc64c1d87905483d36888646a9c45cdc6627694b9476"
+        },
+        "actual": {
+          "path": "modules/15-use-a-spectrogram-to-see-time-varying-frequency/evidence/actual-sweep-1.json",
+          "sha256": "290e56abeaa7f2d915678ebd03aa5b441361ad0b84afa8cadc090663cc4f37d9"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "sweep_2",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/15-use-a-spectrogram-to-see-time-varying-frequency/evidence/expected-sweep-2.json",
+          "sha256": "f941b5a3fcdd70b68cd2046467e28e1993cff1c640f3a6a1201332c5e048187c"
+        },
+        "actual": {
+          "path": "modules/15-use-a-spectrogram-to-see-time-varying-frequency/evidence/actual-sweep-2.json",
+          "sha256": "0420b17868a3401095263ed55f16334c803f0bdc614109dc6bb9dac4adb87f6d"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/15-use-a-spectrogram-to-see-time-varying-frequency/evidence/expected-broken.json",
-          "sha256": "e7aea878c4ae5dbf7ffee52c3957ee8b44b0d908ac1bc02fe0b2fb0f02228eb7"
+          "sha256": "4f5a19eb1b1213111b5e43cb76842b82761b5fbdcc2abd841b3859e37a5be867"
         },
         "actual": {
           "path": "modules/15-use-a-spectrogram-to-see-time-varying-frequency/evidence/actual-broken.json",
-          "sha256": "f052a829d223b7747c50263d7cdcb18603d71d3fe424981e1418f18f0c1cf20e"
+          "sha256": "536b6a0b17a8642d28005e41f11d35aebe0c4f9a846115dd1247442b9a855a04"
         },
-        "max_absolute_error": 4.5274894944213884e-13,
-        "max_relative_error": 4.5274894944213884e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "recovery",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/15-use-a-spectrogram-to-see-time-varying-frequency/evidence/expected-recovery.json",
+          "sha256": "ddc03f91a6c62b366d555e5efb23271da06f1f0b61a1c54f5c1323806cb35341"
+        },
+        "actual": {
+          "path": "modules/15-use-a-spectrogram-to-see-time-varying-frequency/evidence/actual-recovery.json",
+          "sha256": "2f76fb1f9f8623d9bf5ec4dd00f4eae19944857831a6d687c375f4c57852990f"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
         "passed": true
       }
     ]
   },
   "matlab_runtime_parity": {
     "status": "not_run",
-    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+    "reason": "A licensed MATLAB runtime is unavailable; independent Python/source evidence is retained separately from MATLAB execution parity."
   },
   "claims": {
     "profile": "elp-dsp-item-software-v1",
     "browser_visual_review": {
       "status": "not_run",
-      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+      "reason": "Browser visual validation is explicitly outside this software-only repair batch."
     },
     "accessibility_review": {
       "status": "not_run",
-      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+      "reason": "Browser accessibility validation is explicitly outside this software-only repair batch."
     },
     "learner_effectiveness": {
       "status": "not_run",
-      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+      "reason": "Representative learner validation requires a separate human study."
     }
   }
 }

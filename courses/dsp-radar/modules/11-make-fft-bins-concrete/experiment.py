@@ -5,165 +5,230 @@ from typing import Any
 import numpy as np
 
 SEED = 1011
-ITEM_NUMBER = 11
-PHASE = 2
-MAX_POINTS = 512
+FS_HZ = 1024.0
 
 
 def _layout(title: str, x_label: str, y_label: str) -> dict[str, Any]:
     return {
-        "title": {"text": title, "x": 0.02, "xanchor": "left"},
-        "margin": {"l": 68, "r": 22, "t": 58, "b": 58},
-        "xaxis": {"title": x_label, "showgrid": True},
-        "yaxis": {"title": y_label, "showgrid": True},
+        "title": {"text": title, "x": 0.02},
+        "xaxis": {"title": x_label},
+        "yaxis": {"title": y_label},
         "legend": {"orientation": "h", "y": 1.14},
-        "hovermode": "closest",
-        "uirevision": "keep-view",
+        "margin": {"l": 68, "r": 22, "t": 58, "b": 58},
+    }
+
+
+def _case(
+    record_sample_count: int, tone_bin_offset: float, broken: bool
+) -> dict[str, Any]:
+    if record_sample_count not in {32, 64, 128}:
+        raise ValueError("record_sample_count must be 32, 64, or 128")
+    if not np.isfinite(tone_bin_offset) or not 0.0 <= tone_bin_offset <= 0.5:
+        raise ValueError("tone_bin_offset must lie in [0, 0.5]")
+    sample = np.arange(record_sample_count)
+    spacing = FS_HZ / record_sample_count
+    tone_frequency = 144.0 + tone_bin_offset * spacing
+    rng = np.random.default_rng(SEED)
+    noise = (
+        0.002
+        / np.sqrt(2.0)
+        * (
+            rng.standard_normal(record_sample_count)
+            + 1j * rng.standard_normal(record_sample_count)
+        )
+    )
+    observed = (
+        np.exp(1j * (2.0 * np.pi * tone_frequency * sample / FS_HZ + 0.35)) + noise
+    )
+    basis = np.exp(
+        -1j
+        * 2.0
+        * np.pi
+        * np.outer(np.arange(record_sample_count), sample)
+        / record_sample_count
+    )
+    explicit = basis @ observed
+    accelerated = np.fft.fft(observed)
+    magnitude = np.abs(accelerated) / record_sample_count
+    phase = np.angle(accelerated)
+    phase[magnitude < 0.05] = 0.0
+    peak_bin = int(np.argmax(magnitude))
+    signed_bin = (
+        peak_bin
+        if peak_bin <= record_sample_count // 2
+        else peak_bin - record_sample_count
+    )
+    correct_frequency = signed_bin * spacing
+    reported_frequency = correct_frequency + spacing if broken else correct_frequency
+    lower = int(np.floor(tone_frequency / spacing)) % record_sample_count
+    upper = (lower + 1) % record_sample_count
+    return {
+        "sample": sample,
+        "observed": observed,
+        "magnitude": magnitude,
+        "phase": phase,
+        "spacing": spacing,
+        "tone_frequency": tone_frequency,
+        "peak_bin": peak_bin,
+        "correct_frequency": correct_frequency,
+        "reported_frequency": reported_frequency,
+        "dft_error": float(np.max(np.abs(explicit - accelerated))),
+        "neighbor_magnitudes": [float(magnitude[lower]), float(magnitude[upper])],
     }
 
 
 def run(parameters: dict[str, Any]) -> dict[str, Any]:
-    primary = float(parameters["primary_scale"])
-    secondary = float(parameters["secondary_scale"])
-    noise_db = float(parameters["noise_db"])
-    broken_mode = bool(parameters["broken_mode"])
-    count = 192 + 16 * (ITEM_NUMBER % 4)
-    if count > MAX_POINTS:
-        raise ValueError("experiment exceeds the retained point ceiling")
-    rng = np.random.default_rng(SEED)
-    x = np.linspace(0.0, 1.0, count, endpoint=False)
-    variant = 1.0 + (ITEM_NUMBER % 7) / 5.0
-    noise_scale = 10.0 ** (noise_db / 20.0)
-
-    if PHASE == 1:
-        truth = np.cos(2.0 * np.pi * variant * primary * x + 0.4 * secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, count // 7) if broken_mode else measured
-    elif PHASE == 2:
-        tone = np.exp(1j * (2.0 * np.pi * (8.0 + variant * primary) * x + secondary))
-        measured = tone + noise_scale * (rng.standard_normal(count) + 1j * rng.standard_normal(count))
-        response_axis = np.fft.fftshift(np.fft.fftfreq(count, d=1.0 / count))
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / count
-        broken_response = np.abs(measured.real) if broken_mode else np.abs(measured)
-        truth = tone.real
-    elif PHASE == 3:
-        symbols = np.sign(np.sin(2.0 * np.pi * (4.0 + variant) * x))
-        carrier = np.cos(2.0 * np.pi * (18.0 + 2.0 * primary) * x + secondary)
-        truth = symbols * carrier
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(2 + 10 * secondary)) if broken_mode else measured
-    elif PHASE == 4:
-        bins = np.arange(count, dtype=float)
-        center = count * (0.25 + 0.25 * (primary - 0.5))
-        width = 2.0 + 4.0 * secondary
-        truth = np.exp(-0.5 * ((bins - center) / width) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = bins
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / np.sqrt(count)
-        broken_response = np.roll(measured, count // 3) if broken_mode else measured
-        x = bins
-    elif PHASE == 5:
-        cells = np.arange(count, dtype=float)
-        background = 0.2 + (0.45 * secondary) * (cells >= count // 2)
-        power = background + np.abs(noise_scale * rng.standard_normal(count))
-        target_bin = int(count * (0.3 + 0.25 * (primary - 0.5)))
-        power[target_bin] += 1.4
-        truth = power
-        measured = power
-        response_axis = cells
-        response = np.full(count, np.quantile(power, 0.82 + 0.1 * secondary))
-        if broken_mode:
-            response = np.full(count, np.mean(power) * (1.2 + primary))
-        broken_response = response
-        x = cells
-    elif PHASE == 6:
-        steps = np.arange(count, dtype=float)
-        truth = 0.04 * steps + 0.0002 * variant * secondary * steps**2
-        measured = truth + noise_scale * 8.0 * rng.standard_normal(count)
-        gain = np.clip(0.12 + 0.5 * primary, 0.05, 0.95)
-        response = np.empty(count)
-        response[0] = measured[0]
-        for index in range(1, count):
-            response[index] = response[index - 1] + gain * (measured[index] - response[index - 1])
-        response_axis = steps
-        broken_response = np.roll(response, 12) if broken_mode else response
-        x = steps
-    elif PHASE == 7:
-        angles = np.linspace(-90.0, 90.0, count)
-        u = np.sin(np.deg2rad(angles)) - np.sin(np.deg2rad(45.0 * (primary - 1.0)))
-        spacing = 0.45 + 0.45 * secondary
-        elements = 6 + ITEM_NUMBER % 7
-        denominator = np.sin(np.pi * spacing * u)
-        numerator = np.sin(elements * np.pi * spacing * u)
-        response = np.where(np.abs(denominator) < 1e-10, 1.0, np.abs(numerator / (elements * denominator)))
-        truth = response
-        measured = np.maximum(response + noise_scale * rng.standard_normal(count), 0.0)
-        response_axis = angles
-        broken_response = np.roll(response, 9) if broken_mode else response
-        x = angles
-    elif PHASE == 8:
-        bins = np.arange(count, dtype=float)
-        beat_bin = count * (0.15 + 0.35 * (primary - 0.5))
-        truth = np.cos(2.0 * np.pi * beat_bin * bins / count + secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(8 + 16 * secondary)) if broken_mode else measured
-        x = bins
-    else:
-        coordinate = np.linspace(-1.0, 1.0, count)
-        width = 0.05 + 0.16 / primary
-        truth = np.exp(-0.5 * ((coordinate + 0.25) / width) ** 2) + 0.65 * np.exp(-0.5 * ((coordinate - 0.3) / (1.4 * width)) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        kernel = np.ones(3 + 2 * int(secondary * 5))
-        kernel /= kernel.sum()
-        response = np.convolve(measured, kernel, mode="same")
-        response_axis = coordinate
-        broken_response = np.roll(response, 18) + 0.25 * np.roll(response, -13) if broken_mode else response
-        x = coordinate
-
-    displayed = broken_response if broken_mode else measured
-    separation = float(np.max(response) - np.median(response))
-    rmse = float(np.sqrt(np.mean((np.asarray(displayed).real - np.asarray(truth).real) ** 2)))
-    signature = [float(count), primary, secondary, noise_db, float(np.mean(np.asarray(displayed).real)), float(np.std(np.asarray(displayed).real)), separation, rmse]
-    sweep_primary = [0.6, 1.0, 1.4]
-    sweep_secondary = [0.0, 0.5, 1.0]
-    sweep_response = [variant * value for value in sweep_primary]
-    stress_response = [separation / (1.0 + value) for value in sweep_secondary]
-    title = 'Make FFT Bins Concrete'
-
+    count = int(parameters["record_sample_count"])
+    offset = float(parameters["tone_bin_offset"])
+    broken = bool(parameters["broken_mode"])
+    case = _case(count, offset, broken)
+    offset_sweep = np.array([0.0, 0.25, 0.5])
+    neighbor_balance = []
+    for value in offset_sweep:
+        pair = _case(64, float(value), False)["neighbor_magnitudes"]
+        neighbor_balance.append(min(pair) / max(max(pair), 1e-15))
+    length_sweep = np.array([32, 64, 128])
+    spacing_sweep = FS_HZ / length_sweep
+    bins = np.arange(count)
+    signed_frequency = (
+        np.where(bins <= count // 2, bins, bins - count) * case["spacing"]
+    )
+    signature = [
+        float(count),
+        offset,
+        case["spacing"],
+        case["tone_frequency"],
+        float(case["peak_bin"]),
+        case["correct_frequency"],
+        case["reported_frequency"],
+        case["dft_error"],
+        *case["neighbor_magnitudes"],
+    ]
     return {
         "metrics": [
-            {"id": "primary", "label": 'Fft Bin Offset', "value": primary, "unit": "× baseline", "emphasis": "primary"},
-            {"id": "response_separation", "label": "Response separation", "value": separation, "unit": "normalized"},
-            {"id": "model_error", "label": "Model/display error", "value": rmse, "unit": "normalized"},
-            {"id": "points", "label": "Bounded points", "value": count, "unit": "points"},
+            {
+                "id": "bin_spacing",
+                "label": "Bin spacing",
+                "value": case["spacing"],
+                "unit": "Hz",
+                "emphasis": "primary",
+            },
+            {
+                "id": "peak_bin",
+                "label": "Zero-based peak bin",
+                "value": case["peak_bin"],
+                "unit": "bin",
+            },
+            {
+                "id": "reported_frequency",
+                "label": "Reported frequency",
+                "value": case["reported_frequency"],
+                "unit": "Hz",
+            },
+            {
+                "id": "dft_error",
+                "label": "Explicit DFT/FFT error",
+                "value": case["dft_error"],
+                "unit": "V",
+            },
         ],
         "plots": {
-            "model_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "physical/model truth", "x": x, "y": np.asarray(truth).real},
-                {"type": "scatter", "mode": "lines", "name": "measured/processed", "x": x, "y": np.asarray(displayed).real},
-            ], "layout": _layout(title + " — model view", 'normalized frequency', 'spectral magnitude'), "config": {"responsive": True, "displaylogo": False}},
-            "response_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "response", "x": response_axis, "y": np.asarray(response).real},
-            ], "layout": _layout(title + " — response view", 'normalized frequency', 'spectral magnitude'), "config": {"responsive": True, "displaylogo": False}},
-            "parameter_sweeps": {"data": [
-                {"type": "scatter", "mode": "lines+markers", "name": "primary scale", "x": sweep_primary, "y": sweep_response},
-                {"type": "scatter", "mode": "lines+markers", "name": "secondary stress", "x": sweep_secondary, "y": stress_response},
-            ], "layout": _layout("Two one-variable sweeps", "control value", "response statistic"), "config": {"responsive": True, "displaylogo": False}},
-            "broken_case": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "recovered", "x": x, "y": np.asarray(measured).real},
-                {"type": "scatter", "mode": "lines", "name": "broken" if broken_mode else "enable broken mode", "x": x, "y": np.asarray(broken_response).real},
-            ], "layout": _layout("Intentional assumption failure", 'normalized frequency', 'spectral magnitude'), "config": {"responsive": True, "displaylogo": False}},
+            "bin_map": {
+                "data": [
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "magnitude",
+                        "x": signed_frequency,
+                        "y": case["magnitude"],
+                    },
+                    {
+                        "type": "scatter",
+                        "mode": "markers",
+                        "name": "reported peak",
+                        "x": [case["reported_frequency"]],
+                        "y": [max(case["magnitude"])],
+                    },
+                ],
+                "layout": _layout(
+                    "Signed FFT-bin map",
+                    "Signed frequency (Hz)",
+                    "Normalized magnitude (V)",
+                ),
+                "config": {"responsive": True, "displaylogo": False},
+            },
+            "neighboring_bins": {
+                "data": [
+                    {
+                        "type": "bar",
+                        "name": "neighbor magnitude",
+                        "x": ["lower", "upper"],
+                        "y": case["neighbor_magnitudes"],
+                    },
+                ],
+                "layout": _layout(
+                    "Off-bin projections", "Nearest projection", "Magnitude (V)"
+                ),
+                "config": {"responsive": True, "displaylogo": False},
+            },
+            "parameter_sweeps": {
+                "data": [
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "neighbor balance",
+                        "x": offset_sweep,
+                        "y": neighbor_balance,
+                    },
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "bin spacing",
+                        "x": length_sweep,
+                        "y": spacing_sweep,
+                        "yaxis": "y2",
+                    },
+                ],
+                "layout": _layout(
+                    "Fractional offset and record-length sweeps",
+                    "Control value",
+                    "Response",
+                )
+                | {
+                    "yaxis2": {
+                        "title": "Bin spacing (Hz)",
+                        "overlaying": "y",
+                        "side": "right",
+                    }
+                },
+                "config": {"responsive": True, "displaylogo": False},
+            },
+            "broken_case": {
+                "data": [
+                    {
+                        "type": "bar",
+                        "name": "frequency label",
+                        "x": ["correct k", "displayed"],
+                        "y": [case["correct_frequency"], case["reported_frequency"]],
+                    },
+                ],
+                "layout": _layout(
+                    "One-based index error and recovery",
+                    "Axis convention",
+                    "Frequency (Hz)",
+                ),
+                "config": {"responsive": True, "displaylogo": False},
+            },
         },
         "explanations": {
-            "observation": f"The {title} model uses a bounded deterministic spectral/IQ processing experiment. Primary scale={primary:.2f} and secondary stress={secondary:.2f} remain independently controllable.",
-            "broken": "Broken mode deliberately violates the lesson's central interpretation assumption so the displayed response becomes ambiguous, biased, contaminated, or defocused.",
-            "recovery": "Disable broken mode, restore both scales to 1.0 and 0.25, then connect the recovered shape to the pinned source equations before changing one control at a time.",
+            "observation": "Each zero-based DFT bin is one finite-record complex-sinusoid projection; changing N changes both duration and the projection spacing.",
+            "broken": "Broken mode treats the one-based storage index as zero-based k, shifting every physical-frequency label upward by exactly one bin.",
+            "recovery": "Use k=index-1, then f=k fs/N. Phase is interpreted only where the associated projection magnitude clears the retained threshold.",
         },
-        "diagnostics": {"seed": SEED, "item_number": ITEM_NUMBER, "point_count": count, "signature": signature, "broken_active": broken_mode},
+        "diagnostics": {
+            "seed": SEED,
+            "signature": signature,
+            "signed_frequency_hz": signed_frequency.tolist(),
+            "broken_active": broken,
+        },
     }

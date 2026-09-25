@@ -5,165 +5,318 @@ from typing import Any
 import numpy as np
 
 SEED = 1020
-ITEM_NUMBER = 20
-PHASE = 2
-MAX_POINTS = 512
+FS_HZ = 1024.0
+TRIALS = 40
 
 
 def _layout(title: str, x_label: str, y_label: str) -> dict[str, Any]:
     return {
-        "title": {"text": title, "x": 0.02, "xanchor": "left"},
-        "margin": {"l": 68, "r": 22, "t": 58, "b": 58},
-        "xaxis": {"title": x_label, "showgrid": True},
-        "yaxis": {"title": y_label, "showgrid": True},
+        "title": {"text": title, "x": 0.02},
+        "xaxis": {"title": x_label},
+        "yaxis": {"title": y_label},
         "legend": {"orientation": "h", "y": 1.14},
-        "hovermode": "closest",
-        "uirevision": "keep-view",
+        "margin": {"l": 68, "r": 22, "t": 58, "b": 58},
     }
 
 
+def _wrap(value: float | np.ndarray) -> float | np.ndarray:
+    return np.arctan2(np.sin(value), np.cos(value))
+
+
+def _estimate(values: np.ndarray) -> tuple[np.ndarray, np.ndarray, float]:
+    count = len(values)
+    spectrum = np.fft.fft(values)
+    magnitude = np.abs(spectrum) / count
+    peak = int(np.argmax(magnitude))
+    signed_peak = peak if peak < count // 2 else peak - count
+    peak_frequency = signed_peak * FS_HZ / count
+    left = np.log(max(float(magnitude[(peak - 1) % count]), 1e-15))
+    center = np.log(max(float(magnitude[peak]), 1e-15))
+    right = np.log(max(float(magnitude[(peak + 1) % count]), 1e-15))
+    denominator = left - 2.0 * center + right
+    offset = (
+        np.clip(0.5 * (left - right) / denominator, -0.5, 0.5)
+        if abs(denominator) > 1e-15
+        else 0.0
+    )
+    interpolated = (signed_peak + offset) * FS_HZ / count
+    adjacent = np.conj(values[:-1]) * values[1:]
+    coherent = np.sum(adjacent)
+    increment = np.angle(coherent) * FS_HZ / (2.0 * np.pi)
+    coherence = float(abs(coherent) / max(float(np.sum(np.abs(adjacent))), 1e-15))
+    frequencies = np.array([peak_frequency, interpolated, increment])
+    time = np.arange(count) / FS_HZ
+    phases = np.array(
+        [
+            np.angle(np.sum(values * np.exp(-1j * 2.0 * np.pi * value * time)))
+            for value in frequencies
+        ]
+    )
+    return frequencies, phases, coherence
+
+
+def _trial(
+    snr: float, count: int, seed: int, amplitude: float = 1.0
+) -> tuple[np.ndarray, np.ndarray, float, np.ndarray]:
+    if snr < -20.0 or snr > 60.0 or count not in {64, 128, 256, 512}:
+        raise ValueError("SNR or record length is outside the bounded cases")
+    time = np.arange(count) / FS_HZ
+    clean = amplitude * np.exp(1j * (2.0 * np.pi * 123.25 * time + 2.70))
+    rng = np.random.default_rng(seed)
+    noise_rms = 10.0 ** (-snr / 20.0)
+    noise = (
+        noise_rms
+        / np.sqrt(2.0)
+        * (rng.standard_normal(count) + 1j * rng.standard_normal(count))
+    )
+    observed = clean + noise
+    frequencies, phases, coherence = _estimate(observed)
+    return frequencies, phases, coherence, observed
+
+
+def _monte_carlo(
+    snr: float, count: int
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, float]:
+    frequency_error = []
+    phase_error = []
+    coherences = []
+    for trial in range(TRIALS):
+        frequencies, phases, coherence, _ = _trial(snr, count, SEED + 1000 + trial)
+        frequency_error.append(frequencies - 123.25)
+        phase_error.append(_wrap(phases - 2.70))
+        coherences.append(coherence)
+    frequency_error_array = np.array(frequency_error)
+    phase_error_array = np.array(phase_error)
+    frequency_bias = np.mean(frequency_error_array, axis=0)
+    frequency_spread = np.std(frequency_error_array, axis=0, ddof=1)
+    phase_circular_error = np.sqrt(np.mean(phase_error_array**2, axis=0))
+    return (
+        frequency_bias,
+        frequency_spread,
+        phase_circular_error,
+        float(np.mean(coherences)),
+    )
+
+
 def run(parameters: dict[str, Any]) -> dict[str, Any]:
-    primary = float(parameters["primary_scale"])
-    secondary = float(parameters["secondary_scale"])
-    noise_db = float(parameters["noise_db"])
-    broken_mode = bool(parameters["broken_mode"])
-    count = 192 + 16 * (ITEM_NUMBER % 4)
-    if count > MAX_POINTS:
-        raise ValueError("experiment exceeds the retained point ceiling")
-    rng = np.random.default_rng(SEED)
-    x = np.linspace(0.0, 1.0, count, endpoint=False)
-    variant = 1.0 + (ITEM_NUMBER % 7) / 5.0
-    noise_scale = 10.0 ** (noise_db / 20.0)
-
-    if PHASE == 1:
-        truth = np.cos(2.0 * np.pi * variant * primary * x + 0.4 * secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, count // 7) if broken_mode else measured
-    elif PHASE == 2:
-        tone = np.exp(1j * (2.0 * np.pi * (8.0 + variant * primary) * x + secondary))
-        measured = tone + noise_scale * (rng.standard_normal(count) + 1j * rng.standard_normal(count))
-        response_axis = np.fft.fftshift(np.fft.fftfreq(count, d=1.0 / count))
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / count
-        broken_response = np.abs(measured.real) if broken_mode else np.abs(measured)
-        truth = tone.real
-    elif PHASE == 3:
-        symbols = np.sign(np.sin(2.0 * np.pi * (4.0 + variant) * x))
-        carrier = np.cos(2.0 * np.pi * (18.0 + 2.0 * primary) * x + secondary)
-        truth = symbols * carrier
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(2 + 10 * secondary)) if broken_mode else measured
-    elif PHASE == 4:
-        bins = np.arange(count, dtype=float)
-        center = count * (0.25 + 0.25 * (primary - 0.5))
-        width = 2.0 + 4.0 * secondary
-        truth = np.exp(-0.5 * ((bins - center) / width) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = bins
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / np.sqrt(count)
-        broken_response = np.roll(measured, count // 3) if broken_mode else measured
-        x = bins
-    elif PHASE == 5:
-        cells = np.arange(count, dtype=float)
-        background = 0.2 + (0.45 * secondary) * (cells >= count // 2)
-        power = background + np.abs(noise_scale * rng.standard_normal(count))
-        target_bin = int(count * (0.3 + 0.25 * (primary - 0.5)))
-        power[target_bin] += 1.4
-        truth = power
-        measured = power
-        response_axis = cells
-        response = np.full(count, np.quantile(power, 0.82 + 0.1 * secondary))
-        if broken_mode:
-            response = np.full(count, np.mean(power) * (1.2 + primary))
-        broken_response = response
-        x = cells
-    elif PHASE == 6:
-        steps = np.arange(count, dtype=float)
-        truth = 0.04 * steps + 0.0002 * variant * secondary * steps**2
-        measured = truth + noise_scale * 8.0 * rng.standard_normal(count)
-        gain = np.clip(0.12 + 0.5 * primary, 0.05, 0.95)
-        response = np.empty(count)
-        response[0] = measured[0]
-        for index in range(1, count):
-            response[index] = response[index - 1] + gain * (measured[index] - response[index - 1])
-        response_axis = steps
-        broken_response = np.roll(response, 12) if broken_mode else response
-        x = steps
-    elif PHASE == 7:
-        angles = np.linspace(-90.0, 90.0, count)
-        u = np.sin(np.deg2rad(angles)) - np.sin(np.deg2rad(45.0 * (primary - 1.0)))
-        spacing = 0.45 + 0.45 * secondary
-        elements = 6 + ITEM_NUMBER % 7
-        denominator = np.sin(np.pi * spacing * u)
-        numerator = np.sin(elements * np.pi * spacing * u)
-        response = np.where(np.abs(denominator) < 1e-10, 1.0, np.abs(numerator / (elements * denominator)))
-        truth = response
-        measured = np.maximum(response + noise_scale * rng.standard_normal(count), 0.0)
-        response_axis = angles
-        broken_response = np.roll(response, 9) if broken_mode else response
-        x = angles
-    elif PHASE == 8:
-        bins = np.arange(count, dtype=float)
-        beat_bin = count * (0.15 + 0.35 * (primary - 0.5))
-        truth = np.cos(2.0 * np.pi * beat_bin * bins / count + secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(8 + 16 * secondary)) if broken_mode else measured
-        x = bins
-    else:
-        coordinate = np.linspace(-1.0, 1.0, count)
-        width = 0.05 + 0.16 / primary
-        truth = np.exp(-0.5 * ((coordinate + 0.25) / width) ** 2) + 0.65 * np.exp(-0.5 * ((coordinate - 0.3) / (1.4 * width)) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        kernel = np.ones(3 + 2 * int(secondary * 5))
-        kernel /= kernel.sum()
-        response = np.convolve(measured, kernel, mode="same")
-        response_axis = coordinate
-        broken_response = np.roll(response, 18) + 0.25 * np.roll(response, -13) if broken_mode else response
-        x = coordinate
-
-    displayed = broken_response if broken_mode else measured
-    separation = float(np.max(response) - np.median(response))
-    rmse = float(np.sqrt(np.mean((np.asarray(displayed).real - np.asarray(truth).real) ** 2)))
-    signature = [float(count), primary, secondary, noise_db, float(np.mean(np.asarray(displayed).real)), float(np.std(np.asarray(displayed).real)), separation, rmse]
-    sweep_primary = [0.6, 1.0, 1.4]
-    sweep_secondary = [0.0, 0.5, 1.0]
-    sweep_response = [variant * value for value in sweep_primary]
-    stress_response = [separation / (1.0 + value) for value in sweep_secondary]
-    title = 'Estimate Tone Frequency and Phase from Noisy Samples'
-
+    snr = float(parameters["snr_db"])
+    count = int(parameters["record_sample_count"])
+    broken = bool(parameters["broken_mode"])
+    frequencies, phases, coherence, _ = _trial(snr, count, SEED)
+    time = np.arange(count) / FS_HZ
+    true_total = 2.0 * np.pi * 123.25 * (count - 1) / FS_HZ
+    wrapped_endpoint = float(_wrap(true_total))
+    broken_endpoint = wrapped_endpoint * FS_HZ / (2.0 * np.pi * (count - 1))
+    clean = np.exp(1j * (2.0 * np.pi * 123.25 * time + 2.70))
+    recovered = _estimate(clean)[0][2]
+    low_frequencies, _, low_coherence, _ = _trial(
+        -20.0, count, SEED + 99, amplitude=0.02
+    )
+    low_reported = float(low_frequencies[2]) if low_coherence >= 0.20 else 0.0
+    snr_sweep = np.array([-10.0, 0.0, 10.0, 20.0])
+    snr_results = [_monte_carlo(float(value), 256) for value in snr_sweep]
+    length_sweep = np.array([64, 128, 256, 512])
+    length_results = [_monte_carlo(8.0, int(value)) for value in length_sweep]
+    selected_trials = _monte_carlo(snr, count)
+    reported_frequency = broken_endpoint if broken else frequencies[2]
+    signature = [
+        snr,
+        float(count),
+        *frequencies.tolist(),
+        *phases.tolist(),
+        coherence,
+        broken_endpoint,
+        recovered,
+        low_coherence,
+        low_reported,
+        reported_frequency,
+        selected_trials[0][2],
+        selected_trials[1][2],
+        selected_trials[2][2],
+        selected_trials[3],
+    ]
+    labels = ["peak FFT bin", "interpolated FFT", "phase increment"]
     return {
         "metrics": [
-            {"id": "primary", "label": 'Record Snr', "value": primary, "unit": "× baseline", "emphasis": "primary"},
-            {"id": "response_separation", "label": "Response separation", "value": separation, "unit": "normalized"},
-            {"id": "model_error", "label": "Model/display error", "value": rmse, "unit": "normalized"},
-            {"id": "points", "label": "Bounded points", "value": count, "unit": "points"},
+            {
+                "id": "reported_frequency",
+                "label": "Reported frequency",
+                "value": reported_frequency,
+                "unit": "Hz",
+                "emphasis": "primary",
+            },
+            {
+                "id": "interpolated_error",
+                "label": "Interpolated FFT error",
+                "value": frequencies[1] - 123.25,
+                "unit": "Hz",
+            },
+            {
+                "id": "phase_error",
+                "label": "Phase-increment initial-phase error",
+                "value": float(_wrap(phases[2] - 2.70)),
+                "unit": "rad",
+            },
+            {
+                "id": "coherence",
+                "label": "Adjacent-product coherence",
+                "value": coherence,
+                "unit": "ratio",
+            },
+            {
+                "id": "trial_frequency_bias",
+                "label": "40-trial phase-increment bias",
+                "value": selected_trials[0][2],
+                "unit": "Hz",
+            },
+            {
+                "id": "trial_frequency_spread",
+                "label": "40-trial phase-increment spread",
+                "value": selected_trials[1][2],
+                "unit": "Hz",
+            },
+            {
+                "id": "trial_circular_phase_error",
+                "label": "40-trial circular phase error",
+                "value": selected_trials[2][2],
+                "unit": "rad RMS",
+            },
         ],
         "plots": {
-            "model_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "physical/model truth", "x": x, "y": np.asarray(truth).real},
-                {"type": "scatter", "mode": "lines", "name": "measured/processed", "x": x, "y": np.asarray(displayed).real},
-            ], "layout": _layout(title + " — model view", 'normalized frequency', 'spectral magnitude'), "config": {"responsive": True, "displaylogo": False}},
-            "response_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "response", "x": response_axis, "y": np.asarray(response).real},
-            ], "layout": _layout(title + " — response view", 'normalized frequency', 'spectral magnitude'), "config": {"responsive": True, "displaylogo": False}},
-            "parameter_sweeps": {"data": [
-                {"type": "scatter", "mode": "lines+markers", "name": "primary scale", "x": sweep_primary, "y": sweep_response},
-                {"type": "scatter", "mode": "lines+markers", "name": "secondary stress", "x": sweep_secondary, "y": stress_response},
-            ], "layout": _layout("Two one-variable sweeps", "control value", "response statistic"), "config": {"responsive": True, "displaylogo": False}},
-            "broken_case": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "recovered", "x": x, "y": np.asarray(measured).real},
-                {"type": "scatter", "mode": "lines", "name": "broken" if broken_mode else "enable broken mode", "x": x, "y": np.asarray(broken_response).real},
-            ], "layout": _layout("Intentional assumption failure", 'normalized frequency', 'spectral magnitude'), "config": {"responsive": True, "displaylogo": False}},
+            "frequency_estimators": {
+                "data": [
+                    {
+                        "type": "bar",
+                        "name": "frequency estimate",
+                        "x": labels,
+                        "y": frequencies,
+                    },
+                    {
+                        "type": "scatter",
+                        "mode": "lines",
+                        "name": "truth",
+                        "x": labels,
+                        "y": [123.25] * 3,
+                    },
+                ],
+                "layout": _layout(
+                    "Three bounded frequency estimators", "Estimator", "Frequency (Hz)"
+                ),
+                "config": {"responsive": True, "displaylogo": False},
+            },
+            "phase_estimators": {
+                "data": [
+                    {
+                        "type": "bar",
+                        "name": "wrapped phase error",
+                        "x": labels,
+                        "y": _wrap(phases - 2.70),
+                    }
+                ],
+                "layout": _layout(
+                    "De-rotated initial-phase estimates",
+                    "Estimator",
+                    "Circular phase error (rad)",
+                ),
+                "config": {"responsive": True, "displaylogo": False},
+            },
+            "snr_and_length_sweeps": {
+                "data": [
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "phase-increment spread vs SNR",
+                        "x": snr_sweep,
+                        "y": [item[1][2] for item in snr_results],
+                    },
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "phase-increment spread vs N",
+                        "x": length_sweep,
+                        "y": [item[1][2] for item in length_results],
+                        "yaxis": "y2",
+                    },
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "circular phase error vs SNR",
+                        "x": snr_sweep,
+                        "y": [item[2][2] for item in snr_results],
+                        "yaxis": "y3",
+                    },
+                ],
+                "layout": _layout(
+                    "Forty-trial SNR and coherent-length sweeps",
+                    "SNR (dB) / samples",
+                    "Frequency spread (Hz)",
+                )
+                | {
+                    "yaxis2": {
+                        "title": "Frequency spread (Hz)",
+                        "overlaying": "y",
+                        "side": "right",
+                    },
+                    "yaxis3": {
+                        "title": "Circular phase error (rad RMS)",
+                        "anchor": "free",
+                        "overlaying": "y",
+                        "side": "right",
+                        "position": 0.92,
+                    },
+                },
+                "config": {"responsive": True, "displaylogo": False},
+            },
+            "broken_and_gate": {
+                "data": [
+                    {
+                        "type": "bar",
+                        "name": "endpoint/recovery",
+                        "x": ["wrapped endpoint", "adjacent recovery", "truth"],
+                        "y": [broken_endpoint, recovered, 123.25],
+                    },
+                    {
+                        "type": "bar",
+                        "name": "coherence",
+                        "x": ["baseline", "low amplitude"],
+                        "y": [coherence, low_coherence],
+                        "yaxis": "y2",
+                    },
+                ],
+                "layout": _layout(
+                    "Endpoint-wrap failure and confidence gate",
+                    "Case",
+                    "Frequency (Hz)",
+                )
+                | {
+                    "yaxis2": {
+                        "title": "Coherence (ratio)",
+                        "overlaying": "y",
+                        "side": "right",
+                        "range": [0, 1],
+                    }
+                },
+                "config": {"responsive": True, "displaylogo": False},
+            },
         },
         "explanations": {
-            "observation": f"The {title} model uses a bounded deterministic spectral/IQ processing experiment. Primary scale={primary:.2f} and secondary stress={secondary:.2f} remain independently controllable.",
-            "broken": "Broken mode deliberately violates the lesson's central interpretation assumption so the displayed response becomes ambiguous, biased, contaminated, or defocused.",
-            "recovery": "Disable broken mode, restore both scales to 1.0 and 0.25, then connect the recovered shape to the pinned source equations before changing one control at a time.",
+            "observation": "The peak bin is grid-limited, three-bin log interpolation estimates a sub-bin maximum, and coherent adjacent products estimate mean phase step directly.",
+            "broken": "A first-to-last phase angle is wrapped to one turn before division, so a many-turn record produces a catastrophically wrong frequency.",
+            "recovery": "Sum adjacent conjugate products coherently, de-rotate for initial phase, use circular phase error, and withhold low-amplitude evidence below the 0.20 coherence gate.",
         },
-        "diagnostics": {"seed": SEED, "item_number": ITEM_NUMBER, "point_count": count, "signature": signature, "broken_active": broken_mode},
+        "diagnostics": {
+            "seed": SEED,
+            "signature": signature,
+            "broken_active": broken,
+            "trial_count": TRIALS,
+            "low_amplitude_rejected": low_coherence < 0.20,
+            "frequency_bias_hz": [item[0].tolist() for item in snr_results],
+            "phase_circular_error_rad": [item[2].tolist() for item in snr_results],
+            "length_frequency_bias_hz": [item[0].tolist() for item in length_results],
+            "length_frequency_spread_hz": [item[1].tolist() for item in length_results],
+            "length_phase_circular_error_rad": [
+                item[2].tolist() for item in length_results
+            ],
+            "length_mean_coherence": [item[3] for item in length_results],
+        },
     }

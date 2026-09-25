@@ -1,6 +1,4 @@
-# Perform Complex Downconversion by Hand
-
-> **Guiding question:** How does multiplying by a complex oscillator move an RF/IF signal to baseband?
+# P17 Lesson: Change the Reference That Measures Rotation
 
 ## Guiding question
 
@@ -152,33 +150,15 @@ or background work. Ctrl+C cancels it. Correct a rejected control and rerun;
 only P17 figures and `results` are replaced. Static tests cannot substitute for
 MATLAB/Octave execution or human plot inspection.
 
-## Use the Python GUI experiment
+## Use the source-faithful Python experiment: Perform Complex Downconversion by Hand
 
-The GUI keeps the pinned source's mental model and processing order visible. The **oscillator offset** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+The real 240 Hz input is multiplied by `exp(-j2πf_LOt)`, passed through the explicit 129-tap Hamming-windowed sinc, evaluated outside its 64-sample group delay, and given the visible real-input factor-of-two calibration. Broken mode reverses the oscillator sign at the 216 Hz probe and selects the wrong signed spectral copy. Recovery restores the negative-exponent LO.
 
-### Prediction and sweep 1 — oscillator offset
-
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
-
-### Sweep 2 — secondary stress
-
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
-
-### Intentionally broken case and recovery
-
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
-
-## Common mistakes to avoid in the GUI
-
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+The implementation is deterministic, bounded NumPy software. MATLAB figure-window behavior is deliberately omitted. No MATLAB runtime comparison, browser/accessibility result, representative learner validation, physical HIL/hardware, certification, release, deployment, or production-use claim is made.
 
 ## Teach-back checklist
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
+- [ ] Answer the guiding question using physical units and the retained source equation.
 - [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+- [ ] Name the exact broken assumption before enabling it.
+- [ ] Demonstrate recovery and state the software-only claim boundary.

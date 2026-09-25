@@ -3,7 +3,7 @@
   "id": "12-separate-leakage-from-noise",
   "number": 12,
   "title": "Separate Leakage from Noise",
-  "summary": "Explore separate leakage from noise with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "Separate deterministic finite-record leakage from seeded noise while comparing five explicitly constructed windows.",
   "guiding_question": "Why does a perfectly clean tone spread across many FFT bins?",
   "status": "implemented",
   "tags": [
@@ -19,41 +19,47 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Record Coherence",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "window_name",
+      "type": "segmented",
+      "label": "Window",
+      "default": "Hann",
+      "options": [
+        {
+          "label": "Rectangular",
+          "value": "Rectangular"
+        },
+        {
+          "label": "Hann",
+          "value": "Hann"
+        },
+        {
+          "label": "Hamming",
+          "value": "Hamming"
+        },
+        {
+          "label": "Blackman",
+          "value": "Blackman"
+        },
+        {
+          "label": "Flat-top",
+          "value": "Flat-top"
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
+      "id": "tone_bin_offset",
       "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
+      "label": "Fractional-bin offset",
+      "default": 0.35,
       "minimum": 0.0,
-      "maximum": 1.0,
+      "maximum": 0.5,
       "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "unit": "bin"
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named source failure",
       "default": false
     }
   ],
@@ -65,8 +71,8 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing record coherence, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict which window narrows the main lobe and which lowers sidelobes before moving the tone between bins.",
+      "reveal": "Use the retained source equations, change one control at a time, and compare the named invariant."
     },
     {
       "type": "controls",
@@ -77,10 +83,10 @@
     },
     {
       "type": "plot_grid",
-      "title": "Model and response",
+      "title": "Physical model and primary evidence",
       "plots": [
-        "model_view",
-        "response_view"
+        "leakage_spectrum",
+        "window_tradeoffs"
       ]
     },
     {
@@ -90,7 +96,7 @@
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
+      "title": "Named failure and exact recovery",
       "plot": "broken_case"
     },
     {

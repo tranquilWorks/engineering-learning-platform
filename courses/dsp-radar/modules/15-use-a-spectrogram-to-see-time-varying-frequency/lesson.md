@@ -1,6 +1,4 @@
-# Use a Spectrogram to See Time-Varying Frequency
-
-> **Guiding question:** How do window duration and overlap control time-frequency visibility?
+# P15 Lesson: Time and Frequency Share One Window
 
 ## Guiding question
 
@@ -127,33 +125,15 @@ prior P15-tagged figures and clears prior `results`, so a rejected input cannot
 be confused with an older successful output. Rollback restores only P15's
 manifest status to `scaffolded`; P14 and learner progress remain intact.
 
-## Use the Python GUI experiment
+## Use the source-faithful Python experiment: Use a Spectrogram to See Time-Varying Frequency
 
-The GUI keeps the pinned source's mental model and processing order visible. The **spectrogram window** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+The source components are formed explicitly before the Hann-windowed STFT: 90 Hz steady tone, 220–320 Hz gated chirp, 380 Hz 64-sample burst, and a continuous-phase 156/174 Hz hop. **Window length** trades time localization against physical frequency width; **overlap** changes frame-time density. Broken mode pads a 64-sample window to 512 FFT points and calls the 2 Hz display spacing physical resolution; recovery restores the 64-sample main-lobe scale.
 
-### Prediction and sweep 1 — spectrogram window
-
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
-
-### Sweep 2 — secondary stress
-
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
-
-### Intentionally broken case and recovery
-
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
-
-## Common mistakes to avoid in the GUI
-
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+The implementation is deterministic, bounded NumPy software. MATLAB figure-window behavior is deliberately omitted. No MATLAB runtime comparison, browser/accessibility result, representative learner validation, physical HIL/hardware, certification, release, deployment, or production-use claim is made.
 
 ## Teach-back checklist
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
+- [ ] Answer the guiding question using physical units and the retained source equation.
 - [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+- [ ] Name the exact broken assumption before enabling it.
+- [ ] Demonstrate recovery and state the software-only claim boundary.
