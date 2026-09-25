@@ -33,19 +33,19 @@
     ]
   },
   "target": {
-    "content_digest": "3824c292b694e2603f6dea0dec9298a6c3651977992bb943a1456f100d9f5488",
+    "content_digest": "adad0e20527a40b3deaf2f027239a23198697c6e9a6a1be6604f4d81c7ba3704",
     "files": [
       {
         "path": "modules/02-see-sampling-as-taking-measurements/experiment.py",
-        "sha256": "8b2a3cac4cb45a1be980f56a7fa3ebe393db23f6b8e7536f8565b0d19cd1b588"
+        "sha256": "aea9f288448eda6f793ec54cadcb7b80d721d4f5159dbc94598d5f28edecf698"
       },
       {
         "path": "modules/02-see-sampling-as-taking-measurements/lesson.md",
-        "sha256": "81fff279a3fa5f6139a2ec999bb44e5ff86e2cd33454c52fe0185aad21f67556"
+        "sha256": "c02acac97e79b90fd821c476a4e280e581c7d5cba72bec72550768be6a0fe747"
       },
       {
         "path": "modules/02-see-sampling-as-taking-measurements/module.yaml",
-        "sha256": "08af907170c574925a9cc0c717c661ca7a5e86e7c4f388cbfec96eea4ee46639"
+        "sha256": "a05aa02519aa3a128ff17627528412a849f5acbf43c6bc7fea1a7ab7dc5bed6a"
       }
     ]
   },
@@ -53,10 +53,11 @@
     "guiding_question": "What information is lost when a continuous-looking signal is represented by discrete samples?",
     "physical_model": "Imagine a voltmeter that opens its eyes only at regularly spaced instants. For a continuous sinusoid \\[ x(t)=A\\cos(2\\pi f_0t+\\phi), \\] a sampler with interval \\(T_s=1/f_s\\) stores \\[ x[n]=x(nT_s)=A\\cos\\!\\left(2\\pi\\frac{f_0}{f_s}n+\\phi\\right). \\] The stored pair is the sample index (or its known time) and the measured amplitude. Nothing in that sequence directly records the path taken between two measurements. The baseline's dense curve is therefore a reference used by the experiment, not extra information available to the sampler.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary measurement rate while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Retained from the pinned source: dense and sample grids, interpolation error, rate and offset sweeps, and exact alias-family agreement.",
+      "Expose sample rate while holding sample-clock offset fixed, then reverse the roles.",
+      "Named failure: Force 7 Hz under a 12 Sa/s clock so the reflected 5 Hz and high 19 Hz candidates agree at every measurement.",
+      "Exact recovery: Restore the declared 80 Sa/s bandlimited measurement model.",
+      "Deliberately omitted: MATLAB figure-window behavior; the claim remains deterministic software-only."
     ],
     "equations": [
       {
@@ -94,129 +95,159 @@
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "ac9354ace63485348aa580f6a20590cb951ece4e75b228312ad262b591188b3b",
-          "unit": "mixed numeric signature"
+          "sha256": "25d9d61f21561caa8e4a53056c87215899d900a8ad792504d993bd619b236db9",
+          "unit": "source-specific numeric signature"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline independent actual signature",
+          "provenance": "generated",
+          "sha256": "7360d80e3442b2219a8830a6cac7eb88557bfe86577f4d5412ea87de4acf7ca3",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "36434f92f75b53a13f78e8ab1fa662bbd42e63de38afc140b775e403e245907d",
-          "unit": "mixed numeric signature"
+          "sha256": "215bfea4d93ff3bdfc18a397e8f78eadd5a6cd427f6d169b20a67ec7240f81bd",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent actual signature",
+          "provenance": "generated",
+          "sha256": "ecc0dfa0b830434e698c724cd27ca09f9b748751f1bab1310cce4bf2dc943087",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "d871112c1a84293cd6711588bf3c317fd8c405c12c860d26dbd0bf9dfc434bbb",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent actual signature",
+          "provenance": "generated",
+          "sha256": "b13a8511596b7761332950ddf2ee3100e27dea542e461b6d250537afc4357111",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "2b1ab3868205da7bf1f16e47a9eec873674b5dbbc32d5fe9e147020b701631c5",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent actual signature",
+          "provenance": "generated",
+          "sha256": "153df8eec8c77e6afe7a4f747ed7f200cc73d001d056da79aa476034664143cf",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "25d9d61f21561caa8e4a53056c87215899d900a8ad792504d993bd619b236db9",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent actual signature",
+          "provenance": "generated",
+          "sha256": "7360d80e3442b2219a8830a6cac7eb88557bfe86577f4d5412ea87de4acf7ca3",
+          "unit": "source-specific numeric signature"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P02 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P02 source processing and plot sequence",
+        "target_plot_key": "measurements",
+        "title": "Measurements",
         "axes": [
           {
             "role": "x",
-            "label": "sample index",
-            "unit": "source units"
+            "label": "Time",
+            "unit": "s"
           },
           {
             "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
+            "label": "Amplitude",
+            "unit": "a.u."
           }
         ],
-        "interpretation": "This view answers the See Sampling as Taking Measurements guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P02 view with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P02 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
-        "axes": [
-          {
-            "role": "x",
-            "label": "sample index",
-            "unit": "source units"
-          },
-          {
-            "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
-          }
-        ],
-        "interpretation": "This view answers the See Sampling as Taking Measurements guiding question while preserving the source sign, normalization, and finite-record interpretation."
-      },
-      {
-        "source_figure": "Pinned P02 source processing/plot sequence",
+        "source_figure": "Pinned P02 source processing and plot sequence",
         "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "title": "Parameter Sweeps",
         "axes": [
           {
             "role": "x",
-            "label": "sample index",
-            "unit": "source units"
+            "label": "Control value",
+            "unit": "mixed"
           },
           {
             "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
+            "label": "Interpolation error",
+            "unit": "a.u."
           }
         ],
-        "interpretation": "This view answers the See Sampling as Taking Measurements guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P02 view with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P02 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P02 source processing and plot sequence",
+        "target_plot_key": "alias_family",
+        "title": "Alias Family",
         "axes": [
           {
             "role": "x",
-            "label": "sample index",
-            "unit": "source units"
+            "label": "Time",
+            "unit": "s"
           },
           {
             "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
+            "label": "Amplitude",
+            "unit": "a.u."
           }
         ],
-        "interpretation": "This view answers the See Sampling as Taking Measurements guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P02 view with explicit physical axes and bounded deterministic data."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "sample_rate_hz",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          16.0,
+          80.0,
+          120.0
         ],
-        "expected_observation": "Changing measurement rate moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only sample_rate_hz; hold every other control at its source baseline."
       },
       {
-        "control": "secondary_scale",
+        "control": "clock_offset_samples",
         "values": [
           0.0,
-          0.5,
-          1.0
+          0.25,
+          0.5
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only clock_offset_samples; hold every other control at its source baseline."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode.",
+      "failure": "Force 7 Hz under a 12 Sa/s clock so the reflected 5 Hz and high 19 Hz candidates agree at every measurement.",
+      "recovery": "Restore the declared 80 Sa/s bandlimited measurement model.",
+      "expected_observation": "The named invariant fails in broken mode and returns within the recorded numeric tolerance after recovery."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Changing more than one source parameter at a time.",
+      "Force 7 Hz under a 12 Sa/s clock so the reflected 5 Hz and high 19 Hz candidates agree at every measurement.",
+      "Treating a deterministic software result as MATLAB runtime, learner, browser, audio, or hardware evidence."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
+      "Answer the exact guiding question from the pinned source equations.",
       "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Name the failure, demonstrate exact recovery, and explain the limiting case.",
+      "Teach back retained behavior, deliberate omissions, and the software-only claim boundary."
     ]
   },
   "runtime": {
@@ -224,62 +255,124 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 5000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P02 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py",
     "seed": 202,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "sample_rate_hz",
+        "value": 80.0,
+        "unit": "source units"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "clock_offset_samples",
+        "value": 0.0,
+        "unit": "source units"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/02-see-sampling-as-taking-measurements/evidence/expected-baseline.json",
-          "sha256": "ac9354ace63485348aa580f6a20590cb951ece4e75b228312ad262b591188b3b"
+          "sha256": "25d9d61f21561caa8e4a53056c87215899d900a8ad792504d993bd619b236db9"
         },
         "actual": {
           "path": "modules/02-see-sampling-as-taking-measurements/evidence/actual-baseline.json",
-          "sha256": "0312e0c09aba9fe8b6ece0f43a8a97d0a0c0da8c1f2dd9fc2387fdcfa80bdf87"
+          "sha256": "7360d80e3442b2219a8830a6cac7eb88557bfe86577f4d5412ea87de4acf7ca3"
         },
-        "max_absolute_error": 4.0534242629064465e-13,
-        "max_relative_error": 4.0534242629064465e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
         "passed": true
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/02-see-sampling-as-taking-measurements/evidence/expected-sweep-1.json",
+          "sha256": "215bfea4d93ff3bdfc18a397e8f78eadd5a6cd427f6d169b20a67ec7240f81bd"
+        },
+        "actual": {
+          "path": "modules/02-see-sampling-as-taking-measurements/evidence/actual-sweep-1.json",
+          "sha256": "ecc0dfa0b830434e698c724cd27ca09f9b748751f1bab1310cce4bf2dc943087"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "sweep_2",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/02-see-sampling-as-taking-measurements/evidence/expected-sweep-2.json",
+          "sha256": "d871112c1a84293cd6711588bf3c317fd8c405c12c860d26dbd0bf9dfc434bbb"
+        },
+        "actual": {
+          "path": "modules/02-see-sampling-as-taking-measurements/evidence/actual-sweep-2.json",
+          "sha256": "b13a8511596b7761332950ddf2ee3100e27dea542e461b6d250537afc4357111"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/02-see-sampling-as-taking-measurements/evidence/expected-broken.json",
-          "sha256": "36434f92f75b53a13f78e8ab1fa662bbd42e63de38afc140b775e403e245907d"
+          "sha256": "2b1ab3868205da7bf1f16e47a9eec873674b5dbbc32d5fe9e147020b701631c5"
         },
         "actual": {
           "path": "modules/02-see-sampling-as-taking-measurements/evidence/actual-broken.json",
-          "sha256": "8ddaa15f460f1c63b6a37f891202075e5c785a99630d9d537e63aef416660db8"
+          "sha256": "153df8eec8c77e6afe7a4f747ed7f200cc73d001d056da79aa476034664143cf"
         },
-        "max_absolute_error": 4.326539126964235e-13,
-        "max_relative_error": 4.326539126964235e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "recovery",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/02-see-sampling-as-taking-measurements/evidence/expected-recovery.json",
+          "sha256": "25d9d61f21561caa8e4a53056c87215899d900a8ad792504d993bd619b236db9"
+        },
+        "actual": {
+          "path": "modules/02-see-sampling-as-taking-measurements/evidence/actual-recovery.json",
+          "sha256": "7360d80e3442b2219a8830a6cac7eb88557bfe86577f4d5412ea87de4acf7ca3"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
         "passed": true
       }
     ]

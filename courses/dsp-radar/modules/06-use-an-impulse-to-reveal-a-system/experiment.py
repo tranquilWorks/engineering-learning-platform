@@ -5,165 +5,253 @@ from typing import Any
 import numpy as np
 
 SEED = 606
-ITEM_NUMBER = 6
-PHASE = 1
-MAX_POINTS = 512
+MAX_SAMPLES = 1024
 
 
 def _layout(title: str, x_label: str, y_label: str) -> dict[str, Any]:
     return {
-        "title": {"text": title, "x": 0.02, "xanchor": "left"},
-        "margin": {"l": 68, "r": 22, "t": 58, "b": 58},
-        "xaxis": {"title": x_label, "showgrid": True},
-        "yaxis": {"title": y_label, "showgrid": True},
+        "title": {"text": title, "x": 0.02},
+        "xaxis": {"title": x_label},
+        "yaxis": {"title": y_label},
         "legend": {"orientation": "h", "y": 1.14},
-        "hovermode": "closest",
-        "uirevision": "keep-view",
+        "margin": {"l": 68, "r": 22, "t": 58, "b": 58},
+    }
+
+
+def _resonator_direct(
+    signal: np.ndarray, radius: float, frequency_hz: float, fs: float, gain: float
+) -> np.ndarray:
+    coefficient = 2.0 * radius * np.cos(2.0 * np.pi * frequency_hz / fs)
+    output = np.zeros_like(signal)
+    for index in range(len(signal)):
+        previous = output[index - 1] if index >= 1 else 0.0
+        previous_two = output[index - 2] if index >= 2 else 0.0
+        output[index] = (
+            gain * signal[index] + coefficient * previous - radius**2 * previous_two
+        )
+    return output
+
+
+def _impulse_response(
+    radius: float, frequency_hz: float, fs: float, gain: float, count: int
+) -> np.ndarray:
+    impulse = np.zeros(count)
+    impulse[0] = 1.0
+    return _resonator_direct(impulse, radius, frequency_hz, fs, gain)
+
+
+def _case(echo_delay: int, radius: float, broken: bool) -> dict[str, Any]:
+    if echo_delay < 1 or echo_delay > 96 or not 0.1 <= radius <= 0.98:
+        raise ValueError("system controls exceed the bounded range")
+    count = 256
+    if count > MAX_SAMPLES:
+        raise ValueError("record exceeds the resource ceiling")
+    rng = np.random.default_rng(SEED)
+    signal = rng.standard_normal(count)
+    delay = 18
+    delay_h = np.zeros(delay + 1)
+    delay_h[-1] = 1.0
+    ma_h = np.ones(9) / 9.0
+    echo_h = np.zeros(echo_delay + 1)
+    echo_h[0], echo_h[-1] = 1.0, 0.55
+    resonator_h = _impulse_response(radius, 90.0, 1000.0, 0.15, count)
+
+    delay_direct = np.pad(signal, (delay, 0))[:count]
+    ma_direct = np.array(
+        [
+            np.mean(signal[max(0, index - 8) : index + 1]) * min(index + 1, 9) / 9.0
+            for index in range(count)
+        ]
+    )
+    echo_direct = signal.copy()
+    echo_direct[echo_delay:] += 0.55 * signal[:-echo_delay]
+    resonator_direct = _resonator_direct(signal, radius, 90.0, 1000.0, 0.15)
+    direct = {
+        "delay": delay_direct,
+        "moving_average": ma_direct,
+        "echo": echo_direct,
+        "resonator": resonator_direct,
+    }
+    impulses = {
+        "delay": delay_h,
+        "moving_average": ma_h,
+        "echo": echo_h,
+        "resonator": resonator_h,
+    }
+    convolution = {
+        name: np.convolve(signal, impulse)[:count] for name, impulse in impulses.items()
+    }
+    errors = {
+        name: float(np.max(np.abs(direct[name] - convolution[name]))) for name in direct
+    }
+
+    linear = convolution["echo"]
+    circular = np.fft.ifft(np.fft.fft(signal) * np.fft.fft(echo_h, count)).real
+    broken_output = circular if broken else linear
+    wrap_error = float(np.max(np.abs(circular - linear)))
+    display_error = float(np.max(np.abs(broken_output - linear)))
+    return {
+        "signal": signal,
+        "impulses": impulses,
+        "direct": direct,
+        "convolution": convolution,
+        "errors": errors,
+        "linear": linear,
+        "displayed": broken_output,
+        "wrap_error": wrap_error,
+        "display_error": display_error,
     }
 
 
 def run(parameters: dict[str, Any]) -> dict[str, Any]:
-    primary = float(parameters["primary_scale"])
-    secondary = float(parameters["secondary_scale"])
-    noise_db = float(parameters["noise_db"])
-    broken_mode = bool(parameters["broken_mode"])
-    count = 192 + 16 * (ITEM_NUMBER % 4)
-    if count > MAX_POINTS:
-        raise ValueError("experiment exceeds the retained point ceiling")
-    rng = np.random.default_rng(SEED)
-    x = np.linspace(0.0, 1.0, count, endpoint=False)
-    variant = 1.0 + (ITEM_NUMBER % 7) / 5.0
-    noise_scale = 10.0 ** (noise_db / 20.0)
-
-    if PHASE == 1:
-        truth = np.cos(2.0 * np.pi * variant * primary * x + 0.4 * secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, count // 7) if broken_mode else measured
-    elif PHASE == 2:
-        tone = np.exp(1j * (2.0 * np.pi * (8.0 + variant * primary) * x + secondary))
-        measured = tone + noise_scale * (rng.standard_normal(count) + 1j * rng.standard_normal(count))
-        response_axis = np.fft.fftshift(np.fft.fftfreq(count, d=1.0 / count))
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / count
-        broken_response = np.abs(measured.real) if broken_mode else np.abs(measured)
-        truth = tone.real
-    elif PHASE == 3:
-        symbols = np.sign(np.sin(2.0 * np.pi * (4.0 + variant) * x))
-        carrier = np.cos(2.0 * np.pi * (18.0 + 2.0 * primary) * x + secondary)
-        truth = symbols * carrier
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(2 + 10 * secondary)) if broken_mode else measured
-    elif PHASE == 4:
-        bins = np.arange(count, dtype=float)
-        center = count * (0.25 + 0.25 * (primary - 0.5))
-        width = 2.0 + 4.0 * secondary
-        truth = np.exp(-0.5 * ((bins - center) / width) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = bins
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / np.sqrt(count)
-        broken_response = np.roll(measured, count // 3) if broken_mode else measured
-        x = bins
-    elif PHASE == 5:
-        cells = np.arange(count, dtype=float)
-        background = 0.2 + (0.45 * secondary) * (cells >= count // 2)
-        power = background + np.abs(noise_scale * rng.standard_normal(count))
-        target_bin = int(count * (0.3 + 0.25 * (primary - 0.5)))
-        power[target_bin] += 1.4
-        truth = power
-        measured = power
-        response_axis = cells
-        response = np.full(count, np.quantile(power, 0.82 + 0.1 * secondary))
-        if broken_mode:
-            response = np.full(count, np.mean(power) * (1.2 + primary))
-        broken_response = response
-        x = cells
-    elif PHASE == 6:
-        steps = np.arange(count, dtype=float)
-        truth = 0.04 * steps + 0.0002 * variant * secondary * steps**2
-        measured = truth + noise_scale * 8.0 * rng.standard_normal(count)
-        gain = np.clip(0.12 + 0.5 * primary, 0.05, 0.95)
-        response = np.empty(count)
-        response[0] = measured[0]
-        for index in range(1, count):
-            response[index] = response[index - 1] + gain * (measured[index] - response[index - 1])
-        response_axis = steps
-        broken_response = np.roll(response, 12) if broken_mode else response
-        x = steps
-    elif PHASE == 7:
-        angles = np.linspace(-90.0, 90.0, count)
-        u = np.sin(np.deg2rad(angles)) - np.sin(np.deg2rad(45.0 * (primary - 1.0)))
-        spacing = 0.45 + 0.45 * secondary
-        elements = 6 + ITEM_NUMBER % 7
-        denominator = np.sin(np.pi * spacing * u)
-        numerator = np.sin(elements * np.pi * spacing * u)
-        response = np.where(np.abs(denominator) < 1e-10, 1.0, np.abs(numerator / (elements * denominator)))
-        truth = response
-        measured = np.maximum(response + noise_scale * rng.standard_normal(count), 0.0)
-        response_axis = angles
-        broken_response = np.roll(response, 9) if broken_mode else response
-        x = angles
-    elif PHASE == 8:
-        bins = np.arange(count, dtype=float)
-        beat_bin = count * (0.15 + 0.35 * (primary - 0.5))
-        truth = np.cos(2.0 * np.pi * beat_bin * bins / count + secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(8 + 16 * secondary)) if broken_mode else measured
-        x = bins
-    else:
-        coordinate = np.linspace(-1.0, 1.0, count)
-        width = 0.05 + 0.16 / primary
-        truth = np.exp(-0.5 * ((coordinate + 0.25) / width) ** 2) + 0.65 * np.exp(-0.5 * ((coordinate - 0.3) / (1.4 * width)) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        kernel = np.ones(3 + 2 * int(secondary * 5))
-        kernel /= kernel.sum()
-        response = np.convolve(measured, kernel, mode="same")
-        response_axis = coordinate
-        broken_response = np.roll(response, 18) + 0.25 * np.roll(response, -13) if broken_mode else response
-        x = coordinate
-
-    displayed = broken_response if broken_mode else measured
-    separation = float(np.max(response) - np.median(response))
-    rmse = float(np.sqrt(np.mean((np.asarray(displayed).real - np.asarray(truth).real) ** 2)))
-    signature = [float(count), primary, secondary, noise_db, float(np.mean(np.asarray(displayed).real)), float(np.std(np.asarray(displayed).real)), separation, rmse]
-    sweep_primary = [0.6, 1.0, 1.4]
-    sweep_secondary = [0.0, 0.5, 1.0]
-    sweep_response = [variant * value for value in sweep_primary]
-    stress_response = [separation / (1.0 + value) for value in sweep_secondary]
-    title = 'Use an Impulse to Reveal a System'
-
+    echo_delay = int(parameters["echo_delay_samples"])
+    radius = float(parameters["resonator_radius"])
+    broken = bool(parameters["broken_mode"])
+    case = _case(echo_delay, radius, broken)
+    delay_sweep = np.array([16, 32, 48])
+    echo_peak = [
+        float(np.argmax(np.abs(_case(int(value), 0.86, False)["impulses"]["echo"])))
+        for value in delay_sweep
+    ]
+    radius_sweep = np.array([0.6, 0.86, 0.96])
+    ring_energy = [
+        float(np.sum(_case(32, float(value), False)["impulses"]["resonator"] ** 2))
+        for value in radius_sweep
+    ]
+    index = np.arange(256)
     return {
         "metrics": [
-            {"id": "primary", "label": 'Impulse Width', "value": primary, "unit": "× baseline", "emphasis": "primary"},
-            {"id": "response_separation", "label": "Response separation", "value": separation, "unit": "normalized"},
-            {"id": "model_error", "label": "Model/display error", "value": rmse, "unit": "normalized"},
-            {"id": "points", "label": "Bounded points", "value": count, "unit": "points"},
+            {
+                "id": "maximum_equivalence_error",
+                "label": "Direct/convolution error",
+                "value": max(case["errors"].values()),
+                "unit": "a.u.",
+            },
+            {
+                "id": "circular_wrap_error",
+                "label": "Circular wrap error",
+                "value": case["wrap_error"],
+                "unit": "a.u.",
+                "emphasis": "primary",
+            },
+            {
+                "id": "echo_delay",
+                "label": "Echo delay",
+                "value": echo_delay,
+                "unit": "samples",
+            },
+            {
+                "id": "resonator_radius",
+                "label": "Resonator radius",
+                "value": radius,
+                "unit": "ratio",
+            },
         ],
         "plots": {
-            "model_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "physical/model truth", "x": x, "y": np.asarray(truth).real},
-                {"type": "scatter", "mode": "lines", "name": "measured/processed", "x": x, "y": np.asarray(displayed).real},
-            ], "layout": _layout(title + " — model view", 'sample index', 'normalized amplitude'), "config": {"responsive": True, "displaylogo": False}},
-            "response_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "response", "x": response_axis, "y": np.asarray(response).real},
-            ], "layout": _layout(title + " — response view", 'sample index', 'normalized amplitude'), "config": {"responsive": True, "displaylogo": False}},
-            "parameter_sweeps": {"data": [
-                {"type": "scatter", "mode": "lines+markers", "name": "primary scale", "x": sweep_primary, "y": sweep_response},
-                {"type": "scatter", "mode": "lines+markers", "name": "secondary stress", "x": sweep_secondary, "y": stress_response},
-            ], "layout": _layout("Two one-variable sweeps", "control value", "response statistic"), "config": {"responsive": True, "displaylogo": False}},
-            "broken_case": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "recovered", "x": x, "y": np.asarray(measured).real},
-                {"type": "scatter", "mode": "lines", "name": "broken" if broken_mode else "enable broken mode", "x": x, "y": np.asarray(broken_response).real},
-            ], "layout": _layout("Intentional assumption failure", 'sample index', 'normalized amplitude'), "config": {"responsive": True, "displaylogo": False}},
+            "impulse_responses": {
+                "data": [
+                    {
+                        "type": "scatter",
+                        "mode": "lines",
+                        "name": name,
+                        "x": np.arange(len(value)),
+                        "y": value,
+                    }
+                    for name, value in case["impulses"].items()
+                ],
+                "layout": _layout(
+                    "An impulse reveals each system",
+                    "Lag (samples)",
+                    "Impulse response (a.u.)",
+                ),
+            },
+            "equivalence": {
+                "data": [
+                    {
+                        "type": "scatter",
+                        "mode": "lines",
+                        "name": "direct resonator",
+                        "x": index,
+                        "y": case["direct"]["resonator"],
+                    },
+                    {
+                        "type": "scatter",
+                        "mode": "lines",
+                        "name": "convolution",
+                        "x": index,
+                        "y": case["convolution"]["resonator"],
+                    },
+                ],
+                "layout": _layout(
+                    "Direct implementation equals linear convolution",
+                    "Sample index",
+                    "Output amplitude (a.u.)",
+                ),
+            },
+            "parameter_sweeps": {
+                "data": [
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "echo-delay sweep",
+                        "x": delay_sweep,
+                        "y": echo_peak,
+                    },
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "pole-radius sweep",
+                        "x": radius_sweep,
+                        "y": ring_energy,
+                    },
+                ],
+                "layout": _layout(
+                    "Two system sweeps",
+                    "Delay (samples) or radius",
+                    "Echo lag or ringing energy",
+                ),
+            },
+            "broken_case": {
+                "data": [
+                    {
+                        "type": "scatter",
+                        "mode": "lines",
+                        "name": "linear recovery",
+                        "x": index,
+                        "y": case["linear"],
+                    },
+                    {
+                        "type": "scatter",
+                        "mode": "lines",
+                        "name": "displayed output",
+                        "x": index,
+                        "y": case["displayed"],
+                    },
+                ],
+                "layout": _layout(
+                    "Circular convolution wraps the tail",
+                    "Sample index",
+                    "Echo output (a.u.)",
+                ),
+            },
         },
         "explanations": {
-            "observation": f"The {title} model uses a bounded deterministic time/frequency measurement experiment. Primary scale={primary:.2f} and secondary stress={secondary:.2f} remain independently controllable.",
-            "broken": "Broken mode deliberately violates the lesson's central interpretation assumption so the displayed response becomes ambiguous, biased, contaminated, or defocused.",
-            "recovery": "Disable broken mode, restore both scales to 1.0 and 0.25, then connect the recovered shape to the pinned source equations before changing one control at a time.",
+            "observation": "Delay, moving average, echo, and resonator outputs match convolution with their measured impulse responses.",
+            "broken": "Broken mode uses an unpadded N-point FFT product. The linear tail wraps into the beginning of the record.",
+            "recovery": "Use linear convolution or zero-pad the FFT to N+M−1. The recovered output matches the direct system to numerical precision.",
         },
-        "diagnostics": {"seed": SEED, "item_number": ITEM_NUMBER, "point_count": count, "signature": signature, "broken_active": broken_mode},
+        "diagnostics": {
+            "seed": SEED,
+            "sample_count": 256,
+            "broken_active": broken,
+            "direct_convolution_errors": case["errors"],
+            "circular_wrap_error": case["wrap_error"],
+            "signature": [
+                echo_delay,
+                radius,
+                *case["errors"].values(),
+                case["wrap_error"],
+                case["display_error"],
+            ],
+        },
     }

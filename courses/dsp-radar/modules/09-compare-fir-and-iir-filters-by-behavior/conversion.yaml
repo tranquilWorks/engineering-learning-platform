@@ -33,19 +33,19 @@
     ]
   },
   "target": {
-    "content_digest": "f711e4fb4593e7d53686f5989824b17ea944ef6efd414c7e9ed8c0f0b079ece2",
+    "content_digest": "917889b9d241fe0a423a4fcc3eaef805294bd5935671509341fb2d71004522a9",
     "files": [
       {
         "path": "modules/09-compare-fir-and-iir-filters-by-behavior/experiment.py",
-        "sha256": "28bff0a82f0a0ed87b65d41b6ea53e3abe50edc685af355fa09b12d4c83cfd2a"
+        "sha256": "24c65263160e8851b2a082cfadf9cf574ee502411b1c1de607016de35ed7530f"
       },
       {
         "path": "modules/09-compare-fir-and-iir-filters-by-behavior/lesson.md",
-        "sha256": "f16c93ddf03a00027b912aae6899a1a4e02cccb096fd46314d07e2d3c5ef146c"
+        "sha256": "e19a1be259f661fe1610dbbc20ebd8619c9a559bfbeee0db906e97af80a46653"
       },
       {
         "path": "modules/09-compare-fir-and-iir-filters-by-behavior/module.yaml",
-        "sha256": "1f3b4d5e0e7803bd6f0e1b8b20bef34c57b37f1e6deaf424ba0bb67f540a66c9"
+        "sha256": "17cf43abac5f992bb8215f288158f1242bc81efca417dd8709a26ecd9b4080dd"
       }
     ]
   },
@@ -53,10 +53,11 @@
     "guiding_question": "How can two filters with similar magnitude response behave differently in time and phase?",
     "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary filter order while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Retained from the pinned source: FIR/IIR magnitude, group delay, impulse, step, pulse, signal/noise, arithmetic, tap, and Q comparisons.",
+      "Expose FIR tap count while holding IIR quality factor fixed, then reverse the roles.",
+      "Named failure: Move a resonator pole radius to 1.02 so its impulse envelope grows.",
+      "Exact recovery: Move the radius to 0.98 and verify a decaying response.",
+      "Deliberately omitted: MATLAB filter-design and figure-window shortcuts; the claim remains deterministic software-only."
     ],
     "equations": [
       {
@@ -86,129 +87,195 @@
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "a4d0fa237502c6338ce0c433403ca972714f47a2994e1391f4f1461205699c8e",
-          "unit": "mixed numeric signature"
+          "sha256": "593446ccc5f88a2c35ce9c99f3fb116286ac2d545856873de7a59774e82cc8f3",
+          "unit": "source-specific numeric signature"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline independent actual signature",
+          "provenance": "generated",
+          "sha256": "f3b897c40fddcf4efabf46c51da5936f2117581d516d021d3ae686f051dbc68a",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "77b5fc1e79a306224f4a6428a0244811f221ccee66da049f0f4d684b5c6245b5",
-          "unit": "mixed numeric signature"
+          "sha256": "d97bd4ae38feb2f6e3945e30fa8f4853d36d60bee367be65a9974f33ef7acbc0",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent actual signature",
+          "provenance": "generated",
+          "sha256": "ad72d8bec56b623f05a56beef621b12f511ec494a4ca2ffdb2033a0f4bcbb810",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "c02751e821ea0fd8e8d838e3d50e14baeb09454f4536080e783e6ce346f8f83d",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent actual signature",
+          "provenance": "generated",
+          "sha256": "24abb067480a85bde5e77add3a8c4c422c6928f3a8fb42aeb9a6603230dc97ae",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "5a5055572036a8a020cc79339d635cd82270ca5613fc9985612b338de47be986",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent actual signature",
+          "provenance": "generated",
+          "sha256": "35c2544611d72fe2f3f1fd5917e23814544f402610d88a8ccf8940128e0d1eaf",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "593446ccc5f88a2c35ce9c99f3fb116286ac2d545856873de7a59774e82cc8f3",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent actual signature",
+          "provenance": "generated",
+          "sha256": "f3b897c40fddcf4efabf46c51da5936f2117581d516d021d3ae686f051dbc68a",
+          "unit": "source-specific numeric signature"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P09 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P09 source processing and plot sequence",
+        "target_plot_key": "frequency_behavior",
+        "title": "Frequency Behavior",
         "axes": [
           {
             "role": "x",
-            "label": "sample index",
-            "unit": "source units"
+            "label": "Frequency",
+            "unit": "Hz"
           },
           {
             "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
+            "label": "Magnitude or delay",
+            "unit": "mixed"
           }
         ],
-        "interpretation": "This view answers the Compare FIR and IIR Filters by Behavior guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P09 view with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P09 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P09 source processing and plot sequence",
+        "target_plot_key": "time_behavior",
+        "title": "Time Behavior",
         "axes": [
           {
             "role": "x",
-            "label": "sample index",
-            "unit": "source units"
+            "label": "Sample index",
+            "unit": "samples"
           },
           {
             "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
+            "label": "Amplitude",
+            "unit": "a.u."
           }
         ],
-        "interpretation": "This view answers the Compare FIR and IIR Filters by Behavior guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P09 view with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P09 source processing/plot sequence",
+        "source_figure": "Pinned P09 source processing and plot sequence",
+        "target_plot_key": "signal_behavior",
+        "title": "Signal Behavior",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Sample index",
+            "unit": "samples"
+          },
+          {
+            "role": "y",
+            "label": "Amplitude",
+            "unit": "a.u."
+          }
+        ],
+        "interpretation": "Source-faithful P09 view with explicit physical axes and bounded deterministic data."
+      },
+      {
+        "source_figure": "Pinned P09 source processing and plot sequence",
         "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "title": "Parameter Sweeps",
         "axes": [
           {
             "role": "x",
-            "label": "sample index",
-            "unit": "source units"
+            "label": "Control value",
+            "unit": "mixed"
           },
           {
             "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
+            "label": "Filter statistic",
+            "unit": "mixed"
           }
         ],
-        "interpretation": "This view answers the Compare FIR and IIR Filters by Behavior guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P09 view with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P09 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P09 source processing and plot sequence",
+        "target_plot_key": "stability_failure",
+        "title": "Stability Failure",
         "axes": [
           {
             "role": "x",
-            "label": "sample index",
-            "unit": "source units"
+            "label": "Sample index",
+            "unit": "samples"
           },
           {
             "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
+            "label": "Impulse response",
+            "unit": "a.u."
           }
         ],
-        "interpretation": "This view answers the Compare FIR and IIR Filters by Behavior guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P09 view with explicit physical axes and bounded deterministic data."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "fir_taps",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          9,
+          21,
+          41
         ],
-        "expected_observation": "Changing filter order moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only fir_taps; hold every other control at its source baseline."
       },
       {
-        "control": "secondary_scale",
+        "control": "iir_q",
         "values": [
-          0.0,
           0.5,
-          1.0
+          0.70710678,
+          2.0
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only iir_q; hold every other control at its source baseline."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode.",
+      "failure": "Move a resonator pole radius to 1.02 so its impulse envelope grows.",
+      "recovery": "Move the radius to 0.98 and verify a decaying response.",
+      "expected_observation": "The named invariant fails in broken mode and returns within the recorded numeric tolerance after recovery."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Changing more than one source parameter at a time.",
+      "Move a resonator pole radius to 1.02 so its impulse envelope grows.",
+      "Treating a deterministic software result as MATLAB runtime, learner, browser, audio, or hardware evidence."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
+      "Answer the exact guiding question from the pinned source equations.",
       "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Name the failure, demonstrate exact recovery, and explain the limiting case.",
+      "Teach back retained behavior, deliberate omissions, and the software-only claim boundary."
     ]
   },
   "runtime": {
@@ -216,62 +283,124 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 5000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P09 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py",
     "seed": 909,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "fir_taps",
+        "value": 21,
+        "unit": "source units"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "iir_q",
+        "value": 0.70710678,
+        "unit": "source units"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/09-compare-fir-and-iir-filters-by-behavior/evidence/expected-baseline.json",
-          "sha256": "a4d0fa237502c6338ce0c433403ca972714f47a2994e1391f4f1461205699c8e"
+          "sha256": "593446ccc5f88a2c35ce9c99f3fb116286ac2d545856873de7a59774e82cc8f3"
         },
         "actual": {
           "path": "modules/09-compare-fir-and-iir-filters-by-behavior/evidence/actual-baseline.json",
-          "sha256": "85c9130ab8dbd953a85048e787207911aff2c8abb2096a37165c6b0d76494f30"
+          "sha256": "f3b897c40fddcf4efabf46c51da5936f2117581d516d021d3ae686f051dbc68a"
         },
-        "max_absolute_error": 4.422504029655272e-13,
-        "max_relative_error": 4.422504029655272e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
         "passed": true
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/09-compare-fir-and-iir-filters-by-behavior/evidence/expected-sweep-1.json",
+          "sha256": "d97bd4ae38feb2f6e3945e30fa8f4853d36d60bee367be65a9974f33ef7acbc0"
+        },
+        "actual": {
+          "path": "modules/09-compare-fir-and-iir-filters-by-behavior/evidence/actual-sweep-1.json",
+          "sha256": "ad72d8bec56b623f05a56beef621b12f511ec494a4ca2ffdb2033a0f4bcbb810"
+        },
+        "max_absolute_error": 5.426304818347862e-22,
+        "max_relative_error": 5.426304818347862e-22,
+        "passed": true
+      },
+      {
+        "name": "sweep_2",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/09-compare-fir-and-iir-filters-by-behavior/evidence/expected-sweep-2.json",
+          "sha256": "c02751e821ea0fd8e8d838e3d50e14baeb09454f4536080e783e6ce346f8f83d"
+        },
+        "actual": {
+          "path": "modules/09-compare-fir-and-iir-filters-by-behavior/evidence/actual-sweep-2.json",
+          "sha256": "24abb067480a85bde5e77add3a8c4c422c6928f3a8fb42aeb9a6603230dc97ae"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/09-compare-fir-and-iir-filters-by-behavior/evidence/expected-broken.json",
-          "sha256": "77b5fc1e79a306224f4a6428a0244811f221ccee66da049f0f4d684b5c6245b5"
+          "sha256": "5a5055572036a8a020cc79339d635cd82270ca5613fc9985612b338de47be986"
         },
         "actual": {
           "path": "modules/09-compare-fir-and-iir-filters-by-behavior/evidence/actual-broken.json",
-          "sha256": "ee1a93adec2a1e662d9c74affa80642d19084f108e07a824814dfa06ce9a4d86"
+          "sha256": "35c2544611d72fe2f3f1fd5917e23814544f402610d88a8ccf8940128e0d1eaf"
         },
-        "max_absolute_error": 4.2377212849942225e-13,
-        "max_relative_error": 4.2377212849942225e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "recovery",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/09-compare-fir-and-iir-filters-by-behavior/evidence/expected-recovery.json",
+          "sha256": "593446ccc5f88a2c35ce9c99f3fb116286ac2d545856873de7a59774e82cc8f3"
+        },
+        "actual": {
+          "path": "modules/09-compare-fir-and-iir-filters-by-behavior/evidence/actual-recovery.json",
+          "sha256": "f3b897c40fddcf4efabf46c51da5936f2117581d516d021d3ae686f051dbc68a"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
         "passed": true
       }
     ]

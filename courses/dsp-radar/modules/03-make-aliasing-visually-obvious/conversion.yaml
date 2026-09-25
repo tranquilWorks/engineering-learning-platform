@@ -33,19 +33,19 @@
     ]
   },
   "target": {
-    "content_digest": "4356c1aa07775df81a5dc7d2c94ea9b1f2d6d4f0b9baca09252a0b3b90a733ed",
+    "content_digest": "a4725a4a0e93880bdeed995aa81fd6c02a6a27cf90bd5935a05aa7a785b5196d",
     "files": [
       {
         "path": "modules/03-make-aliasing-visually-obvious/experiment.py",
-        "sha256": "c8e07304dc37f1a0f48b3393d9f5c3f2159fe57776d7c616f418db4168177170"
+        "sha256": "f6ac24a7cc5a09e59d1be9336bf070ca61db2be1653d18398b4ab90ba12f26bc"
       },
       {
         "path": "modules/03-make-aliasing-visually-obvious/lesson.md",
-        "sha256": "4e6c5b0c572e3047d06e24b8cb107fc74acec1cf8fcd727197fc21847ad9c09b"
+        "sha256": "fdaf4ace3b64c7a4423c34834b8791731cd1a79bf9b8da7131231b8527044d0a"
       },
       {
         "path": "modules/03-make-aliasing-visually-obvious/module.yaml",
-        "sha256": "76469c626dd4db88ec73d266dd517be859966b202069800c96fe470f750df171"
+        "sha256": "6499370c9687c897a7e13a0cc16aed4090767889ccf80d825f862e441fa4ed22"
       }
     ]
   },
@@ -53,10 +53,11 @@
     "guiding_question": "Why does a high-frequency tone appear as a lower-frequency tone after sampling?",
     "physical_model": "A sampler is a clock that records one amplitude every `1/fs` seconds. It does not count the oscillations that occur between clock ticks. If two continuous tones land on the same amplitude at every tick, the stored sequence cannot tell which tone was present. P02 established that samples are timed measurements rather than a continuous line. P03 follows that consequence into frequency: a continuous tone can make several whole turns between measurements without leaving evidence of those extra turns.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary tone frequency while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Retained from the pinned source: signed folding, phase reflection, recurrence estimation, and frequency/rate sweeps.",
+      "Expose input frequency while holding sample rate fixed, then reverse the roles.",
+      "Named failure: Keep the original phase after a negative signed fold, making the reflected alias miss the samples.",
+      "Exact recovery: Reverse phase after reflection and verify frequency independently from the sample recurrence.",
+      "Deliberately omitted: MATLAB figure-window behavior; the claim remains deterministic software-only."
     ],
     "equations": [
       {
@@ -94,129 +95,159 @@
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "70bbac4525c8a0bdf1ae0fa41b2fc0f4a0970af0b1627fce71c846430ede3dec",
-          "unit": "mixed numeric signature"
+          "sha256": "b239e484bf86eac293bf466490d36f3e62099dea6b8d4a139df109c1256d0ec6",
+          "unit": "source-specific numeric signature"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline independent actual signature",
+          "provenance": "generated",
+          "sha256": "17d92def9d73d57ab47f77ffcf533ef0fa4bfe90652442dc3e826ba155cea5ac",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "a14107469a84f615bc7b8c9dbbcf17e01d8e36b367cc5ae791165b98f3582aaf",
-          "unit": "mixed numeric signature"
+          "sha256": "f92b7a67668d958604804c43e751dc3d6fbd0b2b123522395f5b334b23ff51b0",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent actual signature",
+          "provenance": "generated",
+          "sha256": "5aaea9ba789b3e1bb9fb16fc11611908ee03f9e858c0ddc0772883d6572324d9",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "d69a1cdfcb519768d529fcc92eee93b6f3d0cc14e80fb3297deac32f93e43500",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent actual signature",
+          "provenance": "generated",
+          "sha256": "ef963c446e276b31bd21eda038cb96ab00fdb0361a8eac9c41cf8b9b46e5bb21",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "1e2ca81c7a03be8f7c7e3aad49138969dd6c47b78fa422c901374ce03e2f7951",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent actual signature",
+          "provenance": "generated",
+          "sha256": "92ad14688c2857d75076dc11431293188917c88d6a449e7ef35f735510b8d8f9",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "b239e484bf86eac293bf466490d36f3e62099dea6b8d4a139df109c1256d0ec6",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent actual signature",
+          "provenance": "generated",
+          "sha256": "17d92def9d73d57ab47f77ffcf533ef0fa4bfe90652442dc3e826ba155cea5ac",
+          "unit": "source-specific numeric signature"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P03 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P03 source processing and plot sequence",
+        "target_plot_key": "folding",
+        "title": "Folding",
         "axes": [
           {
             "role": "x",
-            "label": "sample index",
-            "unit": "source units"
+            "label": "Time",
+            "unit": "s"
           },
           {
             "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
+            "label": "Amplitude",
+            "unit": "a.u."
           }
         ],
-        "interpretation": "This view answers the Make Aliasing Visually Obvious guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P03 view with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P03 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
-        "axes": [
-          {
-            "role": "x",
-            "label": "sample index",
-            "unit": "source units"
-          },
-          {
-            "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
-          }
-        ],
-        "interpretation": "This view answers the Make Aliasing Visually Obvious guiding question while preserving the source sign, normalization, and finite-record interpretation."
-      },
-      {
-        "source_figure": "Pinned P03 source processing/plot sequence",
+        "source_figure": "Pinned P03 source processing and plot sequence",
         "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "title": "Parameter Sweeps",
         "axes": [
           {
             "role": "x",
-            "label": "sample index",
-            "unit": "source units"
+            "label": "Frequency",
+            "unit": "Hz"
           },
           {
             "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
+            "label": "Apparent frequency",
+            "unit": "Hz"
           }
         ],
-        "interpretation": "This view answers the Make Aliasing Visually Obvious guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P03 view with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P03 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P03 source processing and plot sequence",
+        "target_plot_key": "phase_check",
+        "title": "Phase Check",
         "axes": [
           {
             "role": "x",
-            "label": "sample index",
-            "unit": "source units"
+            "label": "Time",
+            "unit": "s"
           },
           {
             "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
+            "label": "Amplitude",
+            "unit": "a.u."
           }
         ],
-        "interpretation": "This view answers the Make Aliasing Visually Obvious guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P03 view with explicit physical axes and bounded deterministic data."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "input_frequency_hz",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          300.0,
+          700.0,
+          1300.0
         ],
-        "expected_observation": "Changing tone frequency moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only input_frequency_hz; hold every other control at its source baseline."
       },
       {
-        "control": "secondary_scale",
+        "control": "sample_rate_hz",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          800.0,
+          1000.0,
+          1600.0
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only sample_rate_hz; hold every other control at its source baseline."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode.",
+      "failure": "Keep the original phase after a negative signed fold, making the reflected alias miss the samples.",
+      "recovery": "Reverse phase after reflection and verify frequency independently from the sample recurrence.",
+      "expected_observation": "The named invariant fails in broken mode and returns within the recorded numeric tolerance after recovery."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Changing more than one source parameter at a time.",
+      "Keep the original phase after a negative signed fold, making the reflected alias miss the samples.",
+      "Treating a deterministic software result as MATLAB runtime, learner, browser, audio, or hardware evidence."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
+      "Answer the exact guiding question from the pinned source equations.",
       "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Name the failure, demonstrate exact recovery, and explain the limiting case.",
+      "Teach back retained behavior, deliberate omissions, and the software-only claim boundary."
     ]
   },
   "runtime": {
@@ -224,62 +255,124 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 5000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P03 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py",
     "seed": 303,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "input_frequency_hz",
+        "value": 700.0,
+        "unit": "source units"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "sample_rate_hz",
+        "value": 1000.0,
+        "unit": "source units"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/03-make-aliasing-visually-obvious/evidence/expected-baseline.json",
-          "sha256": "70bbac4525c8a0bdf1ae0fa41b2fc0f4a0970af0b1627fce71c846430ede3dec"
+          "sha256": "b239e484bf86eac293bf466490d36f3e62099dea6b8d4a139df109c1256d0ec6"
         },
         "actual": {
           "path": "modules/03-make-aliasing-visually-obvious/evidence/actual-baseline.json",
-          "sha256": "40862931ca91d7183f3425939ac9b2e89ba1491835ec685795c909a9cf99f935"
+          "sha256": "17d92def9d73d57ab47f77ffcf533ef0fa4bfe90652442dc3e826ba155cea5ac"
         },
-        "max_absolute_error": 4.2627013030482885e-13,
-        "max_relative_error": 4.2627013030482885e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
         "passed": true
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/03-make-aliasing-visually-obvious/evidence/expected-sweep-1.json",
+          "sha256": "f92b7a67668d958604804c43e751dc3d6fbd0b2b123522395f5b334b23ff51b0"
+        },
+        "actual": {
+          "path": "modules/03-make-aliasing-visually-obvious/evidence/actual-sweep-1.json",
+          "sha256": "5aaea9ba789b3e1bb9fb16fc11611908ee03f9e858c0ddc0772883d6572324d9"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "sweep_2",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/03-make-aliasing-visually-obvious/evidence/expected-sweep-2.json",
+          "sha256": "d69a1cdfcb519768d529fcc92eee93b6f3d0cc14e80fb3297deac32f93e43500"
+        },
+        "actual": {
+          "path": "modules/03-make-aliasing-visually-obvious/evidence/actual-sweep-2.json",
+          "sha256": "ef963c446e276b31bd21eda038cb96ab00fdb0361a8eac9c41cf8b9b46e5bb21"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/03-make-aliasing-visually-obvious/evidence/expected-broken.json",
-          "sha256": "a14107469a84f615bc7b8c9dbbcf17e01d8e36b367cc5ae791165b98f3582aaf"
+          "sha256": "1e2ca81c7a03be8f7c7e3aad49138969dd6c47b78fa422c901374ce03e2f7951"
         },
         "actual": {
           "path": "modules/03-make-aliasing-visually-obvious/evidence/actual-broken.json",
-          "sha256": "5392219ae55c911f11f3b76af9fef82f493707946779a221e487ee561957d6c6"
+          "sha256": "92ad14688c2857d75076dc11431293188917c88d6a449e7ef35f735510b8d8f9"
         },
-        "max_absolute_error": 4.2627013030482885e-13,
-        "max_relative_error": 4.2627013030482885e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "recovery",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/03-make-aliasing-visually-obvious/evidence/expected-recovery.json",
+          "sha256": "b239e484bf86eac293bf466490d36f3e62099dea6b8d4a139df109c1256d0ec6"
+        },
+        "actual": {
+          "path": "modules/03-make-aliasing-visually-obvious/evidence/actual-recovery.json",
+          "sha256": "17d92def9d73d57ab47f77ffcf533ef0fa4bfe90652442dc3e826ba155cea5ac"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
         "passed": true
       }
     ]

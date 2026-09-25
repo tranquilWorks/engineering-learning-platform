@@ -1,10 +1,10 @@
 schema_version: 1
 commands:
-  vehicle-telemetry-p53-p60:
-    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_vehicle_dynamics_expansion.py apps/api/tests/test_vehicle_dynamics_framework.py apps/api/tests/test_vehicle_dynamics_course.py apps/api/tests/test_course_caliber_status.py
+  dsp-fidelity-p02-p10:
+    - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src .venv/bin/python -B -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py apps/api/tests/test_course_caliber_status.py
   retained-courses:
-    - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py
     - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_gnc_expansion.py apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_course.py apps/api/tests/test_robotics_expansion.py apps/api/tests/test_robotics_conversion_framework.py apps/api/tests/test_robotics_course.py
+    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_vehicle_dynamics_expansion.py apps/api/tests/test_vehicle_dynamics_framework.py apps/api/tests/test_vehicle_dynamics_course.py
   contract:
     - ./scripts/agent-verify.sh contract
   quick:
@@ -14,10 +14,9 @@ commands:
   deterministic-catalog:
     - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic --json
   lint:
-    - .venv/bin/ruff check apps/api/tests/test_vehicle_dynamics_expansion.py apps/api/tests/test_vehicle_dynamics_framework.py apps/api/tests/test_vehicle_dynamics_course.py apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_course_caliber_status.py courses/vehicle-dynamics/modules/53-* courses/vehicle-dynamics/modules/54-* courses/vehicle-dynamics/modules/55-* courses/vehicle-dynamics/modules/56-* courses/vehicle-dynamics/modules/57-* courses/vehicle-dynamics/modules/58-* courses/vehicle-dynamics/modules/59-* courses/vehicle-dynamics/modules/60-* courses/vehicle-dynamics/expansion_reference_cases.py
+    - .venv/bin/ruff check apps/api/tests/test_dsp_fidelity_remediation.py apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py apps/api/tests/test_course_caliber_status.py courses/dsp-radar/remediation_reference_cases.py courses/dsp-radar/modules/02-* courses/dsp-radar/modules/03-* courses/dsp-radar/modules/04-* courses/dsp-radar/modules/05-* courses/dsp-radar/modules/06-* courses/dsp-radar/modules/07-* courses/dsp-radar/modules/08-* courses/dsp-radar/modules/09-* courses/dsp-radar/modules/10-*
     - .venv/bin/ruff check --ignore UP038 apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_expansion.py apps/api/tests/test_robotics_conversion_framework.py apps/api/tests/test_robotics_expansion.py
   scope:
     - git diff --check
-    - test -z "$(git status --short -- courses/controls-gnc courses/dsp-radar courses/robotics-autonomy courses/demo-radar courses/platform-showcase courses/vehicle-dynamics/fixtures courses/vehicle-dynamics/modules/0[1-9]-* courses/vehicle-dynamics/modules/1[0-9]-* courses/vehicle-dynamics/modules/2[0-9]-* courses/vehicle-dynamics/modules/3[0-9]-* courses/vehicle-dynamics/modules/4[0-9]-* courses/vehicle-dynamics/modules/5[0-2]-*)"
-    - test -z "$(git -C courses/vehicle-dynamics-learning status --porcelain=v1 --untracked-files=all)"
-evidence_boundary: The commands validate Vehicle Dynamics P61-P67 as seven deterministic competency-derived software-only performance and cumulative capstone modules with independent references, five scenarios, and a six-course/290-module/290-interactive catalog. The 24-item source conversion ledger remains closed and unchanged, and all 67 reviewed Vehicle Dynamics modules are implemented. The evidence does not claim source or MATLAB-runtime equivalence, browser/accessibility or learner validation, measured vehicle data, firmware/radio/CAN electrical, bench, vehicle, track, physical hardware/HIL, certification, release, deployment, credentials/settings, or production use.
+    - test -z "$(git status --short -- courses/dsp-radar-learning courses/dsp-radar/source-map.yaml courses/dsp-radar/conversion-manifest.yaml courses/dsp-radar/modules/01-* courses/dsp-radar/modules/1[1-9]-* courses/dsp-radar/modules/2[0-9]-* courses/dsp-radar/modules/3[0-9]-* courses/dsp-radar/modules/4[0-9]-* courses/dsp-radar/modules/5[0-9]-* courses/dsp-radar/modules/6[0-9]-* courses/dsp-radar/modules/7[0-9]-* courses/dsp-radar/modules/8[0-4]-* courses/controls-gnc courses/robotics-autonomy courses/vehicle-dynamics)"
+evidence_boundary: The commands validate DSP/Radar P02-P10 as nine distinct deterministic source-faithful software-only experiments with independent references and five scenarios each. P01 remains the prior distinct conversion; P11-P84 remain pending and issue 441 stays open. The catalog remains six courses, 290 modules, and 290 interactive modules. The evidence does not claim full DSP/Radar numerical verification, curriculum coverage, P84 capstone integration, MATLAB runtime comparison, audio playback, browser/accessibility or learner validation, physical hardware/HIL, certification, release, deployment, credentials/settings, or production use.

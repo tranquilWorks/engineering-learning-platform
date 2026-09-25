@@ -33,19 +33,19 @@
     ]
   },
   "target": {
-    "content_digest": "f18c8321ac9843a5ad62b75622c1abd74aa63adcc3182572bc08abe661eadcee",
+    "content_digest": "35b8e9335bc7bdfee9056ed7c8eb233318e3c77c855175acdf9761bc6f9dea48",
     "files": [
       {
         "path": "modules/07-understand-convolution-as-echo-addition/experiment.py",
-        "sha256": "c583dc62352b51429d1a4fe6f4359c1bbd9320f3edcbdc3fa46a4fe0dbb4d308"
+        "sha256": "76e5edba58ba377a57b4af546d4acf981e1168612f3b4a22ffefe2b337adaaf4"
       },
       {
         "path": "modules/07-understand-convolution-as-echo-addition/lesson.md",
-        "sha256": "771f57e0f9fcfcb2d1e36d94da6bb0ec9ffd84ad82be9045b2e5ed3d05b5bbe7"
+        "sha256": "691a3adf0c18e14bd00b3272891febbf47c3f5835daf6d2ae86f061a8967243d"
       },
       {
         "path": "modules/07-understand-convolution-as-echo-addition/module.yaml",
-        "sha256": "10408c6740b461106e07621a1070f9bd142935492c636b031543e725c52f8cae"
+        "sha256": "7dc6f6c72d6a7f6f31b9649f637e604467c92e8beb06ce41cb2a0dd85100e98b"
       }
     ]
   },
@@ -53,10 +53,11 @@
     "guiding_question": "What is convolution actually doing at each output sample?",
     "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary echo delay while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Retained from the pinned source: explicit shifted paths, signed gains, overlap, two sweeps, and three equivalent convolution formulations.",
+      "Expose middle echo delay while holding third signed gain fixed, then reverse the roles.",
+      "Named failure: Overwrite rather than add samples where shifted signed echoes overlap.",
+      "Exact recovery: Accumulate every path so manual, explicit-sum, and NumPy convolution outputs agree.",
+      "Deliberately omitted: MATLAB figure-window behavior; the claim remains deterministic software-only."
     ],
     "equations": [
       {
@@ -86,129 +87,177 @@
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "d4781497ec2dcfef67fd6b2564518b4169adf87d4500721a435f83e644533fc4",
-          "unit": "mixed numeric signature"
+          "sha256": "08147698a863e06e8ceaedd18ca412c4de8a40d33758c6e0d25db992f5b2dad0",
+          "unit": "source-specific numeric signature"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline independent actual signature",
+          "provenance": "generated",
+          "sha256": "9c9392546df4affce450373dccbacb7cc74bd2e54bb58c21fc3c4b22b4927727",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "3c638682c8a2f6f2516cc00efb1dfe53f72053b943c3e59838394b228e776c67",
-          "unit": "mixed numeric signature"
+          "sha256": "150e22178d98fc9f7a761111841c320ea424450a8c50918a32ba6c9afb10e30d",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent actual signature",
+          "provenance": "generated",
+          "sha256": "86668ceca123483482e52d196327c3275fef11dc845220bc3be916d71abd7e13",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "aacf8f9185560d4c66ee5f8f26936465ab3fcbf0ac9a29f683340eed68d0f63c",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent actual signature",
+          "provenance": "generated",
+          "sha256": "310d7c536e90d38141afff62878e8399d112d2f253b4d687c555ac1a7cc29c51",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "a225d129f40aed3316196438953934fce67f594fd39e722a0853f3f0114ab5ad",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent actual signature",
+          "provenance": "generated",
+          "sha256": "b8adbd1dc1acf0555f4daa356586c9fab6b99741c4faed9f242511e2baec13d5",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "08147698a863e06e8ceaedd18ca412c4de8a40d33758c6e0d25db992f5b2dad0",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent actual signature",
+          "provenance": "generated",
+          "sha256": "9c9392546df4affce450373dccbacb7cc74bd2e54bb58c21fc3c4b22b4927727",
+          "unit": "source-specific numeric signature"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P07 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P07 source processing and plot sequence",
+        "target_plot_key": "echo_paths",
+        "title": "Echo Paths",
         "axes": [
           {
             "role": "x",
-            "label": "sample index",
-            "unit": "source units"
+            "label": "Sample index",
+            "unit": "samples"
           },
           {
             "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
+            "label": "Contribution",
+            "unit": "a.u."
           }
         ],
-        "interpretation": "This view answers the Understand Convolution as Echo Addition guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P07 view with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P07 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P07 source processing and plot sequence",
+        "target_plot_key": "sum_check",
+        "title": "Sum Check",
         "axes": [
           {
             "role": "x",
-            "label": "sample index",
-            "unit": "source units"
+            "label": "Sample index",
+            "unit": "samples"
           },
           {
             "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
+            "label": "Output",
+            "unit": "a.u."
           }
         ],
-        "interpretation": "This view answers the Understand Convolution as Echo Addition guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P07 view with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P07 source processing/plot sequence",
+        "source_figure": "Pinned P07 source processing and plot sequence",
         "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "title": "Parameter Sweeps",
         "axes": [
           {
             "role": "x",
-            "label": "sample index",
-            "unit": "source units"
+            "label": "Control value",
+            "unit": "mixed"
           },
           {
             "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
+            "label": "Response",
+            "unit": "a.u."
           }
         ],
-        "interpretation": "This view answers the Understand Convolution as Echo Addition guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P07 view with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P07 source processing/plot sequence",
+        "source_figure": "Pinned P07 source processing and plot sequence",
         "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "title": "Broken Case",
         "axes": [
           {
             "role": "x",
-            "label": "sample index",
-            "unit": "source units"
+            "label": "Sample index",
+            "unit": "samples"
           },
           {
             "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
+            "label": "Output",
+            "unit": "a.u."
           }
         ],
-        "interpretation": "This view answers the Understand Convolution as Echo Addition guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P07 view with explicit physical axes and bounded deterministic data."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "middle_echo_delay_samples",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          3,
+          5,
+          7
         ],
-        "expected_observation": "Changing echo delay moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only middle_echo_delay_samples; hold every other control at its source baseline."
       },
       {
-        "control": "secondary_scale",
+        "control": "third_echo_gain",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          -0.7,
+          -0.35,
+          0.35
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only third_echo_gain; hold every other control at its source baseline."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode.",
+      "failure": "Overwrite rather than add samples where shifted signed echoes overlap.",
+      "recovery": "Accumulate every path so manual, explicit-sum, and NumPy convolution outputs agree.",
+      "expected_observation": "The named invariant fails in broken mode and returns within the recorded numeric tolerance after recovery."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Changing more than one source parameter at a time.",
+      "Overwrite rather than add samples where shifted signed echoes overlap.",
+      "Treating a deterministic software result as MATLAB runtime, learner, browser, audio, or hardware evidence."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
+      "Answer the exact guiding question from the pinned source equations.",
       "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Name the failure, demonstrate exact recovery, and explain the limiting case.",
+      "Teach back retained behavior, deliberate omissions, and the software-only claim boundary."
     ]
   },
   "runtime": {
@@ -216,62 +265,124 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 5000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P07 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py",
     "seed": 707,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "middle_echo_delay_samples",
+        "value": 5,
+        "unit": "source units"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "third_echo_gain",
+        "value": -0.35,
+        "unit": "source units"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/07-understand-convolution-as-echo-addition/evidence/expected-baseline.json",
-          "sha256": "d4781497ec2dcfef67fd6b2564518b4169adf87d4500721a435f83e644533fc4"
+          "sha256": "08147698a863e06e8ceaedd18ca412c4de8a40d33758c6e0d25db992f5b2dad0"
         },
         "actual": {
           "path": "modules/07-understand-convolution-as-echo-addition/evidence/actual-baseline.json",
-          "sha256": "3aa99c9631a04c977eed8ff1c3d252031481ea92a87627768e0c7176b8746529"
+          "sha256": "9c9392546df4affce450373dccbacb7cc74bd2e54bb58c21fc3c4b22b4927727"
         },
-        "max_absolute_error": 4.816147480823929e-13,
-        "max_relative_error": 4.816147480823929e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
         "passed": true
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/07-understand-convolution-as-echo-addition/evidence/expected-sweep-1.json",
+          "sha256": "150e22178d98fc9f7a761111841c320ea424450a8c50918a32ba6c9afb10e30d"
+        },
+        "actual": {
+          "path": "modules/07-understand-convolution-as-echo-addition/evidence/actual-sweep-1.json",
+          "sha256": "86668ceca123483482e52d196327c3275fef11dc845220bc3be916d71abd7e13"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "sweep_2",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/07-understand-convolution-as-echo-addition/evidence/expected-sweep-2.json",
+          "sha256": "aacf8f9185560d4c66ee5f8f26936465ab3fcbf0ac9a29f683340eed68d0f63c"
+        },
+        "actual": {
+          "path": "modules/07-understand-convolution-as-echo-addition/evidence/actual-sweep-2.json",
+          "sha256": "310d7c536e90d38141afff62878e8399d112d2f253b4d687c555ac1a7cc29c51"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/07-understand-convolution-as-echo-addition/evidence/expected-broken.json",
-          "sha256": "3c638682c8a2f6f2516cc00efb1dfe53f72053b943c3e59838394b228e776c67"
+          "sha256": "a225d129f40aed3316196438953934fce67f594fd39e722a0853f3f0114ab5ad"
         },
         "actual": {
           "path": "modules/07-understand-convolution-as-echo-addition/evidence/actual-broken.json",
-          "sha256": "0d0d4c4729c9ffdcc7b9d80796a890a67aa08a716f4c766ecc7b7167fde1e5ef"
+          "sha256": "b8adbd1dc1acf0555f4daa356586c9fab6b99741c4faed9f242511e2baec13d5"
         },
-        "max_absolute_error": 4.816147480823929e-13,
-        "max_relative_error": 4.816147480823929e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "recovery",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/07-understand-convolution-as-echo-addition/evidence/expected-recovery.json",
+          "sha256": "08147698a863e06e8ceaedd18ca412c4de8a40d33758c6e0d25db992f5b2dad0"
+        },
+        "actual": {
+          "path": "modules/07-understand-convolution-as-echo-addition/evidence/actual-recovery.json",
+          "sha256": "9c9392546df4affce450373dccbacb7cc74bd2e54bb58c21fc3c4b22b4927727"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
         "passed": true
       }
     ]

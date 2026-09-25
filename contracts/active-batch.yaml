@@ -1,62 +1,49 @@
 schema_version: 1
 batch:
-  id: ELP-VEHICLE-PERFORMANCE-P61-P67
-  title: Vehicle Dynamics track geometry, performance envelopes, lap simulation, setup experiments, and cumulative capstones
-  goal: Implement the final reviewed Vehicle Dynamics arc, P61-P67, as five distinct performance modules and two requirements-traced cumulative software capstones with independently formulated references.
+  id: ELP-DSP-FIDELITY-P02-P10
+  title: DSP/Radar source-fidelity repair for sampling and systems foundations
+  goal: Replace the generic P02-P10 Python template with nine distinct source-faithful bounded NumPy experiments and independently formulated evidence.
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
     - products/engineering-learning-platform/COURSE_CALIBER.md
     - products/engineering-learning-platform/course-caliber.yaml
-    - products/engineering-learning-platform/competency-maps/vehicle-dynamics.yaml
-    - products/engineering-learning-platform/batches/ELP-VEHICLE-P01-P08.yaml
-    - products/engineering-learning-platform/batches/ELP-VEHICLE-P09-P16.yaml
-    - products/engineering-learning-platform/batches/ELP-VEHICLE-P17-P24.yaml
-    - products/engineering-learning-platform/batches/ELP-VEHICLE-TIRES-P25-P33.yaml
-    - products/engineering-learning-platform/batches/ELP-VEHICLE-CHASSIS-P34-P43.yaml
-    - products/engineering-learning-platform/batches/ELP-VEHICLE-PROPULSION-P44-P52.yaml
-    - products/engineering-learning-platform/batches/ELP-VEHICLE-TELEMETRY-P53-P60.yaml
-    - tranquilWorks/portfolio-control#467
-  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-VEHICLE-PERFORMANCE-P61-P67
-  baseline_commit: a917fc6174d18a845f9658ce881ba9138c660c76
-  baseline_tree: 0b935a289b8d73aa95fd4d20cf49ced6847fbe37
+    - tranquilWorks/portfolio-control#441
+  baseline_commit: 4b613a79bfe3cbd997e64e8372a58956533dae2c
+  baseline_tree: 9d7de9eb1399cdc541cc8475a2bc0a380c9c00e5
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_baseline: 49b134215e74b2d6f27ae1cab3801ac9dc8c139d
-  control_plane_path: products/engineering-learning-platform/batches/ELP-VEHICLE-PERFORMANCE-P61-P67.yaml
+  control_plane_baseline: 37e9e2fe38e8445f3484c976022005a883b4082b
+  control_plane_path: products/engineering-learning-platform/batches/ELP-DSP-FIDELITY-P02-P10.yaml
   target_repository: tranquilWorks/engineering-learning-platform
-  source_repository: tranquilWorks/vehicle-dynamics-learning
-  source_pin: 57264b3ffeb517ee5eb73e8957b9cd190d022457
-  source_tree: d9e7267ba02c8d3d836c0ae481b80e91233eb81a
-  source_curriculum_sha256: c452996e5253ec7e547a64cccd4aa8af60dc5f4106311d1dec25ec8d5c48eba6
-  competency_map_sha256: 87dae868d7e3a0181062a4fd42ff316513b0f6f35c053cb56b5d73b9c56bde6d
-  source_map_sha256: 1533c3a5f78447adb3008796530796ade0da18a4c4bda57e565c82548ff4c298
+  source_repository: tranquilWorks/dsp-radar_learning
+  source_pin: 5d73667a486df4a7b6c581e4c9406e810ed4f0f6
+  source_tree: 7a3a0f9adce607e10097724c13745eace212f4e1
+  source_curriculum_sha256: 0b92e76efc1f72930fab730145326315219ab3813b8cbf17d32a33f507a4974f
+  source_file_set_sha256: c2511015b195a48bd847bd1f1cdeed92384a10eddf0b23e755590af4fb66ddca
+  source_map_sha256: 5b2751769cf70d7c4faad148fecd2db16e7995982122777fa012bfbda7850bf5
+  conversion_manifest_sha256: 1244c6dea11ea11b880e0f26d54ce81dea42ea1ab4981d4d5180c440eb7890a4
+  coverage_sha256: 66ab0cb3dabda4a1b41f0aee1efcd1274ebfb854af1e145a7b43230b19bf8cba
 dependencies:
-  - ELP-VEHICLE-P01-P08
-  - ELP-VEHICLE-P09-P16
-  - ELP-VEHICLE-P17-P24
-  - ELP-VEHICLE-TIRES-P25-P33
-  - ELP-VEHICLE-CHASSIS-P34-P43
-  - ELP-VEHICLE-PROPULSION-P44-P52
-  - ELP-VEHICLE-TELEMETRY-P53-P60
+  - ELP-DSP-P01
 scope:
   allowed_paths:
-    - courses/vehicle-dynamics/modules/61-*/**
-    - courses/vehicle-dynamics/modules/62-*/**
-    - courses/vehicle-dynamics/modules/63-*/**
-    - courses/vehicle-dynamics/modules/64-*/**
-    - courses/vehicle-dynamics/modules/65-*/**
-    - courses/vehicle-dynamics/modules/66-*/**
-    - courses/vehicle-dynamics/modules/67-*/**
-    - courses/vehicle-dynamics/expansion-map.yaml
-    - courses/vehicle-dynamics/expansion_reference_cases.py
-    - apps/api/tests/test_vehicle_dynamics_expansion.py
-    - apps/api/tests/test_vehicle_dynamics_framework.py
-    - apps/api/tests/test_vehicle_dynamics_course.py
+    - courses/dsp-radar/modules/02-*/**
+    - courses/dsp-radar/modules/03-*/**
+    - courses/dsp-radar/modules/04-*/**
+    - courses/dsp-radar/modules/05-*/**
+    - courses/dsp-radar/modules/06-*/**
+    - courses/dsp-radar/modules/07-*/**
+    - courses/dsp-radar/modules/08-*/**
+    - courses/dsp-radar/modules/09-*/**
+    - courses/dsp-radar/modules/10-*/**
+    - courses/dsp-radar/remediation-map.yaml
+    - courses/dsp-radar/remediation_reference_cases.py
+    - courses/dsp-radar/coverage.yaml
+    - apps/api/tests/test_dsp_fidelity_remediation.py
+    - apps/api/tests/test_dsp_conversion_framework.py
+    - apps/api/tests/test_dsp_course.py
     - apps/api/tests/test_course_caliber_status.py
-    - apps/api/tests/test_gnc_conversion_framework.py
-    - apps/api/tests/test_gnc_expansion.py
-    - apps/api/tests/test_robotics_conversion_framework.py
-    - apps/api/tests/test_robotics_expansion.py
+    - apps/api/tests/test_vehicle_dynamics_framework.py
     - contracts/active-batch.yaml
     - contracts/repo-profile.yaml
     - contracts/verification.yaml
@@ -65,29 +52,27 @@ scope:
     - docs/CURRENT_STATE.md
     - docs/HANDOFF.md
     - docs/ROADMAP.md
-    - docs/evidence/ELP-VEHICLE-PERFORMANCE-P61-P67-*.md
+    - docs/evidence/ELP-DSP-FIDELITY-P02-P10-*.md
   forbidden_paths:
-    - courses/vehicle-dynamics-learning
-    - courses/vehicle-dynamics-learning/**
-    - courses/vehicle-dynamics/competency-map.yaml
-    - courses/vehicle-dynamics/competency-map.schema.json
-    - courses/vehicle-dynamics/source-map.yaml
-    - courses/vehicle-dynamics/conversion-manifest.yaml
-    - courses/vehicle-dynamics/coverage.yaml
-    - courses/vehicle-dynamics/reference_cases.py
-    - courses/vehicle-dynamics/native-design.schema.json
-    - courses/vehicle-dynamics/fixtures/**
-    - courses/vehicle-dynamics/modules/0[1-9]-*/**
-    - courses/vehicle-dynamics/modules/1[0-9]-*/**
-    - courses/vehicle-dynamics/modules/2[0-9]-*/**
-    - courses/vehicle-dynamics/modules/3[0-9]-*/**
-    - courses/vehicle-dynamics/modules/4[0-9]-*/**
-    - courses/vehicle-dynamics/modules/5[0-9]-*/**
-    - courses/vehicle-dynamics/modules/60-*/**
-    - courses/vehicle-dynamics/modules/[7-9][0-9]-*/**
+    - courses/dsp-radar-learning
+    - courses/dsp-radar-learning/**
+    - courses/dsp-radar/source-map.yaml
+    - courses/dsp-radar/conversion-manifest.yaml
+    - courses/dsp-radar/conversion.schema.json
+    - courses/dsp-radar/course.yaml
+    - courses/dsp-radar/AUTHORING.md
+    - courses/dsp-radar/modules/01-*/**
+    - courses/dsp-radar/modules/1[1-9]-*/**
+    - courses/dsp-radar/modules/2[0-9]-*/**
+    - courses/dsp-radar/modules/3[0-9]-*/**
+    - courses/dsp-radar/modules/4[0-9]-*/**
+    - courses/dsp-radar/modules/5[0-9]-*/**
+    - courses/dsp-radar/modules/6[0-9]-*/**
+    - courses/dsp-radar/modules/7[0-9]-*/**
+    - courses/dsp-radar/modules/8[0-4]-*/**
     - courses/controls-gnc/**
-    - courses/dsp-radar/**
     - courses/robotics-autonomy/**
+    - courses/vehicle-dynamics/**
     - courses/demo-radar/**
     - courses/platform-showcase/**
     - apps/api/src/**
@@ -98,69 +83,69 @@ scope:
     - .gitmodules
     - package.json
     - package-lock.json
-    - apps/api/pyproject.toml
-    - apps/web/package.json
-    - apps/web/package-lock.json
-    - Dockerfile
-    - compose.yaml
 acceptance:
-  - Start only after the exact control commit containing this contract is merged. Use exact clean target main a917fc6174d18a845f9658ce881ba9138c660c76, tree 0b935a289b8d73aa95fd4d20cf49ced6847fbe37; any target, source, map, fixture, index, or worktree drift stops implementation.
-  - Implement exactly reviewed-map P61-P67 in order: build track geometry and curvature; construct a speed-dependent g-g-v envelope; optimize a racing line under coupled constraints; run a forward-backward lap-time simulation; compare setups with designed experiments; validate a vehicle model from telemetry; calibrate and predict with a GR86 digital twin.
-  - Preserve P01-P60, source identities, titles, guiding questions, prerequisite order, read-only gitlink, reviewed competency map, native-design schema, source map, fixtures, conversion manifest, coverage ledger, and source-bound reference byte-identically. P61-P67 are competency-derived Python-first native designs and claim neither source implementation nor MATLAB-runtime equivalence.
-  - Treat all seven IDs as separately reviewed work items. Every module must include a complete learner lesson, unique bounded executable model, default baseline, two useful one-variable sweeps, one named broken behavior, exact recovery, limiting cases, coordinate and sign conventions, physical quantities and units, common mistakes, formative checks, and teach-back completion.
-  - Use the course-owned independent reference implementation, extended without importing a production experiment, consuming a production result, or perturbing a production value. Retain origin, inputs, fields and units, tolerances, and finite expected versus actual evidence for baseline, sweep_1, sweep_2, broken, and recovery.
-  - P61 must construct a closed deterministic track from bounded segment geometry, compute arc length, heading, signed curvature, closure error, and a curvature-integral invariant; its broken case must confuse degrees/radians, omit closure, or use a wrong curvature sign.
-  - P62 must build a speed-dependent longitudinal/lateral acceleration envelope from tire, powertrain, brake, aero, load, and friction constraints; expose acceleration bounds, lateral capacity, utilization, and constraint residual; its broken case must combine limits independently, omit drag/downforce, or exceed the friction boundary.
-  - P63 must optimize a bounded racing-line offset against curvature, track width, and the P62 coupled envelope; expose line length, peak curvature, minimum speed, objective improvement, boundary margin, and feasibility residual; its broken case must leave the track, ignore coupling, or optimize an invalid signed distance.
-  - P64 must execute a deterministic forward/backward speed pass and lap-time integration with acceleration, braking, curvature, power, tire, and thermal/energy constraints; expose lap time, speed extrema, energy or thermal budget, pass-closure residual, and active constraints; its broken case must use only a forward pass, violate braking reachability, or double-count available force.
-  - P65 must compare at least two setup factors with a balanced designed experiment, expose main and interaction effects, replicate or residual error, ranking, and a held-out or finite-difference consistency check; its broken case must confound factors, omit an interaction, or compare one-at-a-time changes as causal effects.
-  - P66 must be a cumulative telemetry-validation capstone with signed requirements covering provenance replay, clock alignment, calibration, trajectory and state reconstruction, chronological identification/validation, identifiability/uncertainty, corrupt-data diagnosis, and exact recovery. Expose requirement pass count, held-out residual, uncertainty or coverage, fault count, and trace residual; its broken case must inject one cumulative data/model fault and fail named requirements.
-  - P67 must be a cumulative GR86 digital-twin capstone with signed requirements covering calibrated tire, handling, chassis, propulsion, brake, aero, track, racing-line, lap, uncertainty, and setup-comparison behavior. Expose requirement pass count, lap prediction, uncertainty bound, setup delta, coupled constraint residual, and recovery verdict; its broken case must inject an integrated coupling failure and recovery must restore every traced requirement.
-  - Validate inputs before allocation; cap geometry points, envelope grid, optimization candidates, integration steps, experiment cells, capstone requirements, and horizons; return finite deterministic Plotly-compatible results; perform no network, source write, subprocess, dynamic install or import, eval, learner-code execution, wall-clock dependence, or shared mutable state.
-  - Update the competency expansion ledger to declare 24 source-bound modules, all 67 reviewed planned modules, exactly P25-P67 implemented natively, and no pending native modules. Keep source-bound conversion and coverage totals at total=24, converted=24, pending=0, blocked=0, placeholder=0.
-  - End with exactly six courses, 290 modules, and 290 interactive modules. Update only retained catalog-total assertions needed for this authorized seven-module increase; preserve every completed course and source gitlink byte-identically.
-  - Mark Vehicle Dynamics `platform_converted`, `numerically_verified`, `curriculum_covered`, and `capstone_integrated` passed only if P61-P67 and both reviewed capstone traces pass. Keep `learner_validated` not_run.
-  - Record exact local verification. Hosted CI is not a completion gate by owner direction; keep MATLAB comparison, browser/accessibility, learner validation, measured vehicle or rig data, firmware/radio/bench/vehicle/track execution, physical HIL/hardware, certification, release, deployment, credentials/settings, and production evidence explicitly unperformed.
+  - Start only after the exact control commit containing this contract is merged. Use exact clean target main 4b613a79bfe3cbd997e64e8372a58956533dae2c, tree 9d7de9eb1399cdc541cc8475a2bc0a380c9c00e5; target, source, map, ledger, index, or worktree drift stops implementation.
+  - Repair exactly P02-P10 in numeric order. Preserve P01 and P11-P84 byte-identically. Preserve the read-only source gitlink, source map, conversion manifest, schema, authoring rules, course identity, titles, guiding questions, phase order, and catalog count byte-identically. In coverage.yaml preserve every identity, status, record path, blocker, summary, and P01/P11-P84 target digest; update only P02-P10 target_content_digest values to the repaired catalog revisions.
+  - Replace generic primary_scale, secondary_scale, noise_db, PHASE dispatch, and shared response logic with lesson-specific controls, equations, state, transformations, outputs, plots, failure behavior, and diagnostics derived from each pinned source experiment.
+  - Retain the source lesson's important processing order and explicitly record retained behavior, deliberately omitted MATLAB-only display or audio behavior, and the software-only claim boundary in each module conversion record.
+  - P02 must sample the same sinusoid on dense and measurement grids, quantify interpolation error, sweep sample rate and clock offset, and prove exact below-Nyquist alias-family agreement in the broken case.
+  - P03 must calculate signed alias folding and reflected phase, recover apparent frequency independently from the sample recurrence, sweep input frequency and sample rate, and make the wrong-phase reflected alias fail sample agreement.
+  - P04 must implement bounded bipolar mid-rise quantization with code saturation, LSB and half-LSB error bounds, SQNR, bit-depth and utilization sweeps, deterministic dither behavior, and a clipping failure distinct from quantization noise. Audio playback remains omitted.
+  - P05 must create separately normalized white, colored, narrowband, and impulsive seeded noise; expose RMS, crest factor, lag-one correlation, low-frequency power, and tone-estimation behavior; sweep colored memory and interferer offset; its broken case must compare unequal RMS records and recovery must mean-center and renormalize.
+  - P06 must demonstrate that linear convolution with each impulse response matches direct delay, moving-average, echo, and resonator implementations; sweep echo delay and resonator radius; its broken circular-convolution case must show wrapped-tail error and exact linear recovery.
+  - P07 must form convolution as explicit shifted signed echo addition, match manual, explicit-sum, and NumPy convolution outputs, expose per-path contributions, sweep one delay and one signed gain, and make overwrite-instead-of-add fail on overlap before exact recovery.
+  - P08 must embed an asymmetric known chip sequence at a bounded delay in seeded noise, implement correlation with an explicit lag convention, match an alternate convolution formulation, sweep amplitude and noise, resolve two-target separation limits, and expose the common convolution-index-as-delay error before recovery.
+  - P09 must compare source-derived FIR and stable biquad IIR magnitude, group delay, impulse, step, pulse, signal/noise, and arithmetic behavior; sweep FIR taps and IIR Q; its broken pole radius above one must grow while the recovered radius below one decays.
+  - P10 must implement anti-alias filtering before integer decimation and reconstruction filtering after zero insertion, measure folded and imaging components, sweep offending tone frequency and reconstruction taps, and contrast naive sample dropping/zero insertion with filtered recovery.
+  - Every repaired module must validate finite bounded inputs before allocation; use deterministic NumPy only; return finite Plotly-compatible results with physical axes and units; include baseline, two one-variable sweeps, one named broken case, exact recovery, limiting cases, common mistakes, formative checks, and teach-back completion.
+  - Add a course-owned independent reference implementation that imports no production experiment, consumes no production output, and perturbs no production value. Retain origin, scenario parameters, signature fields and units, tolerances, and finite expected-versus-actual evidence for baseline, sweep_1, sweep_2, broken, and recovery.
+  - Add a remediation ledger covering P02-P84. Mark exactly P02-P10 repaired in this batch and P11-P84 pending; P01 remains the already-distinct implemented source conversion. The ledger must derive counts and may not imply that the remaining generic modules are verified.
+  - Add structural-similarity prevention that rejects an unexplained identical normalized AST across unrelated repaired lessons and rejects generic control ids for repaired items.
+  - Keep DSP/Radar numerically_verified, curriculum_covered, and capstone_integrated blocked after this batch because P11-P84 and P84 remain pending. Record incremental P02-P10 repair without claiming 84/84 fidelity.
+  - Correct the retained Vehicle Dynamics terminal-authorization regression so it verifies its merged historical contract from baseline commit 4b613a79bfe3cbd997e64e8372a58956533dae2c instead of requiring that completed batch to remain the active contract; change no Vehicle Dynamics course artifact or claim.
+  - End with exactly six courses, 290 modules, and 290 interactive modules. Record exact local verification. Hosted CI is not required by owner direction.
+  - Keep MATLAB runtime comparison, browser/accessibility validation, representative learner validation, audio playback, physical HIL/hardware, certification, release, deployment, credentials/settings, and production use explicitly unperformed.
 validation:
   local:
-    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_vehicle_dynamics_expansion.py apps/api/tests/test_vehicle_dynamics_framework.py apps/api/tests/test_vehicle_dynamics_course.py apps/api/tests/test_course_caliber_status.py
-    - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py
-    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_gnc_expansion.py apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_course.py apps/api/tests/test_robotics_expansion.py apps/api/tests/test_robotics_conversion_framework.py apps/api/tests/test_robotics_course.py
+    - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py apps/api/tests/test_course_caliber_status.py
+    - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests
     - ./scripts/agent-verify.sh contract
     - ./scripts/agent-verify.sh quick
     - ./scripts/agent-verify.sh full
     - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic --json
-    - .venv/bin/ruff check apps/api/tests/test_vehicle_dynamics_expansion.py apps/api/tests/test_vehicle_dynamics_framework.py apps/api/tests/test_vehicle_dynamics_course.py apps/api/tests/test_course_caliber_status.py apps/api/tests/test_gnc_conversion_framework.py apps/api/tests/test_gnc_expansion.py apps/api/tests/test_robotics_conversion_framework.py apps/api/tests/test_robotics_expansion.py courses/vehicle-dynamics/modules/61-* courses/vehicle-dynamics/modules/62-* courses/vehicle-dynamics/modules/63-* courses/vehicle-dynamics/modules/64-* courses/vehicle-dynamics/modules/65-* courses/vehicle-dynamics/modules/66-* courses/vehicle-dynamics/modules/67-* courses/vehicle-dynamics/expansion_reference_cases.py
+    - .venv/bin/ruff check apps/api/tests/test_dsp_fidelity_remediation.py apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py apps/api/tests/test_course_caliber_status.py courses/dsp-radar/remediation_reference_cases.py courses/dsp-radar/modules/02-* courses/dsp-radar/modules/03-* courses/dsp-radar/modules/04-* courses/dsp-radar/modules/05-* courses/dsp-radar/modules/06-* courses/dsp-radar/modules/07-* courses/dsp-radar/modules/08-* courses/dsp-radar/modules/09-* courses/dsp-radar/modules/10-*
+    - npm run typecheck
+    - npm run build
     - git diff --check
-    - test -z "$(git status --short -- courses/controls-gnc courses/dsp-radar courses/robotics-autonomy courses/demo-radar courses/platform-showcase courses/vehicle-dynamics/fixtures courses/vehicle-dynamics/modules/0[1-9]-* courses/vehicle-dynamics/modules/1[0-9]-* courses/vehicle-dynamics/modules/2[0-9]-* courses/vehicle-dynamics/modules/3[0-9]-* courses/vehicle-dynamics/modules/4[0-9]-* courses/vehicle-dynamics/modules/5[0-9]-* courses/vehicle-dynamics/modules/60-*)"
-    - test -z "$(git -C courses/vehicle-dynamics-learning status --porcelain=v1 --untracked-files=all)"
+    - test -z "$(git status --short -- courses/dsp-radar-learning courses/dsp-radar/source-map.yaml courses/dsp-radar/conversion-manifest.yaml courses/dsp-radar/modules/01-* courses/dsp-radar/modules/1[1-9]-* courses/dsp-radar/modules/2[0-9]-* courses/dsp-radar/modules/3[0-9]-* courses/dsp-radar/modules/4[0-9]-* courses/dsp-radar/modules/5[0-9]-* courses/dsp-radar/modules/6[0-9]-* courses/dsp-radar/modules/7[0-9]-* courses/dsp-radar/modules/8[0-4]-* courses/controls-gnc courses/robotics-autonomy courses/vehicle-dynamics)"
   focused_tests_to_add:
-    - Validate exact P25-P67 native membership, reviewed-map P61-P67 identities and prerequisite closure, native provenance, expansion-ledger completion, distinct governing-equation fingerprints, and no pending or P68 folder.
-    - Execute baseline, two one-variable sweeps, broken, recovery, invalid-input, resource-bound, finite, deterministic, axis/unit, and evidence-independence checks for every new module.
-    - Assert track closure/curvature, g-g-v coupling, racing-line feasibility, forward/backward lap closure, designed-experiment effects, both requirements-traced capstones, teaching invariants, limiting cases, named failures, and exact recovery.
-    - Compare P61-P67 against analytic, invariant, or separately formulated numerical references without importing or deriving from production experiments.
+    - Validate exact source identity, P02-P10 titles and guiding questions, source-to-target retained/omitted behavior, repaired and pending ledger membership, and unchanged source-bound ledgers.
+    - Execute baseline, two sweeps, broken, recovery, invalid-input, resource-bound, finite, deterministic, axis/unit, and independent-evidence checks for P02-P10.
+    - Assert each P02-P10 source-specific invariant and named failure/recovery behavior.
+    - Compare P02-P10 against separately formulated analytic or numerical references without production imports or outputs.
+    - Reject generic repaired controls and unexplained cross-topic normalized-AST identity.
     - Validate the six-course, 290-module, 290-interactive catalog and regress every retained course.
   required_ci: []
 risk:
   class: high
   hazards:
-    - a shared performance template substitutes for seven distinct governing or computational models
-    - track closure, curvature sign, combined acceleration, racing-line boundary, forward/backward reachability, lap integration, setup confounding, requirement trace, or subsystem coupling is subtly wrong
-    - deterministic synthetic results are mislabeled as measured track, driver, rig, or vehicle evidence
-    - an independent oracle imports or derives from production behavior
-    - a capstone passes aggregate metrics while a named prerequisite requirement fails
+    - renamed generic logic is mistaken for source fidelity
+    - source conventions for alias sign, phase reversal, quantizer endpoints, correlation lag, filter delay, or multirate gain are changed silently
+    - independent evidence reuses production calculations
+    - P02-P10 repair is mislabeled as full P02-P84 completion
   stop_conditions:
-    - exact target, source, map, fixture, index, or worktree identity drifts
-    - an independent reference needs production code, production output, or a perturbed production value
-    - work requires prior-module mutation, source-bound ledger mutation, source or fixture mutation, generic runtime or UI changes, a dependency, network access, or unsupported evidence
-    - any focused, retained-course, contract, quick, full, deterministic, lint, scope, source-cleanliness, or capstone requirement gate fails or is skipped
+    - exact target, source, source-map, conversion-ledger, coverage identity/status/count, course identity, or worktree drift outside the explicitly authorized P02-P10 digest refresh
+    - a source-specific invariant cannot be reproduced with bounded NumPy without a new product decision
+    - an independent reference needs production code or output
+    - work requires P01, P11-P84, source, generic runtime, UI, dependency, credential, release, deployment, or production mutation
+    - any focused, full, deterministic, lint, typecheck, build, scope, or source-cleanliness gate fails or is skipped
 rollback:
-  strategy: Before merge, close the isolated target pull request. After merge, revert its one squash commit; this removes only the Vehicle Dynamics P61-P67 performance and capstone expansion, independent reference additions, tests, evidence, and ledger completion while retaining P01-P60.
+  strategy: Before merge, close the isolated target pull request. After merge, revert its one squash commit to restore the prior generic P02-P10 implementations while retaining all other courses and DSP P01/P11-P84.
 evidence:
   output:
-    - docs/evidence/ELP-VEHICLE-PERFORMANCE-P61-P67-2026-09-24.md
-    - one P61-P67 row per work item with governing relation, provenance, scenarios, teaching invariant, tolerance, axes and units, limitation, and residual risk
-    - signed requirement traces for CAP-TELEMETRY-VALIDATION and CAP-GR86-DIGITAL-TWIN
-    - focused, retained-course, contract, quick, full, deterministic catalog, lint, diff, scope, and source-cleanliness results
-    - one target squash merge, exact resulting commit and tree, issue closure, and explicit unperformed evidence
-  claim_boundary: This batch completes and independently verifies seven deterministic software-only Vehicle Dynamics performance and capstone lessons. P61-P67 are Python-first native designs derived from the reviewed competency map and deterministic synthetic parameters or immutable synthetic protocol fixtures. No source or MATLAB-runtime equivalence, measured track, driver, rig, or vehicle validation, browser/accessibility or learner validation, firmware/radio/bench/vehicle/track execution, physical HIL/hardware, certification, release, deployment, credentials/settings, or production use is implied.
+    - docs/evidence/ELP-DSP-FIDELITY-P02-P10-2026-09-24.md
+    - one P02-P10 row with source flow, controls, equations, retained and omitted behavior, signatures, tolerance, failure/recovery, limitation, and residual risk
+    - structural-similarity and generic-control prevention results
+    - focused, full, deterministic catalog, lint, typecheck, build, diff, scope, and source-cleanliness results
+    - one target squash merge with exact commit and tree; issue 441 remains open for P11-P84
+  claim_boundary: This batch repairs and independently verifies nine deterministic software-only DSP/Radar source conversions, P02-P10. It does not complete issue 441 or establish P11-P84 fidelity. MATLAB runtime comparison, audio playback, browser/accessibility, learner, physical HIL/hardware, certification, release, deployment, credentials/settings, and production evidence remain unperformed.
