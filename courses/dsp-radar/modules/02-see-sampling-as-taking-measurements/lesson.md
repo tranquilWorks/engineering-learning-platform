@@ -114,33 +114,17 @@ and every alias candidate are written as explicit arithmetic.
 - The dense reference curve in this synthetic experiment represents ground
   truth supplied by the model, not information recovered from the samples.
 
-## Use the Python GUI experiment
+## Use the source-faithful Python experiment
 
-The GUI keeps the pinned source's mental model and processing order visible. The **measurement rate** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+The interactive implementation retains **dense and sample grids, interpolation error, rate and offset sweeps, and exact alias-family agreement**. Change **sample rate** and **sample-clock offset** one at a time; the parameter-sweep plot supplies the pinned comparison cases. The broken toggle does exactly this: Force 7 Hz under a 12 Sa/s clock so the reflected 5 Hz and high 19 Hz candidates agree at every measurement. Recovery is equally explicit: Restore the declared 80 Sa/s bandlimited measurement model.
 
-### Prediction and sweep 1 — measurement rate
+The implementation is deterministic, bounded NumPy software. It deliberately omits MATLAB figure-window behavior; no MATLAB runtime equivalence, browser/accessibility result, learner validation, audio-device result, or hardware claim is made.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
-
-### Sweep 2 — secondary stress
-
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
-
-### Intentionally broken case and recovery
-
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
-
-## Common mistakes to avoid in the GUI
-
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+A common mistake is to change both controls together or to infer behavior outside that explicit software-only boundary.
 
 ## Teach-back checklist
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
+- [ ] Answer the guiding question using the source equations and physical units.
 - [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+- [ ] Name the exact broken assumption before enabling it.
+- [ ] Demonstrate recovery and state the software-only claim boundary.

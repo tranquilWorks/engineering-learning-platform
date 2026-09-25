@@ -5,165 +5,222 @@ from typing import Any
 import numpy as np
 
 SEED = 505
-ITEM_NUMBER = 5
-PHASE = 1
-MAX_POINTS = 512
+MAX_SAMPLES = 5000
 
 
 def _layout(title: str, x_label: str, y_label: str) -> dict[str, Any]:
     return {
-        "title": {"text": title, "x": 0.02, "xanchor": "left"},
-        "margin": {"l": 68, "r": 22, "t": 58, "b": 58},
-        "xaxis": {"title": x_label, "showgrid": True},
-        "yaxis": {"title": y_label, "showgrid": True},
+        "title": {"text": title, "x": 0.02},
+        "xaxis": {"title": x_label},
+        "yaxis": {"title": y_label},
         "legend": {"orientation": "h", "y": 1.14},
-        "hovermode": "closest",
-        "uirevision": "keep-view",
+        "margin": {"l": 68, "r": 22, "t": 58, "b": 58},
+    }
+
+
+def _normalize(record: np.ndarray, target_rms: float) -> np.ndarray:
+    centered = record - np.mean(record)
+    rms = float(np.sqrt(np.mean(centered**2)))
+    if rms <= 1e-14:
+        raise ValueError("noise record has zero centered RMS")
+    return centered * target_rms / rms
+
+
+def _metrics(record: np.ndarray, fs: float) -> dict[str, float]:
+    rms = float(np.sqrt(np.mean(record**2)))
+    crest = float(np.max(np.abs(record)) / max(rms, 1e-15))
+    lag_one = float(np.corrcoef(record[:-1], record[1:])[0, 1])
+    spectrum = np.abs(np.fft.rfft(record)) ** 2
+    frequency = np.fft.rfftfreq(len(record), 1.0 / fs)
+    low_power = float(
+        np.sum(spectrum[frequency <= 200.0]) / max(np.sum(spectrum), 1e-30)
+    )
+    return {"rms": rms, "crest": crest, "lag_one": lag_one, "low_power": low_power}
+
+
+def _case(
+    alpha: float, interferer_offset_hz: float, target_rms: float, broken: bool
+) -> dict[str, Any]:
+    if (
+        not 0.0 <= alpha <= 0.99
+        or not 5.0 <= interferer_offset_hz <= 700.0
+        or not 0.05 <= target_rms <= 0.6
+    ):
+        raise ValueError("noise controls exceed the bounded experiment range")
+    fs = 4096.0
+    count = 4096
+    if count > MAX_SAMPLES:
+        raise ValueError("noise record exceeds the resource ceiling")
+    time = np.arange(count, dtype=float) / fs
+    rng = np.random.default_rng(SEED)
+    white_raw = rng.standard_normal(count)
+    colored_raw = np.empty(count)
+    colored_raw[0] = white_raw[0]
+    for index in range(1, count):
+        colored_raw[index] = alpha * colored_raw[index - 1] + white_raw[index]
+    narrow_raw = np.sin(2.0 * np.pi * (512.0 + interferer_offset_hz) * time + 0.3)
+    impulsive_raw = rng.standard_normal(count)
+    mask = rng.random(count) < 0.01
+    impulsive_raw[mask] += 12.0 * rng.choice(
+        np.array([-1.0, 1.0]), int(np.count_nonzero(mask))
+    )
+    raw = {
+        "white": white_raw,
+        "colored": colored_raw,
+        "narrowband": narrow_raw,
+        "impulsive": impulsive_raw,
+    }
+    records = (
+        raw
+        if broken
+        else {name: _normalize(value, target_rms) for name, value in raw.items()}
+    )
+    record_metrics = {name: _metrics(value, fs) for name, value in records.items()}
+    tone = 0.18 * np.sin(2.0 * np.pi * 512.0 * time)
+    basis = np.exp(-1j * 2.0 * np.pi * 512.0 * time)
+    tone_errors = {}
+    for name, noise in records.items():
+        estimate = 2.0 * abs(np.vdot(basis, tone + noise)) / count
+        tone_errors[name] = float(abs(estimate - 0.18))
+    normalized = {name: _normalize(value, target_rms) for name, value in raw.items()}
+    recovery_residual = max(
+        abs(_metrics(value, fs)["rms"] - target_rms) for value in normalized.values()
+    )
+    return {
+        "time": time,
+        "records": records,
+        "metrics": record_metrics,
+        "tone_errors": tone_errors,
+        "recovery_residual": float(recovery_residual),
     }
 
 
 def run(parameters: dict[str, Any]) -> dict[str, Any]:
-    primary = float(parameters["primary_scale"])
-    secondary = float(parameters["secondary_scale"])
-    noise_db = float(parameters["noise_db"])
-    broken_mode = bool(parameters["broken_mode"])
-    count = 192 + 16 * (ITEM_NUMBER % 4)
-    if count > MAX_POINTS:
-        raise ValueError("experiment exceeds the retained point ceiling")
-    rng = np.random.default_rng(SEED)
-    x = np.linspace(0.0, 1.0, count, endpoint=False)
-    variant = 1.0 + (ITEM_NUMBER % 7) / 5.0
-    noise_scale = 10.0 ** (noise_db / 20.0)
-
-    if PHASE == 1:
-        truth = np.cos(2.0 * np.pi * variant * primary * x + 0.4 * secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, count // 7) if broken_mode else measured
-    elif PHASE == 2:
-        tone = np.exp(1j * (2.0 * np.pi * (8.0 + variant * primary) * x + secondary))
-        measured = tone + noise_scale * (rng.standard_normal(count) + 1j * rng.standard_normal(count))
-        response_axis = np.fft.fftshift(np.fft.fftfreq(count, d=1.0 / count))
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / count
-        broken_response = np.abs(measured.real) if broken_mode else np.abs(measured)
-        truth = tone.real
-    elif PHASE == 3:
-        symbols = np.sign(np.sin(2.0 * np.pi * (4.0 + variant) * x))
-        carrier = np.cos(2.0 * np.pi * (18.0 + 2.0 * primary) * x + secondary)
-        truth = symbols * carrier
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(2 + 10 * secondary)) if broken_mode else measured
-    elif PHASE == 4:
-        bins = np.arange(count, dtype=float)
-        center = count * (0.25 + 0.25 * (primary - 0.5))
-        width = 2.0 + 4.0 * secondary
-        truth = np.exp(-0.5 * ((bins - center) / width) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = bins
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / np.sqrt(count)
-        broken_response = np.roll(measured, count // 3) if broken_mode else measured
-        x = bins
-    elif PHASE == 5:
-        cells = np.arange(count, dtype=float)
-        background = 0.2 + (0.45 * secondary) * (cells >= count // 2)
-        power = background + np.abs(noise_scale * rng.standard_normal(count))
-        target_bin = int(count * (0.3 + 0.25 * (primary - 0.5)))
-        power[target_bin] += 1.4
-        truth = power
-        measured = power
-        response_axis = cells
-        response = np.full(count, np.quantile(power, 0.82 + 0.1 * secondary))
-        if broken_mode:
-            response = np.full(count, np.mean(power) * (1.2 + primary))
-        broken_response = response
-        x = cells
-    elif PHASE == 6:
-        steps = np.arange(count, dtype=float)
-        truth = 0.04 * steps + 0.0002 * variant * secondary * steps**2
-        measured = truth + noise_scale * 8.0 * rng.standard_normal(count)
-        gain = np.clip(0.12 + 0.5 * primary, 0.05, 0.95)
-        response = np.empty(count)
-        response[0] = measured[0]
-        for index in range(1, count):
-            response[index] = response[index - 1] + gain * (measured[index] - response[index - 1])
-        response_axis = steps
-        broken_response = np.roll(response, 12) if broken_mode else response
-        x = steps
-    elif PHASE == 7:
-        angles = np.linspace(-90.0, 90.0, count)
-        u = np.sin(np.deg2rad(angles)) - np.sin(np.deg2rad(45.0 * (primary - 1.0)))
-        spacing = 0.45 + 0.45 * secondary
-        elements = 6 + ITEM_NUMBER % 7
-        denominator = np.sin(np.pi * spacing * u)
-        numerator = np.sin(elements * np.pi * spacing * u)
-        response = np.where(np.abs(denominator) < 1e-10, 1.0, np.abs(numerator / (elements * denominator)))
-        truth = response
-        measured = np.maximum(response + noise_scale * rng.standard_normal(count), 0.0)
-        response_axis = angles
-        broken_response = np.roll(response, 9) if broken_mode else response
-        x = angles
-    elif PHASE == 8:
-        bins = np.arange(count, dtype=float)
-        beat_bin = count * (0.15 + 0.35 * (primary - 0.5))
-        truth = np.cos(2.0 * np.pi * beat_bin * bins / count + secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(8 + 16 * secondary)) if broken_mode else measured
-        x = bins
-    else:
-        coordinate = np.linspace(-1.0, 1.0, count)
-        width = 0.05 + 0.16 / primary
-        truth = np.exp(-0.5 * ((coordinate + 0.25) / width) ** 2) + 0.65 * np.exp(-0.5 * ((coordinate - 0.3) / (1.4 * width)) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        kernel = np.ones(3 + 2 * int(secondary * 5))
-        kernel /= kernel.sum()
-        response = np.convolve(measured, kernel, mode="same")
-        response_axis = coordinate
-        broken_response = np.roll(response, 18) + 0.25 * np.roll(response, -13) if broken_mode else response
-        x = coordinate
-
-    displayed = broken_response if broken_mode else measured
-    separation = float(np.max(response) - np.median(response))
-    rmse = float(np.sqrt(np.mean((np.asarray(displayed).real - np.asarray(truth).real) ** 2)))
-    signature = [float(count), primary, secondary, noise_db, float(np.mean(np.asarray(displayed).real)), float(np.std(np.asarray(displayed).real)), separation, rmse]
-    sweep_primary = [0.6, 1.0, 1.4]
-    sweep_secondary = [0.0, 0.5, 1.0]
-    sweep_response = [variant * value for value in sweep_primary]
-    stress_response = [separation / (1.0 + value) for value in sweep_secondary]
-    title = 'Explore White, Colored, and Impulsive Noise'
-
+    alpha = float(parameters["colored_memory"])
+    offset = float(parameters["interferer_offset_hz"])
+    target_rms = float(parameters["noise_rms_v"])
+    broken = bool(parameters["broken_mode"])
+    case = _case(alpha, offset, target_rms, broken)
+    alpha_sweep = np.array([0.0, 0.7, 0.92])
+    alpha_lag = [
+        _case(float(value), 100.0, 0.25, False)["metrics"]["colored"]["lag_one"]
+        for value in alpha_sweep
+    ]
+    offset_sweep = np.array([20.0, 100.0, 300.0])
+    offset_error = [
+        _case(0.92, float(value), 0.25, False)["tone_errors"]["narrowband"]
+        for value in offset_sweep
+    ]
+    metrics = case["metrics"]
+    view = slice(0, 256)
     return {
         "metrics": [
-            {"id": "primary", "label": 'Noise Color', "value": primary, "unit": "× baseline", "emphasis": "primary"},
-            {"id": "response_separation", "label": "Response separation", "value": separation, "unit": "normalized"},
-            {"id": "model_error", "label": "Model/display error", "value": rmse, "unit": "normalized"},
-            {"id": "points", "label": "Bounded points", "value": count, "unit": "points"},
+            {
+                "id": "white_rms",
+                "label": "White RMS",
+                "value": metrics["white"]["rms"],
+                "unit": "V RMS",
+            },
+            {
+                "id": "colored_lag_one",
+                "label": "Colored lag-one correlation",
+                "value": metrics["colored"]["lag_one"],
+                "unit": "correlation",
+                "emphasis": "primary",
+            },
+            {
+                "id": "impulsive_crest",
+                "label": "Impulsive crest factor",
+                "value": metrics["impulsive"]["crest"],
+                "unit": "ratio",
+            },
+            {
+                "id": "narrow_tone_error",
+                "label": "Tone estimate error",
+                "value": case["tone_errors"]["narrowband"],
+                "unit": "V",
+            },
         ],
         "plots": {
-            "model_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "physical/model truth", "x": x, "y": np.asarray(truth).real},
-                {"type": "scatter", "mode": "lines", "name": "measured/processed", "x": x, "y": np.asarray(displayed).real},
-            ], "layout": _layout(title + " — model view", 'sample index', 'normalized amplitude'), "config": {"responsive": True, "displaylogo": False}},
-            "response_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "response", "x": response_axis, "y": np.asarray(response).real},
-            ], "layout": _layout(title + " — response view", 'sample index', 'normalized amplitude'), "config": {"responsive": True, "displaylogo": False}},
-            "parameter_sweeps": {"data": [
-                {"type": "scatter", "mode": "lines+markers", "name": "primary scale", "x": sweep_primary, "y": sweep_response},
-                {"type": "scatter", "mode": "lines+markers", "name": "secondary stress", "x": sweep_secondary, "y": stress_response},
-            ], "layout": _layout("Two one-variable sweeps", "control value", "response statistic"), "config": {"responsive": True, "displaylogo": False}},
-            "broken_case": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "recovered", "x": x, "y": np.asarray(measured).real},
-                {"type": "scatter", "mode": "lines", "name": "broken" if broken_mode else "enable broken mode", "x": x, "y": np.asarray(broken_response).real},
-            ], "layout": _layout("Intentional assumption failure", 'sample index', 'normalized amplitude'), "config": {"responsive": True, "displaylogo": False}},
+            "noise_records": {
+                "data": [
+                    {
+                        "type": "scatter",
+                        "mode": "lines",
+                        "name": name,
+                        "x": case["time"][view],
+                        "y": record[view],
+                    }
+                    for name, record in case["records"].items()
+                ],
+                "layout": _layout(
+                    "Equal-RMS noise can have different structure",
+                    "Time (s)",
+                    "Noise voltage (V)",
+                ),
+            },
+            "noise_statistics": {
+                "data": [
+                    {
+                        "type": "bar",
+                        "name": "crest factor",
+                        "x": list(metrics),
+                        "y": [value["crest"] for value in metrics.values()],
+                    },
+                    {
+                        "type": "bar",
+                        "name": "low-frequency power fraction",
+                        "x": list(metrics),
+                        "y": [value["low_power"] for value in metrics.values()],
+                    },
+                ],
+                "layout": _layout("Noise diagnostics", "Noise family", "Ratio"),
+            },
+            "parameter_sweeps": {
+                "data": [
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "colored-memory sweep",
+                        "x": alpha_sweep,
+                        "y": alpha_lag,
+                    },
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "interferer-offset sweep",
+                        "x": offset_sweep,
+                        "y": offset_error,
+                    },
+                ],
+                "layout": _layout(
+                    "Two one-variable noise sweeps",
+                    "Memory coefficient or offset (Hz)",
+                    "Correlation or tone error",
+                ),
+            },
         },
         "explanations": {
-            "observation": f"The {title} model uses a bounded deterministic time/frequency measurement experiment. Primary scale={primary:.2f} and secondary stress={secondary:.2f} remain independently controllable.",
-            "broken": "Broken mode deliberately violates the lesson's central interpretation assumption so the displayed response becomes ambiguous, biased, contaminated, or defocused.",
-            "recovery": "Disable broken mode, restore both scales to 1.0 and 0.25, then connect the recovered shape to the pinned source equations before changing one control at a time.",
+            "observation": "Mean-centering and RMS normalization isolate structure: color raises lag correlation and low-frequency power, impulses raise crest factor, and a nearby narrowband interferer biases tone estimation.",
+            "broken": "Broken mode compares raw records with unequal RMS, so apparent differences mix noise shape with simple power differences.",
+            "recovery": "Mean-center each record and scale it to the same RMS before comparing. The recovery residual reports the normalization error.",
         },
-        "diagnostics": {"seed": SEED, "item_number": ITEM_NUMBER, "point_count": count, "signature": signature, "broken_active": broken_mode},
+        "diagnostics": {
+            "seed": SEED,
+            "sample_count": 4096,
+            "broken_active": broken,
+            "recovery_rms_residual_v": case["recovery_residual"],
+            "family_metrics": metrics,
+            "tone_errors_v": case["tone_errors"],
+            "signature": [
+                alpha,
+                offset,
+                target_rms,
+                metrics["white"]["rms"],
+                metrics["colored"]["lag_one"],
+                metrics["impulsive"]["crest"],
+                case["tone_errors"]["narrowband"],
+                case["recovery_residual"],
+            ],
+        },
     }

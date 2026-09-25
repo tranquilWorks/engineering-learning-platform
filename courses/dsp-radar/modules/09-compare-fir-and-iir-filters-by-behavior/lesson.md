@@ -163,33 +163,17 @@ fixed-point, hardware, real-time, or operational radar behavior.
 P08 is the declared prerequisite. P09 uses base MATLAB, deterministic synthetic
 data, finite loops, and no external file, network, device, or hardware access.
 
-## Use the Python GUI experiment
+## Use the source-faithful Python experiment
 
-The GUI keeps the pinned source's mental model and processing order visible. The **filter order** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+The interactive implementation retains **FIR/IIR magnitude, group delay, impulse, step, pulse, signal/noise, arithmetic, tap, and Q comparisons**. Change **FIR tap count** and **IIR quality factor** one at a time; the parameter-sweep plot supplies the pinned comparison cases. The broken toggle does exactly this: Move a resonator pole radius to 1.02 so its impulse envelope grows. Recovery is equally explicit: Move the radius to 0.98 and verify a decaying response.
 
-### Prediction and sweep 1 — filter order
+The implementation is deterministic, bounded NumPy software. It deliberately omits MATLAB filter-design and figure-window shortcuts; no MATLAB runtime equivalence, browser/accessibility result, learner validation, audio-device result, or hardware claim is made.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
-
-### Sweep 2 — secondary stress
-
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
-
-### Intentionally broken case and recovery
-
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
-
-## Common mistakes to avoid in the GUI
-
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+A common mistake is to change both controls together or to infer behavior outside that explicit software-only boundary.
 
 ## Teach-back checklist
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
+- [ ] Answer the guiding question using the source equations and physical units.
 - [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+- [ ] Name the exact broken assumption before enabling it.
+- [ ] Demonstrate recovery and state the software-only claim boundary.

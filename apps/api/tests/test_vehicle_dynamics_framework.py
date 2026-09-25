@@ -412,10 +412,13 @@ def test_completed_vehicle_catalog_is_six_courses_with_sixty_seven_vehicle_modul
     assert len(summaries["vehicle-dynamics"].modules) == 67
 
 
-def test_active_contract_is_exact_merged_terminal_authorization() -> None:
-    contract_path = ROOT / "contracts/active-batch.yaml"
-    contract = yaml.safe_load(contract_path.read_text(encoding="utf-8"))
-    assert _sha256(contract_path) == ACTIVE_CONTRACT_SHA256
+def test_merged_terminal_contract_is_retained_after_active_batch_rotation() -> None:
+    completed_contract = _git(
+        "show",
+        "4b613a79bfe3cbd997e64e8372a58956533dae2c:contracts/active-batch.yaml",
+    ).stdout
+    assert hashlib.sha256(completed_contract.encode()).hexdigest() == ACTIVE_CONTRACT_SHA256
+    contract = yaml.safe_load(completed_contract)
     assert contract["batch"]["id"] == "ELP-VEHICLE-PERFORMANCE-P61-P67"
     assert contract["sources"]["baseline_commit"] == ("a917fc6174d18a845f9658ce881ba9138c660c76")
     assert contract["sources"]["competency_map_sha256"] == MAP_SHA256

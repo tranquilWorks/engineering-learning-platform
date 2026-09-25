@@ -19,36 +19,34 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
+      "id": "colored_memory",
       "type": "slider",
-      "label": "Noise Color",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
-    },
-    {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
+      "label": "Colored-noise memory",
+      "default": 0.92,
+      "unit": "coefficient",
       "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
+      "maximum": 0.99,
+      "step": 0.01
     },
     {
-      "id": "noise_db",
+      "id": "interferer_offset_hz",
       "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "label": "Interferer offset",
+      "default": 100.0,
+      "unit": "Hz",
+      "minimum": 5.0,
+      "maximum": 700.0,
+      "step": 5.0
+    },
+    {
+      "id": "noise_rms_v",
+      "type": "slider",
+      "label": "Comparison RMS",
+      "default": 0.25,
+      "unit": "V RMS",
+      "minimum": 0.05,
+      "maximum": 0.6,
+      "step": 0.05
     },
     {
       "id": "broken_mode",
@@ -79,8 +77,8 @@
       "type": "plot_grid",
       "title": "Model and response",
       "plots": [
-        "model_view",
-        "response_view"
+        "noise_records",
+        "noise_statistics"
       ]
     },
     {
@@ -91,7 +89,7 @@
     {
       "type": "plot",
       "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "plot": "noise_statistics"
     },
     {
       "type": "callout",

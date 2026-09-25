@@ -33,19 +33,19 @@
     ]
   },
   "target": {
-    "content_digest": "fb7a1fce257e160cb2428c1391b9654d31a7aa442eedb784563d2237da94b127",
+    "content_digest": "d3a94e71aa13194d9769997a64cf7b7b0c4ca4136177b988dc63f8335c046cac",
     "files": [
       {
         "path": "modules/08-use-correlation-to-find-a-hidden-pattern/experiment.py",
-        "sha256": "8358ba9bfa10663f95beb66923c9d6a7cf8582146ae24f2e70a2e16557e7db05"
+        "sha256": "829daf930b21446e6fa03cc6ff7e54da05917c42264a1f6d03a5c3f3e659d515"
       },
       {
         "path": "modules/08-use-correlation-to-find-a-hidden-pattern/lesson.md",
-        "sha256": "e22bcfa0770de13a98249ea50aadf92ff05befa5d87844383218da1f8afd3e72"
+        "sha256": "01490f262e1878b236a4d75e18035929500ef88f9e231ff205119d2778b2361e"
       },
       {
         "path": "modules/08-use-correlation-to-find-a-hidden-pattern/module.yaml",
-        "sha256": "714cfa92c00136ffb872861bd96bd9e130c6cbdf53799f472d672896cd82dbc7"
+        "sha256": "3865c90548b0eb393947ec5934014bdf35da6dfb39ab1bceb2ce86760265873d"
       }
     ]
   },
@@ -53,10 +53,11 @@
     "guiding_question": "How can a known waveform be located inside noise and delay?",
     "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary pattern SNR while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Retained from the pinned source: asymmetric chip reference, seeded embedding, explicit lag convention, amplitude/noise sweeps, and separation limits.",
+      "Expose target amplitude while holding noise standard deviation fixed, then reverse the roles.",
+      "Named failure: Report the full-convolution array index as delay without subtracting reference length minus one.",
+      "Exact recovery: Map the peak through the explicit lag vector and confirm reversed-reference convolution equivalence.",
+      "Deliberately omitted: MATLAB figure-window behavior; the claim remains deterministic software-only."
     ],
     "equations": [
       {
@@ -86,129 +87,177 @@
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "0631d6f5cc2fe3b4db162b01bf892657a66fa0d09b2b7b390c25849751945839",
-          "unit": "mixed numeric signature"
+          "sha256": "e2dc54cbe647ff21cd4e8c60e9b0652bb45912904d84d2061f67dee9b629eb6b",
+          "unit": "source-specific numeric signature"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline independent actual signature",
+          "provenance": "generated",
+          "sha256": "34a3b110d6f5844ddf4eda1703d3ea7355be6abca43848dbbb0d1bc325b4a348",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "e9bf220f38a764f41f3a9e5810c9acd190ab9ba48308cafc95bd0a31a7b3958f",
-          "unit": "mixed numeric signature"
+          "sha256": "5352fc69c3a3e656120e42809678d14c6056ffd8776e9f376d38e67590b2e0e0",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent actual signature",
+          "provenance": "generated",
+          "sha256": "e6c77c77b6a80752d7ff88e5caa4a36fc46c44eb733221d39a3c4b2e3342980b",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "a18d644ed0913119228f1e3b65552b396c2b622b5a7ec7f7d5c90ad73b54c3a7",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent actual signature",
+          "provenance": "generated",
+          "sha256": "8664105f8e3128916d1ac021a5368f723fc580a9d7eaaaf742bf1f8ced57077f",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "5d3918259dc858f7e3c2ccbdee97f4dbdb1ccd3d8a770d17efc6404931907f5b",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent actual signature",
+          "provenance": "generated",
+          "sha256": "53a29e275cd8b4155478b262e1b8bbde5ec0b9599c50c41d519eaaa7b9d700ae",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "e2dc54cbe647ff21cd4e8c60e9b0652bb45912904d84d2061f67dee9b629eb6b",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent actual signature",
+          "provenance": "generated",
+          "sha256": "34a3b110d6f5844ddf4eda1703d3ea7355be6abca43848dbbb0d1bc325b4a348",
+          "unit": "source-specific numeric signature"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P08 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P08 source processing and plot sequence",
+        "target_plot_key": "hidden_record",
+        "title": "Hidden Record",
         "axes": [
           {
             "role": "x",
-            "label": "sample index",
-            "unit": "source units"
+            "label": "Sample index",
+            "unit": "samples"
           },
           {
             "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
+            "label": "Amplitude",
+            "unit": "a.u."
           }
         ],
-        "interpretation": "This view answers the Use Correlation to Find a Hidden Pattern guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P08 view with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P08 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P08 source processing and plot sequence",
+        "target_plot_key": "correlation",
+        "title": "Correlation",
         "axes": [
           {
             "role": "x",
-            "label": "sample index",
-            "unit": "source units"
+            "label": "Lag",
+            "unit": "samples"
           },
           {
             "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
+            "label": "Correlation",
+            "unit": "a.u."
           }
         ],
-        "interpretation": "This view answers the Use Correlation to Find a Hidden Pattern guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P08 view with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P08 source processing/plot sequence",
+        "source_figure": "Pinned P08 source processing and plot sequence",
         "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "title": "Parameter Sweeps",
         "axes": [
           {
             "role": "x",
-            "label": "sample index",
-            "unit": "source units"
+            "label": "Control value",
+            "unit": "a.u."
           },
           {
             "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
+            "label": "Peak statistic",
+            "unit": "a.u."
           }
         ],
-        "interpretation": "This view answers the Use Correlation to Find a Hidden Pattern guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P08 view with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P08 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P08 source processing and plot sequence",
+        "target_plot_key": "separation_limit",
+        "title": "Separation Limit",
         "axes": [
           {
             "role": "x",
-            "label": "sample index",
-            "unit": "source units"
+            "label": "Separation",
+            "unit": "samples"
           },
           {
             "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
+            "label": "Correlation valley",
+            "unit": "a.u."
           }
         ],
-        "interpretation": "This view answers the Use Correlation to Find a Hidden Pattern guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P08 view with explicit physical axes and bounded deterministic data."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "target_amplitude",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          0.3,
+          0.65,
+          1.0
         ],
-        "expected_observation": "Changing pattern SNR moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only target_amplitude; hold every other control at its source baseline."
       },
       {
-        "control": "secondary_scale",
+        "control": "noise_sigma",
         "values": [
-          0.0,
+          0.2,
           0.5,
           1.0
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only noise_sigma; hold every other control at its source baseline."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode.",
+      "failure": "Report the full-convolution array index as delay without subtracting reference length minus one.",
+      "recovery": "Map the peak through the explicit lag vector and confirm reversed-reference convolution equivalence.",
+      "expected_observation": "The named invariant fails in broken mode and returns within the recorded numeric tolerance after recovery."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Changing more than one source parameter at a time.",
+      "Report the full-convolution array index as delay without subtracting reference length minus one.",
+      "Treating a deterministic software result as MATLAB runtime, learner, browser, audio, or hardware evidence."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
+      "Answer the exact guiding question from the pinned source equations.",
       "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Name the failure, demonstrate exact recovery, and explain the limiting case.",
+      "Teach back retained behavior, deliberate omissions, and the software-only claim boundary."
     ]
   },
   "runtime": {
@@ -216,62 +265,129 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 5000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P08 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py",
     "seed": 808,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "target_amplitude",
+        "value": 0.65,
+        "unit": "source units"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "noise_sigma",
+        "value": 0.5,
+        "unit": "source units"
+      },
+      {
+        "name": "target_separation_samples",
+        "value": 50,
+        "unit": "source units"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/08-use-correlation-to-find-a-hidden-pattern/evidence/expected-baseline.json",
-          "sha256": "0631d6f5cc2fe3b4db162b01bf892657a66fa0d09b2b7b390c25849751945839"
+          "sha256": "e2dc54cbe647ff21cd4e8c60e9b0652bb45912904d84d2061f67dee9b629eb6b"
         },
         "actual": {
           "path": "modules/08-use-correlation-to-find-a-hidden-pattern/evidence/actual-baseline.json",
-          "sha256": "20ff898c6c9fd1a5b0636298c244fb1e75bbe516694231aafd593add637a7598"
+          "sha256": "34a3b110d6f5844ddf4eda1703d3ea7355be6abca43848dbbb0d1bc325b4a348"
         },
-        "max_absolute_error": 4.124756092238613e-13,
-        "max_relative_error": 4.124756092238613e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
         "passed": true
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/08-use-correlation-to-find-a-hidden-pattern/evidence/expected-sweep-1.json",
+          "sha256": "5352fc69c3a3e656120e42809678d14c6056ffd8776e9f376d38e67590b2e0e0"
+        },
+        "actual": {
+          "path": "modules/08-use-correlation-to-find-a-hidden-pattern/evidence/actual-sweep-1.json",
+          "sha256": "e6c77c77b6a80752d7ff88e5caa4a36fc46c44eb733221d39a3c4b2e3342980b"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "sweep_2",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/08-use-correlation-to-find-a-hidden-pattern/evidence/expected-sweep-2.json",
+          "sha256": "a18d644ed0913119228f1e3b65552b396c2b622b5a7ec7f7d5c90ad73b54c3a7"
+        },
+        "actual": {
+          "path": "modules/08-use-correlation-to-find-a-hidden-pattern/evidence/actual-sweep-2.json",
+          "sha256": "8664105f8e3128916d1ac021a5368f723fc580a9d7eaaaf742bf1f8ced57077f"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/08-use-correlation-to-find-a-hidden-pattern/evidence/expected-broken.json",
-          "sha256": "e9bf220f38a764f41f3a9e5810c9acd190ab9ba48308cafc95bd0a31a7b3958f"
+          "sha256": "5d3918259dc858f7e3c2ccbdee97f4dbdb1ccd3d8a770d17efc6404931907f5b"
         },
         "actual": {
           "path": "modules/08-use-correlation-to-find-a-hidden-pattern/evidence/actual-broken.json",
-          "sha256": "ae9b1c900eb11b8ded9dc28814852f474b37af05880900f9c7592b0b9fda4d88"
+          "sha256": "53a29e275cd8b4155478b262e1b8bbde5ec0b9599c50c41d519eaaa7b9d700ae"
         },
-        "max_absolute_error": 4.124756092238613e-13,
-        "max_relative_error": 4.124756092238613e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "recovery",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/08-use-correlation-to-find-a-hidden-pattern/evidence/expected-recovery.json",
+          "sha256": "e2dc54cbe647ff21cd4e8c60e9b0652bb45912904d84d2061f67dee9b629eb6b"
+        },
+        "actual": {
+          "path": "modules/08-use-correlation-to-find-a-hidden-pattern/evidence/actual-recovery.json",
+          "sha256": "34a3b110d6f5844ddf4eda1703d3ea7355be6abca43848dbbb0d1bc325b4a348"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
         "passed": true
       }
     ]

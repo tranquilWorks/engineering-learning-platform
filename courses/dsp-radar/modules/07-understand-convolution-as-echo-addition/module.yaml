@@ -19,36 +19,25 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
+      "id": "middle_echo_delay_samples",
       "type": "slider",
       "label": "Echo Delay",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "default": 5,
+      "unit": "samples",
+      "minimum": 1,
+      "maximum": 8,
+      "step": 1
     },
     {
-      "id": "secondary_scale",
+      "id": "third_echo_gain",
       "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
+      "label": "Third echo gain",
+      "default": -0.35,
+      "unit": "ratio",
+      "minimum": -1.0,
       "maximum": 1.0,
       "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "description": "Signed gain controls constructive or destructive echo overlap."
     },
     {
       "id": "broken_mode",
@@ -79,8 +68,8 @@
       "type": "plot_grid",
       "title": "Model and response",
       "plots": [
-        "model_view",
-        "response_view"
+        "echo_paths",
+        "sum_check"
       ]
     },
     {

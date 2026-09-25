@@ -78,6 +78,17 @@ This lane is a separately authorized direct conversion sequence. It does not
 implement or satisfy the generic B020 ingestion tooling or B030 author-preview
 milestones below.
 
+### ELP-DSP-FIDELITY-P02-P10 — Incremental issue-441 repair
+
+**Status:** Implemented and locally verified as the first fidelity-remediation group.
+
+P02-P10 replace the shared generic runtime with nine distinct source-faithful
+experiments and five independently formulated scenarios per item. The repair
+ledger keeps P01 as the prior distinct conversion, marks P02-P10 repaired, and
+marks P11-P84 pending. Course-level numerical verification, curriculum coverage,
+and capstone integration remain blocked until later issue-441 batches repair the
+remaining generic modules and separately close the competency and P84 capstone gates.
+
 ## ELP-GNC — Authorized Controls/GNC conversion lane
 
 **Depends on:** ELP-DSP-P01-P84

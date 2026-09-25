@@ -19,36 +19,34 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
+      "id": "target_amplitude",
       "type": "slider",
       "label": "Pattern Snr",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "default": 0.65,
+      "unit": "a.u.",
+      "minimum": 0.05,
+      "maximum": 2.0,
+      "step": 0.05
     },
     {
-      "id": "secondary_scale",
+      "id": "noise_sigma",
       "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
+      "label": "Noise standard deviation",
+      "default": 0.5,
+      "unit": "a.u.",
       "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
+      "maximum": 2.0,
+      "step": 0.05
     },
     {
-      "id": "noise_db",
+      "id": "target_separation_samples",
       "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "label": "Second-target separation",
+      "default": 50,
+      "unit": "samples",
+      "minimum": 1,
+      "maximum": 80,
+      "step": 1
     },
     {
       "id": "broken_mode",
@@ -79,8 +77,8 @@
       "type": "plot_grid",
       "title": "Model and response",
       "plots": [
-        "model_view",
-        "response_view"
+        "hidden_record",
+        "correlation"
       ]
     },
     {
@@ -91,7 +89,7 @@
     {
       "type": "plot",
       "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "plot": "correlation"
     },
     {
       "type": "callout",

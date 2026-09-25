@@ -33,19 +33,19 @@
     ]
   },
   "target": {
-    "content_digest": "57adfe8c183356c408154c47788cae906b4fe94c9a59fde5fc14b8a46ab506f0",
+    "content_digest": "72f3805cfe7203d72e76499c1468fdceb7c6e05462b59ff69819c5dc59504cda",
     "files": [
       {
         "path": "modules/05-explore-white-colored-and-impulsive-noise/experiment.py",
-        "sha256": "6a1ebeb98d277c99855258d4d8694e50b016c2533813b413ee4218600dc3a33f"
+        "sha256": "f78d0ac68c2b6b8108c67b3b61e2f0d38abd77a2fcd1d8f14db1c8cf8b0a8c08"
       },
       {
         "path": "modules/05-explore-white-colored-and-impulsive-noise/lesson.md",
-        "sha256": "275d2a88a3aeb528e3d86a4e24596c9abb45cbe60127d90b9555d15ee8a144b7"
+        "sha256": "ef4e93f8d28c943a4f429b4078ef0ddc6eaaa676cfec2fd9333d3c48f69949fc"
       },
       {
         "path": "modules/05-explore-white-colored-and-impulsive-noise/module.yaml",
-        "sha256": "56d028c1eff7119f9d6e680956e3908a530386c617ed723f3fd8eea4b932a179"
+        "sha256": "978a4466ff31885d6f8c6b4234f954f060d252f445c37032b17256ec9f2de589"
       }
     ]
   },
@@ -53,10 +53,11 @@
     "guiding_question": "What does the word noise hide about time behavior and spectrum?",
     "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary noise color while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Retained from the pinned source: seeded noise families, equal-RMS normalization, crest/correlation/power/tone diagnostics, and two sweeps.",
+      "Expose colored-noise memory while holding interferer offset fixed, then reverse the roles.",
+      "Named failure: Compare raw white, colored, narrowband, and impulsive records at unequal RMS.",
+      "Exact recovery: Mean-center and renormalize every record to the same target RMS.",
+      "Deliberately omitted: MATLAB interactive figure-window behavior; the claim remains deterministic software-only."
     ],
     "equations": [
       {
@@ -86,129 +87,159 @@
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "a18e8d9d0a1fcf63aab6f6269aea3ea9fd83f2952e34ed74334ee013d9accf77",
-          "unit": "mixed numeric signature"
+          "sha256": "9a7dc9f471f92914a279888b3f1f87f3a5a714e655920f8f3ce88042e32502a4",
+          "unit": "source-specific numeric signature"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline independent actual signature",
+          "provenance": "generated",
+          "sha256": "d25b106961b4bd3dedf9dee3c2ffdd89a80e9762e00e7385261ccc66b1fa1827",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "a7b9796129f14a5f692f4cfd101e2a780a24ff0c999741e48b5cdaf7ca7ad4a8",
-          "unit": "mixed numeric signature"
+          "sha256": "579a70b1b52da75a33c94618b32f9043ec1c413009d808874716473b41c765ae",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent actual signature",
+          "provenance": "generated",
+          "sha256": "9c00abfdd5412987b5c747014647811050e869b2f80ac326472cb86765b8e628",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "fd3a0329dfa3431c99f4626398487b80fc511a2c60aa4a865c15491f091a0ad0",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent actual signature",
+          "provenance": "generated",
+          "sha256": "9f741be5793b2e5b80c14d72a4d2c6949925d6448a97b2cf6a2e3f0d5b91fcf9",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "e19d8755aeb5b48842ff8d768d9b947cafd7b37c3a66c5cf5dfadb952b3b72db",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent actual signature",
+          "provenance": "generated",
+          "sha256": "6303b8aa74ce8359514727f5767534f736b3bf784b36fb6deaa48e1a3876b9a4",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "9a7dc9f471f92914a279888b3f1f87f3a5a714e655920f8f3ce88042e32502a4",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent actual signature",
+          "provenance": "generated",
+          "sha256": "d25b106961b4bd3dedf9dee3c2ffdd89a80e9762e00e7385261ccc66b1fa1827",
+          "unit": "source-specific numeric signature"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P05 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P05 source processing and plot sequence",
+        "target_plot_key": "noise_records",
+        "title": "Noise Records",
         "axes": [
           {
             "role": "x",
-            "label": "sample index",
-            "unit": "source units"
+            "label": "Time",
+            "unit": "s"
           },
           {
             "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
+            "label": "Noise voltage",
+            "unit": "V"
           }
         ],
-        "interpretation": "This view answers the Explore White, Colored, and Impulsive Noise guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P05 view with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P05 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P05 source processing and plot sequence",
+        "target_plot_key": "noise_statistics",
+        "title": "Noise Statistics",
         "axes": [
           {
             "role": "x",
-            "label": "sample index",
-            "unit": "source units"
+            "label": "Noise family",
+            "unit": "category"
           },
           {
             "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
+            "label": "Diagnostic",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Explore White, Colored, and Impulsive Noise guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P05 view with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P05 source processing/plot sequence",
+        "source_figure": "Pinned P05 source processing and plot sequence",
         "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "title": "Parameter Sweeps",
         "axes": [
           {
             "role": "x",
-            "label": "sample index",
-            "unit": "source units"
+            "label": "Control value",
+            "unit": "mixed"
           },
           {
             "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
+            "label": "Statistic",
+            "unit": "mixed"
           }
         ],
-        "interpretation": "This view answers the Explore White, Colored, and Impulsive Noise guiding question while preserving the source sign, normalization, and finite-record interpretation."
-      },
-      {
-        "source_figure": "Pinned P05 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
-        "axes": [
-          {
-            "role": "x",
-            "label": "sample index",
-            "unit": "source units"
-          },
-          {
-            "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
-          }
-        ],
-        "interpretation": "This view answers the Explore White, Colored, and Impulsive Noise guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P05 view with explicit physical axes and bounded deterministic data."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
-        "values": [
-          0.6,
-          1.0,
-          1.4
-        ],
-        "expected_observation": "Changing noise color moves the source-specific response while secondary stress remains fixed."
-      },
-      {
-        "control": "secondary_scale",
+        "control": "colored_memory",
         "values": [
           0.0,
-          0.5,
-          1.0
+          0.7,
+          0.92
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only colored_memory; hold every other control at its source baseline."
+      },
+      {
+        "control": "interferer_offset_hz",
+        "values": [
+          20.0,
+          100.0,
+          300.0
+        ],
+        "expected_observation": "Change only interferer_offset_hz; hold every other control at its source baseline."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode.",
+      "failure": "Compare raw white, colored, narrowband, and impulsive records at unequal RMS.",
+      "recovery": "Mean-center and renormalize every record to the same target RMS.",
+      "expected_observation": "The named invariant fails in broken mode and returns within the recorded numeric tolerance after recovery."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Changing more than one source parameter at a time.",
+      "Compare raw white, colored, narrowband, and impulsive records at unequal RMS.",
+      "Treating a deterministic software result as MATLAB runtime, learner, browser, audio, or hardware evidence."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
+      "Answer the exact guiding question from the pinned source equations.",
       "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Name the failure, demonstrate exact recovery, and explain the limiting case.",
+      "Teach back retained behavior, deliberate omissions, and the software-only claim boundary."
     ]
   },
   "runtime": {
@@ -216,62 +247,129 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 5000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P05 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py",
     "seed": 505,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "colored_memory",
+        "value": 0.92,
+        "unit": "source units"
       },
       {
-        "name": "secondary_scale",
+        "name": "interferer_offset_hz",
+        "value": 100.0,
+        "unit": "source units"
+      },
+      {
+        "name": "noise_rms_v",
         "value": 0.25,
-        "unit": "normalized"
+        "unit": "source units"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/05-explore-white-colored-and-impulsive-noise/evidence/expected-baseline.json",
-          "sha256": "a18e8d9d0a1fcf63aab6f6269aea3ea9fd83f2952e34ed74334ee013d9accf77"
+          "sha256": "9a7dc9f471f92914a279888b3f1f87f3a5a714e655920f8f3ce88042e32502a4"
         },
         "actual": {
           "path": "modules/05-explore-white-colored-and-impulsive-noise/evidence/actual-baseline.json",
-          "sha256": "5113b399a34f01ddb5887c9af7fb26cfa8e5e864cfb3f82fdb60059e64433ac6"
+          "sha256": "d25b106961b4bd3dedf9dee3c2ffdd89a80e9762e00e7385261ccc66b1fa1827"
         },
-        "max_absolute_error": 4.965472477636013e-13,
-        "max_relative_error": 4.965472477636013e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
         "passed": true
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/05-explore-white-colored-and-impulsive-noise/evidence/expected-sweep-1.json",
+          "sha256": "579a70b1b52da75a33c94618b32f9043ec1c413009d808874716473b41c765ae"
+        },
+        "actual": {
+          "path": "modules/05-explore-white-colored-and-impulsive-noise/evidence/actual-sweep-1.json",
+          "sha256": "9c00abfdd5412987b5c747014647811050e869b2f80ac326472cb86765b8e628"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "sweep_2",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/05-explore-white-colored-and-impulsive-noise/evidence/expected-sweep-2.json",
+          "sha256": "fd3a0329dfa3431c99f4626398487b80fc511a2c60aa4a865c15491f091a0ad0"
+        },
+        "actual": {
+          "path": "modules/05-explore-white-colored-and-impulsive-noise/evidence/actual-sweep-2.json",
+          "sha256": "9f741be5793b2e5b80c14d72a4d2c6949925d6448a97b2cf6a2e3f0d5b91fcf9"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/05-explore-white-colored-and-impulsive-noise/evidence/expected-broken.json",
-          "sha256": "a7b9796129f14a5f692f4cfd101e2a780a24ff0c999741e48b5cdaf7ca7ad4a8"
+          "sha256": "e19d8755aeb5b48842ff8d768d9b947cafd7b37c3a66c5cf5dfadb952b3b72db"
         },
         "actual": {
           "path": "modules/05-explore-white-colored-and-impulsive-noise/evidence/actual-broken.json",
-          "sha256": "29a6629deaf3fe70947f83f2caeffde59225c43b117a80e1e583a9db7f63f9a1"
+          "sha256": "6303b8aa74ce8359514727f5767534f736b3bf784b36fb6deaa48e1a3876b9a4"
         },
-        "max_absolute_error": 3.9013237085328e-13,
-        "max_relative_error": 3.614646532472618e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "recovery",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/05-explore-white-colored-and-impulsive-noise/evidence/expected-recovery.json",
+          "sha256": "9a7dc9f471f92914a279888b3f1f87f3a5a714e655920f8f3ce88042e32502a4"
+        },
+        "actual": {
+          "path": "modules/05-explore-white-colored-and-impulsive-noise/evidence/actual-recovery.json",
+          "sha256": "d25b106961b4bd3dedf9dee3c2ffdd89a80e9762e00e7385261ccc66b1fa1827"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
         "passed": true
       }
     ]

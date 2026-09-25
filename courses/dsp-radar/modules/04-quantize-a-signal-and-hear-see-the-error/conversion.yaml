@@ -33,19 +33,19 @@
     ]
   },
   "target": {
-    "content_digest": "b064e0504d81c928a7d49a543a3f2a7cccc671c1f3be56644db26fc541ed68a9",
+    "content_digest": "003c6e7cdc72d647998d93c7b205dd8890acf72dcb220a9c36e316c2432e9c74",
     "files": [
       {
         "path": "modules/04-quantize-a-signal-and-hear-see-the-error/experiment.py",
-        "sha256": "38aabd6fa2e8bdaef3e57c9481a513d1659d7558a380125ac7479af48d9e701b"
+        "sha256": "7477fd976dd9f8f0110a5519f90d95a5cf33c998a9d2be5ffd1fd61ab11f125e"
       },
       {
         "path": "modules/04-quantize-a-signal-and-hear-see-the-error/lesson.md",
-        "sha256": "f5cbf616970aef7fd7ad8ca93e616d149aa2741cd9e0451b570fd42bdda3a024"
+        "sha256": "65de76a7db975938e0f44cd77cda841b7851e9e6f4c19da74c5859714f3666be"
       },
       {
         "path": "modules/04-quantize-a-signal-and-hear-see-the-error/module.yaml",
-        "sha256": "ad717e56f20ea822908ca38aa6b3616db30da8456b35440f5327977ed0e691d4"
+        "sha256": "06914d1046925bb8d382291298453434c086d975aa7ad165fbe08dc80ec2bd0c"
       }
     ]
   },
@@ -53,10 +53,11 @@
     "guiding_question": "How do ADC bit depth and full-scale range change the measurement?",
     "physical_model": "P02 treated samples as measurements taken at discrete times, and P03 showed that the timing choice can make frequencies ambiguous. P04 keeps those sample times fixed and asks a different question: how precisely can each stored sample describe voltage? Imagine a ruler whose marks are voltage bins. More ADC bits add more marks inside the same input range. A wider full-scale range spaces the marks farther apart. A signal that uses only a small part of the ruler touches few marks even if many are available. A signal beyond the ruler is not measured more coarsely\u2014it is cut off at the end, which is clipping.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary ADC bit depth while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Retained from the pinned source: bipolar mid-rise saturation, LSB bounds, SQNR, bit/utilization sweeps, and seeded dither.",
+      "Expose bit depth while holding signal peak fixed, then reverse the roles.",
+      "Named failure: Overdrive the \u00b11 V converter so saturation error exceeds the half-LSB quantization bound.",
+      "Exact recovery: Return the peak to 0.9 V and distinguish dithered quantization from clipping.",
+      "Deliberately omitted: audio playback and MATLAB sound-device behavior; the claim remains deterministic software-only."
     ],
     "equations": [
       {
@@ -94,129 +95,159 @@
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "906884549243b2bd2bf9e926d0ea3bcab5ce23235417a9f24b4946151eb5d8d9",
-          "unit": "mixed numeric signature"
+          "sha256": "a856f4a043a6a545366526540ee1a068de236199a9650c37c01749e87f4ebd12",
+          "unit": "source-specific numeric signature"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline independent actual signature",
+          "provenance": "generated",
+          "sha256": "0d4ebaca933632480217d4f0d15e0dc429818412039d4f6565033fd73778840e",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "aca75035dda622bc91e72383e331dfd773716680f718f527d1f6500eb26d603c",
-          "unit": "mixed numeric signature"
+          "sha256": "70a168307015840d2aeaa9317106315178ccf0e181c079ea651b6efe345bc983",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent actual signature",
+          "provenance": "generated",
+          "sha256": "946e5826b0a9929bdcda1dc4353cd92b74b6026dad93113c4d5d1178d4686a89",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "f3358da1852276c6a519ffe67f9d80b4a325179e33f804066ebdefdaafa1da6f",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent actual signature",
+          "provenance": "generated",
+          "sha256": "1d46f99b04b5c20d9dc04407cc46ec8d053721140da5b5a92e65d0374592d4ff",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "2e318bc5268df779788acb29d5af2573bf9e5a28e7e3a54905331ed6230fe450",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent actual signature",
+          "provenance": "generated",
+          "sha256": "4603cd7ce08a3e0d30f1713a2cc78377584838c463e3b99885e910381f480eb4",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "a856f4a043a6a545366526540ee1a068de236199a9650c37c01749e87f4ebd12",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent actual signature",
+          "provenance": "generated",
+          "sha256": "0d4ebaca933632480217d4f0d15e0dc429818412039d4f6565033fd73778840e",
+          "unit": "source-specific numeric signature"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P04 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P04 source processing and plot sequence",
+        "target_plot_key": "quantized_waveform",
+        "title": "Quantized Waveform",
         "axes": [
           {
             "role": "x",
-            "label": "sample index",
-            "unit": "source units"
+            "label": "Time",
+            "unit": "s"
           },
           {
             "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
+            "label": "Voltage",
+            "unit": "V"
           }
         ],
-        "interpretation": "This view answers the Quantize a Signal and Hear/See the Error guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P04 view with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P04 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P04 source processing and plot sequence",
+        "target_plot_key": "error",
+        "title": "Error",
         "axes": [
           {
             "role": "x",
-            "label": "sample index",
-            "unit": "source units"
+            "label": "Time",
+            "unit": "s"
           },
           {
             "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
+            "label": "Error",
+            "unit": "V"
           }
         ],
-        "interpretation": "This view answers the Quantize a Signal and Hear/See the Error guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P04 view with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P04 source processing/plot sequence",
+        "source_figure": "Pinned P04 source processing and plot sequence",
         "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "title": "Parameter Sweeps",
         "axes": [
           {
             "role": "x",
-            "label": "sample index",
-            "unit": "source units"
+            "label": "Bits or utilization",
+            "unit": "mixed"
           },
           {
             "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
+            "label": "SQNR",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Quantize a Signal and Hear/See the Error guiding question while preserving the source sign, normalization, and finite-record interpretation."
-      },
-      {
-        "source_figure": "Pinned P04 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
-        "axes": [
-          {
-            "role": "x",
-            "label": "sample index",
-            "unit": "source units"
-          },
-          {
-            "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
-          }
-        ],
-        "interpretation": "This view answers the Quantize a Signal and Hear/See the Error guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P04 view with explicit physical axes and bounded deterministic data."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "bit_depth",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          4,
+          6,
+          8
         ],
-        "expected_observation": "Changing ADC bit depth moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only bit_depth; hold every other control at its source baseline."
       },
       {
-        "control": "secondary_scale",
+        "control": "amplitude_v",
         "values": [
-          0.0,
+          0.2,
           0.5,
-          1.0
+          0.9
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only amplitude_v; hold every other control at its source baseline."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode.",
+      "failure": "Overdrive the \u00b11 V converter so saturation error exceeds the half-LSB quantization bound.",
+      "recovery": "Return the peak to 0.9 V and distinguish dithered quantization from clipping.",
+      "expected_observation": "The named invariant fails in broken mode and returns within the recorded numeric tolerance after recovery."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Changing more than one source parameter at a time.",
+      "Overdrive the \u00b11 V converter so saturation error exceeds the half-LSB quantization bound.",
+      "Treating a deterministic software result as MATLAB runtime, learner, browser, audio, or hardware evidence."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
+      "Answer the exact guiding question from the pinned source equations.",
       "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Name the failure, demonstrate exact recovery, and explain the limiting case.",
+      "Teach back retained behavior, deliberate omissions, and the software-only claim boundary."
     ]
   },
   "runtime": {
@@ -224,62 +255,129 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 5000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P04 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py",
     "seed": 404,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "bit_depth",
+        "value": 6,
+        "unit": "source units"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "amplitude_v",
+        "value": 0.9,
+        "unit": "source units"
+      },
+      {
+        "name": "dither_enabled",
+        "value": false,
+        "unit": "boolean"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/04-quantize-a-signal-and-hear-see-the-error/evidence/expected-baseline.json",
-          "sha256": "906884549243b2bd2bf9e926d0ea3bcab5ce23235417a9f24b4946151eb5d8d9"
+          "sha256": "a856f4a043a6a545366526540ee1a068de236199a9650c37c01749e87f4ebd12"
         },
         "actual": {
           "path": "modules/04-quantize-a-signal-and-hear-see-the-error/evidence/actual-baseline.json",
-          "sha256": "9fa8b3e338c48203457a2822c99d7eeae39d7130444df4516c8a9bbb1984a0f4"
+          "sha256": "0d4ebaca933632480217d4f0d15e0dc429818412039d4f6565033fd73778840e"
         },
-        "max_absolute_error": 3.5810243659284424e-13,
-        "max_relative_error": 3.5810243659284424e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
         "passed": true
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/04-quantize-a-signal-and-hear-see-the-error/evidence/expected-sweep-1.json",
+          "sha256": "70a168307015840d2aeaa9317106315178ccf0e181c079ea651b6efe345bc983"
+        },
+        "actual": {
+          "path": "modules/04-quantize-a-signal-and-hear-see-the-error/evidence/actual-sweep-1.json",
+          "sha256": "946e5826b0a9929bdcda1dc4353cd92b74b6026dad93113c4d5d1178d4686a89"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "sweep_2",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/04-quantize-a-signal-and-hear-see-the-error/evidence/expected-sweep-2.json",
+          "sha256": "f3358da1852276c6a519ffe67f9d80b4a325179e33f804066ebdefdaafa1da6f"
+        },
+        "actual": {
+          "path": "modules/04-quantize-a-signal-and-hear-see-the-error/evidence/actual-sweep-2.json",
+          "sha256": "1d46f99b04b5c20d9dc04407cc46ec8d053721140da5b5a92e65d0374592d4ff"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/04-quantize-a-signal-and-hear-see-the-error/evidence/expected-broken.json",
-          "sha256": "aca75035dda622bc91e72383e331dfd773716680f718f527d1f6500eb26d603c"
+          "sha256": "2e318bc5268df779788acb29d5af2573bf9e5a28e7e3a54905331ed6230fe450"
         },
         "actual": {
           "path": "modules/04-quantize-a-signal-and-hear-see-the-error/evidence/actual-broken.json",
-          "sha256": "eba83c1cc630258d0becb6e0aa55d6fafff9a05018de13bbe1ba82f9d272e601"
+          "sha256": "4603cd7ce08a3e0d30f1713a2cc78377584838c463e3b99885e910381f480eb4"
         },
-        "max_absolute_error": 3.5810243659284424e-13,
-        "max_relative_error": 3.5810243659284424e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "recovery",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/04-quantize-a-signal-and-hear-see-the-error/evidence/expected-recovery.json",
+          "sha256": "a856f4a043a6a545366526540ee1a068de236199a9650c37c01749e87f4ebd12"
+        },
+        "actual": {
+          "path": "modules/04-quantize-a-signal-and-hear-see-the-error/evidence/actual-recovery.json",
+          "sha256": "0d4ebaca933632480217d4f0d15e0dc429818412039d4f6565033fd73778840e"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
         "passed": true
       }
     ]

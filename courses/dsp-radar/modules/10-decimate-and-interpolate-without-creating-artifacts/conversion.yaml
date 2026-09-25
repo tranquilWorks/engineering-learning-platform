@@ -33,19 +33,19 @@
     ]
   },
   "target": {
-    "content_digest": "aa8511b2ef67ac4802ff7b6a13a4e767d2d0e9e4c2cef4637e835a5e75f15688",
+    "content_digest": "4bf26fa93849b71af3a6977229c7853b5028ec28fbfeb9f42ebb069edb2e3e31",
     "files": [
       {
         "path": "modules/10-decimate-and-interpolate-without-creating-artifacts/experiment.py",
-        "sha256": "eeea74dfbe084e1a43e42d8b89394ea082a74b35d7962fb4dc122860f9bb1a90"
+        "sha256": "3036633858ad5fa4982fa327a8b432533ec9131191c04593a8fbe208f5a7a250"
       },
       {
         "path": "modules/10-decimate-and-interpolate-without-creating-artifacts/lesson.md",
-        "sha256": "881cc3f9edc1f6d355c52abe13b3bc2ea74461417187e0b7e74aa98607b2be49"
+        "sha256": "a1c6a0f378eb449c2830fb0a2019fef38954d4394bb35ee227061d07f7956c1b"
       },
       {
         "path": "modules/10-decimate-and-interpolate-without-creating-artifacts/module.yaml",
-        "sha256": "dcfe0c40717cbb97fe5ce0d2e9e676eeb697189bee4250f51a682171ff135618"
+        "sha256": "9c620bd29bb93d4efc7f975fbeb8b4e2df49db8688b8b9a11bfe550c79030bba"
       }
     ]
   },
@@ -53,10 +53,11 @@
     "guiding_question": "Why must filtering accompany sample-rate changes?",
     "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary rate change factor while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Retained from the pinned source: 4:1 rate change, anti-alias and reconstruction filters, artifact metrics, and tone/tap sweeps.",
+      "Expose offending high-tone frequency while holding reconstruction tap count fixed, then reverse the roles.",
+      "Named failure: Drop samples without anti-alias filtering and leave inserted zeros without reconstruction filtering.",
+      "Exact recovery: Low-pass before decimation and after zero insertion, then measure folded and image components.",
+      "Deliberately omitted: MATLAB figure-window behavior; the claim remains deterministic software-only."
     ],
     "equations": [
       {
@@ -94,129 +95,161 @@
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "fcb758db7e34dff8a2d96067574f03c16c467725fe41845e052de872bc6b91eb",
-          "unit": "mixed numeric signature"
+          "sha256": "df856a4b4909846870f239601f8aec7b8d8f6ae1adda1f4574cf235cd9b84c96",
+          "unit": "source-specific numeric signature"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline independent actual signature",
+          "provenance": "generated",
+          "sha256": "e0f01d40b9d0a9401d9724243829d21c6da33beeb2b1e5614c305702e23fbee0",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "c0242b117cf781db30a61314c231d12aea810ac0996c2ad3ac960f43d0da318b",
-          "unit": "mixed numeric signature"
+          "sha256": "0319479fc7f1a094432f9d8be8c9047260a123bdbeb4ef696111d88cbd2adae9",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent actual signature",
+          "provenance": "generated",
+          "sha256": "e01cb2dca12bdd4be9ac94105ac49e4f4370de6df4aa6a8bcc087c4b2f9d7667",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "3c212b3db63c83c3dca168a0f8458e2827579f608248e53a675e09ccdf5dea12",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent actual signature",
+          "provenance": "generated",
+          "sha256": "5503b5048c2ae73223036908a1f661ad93df220985744b7818be69c1d89f02a7",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "42d1fb899c6e60eaf4176e4bc3b7ec952e75d49e54ebf9a840192e4f005497a5",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent actual signature",
+          "provenance": "generated",
+          "sha256": "c2ef59c01a44fda6c1426970c4ef98d95c1f68e9cd2c7e3e867a696a4eb31550",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "df856a4b4909846870f239601f8aec7b8d8f6ae1adda1f4574cf235cd9b84c96",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent actual signature",
+          "provenance": "generated",
+          "sha256": "e0f01d40b9d0a9401d9724243829d21c6da33beeb2b1e5614c305702e23fbee0",
+          "unit": "source-specific numeric signature"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P10 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P10 source processing and plot sequence",
+        "target_plot_key": "decimation",
+        "title": "Decimation",
         "axes": [
           {
             "role": "x",
-            "label": "sample index",
-            "unit": "source units"
+            "label": "Time",
+            "unit": "s"
           },
           {
             "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
+            "label": "Amplitude",
+            "unit": "a.u."
           }
         ],
-        "interpretation": "This view answers the Decimate and Interpolate Without Creating Artifacts guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P10 view with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P10 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P10 source processing and plot sequence",
+        "target_plot_key": "interpolation",
+        "title": "Interpolation",
         "axes": [
           {
             "role": "x",
-            "label": "sample index",
-            "unit": "source units"
+            "label": "Time",
+            "unit": "s"
           },
           {
             "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
+            "label": "Amplitude",
+            "unit": "a.u."
           }
         ],
-        "interpretation": "This view answers the Decimate and Interpolate Without Creating Artifacts guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P10 view with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P10 source processing/plot sequence",
+        "source_figure": "Pinned P10 source processing and plot sequence",
         "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "title": "Parameter Sweeps",
         "axes": [
           {
             "role": "x",
-            "label": "sample index",
-            "unit": "source units"
+            "label": "Control value",
+            "unit": "mixed"
           },
           {
             "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
+            "label": "Artifact amplitude",
+            "unit": "a.u."
           }
         ],
-        "interpretation": "This view answers the Decimate and Interpolate Without Creating Artifacts guiding question while preserving the source sign, normalization, and finite-record interpretation."
-      },
-      {
-        "source_figure": "Pinned P10 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
-        "axes": [
-          {
-            "role": "x",
-            "label": "sample index",
-            "unit": "source units"
-          },
-          {
-            "role": "y",
-            "label": "normalized amplitude",
-            "unit": "normalized"
-          }
-        ],
-        "interpretation": "This view answers the Decimate and Interpolate Without Creating Artifacts guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P10 view with explicit physical axes and bounded deterministic data."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "high_tone_hz",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          220.0,
+          280.0,
+          340.0,
+          420.0
         ],
-        "expected_observation": "Changing rate change factor moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only high_tone_hz; hold every other control at its source baseline."
       },
       {
-        "control": "secondary_scale",
+        "control": "reconstruction_taps",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          9,
+          17,
+          33,
+          65
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only reconstruction_taps; hold every other control at its source baseline."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode.",
+      "failure": "Drop samples without anti-alias filtering and leave inserted zeros without reconstruction filtering.",
+      "recovery": "Low-pass before decimation and after zero insertion, then measure folded and image components.",
+      "expected_observation": "The named invariant fails in broken mode and returns within the recorded numeric tolerance after recovery."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Changing more than one source parameter at a time.",
+      "Drop samples without anti-alias filtering and leave inserted zeros without reconstruction filtering.",
+      "Treating a deterministic software result as MATLAB runtime, learner, browser, audio, or hardware evidence."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
+      "Answer the exact guiding question from the pinned source equations.",
       "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Name the failure, demonstrate exact recovery, and explain the limiting case.",
+      "Teach back retained behavior, deliberate omissions, and the software-only claim boundary."
     ]
   },
   "runtime": {
@@ -224,62 +257,124 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 5000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P10 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py",
     "seed": 1010,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "high_tone_hz",
+        "value": 420.0,
+        "unit": "source units"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "reconstruction_taps",
+        "value": 65,
+        "unit": "source units"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/10-decimate-and-interpolate-without-creating-artifacts/evidence/expected-baseline.json",
-          "sha256": "fcb758db7e34dff8a2d96067574f03c16c467725fe41845e052de872bc6b91eb"
+          "sha256": "df856a4b4909846870f239601f8aec7b8d8f6ae1adda1f4574cf235cd9b84c96"
         },
         "actual": {
           "path": "modules/10-decimate-and-interpolate-without-creating-artifacts/evidence/actual-baseline.json",
-          "sha256": "396bcbad0ac0eb6f6113c83fd662dd763920ab8a242dd7dbe2537c52ca7f684a"
+          "sha256": "e0f01d40b9d0a9401d9724243829d21c6da33beeb2b1e5614c305702e23fbee0"
         },
-        "max_absolute_error": 3.631539513548887e-13,
-        "max_relative_error": 3.631539513548887e-13,
+        "max_absolute_error": 2.3527187142935446e-17,
+        "max_relative_error": 2.3527187142935446e-17,
         "passed": true
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/10-decimate-and-interpolate-without-creating-artifacts/evidence/expected-sweep-1.json",
+          "sha256": "0319479fc7f1a094432f9d8be8c9047260a123bdbeb4ef696111d88cbd2adae9"
+        },
+        "actual": {
+          "path": "modules/10-decimate-and-interpolate-without-creating-artifacts/evidence/actual-sweep-1.json",
+          "sha256": "e01cb2dca12bdd4be9ac94105ac49e4f4370de6df4aa6a8bcc087c4b2f9d7667"
+        },
+        "max_absolute_error": 1.951563910473908e-17,
+        "max_relative_error": 1.951563910473908e-17,
+        "passed": true
+      },
+      {
+        "name": "sweep_2",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/10-decimate-and-interpolate-without-creating-artifacts/evidence/expected-sweep-2.json",
+          "sha256": "3c212b3db63c83c3dca168a0f8458e2827579f608248e53a675e09ccdf5dea12"
+        },
+        "actual": {
+          "path": "modules/10-decimate-and-interpolate-without-creating-artifacts/evidence/actual-sweep-2.json",
+          "sha256": "5503b5048c2ae73223036908a1f661ad93df220985744b7818be69c1d89f02a7"
+        },
+        "max_absolute_error": 7.253312533928025e-17,
+        "max_relative_error": 7.253312533928025e-17,
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/10-decimate-and-interpolate-without-creating-artifacts/evidence/expected-broken.json",
-          "sha256": "c0242b117cf781db30a61314c231d12aea810ac0996c2ad3ac960f43d0da318b"
+          "sha256": "42d1fb899c6e60eaf4176e4bc3b7ec952e75d49e54ebf9a840192e4f005497a5"
         },
         "actual": {
           "path": "modules/10-decimate-and-interpolate-without-creating-artifacts/evidence/actual-broken.json",
-          "sha256": "c663138fcbbc6b84bc8fa637f1ca415b77ffc93d0622622b400ff1ef248c2c91"
+          "sha256": "c2ef59c01a44fda6c1426970c4ef98d95c1f68e9cd2c7e3e867a696a4eb31550"
         },
-        "max_absolute_error": 3.631539513548887e-13,
-        "max_relative_error": 3.631539513548887e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "recovery",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/10-decimate-and-interpolate-without-creating-artifacts/evidence/expected-recovery.json",
+          "sha256": "df856a4b4909846870f239601f8aec7b8d8f6ae1adda1f4574cf235cd9b84c96"
+        },
+        "actual": {
+          "path": "modules/10-decimate-and-interpolate-without-creating-artifacts/evidence/actual-recovery.json",
+          "sha256": "e0f01d40b9d0a9401d9724243829d21c6da33beeb2b1e5614c305702e23fbee0"
+        },
+        "max_absolute_error": 2.3527187142935446e-17,
+        "max_relative_error": 2.3527187142935446e-17,
         "passed": true
       }
     ]

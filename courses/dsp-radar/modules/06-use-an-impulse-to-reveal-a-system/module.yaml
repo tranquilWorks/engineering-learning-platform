@@ -19,36 +19,24 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
+      "id": "echo_delay_samples",
       "type": "slider",
-      "label": "Impulse Width",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "label": "Echo delay",
+      "default": 32,
+      "unit": "samples",
+      "minimum": 1,
+      "maximum": 96,
+      "step": 1
     },
     {
-      "id": "secondary_scale",
+      "id": "resonator_radius",
       "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "label": "Resonator pole radius",
+      "default": 0.86,
+      "unit": "ratio",
+      "minimum": 0.1,
+      "maximum": 0.98,
+      "step": 0.01
     },
     {
       "id": "broken_mode",
@@ -79,8 +67,8 @@
       "type": "plot_grid",
       "title": "Model and response",
       "plots": [
-        "model_view",
-        "response_view"
+        "impulse_responses",
+        "equivalence"
       ]
     },
     {

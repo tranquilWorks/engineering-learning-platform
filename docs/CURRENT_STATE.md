@@ -1,11 +1,9 @@
 # Current state
 
-`ELP-VEHICLE-PERFORMANCE-P61-P67` completes issue 467 from exact target baseline `a917fc6174d18a845f9658ce881ba9138c660c76` (tree `0b935a289b8d73aa95fd4d20cf49ced6847fbe37`) and final Portfolio Control authorization `5e49d1db70efb7c1e532d4f62a747546d82ebb87`.
+`ELP-DSP-FIDELITY-P02-P10` is the first incremental repair batch for issue 441. It starts from exact target baseline `4b613a79bfe3cbd997e64e8372a58956533dae2c` (tree `9d7de9eb1399cdc541cc8475a2bc0a380c9c00e5`) and final Portfolio Control authorization `67620c1580976fda9047d9706cde9a34500ee82e`.
 
-Vehicle Dynamics implements P01-P67. P61-P65 add track geometry, g-g-v envelopes, racing-line optimization, forward-backward lap simulation, and designed setup experiments; P66-P67 are cumulative telemetry-validation and GR86 digital-twin capstones.
+DSP/Radar P02-P10 now use nine distinct source-faithful bounded NumPy experiments. They cover sampling measurements, alias folding, quantization, noise families, impulse responses, convolution, correlation, FIR/IIR behavior, and multirate artifacts. Each retains baseline, two one-variable sweeps, a named broken case, exact recovery, and five independently formulated evidence scenarios. Generic controls and shared `PHASE` dispatch are absent from the repaired items, and normalized AST checks prevent an unexplained identical implementation shape.
 
-Coverage remains 24 converted, zero pending, zero blocked, and zero placeholder items for the closed source-bound inventory. All 67 reviewed modules are implemented; the catalog contains six courses, 290 modules, and 290 interactive experiments. Curriculum coverage and capstone integration pass; learner validation remains not run.
+The remediation ledger is deliberately incremental: P01 is the prior distinct conversion, P02-P10 are repaired, and P11-P84 remain pending. DSP/Radar therefore stays blocked at `numerically_verified`, `curriculum_covered`, and `capstone_integrated`; issue 441 remains open. The catalog remains six courses, 290 modules, and 290 interactive experiments.
 
-P20 retains its source title but uses deterministic synthetic offline data, not a real drive. P24 uses deterministic synthetic telemetry and is not physical GR86 validation. The replay data is synthetic protocol evidence and contains no VIN, driver identity, real location, precise route, or vehicle capture.
-
-MATLAB runtime comparison, browser/accessibility validation, learner validation, measured vehicle data, firmware or BLE-radio execution, bench/vehicle/track testing, physical HIL/hardware, safety certification, release, deployment, credentials/settings, and production validation remain explicitly unperformed.
+MATLAB runtime comparison, audio playback, browser/accessibility validation, representative learner validation, physical HIL/hardware, certification, release, deployment, credentials/settings, and production validation remain explicitly unperformed.
