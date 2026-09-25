@@ -1,19 +1,19 @@
 schema_version: 1
 batch:
-  id: ELP-DSP-FIDELITY-P02-P10
-  title: DSP/Radar source-fidelity repair for sampling and systems foundations
-  goal: Replace the generic P02-P10 Python template with nine distinct source-faithful bounded NumPy experiments and independently formulated evidence.
+  id: ELP-DSP-FIDELITY-P11-P20
+  title: DSP/Radar source-fidelity repair for Fourier, spectral, and I/Q intuition
+  goal: Replace the generic P11-P20 Python template with ten distinct source-faithful bounded NumPy experiments and independently formulated evidence.
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
     - products/engineering-learning-platform/COURSE_CALIBER.md
     - products/engineering-learning-platform/course-caliber.yaml
     - tranquilWorks/portfolio-control#441
-  baseline_commit: 4b613a79bfe3cbd997e64e8372a58956533dae2c
-  baseline_tree: 9d7de9eb1399cdc541cc8475a2bc0a380c9c00e5
+  baseline_commit: a24818f42ff267394ee4ec97727ddb7d1978e3f4
+  baseline_tree: 1b5f62cc0adaa1796c459e7def317405cea4fe37
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_baseline: 37e9e2fe38e8445f3484c976022005a883b4082b
-  control_plane_path: products/engineering-learning-platform/batches/ELP-DSP-FIDELITY-P02-P10.yaml
+  control_plane_baseline: 09ed06bebf21ece833ffa1626826eaf99e042521
+  control_plane_path: products/engineering-learning-platform/batches/ELP-DSP-FIDELITY-P11-P20.yaml
   target_repository: tranquilWorks/engineering-learning-platform
   source_repository: tranquilWorks/dsp-radar_learning
   source_pin: 5d73667a486df4a7b6c581e4c9406e810ed4f0f6
@@ -22,28 +22,29 @@ sources:
   source_file_set_sha256: c2511015b195a48bd847bd1f1cdeed92384a10eddf0b23e755590af4fb66ddca
   source_map_sha256: 5b2751769cf70d7c4faad148fecd2db16e7995982122777fa012bfbda7850bf5
   conversion_manifest_sha256: 1244c6dea11ea11b880e0f26d54ce81dea42ea1ab4981d4d5180c440eb7890a4
-  coverage_sha256: 66ab0cb3dabda4a1b41f0aee1efcd1274ebfb854af1e145a7b43230b19bf8cba
+  coverage_sha256: 8a642c4dd02cc916bffb15494517158951d4f2be8ed22dd500758137e5388c73
 dependencies:
-  - ELP-DSP-P01
+  - ELP-DSP-FIDELITY-P02-P10
 scope:
   allowed_paths:
-    - courses/dsp-radar/modules/02-*/**
-    - courses/dsp-radar/modules/03-*/**
-    - courses/dsp-radar/modules/04-*/**
-    - courses/dsp-radar/modules/05-*/**
-    - courses/dsp-radar/modules/06-*/**
-    - courses/dsp-radar/modules/07-*/**
-    - courses/dsp-radar/modules/08-*/**
-    - courses/dsp-radar/modules/09-*/**
-    - courses/dsp-radar/modules/10-*/**
+    - courses/dsp-radar/modules/11-*/**
+    - courses/dsp-radar/modules/12-*/**
+    - courses/dsp-radar/modules/13-*/**
+    - courses/dsp-radar/modules/14-*/**
+    - courses/dsp-radar/modules/15-*/**
+    - courses/dsp-radar/modules/16-*/**
+    - courses/dsp-radar/modules/17-*/**
+    - courses/dsp-radar/modules/18-*/**
+    - courses/dsp-radar/modules/19-*/**
+    - courses/dsp-radar/modules/20-*/**
     - courses/dsp-radar/remediation-map.yaml
     - courses/dsp-radar/remediation_reference_cases.py
     - courses/dsp-radar/coverage.yaml
+    - apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py
     - apps/api/tests/test_dsp_fidelity_remediation.py
     - apps/api/tests/test_dsp_conversion_framework.py
     - apps/api/tests/test_dsp_course.py
     - apps/api/tests/test_course_caliber_status.py
-    - apps/api/tests/test_vehicle_dynamics_framework.py
     - contracts/active-batch.yaml
     - contracts/repo-profile.yaml
     - contracts/verification.yaml
@@ -52,7 +53,7 @@ scope:
     - docs/CURRENT_STATE.md
     - docs/HANDOFF.md
     - docs/ROADMAP.md
-    - docs/evidence/ELP-DSP-FIDELITY-P02-P10-*.md
+    - docs/evidence/ELP-DSP-FIDELITY-P11-P20-*.md
   forbidden_paths:
     - courses/dsp-radar-learning
     - courses/dsp-radar-learning/**
@@ -61,9 +62,9 @@ scope:
     - courses/dsp-radar/conversion.schema.json
     - courses/dsp-radar/course.yaml
     - courses/dsp-radar/AUTHORING.md
-    - courses/dsp-radar/modules/01-*/**
-    - courses/dsp-radar/modules/1[1-9]-*/**
-    - courses/dsp-radar/modules/2[0-9]-*/**
+    - courses/dsp-radar/modules/0[1-9]-*/**
+    - courses/dsp-radar/modules/10-*/**
+    - courses/dsp-radar/modules/2[1-9]-*/**
     - courses/dsp-radar/modules/3[0-9]-*/**
     - courses/dsp-radar/modules/4[0-9]-*/**
     - courses/dsp-radar/modules/5[0-9]-*/**
@@ -84,68 +85,68 @@ scope:
     - package.json
     - package-lock.json
 acceptance:
-  - Start only after the exact control commit containing this contract is merged. Use exact clean target main 4b613a79bfe3cbd997e64e8372a58956533dae2c, tree 9d7de9eb1399cdc541cc8475a2bc0a380c9c00e5; target, source, map, ledger, index, or worktree drift stops implementation.
-  - Repair exactly P02-P10 in numeric order. Preserve P01 and P11-P84 byte-identically. Preserve the read-only source gitlink, source map, conversion manifest, schema, authoring rules, course identity, titles, guiding questions, phase order, and catalog count byte-identically. In coverage.yaml preserve every identity, status, record path, blocker, summary, and P01/P11-P84 target digest; update only P02-P10 target_content_digest values to the repaired catalog revisions.
+  - Start only after the exact control commit containing this contract is merged. Use exact clean target main a24818f42ff267394ee4ec97727ddb7d1978e3f4, tree 1b5f62cc0adaa1796c459e7def317405cea4fe37; target, source, map, ledger, index, or worktree drift stops implementation.
+  - Repair exactly P11-P20 in numeric order. Preserve P01-P10 and P21-P84 module artifacts byte-identically. Preserve the read-only source gitlink, source map, conversion manifest, schema, authoring rules, course identity, titles, guiding questions, phase order, and catalog count byte-identically. In coverage.yaml preserve every identity, status, record path, blocker, summary, and P01-P10/P21-P84 target digest; update only P11-P20 target_content_digest values.
   - Replace generic primary_scale, secondary_scale, noise_db, PHASE dispatch, and shared response logic with lesson-specific controls, equations, state, transformations, outputs, plots, failure behavior, and diagnostics derived from each pinned source experiment.
-  - Retain the source lesson's important processing order and explicitly record retained behavior, deliberately omitted MATLAB-only display or audio behavior, and the software-only claim boundary in each module conversion record.
-  - P02 must sample the same sinusoid on dense and measurement grids, quantify interpolation error, sweep sample rate and clock offset, and prove exact below-Nyquist alias-family agreement in the broken case.
-  - P03 must calculate signed alias folding and reflected phase, recover apparent frequency independently from the sample recurrence, sweep input frequency and sample rate, and make the wrong-phase reflected alias fail sample agreement.
-  - P04 must implement bounded bipolar mid-rise quantization with code saturation, LSB and half-LSB error bounds, SQNR, bit-depth and utilization sweeps, deterministic dither behavior, and a clipping failure distinct from quantization noise. Audio playback remains omitted.
-  - P05 must create separately normalized white, colored, narrowband, and impulsive seeded noise; expose RMS, crest factor, lag-one correlation, low-frequency power, and tone-estimation behavior; sweep colored memory and interferer offset; its broken case must compare unequal RMS records and recovery must mean-center and renormalize.
-  - P06 must demonstrate that linear convolution with each impulse response matches direct delay, moving-average, echo, and resonator implementations; sweep echo delay and resonator radius; its broken circular-convolution case must show wrapped-tail error and exact linear recovery.
-  - P07 must form convolution as explicit shifted signed echo addition, match manual, explicit-sum, and NumPy convolution outputs, expose per-path contributions, sweep one delay and one signed gain, and make overwrite-instead-of-add fail on overlap before exact recovery.
-  - P08 must embed an asymmetric known chip sequence at a bounded delay in seeded noise, implement correlation with an explicit lag convention, match an alternate convolution formulation, sweep amplitude and noise, resolve two-target separation limits, and expose the common convolution-index-as-delay error before recovery.
-  - P09 must compare source-derived FIR and stable biquad IIR magnitude, group delay, impulse, step, pulse, signal/noise, and arithmetic behavior; sweep FIR taps and IIR Q; its broken pole radius above one must grow while the recovered radius below one decays.
-  - P10 must implement anti-alias filtering before integer decimation and reconstruction filtering after zero insertion, measure folded and imaging components, sweep offending tone frequency and reconstruction taps, and contrast naive sample dropping/zero insertion with filtered recovery.
+  - Retain each source lesson's important processing order and explicitly record retained behavior, deliberately omitted MATLAB-only display behavior, and the software-only claim boundary in each module conversion record.
+  - P11 must map zero-based and signed FFT bins to hertz, match an explicit DFT to the FFT, sweep fractional-bin offset and record length, preserve meaningful phase only above a magnitude threshold, and expose the one-based-array-index frequency-axis error before exact recovery.
+  - P12 must separate deterministic finite-record leakage from seeded noise; explicitly construct rectangular, Hann, Hamming, Blackman, and flat-top windows; report coherent gain, main-lobe width, amplitude error, and sidelobes; sweep window and fractional-bin offset; and reject the broken rule that all nonpeak energy is noise.
+  - P13 must compare one 128-sample record at 1x, 4x, and 16x zero padding with genuinely longer 256- and 512-sample records using shared samples; preserve the two-tone 4 Hz separation case; measure display spacing and physical main-lobe/Rayleigh scale separately; and make the broken display-spacing-as-resolution claim fail.
+  - P14 must implement a one-sided full-record periodogram and explicit Hann-windowed Welch PSD with correct V^2/Hz scaling; sweep segment length and overlap; repeat a tone-free probe across 24 deterministic seeds; distinguish raw segment count from effective independent averages; and expose the low bias from averaging dB instead of linear power.
+  - P15 must explicitly form an STFT/PSD of the source steady tone, gated chirp, short burst, and continuous-phase hop; sweep window length and overlap separately; expose frame-time, burst-localization, chirp-ridge, and close-frequency metrics; and reject the claim that a zero-padded 64-sample window gains 2 Hz physical resolution.
+  - P16 must form the analytic signal with the explicit even-length FFT Hilbert mask, retain DC/Nyquist, suppress negative-frequency redundancy, recover envelope/unwrapped phase/instantaneous frequency, sweep envelope depth and phase deviation separately, and gate the broken near-zero-envelope phase spike by amplitude reliability.
+  - P17 must multiply a real 240 Hz passband tone by an explicit negative-exponent complex LO, expose desired difference and sum-frequency image, apply the explicit 129-tap windowed-sinc low-pass with group-delay handling and visible real-input 2x calibration, sweep LO frequency and phase, and make the reversed-oscillator-sign convention select the wrong signed copy before recovery.
+  - P18 must compare positive/negative complex rotations with indistinguishable real projections, preserve centered signed spectra and real-versus-complex downconversion, sweep offset frequency and sample rate, show the signed discrete-time aliases at the under-Nyquist rate, and make discard-Q collapse both sign estimates before recovery by retaining I and Q.
+  - P19 must inject DC offset, gain mismatch, and quadrature error separately and together; expose DC spike, desired/image ratio, trajectory/constellation geometry, axis ratio, and I/Q correlation; correct mean, gain, and shear in source order; sweep gain and quadrature error; and show that a broken global rotation cannot repair image rejection.
+  - P20 must compare peak-bin, three-bin interpolated-FFT, and coherent adjacent-phase-increment frequency estimates plus de-rotated initial-phase estimates; sweep SNR and coherent record length with bounded trials; report bias, spread, circular phase error, and coherence; expose wrapped first-to-last endpoint failure; and withhold the low-amplitude estimate below the coherence gate.
   - Every repaired module must validate finite bounded inputs before allocation; use deterministic NumPy only; return finite Plotly-compatible results with physical axes and units; include baseline, two one-variable sweeps, one named broken case, exact recovery, limiting cases, common mistakes, formative checks, and teach-back completion.
-  - Add a course-owned independent reference implementation that imports no production experiment, consumes no production output, and perturbs no production value. Retain origin, scenario parameters, signature fields and units, tolerances, and finite expected-versus-actual evidence for baseline, sweep_1, sweep_2, broken, and recovery.
-  - Add a remediation ledger covering P02-P84. Mark exactly P02-P10 repaired in this batch and P11-P84 pending; P01 remains the already-distinct implemented source conversion. The ledger must derive counts and may not imply that the remaining generic modules are verified.
-  - Add structural-similarity prevention that rejects an unexplained identical normalized AST across unrelated repaired lessons and rejects generic control ids for repaired items.
-  - Keep DSP/Radar numerically_verified, curriculum_covered, and capstone_integrated blocked after this batch because P11-P84 and P84 remain pending. Record incremental P02-P10 repair without claiming 84/84 fidelity.
-  - Correct the retained Vehicle Dynamics terminal-authorization regression so it verifies its merged historical contract from baseline commit 4b613a79bfe3cbd997e64e8372a58956533dae2c instead of requiring that completed batch to remain the active contract; change no Vehicle Dynamics course artifact or claim.
+  - Extend the course-owned independent reference implementation without importing a production experiment, consuming production output, or perturbing a production value. Retain origin, scenario parameters, signature fields and units, tolerances, and finite expected-versus-actual evidence for baseline, sweep_1, sweep_2, broken, and recovery for every P11-P20 item.
+  - Update the remediation ledger to distinguish P01 already distinct, P02-P10 repaired in the prior batch, P11-P20 repaired in this batch, and P21-P84 pending. Derive counts as 1 already distinct, 9 prior repaired, 10 current repaired, 64 pending, and 84 total without implying that pending modules are verified.
+  - Extend structural-similarity prevention to reject unexplained identical normalized ASTs across P02-P20 and reject generic control ids for P11-P20. Regress P02-P10 evidence and behavior without changing their module artifacts.
+  - Keep DSP/Radar numerically_verified, curriculum_covered, and capstone_integrated blocked after this batch because P21-P84 and P84 remain pending. Record incremental P11-P20 repair without claiming 84/84 fidelity.
   - End with exactly six courses, 290 modules, and 290 interactive modules. Record exact local verification. Hosted CI is not required by owner direction.
-  - Keep MATLAB runtime comparison, browser/accessibility validation, representative learner validation, audio playback, physical HIL/hardware, certification, release, deployment, credentials/settings, and production use explicitly unperformed.
+  - Keep MATLAB runtime comparison, browser/accessibility validation, representative learner validation, physical HIL/hardware, certification, release, deployment, credentials/settings, and production use explicitly unperformed.
 validation:
   local:
-    - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py apps/api/tests/test_course_caliber_status.py
+    - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py apps/api/tests/test_course_caliber_status.py
     - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests
     - ./scripts/agent-verify.sh contract
     - ./scripts/agent-verify.sh quick
     - ./scripts/agent-verify.sh full
     - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic --json
-    - .venv/bin/ruff check apps/api/tests/test_dsp_fidelity_remediation.py apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py apps/api/tests/test_course_caliber_status.py courses/dsp-radar/remediation_reference_cases.py courses/dsp-radar/modules/02-* courses/dsp-radar/modules/03-* courses/dsp-radar/modules/04-* courses/dsp-radar/modules/05-* courses/dsp-radar/modules/06-* courses/dsp-radar/modules/07-* courses/dsp-radar/modules/08-* courses/dsp-radar/modules/09-* courses/dsp-radar/modules/10-*
+    - .venv/bin/ruff check apps/api/tests/test_dsp_fidelity_remediation.py apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py apps/api/tests/test_course_caliber_status.py courses/dsp-radar/remediation_reference_cases.py courses/dsp-radar/modules/11-* courses/dsp-radar/modules/12-* courses/dsp-radar/modules/13-* courses/dsp-radar/modules/14-* courses/dsp-radar/modules/15-* courses/dsp-radar/modules/16-* courses/dsp-radar/modules/17-* courses/dsp-radar/modules/18-* courses/dsp-radar/modules/19-* courses/dsp-radar/modules/20-*
     - npm run typecheck
     - npm run build
     - git diff --check
-    - test -z "$(git status --short -- courses/dsp-radar-learning courses/dsp-radar/source-map.yaml courses/dsp-radar/conversion-manifest.yaml courses/dsp-radar/modules/01-* courses/dsp-radar/modules/1[1-9]-* courses/dsp-radar/modules/2[0-9]-* courses/dsp-radar/modules/3[0-9]-* courses/dsp-radar/modules/4[0-9]-* courses/dsp-radar/modules/5[0-9]-* courses/dsp-radar/modules/6[0-9]-* courses/dsp-radar/modules/7[0-9]-* courses/dsp-radar/modules/8[0-4]-* courses/controls-gnc courses/robotics-autonomy courses/vehicle-dynamics)"
+    - test -z "$(git status --short -- courses/dsp-radar-learning courses/dsp-radar/source-map.yaml courses/dsp-radar/conversion-manifest.yaml courses/dsp-radar/modules/0[1-9]-* courses/dsp-radar/modules/10-* courses/dsp-radar/modules/2[1-9]-* courses/dsp-radar/modules/3[0-9]-* courses/dsp-radar/modules/4[0-9]-* courses/dsp-radar/modules/5[0-9]-* courses/dsp-radar/modules/6[0-9]-* courses/dsp-radar/modules/7[0-9]-* courses/dsp-radar/modules/8[0-4]-* courses/controls-gnc courses/robotics-autonomy courses/vehicle-dynamics)"
   focused_tests_to_add:
-    - Validate exact source identity, P02-P10 titles and guiding questions, source-to-target retained/omitted behavior, repaired and pending ledger membership, and unchanged source-bound ledgers.
-    - Execute baseline, two sweeps, broken, recovery, invalid-input, resource-bound, finite, deterministic, axis/unit, and independent-evidence checks for P02-P10.
-    - Assert each P02-P10 source-specific invariant and named failure/recovery behavior.
-    - Compare P02-P10 against separately formulated analytic or numerical references without production imports or outputs.
-    - Reject generic repaired controls and unexplained cross-topic normalized-AST identity.
-    - Validate the six-course, 290-module, 290-interactive catalog and regress every retained course.
+    - Validate exact source identity, P11-P20 titles and guiding questions, retained/omitted source behavior, repaired and pending ledger membership, and unchanged source-bound ledgers.
+    - Execute baseline, two sweeps, broken, recovery, invalid-input, resource-bound, finite, deterministic, axis/unit, and independent-evidence checks for P11-P20.
+    - Assert each P11-P20 source-specific invariant and named failure/recovery behavior.
+    - Compare P11-P20 against separately formulated analytic or numerical references without production imports or outputs.
+    - Reject generic repaired controls and unexplained cross-topic normalized-AST identity across P02-P20.
+    - Regress P02-P10 and validate the six-course, 290-module, 290-interactive catalog.
   required_ci: []
 risk:
   class: high
   hazards:
     - renamed generic logic is mistaken for source fidelity
-    - source conventions for alias sign, phase reversal, quantizer endpoints, correlation lag, filter delay, or multirate gain are changed silently
+    - source conventions for FFT index, spectral scaling, window gain, signed frequency, IQ calibration, or phase wrapping are changed silently
     - independent evidence reuses production calculations
-    - P02-P10 repair is mislabeled as full P02-P84 completion
+    - P11-P20 repair is mislabeled as full P02-P84 completion
   stop_conditions:
-    - exact target, source, source-map, conversion-ledger, coverage identity/status/count, course identity, or worktree drift outside the explicitly authorized P02-P10 digest refresh
+    - exact target, source, source-map, conversion-ledger, coverage identity/status/count, course identity, or worktree drift outside the explicitly authorized P11-P20 digest refresh
     - a source-specific invariant cannot be reproduced with bounded NumPy without a new product decision
     - an independent reference needs production code or output
-    - work requires P01, P11-P84, source, generic runtime, UI, dependency, credential, release, deployment, or production mutation
+    - work requires P01-P10, P21-P84, source, generic runtime, UI, dependency, credential, release, deployment, or production mutation
     - any focused, full, deterministic, lint, typecheck, build, scope, or source-cleanliness gate fails or is skipped
 rollback:
-  strategy: Before merge, close the isolated target pull request. After merge, revert its one squash commit to restore the prior generic P02-P10 implementations while retaining all other courses and DSP P01/P11-P84.
+  strategy: Before merge, close the isolated target pull request. After merge, revert its one squash commit to restore the prior generic P11-P20 implementations while retaining P01-P10 and every other course.
 evidence:
   output:
-    - docs/evidence/ELP-DSP-FIDELITY-P02-P10-2026-09-24.md
-    - one P02-P10 row with source flow, controls, equations, retained and omitted behavior, signatures, tolerance, failure/recovery, limitation, and residual risk
-    - structural-similarity and generic-control prevention results
+    - docs/evidence/ELP-DSP-FIDELITY-P11-P20-2026-09-24.md
+    - one P11-P20 row with source flow, controls, equations, retained and omitted behavior, signatures, tolerance, failure/recovery, limitation, and residual risk
+    - structural-similarity, generic-control, and P02-P10 regression results
     - focused, full, deterministic catalog, lint, typecheck, build, diff, scope, and source-cleanliness results
-    - one target squash merge with exact commit and tree; issue 441 remains open for P11-P84
-  claim_boundary: This batch repairs and independently verifies nine deterministic software-only DSP/Radar source conversions, P02-P10. It does not complete issue 441 or establish P11-P84 fidelity. MATLAB runtime comparison, audio playback, browser/accessibility, learner, physical HIL/hardware, certification, release, deployment, credentials/settings, and production evidence remain unperformed.
+    - one target squash merge with exact commit and tree; issue 441 remains open for P21-P84
+  claim_boundary: This batch repairs and independently verifies ten deterministic software-only DSP/Radar source conversions, P11-P20. It does not complete issue 441 or establish P21-P84 fidelity. MATLAB runtime comparison, browser/accessibility, learner, physical HIL/hardware, certification, release, deployment, credentials/settings, and production evidence remain unperformed.

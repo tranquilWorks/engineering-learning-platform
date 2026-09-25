@@ -69,7 +69,7 @@ def _finite_leaves(value: Any) -> list[float]:
 
 def test_control_plane_and_immutable_source_identities() -> None:
     contract = _load_yaml(ROOT / "contracts/active-batch.yaml")
-    assert contract["batch"]["id"] == "ELP-DSP-FIDELITY-P02-P10"
+    assert contract["batch"]["id"] == "ELP-DSP-FIDELITY-P11-P20"
     assert contract["sources"]["source_pin"] == "5d73667a486df4a7b6c581e4c9406e810ed4f0f6"
     assert contract["sources"]["source_tree"] == "7a3a0f9adce607e10097724c13745eace212f4e1"
     assert _sha256(COURSE_ROOT / "source-map.yaml") == contract["sources"]["source_map_sha256"]
@@ -79,19 +79,22 @@ def test_control_plane_and_immutable_source_identities() -> None:
     )
 
 
-def test_remediation_ledger_marks_only_this_batch_repaired() -> None:
+def test_remediation_ledger_preserves_prior_batch_membership() -> None:
     ledger = _load_yaml(COURSE_ROOT / "remediation-map.yaml")
-    repaired = ledger["scope"]["repaired_in_batch"]["items"]
+    repaired = ledger["scope"]["repaired_in_prior_batches"]["items"]
+    current = ledger["scope"]["repaired_in_batch"]["items"]
     pending = ledger["scope"]["pending"]["items"]
     already = ledger["scope"]["already_distinct"]
     assert repaired == ITEM_IDS
-    assert pending == [f"P{number:02d}" for number in range(11, 85)]
+    assert current == [f"P{number:02d}" for number in range(11, 21)]
+    assert pending == [f"P{number:02d}" for number in range(21, 85)]
     assert already == ["P01"]
     counts = ledger["derived_counts"]
     assert counts["already_distinct"] == len(already) == 1
-    assert counts["repaired_in_batch"] == len(repaired) == 9
-    assert counts["pending"] == len(pending) == 74
-    assert counts["total_items"] == len(already) + len(repaired) + len(pending) == 84
+    assert counts["repaired_in_prior_batches"] == len(repaired) == 9
+    assert counts["repaired_in_batch"] == len(current) == 10
+    assert counts["pending"] == len(pending) == 64
+    assert counts["total_items"] == len(already) + len(repaired) + len(current) + len(pending) == 84
     assert ledger["claim_boundary"]["numerically_verified"] == "blocked"
     assert ledger["claim_boundary"]["curriculum_covered"] == "blocked"
     assert ledger["claim_boundary"]["capstone_integrated"] == "blocked"

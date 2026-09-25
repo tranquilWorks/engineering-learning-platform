@@ -89,8 +89,7 @@ def test_dsp_item_source_content_and_catalog_contract(
     assert record["content"]["equation_order"] == "before_toolbox_shortcuts"
 
     expected_hashes = {
-        identity["path"]: identity["sha256"]
-        for identity in record["target"]["files"]
+        identity["path"]: identity["sha256"] for identity in record["target"]["files"]
     }
     assert expected_hashes == {
         f"{item['target_folder']}/{path}": digest for path, digest in module.input_hashes
@@ -139,30 +138,42 @@ def test_dsp_item_deterministic_runtime_sweeps_and_failure_recovery(
         ).model_dump(mode="json")
         assert _canonical(low["diagnostics"]) != _canonical(high["diagnostics"])
 
-    failure_controls = [
-        control for control in module.manifest.controls if control.type == "toggle"
-    ]
+    failure_controls = [control for control in module.manifest.controls if control.type == "toggle"]
     assert failure_controls, f"{item['id']} needs an intentional failure toggle"
     failure = failure_controls[-1]
-    recovered = runtime.run(
-        "dsp-radar", item["target_module_id"], {failure.id: False}
-    ).model_dump(mode="json")
-    broken = runtime.run(
-        "dsp-radar", item["target_module_id"], {failure.id: True}
-    ).model_dump(mode="json")
+    recovered = runtime.run("dsp-radar", item["target_module_id"], {failure.id: False}).model_dump(
+        mode="json"
+    )
+    broken = runtime.run("dsp-radar", item["target_module_id"], {failure.id: True}).model_dump(
+        mode="json"
+    )
     assert _canonical(recovered["diagnostics"]) != _canonical(broken["diagnostics"])
 
     with pytest.raises(RuntimeContractError, match="unknown parameters"):
         runtime.run("dsp-radar", item["target_module_id"], {"unreviewed_parameter": 1})
     numeric = next(
-        control for control in module.manifest.controls if control.type in {"slider", "number"}
+        (control for control in module.manifest.controls if control.type in {"slider", "number"}),
+        None,
     )
-    with pytest.raises(RuntimeContractError, match="outside"):
-        runtime.run(
-            "dsp-radar",
-            item["target_module_id"],
-            {numeric.id: numeric.maximum + (numeric.step or 1.0)},
+    if numeric is not None:
+        with pytest.raises(RuntimeContractError, match="outside"):
+            runtime.run(
+                "dsp-radar",
+                item["target_module_id"],
+                {numeric.id: numeric.maximum + (numeric.step or 1.0)},
+            )
+    else:
+        enumerated = next(
+            control
+            for control in module.manifest.controls
+            if control.type in {"select", "segmented"}
         )
+        with pytest.raises(RuntimeContractError, match="must be one of"):
+            runtime.run(
+                "dsp-radar",
+                item["target_module_id"],
+                {enumerated.id: "__invalid__"},
+            )
 
 
 @pytest.mark.parametrize("item", SELECTED, ids=lambda item: item["id"])

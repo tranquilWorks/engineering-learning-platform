@@ -33,43 +33,39 @@
     ]
   },
   "target": {
-    "content_digest": "221046f9d02456e5d53fae0e54aa2470d19568dfdf8a711f2d7589fa53b860a1",
+    "content_digest": "f8f0f44ec70a2562db5d965d2b4bff010e7d6d9502fbb0a1ea37a8d5339560ae",
     "files": [
       {
         "path": "modules/17-perform-complex-downconversion-by-hand/experiment.py",
-        "sha256": "889bd74698c571b11c54dc269a88f6852da39e655faa0b04f2bc645ef9516ab5"
+        "sha256": "010d25be14afb71d98051f6a37c10e84b8ffedce93a9cdae814e86a250f84e33"
       },
       {
         "path": "modules/17-perform-complex-downconversion-by-hand/lesson.md",
-        "sha256": "de13c5963796335be6cd5752fb621731f7adbff506b75cefd51d360d81b59a72"
+        "sha256": "18846c7bea61dbc253c33562ed415bf7d26ee1d42a8928f76b87198e278b4eb7"
       },
       {
         "path": "modules/17-perform-complex-downconversion-by-hand/module.yaml",
-        "sha256": "5ee3c3973c88b70e44470e38c659c5c6bad6d21d88fe53f5385f3f8035af6c53"
+        "sha256": "ddc0667e4fef8fecf701888f8e343ac08572eeda77f4ebe0fdeeca7a84d343f6"
       }
     ]
   },
   "content": {
     "guiding_question": "How does multiplying by a complex oscillator move an RF/IF signal to baseband?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "A negative-exponent complex oscillator translates the positive RF copy to the signed difference frequency and its mirror to a distant sum image.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary oscillator offset while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Retained from the pinned source: form the deterministic real 240 Hz passband record; multiply by the explicit complex LO; apply the explicit 129-tap windowed-sinc low-pass; exclude group-delay edges and apply the visible real-input 2x calibration.",
+      "Named failure: Reverse the oscillator sign and select the wrong signed RF copy.",
+      "Exact recovery: Restore exp(-j2pi fLO t), group-delay handling, and the explicit factor of two.",
+      "Deliberately omitted: MATLAB figure-window behavior; the claim remains deterministic software-only."
     ],
     "equations": [
       {
-        "latex": "x(t)=A\\cos(2\\pi f_c t+\\phi_c),",
-        "meaning": "Pinned source equation used to interpret the experiment response."
+        "latex": "x(t)e^{-j2\\pi f_{LO}t}",
+        "meaning": "Complex frequency translation."
       },
       {
-        "latex": "\\ell(t)=e^{-j(2\\pi f_{LO}t+\\phi_{LO})}.",
-        "meaning": "Pinned source equation used to interpret the experiment response."
-      },
-      {
-        "latex": "x(t)\\ell(t)= \\frac{A}{2}e^{j[2\\pi(f_c-f_{LO})t+\\phi_c-\\phi_{LO}]} +\\frac{A}{2}e^{-j[2\\pi(f_c+f_{LO})t+\\phi_c+\\phi_{LO}]}.",
-        "meaning": "Pinned source equation used to interpret the experiment response."
+        "latex": "f_{BB}=f_c-f_{LO}",
+        "meaning": "Signed desired difference frequency."
       }
     ],
     "equation_order": "before_toolbox_shortcuts",
@@ -77,146 +73,194 @@
       "seed": 1017,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
+          "name": "bounded_scenario_count",
+          "value": 5,
+          "unit": "cases"
+        },
+        {
+          "name": "absolute_tolerance",
+          "value": 0.0001,
+          "unit": "signature units"
+        },
+        {
+          "name": "relative_tolerance",
+          "value": 0.0001,
           "unit": "ratio"
-        },
-        {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "50bad4ef12d96602530926409ebdb783c7da0336d496ee47bbe455af1e09b745",
-          "unit": "mixed numeric signature"
+          "sha256": "6f1414d2b1e2e9c9809cea59438d63137feda49173f5d9d108f14c2810419374",
+          "unit": "source-specific numeric signature"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline independent actual signature",
+          "provenance": "generated",
+          "sha256": "a8141029cd05599b3c9ef406337dcf6e43bc830c9396ffda3f3b6583cc178d8e",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "8d2e3fb3a3ff7e5eba6e345af9b679d86a570285c5dd785162fa434e0519ce9e",
-          "unit": "mixed numeric signature"
+          "sha256": "f344ef6ea448c1b287bebd780246a964d1a8449a2f08c0e81b3e61616e3d8475",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent actual signature",
+          "provenance": "generated",
+          "sha256": "ce0d55f16c6bdb8ac4922436d0f333cd320b40f7d44c2702c7b211251b3feb1b",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "4858625f48eee2ef60a8e9b92ad1e25bfeda1cc74218629e6029e90e9fc1aebf",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent actual signature",
+          "provenance": "generated",
+          "sha256": "701e79887217961a1ecbd5507e9686798e4f84ab34f2516143df27d04992e3f4",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "7a738592ea1dad5cdf62641baaaa1b6d7d1e88ede700377f97fa762dcf71073d",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent actual signature",
+          "provenance": "generated",
+          "sha256": "f7e22e558980798f9c494b9069cbfde5ca2829447b149ba35395304fe6201423",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "6f6abf7e61cdccc0e320f6d248e9c3b87ab188bd1de3b757444b42272a338cc6",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent actual signature",
+          "provenance": "generated",
+          "sha256": "ce76ff9a91002cac6cd20b35b2957acbbfbb8ec6a2c8a14fa17f44da81ab7d96",
+          "unit": "source-specific numeric signature"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P17 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P17 source processing and plot sequence",
+        "target_plot_key": "mixer_spectrum",
+        "title": "Mixer Spectrum",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Signed frequency",
+            "unit": "Hz"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Magnitude",
+            "unit": "V"
           }
         ],
-        "interpretation": "This view answers the Perform Complex Downconversion by Hand guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P17 evidence with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P17 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P17 source processing and plot sequence",
+        "target_plot_key": "filtered_baseband",
+        "title": "Filtered Baseband",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Time",
+            "unit": "s"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "I/Q voltage",
+            "unit": "V"
           }
         ],
-        "interpretation": "This view answers the Perform Complex Downconversion by Hand guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P17 evidence with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P17 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P17 source processing and plot sequence",
+        "target_plot_key": "lo_frequency_sweep",
+        "title": "Lo Frequency Sweep",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "LO frequency",
+            "unit": "Hz"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Baseband frequency",
+            "unit": "Hz"
           }
         ],
-        "interpretation": "This view answers the Perform Complex Downconversion by Hand guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P17 evidence with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P17 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P17 source processing and plot sequence",
+        "target_plot_key": "phase_and_broken",
+        "title": "Phase And Broken",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "LO phase / case",
+            "unit": "mixed"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Phase / signed frequency",
+            "unit": "mixed"
           }
         ],
-        "interpretation": "This view answers the Perform Complex Downconversion by Hand guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P17 evidence with explicit physical axes and bounded deterministic data."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "lo_frequency_hz",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          204.0,
+          240.0,
+          276.0
         ],
-        "expected_observation": "Changing oscillator offset moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "The signed baseband beat follows 240-fLO."
       },
       {
-        "control": "secondary_scale",
+        "control": "lo_phase_rad",
         "values": [
           0.0,
-          0.5,
-          1.0
+          1.5707963267948966,
+          3.141592653589793
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "LO phase rotates I/Q without changing beat magnitude."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode with the retained broken-case parameters.",
+      "failure": "Reverse the oscillator sign and select the wrong signed RF copy.",
+      "recovery": "Restore exp(-j2pi fLO t), group-delay handling, and the explicit factor of two.",
+      "expected_observation": "The named invariant fails in broken mode and returns within the recorded numeric tolerance after recovery."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Changing more than one source parameter at a time.",
+      "Reverse the oscillator sign and select the wrong signed RF copy.",
+      "Treating deterministic software evidence as MATLAB runtime, learner, browser, or physical hardware validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
+      "Answer the exact guiding question from the pinned source equations.",
       "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Name the failure and demonstrate exact recovery.",
+      "Teach back retained behavior, deliberate omissions, and the software-only claim boundary."
     ]
   },
   "runtime": {
@@ -224,83 +268,145 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 8192,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P17 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py",
     "seed": 1017,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "lo_frequency_hz",
+        "value": 240.0,
+        "unit": "source units"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "lo_phase_rad",
+        "value": 0.0,
+        "unit": "source units"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/17-perform-complex-downconversion-by-hand/evidence/expected-baseline.json",
-          "sha256": "50bad4ef12d96602530926409ebdb783c7da0336d496ee47bbe455af1e09b745"
+          "sha256": "6f1414d2b1e2e9c9809cea59438d63137feda49173f5d9d108f14c2810419374"
         },
         "actual": {
           "path": "modules/17-perform-complex-downconversion-by-hand/evidence/actual-baseline.json",
-          "sha256": "272c66b2a7e99525335db207e45f166aa05b4308e24f1d50edaaeb0c5c937510"
+          "sha256": "a8141029cd05599b3c9ef406337dcf6e43bc830c9396ffda3f3b6583cc178d8e"
         },
-        "max_absolute_error": 4.0756287233989497e-13,
-        "max_relative_error": 4.0756287233989497e-13,
+        "max_absolute_error": 3.694822225952521e-13,
+        "max_relative_error": 4.6621559680953466e-15,
         "passed": true
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/17-perform-complex-downconversion-by-hand/evidence/expected-sweep-1.json",
+          "sha256": "f344ef6ea448c1b287bebd780246a964d1a8449a2f08c0e81b3e61616e3d8475"
+        },
+        "actual": {
+          "path": "modules/17-perform-complex-downconversion-by-hand/evidence/actual-sweep-1.json",
+          "sha256": "ce0d55f16c6bdb8ac4922436d0f333cd320b40f7d44c2702c7b211251b3feb1b"
+        },
+        "max_absolute_error": 2.7000623958883807e-13,
+        "max_relative_error": 3.3204231661691706e-15,
+        "passed": true
+      },
+      {
+        "name": "sweep_2",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/17-perform-complex-downconversion-by-hand/evidence/expected-sweep-2.json",
+          "sha256": "4858625f48eee2ef60a8e9b92ad1e25bfeda1cc74218629e6029e90e9fc1aebf"
+        },
+        "actual": {
+          "path": "modules/17-perform-complex-downconversion-by-hand/evidence/actual-sweep-2.json",
+          "sha256": "701e79887217961a1ecbd5507e9686798e4f84ab34f2516143df27d04992e3f4"
+        },
+        "max_absolute_error": 4.405364961712621e-13,
+        "max_relative_error": 5.558724423498496e-15,
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/17-perform-complex-downconversion-by-hand/evidence/expected-broken.json",
-          "sha256": "8d2e3fb3a3ff7e5eba6e345af9b679d86a570285c5dd785162fa434e0519ce9e"
+          "sha256": "7a738592ea1dad5cdf62641baaaa1b6d7d1e88ede700377f97fa762dcf71073d"
         },
         "actual": {
           "path": "modules/17-perform-complex-downconversion-by-hand/evidence/actual-broken.json",
-          "sha256": "78cd13391d1d85a55f9f4f17b69cc55e909a22633ffbe820d11dd56721a06868"
+          "sha256": "f7e22e558980798f9c494b9069cbfde5ca2829447b149ba35395304fe6201423"
         },
-        "max_absolute_error": 3.270717030545711e-13,
-        "max_relative_error": 3.270717030545711e-13,
+        "max_absolute_error": 3.522870883898577e-11,
+        "max_relative_error": 7.809404711483295e-13,
+        "passed": true
+      },
+      {
+        "name": "recovery",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/17-perform-complex-downconversion-by-hand/evidence/expected-recovery.json",
+          "sha256": "6f6abf7e61cdccc0e320f6d248e9c3b87ab188bd1de3b757444b42272a338cc6"
+        },
+        "actual": {
+          "path": "modules/17-perform-complex-downconversion-by-hand/evidence/actual-recovery.json",
+          "sha256": "ce76ff9a91002cac6cd20b35b2957acbbfbb8ec6a2c8a14fa17f44da81ab7d96"
+        },
+        "max_absolute_error": 3.8838265936647076e-11,
+        "max_relative_error": 3.4627173871729375e-13,
         "passed": true
       }
     ]
   },
   "matlab_runtime_parity": {
     "status": "not_run",
-    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+    "reason": "A licensed MATLAB runtime is unavailable; independent Python/source evidence is retained separately from MATLAB execution parity."
   },
   "claims": {
     "profile": "elp-dsp-item-software-v1",
     "browser_visual_review": {
       "status": "not_run",
-      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+      "reason": "Browser visual validation is explicitly outside this software-only repair batch."
     },
     "accessibility_review": {
       "status": "not_run",
-      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+      "reason": "Browser accessibility validation is explicitly outside this software-only repair batch."
     },
     "learner_effectiveness": {
       "status": "not_run",
-      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+      "reason": "Representative learner validation requires a separate human study."
     }
   }
 }

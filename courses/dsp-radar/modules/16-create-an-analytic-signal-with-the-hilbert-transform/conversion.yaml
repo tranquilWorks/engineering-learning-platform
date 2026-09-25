@@ -33,43 +33,39 @@
     ]
   },
   "target": {
-    "content_digest": "09d8b378e768d4f1f610f470956b2612211fa53d933aa6e018e58a0530320d7e",
+    "content_digest": "f2a8da21b7bddbbd4e8dbf869bc02cd246ea97af3777b3192a31c29b4d5484cb",
     "files": [
       {
         "path": "modules/16-create-an-analytic-signal-with-the-hilbert-transform/experiment.py",
-        "sha256": "f0ab0263e0afc67ba1dba6522a717432c1c422c5729c8b6e015d8512c37d3216"
+        "sha256": "a5a7089212cddbdbaeb30e7fc9ad6fc5dd53d09fbb4cda6fd4448735590e4c15"
       },
       {
         "path": "modules/16-create-an-analytic-signal-with-the-hilbert-transform/lesson.md",
-        "sha256": "ea722fda06f4381e1e7aacbc38b025e97468f0fa820db013b1a635f74d2723b3"
+        "sha256": "b559a0f17296473ea971dc9d8817dc7259bfe02e1e1d89a341f953439ab4f56a"
       },
       {
         "path": "modules/16-create-an-analytic-signal-with-the-hilbert-transform/module.yaml",
-        "sha256": "1e2b22cd81fc0665d5a765525c8c48a320ef3ed000f13d19975f5d67247ef328"
+        "sha256": "bd9a70c27b152e533b569d21be5bd9e640e38f4617f18d5d8a08a030fe003655"
       }
     ]
   },
   "content": {
     "guiding_question": "How can a real waveform be represented by a complex envelope?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "The even-length FFT Hilbert mask constructs a one-sided analytic signal whose magnitude, unwrapped phase, and phase derivative describe envelope and instantaneous frequency.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary analytic signal frequency while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Retained from the pinned source: form the retained amplitude- and phase-modulated real carrier; retain DC/Nyquist, double positive bins, and zero negative bins; recover envelope and unwrapped phase; gate phase differences using adjacent amplitude reliability.",
+      "Named failure: Differentiate phase while the analytic envelope is noise-dominated near zero.",
+      "Exact recovery: Withhold estimates unless both adjacent amplitudes exceed 0.05 V.",
+      "Deliberately omitted: MATLAB figure-window behavior; the claim remains deterministic software-only."
     ],
     "equations": [
       {
-        "latex": "z(t)=x(t)+j\\widehat{x}(t)=A(t)e^{j\\phi(t)}.",
-        "meaning": "Pinned source equation used to interpret the experiment response."
+        "latex": "z[n]=\\mathrm{IFFT}{\\mathrm{FFT}{x[n]}H[k]}",
+        "meaning": "Explicit analytic-signal construction."
       },
       {
-        "latex": "H[k]=\\begin{cases} 1, & k=0 \\text{ or } k=N/2,\\\\ 2, & 0<k<N/2,\\\\ 0, & N/2<k<N. \\end{cases}",
-        "meaning": "Pinned source equation used to interpret the experiment response."
-      },
-      {
-        "latex": "z[n]=\\operatorname{IFFT}\\{X[k]H[k]\\}.",
-        "meaning": "Pinned source equation used to interpret the experiment response."
+        "latex": "f_i[n]=f_s(\\phi[n]-\\phi[n-1])/(2\\pi)",
+        "meaning": "Instantaneous-frequency estimate from unwrapped phase."
       }
     ],
     "equation_order": "before_toolbox_shortcuts",
@@ -77,146 +73,194 @@
       "seed": 1016,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
+          "name": "bounded_scenario_count",
+          "value": 5,
+          "unit": "cases"
+        },
+        {
+          "name": "absolute_tolerance",
+          "value": 0.0001,
+          "unit": "signature units"
+        },
+        {
+          "name": "relative_tolerance",
+          "value": 0.0001,
           "unit": "ratio"
-        },
-        {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "d15bc9added870deb8bf5a0b8a9ce2021ea41df66f9739d48c9ba22d84f20f43",
-          "unit": "mixed numeric signature"
+          "sha256": "b17efb2737b0f3a29bc7bef86ecbc0058fa7f5857d7dace61452c229a348268c",
+          "unit": "source-specific numeric signature"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline independent actual signature",
+          "provenance": "generated",
+          "sha256": "375adc143e859ef13b66d143fbb11f4d35abb8f0611611d566e9615c45ad9745",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "e0bd06ec872786c0002daacf9f2a85d012bcbaa7e4c556d37e0aa7a01e868e40",
-          "unit": "mixed numeric signature"
+          "sha256": "e511dbae9ed7bca97e742245eddfa1f40aa71486fcb50db88ba8f6ca8d8fdb07",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent actual signature",
+          "provenance": "generated",
+          "sha256": "5819b0705fdc74a4660cd11d75ff951d8e4f8844874bfc3accd301e84efd0c28",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "f09409888ab636da193d82e37d5b222c20bbeac93412b3e3c726c8170864114b",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent actual signature",
+          "provenance": "generated",
+          "sha256": "3ad0d561b8cc8a79cff06f592de0d5b61f16d35cba0bf0515244a061888bce13",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "5a29722683b171b5c28a441612e69dc5a5981688aeb84d47da59f3d5896155d2",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent actual signature",
+          "provenance": "generated",
+          "sha256": "f7d859b93022a3207072cab04d2f72341661a1452b1812554211fb6ae61d9f6d",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "b17efb2737b0f3a29bc7bef86ecbc0058fa7f5857d7dace61452c229a348268c",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent actual signature",
+          "provenance": "generated",
+          "sha256": "375adc143e859ef13b66d143fbb11f4d35abb8f0611611d566e9615c45ad9745",
+          "unit": "source-specific numeric signature"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P16 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P16 source processing and plot sequence",
+        "target_plot_key": "waveform_envelope",
+        "title": "Waveform Envelope",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Time",
+            "unit": "s"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Amplitude",
+            "unit": "V"
           }
         ],
-        "interpretation": "This view answers the Create an Analytic Signal with the Hilbert Transform guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P16 evidence with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P16 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P16 source processing and plot sequence",
+        "target_plot_key": "analytic_spectrum",
+        "title": "Analytic Spectrum",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Signed frequency",
+            "unit": "Hz"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Magnitude",
+            "unit": "V"
           }
         ],
-        "interpretation": "This view answers the Create an Analytic Signal with the Hilbert Transform guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P16 evidence with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P16 source processing/plot sequence",
+        "source_figure": "Pinned P16 source processing and plot sequence",
         "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "title": "Parameter Sweeps",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Depth / deviation",
+            "unit": "mixed"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Recovery response",
+            "unit": "mixed"
           }
         ],
-        "interpretation": "This view answers the Create an Analytic Signal with the Hilbert Transform guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P16 evidence with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P16 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P16 source processing and plot sequence",
+        "target_plot_key": "reliability_gate",
+        "title": "Reliability Gate",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Time",
+            "unit": "s"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Instantaneous frequency",
+            "unit": "Hz"
           }
         ],
-        "interpretation": "This view answers the Create an Analytic Signal with the Hilbert Transform guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P16 evidence with explicit physical axes and bounded deterministic data."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "envelope_depth",
         "values": [
+          0.2,
           0.6,
-          1.0,
-          1.4
+          0.9
         ],
-        "expected_observation": "Changing analytic signal frequency moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Envelope recovery remains explicit as the minimum amplitude falls."
       },
       {
-        "control": "secondary_scale",
+        "control": "phase_deviation_rad",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          0.2,
+          0.6,
+          1.2
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Frequency excursion scales with phase-deviation index."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode with the retained broken-case parameters.",
+      "failure": "Differentiate phase while the analytic envelope is noise-dominated near zero.",
+      "recovery": "Withhold estimates unless both adjacent amplitudes exceed 0.05 V.",
+      "expected_observation": "The named invariant fails in broken mode and returns within the recorded numeric tolerance after recovery."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Changing more than one source parameter at a time.",
+      "Differentiate phase while the analytic envelope is noise-dominated near zero.",
+      "Treating deterministic software evidence as MATLAB runtime, learner, browser, or physical hardware validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
+      "Answer the exact guiding question from the pinned source equations.",
       "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Name the failure and demonstrate exact recovery.",
+      "Teach back retained behavior, deliberate omissions, and the software-only claim boundary."
     ]
   },
   "runtime": {
@@ -224,83 +268,145 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 8192,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P16 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py",
     "seed": 1016,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "envelope_depth",
+        "value": 0.6,
+        "unit": "source units"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "phase_deviation_rad",
+        "value": 0.6,
+        "unit": "source units"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/16-create-an-analytic-signal-with-the-hilbert-transform/evidence/expected-baseline.json",
-          "sha256": "d15bc9added870deb8bf5a0b8a9ce2021ea41df66f9739d48c9ba22d84f20f43"
+          "sha256": "b17efb2737b0f3a29bc7bef86ecbc0058fa7f5857d7dace61452c229a348268c"
         },
         "actual": {
           "path": "modules/16-create-an-analytic-signal-with-the-hilbert-transform/evidence/actual-baseline.json",
-          "sha256": "b649b09a07496575e1fc4d2e5df69924108d2f70ea54e27da8bb03453d674470"
+          "sha256": "375adc143e859ef13b66d143fbb11f4d35abb8f0611611d566e9615c45ad9745"
         },
-        "max_absolute_error": 4.897679484194839e-13,
-        "max_relative_error": 4.897679484194839e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
         "passed": true
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/16-create-an-analytic-signal-with-the-hilbert-transform/evidence/expected-sweep-1.json",
+          "sha256": "e511dbae9ed7bca97e742245eddfa1f40aa71486fcb50db88ba8f6ca8d8fdb07"
+        },
+        "actual": {
+          "path": "modules/16-create-an-analytic-signal-with-the-hilbert-transform/evidence/actual-sweep-1.json",
+          "sha256": "5819b0705fdc74a4660cd11d75ff951d8e4f8844874bfc3accd301e84efd0c28"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "sweep_2",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/16-create-an-analytic-signal-with-the-hilbert-transform/evidence/expected-sweep-2.json",
+          "sha256": "f09409888ab636da193d82e37d5b222c20bbeac93412b3e3c726c8170864114b"
+        },
+        "actual": {
+          "path": "modules/16-create-an-analytic-signal-with-the-hilbert-transform/evidence/actual-sweep-2.json",
+          "sha256": "3ad0d561b8cc8a79cff06f592de0d5b61f16d35cba0bf0515244a061888bce13"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/16-create-an-analytic-signal-with-the-hilbert-transform/evidence/expected-broken.json",
-          "sha256": "e0bd06ec872786c0002daacf9f2a85d012bcbaa7e4c556d37e0aa7a01e868e40"
+          "sha256": "5a29722683b171b5c28a441612e69dc5a5981688aeb84d47da59f3d5896155d2"
         },
         "actual": {
           "path": "modules/16-create-an-analytic-signal-with-the-hilbert-transform/evidence/actual-broken.json",
-          "sha256": "fc4b72e6abf271fcea9f489f92334dd8a193eabaec55ab1e00680f2274cce272"
+          "sha256": "f7d859b93022a3207072cab04d2f72341661a1452b1812554211fb6ae61d9f6d"
         },
-        "max_absolute_error": 4.797273689405301e-13,
-        "max_relative_error": 4.797273689405301e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "recovery",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/16-create-an-analytic-signal-with-the-hilbert-transform/evidence/expected-recovery.json",
+          "sha256": "b17efb2737b0f3a29bc7bef86ecbc0058fa7f5857d7dace61452c229a348268c"
+        },
+        "actual": {
+          "path": "modules/16-create-an-analytic-signal-with-the-hilbert-transform/evidence/actual-recovery.json",
+          "sha256": "375adc143e859ef13b66d143fbb11f4d35abb8f0611611d566e9615c45ad9745"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
         "passed": true
       }
     ]
   },
   "matlab_runtime_parity": {
     "status": "not_run",
-    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+    "reason": "A licensed MATLAB runtime is unavailable; independent Python/source evidence is retained separately from MATLAB execution parity."
   },
   "claims": {
     "profile": "elp-dsp-item-software-v1",
     "browser_visual_review": {
       "status": "not_run",
-      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+      "reason": "Browser visual validation is explicitly outside this software-only repair batch."
     },
     "accessibility_review": {
       "status": "not_run",
-      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+      "reason": "Browser accessibility validation is explicitly outside this software-only repair batch."
     },
     "learner_effectiveness": {
       "status": "not_run",
-      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+      "reason": "Representative learner validation requires a separate human study."
     }
   }
 }

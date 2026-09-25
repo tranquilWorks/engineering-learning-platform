@@ -33,43 +33,39 @@
     ]
   },
   "target": {
-    "content_digest": "a16d24fe59dfaf72c3daac90d5c7bcc66507aa012e36aa91b54a945694c5da09",
+    "content_digest": "059504e23a14df0535aa4371379b1d4ed4a3d0274bc4c2d9a477832fb3eb55ed",
     "files": [
       {
         "path": "modules/13-prove-zero-padding-does-not-improve-true-resolution/experiment.py",
-        "sha256": "e500626fc6a8a905049e80e50ac141526aad2ae920a01eecdcc3f8a9f9a05da7"
+        "sha256": "628dda952b9409403264ca25a3ee89d00a5aa5953611ce2001b780f326ca03ce"
       },
       {
         "path": "modules/13-prove-zero-padding-does-not-improve-true-resolution/lesson.md",
-        "sha256": "280a9d440862ea9245c8122fad209efca1343a72fe2c1cee2e5785b33e472214"
+        "sha256": "276e71bf16b71a698431a223380c70c6fd7cb4f98d75dae7622c67cff87fd84f"
       },
       {
         "path": "modules/13-prove-zero-padding-does-not-improve-true-resolution/module.yaml",
-        "sha256": "737610da80041c197399300677f956e0ddb22da741da7ea9bdbaff4cce127fdf"
+        "sha256": "a5fd8081cab1b55b0d46c53bd05e325d96ccc1ad7998b784f54b0480e7300f41"
       }
     ]
   },
   "content": {
     "guiding_question": "Why does a smoother FFT plot not necessarily contain more information?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "Appending zeros samples the same finite-record transform more densely; acquiring shared additional samples changes the physical observation and its Rayleigh scale.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary zero padding factor while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Retained from the pinned source: construct one deterministic 512-sample two-tone record; reuse its first 128 samples for all padding cases; admit 256 and 512 measured samples for observation sweeps; keep display spacing separate from physical width.",
+      "Named failure: Treat fs/NFFT display spacing as true physical resolution.",
+      "Exact recovery: Report display spacing and the observation-derived Rayleigh scale separately.",
+      "Deliberately omitted: MATLAB figure-window behavior; the claim remains deterministic software-only."
     ],
     "equations": [
       {
-        "latex": "X(f)=\\sum_{n=0}^{N-1}x[n]e^{-j2\\pi fn/f_s}.",
-        "meaning": "Pinned source equation used to interpret the experiment response."
+        "latex": "\\Delta f_{display}=f_s/N_{FFT}",
+        "meaning": "Sample spacing of the plotted transform."
       },
       {
-        "latex": "f_k=k\\frac{f_s}{N_{\\mathrm{fft}}}.",
-        "meaning": "Pinned source equation used to interpret the experiment response."
-      },
-      {
-        "latex": "B_{\\mathrm{main}}=\\frac{2}{T}=\\frac{2f_s}{N}.",
-        "meaning": "Pinned source equation used to interpret the experiment response."
+        "latex": "\\Delta f_{Rayleigh}=f_s/N_{record}=1/T",
+        "meaning": "Observation-derived physical scale."
       }
     ],
     "equation_order": "before_toolbox_shortcuts",
@@ -77,146 +73,194 @@
       "seed": 1013,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
+          "name": "bounded_scenario_count",
+          "value": 5,
+          "unit": "cases"
+        },
+        {
+          "name": "absolute_tolerance",
+          "value": 0.0001,
+          "unit": "signature units"
+        },
+        {
+          "name": "relative_tolerance",
+          "value": 0.0001,
           "unit": "ratio"
-        },
-        {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "70adc0e784fff56b7d9b05bc286dfa4c511fd04df9fa559456242bb6e447bbc6",
-          "unit": "mixed numeric signature"
+          "sha256": "6b762f03b010e56568ae644a3856e88b1d2ce4548612edba77dacbbda3123541",
+          "unit": "source-specific numeric signature"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline independent actual signature",
+          "provenance": "generated",
+          "sha256": "835e46bf9b80dbdf0344c590b1bd10196528820cd7dc084932ecca3a5e1175c4",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "0b8f6e0df76a27fc1a366b193007f7b5371dfaa130154b7524aca86a14a01411",
-          "unit": "mixed numeric signature"
+          "sha256": "237d84afbf5ea76bdc690c12f4a284c78f8a64998f25404b094177bfe36eb6e3",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent actual signature",
+          "provenance": "generated",
+          "sha256": "d7549676c614e9f94b1d115e240d3e69f65b695f9ba4bf10b87235cdb80e55b3",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "f9d034c902ac9c286d17ffc9a8d5883db03d1c3204f1f085c2f489d0e769c75e",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent actual signature",
+          "provenance": "generated",
+          "sha256": "b4f6b78e22d9f0dcc8fa80fbd1f410723951d6e2ed56d6bca5dcac6df76c0e65",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "b56afb363ce8ec06fcbae5bfd8d6c860850de35033e87a255776c848fa849235",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent actual signature",
+          "provenance": "generated",
+          "sha256": "58efd12184c01400eea944a791caf04567881cd1b28ce2e106622c8496f62c66",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "237d84afbf5ea76bdc690c12f4a284c78f8a64998f25404b094177bfe36eb6e3",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent actual signature",
+          "provenance": "generated",
+          "sha256": "d7549676c614e9f94b1d115e240d3e69f65b695f9ba4bf10b87235cdb80e55b3",
+          "unit": "source-specific numeric signature"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P13 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P13 source processing and plot sequence",
+        "target_plot_key": "padded_spectrum",
+        "title": "Padded Spectrum",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Frequency",
+            "unit": "Hz"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Magnitude",
+            "unit": "V"
           }
         ],
-        "interpretation": "This view answers the Prove Zero-Padding Does Not Improve True Resolution guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P13 evidence with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P13 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P13 source processing and plot sequence",
+        "target_plot_key": "padding_sweep",
+        "title": "Padding Sweep",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Padding factor",
+            "unit": "ratio"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Spacing / valley",
+            "unit": "mixed"
           }
         ],
-        "interpretation": "This view answers the Prove Zero-Padding Does Not Improve True Resolution guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P13 evidence with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P13 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P13 source processing and plot sequence",
+        "target_plot_key": "observation_sweep",
+        "title": "Observation Sweep",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Measured samples",
+            "unit": "samples"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Rayleigh / valley",
+            "unit": "mixed"
           }
         ],
-        "interpretation": "This view answers the Prove Zero-Padding Does Not Improve True Resolution guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P13 evidence with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P13 source processing/plot sequence",
+        "source_figure": "Pinned P13 source processing and plot sequence",
         "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "title": "Broken Case",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Claim",
+            "unit": "case"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Resolution",
+            "unit": "Hz"
           }
         ],
-        "interpretation": "This view answers the Prove Zero-Padding Does Not Improve True Resolution guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P13 evidence with explicit physical axes and bounded deterministic data."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "padding_factor",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          1,
+          4,
+          16
         ],
-        "expected_observation": "Changing zero padding factor moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Padding changes display spacing without adding measurements."
       },
       {
-        "control": "secondary_scale",
+        "control": "observation_multiplier",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          1,
+          2,
+          4
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Longer shared observations can separate the retained 198/202 Hz pair."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode with the retained broken-case parameters.",
+      "failure": "Treat fs/NFFT display spacing as true physical resolution.",
+      "recovery": "Report display spacing and the observation-derived Rayleigh scale separately.",
+      "expected_observation": "The named invariant fails in broken mode and returns within the recorded numeric tolerance after recovery."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Changing more than one source parameter at a time.",
+      "Treat fs/NFFT display spacing as true physical resolution.",
+      "Treating deterministic software evidence as MATLAB runtime, learner, browser, or physical hardware validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
+      "Answer the exact guiding question from the pinned source equations.",
       "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Name the failure and demonstrate exact recovery.",
+      "Teach back retained behavior, deliberate omissions, and the software-only claim boundary."
     ]
   },
   "runtime": {
@@ -224,83 +268,145 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 8192,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P13 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py",
     "seed": 1013,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "padding_factor",
+        "value": 4,
+        "unit": "source units"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "observation_multiplier",
+        "value": 1,
+        "unit": "source units"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/13-prove-zero-padding-does-not-improve-true-resolution/evidence/expected-baseline.json",
-          "sha256": "70adc0e784fff56b7d9b05bc286dfa4c511fd04df9fa559456242bb6e447bbc6"
+          "sha256": "6b762f03b010e56568ae644a3856e88b1d2ce4548612edba77dacbbda3123541"
         },
         "actual": {
           "path": "modules/13-prove-zero-padding-does-not-improve-true-resolution/evidence/actual-baseline.json",
-          "sha256": "e69c5a85e02351b5da2a0b2e6499290c42583a2b4f793beecd57d75efbc413f6"
+          "sha256": "835e46bf9b80dbdf0344c590b1bd10196528820cd7dc084932ecca3a5e1175c4"
         },
-        "max_absolute_error": 4.3618060552308435e-13,
-        "max_relative_error": 4.3618060552308435e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
         "passed": true
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/13-prove-zero-padding-does-not-improve-true-resolution/evidence/expected-sweep-1.json",
+          "sha256": "237d84afbf5ea76bdc690c12f4a284c78f8a64998f25404b094177bfe36eb6e3"
+        },
+        "actual": {
+          "path": "modules/13-prove-zero-padding-does-not-improve-true-resolution/evidence/actual-sweep-1.json",
+          "sha256": "d7549676c614e9f94b1d115e240d3e69f65b695f9ba4bf10b87235cdb80e55b3"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "sweep_2",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/13-prove-zero-padding-does-not-improve-true-resolution/evidence/expected-sweep-2.json",
+          "sha256": "f9d034c902ac9c286d17ffc9a8d5883db03d1c3204f1f085c2f489d0e769c75e"
+        },
+        "actual": {
+          "path": "modules/13-prove-zero-padding-does-not-improve-true-resolution/evidence/actual-sweep-2.json",
+          "sha256": "b4f6b78e22d9f0dcc8fa80fbd1f410723951d6e2ed56d6bca5dcac6df76c0e65"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/13-prove-zero-padding-does-not-improve-true-resolution/evidence/expected-broken.json",
-          "sha256": "0b8f6e0df76a27fc1a366b193007f7b5371dfaa130154b7524aca86a14a01411"
+          "sha256": "b56afb363ce8ec06fcbae5bfd8d6c860850de35033e87a255776c848fa849235"
         },
         "actual": {
           "path": "modules/13-prove-zero-padding-does-not-improve-true-resolution/evidence/actual-broken.json",
-          "sha256": "269db1701fd3b87ed496f6086fe7b13f3b5e0efb0a06d812f226a7871e6be57e"
+          "sha256": "58efd12184c01400eea944a791caf04567881cd1b28ce2e106622c8496f62c66"
         },
-        "max_absolute_error": 4.4275694222051243e-13,
-        "max_relative_error": 4.4275694222051243e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "recovery",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/13-prove-zero-padding-does-not-improve-true-resolution/evidence/expected-recovery.json",
+          "sha256": "237d84afbf5ea76bdc690c12f4a284c78f8a64998f25404b094177bfe36eb6e3"
+        },
+        "actual": {
+          "path": "modules/13-prove-zero-padding-does-not-improve-true-resolution/evidence/actual-recovery.json",
+          "sha256": "d7549676c614e9f94b1d115e240d3e69f65b695f9ba4bf10b87235cdb80e55b3"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
         "passed": true
       }
     ]
   },
   "matlab_runtime_parity": {
     "status": "not_run",
-    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+    "reason": "A licensed MATLAB runtime is unavailable; independent Python/source evidence is retained separately from MATLAB execution parity."
   },
   "claims": {
     "profile": "elp-dsp-item-software-v1",
     "browser_visual_review": {
       "status": "not_run",
-      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+      "reason": "Browser visual validation is explicitly outside this software-only repair batch."
     },
     "accessibility_review": {
       "status": "not_run",
-      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+      "reason": "Browser accessibility validation is explicitly outside this software-only repair batch."
     },
     "learner_effectiveness": {
       "status": "not_run",
-      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+      "reason": "Representative learner validation requires a separate human study."
     }
   }
 }

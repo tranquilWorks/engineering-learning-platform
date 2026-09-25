@@ -5,165 +5,369 @@ from typing import Any
 import numpy as np
 
 SEED = 1019
-ITEM_NUMBER = 19
-PHASE = 2
-MAX_POINTS = 512
+FS_HZ = 2048.0
+COUNT = 4096
 
 
 def _layout(title: str, x_label: str, y_label: str) -> dict[str, Any]:
     return {
-        "title": {"text": title, "x": 0.02, "xanchor": "left"},
-        "margin": {"l": 68, "r": 22, "t": 58, "b": 58},
-        "xaxis": {"title": x_label, "showgrid": True},
-        "yaxis": {"title": y_label, "showgrid": True},
+        "title": {"text": title, "x": 0.02},
+        "xaxis": {"title": x_label},
+        "yaxis": {"title": y_label},
         "legend": {"orientation": "h", "y": 1.14},
-        "hovermode": "closest",
-        "uirevision": "keep-view",
+        "margin": {"l": 68, "r": 22, "t": 58, "b": 58},
+    }
+
+
+def _metrics(
+    values: np.ndarray, reference_phase: np.ndarray
+) -> tuple[float, float, float, float]:
+    centered_i = values.real - np.mean(values.real)
+    centered_q = values.imag - np.mean(values.imag)
+    desired = abs(np.mean(values * np.exp(-1j * reference_phase)))
+    image = abs(np.mean(values * np.exp(1j * reference_phase)))
+    irr = float(20.0 * np.log10(max(desired, 1e-12) / max(image, 1e-12)))
+    dc = float(20.0 * np.log10(max(abs(np.mean(values)), 1e-12) / max(desired, 1e-12)))
+    correlation = float(
+        np.mean(centered_i * centered_q)
+        / np.sqrt(np.mean(centered_i**2) * np.mean(centered_q**2))
+    )
+    covariance = np.cov(np.vstack((centered_i, centered_q)))
+    eigenvalues = np.linalg.eigvalsh(covariance)
+    axis_ratio = float(np.sqrt(max(eigenvalues) / max(min(eigenvalues), 1e-15)))
+    return dc, irr, correlation, axis_ratio
+
+
+def _case(i_gain: float, error_deg: float, broken: bool) -> dict[str, Any]:
+    if i_gain not in {1.0, 1.1, 1.15, 1.3}:
+        raise ValueError("i_gain must be 1, 1.1, 1.15, or 1.3")
+    if error_deg not in {0.0, 5.0, 8.0, 15.0}:
+        raise ValueError("quadrature_error_deg must be 0, 5, 8, or 15")
+    time = np.arange(COUNT) / FS_HZ
+    phase = 2.0 * np.pi * 160.0 * time + 0.35
+    rng = np.random.default_rng(SEED)
+    clean = np.exp(1j * phase) + 0.002 / np.sqrt(2.0) * (
+        rng.standard_normal(COUNT) + 1j * rng.standard_normal(COUNT)
+    )
+    error = np.deg2rad(error_deg)
+    dc_only = clean.real + 0.12 + 1j * (clean.imag - 0.08)
+    gain_only = i_gain * clean.real + 1j * 0.85 * clean.imag
+    phase_only = clean.real + 1j * (
+        clean.imag * np.cos(error) + clean.real * np.sin(error)
+    )
+    impaired = (
+        i_gain * clean.real
+        + 0.12
+        + 1j * (0.85 * (clean.imag * np.cos(error) + clean.real * np.sin(error)) - 0.08)
+    )
+    mean_corrected = impaired - np.mean(impaired)
+    estimated_i_gain = np.sqrt(2.0 * np.mean(mean_corrected.real**2))
+    estimated_q_gain = np.sqrt(2.0 * np.mean(mean_corrected.imag**2))
+    gain_corrected_i = mean_corrected.real / estimated_i_gain
+    gain_corrected_q = mean_corrected.imag / estimated_q_gain
+    gain_corrected = gain_corrected_i + 1j * gain_corrected_q
+    correlation = np.clip(2.0 * np.mean(gain_corrected_i * gain_corrected_q), -1.0, 1.0)
+    estimated_error = float(np.arcsin(correlation))
+    if broken:
+        corrected = gain_corrected * np.exp(-1j * estimated_error)
+    else:
+        corrected_q = (
+            gain_corrected_q - gain_corrected_i * np.sin(estimated_error)
+        ) / np.cos(estimated_error)
+        corrected = gain_corrected_i + 1j * corrected_q
+    stages = [impaired, mean_corrected, gain_corrected, corrected]
+    stage_metrics = [_metrics(value, phase) for value in stages]
+    isolated = [clean, dc_only, gain_only, phase_only, impaired]
+    isolated_metrics = [_metrics(value, phase) for value in isolated]
+    frequency = np.fft.fftshift(np.fft.fftfreq(COUNT, 1.0 / FS_HZ))
+    spectrum = np.abs(np.fft.fftshift(np.fft.fft(impaired))) / COUNT
+    corrected_spectrum = np.abs(np.fft.fftshift(np.fft.fft(corrected))) / COUNT
+    isolated_spectra = [
+        np.abs(np.fft.fftshift(np.fft.fft(value))) / COUNT for value in isolated
+    ]
+    return {
+        "time": time,
+        "phase": phase,
+        "clean": clean,
+        "impaired": impaired,
+        "corrected": corrected,
+        "frequency": frequency,
+        "spectrum": spectrum,
+        "corrected_spectrum": corrected_spectrum,
+        "stage_metrics": stage_metrics,
+        "isolated_metrics": isolated_metrics,
+        "isolated_spectra": isolated_spectra,
+        "estimated_error_deg": float(np.rad2deg(estimated_error)),
+        "estimated_i_gain": float(estimated_i_gain),
+        "estimated_q_gain": float(estimated_q_gain),
+        "corrected_rmse": float(np.sqrt(np.mean(np.abs(corrected - clean) ** 2))),
     }
 
 
 def run(parameters: dict[str, Any]) -> dict[str, Any]:
-    primary = float(parameters["primary_scale"])
-    secondary = float(parameters["secondary_scale"])
-    noise_db = float(parameters["noise_db"])
-    broken_mode = bool(parameters["broken_mode"])
-    count = 192 + 16 * (ITEM_NUMBER % 4)
-    if count > MAX_POINTS:
-        raise ValueError("experiment exceeds the retained point ceiling")
-    rng = np.random.default_rng(SEED)
-    x = np.linspace(0.0, 1.0, count, endpoint=False)
-    variant = 1.0 + (ITEM_NUMBER % 7) / 5.0
-    noise_scale = 10.0 ** (noise_db / 20.0)
-
-    if PHASE == 1:
-        truth = np.cos(2.0 * np.pi * variant * primary * x + 0.4 * secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, count // 7) if broken_mode else measured
-    elif PHASE == 2:
-        tone = np.exp(1j * (2.0 * np.pi * (8.0 + variant * primary) * x + secondary))
-        measured = tone + noise_scale * (rng.standard_normal(count) + 1j * rng.standard_normal(count))
-        response_axis = np.fft.fftshift(np.fft.fftfreq(count, d=1.0 / count))
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / count
-        broken_response = np.abs(measured.real) if broken_mode else np.abs(measured)
-        truth = tone.real
-    elif PHASE == 3:
-        symbols = np.sign(np.sin(2.0 * np.pi * (4.0 + variant) * x))
-        carrier = np.cos(2.0 * np.pi * (18.0 + 2.0 * primary) * x + secondary)
-        truth = symbols * carrier
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(2 + 10 * secondary)) if broken_mode else measured
-    elif PHASE == 4:
-        bins = np.arange(count, dtype=float)
-        center = count * (0.25 + 0.25 * (primary - 0.5))
-        width = 2.0 + 4.0 * secondary
-        truth = np.exp(-0.5 * ((bins - center) / width) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = bins
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / np.sqrt(count)
-        broken_response = np.roll(measured, count // 3) if broken_mode else measured
-        x = bins
-    elif PHASE == 5:
-        cells = np.arange(count, dtype=float)
-        background = 0.2 + (0.45 * secondary) * (cells >= count // 2)
-        power = background + np.abs(noise_scale * rng.standard_normal(count))
-        target_bin = int(count * (0.3 + 0.25 * (primary - 0.5)))
-        power[target_bin] += 1.4
-        truth = power
-        measured = power
-        response_axis = cells
-        response = np.full(count, np.quantile(power, 0.82 + 0.1 * secondary))
-        if broken_mode:
-            response = np.full(count, np.mean(power) * (1.2 + primary))
-        broken_response = response
-        x = cells
-    elif PHASE == 6:
-        steps = np.arange(count, dtype=float)
-        truth = 0.04 * steps + 0.0002 * variant * secondary * steps**2
-        measured = truth + noise_scale * 8.0 * rng.standard_normal(count)
-        gain = np.clip(0.12 + 0.5 * primary, 0.05, 0.95)
-        response = np.empty(count)
-        response[0] = measured[0]
-        for index in range(1, count):
-            response[index] = response[index - 1] + gain * (measured[index] - response[index - 1])
-        response_axis = steps
-        broken_response = np.roll(response, 12) if broken_mode else response
-        x = steps
-    elif PHASE == 7:
-        angles = np.linspace(-90.0, 90.0, count)
-        u = np.sin(np.deg2rad(angles)) - np.sin(np.deg2rad(45.0 * (primary - 1.0)))
-        spacing = 0.45 + 0.45 * secondary
-        elements = 6 + ITEM_NUMBER % 7
-        denominator = np.sin(np.pi * spacing * u)
-        numerator = np.sin(elements * np.pi * spacing * u)
-        response = np.where(np.abs(denominator) < 1e-10, 1.0, np.abs(numerator / (elements * denominator)))
-        truth = response
-        measured = np.maximum(response + noise_scale * rng.standard_normal(count), 0.0)
-        response_axis = angles
-        broken_response = np.roll(response, 9) if broken_mode else response
-        x = angles
-    elif PHASE == 8:
-        bins = np.arange(count, dtype=float)
-        beat_bin = count * (0.15 + 0.35 * (primary - 0.5))
-        truth = np.cos(2.0 * np.pi * beat_bin * bins / count + secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(8 + 16 * secondary)) if broken_mode else measured
-        x = bins
-    else:
-        coordinate = np.linspace(-1.0, 1.0, count)
-        width = 0.05 + 0.16 / primary
-        truth = np.exp(-0.5 * ((coordinate + 0.25) / width) ** 2) + 0.65 * np.exp(-0.5 * ((coordinate - 0.3) / (1.4 * width)) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        kernel = np.ones(3 + 2 * int(secondary * 5))
-        kernel /= kernel.sum()
-        response = np.convolve(measured, kernel, mode="same")
-        response_axis = coordinate
-        broken_response = np.roll(response, 18) + 0.25 * np.roll(response, -13) if broken_mode else response
-        x = coordinate
-
-    displayed = broken_response if broken_mode else measured
-    separation = float(np.max(response) - np.median(response))
-    rmse = float(np.sqrt(np.mean((np.asarray(displayed).real - np.asarray(truth).real) ** 2)))
-    signature = [float(count), primary, secondary, noise_db, float(np.mean(np.asarray(displayed).real)), float(np.std(np.asarray(displayed).real)), separation, rmse]
-    sweep_primary = [0.6, 1.0, 1.4]
-    sweep_secondary = [0.0, 0.5, 1.0]
-    sweep_response = [variant * value for value in sweep_primary]
-    stress_response = [separation / (1.0 + value) for value in sweep_secondary]
-    title = 'Inject and Correct IQ Impairments'
-
+    i_gain = float(parameters["i_gain"])
+    error = float(parameters["quadrature_error_deg"])
+    broken = bool(parameters["broken_mode"])
+    case = _case(i_gain, error, broken)
+    gain_sweep = np.array([1.0, 1.1, 1.3])
+    gain_irr = [
+        _case(float(value), 0.0, False)["stage_metrics"][0][1] for value in gain_sweep
+    ]
+    gain_axis = [
+        _case(float(value), 0.0, False)["stage_metrics"][0][3] for value in gain_sweep
+    ]
+    phase_sweep = np.array([0.0, 5.0, 15.0])
+    phase_correlation = [
+        _case(1.15, float(value), False)["stage_metrics"][0][2] for value in phase_sweep
+    ]
+    broken_case = _case(1.15, 8.0, True)
+    recovered_case = _case(1.15, 8.0, False)
+    raw = case["stage_metrics"][0]
+    final = case["stage_metrics"][-1]
+    display = np.arange(0, COUNT, 8)
+    trajectory = np.arange(0, 80)
+    signature = [
+        i_gain,
+        error,
+        raw[0],
+        raw[1],
+        raw[2],
+        raw[3],
+        final[1],
+        final[2],
+        final[3],
+        case["estimated_i_gain"],
+        case["estimated_q_gain"],
+        case["estimated_error_deg"],
+        broken_case["stage_metrics"][-1][1],
+        recovered_case["stage_metrics"][-1][1],
+        case["isolated_metrics"][1][0],
+        case["isolated_metrics"][2][1],
+        case["isolated_metrics"][3][1],
+    ]
     return {
         "metrics": [
-            {"id": "primary", "label": 'Iq Gain Mismatch', "value": primary, "unit": "× baseline", "emphasis": "primary"},
-            {"id": "response_separation", "label": "Response separation", "value": separation, "unit": "normalized"},
-            {"id": "model_error", "label": "Model/display error", "value": rmse, "unit": "normalized"},
-            {"id": "points", "label": "Bounded points", "value": count, "unit": "points"},
+            {"id": "dc_spike", "label": "Raw DC level", "value": raw[0], "unit": "dBc"},
+            {
+                "id": "raw_irr",
+                "label": "Raw image rejection",
+                "value": raw[1],
+                "unit": "dB",
+            },
+            {
+                "id": "corrected_irr",
+                "label": "Corrected image rejection",
+                "value": final[1],
+                "unit": "dB",
+                "emphasis": "primary",
+            },
+            {
+                "id": "axis_ratio",
+                "label": "Corrected axis ratio",
+                "value": final[3],
+                "unit": "ratio",
+            },
+            {
+                "id": "dc_only_level",
+                "label": "DC-only level",
+                "value": case["isolated_metrics"][1][0],
+                "unit": "dBc",
+            },
+            {
+                "id": "gain_only_irr",
+                "label": "Gain-only image rejection",
+                "value": case["isolated_metrics"][2][1],
+                "unit": "dB",
+            },
+            {
+                "id": "phase_only_irr",
+                "label": "Phase-only image rejection",
+                "value": case["isolated_metrics"][3][1],
+                "unit": "dB",
+            },
         ],
         "plots": {
-            "model_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "physical/model truth", "x": x, "y": np.asarray(truth).real},
-                {"type": "scatter", "mode": "lines", "name": "measured/processed", "x": x, "y": np.asarray(displayed).real},
-            ], "layout": _layout(title + " — model view", 'normalized frequency', 'spectral magnitude'), "config": {"responsive": True, "displaylogo": False}},
-            "response_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "response", "x": response_axis, "y": np.asarray(response).real},
-            ], "layout": _layout(title + " — response view", 'normalized frequency', 'spectral magnitude'), "config": {"responsive": True, "displaylogo": False}},
-            "parameter_sweeps": {"data": [
-                {"type": "scatter", "mode": "lines+markers", "name": "primary scale", "x": sweep_primary, "y": sweep_response},
-                {"type": "scatter", "mode": "lines+markers", "name": "secondary stress", "x": sweep_secondary, "y": stress_response},
-            ], "layout": _layout("Two one-variable sweeps", "control value", "response statistic"), "config": {"responsive": True, "displaylogo": False}},
-            "broken_case": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "recovered", "x": x, "y": np.asarray(measured).real},
-                {"type": "scatter", "mode": "lines", "name": "broken" if broken_mode else "enable broken mode", "x": x, "y": np.asarray(broken_response).real},
-            ], "layout": _layout("Intentional assumption failure", 'normalized frequency', 'spectral magnitude'), "config": {"responsive": True, "displaylogo": False}},
+            "impairment_spectrum": {
+                "data": [
+                    {
+                        "type": "scatter",
+                        "mode": "lines",
+                        "name": "raw",
+                        "x": case["frequency"][display],
+                        "y": case["spectrum"][display],
+                    },
+                    {
+                        "type": "scatter",
+                        "mode": "lines",
+                        "name": "corrected",
+                        "x": case["frequency"][display],
+                        "y": case["corrected_spectrum"][display],
+                    },
+                ],
+                "layout": _layout(
+                    "DC spike, desired tone, and image",
+                    "Signed frequency (Hz)",
+                    "Magnitude (V)",
+                ),
+                "config": {"responsive": True, "displaylogo": False},
+            },
+            "trajectory": {
+                "data": [
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "impaired",
+                        "x": case["impaired"].real[trajectory],
+                        "y": case["impaired"].imag[trajectory],
+                    },
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "corrected",
+                        "x": case["corrected"].real[trajectory],
+                        "y": case["corrected"].imag[trajectory],
+                    },
+                ],
+                "layout": _layout("I/Q trajectory geometry", "I (V)", "Q (V)"),
+                "config": {"responsive": True, "displaylogo": False},
+            },
+            "isolated_impairments": {
+                "data": [
+                    {
+                        "type": "bar",
+                        "name": "DC level",
+                        "x": [
+                            "clean",
+                            "DC only",
+                            "gain only",
+                            "phase only",
+                            "combined",
+                        ],
+                        "y": [value[0] for value in case["isolated_metrics"]],
+                    },
+                    {
+                        "type": "bar",
+                        "name": "image rejection",
+                        "x": [
+                            "clean",
+                            "DC only",
+                            "gain only",
+                            "phase only",
+                            "combined",
+                        ],
+                        "y": [value[1] for value in case["isolated_metrics"]],
+                    },
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "I/Q correlation",
+                        "x": [
+                            "clean",
+                            "DC only",
+                            "gain only",
+                            "phase only",
+                            "combined",
+                        ],
+                        "y": [value[2] for value in case["isolated_metrics"]],
+                        "yaxis": "y2",
+                    },
+                ],
+                "layout": _layout(
+                    "Separate and combined impairment signatures",
+                    "Impairment case",
+                    "Level / image rejection (dB)",
+                )
+                | {
+                    "yaxis2": {
+                        "title": "I/Q correlation (ratio)",
+                        "overlaying": "y",
+                        "side": "right",
+                    }
+                },
+                "config": {"responsive": True, "displaylogo": False},
+            },
+            "parameter_sweeps": {
+                "data": [
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "gain-sweep axis ratio",
+                        "x": gain_sweep,
+                        "y": gain_axis,
+                    },
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "gain-sweep IRR",
+                        "x": gain_sweep,
+                        "y": gain_irr,
+                        "yaxis": "y2",
+                    },
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "phase-sweep correlation",
+                        "x": phase_sweep,
+                        "y": phase_correlation,
+                    },
+                ],
+                "layout": _layout(
+                    "Gain and quadrature-error sweeps",
+                    "Control value",
+                    "Geometry response",
+                )
+                | {
+                    "yaxis2": {
+                        "title": "Image rejection (dB)",
+                        "overlaying": "y",
+                        "side": "right",
+                    }
+                },
+                "config": {"responsive": True, "displaylogo": False},
+            },
+            "correction_stages": {
+                "data": [
+                    {
+                        "type": "bar",
+                        "name": "image rejection",
+                        "x": ["raw", "mean", "gain", "phase/shear"],
+                        "y": [value[1] for value in case["stage_metrics"]],
+                    },
+                    {
+                        "type": "bar",
+                        "name": "broken global rotation",
+                        "x": ["rotation", "shear recovery"],
+                        "y": [
+                            broken_case["stage_metrics"][-1][1],
+                            recovered_case["stage_metrics"][-1][1],
+                        ],
+                    },
+                ],
+                "layout": _layout(
+                    "Ordered correction and broken rotation",
+                    "Correction stage",
+                    "Image rejection (dB)",
+                ),
+                "config": {"responsive": True, "displaylogo": False},
+            },
         },
         "explanations": {
-            "observation": f"The {title} model uses a bounded deterministic spectral/IQ processing experiment. Primary scale={primary:.2f} and secondary stress={secondary:.2f} remain independently controllable.",
-            "broken": "Broken mode deliberately violates the lesson's central interpretation assumption so the displayed response becomes ambiguous, biased, contaminated, or defocused.",
-            "recovery": "Disable broken mode, restore both scales to 1.0 and 0.25, then connect the recovered shape to the pinned source equations before changing one control at a time.",
+            "observation": "DC shifts the center, branch-gain mismatch stretches the ellipse, and quadrature error shears its axes; each creates a distinct spectrum and geometry signature.",
+            "broken": "A global complex rotation changes phase but preserves desired/image magnitudes, so it cannot undo quadrature shear or improve image rejection.",
+            "recovery": "Correct mean first, normalize branch gains second, then apply the inverse shear using the estimated I/Q correlation.",
         },
-        "diagnostics": {"seed": SEED, "item_number": ITEM_NUMBER, "point_count": count, "signature": signature, "broken_active": broken_mode},
+        "diagnostics": {
+            "seed": SEED,
+            "signature": signature,
+            "broken_active": broken,
+            "stage_order": ["mean", "gain", "shear"],
+            "isolated_case_metrics": {
+                name: list(values)
+                for name, values in zip(
+                    ["clean", "dc_only", "gain_only", "phase_only", "combined"],
+                    case["isolated_metrics"],
+                    strict=True,
+                )
+            },
+        },
     }

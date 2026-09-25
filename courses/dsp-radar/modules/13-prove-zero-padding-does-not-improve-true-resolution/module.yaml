@@ -3,7 +3,7 @@
   "id": "13-prove-zero-padding-does-not-improve-true-resolution",
   "number": 13,
   "title": "Prove Zero-Padding Does Not Improve True Resolution",
-  "summary": "Explore prove zero-padding does not improve true resolution with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "Hold measured samples fixed while zero padding, then lengthen the observation to distinguish display spacing from physical resolution.",
   "guiding_question": "Why does a smoother FFT plot not necessarily contain more information?",
   "status": "implemented",
   "tags": [
@@ -19,41 +19,49 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Zero Padding Factor",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "padding_factor",
+      "type": "segmented",
+      "label": "Zero-padding factor",
+      "default": 4,
+      "options": [
+        {
+          "label": "1\u00d7",
+          "value": 1
+        },
+        {
+          "label": "4\u00d7",
+          "value": 4
+        },
+        {
+          "label": "16\u00d7",
+          "value": 16
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "observation_multiplier",
+      "type": "segmented",
+      "label": "Observation length",
+      "default": 1,
+      "options": [
+        {
+          "label": "128 samples",
+          "value": 1
+        },
+        {
+          "label": "256 samples",
+          "value": 2
+        },
+        {
+          "label": "512 samples",
+          "value": 4
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named source failure",
       "default": false
     }
   ],
@@ -65,8 +73,8 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing zero padding factor, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict whether padding or acquiring more shared samples changes the 4 Hz two-tone separation evidence.",
+      "reveal": "Use the retained source equations, change one control at a time, and compare the named invariant."
     },
     {
       "type": "controls",
@@ -77,20 +85,20 @@
     },
     {
       "type": "plot_grid",
-      "title": "Model and response",
+      "title": "Physical model and primary evidence",
       "plots": [
-        "model_view",
-        "response_view"
+        "padded_spectrum",
+        "padding_sweep"
       ]
     },
     {
       "type": "plot",
       "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "plot": "observation_sweep"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
+      "title": "Named failure and exact recovery",
       "plot": "broken_case"
     },
     {

@@ -5,165 +5,279 @@ from typing import Any
 import numpy as np
 
 SEED = 1016
-ITEM_NUMBER = 16
-PHASE = 2
-MAX_POINTS = 512
+FS_HZ = 2048.0
+COUNT = 4096
 
 
 def _layout(title: str, x_label: str, y_label: str) -> dict[str, Any]:
     return {
-        "title": {"text": title, "x": 0.02, "xanchor": "left"},
-        "margin": {"l": 68, "r": 22, "t": 58, "b": 58},
-        "xaxis": {"title": x_label, "showgrid": True},
-        "yaxis": {"title": y_label, "showgrid": True},
+        "title": {"text": title, "x": 0.02},
+        "xaxis": {"title": x_label},
+        "yaxis": {"title": y_label},
         "legend": {"orientation": "h", "y": 1.14},
-        "hovermode": "closest",
-        "uirevision": "keep-view",
+        "margin": {"l": 68, "r": 22, "t": 58, "b": 58},
+    }
+
+
+def _analytic(values: np.ndarray) -> np.ndarray:
+    if len(values) != COUNT:
+        raise ValueError("analytic-signal record must contain 4096 samples")
+    mask = np.zeros(COUNT)
+    mask[0] = 1.0
+    mask[1 : COUNT // 2] = 2.0
+    mask[COUNT // 2] = 1.0
+    return np.fft.ifft(np.fft.fft(values) * mask)
+
+
+def _case(depth: float, deviation: float, broken: bool) -> dict[str, Any]:
+    if depth not in {0.2, 0.6, 0.9}:
+        raise ValueError("envelope_depth must be 0.2, 0.6, or 0.9")
+    if deviation not in {0.2, 0.6, 1.2}:
+        raise ValueError("phase_deviation_rad must be 0.2, 0.6, or 1.2")
+    sample = np.arange(COUNT)
+    time = sample / FS_HZ
+    envelope = 1.0 + depth * np.cos(2.0 * np.pi * 2.0 * time)
+    phase = (
+        2.0 * np.pi * 240.0 * time + 0.35 + deviation * np.sin(2.0 * np.pi * 3.0 * time)
+    )
+    designed_frequency = 240.0 + deviation * 3.0 * np.cos(2.0 * np.pi * 3.0 * time)
+    rng = np.random.default_rng(SEED)
+    if broken:
+        envelope = 1.0 - 0.999 * np.exp(-0.5 * ((time - 1.0) / 0.025) ** 2)
+        noise = 0.010 * rng.standard_normal(COUNT)
+    else:
+        noise = 0.002 * rng.standard_normal(COUNT)
+    observed = envelope * np.cos(phase) + noise
+    analytic = _analytic(observed)
+    recovered_envelope = np.abs(analytic)
+    recovered_phase = np.unwrap(np.angle(analytic))
+    raw_frequency = np.empty(COUNT)
+    raw_frequency[0] = 240.0
+    raw_frequency[1:] = np.diff(recovered_phase) * FS_HZ / (2.0 * np.pi)
+    reliable = recovered_envelope >= 0.05
+    reliable[1:] &= reliable[:-1]
+    reliable[:128] = False
+    reliable[-128:] = False
+    gated_frequency = np.where(reliable, raw_frequency, 240.0)
+    evaluation = np.zeros(COUNT, dtype=bool)
+    evaluation[128:-128] = True
+    envelope_rmse = float(
+        np.sqrt(np.mean((recovered_envelope[evaluation] - envelope[evaluation]) ** 2))
+    )
+    frequency_rmse = float(
+        np.sqrt(np.mean((raw_frequency[reliable] - designed_frequency[reliable]) ** 2))
+    )
+    spectrum = np.fft.fftshift(np.fft.fft(analytic)) / COUNT
+    frequency = np.fft.fftshift(np.fft.fftfreq(COUNT, 1.0 / FS_HZ))
+    negative = frequency < 0
+    positive = frequency > 0
+    suppression = float(
+        10.0
+        * np.log10(
+            max(float(np.sum(np.abs(spectrum[positive]) ** 2)), 1e-30)
+            / max(float(np.sum(np.abs(spectrum[negative]) ** 2)), 1e-30)
+        )
+    )
+    low = recovered_envelope < 0.05
+    raw_spike = (
+        float(np.max(np.abs(raw_frequency[low] - designed_frequency[low])))
+        if np.any(low)
+        else 0.0
+    )
+    return {
+        "time": time,
+        "observed": observed,
+        "envelope": envelope,
+        "recovered_envelope": recovered_envelope,
+        "recovered_phase": recovered_phase,
+        "designed_frequency": designed_frequency,
+        "raw_frequency": raw_frequency,
+        "gated_frequency": gated_frequency,
+        "reliable": reliable,
+        "frequency": frequency,
+        "spectrum": np.abs(spectrum),
+        "envelope_rmse": envelope_rmse,
+        "frequency_rmse": frequency_rmse,
+        "suppression": suppression,
+        "raw_spike": raw_spike,
+        "withheld": int(np.count_nonzero(evaluation & ~reliable)),
     }
 
 
 def run(parameters: dict[str, Any]) -> dict[str, Any]:
-    primary = float(parameters["primary_scale"])
-    secondary = float(parameters["secondary_scale"])
-    noise_db = float(parameters["noise_db"])
-    broken_mode = bool(parameters["broken_mode"])
-    count = 192 + 16 * (ITEM_NUMBER % 4)
-    if count > MAX_POINTS:
-        raise ValueError("experiment exceeds the retained point ceiling")
-    rng = np.random.default_rng(SEED)
-    x = np.linspace(0.0, 1.0, count, endpoint=False)
-    variant = 1.0 + (ITEM_NUMBER % 7) / 5.0
-    noise_scale = 10.0 ** (noise_db / 20.0)
-
-    if PHASE == 1:
-        truth = np.cos(2.0 * np.pi * variant * primary * x + 0.4 * secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, count // 7) if broken_mode else measured
-    elif PHASE == 2:
-        tone = np.exp(1j * (2.0 * np.pi * (8.0 + variant * primary) * x + secondary))
-        measured = tone + noise_scale * (rng.standard_normal(count) + 1j * rng.standard_normal(count))
-        response_axis = np.fft.fftshift(np.fft.fftfreq(count, d=1.0 / count))
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / count
-        broken_response = np.abs(measured.real) if broken_mode else np.abs(measured)
-        truth = tone.real
-    elif PHASE == 3:
-        symbols = np.sign(np.sin(2.0 * np.pi * (4.0 + variant) * x))
-        carrier = np.cos(2.0 * np.pi * (18.0 + 2.0 * primary) * x + secondary)
-        truth = symbols * carrier
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(2 + 10 * secondary)) if broken_mode else measured
-    elif PHASE == 4:
-        bins = np.arange(count, dtype=float)
-        center = count * (0.25 + 0.25 * (primary - 0.5))
-        width = 2.0 + 4.0 * secondary
-        truth = np.exp(-0.5 * ((bins - center) / width) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = bins
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / np.sqrt(count)
-        broken_response = np.roll(measured, count // 3) if broken_mode else measured
-        x = bins
-    elif PHASE == 5:
-        cells = np.arange(count, dtype=float)
-        background = 0.2 + (0.45 * secondary) * (cells >= count // 2)
-        power = background + np.abs(noise_scale * rng.standard_normal(count))
-        target_bin = int(count * (0.3 + 0.25 * (primary - 0.5)))
-        power[target_bin] += 1.4
-        truth = power
-        measured = power
-        response_axis = cells
-        response = np.full(count, np.quantile(power, 0.82 + 0.1 * secondary))
-        if broken_mode:
-            response = np.full(count, np.mean(power) * (1.2 + primary))
-        broken_response = response
-        x = cells
-    elif PHASE == 6:
-        steps = np.arange(count, dtype=float)
-        truth = 0.04 * steps + 0.0002 * variant * secondary * steps**2
-        measured = truth + noise_scale * 8.0 * rng.standard_normal(count)
-        gain = np.clip(0.12 + 0.5 * primary, 0.05, 0.95)
-        response = np.empty(count)
-        response[0] = measured[0]
-        for index in range(1, count):
-            response[index] = response[index - 1] + gain * (measured[index] - response[index - 1])
-        response_axis = steps
-        broken_response = np.roll(response, 12) if broken_mode else response
-        x = steps
-    elif PHASE == 7:
-        angles = np.linspace(-90.0, 90.0, count)
-        u = np.sin(np.deg2rad(angles)) - np.sin(np.deg2rad(45.0 * (primary - 1.0)))
-        spacing = 0.45 + 0.45 * secondary
-        elements = 6 + ITEM_NUMBER % 7
-        denominator = np.sin(np.pi * spacing * u)
-        numerator = np.sin(elements * np.pi * spacing * u)
-        response = np.where(np.abs(denominator) < 1e-10, 1.0, np.abs(numerator / (elements * denominator)))
-        truth = response
-        measured = np.maximum(response + noise_scale * rng.standard_normal(count), 0.0)
-        response_axis = angles
-        broken_response = np.roll(response, 9) if broken_mode else response
-        x = angles
-    elif PHASE == 8:
-        bins = np.arange(count, dtype=float)
-        beat_bin = count * (0.15 + 0.35 * (primary - 0.5))
-        truth = np.cos(2.0 * np.pi * beat_bin * bins / count + secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(8 + 16 * secondary)) if broken_mode else measured
-        x = bins
-    else:
-        coordinate = np.linspace(-1.0, 1.0, count)
-        width = 0.05 + 0.16 / primary
-        truth = np.exp(-0.5 * ((coordinate + 0.25) / width) ** 2) + 0.65 * np.exp(-0.5 * ((coordinate - 0.3) / (1.4 * width)) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        kernel = np.ones(3 + 2 * int(secondary * 5))
-        kernel /= kernel.sum()
-        response = np.convolve(measured, kernel, mode="same")
-        response_axis = coordinate
-        broken_response = np.roll(response, 18) + 0.25 * np.roll(response, -13) if broken_mode else response
-        x = coordinate
-
-    displayed = broken_response if broken_mode else measured
-    separation = float(np.max(response) - np.median(response))
-    rmse = float(np.sqrt(np.mean((np.asarray(displayed).real - np.asarray(truth).real) ** 2)))
-    signature = [float(count), primary, secondary, noise_db, float(np.mean(np.asarray(displayed).real)), float(np.std(np.asarray(displayed).real)), separation, rmse]
-    sweep_primary = [0.6, 1.0, 1.4]
-    sweep_secondary = [0.0, 0.5, 1.0]
-    sweep_response = [variant * value for value in sweep_primary]
-    stress_response = [separation / (1.0 + value) for value in sweep_secondary]
-    title = 'Create an Analytic Signal with the Hilbert Transform'
-
+    depth = float(parameters["envelope_depth"])
+    deviation = float(parameters["phase_deviation_rad"])
+    broken = bool(parameters["broken_mode"])
+    case = _case(depth, deviation, broken)
+    depth_sweep = np.array([0.2, 0.6, 0.9])
+    depth_rmse = [
+        _case(float(value), 0.6, False)["envelope_rmse"] for value in depth_sweep
+    ]
+    deviation_sweep = np.array([0.2, 0.6, 1.2])
+    recovered_span = []
+    for value in deviation_sweep:
+        item = _case(0.6, float(value), False)
+        recovered_span.append(
+            float(
+                np.percentile(item["raw_frequency"][item["reliable"]], 95)
+                - np.percentile(item["raw_frequency"][item["reliable"]], 5)
+            )
+        )
+    display = np.arange(0, COUNT, 8)
+    spectrum_display = np.arange(0, COUNT, 8)
+    signature = [
+        depth,
+        deviation,
+        case["envelope_rmse"],
+        case["frequency_rmse"],
+        case["suppression"],
+        float(np.min(case["recovered_envelope"])),
+        case["raw_spike"],
+        float(case["withheld"]),
+    ]
     return {
         "metrics": [
-            {"id": "primary", "label": 'Analytic Signal Frequency', "value": primary, "unit": "× baseline", "emphasis": "primary"},
-            {"id": "response_separation", "label": "Response separation", "value": separation, "unit": "normalized"},
-            {"id": "model_error", "label": "Model/display error", "value": rmse, "unit": "normalized"},
-            {"id": "points", "label": "Bounded points", "value": count, "unit": "points"},
+            {
+                "id": "envelope_rmse",
+                "label": "Envelope RMSE",
+                "value": case["envelope_rmse"],
+                "unit": "V",
+            },
+            {
+                "id": "frequency_rmse",
+                "label": "Reliable IF RMSE",
+                "value": case["frequency_rmse"],
+                "unit": "Hz",
+                "emphasis": "primary",
+            },
+            {
+                "id": "negative_suppression",
+                "label": "Negative-frequency suppression",
+                "value": case["suppression"],
+                "unit": "dB",
+            },
+            {
+                "id": "withheld",
+                "label": "Unreliable samples withheld",
+                "value": case["withheld"],
+                "unit": "samples",
+            },
         ],
         "plots": {
-            "model_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "physical/model truth", "x": x, "y": np.asarray(truth).real},
-                {"type": "scatter", "mode": "lines", "name": "measured/processed", "x": x, "y": np.asarray(displayed).real},
-            ], "layout": _layout(title + " — model view", 'normalized frequency', 'spectral magnitude'), "config": {"responsive": True, "displaylogo": False}},
-            "response_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "response", "x": response_axis, "y": np.asarray(response).real},
-            ], "layout": _layout(title + " — response view", 'normalized frequency', 'spectral magnitude'), "config": {"responsive": True, "displaylogo": False}},
-            "parameter_sweeps": {"data": [
-                {"type": "scatter", "mode": "lines+markers", "name": "primary scale", "x": sweep_primary, "y": sweep_response},
-                {"type": "scatter", "mode": "lines+markers", "name": "secondary stress", "x": sweep_secondary, "y": stress_response},
-            ], "layout": _layout("Two one-variable sweeps", "control value", "response statistic"), "config": {"responsive": True, "displaylogo": False}},
-            "broken_case": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "recovered", "x": x, "y": np.asarray(measured).real},
-                {"type": "scatter", "mode": "lines", "name": "broken" if broken_mode else "enable broken mode", "x": x, "y": np.asarray(broken_response).real},
-            ], "layout": _layout("Intentional assumption failure", 'normalized frequency', 'spectral magnitude'), "config": {"responsive": True, "displaylogo": False}},
+            "waveform_envelope": {
+                "data": [
+                    {
+                        "type": "scatter",
+                        "mode": "lines",
+                        "name": "real waveform",
+                        "x": case["time"][display],
+                        "y": case["observed"][display],
+                    },
+                    {
+                        "type": "scatter",
+                        "mode": "lines",
+                        "name": "designed envelope",
+                        "x": case["time"][display],
+                        "y": case["envelope"][display],
+                    },
+                    {
+                        "type": "scatter",
+                        "mode": "lines",
+                        "name": "recovered envelope",
+                        "x": case["time"][display],
+                        "y": case["recovered_envelope"][display],
+                    },
+                ],
+                "layout": _layout(
+                    "Analytic envelope recovery", "Time (s)", "Amplitude (V)"
+                ),
+                "config": {"responsive": True, "displaylogo": False},
+            },
+            "analytic_spectrum": {
+                "data": [
+                    {
+                        "type": "scatter",
+                        "mode": "lines",
+                        "name": "analytic magnitude",
+                        "x": case["frequency"][spectrum_display],
+                        "y": case["spectrum"][spectrum_display],
+                    }
+                ],
+                "layout": _layout(
+                    "One-sided analytic spectrum",
+                    "Signed frequency (Hz)",
+                    "Magnitude (V)",
+                ),
+                "config": {"responsive": True, "displaylogo": False},
+            },
+            "parameter_sweeps": {
+                "data": [
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "envelope RMSE",
+                        "x": depth_sweep,
+                        "y": depth_rmse,
+                    },
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "IF span",
+                        "x": deviation_sweep,
+                        "y": recovered_span,
+                        "yaxis": "y2",
+                    },
+                ],
+                "layout": _layout(
+                    "Envelope-depth and phase-deviation sweeps",
+                    "Control value",
+                    "Envelope RMSE (V)",
+                )
+                | {
+                    "yaxis2": {
+                        "title": "IF span (Hz)",
+                        "overlaying": "y",
+                        "side": "right",
+                    }
+                },
+                "config": {"responsive": True, "displaylogo": False},
+            },
+            "reliability_gate": {
+                "data": [
+                    {
+                        "type": "scatter",
+                        "mode": "lines",
+                        "name": "raw instantaneous frequency",
+                        "x": case["time"][display],
+                        "y": case["raw_frequency"][display],
+                    },
+                    {
+                        "type": "scatter",
+                        "mode": "lines",
+                        "name": "amplitude-gated frequency",
+                        "x": case["time"][display],
+                        "y": case["gated_frequency"][display],
+                    },
+                ],
+                "layout": _layout(
+                    "Near-zero-envelope failure and gate",
+                    "Time (s)",
+                    "Instantaneous frequency (Hz)",
+                ),
+                "config": {"responsive": True, "displaylogo": False},
+            },
         },
         "explanations": {
-            "observation": f"The {title} model uses a bounded deterministic spectral/IQ processing experiment. Primary scale={primary:.2f} and secondary stress={secondary:.2f} remain independently controllable.",
-            "broken": "Broken mode deliberately violates the lesson's central interpretation assumption so the displayed response becomes ambiguous, biased, contaminated, or defocused.",
-            "recovery": "Disable broken mode, restore both scales to 1.0 and 0.25, then connect the recovered shape to the pinned source equations before changing one control at a time.",
+            "observation": "The explicit even-length Hilbert mask retains DC and Nyquist, doubles positive-frequency bins, and suppresses the redundant negative-frequency half.",
+            "broken": "Near a zero envelope, noise controls phase and differentiation turns the phase jump into a large false instantaneous-frequency spike.",
+            "recovery": "Require both adjacent analytic samples to clear the amplitude threshold before reporting the phase-difference frequency estimate.",
         },
-        "diagnostics": {"seed": SEED, "item_number": ITEM_NUMBER, "point_count": count, "signature": signature, "broken_active": broken_mode},
+        "diagnostics": {
+            "seed": SEED,
+            "signature": signature,
+            "broken_active": broken,
+            "hilbert_mask_dc": 1.0,
+            "hilbert_mask_nyquist": 1.0,
+            "hilbert_mask_positive": 2.0,
+        },
     }

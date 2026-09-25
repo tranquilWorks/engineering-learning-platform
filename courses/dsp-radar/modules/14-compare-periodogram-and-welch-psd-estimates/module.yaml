@@ -3,7 +3,7 @@
   "id": "14-compare-periodogram-and-welch-psd-estimates",
   "number": 14,
   "title": "Compare Periodogram and Welch PSD Estimates",
-  "summary": "Explore compare periodogram and welch psd estimates with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "Compare a correctly scaled full-record periodogram with explicit Hann-windowed Welch PSD estimates and averaging statistics.",
   "guiding_question": "Why does averaging make a noise spectrum easier to interpret?",
   "status": "implemented",
   "tags": [
@@ -19,41 +19,50 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Welch Segment Count",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "segment_length",
+      "type": "segmented",
+      "label": "Welch segment length",
+      "default": 512,
+      "options": [
+        {
+          "label": "256",
+          "value": 256
+        },
+        {
+          "label": "512",
+          "value": 512
+        },
+        {
+          "label": "1024",
+          "value": 1024
+        }
+      ],
+      "unit": "samples"
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "overlap_fraction",
+      "type": "segmented",
+      "label": "Segment overlap",
+      "default": 0.5,
+      "options": [
+        {
+          "label": "0%",
+          "value": 0.0
+        },
+        {
+          "label": "50%",
+          "value": 0.5
+        },
+        {
+          "label": "75%",
+          "value": 0.75
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named source failure",
       "default": false
     }
   ],
@@ -65,8 +74,8 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing welch segment count, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict the variance and resolution changes when segment length or overlap changes while record length stays fixed.",
+      "reveal": "Use the retained source equations, change one control at a time, and compare the named invariant."
     },
     {
       "type": "controls",
@@ -77,20 +86,20 @@
     },
     {
       "type": "plot_grid",
-      "title": "Model and response",
+      "title": "Physical model and primary evidence",
       "plots": [
-        "model_view",
-        "response_view"
+        "psd_comparison",
+        "segment_sweep"
       ]
     },
     {
       "type": "plot",
       "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "plot": "overlap_sweep"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
+      "title": "Named failure and exact recovery",
       "plot": "broken_case"
     },
     {

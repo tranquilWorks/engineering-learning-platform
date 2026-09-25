@@ -9,7 +9,7 @@ scope:
   total_items: 84
   already_distinct:
     - P01
-  repaired_in_batch:
+  repaired_in_prior_batches:
     batch_id: ELP-DSP-FIDELITY-P02-P10
     items:
       - P02
@@ -21,19 +21,22 @@ scope:
       - P08
       - P09
       - P10
+  repaired_in_batch:
+    batch_id: ELP-DSP-FIDELITY-P11-P20
+    items:
+      - P11
+      - P12
+      - P13
+      - P14
+      - P15
+      - P16
+      - P17
+      - P18
+      - P19
+      - P20
   pending:
     status: generic_template_not_verified
     items:
-    - P11
-    - P12
-    - P13
-    - P14
-    - P15
-    - P16
-    - P17
-    - P18
-    - P19
-    - P20
     - P21
     - P22
     - P23
@@ -99,16 +102,17 @@ scope:
     - P83
     - P84
 derived_counts:
-  rule: total_items = already_distinct + repaired_in_batch + pending
+  rule: total_items = already_distinct + repaired_in_prior_batches + repaired_in_batch + pending
   total_items: 84
   already_distinct: 1
-  repaired_in_batch: 9
-  pending: 74
+  repaired_in_prior_batches: 9
+  repaired_in_batch: 10
+  pending: 64
 claim_boundary:
   numerically_verified: blocked
   curriculum_covered: blocked
   capstone_integrated: blocked
-  reason: P11-P84 remain generic and P84 capstone fidelity remains pending.
+  reason: P21-P84 remain generic and P84 capstone fidelity remains pending.
   explicitly_unperformed:
     - MATLAB runtime comparison
     - audio playback

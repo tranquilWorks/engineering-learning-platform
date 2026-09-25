@@ -33,39 +33,39 @@
     ]
   },
   "target": {
-    "content_digest": "4c8867f23e0be9ffe45efd3ac885d833f9c5807016209ad5b381ba49a9c3b93e",
+    "content_digest": "82c436ae85f97887ffc42f27fa70079308b98deb20c335305fcd8451767bc6bf",
     "files": [
       {
         "path": "modules/11-make-fft-bins-concrete/experiment.py",
-        "sha256": "2f068f900a080c5ef40712372a66916170b50c7e4c9861e23bfe3c68aaee7b17"
+        "sha256": "5defad07248a728bf40ec665a18f6d5e125eae14f4e4fd2d18d69a99d966e2e8"
       },
       {
         "path": "modules/11-make-fft-bins-concrete/lesson.md",
-        "sha256": "69e6e6ad6366de1eff935f5ce55df23e6b81616794b3f2a9f7d386c883476546"
+        "sha256": "0e87702a0902dba2235eceba576288d9a976739d9b57d90060fa5842093ab409"
       },
       {
         "path": "modules/11-make-fft-bins-concrete/module.yaml",
-        "sha256": "ebc132c8fe2dd72ff514315a700882841f7292ee1dce3262b42843069c54c34c"
+        "sha256": "202b7e4b793fe87257e0d426db6c33d7efbd97835c4f197dc8a870a0a045dd17"
       }
     ]
   },
   "content": {
     "guiding_question": "What frequency does each FFT bin represent?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "A finite record is projected onto zero-based complex-sinusoid bins; signed frequency is the bin label times fs/N, not the one-based storage index.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary FFT bin offset while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Retained from the pinned source: construct the retained complex tone and seeded noise; evaluate the explicit DFT and FFT on the same samples; map zero-based and signed bins to hertz; gate phase by projection magnitude.",
+      "Named failure: Use a one-based array index directly as k and shift the reported frequency by one bin.",
+      "Exact recovery: Convert index to zero-based k before applying f=k fs/N.",
+      "Deliberately omitted: MATLAB figure-window behavior; the claim remains deterministic software-only."
     ],
     "equations": [
       {
-        "latex": "X[k] = \\sum_{n=0}^{N-1} x[n] e^{-j2\\pi kn/N}, \\qquad f_k = k\\frac{f_s}{N}.",
-        "meaning": "Pinned source equation used to interpret the experiment response."
+        "latex": "X[k]=\\sum_{n=0}^{N-1}x[n]e^{-j2\\pi kn/N}",
+        "meaning": "Explicit DFT projection."
       },
       {
-        "latex": "\\Delta f = \\frac{f_s}{N} = \\frac{1}{T},",
-        "meaning": "Pinned source equation used to interpret the experiment response."
+        "latex": "f_k=kf_s/N,\\quad \\Delta f=f_s/N",
+        "meaning": "Zero-based bin-to-frequency map and finite-record spacing."
       }
     ],
     "equation_order": "before_toolbox_shortcuts",
@@ -73,146 +73,194 @@
       "seed": 1011,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
+          "name": "bounded_scenario_count",
+          "value": 5,
+          "unit": "cases"
+        },
+        {
+          "name": "absolute_tolerance",
+          "value": 0.0001,
+          "unit": "signature units"
+        },
+        {
+          "name": "relative_tolerance",
+          "value": 0.0001,
           "unit": "ratio"
-        },
-        {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "9510d8fb12758ef1ffd1b3e57bf8e2369f29888d21f9b78fa5a80b2a4fce8e8b",
-          "unit": "mixed numeric signature"
+          "sha256": "e6ba8f59212b83e8a6c0a139b7dcdf9b34f95d82ae749911b1d0059d5cf93a00",
+          "unit": "source-specific numeric signature"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline independent actual signature",
+          "provenance": "generated",
+          "sha256": "8fb3a0188870b2c26d2dc019b122cb1abee099a83ec256921d6d09eb977df6af",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "6b49c215bf153895f31476e6cc6f2ffb43d46340ba05eee7f392829a8bf228a1",
-          "unit": "mixed numeric signature"
+          "sha256": "db4295346466f99f08f64a469700997b30b192df57fb99c94849ac8dfd3ec07f",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent actual signature",
+          "provenance": "generated",
+          "sha256": "5eab54e55d3a37ae744ae54161f63f109b71c6f882771dc96be032e3c6b90645",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "e3a404afcdb85ccdf9b94d095eed0abb5e4dad4ba3921864108b6791f1dd9243",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent actual signature",
+          "provenance": "generated",
+          "sha256": "a4747486f539afeb7c56f046cc36b6816c32034401991179c6a81c7c248413ee",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "17ba84b25dcfa5f35b7a8cd995afd52e60b1b361a5bc2148d0b7ac11e05a25b8",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent actual signature",
+          "provenance": "generated",
+          "sha256": "743f59f0fe246dc7656f45cc7fc50f7bb7a086ce8c73d16134d435c5b7da6cf8",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "e6ba8f59212b83e8a6c0a139b7dcdf9b34f95d82ae749911b1d0059d5cf93a00",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent actual signature",
+          "provenance": "generated",
+          "sha256": "8fb3a0188870b2c26d2dc019b122cb1abee099a83ec256921d6d09eb977df6af",
+          "unit": "source-specific numeric signature"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P11 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P11 source processing and plot sequence",
+        "target_plot_key": "bin_map",
+        "title": "Bin Map",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Signed frequency",
+            "unit": "Hz"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Normalized magnitude",
+            "unit": "V"
           }
         ],
-        "interpretation": "This view answers the Make FFT Bins Concrete guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P11 evidence with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P11 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P11 source processing and plot sequence",
+        "target_plot_key": "neighboring_bins",
+        "title": "Neighboring Bins",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Nearest projection",
+            "unit": "bin"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Magnitude",
+            "unit": "V"
           }
         ],
-        "interpretation": "This view answers the Make FFT Bins Concrete guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P11 evidence with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P11 source processing/plot sequence",
+        "source_figure": "Pinned P11 source processing and plot sequence",
         "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "title": "Parameter Sweeps",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Offset / record length",
+            "unit": "mixed"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Projection response",
+            "unit": "mixed"
           }
         ],
-        "interpretation": "This view answers the Make FFT Bins Concrete guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P11 evidence with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P11 source processing/plot sequence",
+        "source_figure": "Pinned P11 source processing and plot sequence",
         "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "title": "Broken Case",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Axis convention",
+            "unit": "case"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Frequency",
+            "unit": "Hz"
           }
         ],
-        "interpretation": "This view answers the Make FFT Bins Concrete guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P11 evidence with explicit physical axes and bounded deterministic data."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "record_sample_count",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          32,
+          64,
+          128
         ],
-        "expected_observation": "Changing FFT bin offset moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Longer records reduce fs/N while the physical tone remains fixed."
       },
       {
-        "control": "secondary_scale",
+        "control": "tone_bin_offset",
         "values": [
           0.0,
-          0.5,
-          1.0
+          0.25,
+          0.5
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Off-bin tones divide deterministic projection energy between neighbors."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode with the retained broken-case parameters.",
+      "failure": "Use a one-based array index directly as k and shift the reported frequency by one bin.",
+      "recovery": "Convert index to zero-based k before applying f=k fs/N.",
+      "expected_observation": "The named invariant fails in broken mode and returns within the recorded numeric tolerance after recovery."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Changing more than one source parameter at a time.",
+      "Use a one-based array index directly as k and shift the reported frequency by one bin.",
+      "Treating deterministic software evidence as MATLAB runtime, learner, browser, or physical hardware validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
+      "Answer the exact guiding question from the pinned source equations.",
       "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Name the failure and demonstrate exact recovery.",
+      "Teach back retained behavior, deliberate omissions, and the software-only claim boundary."
     ]
   },
   "runtime": {
@@ -220,83 +268,145 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 8192,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P11 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py",
     "seed": 1011,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "record_sample_count",
+        "value": 64,
+        "unit": "source units"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "tone_bin_offset",
+        "value": 0.0,
+        "unit": "source units"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/11-make-fft-bins-concrete/evidence/expected-baseline.json",
-          "sha256": "9510d8fb12758ef1ffd1b3e57bf8e2369f29888d21f9b78fa5a80b2a4fce8e8b"
+          "sha256": "e6ba8f59212b83e8a6c0a139b7dcdf9b34f95d82ae749911b1d0059d5cf93a00"
         },
         "actual": {
           "path": "modules/11-make-fft-bins-concrete/evidence/actual-baseline.json",
-          "sha256": "0d23cc29c57e64a89252079a82965dff7a786e6578e07fdf99a13ff0c4bf9c5b"
+          "sha256": "8fb3a0188870b2c26d2dc019b122cb1abee099a83ec256921d6d09eb977df6af"
         },
-        "max_absolute_error": 3.9335895651859687e-13,
-        "max_relative_error": 3.9335895651859687e-13,
+        "max_absolute_error": 7.85978101756208e-14,
+        "max_relative_error": 7.85978101756208e-14,
         "passed": true
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/11-make-fft-bins-concrete/evidence/expected-sweep-1.json",
+          "sha256": "db4295346466f99f08f64a469700997b30b192df57fb99c94849ac8dfd3ec07f"
+        },
+        "actual": {
+          "path": "modules/11-make-fft-bins-concrete/evidence/actual-sweep-1.json",
+          "sha256": "5eab54e55d3a37ae744ae54161f63f109b71c6f882771dc96be032e3c6b90645"
+        },
+        "max_absolute_error": 1.8099112114679355e-13,
+        "max_relative_error": 1.8099112114679355e-13,
+        "passed": true
+      },
+      {
+        "name": "sweep_2",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/11-make-fft-bins-concrete/evidence/expected-sweep-2.json",
+          "sha256": "e3a404afcdb85ccdf9b94d095eed0abb5e4dad4ba3921864108b6791f1dd9243"
+        },
+        "actual": {
+          "path": "modules/11-make-fft-bins-concrete/evidence/actual-sweep-2.json",
+          "sha256": "a4747486f539afeb7c56f046cc36b6816c32034401991179c6a81c7c248413ee"
+        },
+        "max_absolute_error": 1.0732843780866294e-14,
+        "max_relative_error": 1.0732843780866294e-14,
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/11-make-fft-bins-concrete/evidence/expected-broken.json",
-          "sha256": "6b49c215bf153895f31476e6cc6f2ffb43d46340ba05eee7f392829a8bf228a1"
+          "sha256": "17ba84b25dcfa5f35b7a8cd995afd52e60b1b361a5bc2148d0b7ac11e05a25b8"
         },
         "actual": {
           "path": "modules/11-make-fft-bins-concrete/evidence/actual-broken.json",
-          "sha256": "de7c7e5c3f09da5ee268dd43b6984bdd5c374aa7e7560a7d42872725aa4c77f6"
+          "sha256": "743f59f0fe246dc7656f45cc7fc50f7bb7a086ce8c73d16134d435c5b7da6cf8"
         },
-        "max_absolute_error": 3.956834859764058e-13,
-        "max_relative_error": 3.956834859764058e-13,
+        "max_absolute_error": 7.85978101756208e-14,
+        "max_relative_error": 7.85978101756208e-14,
+        "passed": true
+      },
+      {
+        "name": "recovery",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/11-make-fft-bins-concrete/evidence/expected-recovery.json",
+          "sha256": "e6ba8f59212b83e8a6c0a139b7dcdf9b34f95d82ae749911b1d0059d5cf93a00"
+        },
+        "actual": {
+          "path": "modules/11-make-fft-bins-concrete/evidence/actual-recovery.json",
+          "sha256": "8fb3a0188870b2c26d2dc019b122cb1abee099a83ec256921d6d09eb977df6af"
+        },
+        "max_absolute_error": 7.85978101756208e-14,
+        "max_relative_error": 7.85978101756208e-14,
         "passed": true
       }
     ]
   },
   "matlab_runtime_parity": {
     "status": "not_run",
-    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+    "reason": "A licensed MATLAB runtime is unavailable; independent Python/source evidence is retained separately from MATLAB execution parity."
   },
   "claims": {
     "profile": "elp-dsp-item-software-v1",
     "browser_visual_review": {
       "status": "not_run",
-      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+      "reason": "Browser visual validation is explicitly outside this software-only repair batch."
     },
     "accessibility_review": {
       "status": "not_run",
-      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+      "reason": "Browser accessibility validation is explicitly outside this software-only repair batch."
     },
     "learner_effectiveness": {
       "status": "not_run",
-      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+      "reason": "Representative learner validation requires a separate human study."
     }
   }
 }

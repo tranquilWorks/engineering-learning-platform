@@ -33,43 +33,39 @@
     ]
   },
   "target": {
-    "content_digest": "9c05373cf1c14b51b0d4bc5f90ddb3ac39b978a269be1a8e5e8c035a8bc2250a",
+    "content_digest": "d0dd9507497134005e810d2036ce1f33f3288dcc8b16fffbe47a67b48cd047e7",
     "files": [
       {
         "path": "modules/12-separate-leakage-from-noise/experiment.py",
-        "sha256": "7b7cb082388741c4d669b54137dd1b270a1b98072ef0a9af44e84e297204e7cb"
+        "sha256": "bb8403f5d800b9fa7a4e8db0781a6f3ce294725f42826482dcecf8a007481b8b"
       },
       {
         "path": "modules/12-separate-leakage-from-noise/lesson.md",
-        "sha256": "ece9f8c296bf8a1849efd99c7f5337bc0846e211adb61e211ea7bc563e4f5172"
+        "sha256": "78223aac1d606a94c82fab4e7f357ac38d493ab5716adecf246d83fdec5cddc3"
       },
       {
         "path": "modules/12-separate-leakage-from-noise/module.yaml",
-        "sha256": "be87c18bf8b3fda94751c7032b6724d4375b3751720724e60d2d9c8c90740912"
+        "sha256": "e49a812bba908661c9d5eacce7a24ed40fb5d34bec03c93d6a14045c9827614b"
       }
     ]
   },
   "content": {
     "guiding_question": "Why does a perfectly clean tone spread across many FFT bins?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "A finite observation multiplies the tone by a window, so its deterministic window spectrum shifts around the tone independently of random noise.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary record coherence while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Retained from the pinned source: construct five retained windows explicitly; normalize each by coherent gain; measure main-lobe width, peak error, and sidelobes; compare clean leakage with separately seeded noise.",
+      "Named failure: Call every clean nonpeak projection noise.",
+      "Exact recovery: Separate the known clean-window response from the independently seeded noise realization.",
+      "Deliberately omitted: MATLAB figure-window behavior; the claim remains deterministic software-only."
     ],
     "equations": [
       {
-        "latex": "x[n]=A e^{j(2\\pi f_0 n/f_s+\\phi)},\\qquad 0\\le n<N,",
-        "meaning": "Pinned source equation used to interpret the experiment response."
+        "latex": "X_w[k]=\\sum_n x[n]w[n]e^{-j2\\pi kn/N}",
+        "meaning": "Windowed finite-record DFT."
       },
       {
-        "latex": "X_w[k]=\\sum_{n=0}^{N-1}x[n]w[n]e^{-j2\\pi kn/N}.",
-        "meaning": "Pinned source equation used to interpret the experiment response."
-      },
-      {
-        "latex": "G_c=\\frac{1}{N}\\sum_{n=0}^{N-1}w[n].",
-        "meaning": "Pinned source equation used to interpret the experiment response."
+        "latex": "G_c=N^{-1}\\sum_n w[n]",
+        "meaning": "Coherent-gain amplitude correction."
       }
     ],
     "equation_order": "before_toolbox_shortcuts",
@@ -77,146 +73,197 @@
       "seed": 1012,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
+          "name": "bounded_scenario_count",
+          "value": 5,
+          "unit": "cases"
+        },
+        {
+          "name": "absolute_tolerance",
+          "value": 0.0001,
+          "unit": "signature units"
+        },
+        {
+          "name": "relative_tolerance",
+          "value": 0.0001,
           "unit": "ratio"
-        },
-        {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "5b573d67d5ec22fe057e6a03c6b1e89eb5008ac69336044bc0244f17c381b9ee",
-          "unit": "mixed numeric signature"
+          "sha256": "73497cac6915d01c59a2d6f724e8aab533907544f1b57d58cd1c5beeec23e554",
+          "unit": "source-specific numeric signature"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline independent actual signature",
+          "provenance": "generated",
+          "sha256": "0147dbc617de1b611b9f67197bbf06d40c09bc8b5996c1930f74dad7c693b7f1",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "f0bf17274f501651f35d182f45b2334d71afb6a920f60946a41bce373948fd20",
-          "unit": "mixed numeric signature"
+          "sha256": "b8e6f64937f474d008f609c62de6cb1c2b2c3763b4ab5b349915cf11e786e50f",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent actual signature",
+          "provenance": "generated",
+          "sha256": "48aa530d460b3e3b51c59e27a09313e6d4c6ac5ee2115bcb1244f0da9be6544c",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "adf281f53b2cfa57482030a6e306331fab042d9ac978e484046cacbe5619f2b1",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent actual signature",
+          "provenance": "generated",
+          "sha256": "63f96a2989e3c5419f164f29570eb87534c90d16a53e9042afd30c839923c9ac",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "3682ef36b9ef26828e4985783d18b650c97570db497d899287e43c062df3194a",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent actual signature",
+          "provenance": "generated",
+          "sha256": "07df08bddb3fdc5cc8d7266ec9df138c0d67266b98018836ea725f51e50c6864",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "73497cac6915d01c59a2d6f724e8aab533907544f1b57d58cd1c5beeec23e554",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent actual signature",
+          "provenance": "generated",
+          "sha256": "0147dbc617de1b611b9f67197bbf06d40c09bc8b5996c1930f74dad7c693b7f1",
+          "unit": "source-specific numeric signature"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P12 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P12 source processing and plot sequence",
+        "target_plot_key": "leakage_spectrum",
+        "title": "Leakage Spectrum",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Frequency",
+            "unit": "Hz"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Magnitude",
+            "unit": "dB re 1 V"
           }
         ],
-        "interpretation": "This view answers the Separate Leakage from Noise guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P12 evidence with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P12 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P12 source processing and plot sequence",
+        "target_plot_key": "window_tradeoffs",
+        "title": "Window Tradeoffs",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Window",
+            "unit": "case"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Main-lobe width",
+            "unit": "Hz"
           }
         ],
-        "interpretation": "This view answers the Separate Leakage from Noise guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P12 evidence with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P12 source processing/plot sequence",
+        "source_figure": "Pinned P12 source processing and plot sequence",
         "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "title": "Parameter Sweeps",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Fractional-bin offset",
+            "unit": "bin"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Off-peak energy",
+            "unit": "V^2"
           }
         ],
-        "interpretation": "This view answers the Separate Leakage from Noise guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P12 evidence with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P12 source processing/plot sequence",
+        "source_figure": "Pinned P12 source processing and plot sequence",
         "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "title": "Broken Case",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Estimator",
+            "unit": "case"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Median magnitude",
+            "unit": "V"
           }
         ],
-        "interpretation": "This view answers the Separate Leakage from Noise guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P12 evidence with explicit physical axes and bounded deterministic data."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "window_name",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          "Rectangular",
+          "Hann",
+          "Hamming",
+          "Blackman",
+          "Flat-top"
         ],
-        "expected_observation": "Changing record coherence moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Windows trade main-lobe width, amplitude error, and sidelobes."
       },
       {
-        "control": "secondary_scale",
+        "control": "tone_bin_offset",
         "values": [
           0.0,
-          0.5,
-          1.0
+          0.2,
+          0.35,
+          0.5
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Leakage changes deterministically as the tone moves between bins."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode with the retained broken-case parameters.",
+      "failure": "Call every clean nonpeak projection noise.",
+      "recovery": "Separate the known clean-window response from the independently seeded noise realization.",
+      "expected_observation": "The named invariant fails in broken mode and returns within the recorded numeric tolerance after recovery."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Changing more than one source parameter at a time.",
+      "Call every clean nonpeak projection noise.",
+      "Treating deterministic software evidence as MATLAB runtime, learner, browser, or physical hardware validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
+      "Answer the exact guiding question from the pinned source equations.",
       "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Name the failure and demonstrate exact recovery.",
+      "Teach back retained behavior, deliberate omissions, and the software-only claim boundary."
     ]
   },
   "runtime": {
@@ -224,83 +271,145 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 8192,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P12 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py",
     "seed": 1012,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "window_name",
+        "value": "Hann",
+        "unit": "source units"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "tone_bin_offset",
+        "value": 0.35,
+        "unit": "source units"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/12-separate-leakage-from-noise/evidence/expected-baseline.json",
-          "sha256": "5b573d67d5ec22fe057e6a03c6b1e89eb5008ac69336044bc0244f17c381b9ee"
+          "sha256": "73497cac6915d01c59a2d6f724e8aab533907544f1b57d58cd1c5beeec23e554"
         },
         "actual": {
           "path": "modules/12-separate-leakage-from-noise/evidence/actual-baseline.json",
-          "sha256": "8d843458d11eb8aa2c714aee8d1e17e8155001512407b0eb72d91192dae9b5ea"
+          "sha256": "0147dbc617de1b611b9f67197bbf06d40c09bc8b5996c1930f74dad7c693b7f1"
         },
-        "max_absolute_error": 3.9179770539021774e-13,
-        "max_relative_error": 3.9179770539021774e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
         "passed": true
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/12-separate-leakage-from-noise/evidence/expected-sweep-1.json",
+          "sha256": "b8e6f64937f474d008f609c62de6cb1c2b2c3763b4ab5b349915cf11e786e50f"
+        },
+        "actual": {
+          "path": "modules/12-separate-leakage-from-noise/evidence/actual-sweep-1.json",
+          "sha256": "48aa530d460b3e3b51c59e27a09313e6d4c6ac5ee2115bcb1244f0da9be6544c"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "sweep_2",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/12-separate-leakage-from-noise/evidence/expected-sweep-2.json",
+          "sha256": "adf281f53b2cfa57482030a6e306331fab042d9ac978e484046cacbe5619f2b1"
+        },
+        "actual": {
+          "path": "modules/12-separate-leakage-from-noise/evidence/actual-sweep-2.json",
+          "sha256": "63f96a2989e3c5419f164f29570eb87534c90d16a53e9042afd30c839923c9ac"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/12-separate-leakage-from-noise/evidence/expected-broken.json",
-          "sha256": "f0bf17274f501651f35d182f45b2334d71afb6a920f60946a41bce373948fd20"
+          "sha256": "3682ef36b9ef26828e4985783d18b650c97570db497d899287e43c062df3194a"
         },
         "actual": {
           "path": "modules/12-separate-leakage-from-noise/evidence/actual-broken.json",
-          "sha256": "e2823a48943f6d24a388a231a5c0229602907b210c03a9c2cbb00b47c852130a"
+          "sha256": "07df08bddb3fdc5cc8d7266ec9df138c0d67266b98018836ea725f51e50c6864"
         },
-        "max_absolute_error": 3.9179770539021774e-13,
-        "max_relative_error": 3.9179770539021774e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "recovery",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/12-separate-leakage-from-noise/evidence/expected-recovery.json",
+          "sha256": "73497cac6915d01c59a2d6f724e8aab533907544f1b57d58cd1c5beeec23e554"
+        },
+        "actual": {
+          "path": "modules/12-separate-leakage-from-noise/evidence/actual-recovery.json",
+          "sha256": "0147dbc617de1b611b9f67197bbf06d40c09bc8b5996c1930f74dad7c693b7f1"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
         "passed": true
       }
     ]
   },
   "matlab_runtime_parity": {
     "status": "not_run",
-    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+    "reason": "A licensed MATLAB runtime is unavailable; independent Python/source evidence is retained separately from MATLAB execution parity."
   },
   "claims": {
     "profile": "elp-dsp-item-software-v1",
     "browser_visual_review": {
       "status": "not_run",
-      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+      "reason": "Browser visual validation is explicitly outside this software-only repair batch."
     },
     "accessibility_review": {
       "status": "not_run",
-      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+      "reason": "Browser accessibility validation is explicitly outside this software-only repair batch."
     },
     "learner_effectiveness": {
       "status": "not_run",
-      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+      "reason": "Representative learner validation requires a separate human study."
     }
   }
 }

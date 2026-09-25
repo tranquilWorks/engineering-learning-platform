@@ -3,7 +3,7 @@
   "id": "17-perform-complex-downconversion-by-hand",
   "number": 17,
   "title": "Perform Complex Downconversion by Hand",
-  "summary": "Explore perform complex downconversion by hand with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "Translate a real 240 Hz passband tone with an explicit complex LO and a group-delay-aware 129-tap low-pass filter.",
   "guiding_question": "How does multiplying by a complex oscillator move an RF/IF signal to baseband?",
   "status": "implemented",
   "tags": [
@@ -19,41 +19,55 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Oscillator Offset",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "lo_frequency_hz",
+      "type": "segmented",
+      "label": "LO frequency",
+      "default": 240.0,
+      "options": [
+        {
+          "label": "204",
+          "value": 204.0
+        },
+        {
+          "label": "216 broken probe",
+          "value": 216.0
+        },
+        {
+          "label": "240",
+          "value": 240.0
+        },
+        {
+          "label": "276",
+          "value": 276.0
+        }
+      ],
+      "unit": "Hz"
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "lo_phase_rad",
+      "type": "segmented",
+      "label": "LO phase",
+      "default": 0.0,
+      "options": [
+        {
+          "label": "0",
+          "value": 0.0
+        },
+        {
+          "label": "\u03c0/2",
+          "value": 1.5707963267948966
+        },
+        {
+          "label": "\u03c0",
+          "value": 3.141592653589793
+        }
+      ],
+      "unit": "rad"
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named source failure",
       "default": false
     }
   ],
@@ -65,8 +79,8 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing oscillator offset, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict the signed difference term and sum-frequency image before changing LO frequency or phase.",
+      "reveal": "Use the retained source equations, change one control at a time, and compare the named invariant."
     },
     {
       "type": "controls",
@@ -77,21 +91,21 @@
     },
     {
       "type": "plot_grid",
-      "title": "Model and response",
+      "title": "Physical model and primary evidence",
       "plots": [
-        "model_view",
-        "response_view"
+        "mixer_spectrum",
+        "filtered_baseband"
       ]
     },
     {
       "type": "plot",
       "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "plot": "lo_frequency_sweep"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Named failure and exact recovery",
+      "plot": "phase_and_broken"
     },
     {
       "type": "callout",

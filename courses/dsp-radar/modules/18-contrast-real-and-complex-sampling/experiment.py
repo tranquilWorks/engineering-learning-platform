@@ -5,165 +5,364 @@ from typing import Any
 import numpy as np
 
 SEED = 1018
-ITEM_NUMBER = 18
-PHASE = 2
-MAX_POINTS = 512
+COUNT = 4096
 
 
 def _layout(title: str, x_label: str, y_label: str) -> dict[str, Any]:
     return {
-        "title": {"text": title, "x": 0.02, "xanchor": "left"},
-        "margin": {"l": 68, "r": 22, "t": 58, "b": 58},
-        "xaxis": {"title": x_label, "showgrid": True},
-        "yaxis": {"title": y_label, "showgrid": True},
+        "title": {"text": title, "x": 0.02},
+        "xaxis": {"title": x_label},
+        "yaxis": {"title": y_label},
         "legend": {"orientation": "h", "y": 1.14},
-        "hovermode": "closest",
-        "uirevision": "keep-view",
+        "margin": {"l": 68, "r": 22, "t": 58, "b": 58},
+    }
+
+
+def _estimate(values: np.ndarray, rate: float) -> float:
+    return float(
+        np.angle(np.sum(np.conj(values[:-1]) * values[1:])) * rate / (2.0 * np.pi)
+    )
+
+
+def _alias(frequency: float, rate: float) -> float:
+    return float((frequency + rate / 2.0) % rate - rate / 2.0)
+
+
+def _downconversion(offset: float) -> dict[str, Any]:
+    sample_rate = 2048.0
+    time = np.arange(COUNT) / sample_rate
+    upper_rf = np.exp(1j * (2.0 * np.pi * (600.0 + offset) * time + 0.35))
+    lower_rf = np.exp(1j * (2.0 * np.pi * (600.0 - offset) * time - 0.35))
+    complex_lo = np.exp(-1j * 2.0 * np.pi * 600.0 * time)
+    upper_complex = upper_rf * complex_lo
+    lower_complex = lower_rf * complex_lo
+    centered = np.arange(129) - 64
+    ideal = 2.0 * 450.0 / sample_rate * np.sinc(2.0 * 450.0 * centered / sample_rate)
+    taps = ideal * np.hamming(129)
+    taps /= np.sum(taps)
+    real_lo = 2.0 * np.cos(2.0 * np.pi * 600.0 * time)
+    upper_real = np.convolve(upper_rf.real * real_lo, taps, mode="same")
+    lower_real = np.convolve(lower_rf.real * real_lo, taps, mode="same")
+    evaluation = slice(192, -192)
+    return {
+        "time": time,
+        "upper_complex": upper_complex,
+        "lower_complex": lower_complex,
+        "upper_real": upper_real,
+        "lower_real": lower_real,
+        "upper_frequency": _estimate(upper_complex, sample_rate),
+        "lower_frequency": _estimate(lower_complex, sample_rate),
+        "real_collapse_rmse": float(
+            np.sqrt(np.mean((upper_real[evaluation] - lower_real[evaluation]) ** 2))
+        ),
+    }
+
+
+def _case(offset: float, rate: float, broken: bool) -> dict[str, Any]:
+    if offset not in {40.0, 160.0, 400.0}:
+        raise ValueError("offset_frequency_hz must be 40, 160, or 400")
+    if rate not in {256.0, 512.0, 2048.0}:
+        raise ValueError("sample_rate_hz must be 256, 512, or 2048")
+    count = int(rate * 0.5)
+    time = np.arange(count) / rate
+    positive_clean = np.exp(1j * (2.0 * np.pi * offset * time + 0.35))
+    rng = np.random.default_rng(SEED)
+    noise = (
+        0.002
+        / np.sqrt(2.0)
+        * (rng.standard_normal(count) + 1j * rng.standard_normal(count))
+    )
+    positive = positive_clean + noise
+    negative = np.conj(positive)
+    real_positive = positive.real
+    real_negative = negative.real
+    if broken:
+        estimated_positive = _estimate(real_positive.astype(complex), rate)
+        estimated_negative = _estimate(real_negative.astype(complex), rate)
+    else:
+        estimated_positive = _estimate(positive, rate)
+        estimated_negative = _estimate(negative, rate)
+    frequency = np.fft.fftshift(np.fft.fftfreq(count, 1.0 / rate))
+    positive_spectrum = np.abs(np.fft.fftshift(np.fft.fft(positive))) / count
+    negative_spectrum = np.abs(np.fft.fftshift(np.fft.fft(negative))) / count
+    real_spectrum = np.abs(np.fft.fftshift(np.fft.fft(real_positive))) / count
+    return {
+        "time": time,
+        "positive": positive,
+        "negative": negative,
+        "real_positive": real_positive,
+        "real_negative": real_negative,
+        "frequency": frequency,
+        "positive_spectrum": positive_spectrum,
+        "negative_spectrum": negative_spectrum,
+        "real_spectrum": real_spectrum,
+        "positive_estimate": estimated_positive,
+        "negative_estimate": estimated_negative,
+        "positive_alias": _alias(offset, rate),
+        "negative_alias": _alias(-offset, rate),
+        "projection_rmse": float(
+            np.sqrt(np.mean((real_positive - real_negative) ** 2))
+        ),
     }
 
 
 def run(parameters: dict[str, Any]) -> dict[str, Any]:
-    primary = float(parameters["primary_scale"])
-    secondary = float(parameters["secondary_scale"])
-    noise_db = float(parameters["noise_db"])
-    broken_mode = bool(parameters["broken_mode"])
-    count = 192 + 16 * (ITEM_NUMBER % 4)
-    if count > MAX_POINTS:
-        raise ValueError("experiment exceeds the retained point ceiling")
-    rng = np.random.default_rng(SEED)
-    x = np.linspace(0.0, 1.0, count, endpoint=False)
-    variant = 1.0 + (ITEM_NUMBER % 7) / 5.0
-    noise_scale = 10.0 ** (noise_db / 20.0)
-
-    if PHASE == 1:
-        truth = np.cos(2.0 * np.pi * variant * primary * x + 0.4 * secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, count // 7) if broken_mode else measured
-    elif PHASE == 2:
-        tone = np.exp(1j * (2.0 * np.pi * (8.0 + variant * primary) * x + secondary))
-        measured = tone + noise_scale * (rng.standard_normal(count) + 1j * rng.standard_normal(count))
-        response_axis = np.fft.fftshift(np.fft.fftfreq(count, d=1.0 / count))
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / count
-        broken_response = np.abs(measured.real) if broken_mode else np.abs(measured)
-        truth = tone.real
-    elif PHASE == 3:
-        symbols = np.sign(np.sin(2.0 * np.pi * (4.0 + variant) * x))
-        carrier = np.cos(2.0 * np.pi * (18.0 + 2.0 * primary) * x + secondary)
-        truth = symbols * carrier
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(2 + 10 * secondary)) if broken_mode else measured
-    elif PHASE == 4:
-        bins = np.arange(count, dtype=float)
-        center = count * (0.25 + 0.25 * (primary - 0.5))
-        width = 2.0 + 4.0 * secondary
-        truth = np.exp(-0.5 * ((bins - center) / width) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = bins
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / np.sqrt(count)
-        broken_response = np.roll(measured, count // 3) if broken_mode else measured
-        x = bins
-    elif PHASE == 5:
-        cells = np.arange(count, dtype=float)
-        background = 0.2 + (0.45 * secondary) * (cells >= count // 2)
-        power = background + np.abs(noise_scale * rng.standard_normal(count))
-        target_bin = int(count * (0.3 + 0.25 * (primary - 0.5)))
-        power[target_bin] += 1.4
-        truth = power
-        measured = power
-        response_axis = cells
-        response = np.full(count, np.quantile(power, 0.82 + 0.1 * secondary))
-        if broken_mode:
-            response = np.full(count, np.mean(power) * (1.2 + primary))
-        broken_response = response
-        x = cells
-    elif PHASE == 6:
-        steps = np.arange(count, dtype=float)
-        truth = 0.04 * steps + 0.0002 * variant * secondary * steps**2
-        measured = truth + noise_scale * 8.0 * rng.standard_normal(count)
-        gain = np.clip(0.12 + 0.5 * primary, 0.05, 0.95)
-        response = np.empty(count)
-        response[0] = measured[0]
-        for index in range(1, count):
-            response[index] = response[index - 1] + gain * (measured[index] - response[index - 1])
-        response_axis = steps
-        broken_response = np.roll(response, 12) if broken_mode else response
-        x = steps
-    elif PHASE == 7:
-        angles = np.linspace(-90.0, 90.0, count)
-        u = np.sin(np.deg2rad(angles)) - np.sin(np.deg2rad(45.0 * (primary - 1.0)))
-        spacing = 0.45 + 0.45 * secondary
-        elements = 6 + ITEM_NUMBER % 7
-        denominator = np.sin(np.pi * spacing * u)
-        numerator = np.sin(elements * np.pi * spacing * u)
-        response = np.where(np.abs(denominator) < 1e-10, 1.0, np.abs(numerator / (elements * denominator)))
-        truth = response
-        measured = np.maximum(response + noise_scale * rng.standard_normal(count), 0.0)
-        response_axis = angles
-        broken_response = np.roll(response, 9) if broken_mode else response
-        x = angles
-    elif PHASE == 8:
-        bins = np.arange(count, dtype=float)
-        beat_bin = count * (0.15 + 0.35 * (primary - 0.5))
-        truth = np.cos(2.0 * np.pi * beat_bin * bins / count + secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(8 + 16 * secondary)) if broken_mode else measured
-        x = bins
-    else:
-        coordinate = np.linspace(-1.0, 1.0, count)
-        width = 0.05 + 0.16 / primary
-        truth = np.exp(-0.5 * ((coordinate + 0.25) / width) ** 2) + 0.65 * np.exp(-0.5 * ((coordinate - 0.3) / (1.4 * width)) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        kernel = np.ones(3 + 2 * int(secondary * 5))
-        kernel /= kernel.sum()
-        response = np.convolve(measured, kernel, mode="same")
-        response_axis = coordinate
-        broken_response = np.roll(response, 18) + 0.25 * np.roll(response, -13) if broken_mode else response
-        x = coordinate
-
-    displayed = broken_response if broken_mode else measured
-    separation = float(np.max(response) - np.median(response))
-    rmse = float(np.sqrt(np.mean((np.asarray(displayed).real - np.asarray(truth).real) ** 2)))
-    signature = [float(count), primary, secondary, noise_db, float(np.mean(np.asarray(displayed).real)), float(np.std(np.asarray(displayed).real)), separation, rmse]
-    sweep_primary = [0.6, 1.0, 1.4]
-    sweep_secondary = [0.0, 0.5, 1.0]
-    sweep_response = [variant * value for value in sweep_primary]
-    stress_response = [separation / (1.0 + value) for value in sweep_secondary]
-    title = 'Contrast Real and Complex Sampling'
-
+    offset = float(parameters["offset_frequency_hz"])
+    rate = float(parameters["sample_rate_hz"])
+    broken = bool(parameters["broken_mode"])
+    case = _case(offset, rate, broken)
+    downconversion = _downconversion(offset)
+    offsets = np.array([40.0, 160.0, 400.0])
+    positive_offset = [
+        _case(float(value), 2048.0, False)["positive_estimate"] for value in offsets
+    ]
+    negative_offset = [
+        _case(float(value), 2048.0, False)["negative_estimate"] for value in offsets
+    ]
+    rates = np.array([2048.0, 512.0, 256.0])
+    positive_alias = [
+        _case(160.0, float(value), False)["positive_alias"] for value in rates
+    ]
+    negative_alias = [
+        _case(160.0, float(value), False)["negative_alias"] for value in rates
+    ]
+    baseline = _case(160.0, 2048.0, False)
+    broken_case = _case(160.0, 2048.0, True)
+    display = np.arange(
+        0, len(case["frequency"]), max(1, len(case["frequency"]) // 512)
+    )
+    signature = [
+        offset,
+        rate,
+        case["positive_alias"],
+        case["negative_alias"],
+        case["positive_estimate"],
+        case["negative_estimate"],
+        case["projection_rmse"],
+        broken_case["positive_estimate"],
+        broken_case["negative_estimate"],
+        baseline["positive_estimate"],
+        baseline["negative_estimate"],
+        downconversion["upper_frequency"],
+        downconversion["lower_frequency"],
+        downconversion["real_collapse_rmse"],
+    ]
     return {
         "metrics": [
-            {"id": "primary", "label": 'Signed Frequency', "value": primary, "unit": "× baseline", "emphasis": "primary"},
-            {"id": "response_separation", "label": "Response separation", "value": separation, "unit": "normalized"},
-            {"id": "model_error", "label": "Model/display error", "value": rmse, "unit": "normalized"},
-            {"id": "points", "label": "Bounded points", "value": count, "unit": "points"},
+            {
+                "id": "positive_frequency",
+                "label": "Positive-rotation estimate",
+                "value": case["positive_estimate"],
+                "unit": "Hz",
+                "emphasis": "primary",
+            },
+            {
+                "id": "negative_frequency",
+                "label": "Negative-rotation estimate",
+                "value": case["negative_estimate"],
+                "unit": "Hz",
+            },
+            {
+                "id": "real_projection_rmse",
+                "label": "Real-projection difference",
+                "value": case["projection_rmse"],
+                "unit": "V",
+            },
+            {
+                "id": "nyquist_limit",
+                "label": "Complex signed Nyquist limit",
+                "value": rate / 2.0,
+                "unit": "Hz",
+            },
+            {
+                "id": "complex_upper_side",
+                "label": "Complex upper-side result",
+                "value": downconversion["upper_frequency"],
+                "unit": "Hz",
+            },
+            {
+                "id": "complex_lower_side",
+                "label": "Complex lower-side result",
+                "value": downconversion["lower_frequency"],
+                "unit": "Hz",
+            },
+            {
+                "id": "real_mixer_collapse",
+                "label": "Real-mixer side collapse",
+                "value": downconversion["real_collapse_rmse"],
+                "unit": "V RMS",
+            },
         ],
         "plots": {
-            "model_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "physical/model truth", "x": x, "y": np.asarray(truth).real},
-                {"type": "scatter", "mode": "lines", "name": "measured/processed", "x": x, "y": np.asarray(displayed).real},
-            ], "layout": _layout(title + " — model view", 'normalized frequency', 'spectral magnitude'), "config": {"responsive": True, "displaylogo": False}},
-            "response_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "response", "x": response_axis, "y": np.asarray(response).real},
-            ], "layout": _layout(title + " — response view", 'normalized frequency', 'spectral magnitude'), "config": {"responsive": True, "displaylogo": False}},
-            "parameter_sweeps": {"data": [
-                {"type": "scatter", "mode": "lines+markers", "name": "primary scale", "x": sweep_primary, "y": sweep_response},
-                {"type": "scatter", "mode": "lines+markers", "name": "secondary stress", "x": sweep_secondary, "y": stress_response},
-            ], "layout": _layout("Two one-variable sweeps", "control value", "response statistic"), "config": {"responsive": True, "displaylogo": False}},
-            "broken_case": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "recovered", "x": x, "y": np.asarray(measured).real},
-                {"type": "scatter", "mode": "lines", "name": "broken" if broken_mode else "enable broken mode", "x": x, "y": np.asarray(broken_response).real},
-            ], "layout": _layout("Intentional assumption failure", 'normalized frequency', 'spectral magnitude'), "config": {"responsive": True, "displaylogo": False}},
+            "iq_rotation": {
+                "data": [
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "+f rotation",
+                        "x": case["positive"].real[:40],
+                        "y": case["positive"].imag[:40],
+                    },
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "-f rotation",
+                        "x": case["negative"].real[:40],
+                        "y": case["negative"].imag[:40],
+                    },
+                ],
+                "layout": _layout("I/Q preserves rotation direction", "I (V)", "Q (V)"),
+                "config": {"responsive": True, "displaylogo": False},
+            },
+            "centered_spectra": {
+                "data": [
+                    {
+                        "type": "scatter",
+                        "mode": "lines",
+                        "name": "+f complex",
+                        "x": case["frequency"][display],
+                        "y": case["positive_spectrum"][display],
+                    },
+                    {
+                        "type": "scatter",
+                        "mode": "lines",
+                        "name": "-f complex",
+                        "x": case["frequency"][display],
+                        "y": case["negative_spectrum"][display],
+                    },
+                    {
+                        "type": "scatter",
+                        "mode": "lines",
+                        "name": "real projection",
+                        "x": case["frequency"][display],
+                        "y": case["real_spectrum"][display],
+                    },
+                ],
+                "layout": _layout(
+                    "Centered signed spectra", "Signed frequency (Hz)", "Magnitude (V)"
+                ),
+                "config": {"responsive": True, "displaylogo": False},
+            },
+            "downconversion": {
+                "data": [
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "complex upper side",
+                        "x": downconversion["upper_complex"].real[:40],
+                        "y": downconversion["upper_complex"].imag[:40],
+                    },
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "complex lower side",
+                        "x": downconversion["lower_complex"].real[:40],
+                        "y": downconversion["lower_complex"].imag[:40],
+                    },
+                    {
+                        "type": "scatter",
+                        "mode": "lines",
+                        "name": "real upper side after LPF",
+                        "x": downconversion["time"][192:272],
+                        "y": downconversion["upper_real"][192:272],
+                        "yaxis": "y2",
+                    },
+                    {
+                        "type": "scatter",
+                        "mode": "lines",
+                        "name": "real lower side after LPF",
+                        "x": downconversion["time"][192:272],
+                        "y": downconversion["lower_real"][192:272],
+                        "yaxis": "y2",
+                    },
+                ],
+                "layout": _layout(
+                    "Real versus complex downconversion around 600 Hz",
+                    "I (V) / time (s)",
+                    "Q (V)",
+                )
+                | {
+                    "yaxis2": {
+                        "title": "Real baseband (V)",
+                        "overlaying": "y",
+                        "side": "right",
+                    }
+                },
+                "config": {"responsive": True, "displaylogo": False},
+            },
+            "offset_sweep": {
+                "data": [
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "+ rotation",
+                        "x": offsets,
+                        "y": positive_offset,
+                    },
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "- rotation",
+                        "x": offsets,
+                        "y": negative_offset,
+                    },
+                ],
+                "layout": _layout(
+                    "Offset-frequency sign sweep",
+                    "Offset magnitude (Hz)",
+                    "Estimated signed frequency (Hz)",
+                ),
+                "config": {"responsive": True, "displaylogo": False},
+            },
+            "alias_and_broken": {
+                "data": [
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "+f alias",
+                        "x": rates,
+                        "y": positive_alias,
+                    },
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "-f alias",
+                        "x": rates,
+                        "y": negative_alias,
+                    },
+                    {
+                        "type": "bar",
+                        "name": "discard-Q estimates",
+                        "x": [2048.0, 2048.0],
+                        "y": [
+                            broken_case["positive_estimate"],
+                            broken_case["negative_estimate"],
+                        ],
+                    },
+                ],
+                "layout": _layout(
+                    "Under-Nyquist aliases and discard-Q failure",
+                    "Sample rate (samples/s)",
+                    "Signed frequency (Hz)",
+                ),
+                "config": {"responsive": True, "displaylogo": False},
+            },
         },
         "explanations": {
-            "observation": f"The {title} model uses a bounded deterministic spectral/IQ processing experiment. Primary scale={primary:.2f} and secondary stress={secondary:.2f} remain independently controllable.",
-            "broken": "Broken mode deliberately violates the lesson's central interpretation assumption so the displayed response becomes ambiguous, biased, contaminated, or defocused.",
-            "recovery": "Disable broken mode, restore both scales to 1.0 and 0.25, then connect the recovered shape to the pinned source equations before changing one control at a time.",
+            "observation": "Conjugate complex rotations have opposite phase progression and signed spectral peaks even though their real projections are identical.",
+            "broken": "Discarding Q projects both rotations onto the same cosine; the adjacent-product phase then collapses both sign estimates to zero.",
+            "recovery": "Retain I and Q and interpret frequency on the centered signed interval, including the deterministic aliases produced below Nyquist.",
         },
-        "diagnostics": {"seed": SEED, "item_number": ITEM_NUMBER, "point_count": count, "signature": signature, "broken_active": broken_mode},
+        "diagnostics": {
+            "seed": SEED,
+            "signature": signature,
+            "broken_active": broken,
+            "expected_positive_alias_hz": case["positive_alias"],
+            "expected_negative_alias_hz": case["negative_alias"],
+            "complex_downconversion_hz": [
+                downconversion["upper_frequency"],
+                downconversion["lower_frequency"],
+            ],
+            "real_mixer_collapse_rmse_v": downconversion["real_collapse_rmse"],
+        },
     }

@@ -5,165 +5,284 @@ from typing import Any
 import numpy as np
 
 SEED = 1015
-ITEM_NUMBER = 15
-PHASE = 2
-MAX_POINTS = 512
+FS_HZ = 1024.0
+COUNT = 4096
 
 
 def _layout(title: str, x_label: str, y_label: str) -> dict[str, Any]:
     return {
-        "title": {"text": title, "x": 0.02, "xanchor": "left"},
-        "margin": {"l": 68, "r": 22, "t": 58, "b": 58},
-        "xaxis": {"title": x_label, "showgrid": True},
-        "yaxis": {"title": y_label, "showgrid": True},
+        "title": {"text": title, "x": 0.02},
+        "xaxis": {"title": x_label},
+        "yaxis": {"title": y_label},
         "legend": {"orientation": "h", "y": 1.14},
-        "hovermode": "closest",
-        "uirevision": "keep-view",
+        "margin": {"l": 68, "r": 22, "t": 58, "b": 58},
+    }
+
+
+def _signal() -> np.ndarray:
+    sample = np.arange(COUNT)
+    time = sample / FS_HZ
+    signal = 0.35 * np.cos(2 * np.pi * 90 * time + 0.2)
+    chirp_gate = (time >= 0.5) & (time < 2.25)
+    chirp_time = time - 0.5
+    slope = (320 - 220) / (2.25 - 0.5)
+    chirp_phase = 2 * np.pi * (220 * chirp_time + 0.5 * slope * chirp_time**2) - 0.4
+    signal += 0.25 * np.cos(chirp_phase) * chirp_gate
+    burst = (sample >= 1536) & (sample < 1600)
+    signal += 0.8 * np.cos(2 * np.pi * 380 * time + 0.7) * burst
+    hop_phase = np.where(
+        time < 2.75,
+        2 * np.pi * 156 * time - 0.3,
+        2 * np.pi * (156 * 2.75 + 174 * (time - 2.75)) - 0.3,
+    )
+    signal += 0.28 * np.cos(hop_phase)
+    rng = np.random.default_rng(SEED)
+    return signal + 0.02 * rng.standard_normal(COUNT)
+
+
+def _stft(
+    values: np.ndarray,
+    window_length: int,
+    overlap: float,
+    fft_length: int | None = None,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    fft_length = window_length if fft_length is None else fft_length
+    hop = round(window_length * (1 - overlap))
+    starts = np.arange(0, len(values) - window_length + 1, hop)
+    if len(starts) > 256 or fft_length > 512:
+        raise ValueError("STFT resource ceiling exceeded")
+    n = np.arange(window_length)
+    window = 0.5 - 0.5 * np.cos(2 * np.pi * n / (window_length - 1))
+    scale = FS_HZ * np.sum(window**2)
+    columns = []
+    for start in starts:
+        transformed = np.fft.rfft(
+            values[start : start + window_length] * window, fft_length
+        )
+        psd = np.abs(transformed) ** 2 / scale
+        if len(psd) > 2:
+            psd[1:-1] *= 2
+        columns.append(psd)
+    return (
+        np.fft.rfftfreq(fft_length, 1 / FS_HZ),
+        (starts + (window_length - 1) / 2) / FS_HZ,
+        np.array(columns).T,
+    )
+
+
+def _case(window_length: int, overlap: float, broken: bool) -> dict[str, Any]:
+    if window_length not in {64, 128, 512} or overlap not in {0.0, 0.5, 0.75}:
+        raise ValueError("use retained window and overlap cases")
+    values = _signal()
+    frequency, frame_time, psd = _stft(values, window_length, overlap)
+    burst_bin = int(np.argmin(np.abs(frequency - 380)))
+    burst_frame = int(np.argmax(psd[burst_bin]))
+    burst_center = (1536 + 31.5) / FS_HZ
+    burst_time_error = float(abs(frame_time[burst_frame] - burst_center))
+    before_frame = int(np.argmin(np.abs(frame_time - 2.65)))
+    after_frame = int(np.argmin(np.abs(frame_time - 2.85)))
+    before_156 = psd[int(np.argmin(np.abs(frequency - 156))), before_frame]
+    before_174 = psd[int(np.argmin(np.abs(frequency - 174))), before_frame]
+    after_156 = psd[int(np.argmin(np.abs(frequency - 156))), after_frame]
+    after_174 = psd[int(np.argmin(np.abs(frequency - 174))), after_frame]
+    hop_contrast = float(
+        10
+        * np.log10(
+            max(before_156 * after_174, 1e-30) / max(before_174 * after_156, 1e-30)
+        )
+    )
+    chirp_frames = (frame_time >= 0.6) & (frame_time <= 2.15)
+    chirp_band = (frequency >= 200.0) & (frequency <= 340.0)
+    chirp_frequency = frequency[chirp_band]
+    chirp_density = psd[np.ix_(chirp_band, chirp_frames)]
+    ridge_frequency = chirp_frequency[np.argmax(chirp_density, axis=0)]
+    expected_ridge = 220.0 + (100.0 / 1.75) * (frame_time[chirp_frames] - 0.5)
+    chirp_ridge_rmse = float(np.sqrt(np.mean((ridge_frequency - expected_ridge) ** 2)))
+    physical_width = 4 * FS_HZ / window_length
+    broken_display_spacing = FS_HZ / 512
+    displayed_resolution = broken_display_spacing if broken else physical_width
+    return {
+        "values": values,
+        "frequency": frequency,
+        "time": frame_time,
+        "psd": psd,
+        "frame_count": len(frame_time),
+        "time_spacing": float(np.diff(frame_time).mean())
+        if len(frame_time) > 1
+        else 0.0,
+        "bin_spacing": FS_HZ / window_length,
+        "physical_width": physical_width,
+        "burst_time_error": burst_time_error,
+        "hop_contrast": hop_contrast,
+        "chirp_ridge_rmse": chirp_ridge_rmse,
+        "broken_display_spacing": broken_display_spacing,
+        "displayed_resolution": displayed_resolution,
     }
 
 
 def run(parameters: dict[str, Any]) -> dict[str, Any]:
-    primary = float(parameters["primary_scale"])
-    secondary = float(parameters["secondary_scale"])
-    noise_db = float(parameters["noise_db"])
-    broken_mode = bool(parameters["broken_mode"])
-    count = 192 + 16 * (ITEM_NUMBER % 4)
-    if count > MAX_POINTS:
-        raise ValueError("experiment exceeds the retained point ceiling")
-    rng = np.random.default_rng(SEED)
-    x = np.linspace(0.0, 1.0, count, endpoint=False)
-    variant = 1.0 + (ITEM_NUMBER % 7) / 5.0
-    noise_scale = 10.0 ** (noise_db / 20.0)
-
-    if PHASE == 1:
-        truth = np.cos(2.0 * np.pi * variant * primary * x + 0.4 * secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, count // 7) if broken_mode else measured
-    elif PHASE == 2:
-        tone = np.exp(1j * (2.0 * np.pi * (8.0 + variant * primary) * x + secondary))
-        measured = tone + noise_scale * (rng.standard_normal(count) + 1j * rng.standard_normal(count))
-        response_axis = np.fft.fftshift(np.fft.fftfreq(count, d=1.0 / count))
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / count
-        broken_response = np.abs(measured.real) if broken_mode else np.abs(measured)
-        truth = tone.real
-    elif PHASE == 3:
-        symbols = np.sign(np.sin(2.0 * np.pi * (4.0 + variant) * x))
-        carrier = np.cos(2.0 * np.pi * (18.0 + 2.0 * primary) * x + secondary)
-        truth = symbols * carrier
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(2 + 10 * secondary)) if broken_mode else measured
-    elif PHASE == 4:
-        bins = np.arange(count, dtype=float)
-        center = count * (0.25 + 0.25 * (primary - 0.5))
-        width = 2.0 + 4.0 * secondary
-        truth = np.exp(-0.5 * ((bins - center) / width) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = bins
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / np.sqrt(count)
-        broken_response = np.roll(measured, count // 3) if broken_mode else measured
-        x = bins
-    elif PHASE == 5:
-        cells = np.arange(count, dtype=float)
-        background = 0.2 + (0.45 * secondary) * (cells >= count // 2)
-        power = background + np.abs(noise_scale * rng.standard_normal(count))
-        target_bin = int(count * (0.3 + 0.25 * (primary - 0.5)))
-        power[target_bin] += 1.4
-        truth = power
-        measured = power
-        response_axis = cells
-        response = np.full(count, np.quantile(power, 0.82 + 0.1 * secondary))
-        if broken_mode:
-            response = np.full(count, np.mean(power) * (1.2 + primary))
-        broken_response = response
-        x = cells
-    elif PHASE == 6:
-        steps = np.arange(count, dtype=float)
-        truth = 0.04 * steps + 0.0002 * variant * secondary * steps**2
-        measured = truth + noise_scale * 8.0 * rng.standard_normal(count)
-        gain = np.clip(0.12 + 0.5 * primary, 0.05, 0.95)
-        response = np.empty(count)
-        response[0] = measured[0]
-        for index in range(1, count):
-            response[index] = response[index - 1] + gain * (measured[index] - response[index - 1])
-        response_axis = steps
-        broken_response = np.roll(response, 12) if broken_mode else response
-        x = steps
-    elif PHASE == 7:
-        angles = np.linspace(-90.0, 90.0, count)
-        u = np.sin(np.deg2rad(angles)) - np.sin(np.deg2rad(45.0 * (primary - 1.0)))
-        spacing = 0.45 + 0.45 * secondary
-        elements = 6 + ITEM_NUMBER % 7
-        denominator = np.sin(np.pi * spacing * u)
-        numerator = np.sin(elements * np.pi * spacing * u)
-        response = np.where(np.abs(denominator) < 1e-10, 1.0, np.abs(numerator / (elements * denominator)))
-        truth = response
-        measured = np.maximum(response + noise_scale * rng.standard_normal(count), 0.0)
-        response_axis = angles
-        broken_response = np.roll(response, 9) if broken_mode else response
-        x = angles
-    elif PHASE == 8:
-        bins = np.arange(count, dtype=float)
-        beat_bin = count * (0.15 + 0.35 * (primary - 0.5))
-        truth = np.cos(2.0 * np.pi * beat_bin * bins / count + secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(8 + 16 * secondary)) if broken_mode else measured
-        x = bins
-    else:
-        coordinate = np.linspace(-1.0, 1.0, count)
-        width = 0.05 + 0.16 / primary
-        truth = np.exp(-0.5 * ((coordinate + 0.25) / width) ** 2) + 0.65 * np.exp(-0.5 * ((coordinate - 0.3) / (1.4 * width)) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        kernel = np.ones(3 + 2 * int(secondary * 5))
-        kernel /= kernel.sum()
-        response = np.convolve(measured, kernel, mode="same")
-        response_axis = coordinate
-        broken_response = np.roll(response, 18) + 0.25 * np.roll(response, -13) if broken_mode else response
-        x = coordinate
-
-    displayed = broken_response if broken_mode else measured
-    separation = float(np.max(response) - np.median(response))
-    rmse = float(np.sqrt(np.mean((np.asarray(displayed).real - np.asarray(truth).real) ** 2)))
-    signature = [float(count), primary, secondary, noise_db, float(np.mean(np.asarray(displayed).real)), float(np.std(np.asarray(displayed).real)), separation, rmse]
-    sweep_primary = [0.6, 1.0, 1.4]
-    sweep_secondary = [0.0, 0.5, 1.0]
-    sweep_response = [variant * value for value in sweep_primary]
-    stress_response = [separation / (1.0 + value) for value in sweep_secondary]
-    title = 'Use a Spectrogram to See Time-Varying Frequency'
-
+    window_length = int(parameters["window_length"])
+    overlap = float(parameters["overlap_fraction"])
+    broken = bool(parameters["broken_mode"])
+    case = _case(window_length, overlap, broken)
+    lengths = np.array([512, 128, 64])
+    burst_error = [
+        _case(int(value), 0.5, False)["burst_time_error"] for value in lengths
+    ]
+    physical_width = [4 * FS_HZ / value for value in lengths]
+    overlaps = np.array([0.0, 0.5, 0.75])
+    time_spacing = [
+        _case(128, float(value), False)["time_spacing"] for value in overlaps
+    ]
+    downsample = np.arange(0, COUNT, 8)
+    signature = [
+        float(window_length),
+        overlap,
+        float(case["frame_count"]),
+        case["time_spacing"],
+        case["bin_spacing"],
+        case["physical_width"],
+        case["burst_time_error"],
+        case["hop_contrast"],
+        case["displayed_resolution"],
+        case["chirp_ridge_rmse"],
+    ]
     return {
         "metrics": [
-            {"id": "primary", "label": 'Spectrogram Window', "value": primary, "unit": "× baseline", "emphasis": "primary"},
-            {"id": "response_separation", "label": "Response separation", "value": separation, "unit": "normalized"},
-            {"id": "model_error", "label": "Model/display error", "value": rmse, "unit": "normalized"},
-            {"id": "points", "label": "Bounded points", "value": count, "unit": "points"},
+            {
+                "id": "frame_count",
+                "label": "STFT frames",
+                "value": case["frame_count"],
+                "unit": "frames",
+            },
+            {
+                "id": "time_spacing",
+                "label": "Frame-time spacing",
+                "value": case["time_spacing"],
+                "unit": "s",
+            },
+            {
+                "id": "physical_width",
+                "label": "Hann main-lobe scale",
+                "value": case["physical_width"],
+                "unit": "Hz",
+                "emphasis": "primary",
+            },
+            {
+                "id": "burst_error",
+                "label": "Burst-time error",
+                "value": case["burst_time_error"],
+                "unit": "s",
+            },
+            {
+                "id": "chirp_ridge_error",
+                "label": "Chirp-ridge RMSE",
+                "value": case["chirp_ridge_rmse"],
+                "unit": "Hz",
+            },
+            {
+                "id": "hop_contrast",
+                "label": "156/174 Hz hop contrast",
+                "value": case["hop_contrast"],
+                "unit": "dB",
+            },
         ],
         "plots": {
-            "model_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "physical/model truth", "x": x, "y": np.asarray(truth).real},
-                {"type": "scatter", "mode": "lines", "name": "measured/processed", "x": x, "y": np.asarray(displayed).real},
-            ], "layout": _layout(title + " — model view", 'normalized frequency', 'spectral magnitude'), "config": {"responsive": True, "displaylogo": False}},
-            "response_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "response", "x": response_axis, "y": np.asarray(response).real},
-            ], "layout": _layout(title + " — response view", 'normalized frequency', 'spectral magnitude'), "config": {"responsive": True, "displaylogo": False}},
-            "parameter_sweeps": {"data": [
-                {"type": "scatter", "mode": "lines+markers", "name": "primary scale", "x": sweep_primary, "y": sweep_response},
-                {"type": "scatter", "mode": "lines+markers", "name": "secondary stress", "x": sweep_secondary, "y": stress_response},
-            ], "layout": _layout("Two one-variable sweeps", "control value", "response statistic"), "config": {"responsive": True, "displaylogo": False}},
-            "broken_case": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "recovered", "x": x, "y": np.asarray(measured).real},
-                {"type": "scatter", "mode": "lines", "name": "broken" if broken_mode else "enable broken mode", "x": x, "y": np.asarray(broken_response).real},
-            ], "layout": _layout("Intentional assumption failure", 'normalized frequency', 'spectral magnitude'), "config": {"responsive": True, "displaylogo": False}},
+            "time_record": {
+                "data": [
+                    {
+                        "type": "scatter",
+                        "mode": "lines",
+                        "name": "composite record",
+                        "x": downsample / FS_HZ,
+                        "y": case["values"][downsample],
+                    }
+                ],
+                "layout": _layout(
+                    "Steady tone, chirp, burst, and hop", "Time (s)", "Amplitude (V)"
+                ),
+                "config": {"responsive": True, "displaylogo": False},
+            },
+            "spectrogram": {
+                "data": [
+                    {
+                        "type": "heatmap",
+                        "name": "PSD",
+                        "x": case["time"],
+                        "y": case["frequency"],
+                        "z": 10 * np.log10(np.maximum(case["psd"], 1e-20)),
+                        "colorscale": "Viridis",
+                    }
+                ],
+                "layout": _layout(
+                    "Explicit STFT", "Frame-center time (s)", "Frequency (Hz)"
+                ),
+                "config": {"responsive": True, "displaylogo": False},
+            },
+            "window_sweep": {
+                "data": [
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "burst timing error",
+                        "x": lengths,
+                        "y": burst_error,
+                    },
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "frequency width",
+                        "x": lengths,
+                        "y": physical_width,
+                        "yaxis": "y2",
+                    },
+                ],
+                "layout": _layout(
+                    "Time-frequency window tradeoff",
+                    "Window length (samples)",
+                    "Timing error (s)",
+                )
+                | {
+                    "yaxis2": {
+                        "title": "Main-lobe scale (Hz)",
+                        "overlaying": "y",
+                        "side": "right",
+                    }
+                },
+                "config": {"responsive": True, "displaylogo": False},
+            },
+            "overlap_and_broken": {
+                "data": [
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "frame spacing",
+                        "x": overlaps,
+                        "y": time_spacing,
+                    },
+                    {
+                        "type": "bar",
+                        "name": "resolution scales",
+                        "x": ["zero-padded grid", "physical window", "displayed"],
+                        "y": [
+                            case["broken_display_spacing"],
+                            case["physical_width"],
+                            case["displayed_resolution"],
+                        ],
+                    },
+                ],
+                "layout": _layout(
+                    "Overlap and zero-padding claim",
+                    "Overlap or scale",
+                    "Time / frequency metric",
+                ),
+                "config": {"responsive": True, "displaylogo": False},
+            },
         },
         "explanations": {
-            "observation": f"The {title} model uses a bounded deterministic spectral/IQ processing experiment. Primary scale={primary:.2f} and secondary stress={secondary:.2f} remain independently controllable.",
-            "broken": "Broken mode deliberately violates the lesson's central interpretation assumption so the displayed response becomes ambiguous, biased, contaminated, or defocused.",
-            "recovery": "Disable broken mode, restore both scales to 1.0 and 0.25, then connect the recovered shape to the pinned source equations before changing one control at a time.",
+            "observation": "Each spectrogram column is one finite windowed measurement. Short windows localize events; long windows narrow spectral responses; overlap only samples frame centers more densely.",
+            "broken": "Broken mode labels the 2 Hz zero-padded grid of a 64-sample window as 2 Hz physical resolution even though its Hann main-lobe scale is about 64 Hz.",
+            "recovery": "Keep FFT display spacing, window response width, and frame spacing as separate quantities when interpreting the burst, chirp, and 18 Hz hop.",
         },
-        "diagnostics": {"seed": SEED, "item_number": ITEM_NUMBER, "point_count": count, "signature": signature, "broken_active": broken_mode},
+        "diagnostics": {"seed": SEED, "signature": signature, "broken_active": broken},
     }

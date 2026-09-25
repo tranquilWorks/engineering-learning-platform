@@ -33,43 +33,39 @@
     ]
   },
   "target": {
-    "content_digest": "5ed4f9ccb63d9cc1c0dc0a4a4fdc39613f52551245de9cd7bfd8a481ae1b72a8",
+    "content_digest": "0fb35d18695a552a42a8dd1fa989b232b094dbaee2f49e0184276a5e74e23a8e",
     "files": [
       {
         "path": "modules/18-contrast-real-and-complex-sampling/experiment.py",
-        "sha256": "cd53be0f9db35a93a2d4b41a461f898fcf417c52cf3473bede6af1e8ace08624"
+        "sha256": "a06dc66027db91bf13e88fa83fecafac87c04ecfc5a1928bb940cec00d88a1ab"
       },
       {
         "path": "modules/18-contrast-real-and-complex-sampling/lesson.md",
-        "sha256": "026ca7f2ed7606fc1a1bda1a3e82e53c982cab3957d2062af3ed7ae257c28128"
+        "sha256": "462c24e54e48b66a845babd7233798b0716e81028ca9dc2ea1c670a082639e80"
       },
       {
         "path": "modules/18-contrast-real-and-complex-sampling/module.yaml",
-        "sha256": "dc3c480d740f22695215e60532873b344a55aa9cb794a33d0732279cc9d86ddd"
+        "sha256": "5e38690fd412b955bdae1b630722c41cc16e7c16f252e705d2b2cda38f3279c9"
       }
     ]
   },
   "content": {
     "guiding_question": "Why can complex samples distinguish positive and negative frequencies?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "Positive and negative complex rotations have opposite phase progression and signed spectra, but projection onto the real axis makes the two cosines identical.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary signed frequency while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Retained from the pinned source: construct conjugate positive and negative complex tones; compare their identical real projections; estimate signed phase progression and centered spectra; downconvert paired RF sides with complex and real mixers; sample at three rates to expose deterministic aliases.",
+      "Named failure: Discard Q and try to infer rotation direction from the identical real projections.",
+      "Exact recovery: Retain both I and Q and interpret the centered signed spectrum.",
+      "Deliberately omitted: MATLAB figure-window behavior; the claim remains deterministic software-only."
     ],
     "equations": [
       {
-        "latex": "z_+[n]=A e^{j(2\\pi f_0 n/f_s+\\phi)},\\qquad z_-[n]=A e^{-j(2\\pi f_0 n/f_s+\\phi)}=z_+^*[n].",
-        "meaning": "Pinned source equation used to interpret the experiment response."
+        "latex": "z_+[n]=e^{j\\omega n},\\quad z_-[n]=e^{-j\\omega n}",
+        "meaning": "Opposite complex rotations."
       },
       {
-        "latex": "\\Re\\{z_+[n]\\}=\\Re\\{z_-[n]\\} =A\\cos(2\\pi f_0 n/f_s+\\phi).",
-        "meaning": "Pinned source equation used to interpret the experiment response."
-      },
-      {
-        "latex": "x_U(t)=A e^{j[2\\pi(f_{LO}+\\Delta)t+\\phi]},\\qquad x_L(t)=A e^{j[2\\pi(f_{LO}-\\Delta)t-\\phi]}.",
-        "meaning": "Pinned source equation used to interpret the experiment response."
+        "latex": "f_a=((f+f_s/2)\\bmod f_s)-f_s/2",
+        "meaning": "Centered signed alias map."
       }
     ],
     "equation_order": "before_toolbox_shortcuts",
@@ -77,146 +73,212 @@
       "seed": 1018,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
+          "name": "bounded_scenario_count",
+          "value": 5,
+          "unit": "cases"
+        },
+        {
+          "name": "absolute_tolerance",
+          "value": 0.0001,
+          "unit": "signature units"
+        },
+        {
+          "name": "relative_tolerance",
+          "value": 0.0001,
           "unit": "ratio"
-        },
-        {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "7192078f04ddaa5d742e0309b2645344d39f5a02b457573d5c2f641c6536c536",
-          "unit": "mixed numeric signature"
+          "sha256": "319292ce51ac6be69ac82b355fac203f945f6e5717c24a3141c9462233dd047e",
+          "unit": "source-specific numeric signature"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline independent actual signature",
+          "provenance": "generated",
+          "sha256": "fb61d022c979259c7e038b169f6e109332c52be2a2fefce36fecac43e7c4d723",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent expected signature",
           "provenance": "retained_fixture",
-          "sha256": "333a1b9ce7bc44a21344597c3b4692b6b51a79d9e2145de36bd83754a6e4a4e5",
-          "unit": "mixed numeric signature"
+          "sha256": "b4de5d4d7a05fb6f520b0eb035920e18362540a0981105f5d66ff6fb7003a175",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_1 independent actual signature",
+          "provenance": "generated",
+          "sha256": "e355e7187309dc182dee5d29c05884fbff360e7b72829195b372492cd589728d",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "f7f14961a25866d36e8b018a539e908fc6ba97eb3eb9c9f76c5585aaa3fbf08d",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "sweep_2 independent actual signature",
+          "provenance": "generated",
+          "sha256": "b97ddb1a6c7bf70e76aec2b60e54cf4c82fa09a2e943c82221644ac71d93b4bf",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "1e22ff49a0fb8277a568e6829d083cab9f6810fdb8fcaa52f86de29024bb3e5d",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "broken independent actual signature",
+          "provenance": "generated",
+          "sha256": "d98f22f17371eb104cefba5f586e65fa9deed5ab638af1a812eee3b143ada698",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "319292ce51ac6be69ac82b355fac203f945f6e5717c24a3141c9462233dd047e",
+          "unit": "source-specific numeric signature"
+        },
+        {
+          "name": "recovery independent actual signature",
+          "provenance": "generated",
+          "sha256": "fb61d022c979259c7e038b169f6e109332c52be2a2fefce36fecac43e7c4d723",
+          "unit": "source-specific numeric signature"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P18 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P18 source processing and plot sequence",
+        "target_plot_key": "iq_rotation",
+        "title": "Iq Rotation",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "I",
+            "unit": "V"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Q",
+            "unit": "V"
           }
         ],
-        "interpretation": "This view answers the Contrast Real and Complex Sampling guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P18 evidence with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P18 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P18 source processing and plot sequence",
+        "target_plot_key": "centered_spectra",
+        "title": "Centered Spectra",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Signed frequency",
+            "unit": "Hz"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Magnitude",
+            "unit": "V"
           }
         ],
-        "interpretation": "This view answers the Contrast Real and Complex Sampling guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P18 evidence with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P18 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P18 source processing and plot sequence",
+        "target_plot_key": "offset_sweep",
+        "title": "Offset Sweep",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "Offset magnitude",
+            "unit": "Hz"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Signed estimate",
+            "unit": "Hz"
           }
         ],
-        "interpretation": "This view answers the Contrast Real and Complex Sampling guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Source-faithful P18 evidence with explicit physical axes and bounded deterministic data."
       },
       {
-        "source_figure": "Pinned P18 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P18 real-versus-complex downconversion sequence",
+        "target_plot_key": "downconversion",
+        "title": "Real Versus Complex Downconversion",
         "axes": [
           {
             "role": "x",
-            "label": "normalized frequency",
-            "unit": "source units"
+            "label": "I / time",
+            "unit": "V / s"
           },
           {
             "role": "y",
-            "label": "spectral magnitude",
-            "unit": "normalized"
+            "label": "Q / real baseband",
+            "unit": "V"
           }
         ],
-        "interpretation": "This view answers the Contrast Real and Complex Sampling guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Complex mixing preserves upper/lower-side sign while the real cosine mixer collapses both RF sides to the same low-pass beat."
+      },
+      {
+        "source_figure": "Pinned P18 source processing and plot sequence",
+        "target_plot_key": "alias_and_broken",
+        "title": "Alias And Broken",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Sample rate",
+            "unit": "samples/s"
+          },
+          {
+            "role": "y",
+            "label": "Signed alias",
+            "unit": "Hz"
+          }
+        ],
+        "interpretation": "Source-faithful P18 evidence with explicit physical axes and bounded deterministic data."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "offset_frequency_hz",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          40.0,
+          160.0,
+          400.0
         ],
-        "expected_observation": "Changing signed frequency moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Full I/Q preserves rotation sign across offsets."
       },
       {
-        "control": "secondary_scale",
+        "control": "sample_rate_hz",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          2048.0,
+          512.0,
+          256.0
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Below Nyquist, each rotation maps to a signed discrete-time alias."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode with the retained broken-case parameters.",
+      "failure": "Discard Q and try to infer rotation direction from the identical real projections.",
+      "recovery": "Retain both I and Q and interpret the centered signed spectrum.",
+      "expected_observation": "The named invariant fails in broken mode and returns within the recorded numeric tolerance after recovery."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Changing more than one source parameter at a time.",
+      "Discard Q and try to infer rotation direction from the identical real projections.",
+      "Treating deterministic software evidence as MATLAB runtime, learner, browser, or physical hardware validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
+      "Answer the exact guiding question from the pinned source equations.",
       "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Name the failure and demonstrate exact recovery.",
+      "Teach back retained behavior, deliberate omissions, and the software-only claim boundary."
     ]
   },
   "runtime": {
@@ -224,83 +286,145 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 8192,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P18 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py",
     "seed": 1018,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "offset_frequency_hz",
+        "value": 160.0,
+        "unit": "source units"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "sample_rate_hz",
+        "value": 2048.0,
+        "unit": "source units"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/18-contrast-real-and-complex-sampling/evidence/expected-baseline.json",
-          "sha256": "7192078f04ddaa5d742e0309b2645344d39f5a02b457573d5c2f641c6536c536"
+          "sha256": "319292ce51ac6be69ac82b355fac203f945f6e5717c24a3141c9462233dd047e"
         },
         "actual": {
           "path": "modules/18-contrast-real-and-complex-sampling/evidence/actual-baseline.json",
-          "sha256": "63630143184311b21bb3b7113db0d77468b431a92901dcc964837b61157c2898"
+          "sha256": "fb61d022c979259c7e038b169f6e109332c52be2a2fefce36fecac43e7c4d723"
         },
-        "max_absolute_error": 3.9076381019853557e-13,
-        "max_relative_error": 3.9076381019853557e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
         "passed": true
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "source-specific numeric signature",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/18-contrast-real-and-complex-sampling/evidence/expected-sweep-1.json",
+          "sha256": "b4de5d4d7a05fb6f520b0eb035920e18362540a0981105f5d66ff6fb7003a175"
+        },
+        "actual": {
+          "path": "modules/18-contrast-real-and-complex-sampling/evidence/actual-sweep-1.json",
+          "sha256": "e355e7187309dc182dee5d29c05884fbff360e7b72829195b372492cd589728d"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "sweep_2",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/18-contrast-real-and-complex-sampling/evidence/expected-sweep-2.json",
+          "sha256": "f7f14961a25866d36e8b018a539e908fc6ba97eb3eb9c9f76c5585aaa3fbf08d"
+        },
+        "actual": {
+          "path": "modules/18-contrast-real-and-complex-sampling/evidence/actual-sweep-2.json",
+          "sha256": "b97ddb1a6c7bf70e76aec2b60e54cf4c82fa09a2e943c82221644ac71d93b4bf"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "broken",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
         },
         "expected": {
           "path": "modules/18-contrast-real-and-complex-sampling/evidence/expected-broken.json",
-          "sha256": "333a1b9ce7bc44a21344597c3b4692b6b51a79d9e2145de36bd83754a6e4a4e5"
+          "sha256": "1e22ff49a0fb8277a568e6829d083cab9f6810fdb8fcaa52f86de29024bb3e5d"
         },
         "actual": {
           "path": "modules/18-contrast-real-and-complex-sampling/evidence/actual-broken.json",
-          "sha256": "8d9d06cb2edc9bb9daf6f4e023913e9c146d4318686de82e4d911c5bbf428e26"
+          "sha256": "d98f22f17371eb104cefba5f586e65fa9deed5ab638af1a812eee3b143ada698"
         },
-        "max_absolute_error": 2.4213964167074664e-13,
-        "max_relative_error": 2.4213964167074664e-13,
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true
+      },
+      {
+        "name": "recovery",
+        "units": "source-specific numeric signature",
+        "tolerance": {
+          "absolute": 0.0001,
+          "relative": 0.0001
+        },
+        "expected": {
+          "path": "modules/18-contrast-real-and-complex-sampling/evidence/expected-recovery.json",
+          "sha256": "319292ce51ac6be69ac82b355fac203f945f6e5717c24a3141c9462233dd047e"
+        },
+        "actual": {
+          "path": "modules/18-contrast-real-and-complex-sampling/evidence/actual-recovery.json",
+          "sha256": "fb61d022c979259c7e038b169f6e109332c52be2a2fefce36fecac43e7c4d723"
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
         "passed": true
       }
     ]
   },
   "matlab_runtime_parity": {
     "status": "not_run",
-    "reason": "A licensed MATLAB runtime is not available; Python/source equivalence is retained separately from MATLAB execution parity."
+    "reason": "A licensed MATLAB runtime is unavailable; independent Python/source evidence is retained separately from MATLAB execution parity."
   },
   "claims": {
     "profile": "elp-dsp-item-software-v1",
     "browser_visual_review": {
       "status": "not_run",
-      "reason": "Integrated browser review is deferred until the 84-module sweep is complete."
+      "reason": "Browser visual validation is explicitly outside this software-only repair batch."
     },
     "accessibility_review": {
       "status": "not_run",
-      "reason": "Integrated accessibility review is deferred until the 84-module sweep is complete."
+      "reason": "Browser accessibility validation is explicitly outside this software-only repair batch."
     },
     "learner_effectiveness": {
       "status": "not_run",
-      "reason": "Learner effectiveness requires a post-release study and is not claimed by software tests."
+      "reason": "Representative learner validation requires a separate human study."
     }
   }
 }

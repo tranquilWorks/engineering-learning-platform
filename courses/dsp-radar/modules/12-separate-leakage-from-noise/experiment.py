@@ -5,165 +5,242 @@ from typing import Any
 import numpy as np
 
 SEED = 1012
-ITEM_NUMBER = 12
-PHASE = 2
-MAX_POINTS = 512
+FS_HZ = 1024.0
+COUNT = 128
+WINDOWS = ["Rectangular", "Hann", "Hamming", "Blackman", "Flat-top"]
 
 
 def _layout(title: str, x_label: str, y_label: str) -> dict[str, Any]:
     return {
-        "title": {"text": title, "x": 0.02, "xanchor": "left"},
-        "margin": {"l": 68, "r": 22, "t": 58, "b": 58},
-        "xaxis": {"title": x_label, "showgrid": True},
-        "yaxis": {"title": y_label, "showgrid": True},
+        "title": {"text": title, "x": 0.02},
+        "xaxis": {"title": x_label},
+        "yaxis": {"title": y_label},
         "legend": {"orientation": "h", "y": 1.14},
-        "hovermode": "closest",
-        "uirevision": "keep-view",
+        "margin": {"l": 68, "r": 22, "t": 58, "b": 58},
+    }
+
+
+def _window(name: str) -> np.ndarray:
+    n = np.arange(COUNT)
+    angle = 2.0 * np.pi * n / (COUNT - 1)
+    if name == "Rectangular":
+        return np.ones(COUNT)
+    if name == "Hann":
+        return 0.5 - 0.5 * np.cos(angle)
+    if name == "Hamming":
+        return 0.54 - 0.46 * np.cos(angle)
+    if name == "Blackman":
+        return 0.42 - 0.5 * np.cos(angle) + 0.08 * np.cos(2.0 * angle)
+    if name == "Flat-top":
+        return (
+            1.0
+            - 1.93 * np.cos(angle)
+            + 1.29 * np.cos(2 * angle)
+            - 0.388 * np.cos(3 * angle)
+            + 0.0322 * np.cos(4 * angle)
+        )
+    raise ValueError("unknown window")
+
+
+def _metrics(name: str, offset: float, broken: bool) -> dict[str, Any]:
+    if name not in WINDOWS or not np.isfinite(offset) or not 0.0 <= offset <= 0.5:
+        raise ValueError("invalid window or fractional-bin offset")
+    sample = np.arange(COUNT)
+    tone = np.exp(1j * (2.0 * np.pi * (17.0 + offset) * sample / COUNT + 0.25))
+    rng = np.random.default_rng(SEED)
+    noise = (
+        0.02
+        / np.sqrt(2.0)
+        * (rng.standard_normal(COUNT) + 1j * rng.standard_normal(COUNT))
+    )
+    window = _window(name)
+    coherent_gain = float(np.mean(window))
+    fft_count = 2048
+    clean_spectrum = np.abs(np.fft.fft(tone * window, fft_count)) / (
+        COUNT * abs(coherent_gain)
+    )
+    noise_spectrum = np.abs(np.fft.fft(noise * window, fft_count)) / (
+        COUNT * abs(coherent_gain)
+    )
+    frequency_bins = np.arange(fft_count) * FS_HZ / fft_count
+    peak_index = int(np.argmax(clean_spectrum))
+    peak = float(clean_spectrum[peak_index])
+    threshold = peak / np.sqrt(2.0)
+    above = np.flatnonzero(clean_spectrum >= threshold)
+    near = above[np.abs(above - peak_index) < 128]
+    main_lobe_width_hz = float((near[-1] - near[0]) * FS_HZ / fft_count)
+    exclusion_bins = {
+        "Rectangular": 4,
+        "Hann": 8,
+        "Hamming": 8,
+        "Blackman": 12,
+        "Flat-top": 20,
+    }[name] * (fft_count // COUNT)
+    mask = np.ones(fft_count, dtype=bool)
+    mask[
+        max(0, peak_index - exclusion_bins) : min(
+            fft_count, peak_index + exclusion_bins + 1
+        )
+    ] = False
+    sidelobe_db = float(
+        20.0 * np.log10(max(np.max(clean_spectrum[mask]) / peak, 1e-15))
+    )
+    amplitude_error_db = float(20.0 * np.log10(max(peak, 1e-15)))
+    coarse = np.abs(np.fft.fft(tone)) / COUNT
+    offpeak_energy = float(np.sum(coarse**2) - np.max(coarse) ** 2)
+    actual_noise_floor = float(np.median(noise_spectrum))
+    clean_offpeak = float(np.median(clean_spectrum[mask]))
+    displayed_noise = clean_offpeak if broken else actual_noise_floor
+    return {
+        "frequency": frequency_bins[:1025],
+        "clean": clean_spectrum[:1025],
+        "noise": noise_spectrum[:1025],
+        "coherent_gain": coherent_gain,
+        "main_lobe_width_hz": main_lobe_width_hz,
+        "sidelobe_db": sidelobe_db,
+        "amplitude_error_db": amplitude_error_db,
+        "offpeak_energy": offpeak_energy,
+        "actual_noise_floor": actual_noise_floor,
+        "displayed_noise": displayed_noise,
     }
 
 
 def run(parameters: dict[str, Any]) -> dict[str, Any]:
-    primary = float(parameters["primary_scale"])
-    secondary = float(parameters["secondary_scale"])
-    noise_db = float(parameters["noise_db"])
-    broken_mode = bool(parameters["broken_mode"])
-    count = 192 + 16 * (ITEM_NUMBER % 4)
-    if count > MAX_POINTS:
-        raise ValueError("experiment exceeds the retained point ceiling")
-    rng = np.random.default_rng(SEED)
-    x = np.linspace(0.0, 1.0, count, endpoint=False)
-    variant = 1.0 + (ITEM_NUMBER % 7) / 5.0
-    noise_scale = 10.0 ** (noise_db / 20.0)
-
-    if PHASE == 1:
-        truth = np.cos(2.0 * np.pi * variant * primary * x + 0.4 * secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, count // 7) if broken_mode else measured
-    elif PHASE == 2:
-        tone = np.exp(1j * (2.0 * np.pi * (8.0 + variant * primary) * x + secondary))
-        measured = tone + noise_scale * (rng.standard_normal(count) + 1j * rng.standard_normal(count))
-        response_axis = np.fft.fftshift(np.fft.fftfreq(count, d=1.0 / count))
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / count
-        broken_response = np.abs(measured.real) if broken_mode else np.abs(measured)
-        truth = tone.real
-    elif PHASE == 3:
-        symbols = np.sign(np.sin(2.0 * np.pi * (4.0 + variant) * x))
-        carrier = np.cos(2.0 * np.pi * (18.0 + 2.0 * primary) * x + secondary)
-        truth = symbols * carrier
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(2 + 10 * secondary)) if broken_mode else measured
-    elif PHASE == 4:
-        bins = np.arange(count, dtype=float)
-        center = count * (0.25 + 0.25 * (primary - 0.5))
-        width = 2.0 + 4.0 * secondary
-        truth = np.exp(-0.5 * ((bins - center) / width) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = bins
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / np.sqrt(count)
-        broken_response = np.roll(measured, count // 3) if broken_mode else measured
-        x = bins
-    elif PHASE == 5:
-        cells = np.arange(count, dtype=float)
-        background = 0.2 + (0.45 * secondary) * (cells >= count // 2)
-        power = background + np.abs(noise_scale * rng.standard_normal(count))
-        target_bin = int(count * (0.3 + 0.25 * (primary - 0.5)))
-        power[target_bin] += 1.4
-        truth = power
-        measured = power
-        response_axis = cells
-        response = np.full(count, np.quantile(power, 0.82 + 0.1 * secondary))
-        if broken_mode:
-            response = np.full(count, np.mean(power) * (1.2 + primary))
-        broken_response = response
-        x = cells
-    elif PHASE == 6:
-        steps = np.arange(count, dtype=float)
-        truth = 0.04 * steps + 0.0002 * variant * secondary * steps**2
-        measured = truth + noise_scale * 8.0 * rng.standard_normal(count)
-        gain = np.clip(0.12 + 0.5 * primary, 0.05, 0.95)
-        response = np.empty(count)
-        response[0] = measured[0]
-        for index in range(1, count):
-            response[index] = response[index - 1] + gain * (measured[index] - response[index - 1])
-        response_axis = steps
-        broken_response = np.roll(response, 12) if broken_mode else response
-        x = steps
-    elif PHASE == 7:
-        angles = np.linspace(-90.0, 90.0, count)
-        u = np.sin(np.deg2rad(angles)) - np.sin(np.deg2rad(45.0 * (primary - 1.0)))
-        spacing = 0.45 + 0.45 * secondary
-        elements = 6 + ITEM_NUMBER % 7
-        denominator = np.sin(np.pi * spacing * u)
-        numerator = np.sin(elements * np.pi * spacing * u)
-        response = np.where(np.abs(denominator) < 1e-10, 1.0, np.abs(numerator / (elements * denominator)))
-        truth = response
-        measured = np.maximum(response + noise_scale * rng.standard_normal(count), 0.0)
-        response_axis = angles
-        broken_response = np.roll(response, 9) if broken_mode else response
-        x = angles
-    elif PHASE == 8:
-        bins = np.arange(count, dtype=float)
-        beat_bin = count * (0.15 + 0.35 * (primary - 0.5))
-        truth = np.cos(2.0 * np.pi * beat_bin * bins / count + secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(8 + 16 * secondary)) if broken_mode else measured
-        x = bins
-    else:
-        coordinate = np.linspace(-1.0, 1.0, count)
-        width = 0.05 + 0.16 / primary
-        truth = np.exp(-0.5 * ((coordinate + 0.25) / width) ** 2) + 0.65 * np.exp(-0.5 * ((coordinate - 0.3) / (1.4 * width)) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        kernel = np.ones(3 + 2 * int(secondary * 5))
-        kernel /= kernel.sum()
-        response = np.convolve(measured, kernel, mode="same")
-        response_axis = coordinate
-        broken_response = np.roll(response, 18) + 0.25 * np.roll(response, -13) if broken_mode else response
-        x = coordinate
-
-    displayed = broken_response if broken_mode else measured
-    separation = float(np.max(response) - np.median(response))
-    rmse = float(np.sqrt(np.mean((np.asarray(displayed).real - np.asarray(truth).real) ** 2)))
-    signature = [float(count), primary, secondary, noise_db, float(np.mean(np.asarray(displayed).real)), float(np.std(np.asarray(displayed).real)), separation, rmse]
-    sweep_primary = [0.6, 1.0, 1.4]
-    sweep_secondary = [0.0, 0.5, 1.0]
-    sweep_response = [variant * value for value in sweep_primary]
-    stress_response = [separation / (1.0 + value) for value in sweep_secondary]
-    title = 'Separate Leakage from Noise'
-
+    name = str(parameters["window_name"])
+    offset = float(parameters["tone_bin_offset"])
+    broken = bool(parameters["broken_mode"])
+    case = _metrics(name, offset, broken)
+    window_width = [
+        _metrics(value, 0.35, False)["main_lobe_width_hz"] for value in WINDOWS
+    ]
+    offset_sweep = np.array([0.0, 0.2, 0.35, 0.5])
+    leakage_sweep = [
+        _metrics("Rectangular", float(value), False)["offpeak_energy"]
+        for value in offset_sweep
+    ]
+    signature = [
+        float(WINDOWS.index(name)),
+        offset,
+        case["coherent_gain"],
+        case["main_lobe_width_hz"],
+        case["amplitude_error_db"],
+        case["sidelobe_db"],
+        case["offpeak_energy"],
+        case["actual_noise_floor"],
+        case["displayed_noise"],
+    ]
     return {
         "metrics": [
-            {"id": "primary", "label": 'Record Coherence', "value": primary, "unit": "× baseline", "emphasis": "primary"},
-            {"id": "response_separation", "label": "Response separation", "value": separation, "unit": "normalized"},
-            {"id": "model_error", "label": "Model/display error", "value": rmse, "unit": "normalized"},
-            {"id": "points", "label": "Bounded points", "value": count, "unit": "points"},
+            {
+                "id": "coherent_gain",
+                "label": "Coherent gain",
+                "value": case["coherent_gain"],
+                "unit": "ratio",
+            },
+            {
+                "id": "main_lobe_width",
+                "label": "-3 dB main-lobe width",
+                "value": case["main_lobe_width_hz"],
+                "unit": "Hz",
+                "emphasis": "primary",
+            },
+            {
+                "id": "amplitude_error",
+                "label": "Peak amplitude error",
+                "value": case["amplitude_error_db"],
+                "unit": "dB",
+            },
+            {
+                "id": "sidelobe",
+                "label": "Maximum sidelobe",
+                "value": case["sidelobe_db"],
+                "unit": "dBc",
+            },
+            {
+                "id": "noise_floor",
+                "label": "Displayed noise floor",
+                "value": case["displayed_noise"],
+                "unit": "V",
+            },
         ],
         "plots": {
-            "model_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "physical/model truth", "x": x, "y": np.asarray(truth).real},
-                {"type": "scatter", "mode": "lines", "name": "measured/processed", "x": x, "y": np.asarray(displayed).real},
-            ], "layout": _layout(title + " — model view", 'normalized frequency', 'spectral magnitude'), "config": {"responsive": True, "displaylogo": False}},
-            "response_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "response", "x": response_axis, "y": np.asarray(response).real},
-            ], "layout": _layout(title + " — response view", 'normalized frequency', 'spectral magnitude'), "config": {"responsive": True, "displaylogo": False}},
-            "parameter_sweeps": {"data": [
-                {"type": "scatter", "mode": "lines+markers", "name": "primary scale", "x": sweep_primary, "y": sweep_response},
-                {"type": "scatter", "mode": "lines+markers", "name": "secondary stress", "x": sweep_secondary, "y": stress_response},
-            ], "layout": _layout("Two one-variable sweeps", "control value", "response statistic"), "config": {"responsive": True, "displaylogo": False}},
-            "broken_case": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "recovered", "x": x, "y": np.asarray(measured).real},
-                {"type": "scatter", "mode": "lines", "name": "broken" if broken_mode else "enable broken mode", "x": x, "y": np.asarray(broken_response).real},
-            ], "layout": _layout("Intentional assumption failure", 'normalized frequency', 'spectral magnitude'), "config": {"responsive": True, "displaylogo": False}},
+            "leakage_spectrum": {
+                "data": [
+                    {
+                        "type": "scatter",
+                        "mode": "lines",
+                        "name": "clean finite-record tone",
+                        "x": case["frequency"],
+                        "y": 20 * np.log10(np.maximum(case["clean"], 1e-8)),
+                    },
+                    {
+                        "type": "scatter",
+                        "mode": "lines",
+                        "name": "seeded noise",
+                        "x": case["frequency"],
+                        "y": 20 * np.log10(np.maximum(case["noise"], 1e-8)),
+                    },
+                ],
+                "layout": _layout(
+                    "Structured leakage versus random noise",
+                    "Frequency (Hz)",
+                    "Magnitude (dB re 1 V)",
+                ),
+                "config": {"responsive": True, "displaylogo": False},
+            },
+            "window_tradeoffs": {
+                "data": [
+                    {
+                        "type": "bar",
+                        "name": "main-lobe width",
+                        "x": WINDOWS,
+                        "y": window_width,
+                    }
+                ],
+                "layout": _layout("Window tradeoff", "Window", "-3 dB width (Hz)"),
+                "config": {"responsive": True, "displaylogo": False},
+            },
+            "parameter_sweeps": {
+                "data": [
+                    {
+                        "type": "scatter",
+                        "mode": "lines+markers",
+                        "name": "rectangular off-peak energy",
+                        "x": offset_sweep,
+                        "y": leakage_sweep,
+                    }
+                ],
+                "layout": _layout(
+                    "Fractional-bin leakage sweep",
+                    "Fractional-bin offset",
+                    "Off-peak energy (V²)",
+                ),
+                "config": {"responsive": True, "displaylogo": False},
+            },
+            "broken_case": {
+                "data": [
+                    {
+                        "type": "bar",
+                        "name": "noise estimate",
+                        "x": ["actual seeded noise", "displayed estimate"],
+                        "y": [case["actual_noise_floor"], case["displayed_noise"]],
+                    }
+                ],
+                "layout": _layout(
+                    "Leakage mislabeled as noise", "Estimator", "Median magnitude (V)"
+                ),
+                "config": {"responsive": True, "displaylogo": False},
+            },
         },
         "explanations": {
-            "observation": f"The {title} model uses a bounded deterministic spectral/IQ processing experiment. Primary scale={primary:.2f} and secondary stress={secondary:.2f} remain independently controllable.",
-            "broken": "Broken mode deliberately violates the lesson's central interpretation assumption so the displayed response becomes ambiguous, biased, contaminated, or defocused.",
-            "recovery": "Disable broken mode, restore both scales to 1.0 and 0.25, then connect the recovered shape to the pinned source equations before changing one control at a time.",
+            "observation": "Finite observation creates a repeat-boundary discontinuity and a deterministic leakage pattern; a window reshapes that pattern with measurable width, sidelobe, and amplitude tradeoffs.",
+            "broken": "Broken mode calls the clean tone's nonpeak projections noise even though the controlled input contains no random component there.",
+            "recovery": "Separate the known clean-tone response from the seeded noise realization and average or characterize noise only in linear physical units.",
         },
-        "diagnostics": {"seed": SEED, "item_number": ITEM_NUMBER, "point_count": count, "signature": signature, "broken_active": broken_mode},
+        "diagnostics": {
+            "seed": SEED,
+            "signature": signature,
+            "window": name,
+            "broken_active": broken,
+        },
     }
