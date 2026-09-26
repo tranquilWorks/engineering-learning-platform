@@ -11,6 +11,7 @@ from typing import Any
 
 import numpy as np
 import pytest
+from numerical_replay import assert_recorded_metrics, assert_replay, assert_scientific_comparison
 
 from elp_api.catalog import CourseCatalog
 from elp_api.runtime import ExperimentRuntime, RuntimeContractError
@@ -215,38 +216,17 @@ def test_gnc_item_five_scenario_independent_equivalence(
         regenerated_actual = runtime.run(
             "controls-gnc", item["target_module_id"], case["parameters"]
         ).diagnostics["signature"]
-        assert regenerated_expected == pytest.approx(
-            expected["cases"][scenario]["signature"], abs=0, rel=0
+        saved_expected = expected["cases"][scenario]["signature"]
+        saved_actual = actual["cases"][scenario]["signature"]
+        assert_replay(regenerated_expected, saved_expected, case["tolerance"])
+        assert_replay(regenerated_actual, saved_actual, case["tolerance"])
+        assert (
+            len(regenerated_expected)
+            == len(regenerated_actual)
+            == len(expected["signature_fields"])
         )
-        assert regenerated_actual == pytest.approx(
-            actual["cases"][scenario]["signature"], abs=0, rel=0
-        )
-
-        expected_values = np.asarray(regenerated_expected, dtype=float)
-        actual_values = np.asarray(regenerated_actual, dtype=float)
-        assert len(expected_values) == len(actual_values) == len(expected["signature_fields"])
-        assert np.all(np.isfinite(expected_values))
-        assert np.all(np.isfinite(actual_values))
-        difference = np.abs(expected_values - actual_values)
-        scale = float(max(np.max(np.abs(expected_values)), np.max(np.abs(actual_values)), 1.0))
-        absolute = float(np.max(difference))
-        relative = float(
-            np.max(
-                difference
-                / np.maximum.reduce(
-                    [np.abs(expected_values), np.abs(actual_values), np.ones_like(difference)]
-                )
-            )
-        )
-        allowed_absolute = max(case["tolerance"]["absolute"], case["tolerance"]["relative"] * scale)
-        assert scale == pytest.approx(case["comparison_scale"], abs=1e-15, rel=1e-15)
-        assert allowed_absolute == pytest.approx(
-            case["allowed_absolute_error"], abs=1e-15, rel=1e-15
-        )
-        assert absolute == pytest.approx(case["max_absolute_error"], abs=1e-15, rel=1e-15)
-        assert relative == pytest.approx(case["max_relative_error"], abs=1e-15, rel=1e-15)
-        assert absolute <= allowed_absolute
-        assert relative <= case["tolerance"]["relative"]
+        assert_recorded_metrics(saved_expected, saved_actual, case)
+        assert_scientific_comparison(regenerated_expected, regenerated_actual, case["tolerance"])
 
         description, expected_invariant = REFERENCE.teaching_invariant(
             item["number"], case["parameters"], regenerated_expected

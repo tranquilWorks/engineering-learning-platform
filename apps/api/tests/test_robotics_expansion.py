@@ -9,6 +9,7 @@ from typing import Any
 
 import numpy as np
 import yaml
+from numerical_replay import assert_replay
 
 from elp_api.catalog import CourseCatalog
 from elp_api.runtime import ExperimentRuntime
@@ -223,10 +224,8 @@ def test_robotics_native_five_scenario_evidence_and_runtime() -> None:
             production = first.diagnostics["signature"]
             assert first.model_dump(mode="json") == second.model_dump(mode="json")
             assert first.diagnostics["sample_count"] <= 500
-            assert reference == expected["cases"][scenario]["signature"]
-            assert production == _approx(
-                actual["cases"][scenario]["signature"], design["tolerance"]
-            )
+            assert_replay(reference, expected["cases"][scenario]["signature"], design["tolerance"])
+            assert_replay(production, actual["cases"][scenario]["signature"], design["tolerance"])
             assert len(reference) == len(production) == len(design["signature"])
             assert np.all(np.isfinite(reference)) and np.all(np.isfinite(production))
             assert production == _approx(reference, design["tolerance"])

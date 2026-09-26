@@ -68,7 +68,10 @@ def _finite_leaves(value: Any) -> list[float]:
 
 
 def test_control_plane_and_immutable_source_identities() -> None:
-    contract = _load_yaml(ROOT / "contracts/active-batch.yaml")
+    # Exact contract retained from completed target 01a510244801cbf2c3b7ce990693aac9dc5959c1.
+    retained = ROOT / "docs/evidence/ELP-VERIFY-REPLAY-01-p11-p20-contract.yaml"
+    assert _sha256(retained) == "a834748236ec70a0728322aa10340aad9f6f498a516fba8e2c1dda82f687f4ea"
+    contract = _load_yaml(retained)
     assert contract["batch"]["id"] == "ELP-DSP-FIDELITY-P11-P20"
     assert contract["sources"]["source_pin"] == "5d73667a486df4a7b6c581e4c9406e810ed4f0f6"
     assert contract["sources"]["source_tree"] == "7a3a0f9adce607e10097724c13745eace212f4e1"

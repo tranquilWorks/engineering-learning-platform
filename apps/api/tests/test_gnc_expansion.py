@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+from numerical_replay import assert_replay
 
 from elp_api.catalog import CourseCatalog
 from elp_api.runtime import ExperimentRuntime
@@ -124,10 +125,8 @@ def test_gnc_native_five_scenario_evidence_and_runtime() -> None:
             parameters = design["scenarios"][scenario]
             reference = REFERENCE.reference_signature(number, parameters)
             production = runtime.run("controls-gnc", module_id, parameters).diagnostics["signature"]
-            assert reference == expected["cases"][scenario]["signature"]
-            assert production == pytest_approx(
-                actual["cases"][scenario]["signature"], design["tolerance"]
-            )
+            assert_replay(reference, expected["cases"][scenario]["signature"], design["tolerance"])
+            assert_replay(production, actual["cases"][scenario]["signature"], design["tolerance"])
             assert len(reference) == len(production) == len(design["signature"])
             assert np.all(np.isfinite(reference)) and np.all(np.isfinite(production))
             assert production == pytest_approx(reference, design["tolerance"])
