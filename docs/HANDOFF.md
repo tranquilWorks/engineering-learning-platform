@@ -14,6 +14,9 @@ activation does not invalidate completed work.
 
 See `docs/evidence/ELP-VERIFY-REPLAY-01-2026-09-26.md` for baseline failures,
 read-only audit, negative controls, verification results, and rollback.
+The reviewable repair is [PR #45](https://github.com/tranquilWorks/engineering-learning-platform/pull/45)
+on branch `codex/dsp-fidelity-continuation-20260926`; implementation commit
+`3156f62` passed the retained local gates, with subsequent evidence-only cleanup.
 Target protected-branch merge still requires human approval. After this repair
 merges, reissue the control P21-P28 contract against the exact resulting commit
 and tree before activating that manually gated batch.
