@@ -65,7 +65,8 @@ All required local gates passed. Exact commands are in `contracts/verification.y
 The full build retains its existing large Plotly chunk warning. The three Python
 warnings concern Starlette/httpx and FastAPI ORJSONResponse deprecations; no
 runtime/dependency behavior was changed in this test-only batch. Test and build
-logs use the `ELP-VERIFY-REPLAY-01-replay-*` prefix. Python environment versions
+logs use the `ELP-VERIFY-REPLAY-01-replay-*` prefix. Retained text logs remove
+terminal color codes and trailing whitespace; numerical values and results are unchanged. Python environment versions
 are retained separately; frontend used Node 22.23.3. This is software verification
 only, not browser/accessibility or deployment evidence.
 

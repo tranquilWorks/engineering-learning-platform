@@ -37,7 +37,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
         assert equivalence["production_origin"]["derived_from_production_output"] is True
         assert equivalence["production_origin"]["perturbs_production_output"] is False
         assert [case["scenario"] for case in equivalence["cases"]] == list(SCENARIOS)
-    
+
         expected_path = COURSE_ROOT / equivalence["cases"][0]["expected"]["path"]
         actual_path = COURSE_ROOT / equivalence["cases"][0]["actual"]["path"]
         assert expected_path.name == "expected-independent.json"
@@ -52,7 +52,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
         assert actual["origin"] == equivalence["production_origin"]
         assert expected["signature_fields"] == actual["signature_fields"]
         assert expected_path.read_bytes() != actual_path.read_bytes()
-    
+
         for case in equivalence["cases"]:
             scenario = case["scenario"]
             assert case["evidence_key"] == scenario
@@ -60,7 +60,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
             assert case["parameters"] == actual["cases"][scenario]["parameters"]
             assert _sha256(expected_path) == case["expected"]["sha256"]
             assert _sha256(actual_path) == case["actual"]["sha256"]
-    
+
             regenerated_expected = REFERENCE.reference_signature(item["number"], case["parameters"])
             regenerated_actual = runtime.run(
                 "controls-gnc", item["target_module_id"], case["parameters"]
@@ -69,11 +69,11 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
                 expected["cases"][scenario]["signature"], abs=0, rel=0
             )
 E           assert [0.5, 2.0, 3....1923927240686] == approx([0.5 ±...68 ± 0.0e+00])
-E             
+E
 E             comparison failed. Mismatched elements: 1 / 5:
 E             Max absolute difference: 5.684341886080802e-14
 E             Max relative difference: 2.2573104034881677e-16
-E             Index | Obtained           | Expected                   
+E             Index | Obtained           | Expected
 E             4     | 251.81923927240686 | 251.8192392724068 ± 0.0e+00
 
 apps/api/tests/test_gnc_course.py:218: AssertionError
@@ -102,7 +102,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
         assert equivalence["production_origin"]["derived_from_production_output"] is True
         assert equivalence["production_origin"]["perturbs_production_output"] is False
         assert [case["scenario"] for case in equivalence["cases"]] == list(SCENARIOS)
-    
+
         expected_path = COURSE_ROOT / equivalence["cases"][0]["expected"]["path"]
         actual_path = COURSE_ROOT / equivalence["cases"][0]["actual"]["path"]
         assert expected_path.name == "expected-independent.json"
@@ -117,7 +117,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
         assert actual["origin"] == equivalence["production_origin"]
         assert expected["signature_fields"] == actual["signature_fields"]
         assert expected_path.read_bytes() != actual_path.read_bytes()
-    
+
         for case in equivalence["cases"]:
             scenario = case["scenario"]
             assert case["evidence_key"] == scenario
@@ -125,7 +125,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
             assert case["parameters"] == actual["cases"][scenario]["parameters"]
             assert _sha256(expected_path) == case["expected"]["sha256"]
             assert _sha256(actual_path) == case["actual"]["sha256"]
-    
+
             regenerated_expected = REFERENCE.reference_signature(item["number"], case["parameters"])
             regenerated_actual = runtime.run(
                 "controls-gnc", item["target_module_id"], case["parameters"]
@@ -134,13 +134,13 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
                 expected["cases"][scenario]["signature"], abs=0, rel=0
             )
 E           assert [0.3490658503...9343535910182] == approx([0.349...16 ± 0.0e+00])
-E             
+E
 E             comparison failed. Mismatched elements: 3 / 5:
 E             Max absolute difference: 7.424616477180734e-16
 E             Max relative difference: 2.902683345508859e-14
-E             Index | Obtained            | Expected                      
+E             Index | Obtained            | Expected
 E             2     | 0.02557845825197702 | 0.025578458251977763 ± 0.0e+00
-E             3     | 0.1574005994947832  | 0.15740059949478324 ± 0.0e+00 
+E             3     | 0.1574005994947832  | 0.15740059949478324 ± 0.0e+00
 E             4     | 0.16299343535910182 | 0.1629934353591016 ± 0.0e+00
 
 apps/api/tests/test_gnc_course.py:218: AssertionError
@@ -169,7 +169,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
         assert equivalence["production_origin"]["derived_from_production_output"] is True
         assert equivalence["production_origin"]["perturbs_production_output"] is False
         assert [case["scenario"] for case in equivalence["cases"]] == list(SCENARIOS)
-    
+
         expected_path = COURSE_ROOT / equivalence["cases"][0]["expected"]["path"]
         actual_path = COURSE_ROOT / equivalence["cases"][0]["actual"]["path"]
         assert expected_path.name == "expected-independent.json"
@@ -184,7 +184,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
         assert actual["origin"] == equivalence["production_origin"]
         assert expected["signature_fields"] == actual["signature_fields"]
         assert expected_path.read_bytes() != actual_path.read_bytes()
-    
+
         for case in equivalence["cases"]:
             scenario = case["scenario"]
             assert case["evidence_key"] == scenario
@@ -192,7 +192,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
             assert case["parameters"] == actual["cases"][scenario]["parameters"]
             assert _sha256(expected_path) == case["expected"]["sha256"]
             assert _sha256(actual_path) == case["actual"]["sha256"]
-    
+
             regenerated_expected = REFERENCE.reference_signature(item["number"], case["parameters"])
             regenerated_actual = runtime.run(
                 "controls-gnc", item["target_module_id"], case["parameters"]
@@ -204,11 +204,11 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
                 actual["cases"][scenario]["signature"], abs=0, rel=0
             )
 E           assert [4.0, 0.5, -7...1114275582331] == approx([4.0 ±...31 ± 0.0e+00])
-E             
+E
 E             comparison failed. Mismatched elements: 2 / 5:
 E             Max absolute difference: 2.842170943040401e-14
 E             Max relative difference: 4.0287969662863245e-15
-E             Index | Obtained           | Expected                    
+E             Index | Obtained           | Expected
 E             2     | -7.054639305043622 | -7.054639305043594 ± 0.0e+00
 E             3     | 1.6119733573881572 | 1.611973357388157 ± 0.0e+00
 
@@ -238,7 +238,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
         assert equivalence["production_origin"]["derived_from_production_output"] is True
         assert equivalence["production_origin"]["perturbs_production_output"] is False
         assert [case["scenario"] for case in equivalence["cases"]] == list(SCENARIOS)
-    
+
         expected_path = COURSE_ROOT / equivalence["cases"][0]["expected"]["path"]
         actual_path = COURSE_ROOT / equivalence["cases"][0]["actual"]["path"]
         assert expected_path.name == "expected-independent.json"
@@ -253,7 +253,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
         assert actual["origin"] == equivalence["production_origin"]
         assert expected["signature_fields"] == actual["signature_fields"]
         assert expected_path.read_bytes() != actual_path.read_bytes()
-    
+
         for case in equivalence["cases"]:
             scenario = case["scenario"]
             assert case["evidence_key"] == scenario
@@ -261,7 +261,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
             assert case["parameters"] == actual["cases"][scenario]["parameters"]
             assert _sha256(expected_path) == case["expected"]["sha256"]
             assert _sha256(actual_path) == case["actual"]["sha256"]
-    
+
             regenerated_expected = REFERENCE.reference_signature(item["number"], case["parameters"])
             regenerated_actual = runtime.run(
                 "controls-gnc", item["target_module_id"], case["parameters"]
@@ -270,11 +270,11 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
                 expected["cases"][scenario]["signature"], abs=0, rel=0
             )
 E           assert [1.5, 2.0, 0....99987097, 6.0] == approx([1.5 ±....0 ± 0.0e+00])
-E             
+E
 E             comparison failed. Mismatched elements: 1 / 5:
 E             Max absolute difference: 5.329070518200751e-15
 E             Max relative difference: 4.440892098505401e-15
-E             Index | Obtained           | Expected                    
+E             Index | Obtained           | Expected
 E             3     | 1.1999999999987097 | 1.1999999999987043 ± 0.0e+00
 
 apps/api/tests/test_gnc_course.py:218: AssertionError
@@ -303,7 +303,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
         assert equivalence["production_origin"]["derived_from_production_output"] is True
         assert equivalence["production_origin"]["perturbs_production_output"] is False
         assert [case["scenario"] for case in equivalence["cases"]] == list(SCENARIOS)
-    
+
         expected_path = COURSE_ROOT / equivalence["cases"][0]["expected"]["path"]
         actual_path = COURSE_ROOT / equivalence["cases"][0]["actual"]["path"]
         assert expected_path.name == "expected-independent.json"
@@ -318,7 +318,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
         assert actual["origin"] == equivalence["production_origin"]
         assert expected["signature_fields"] == actual["signature_fields"]
         assert expected_path.read_bytes() != actual_path.read_bytes()
-    
+
         for case in equivalence["cases"]:
             scenario = case["scenario"]
             assert case["evidence_key"] == scenario
@@ -326,7 +326,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
             assert case["parameters"] == actual["cases"][scenario]["parameters"]
             assert _sha256(expected_path) == case["expected"]["sha256"]
             assert _sha256(actual_path) == case["actual"]["sha256"]
-    
+
             regenerated_expected = REFERENCE.reference_signature(item["number"], case["parameters"])
             regenerated_actual = runtime.run(
                 "controls-gnc", item["target_module_id"], case["parameters"]
@@ -335,11 +335,11 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
                 expected["cases"][scenario]["signature"], abs=0, rel=0
             )
 E           assert [0.5, 3.0, 1....8698365109483] == approx([0.5 ±...83 ± 0.0e+00])
-E             
+E
 E             comparison failed. Mismatched elements: 1 / 5:
 E             Max absolute difference: 2.220446049250313e-16
 E             Max relative difference: 1.6566460959563093e-16
-E             Index | Obtained           | Expected                   
+E             Index | Obtained           | Expected
 E             3     | 1.3403261292017512 | 1.340326129201751 ± 0.0e+00
 
 apps/api/tests/test_gnc_course.py:218: AssertionError
@@ -368,7 +368,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
         assert equivalence["production_origin"]["derived_from_production_output"] is True
         assert equivalence["production_origin"]["perturbs_production_output"] is False
         assert [case["scenario"] for case in equivalence["cases"]] == list(SCENARIOS)
-    
+
         expected_path = COURSE_ROOT / equivalence["cases"][0]["expected"]["path"]
         actual_path = COURSE_ROOT / equivalence["cases"][0]["actual"]["path"]
         assert expected_path.name == "expected-independent.json"
@@ -383,7 +383,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
         assert actual["origin"] == equivalence["production_origin"]
         assert expected["signature_fields"] == actual["signature_fields"]
         assert expected_path.read_bytes() != actual_path.read_bytes()
-    
+
         for case in equivalence["cases"]:
             scenario = case["scenario"]
             assert case["evidence_key"] == scenario
@@ -391,7 +391,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
             assert case["parameters"] == actual["cases"][scenario]["parameters"]
             assert _sha256(expected_path) == case["expected"]["sha256"]
             assert _sha256(actual_path) == case["actual"]["sha256"]
-    
+
             regenerated_expected = REFERENCE.reference_signature(item["number"], case["parameters"])
             regenerated_actual = runtime.run(
                 "controls-gnc", item["target_module_id"], case["parameters"]
@@ -400,11 +400,11 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
                 expected["cases"][scenario]["signature"], abs=0, rel=0
             )
 E           assert [1.0, 2.0, 0....00000002, 1.2] == approx([1.0 ±....2 ± 0.0e+00])
-E             
+E
 E             comparison failed. Mismatched elements: 1 / 6:
 E             Max absolute difference: 1.1102230246251565e-16
 E             Max relative difference: 1.8503717077085936e-16
-E             Index | Obtained           | Expected                    
+E             Index | Obtained           | Expected
 E             4     | 0.6000000000000002 | 0.6000000000000001 ± 0.0e+00
 
 apps/api/tests/test_gnc_course.py:218: AssertionError
@@ -433,7 +433,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
         assert equivalence["production_origin"]["derived_from_production_output"] is True
         assert equivalence["production_origin"]["perturbs_production_output"] is False
         assert [case["scenario"] for case in equivalence["cases"]] == list(SCENARIOS)
-    
+
         expected_path = COURSE_ROOT / equivalence["cases"][0]["expected"]["path"]
         actual_path = COURSE_ROOT / equivalence["cases"][0]["actual"]["path"]
         assert expected_path.name == "expected-independent.json"
@@ -448,7 +448,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
         assert actual["origin"] == equivalence["production_origin"]
         assert expected["signature_fields"] == actual["signature_fields"]
         assert expected_path.read_bytes() != actual_path.read_bytes()
-    
+
         for case in equivalence["cases"]:
             scenario = case["scenario"]
             assert case["evidence_key"] == scenario
@@ -456,7 +456,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
             assert case["parameters"] == actual["cases"][scenario]["parameters"]
             assert _sha256(expected_path) == case["expected"]["sha256"]
             assert _sha256(actual_path) == case["actual"]["sha256"]
-    
+
             regenerated_expected = REFERENCE.reference_signature(item["number"], case["parameters"])
             regenerated_actual = runtime.run(
                 "controls-gnc", item["target_module_id"], case["parameters"]
@@ -465,11 +465,11 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
                 expected["cases"][scenario]["signature"], abs=0, rel=0
             )
 E           assert [2.0, 0.0, 0....943332955e-06] == approx([2.0 ±...06 ± 0.0e+00])
-E             
+E
 E             comparison failed. Mismatched elements: 2 / 5:
 E             Max absolute difference: 9.317362419797304e-21
 E             Max relative difference: 2.5659642217544874e-15
-E             Index | Obtained                | Expected                         
+E             Index | Obtained                | Expected
 E             3     | -2.475773843823722e-06  | -2.4757738438237156e-06 ± 0.0e+00
 E             4     | -5.2778996943332955e-06 | -5.277899694333286e-06 ± 0.0e+00
 
@@ -499,7 +499,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
         assert equivalence["production_origin"]["derived_from_production_output"] is True
         assert equivalence["production_origin"]["perturbs_production_output"] is False
         assert [case["scenario"] for case in equivalence["cases"]] == list(SCENARIOS)
-    
+
         expected_path = COURSE_ROOT / equivalence["cases"][0]["expected"]["path"]
         actual_path = COURSE_ROOT / equivalence["cases"][0]["actual"]["path"]
         assert expected_path.name == "expected-independent.json"
@@ -514,7 +514,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
         assert actual["origin"] == equivalence["production_origin"]
         assert expected["signature_fields"] == actual["signature_fields"]
         assert expected_path.read_bytes() != actual_path.read_bytes()
-    
+
         for case in equivalence["cases"]:
             scenario = case["scenario"]
             assert case["evidence_key"] == scenario
@@ -522,7 +522,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
             assert case["parameters"] == actual["cases"][scenario]["parameters"]
             assert _sha256(expected_path) == case["expected"]["sha256"]
             assert _sha256(actual_path) == case["actual"]["sha256"]
-    
+
             regenerated_expected = REFERENCE.reference_signature(item["number"], case["parameters"])
             regenerated_actual = runtime.run(
                 "controls-gnc", item["target_module_id"], case["parameters"]
@@ -531,11 +531,11 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
                 expected["cases"][scenario]["signature"], abs=0, rel=0
             )
 E           assert [4.0, 1.0, 1....6898377340372] == approx([4.0 ±...67 ± 0.0e+00])
-E             
+E
 E             comparison failed. Mismatched elements: 3 / 6:
 E             Max absolute difference: 2.544631172440859e-13
 E             Max relative difference: 1.296448643430747e-13
-E             Index | Obtained           | Expected                    
+E             Index | Obtained           | Expected
 E             3     | 1.9627705156967032 | 1.9627705156969577 ± 0.0e+00
 E             4     | 1.9627705156967032 | 1.9627705156969577 ± 0.0e+00
 E             5     | 4.486898377340372  | 4.486898377340367 ± 0.0e+00
@@ -566,7 +566,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
         assert equivalence["production_origin"]["derived_from_production_output"] is True
         assert equivalence["production_origin"]["perturbs_production_output"] is False
         assert [case["scenario"] for case in equivalence["cases"]] == list(SCENARIOS)
-    
+
         expected_path = COURSE_ROOT / equivalence["cases"][0]["expected"]["path"]
         actual_path = COURSE_ROOT / equivalence["cases"][0]["actual"]["path"]
         assert expected_path.name == "expected-independent.json"
@@ -581,7 +581,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
         assert actual["origin"] == equivalence["production_origin"]
         assert expected["signature_fields"] == actual["signature_fields"]
         assert expected_path.read_bytes() != actual_path.read_bytes()
-    
+
         for case in equivalence["cases"]:
             scenario = case["scenario"]
             assert case["evidence_key"] == scenario
@@ -589,7 +589,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
             assert case["parameters"] == actual["cases"][scenario]["parameters"]
             assert _sha256(expected_path) == case["expected"]["sha256"]
             assert _sha256(actual_path) == case["actual"]["sha256"]
-    
+
             regenerated_expected = REFERENCE.reference_signature(item["number"], case["parameters"])
             regenerated_actual = runtime.run(
                 "controls-gnc", item["target_module_id"], case["parameters"]
@@ -598,11 +598,11 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
                 expected["cases"][scenario]["signature"], abs=0, rel=0
             )
 E           assert [1.0, 1.0, 1....52375125, 1.5] == approx([1.0 ±....5 ± 0.0e+00])
-E             
+E
 E             comparison failed. Mismatched elements: 1 / 5:
 E             Max absolute difference: 1.1726841719905678e-10
 E             Max relative difference: 1.6470447897795694e-09
-E             Index | Obtained            | Expected                     
+E             Index | Obtained            | Expected
 E             3     | 0.07119928852375125 | 0.07119928864101967 ± 0.0e+00
 
 apps/api/tests/test_gnc_course.py:218: AssertionError
@@ -631,7 +631,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
         assert equivalence["production_origin"]["derived_from_production_output"] is True
         assert equivalence["production_origin"]["perturbs_production_output"] is False
         assert [case["scenario"] for case in equivalence["cases"]] == list(SCENARIOS)
-    
+
         expected_path = COURSE_ROOT / equivalence["cases"][0]["expected"]["path"]
         actual_path = COURSE_ROOT / equivalence["cases"][0]["actual"]["path"]
         assert expected_path.name == "expected-independent.json"
@@ -646,7 +646,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
         assert actual["origin"] == equivalence["production_origin"]
         assert expected["signature_fields"] == actual["signature_fields"]
         assert expected_path.read_bytes() != actual_path.read_bytes()
-    
+
         for case in equivalence["cases"]:
             scenario = case["scenario"]
             assert case["evidence_key"] == scenario
@@ -654,7 +654,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
             assert case["parameters"] == actual["cases"][scenario]["parameters"]
             assert _sha256(expected_path) == case["expected"]["sha256"]
             assert _sha256(actual_path) == case["actual"]["sha256"]
-    
+
             regenerated_expected = REFERENCE.reference_signature(item["number"], case["parameters"])
             regenerated_actual = runtime.run(
                 "controls-gnc", item["target_module_id"], case["parameters"]
@@ -666,11 +666,11 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
                 actual["cases"][scenario]["signature"], abs=0, rel=0
             )
 E           assert [3.0, 5.0, 10...506, 0.0, 5.0] == approx([3.0 ±....0 ± 0.0e+00])
-E             
+E
 E             comparison failed. Mismatched elements: 1 / 5:
 E             Max absolute difference: 1.4210854715202004e-14
 E             Max relative difference: 1.2943395074367147e-16
-E             Index | Obtained           | Expected                    
+E             Index | Obtained           | Expected
 E             2     | 109.79232754275506 | 109.79232754275507 ± 0.0e+00
 
 apps/api/tests/test_gnc_course.py:221: AssertionError
@@ -699,7 +699,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
         assert equivalence["production_origin"]["derived_from_production_output"] is True
         assert equivalence["production_origin"]["perturbs_production_output"] is False
         assert [case["scenario"] for case in equivalence["cases"]] == list(SCENARIOS)
-    
+
         expected_path = COURSE_ROOT / equivalence["cases"][0]["expected"]["path"]
         actual_path = COURSE_ROOT / equivalence["cases"][0]["actual"]["path"]
         assert expected_path.name == "expected-independent.json"
@@ -714,7 +714,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
         assert actual["origin"] == equivalence["production_origin"]
         assert expected["signature_fields"] == actual["signature_fields"]
         assert expected_path.read_bytes() != actual_path.read_bytes()
-    
+
         for case in equivalence["cases"]:
             scenario = case["scenario"]
             assert case["evidence_key"] == scenario
@@ -722,7 +722,7 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
             assert case["parameters"] == actual["cases"][scenario]["parameters"]
             assert _sha256(expected_path) == case["expected"]["sha256"]
             assert _sha256(actual_path) == case["actual"]["sha256"]
-    
+
             regenerated_expected = REFERENCE.reference_signature(item["number"], case["parameters"])
             regenerated_actual = runtime.run(
                 "controls-gnc", item["target_module_id"], case["parameters"]
@@ -731,12 +731,12 @@ runtime = <elp_api.runtime.ExperimentRuntime object at 0x7de2a279d6a0>
                 expected["cases"][scenario]["signature"], abs=0, rel=0
             )
 E           assert [0.2, 0.1, 2....6275153236983] == approx([0.2 ±...76 ± 0.0e+00])
-E             
+E
 E             comparison failed. Mismatched elements: 2 / 6:
 E             Max absolute difference: 7.105427357601002e-15
 E             Max relative difference: 3.5533754677559437e-16
-E             Index | Obtained            | Expected                     
-E             3     | 11.296109154556028  | 11.296109154556026 ± 0.0e+00 
+E             Index | Obtained            | Expected
+E             3     | 11.296109154556028  | 11.296109154556026 ± 0.0e+00
 E             5     | -19.996275153236983 | -19.996275153236976 ± 0.0e+00
 
 apps/api/tests/test_gnc_course.py:218: AssertionError
@@ -762,7 +762,7 @@ ______________ test_gnc_native_five_scenario_evidence_and_runtime ______________
                 production = runtime.run("controls-gnc", module_id, parameters).diagnostics["signature"]
 >               assert reference == expected["cases"][scenario]["signature"]
 E               assert [8.4415287680...0418e-17, 0.0] == [8.3555347216...0418e-17, 0.0]
-E                 
+E
 E                 At index 0 diff: 8.441528768080323e-17 != 8.355534721610418e-17
 E                 Use -v to get more diff
 
@@ -793,7 +793,7 @@ ___________ test_robotics_native_five_scenario_evidence_and_runtime ____________
                 assert first.diagnostics["sample_count"] <= 500
 >               assert reference == expected["cases"][scenario]["signature"]
 E               assert [4.0, 467.449...4381530095053] == [4.0, 467.449...4438153009505]
-E                 
+E
 E                 At index 1 diff: 467.4492190685631 != 467.44921906856274
 E                 Use -v to get more diff
 
@@ -824,7 +824,7 @@ ____________ test_vehicle_native_five_scenario_evidence_and_runtime ____________
                 ).diagnostics["signature"]
 >               assert reference == expected["cases"][scenario]["signature"]
 E               assert [70000.0, 900...98741789, 0.0] == [70000, 9000....093345567e-17]
-E                 
+E
 E                 At index 1 diff: 9000.0 != 9000.000000000002
 E                 Use -v to get more diff
 
