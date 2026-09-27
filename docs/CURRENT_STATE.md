@@ -3,7 +3,13 @@
 `ELP-DSP-FIDELITY-P21-P28` continues issue 441 from merged numerical replay repair
 `b7e684d595bd777602c9aa22cd489189efa6584b`, authorized by control
 `12ea755ee75f9fe7bc142f052362938d9cefb4c9`. Implementation and independent
-scenario comparisons are complete; required broader verification is in progress.
+scenario comparisons are complete. All mandatory local verification passed:
+quick/full each passed 785 tests, plus source-attested DSP, contract, catalog,
+lint, frontend typecheck/build, scope and API/live HTTP smoke checks.
+[PR #46](https://github.com/tranquilWorks/engineering-learning-platform/pull/46)
+is ready for review and awaits protected-merge approval. Hosted backend CI still
+fails source/history checks because its checkout omits their prerequisites;
+frontend CI passed at implementation revision `152ddf6`.
 
 The eight lessons now expose AM envelope/coherent recovery, FM occupied bandwidth
 and phase aliasing, energy-consistent BPSK/QPSK, explicit finite RRC pulses and

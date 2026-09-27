@@ -79,21 +79,32 @@ production validation were not performed. No course-level completion is claimed.
 
 ## Verification
 
-Required local checks are in `contracts/verification.yaml`. Verified so far:
+Required local checks are in `contracts/verification.yaml`. Implementation
+revision: `152ddf6ad3e534f7b4ed11e9f73b9d909a7d60a5`.
+Review: [target PR #46](https://github.com/tranquilWorks/engineering-learning-platform/pull/46).
+All mandatory local gates passed:
 
 - Source-attested focused DSP suite: 405 passed.
 - New P21-P28 suite: 60 passed, including 40 five-scenario comparisons.
 - Contract wrapper: 72 passed.
+- Quick wrapper / complete API suite: 785 passed in 528.68 seconds.
+- Full wrapper: exit 0; compileall, generated-schema check, deterministic catalog,
+  785 API tests (490.40 seconds), frontend typecheck and build all passed.
+  No frontend skip was used.
 - Scoped Python lint: passed.
 - Deterministic catalog: 6 courses, 290 modules, 290 interactive, no errors.
 - API smoke: eight module documents, 24 baseline/broken/recovery executions,
   exact recovery and eight stale-revision rejections passed using TestClient.
+- Live TCP preview: HTML, health, catalog, eight module documents and eight
+  baseline executions passed at `http://127.0.0.1:8765`. This is a protocol
+  smoke check, not a visual/browser review.
 - Scope audit: only allowed paths; exactly eight coverage digest changes;
   source submodule clean; previous independent-reference source byte-identical.
 
-The final quick/full results and exact-head review status are recorded below
-when complete. The full wrapper includes `scripts/verify.sh`, generated-schema
-validation, deterministic catalog, every API test, frontend typecheck and build.
+The quick/full wrappers ran against implementation revision `152ddf6`; the
+following commit changes only this evidence and the two status/handoff documents.
+The full wrapper executes `scripts/verify.sh`. Existing warnings remain: three
+Starlette/FastAPI deprecations and the large Plotly frontend chunk.
 Final label-only refinement clarifies selected FM and stable LMS reference
 metrics during a broken demonstration; numerical values are unchanged.
 
@@ -118,6 +129,35 @@ commit `4b613a79bfe3cbd997e64e8372a58956533dae2c`. Frontend passed. That workflo
 setup debt remains separate and outside this DSP contract. Required local checks
 retain the source/history gates; hosted CI is not a completion requirement under
 the retained owner policy. Target protected-branch merge still requires approval.
+
+PR #46 implementation run
+[36293155510](https://github.com/tranquilWorks/engineering-learning-platform/actions/runs/36293155510)
+finished at implementation revision `152ddf6ad3e534f7b4ed11e9f73b9d909a7d60a5`:
+frontend passed; backend had 775 passes and ten failures in 238.13 seconds;
+container was skipped. Inspected backend job `108546961579` logs show nine source
+attestation failures caused by the absent DSP submodule (the existing P11-P20
+check plus eight new P21-P28 checks), and one missing historical vehicle commit.
+These are the same two checkout prerequisites as PR #45. No scientific replay
+failure was reported. This is not a hosted CI pass.
+
+## Retained execution results
+
+The local logs below are retained in the ignored `.state/` directory of the
+review worktree. These hashes bind the observed command output; the committed
+summary and per-module independent fixtures retain the portable evidence.
+
+| Local log | SHA-256 |
+| --- | --- |
+| `p21-focused-final.txt` | `35e4fe9a33f482347d3697ca4f2459c1bc267fd8066c8bb81177dcea5d8541c7` |
+| `p21-new-tests-final.txt` | `e826600349a85035623615515f8af3182c361e28742aba6e2998a15c68babc40` |
+| `p21-contract.txt` | `bd0f4f730cf9098a5a86708a9bd9c4e4469dd221bf0fba172ff2d1f8519071a8` |
+| `p21-quick.txt` | `ed3a1b53fc231ec31a57dcc665d470485823a295174c485e75862f4018b9edfa` |
+| `p21-full.txt` | `ce006a0a1d843cf2c89566ca975073ce817695f96f2966805397dc1bad5beb1f` |
+| `p21-lint.txt` | `82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18` |
+| `p21-catalog.json` | `e0ec19a3f9adf17cab941b6e63ba2fd0a89f5a0ca177b6997a4b612d0462e484` |
+| `p21-http-smoke.json` | `cec08f61c352ca2fdefd31e933a15557a060113f845d14bc000c98367c086ea2` |
+| `p21-live-preview.json` | `998d7e884ca78641daddc622f4f16f81fbc813bf8388379c1d424a1f8cf9dbe3` |
+| `p21-scope.json` | `e2529dd663ffd5f4dfac2f138eb8810ea1c000967964d9b39610acd29c0face8` |
 
 ## Remaining work and rollback
 
