@@ -3,13 +3,13 @@
   "id": "49-use-ordered-statistic-cfar-with-interfering-targets",
   "number": 49,
   "title": "Use Ordered-Statistic CFAR with Interfering Targets",
-  "summary": "Explore use ordered-statistic cfar with interfering targets with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "OS-CFAR uses the kth ascending reference power and calibrates its product-form false-alarm law. Its N\u2212k capacity is a strong-outlier limit, not immunity to arbitrary contamination.",
   "guiding_question": "How can CFAR resist several contaminated training cells?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-5",
-    "OS-CFAR-rank"
+    "radar-detection",
+    "P49"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,55 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Os Cfar Rank",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "os_rank",
+      "type": "segmented",
+      "label": "OS rank",
+      "unit": "rank",
+      "default": 18,
+      "options": [
+        {
+          "label": "12",
+          "value": 12
+        },
+        {
+          "label": "18 baseline",
+          "value": 18
+        },
+        {
+          "label": "22",
+          "value": 22
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
+      "id": "interferer_power_db",
+      "type": "segmented",
+      "label": "Interferer power db",
       "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "default": 20,
+      "options": [
+        {
+          "label": "0",
+          "value": 0
+        },
+        {
+          "label": "10",
+          "value": 10
+        },
+        {
+          "label": "20 baseline",
+          "value": 20
+        },
+        {
+          "label": "30",
+          "value": 30
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +79,45 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing os cfar rank, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict the strong-outlier capacity N\u2212k and what happens at one extra contaminator. Why does changing rank require recalibration before comparing Pd?",
+      "reveal": "OS-CFAR uses the kth ascending reference power and calibrates its product-form false-alarm law. Its N\u2212k capacity is a strong-outlier limit, not immunity to arbitrary contamination."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "CA mean versus calibrated OS rank",
+      "plot": "profile"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Primary CUT reference powers in ascending order",
+      "plot": "sorted"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Contamination crosses the N\u2212k outlier capacity",
+      "plot": "count"
+    },
+    {
+      "type": "plot",
+      "title": "Four contaminated cells grow stronger",
+      "plot": "strength"
+    },
+    {
+      "type": "plot",
+      "title": "Rank trades sensitivity for contamination tolerance",
+      "plot": "rank"
+    },
+    {
+      "type": "plot",
+      "title": "Rank changes require recalibration",
+      "plot": "failure"
     },
     {
       "type": "callout",
@@ -102,7 +128,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

@@ -1,169 +1,237 @@
 from __future__ import annotations
 
-from typing import Any
-
 import numpy as np
 
-SEED = 4901
-ITEM_NUMBER = 49
-PHASE = 5
-MAX_POINTS = 512
+
+def _controls(p, spec):
+    values = []
+    for key, default, choices in spec:
+        value = p.get(key, default)
+        if isinstance(value, bool) or value not in choices:
+            raise ValueError("Choose a retained physical control: " + key)
+        values.append(float(value))
+    broken = p.get("broken_mode", False)
+    if not isinstance(broken, bool):
+        raise TypeError("broken_mode must be boolean")
+    return (*values, broken)
 
 
-def _layout(title: str, x_label: str, y_label: str) -> dict[str, Any]:
+def _plot(title, xlabel, ylabel, traces):
+    data = []
+    for name, x, y in traces:
+        x, y = np.asarray(x), np.asarray(y)
+        ix = np.unique(np.linspace(0, len(x) - 1, min(512, len(x))).astype(int))
+        data.append(
+            {
+                "type": "scatter",
+                "mode": "lines",
+                "name": name,
+                "x": x[ix].tolist(),
+                "y": y[ix].tolist(),
+            }
+        )
     return {
-        "title": {"text": title, "x": 0.02, "xanchor": "left"},
-        "margin": {"l": 68, "r": 22, "t": 58, "b": 58},
-        "xaxis": {"title": x_label, "showgrid": True},
-        "yaxis": {"title": y_label, "showgrid": True},
-        "legend": {"orientation": "h", "y": 1.14},
-        "hovermode": "closest",
-        "uirevision": "keep-view",
+        "data": data,
+        "layout": {
+            "title": {"text": title},
+            "xaxis": {"title": xlabel},
+            "yaxis": {"title": ylabel},
+            "legend": {"orientation": "h"},
+        },
+        "config": {"responsive": True, "displaylogo": False},
     }
 
 
-def run(parameters: dict[str, Any]) -> dict[str, Any]:
-    primary = float(parameters["primary_scale"])
-    secondary = float(parameters["secondary_scale"])
-    noise_db = float(parameters["noise_db"])
-    broken_mode = bool(parameters["broken_mode"])
-    count = 192 + 16 * (ITEM_NUMBER % 4)
-    if count > MAX_POINTS:
-        raise ValueError("experiment exceeds the retained point ceiling")
-    rng = np.random.default_rng(SEED)
-    x = np.linspace(0.0, 1.0, count, endpoint=False)
-    variant = 1.0 + (ITEM_NUMBER % 7) / 5.0
-    noise_scale = 10.0 ** (noise_db / 20.0)
-
-    if PHASE == 1:
-        truth = np.cos(2.0 * np.pi * variant * primary * x + 0.4 * secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, count // 7) if broken_mode else measured
-    elif PHASE == 2:
-        tone = np.exp(1j * (2.0 * np.pi * (8.0 + variant * primary) * x + secondary))
-        measured = tone + noise_scale * (rng.standard_normal(count) + 1j * rng.standard_normal(count))
-        response_axis = np.fft.fftshift(np.fft.fftfreq(count, d=1.0 / count))
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / count
-        broken_response = np.abs(measured.real) if broken_mode else np.abs(measured)
-        truth = tone.real
-    elif PHASE == 3:
-        symbols = np.sign(np.sin(2.0 * np.pi * (4.0 + variant) * x))
-        carrier = np.cos(2.0 * np.pi * (18.0 + 2.0 * primary) * x + secondary)
-        truth = symbols * carrier
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(2 + 10 * secondary)) if broken_mode else measured
-    elif PHASE == 4:
-        bins = np.arange(count, dtype=float)
-        center = count * (0.25 + 0.25 * (primary - 0.5))
-        width = 2.0 + 4.0 * secondary
-        truth = np.exp(-0.5 * ((bins - center) / width) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = bins
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / np.sqrt(count)
-        broken_response = np.roll(measured, count // 3) if broken_mode else measured
-        x = bins
-    elif PHASE == 5:
-        cells = np.arange(count, dtype=float)
-        background = 0.2 + (0.45 * secondary) * (cells >= count // 2)
-        power = background + np.abs(noise_scale * rng.standard_normal(count))
-        target_bin = int(count * (0.3 + 0.25 * (primary - 0.5)))
-        power[target_bin] += 1.4
-        truth = power
-        measured = power
-        response_axis = cells
-        response = np.full(count, np.quantile(power, 0.82 + 0.1 * secondary))
-        if broken_mode:
-            response = np.full(count, np.mean(power) * (1.2 + primary))
-        broken_response = response
-        x = cells
-    elif PHASE == 6:
-        steps = np.arange(count, dtype=float)
-        truth = 0.04 * steps + 0.0002 * variant * secondary * steps**2
-        measured = truth + noise_scale * 8.0 * rng.standard_normal(count)
-        gain = np.clip(0.12 + 0.5 * primary, 0.05, 0.95)
-        response = np.empty(count)
-        response[0] = measured[0]
-        for index in range(1, count):
-            response[index] = response[index - 1] + gain * (measured[index] - response[index - 1])
-        response_axis = steps
-        broken_response = np.roll(response, 12) if broken_mode else response
-        x = steps
-    elif PHASE == 7:
-        angles = np.linspace(-90.0, 90.0, count)
-        u = np.sin(np.deg2rad(angles)) - np.sin(np.deg2rad(45.0 * (primary - 1.0)))
-        spacing = 0.45 + 0.45 * secondary
-        elements = 6 + ITEM_NUMBER % 7
-        denominator = np.sin(np.pi * spacing * u)
-        numerator = np.sin(elements * np.pi * spacing * u)
-        response = np.where(np.abs(denominator) < 1e-10, 1.0, np.abs(numerator / (elements * denominator)))
-        truth = response
-        measured = np.maximum(response + noise_scale * rng.standard_normal(count), 0.0)
-        response_axis = angles
-        broken_response = np.roll(response, 9) if broken_mode else response
-        x = angles
-    elif PHASE == 8:
-        bins = np.arange(count, dtype=float)
-        beat_bin = count * (0.15 + 0.35 * (primary - 0.5))
-        truth = np.cos(2.0 * np.pi * beat_bin * bins / count + secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(8 + 16 * secondary)) if broken_mode else measured
-        x = bins
-    else:
-        coordinate = np.linspace(-1.0, 1.0, count)
-        width = 0.05 + 0.16 / primary
-        truth = np.exp(-0.5 * ((coordinate + 0.25) / width) ** 2) + 0.65 * np.exp(-0.5 * ((coordinate - 0.3) / (1.4 * width)) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        kernel = np.ones(3 + 2 * int(secondary * 5))
-        kernel /= kernel.sum()
-        response = np.convolve(measured, kernel, mode="same")
-        response_axis = coordinate
-        broken_response = np.roll(response, 18) + 0.25 * np.roll(response, -13) if broken_mode else response
-        x = coordinate
-
-    displayed = broken_response if broken_mode else measured
-    separation = float(np.max(response) - np.median(response))
-    rmse = float(np.sqrt(np.mean((np.asarray(displayed).real - np.asarray(truth).real) ** 2)))
-    signature = [float(count), primary, secondary, noise_db, float(np.mean(np.asarray(displayed).real)), float(np.std(np.asarray(displayed).real)), separation, rmse]
-    sweep_primary = [0.6, 1.0, 1.4]
-    sweep_secondary = [0.0, 0.5, 1.0]
-    sweep_response = [variant * value for value in sweep_primary]
-    stress_response = [separation / (1.0 + value) for value in sweep_secondary]
-    title = 'Use Ordered-Statistic CFAR with Interfering Targets'
-
+def _finish(values, plots, observation, failure, recovery, seed, broken, **extra):
     return {
         "metrics": [
-            {"id": "primary", "label": 'Os Cfar Rank', "value": primary, "unit": "× baseline", "emphasis": "primary"},
-            {"id": "response_separation", "label": "Response separation", "value": separation, "unit": "normalized"},
-            {"id": "model_error", "label": "Model/display error", "value": rmse, "unit": "normalized"},
-            {"id": "points", "label": "Bounded points", "value": count, "unit": "points"},
+            {"id": k, "label": k.replace("_", " "), "value": float(v), "unit": u}
+            for k, (v, u) in values.items()
         ],
-        "plots": {
-            "model_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "physical/model truth", "x": x, "y": np.asarray(truth).real},
-                {"type": "scatter", "mode": "lines", "name": "measured/processed", "x": x, "y": np.asarray(displayed).real},
-            ], "layout": _layout(title + " — model view", 'cell index', 'power / threshold'), "config": {"responsive": True, "displaylogo": False}},
-            "response_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "response", "x": response_axis, "y": np.asarray(response).real},
-            ], "layout": _layout(title + " — response view", 'cell index', 'power / threshold'), "config": {"responsive": True, "displaylogo": False}},
-            "parameter_sweeps": {"data": [
-                {"type": "scatter", "mode": "lines+markers", "name": "primary scale", "x": sweep_primary, "y": sweep_response},
-                {"type": "scatter", "mode": "lines+markers", "name": "secondary stress", "x": sweep_secondary, "y": stress_response},
-            ], "layout": _layout("Two one-variable sweeps", "control value", "response statistic"), "config": {"responsive": True, "displaylogo": False}},
-            "broken_case": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "recovered", "x": x, "y": np.asarray(measured).real},
-                {"type": "scatter", "mode": "lines", "name": "broken" if broken_mode else "enable broken mode", "x": x, "y": np.asarray(broken_response).real},
-            ], "layout": _layout("Intentional assumption failure", 'cell index', 'power / threshold'), "config": {"responsive": True, "displaylogo": False}},
-        },
+        "plots": plots,
         "explanations": {
-            "observation": f"The {title} model uses a bounded deterministic adaptive detection experiment. Primary scale={primary:.2f} and secondary stress={secondary:.2f} remain independently controllable.",
-            "broken": "Broken mode deliberately violates the lesson's central interpretation assumption so the displayed response becomes ambiguous, biased, contaminated, or defocused.",
-            "recovery": "Disable broken mode, restore both scales to 1.0 and 0.25, then connect the recovered shape to the pinned source equations before changing one control at a time.",
+            "observation": observation,
+            "broken": failure,
+            "recovery": recovery,
         },
-        "diagnostics": {"seed": SEED, "item_number": ITEM_NUMBER, "point_count": count, "signature": signature, "broken_active": broken_mode},
+        "diagnostics": dict(
+            signature=[float(v[0]) for v in values.values()],
+            signature_fields=list(values),
+            seed=seed,
+            broken_active=broken,
+            **extra,
+        ),
     }
+
+
+def _alpha(n, p):
+    return n * np.expm1(-np.log(p) / n)
+
+
+def _refs(length, t, g):
+    cuts = np.arange(t + g, length - t - g)
+    offsets = np.r_[np.arange(-t - g, -g), np.arange(g + 1, g + t + 1)]
+    return cuts, cuts[:, None] + offsets
+
+
+def _os_pfa(a, n, k):
+    j = np.arange(n - k + 1, n + 1, dtype=float)
+    return float(np.exp(np.sum(np.log(j) - np.log(j + a))))
+
+
+def _calibrate(probability, p):
+    lo, hi = 0.0, 1.0
+    for _ in range(32):
+        if probability(hi) <= p:
+            break
+        hi *= 2
+    else:
+        raise ValueError("Calibration not bracketed")
+    for _ in range(80):
+        mid = (lo + hi) / 2
+        if probability(mid) > p:
+            lo = mid
+        else:
+            hi = mid
+    return (lo + hi) / 2
+
+
+def run(parameters):
+    rank, strength, broken = _controls(
+        parameters,
+        [("os_rank", 18, [12, 18, 22]), ("interferer_power_db", 20, [0, 10, 20, 30])],
+    )
+    k = int(rank)
+    n = 24
+    p = 0.001
+    ca = _alpha(n, p)
+    base_os = _calibrate(lambda a: _os_pfa(a, n, 18), p)
+    proper = _calibrate(lambda a: _os_pfa(a, n, k), p)
+    # The named failure changes rank to 22 but reuses rank-18 calibration.
+    active_rank = 22 if broken else k
+    alpha = base_os if broken else proper
+    rng = np.random.default_rng(4901)
+    power = -np.log(rng.random(256))
+    power[127] += 10**1.5
+    power[np.array([114, 119, 135, 140])] += 10 ** (strength / 10)
+    cuts, refs = _refs(256, 12, 2)
+    samples = power[refs]
+    sorted_power = np.sort(samples, axis=1)
+    ct = ca * samples.mean(axis=1)
+    ot = alpha * sorted_power[:, active_rank - 1]
+    trials = 20000
+    reference = -np.log(rng.random((trials, 24)))
+    noise = (rng.normal(size=trials) + 1j * rng.normal(size=trials)) / np.sqrt(2)
+    target = abs(noise + np.sqrt(10**1.3)) ** 2
+    counts = np.array([0, 2, 4, 6, 7, 8])
+    count_pd = []
+    for m in counts:
+        bank = reference.copy()
+        bank[:, :m] += 10 ** (strength / 10)
+        count_pd.append(
+            [
+                np.mean(target > ca * bank.mean(axis=1)),
+                np.mean(target > proper * np.sort(bank, axis=1)[:, k - 1]),
+            ]
+        )
+    strengths = np.array([-20, 0, 10, 20, 30])
+    strength_pd = []
+    for db in strengths:
+        bank = reference.copy()
+        bank[:, :4] += 10 ** (db / 10)
+        strength_pd.append(
+            [
+                np.mean(target > ca * bank.mean(axis=1)),
+                np.mean(target > proper * np.sort(bank, axis=1)[:, k - 1]),
+            ]
+        )
+    ranks = np.array([12, 16, 18, 20, 22, 24])
+    rank_pd = []
+    rank_alphas = []
+    wrong = []
+    contaminated = reference.copy()
+    contaminated[:, :4] += 10 ** (strength / 10)
+    ordered = np.sort(contaminated, axis=1)
+    for rk in ranks:
+        a = _calibrate(lambda value, rk=rk: _os_pfa(value, n, int(rk)), p)
+        rank_alphas.append(a)
+        rank_pd.append(np.mean(target > a * ordered[:, rk - 1]))
+        wrong.append(_os_pfa(base_os, n, int(rk)))
+    index = 127 - cuts[0]
+    active_pd = np.mean(target > alpha * ordered[:, active_rank - 1])
+    values = {
+        "active_rank": (active_rank, "ascending rank"),
+        "active_alpha": (alpha, "ratio"),
+        "active_homogeneous_pfa": (_os_pfa(alpha, n, active_rank), "probability"),
+        "outlier_capacity": (n - active_rank, "cells"),
+        "primary_ca_margin": (power[127] / ct[index], "ratio"),
+        "primary_os_margin": (power[127] / ot[index], "ratio"),
+        "contaminated_active_pd": (active_pd, "probability"),
+        "recovered_alpha": (proper, "ratio"),
+        "recovered_pfa": (_os_pfa(proper, n, k), "probability"),
+        "model_valid": (not broken, "boolean"),
+    }
+    count_pd = np.array(count_pd)
+    strength_pd = np.array(strength_pd)
+    plots = {
+        "profile": _plot(
+            "CA mean versus calibrated OS rank",
+            "Range cell (index)",
+            "Power (relative)",
+            [
+                ("Observed", np.arange(1, 257), power),
+                ("CA", cuts + 1, ct),
+                ("Active OS", cuts + 1, ot),
+            ],
+        ),
+        "sorted": _plot(
+            "Primary CUT reference powers in ascending order",
+            "Ascending rank (index)",
+            "Reference power (relative)",
+            [("Ordered references", np.arange(1, 25), sorted_power[index])],
+        ),
+        "count": _plot(
+            "Contamination crosses the N−k outlier capacity",
+            "Strong interferers (count)",
+            "Pd (probability)",
+            [("CA", counts, count_pd[:, 0]), ("Selected OS", counts, count_pd[:, 1])],
+        ),
+        "strength": _plot(
+            "Four contaminated cells grow stronger",
+            "Interferer excess power (dB)",
+            "Pd (probability)",
+            [
+                ("CA", strengths, strength_pd[:, 0]),
+                ("OS", strengths, strength_pd[:, 1]),
+            ],
+        ),
+        "rank": _plot(
+            "Rank trades sensitivity for contamination tolerance",
+            "Ascending rank (index)",
+            "Pd (probability)",
+            [("Recalibrated OS", ranks, rank_pd)],
+        ),
+        "failure": _plot(
+            "Rank changes require recalibration",
+            "Ascending rank (index)",
+            "Homogeneous Pfa (probability)",
+            [
+                ("Reused rank-18 alpha", ranks, wrong),
+                ("Recalibrated", ranks, np.full(6, p)),
+            ],
+        ),
+    }
+    return _finish(
+        values,
+        plots,
+        "OS-CFAR uses the kth ascending reference power and calibrates its product-form false-alarm law. Its N−k capacity is a strong-outlier limit, not immunity to arbitrary contamination.",
+        "The failure selects rank 22 while retaining rank-18 alpha. Its homogeneous Pfa changes, so a Pd comparison no longer has equal calibration.",
+        "Recompute alpha for the selected rank, inspect contamination count and strength, and state the lost outlier capacity. Disable the toggle for the selected rank-specific baseline.",
+        4901,
+        broken,
+        trials=trials,
+        count_pd=count_pd.tolist(),
+        strength_pd=strength_pd.tolist(),
+        rank_pd=rank_pd,
+        rank_alphas=rank_alphas,
+    )

@@ -1,0 +1,87 @@
+{
+  "item": "P49",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p49",
+    "sha256": "eee1c963fa051806d29581553be723bc8580ccbccdd1b7f00ea8492a776fac5c",
+    "byte_count": 118814,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/49-use-ordered-statistic-cfar-with-interfering-targets/experiment.py",
+    "sha256": "516bd58374a5c036942e6225a5c0a863c062f0c7be50d0411016da7482ec55db",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "os_rank": 18,
+      "interferer_power_db": 20,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "os_rank": 22,
+      "interferer_power_db": 20,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "os_rank": 18,
+      "interferer_power_db": 30,
+      "broken_mode": false
+    },
+    "broken": {
+      "os_rank": 18,
+      "interferer_power_db": 20,
+      "broken_mode": true
+    },
+    "recovery": {
+      "os_rank": 18,
+      "interferer_power_db": 20,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "active_rank",
+      "unit": "ascending rank"
+    },
+    {
+      "name": "active_alpha",
+      "unit": "ratio"
+    },
+    {
+      "name": "active_homogeneous_pfa",
+      "unit": "probability"
+    },
+    {
+      "name": "outlier_capacity",
+      "unit": "cells"
+    },
+    {
+      "name": "primary_ca_margin",
+      "unit": "ratio"
+    },
+    {
+      "name": "primary_os_margin",
+      "unit": "ratio"
+    },
+    {
+      "name": "contaminated_active_pd",
+      "unit": "probability"
+    },
+    {
+      "name": "recovered_alpha",
+      "unit": "ratio"
+    },
+    {
+      "name": "recovered_pfa",
+      "unit": "probability"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

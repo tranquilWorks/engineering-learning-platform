@@ -1,0 +1,95 @@
+{
+  "item": "P46",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p46",
+    "sha256": "eee1c963fa051806d29581553be723bc8580ccbccdd1b7f00ea8492a776fac5c",
+    "byte_count": 118814,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/46-vary-cfar-guard-and-training-cells/experiment.py",
+    "sha256": "111aae8cedbacf704997ae21abb6505b00828b1141ea1efa309d21a1b90e4107",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "guard_cells": 4,
+      "training_cells": 12,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "guard_cells": 0,
+      "training_cells": 12,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "guard_cells": 4,
+      "training_cells": 36,
+      "broken_mode": false
+    },
+    "broken": {
+      "guard_cells": 4,
+      "training_cells": 12,
+      "broken_mode": true
+    },
+    "recovery": {
+      "guard_cells": 4,
+      "training_cells": 12,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "window_span",
+      "unit": "m"
+    },
+    {
+      "name": "excluded_edges",
+      "unit": "cells"
+    },
+    {
+      "name": "strong_target_margin",
+      "unit": "ratio"
+    },
+    {
+      "name": "active_weak_margin",
+      "unit": "ratio"
+    },
+    {
+      "name": "contaminated_weak_margin",
+      "unit": "ratio"
+    },
+    {
+      "name": "recovered_weak_margin",
+      "unit": "ratio"
+    },
+    {
+      "name": "weak_power_change",
+      "unit": "power"
+    },
+    {
+      "name": "small_guard_leakage",
+      "unit": "power"
+    },
+    {
+      "name": "large_guard_leakage",
+      "unit": "power"
+    },
+    {
+      "name": "small_window_locality_error",
+      "unit": "ratio"
+    },
+    {
+      "name": "large_window_locality_error",
+      "unit": "ratio"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

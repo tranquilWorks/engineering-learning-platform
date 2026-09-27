@@ -3,13 +3,13 @@
   "id": "50-apply-2-d-cfar-to-a-range-doppler-map",
   "number": 50,
   "title": "Apply 2-D CFAR to a Range-Doppler Map",
-  "summary": "Explore apply 2-d cfar to a range-doppler map with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "The two-dimensional CA stencil is the outer rectangle minus the full guard rectangle. The exact training count sets alpha; only complete windows define calibrated tests.",
   "guiding_question": "How does local thresholding extend from one range profile to two dimensions?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-5",
-    "2D-training-width"
+    "radar-detection",
+    "P50"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,51 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "2D Training Width",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "range_training_half_width",
+      "type": "segmented",
+      "label": "Range training half width",
+      "unit": "bins",
+      "default": 6,
+      "options": [
+        {
+          "label": "3",
+          "value": 3
+        },
+        {
+          "label": "6 baseline",
+          "value": 6
+        },
+        {
+          "label": "12",
+          "value": 12
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "doppler_training_half_width",
+      "type": "segmented",
+      "label": "Doppler training half width",
+      "unit": "bins",
+      "default": 4,
+      "options": [
+        {
+          "label": "2",
+          "value": 2
+        },
+        {
+          "label": "4 baseline",
+          "value": 4
+        },
+        {
+          "label": "8",
+          "value": 8
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +75,50 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing 2d training width, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict the exact number of training cells in the rectangular ring. Which target becomes untestable at the border, and how does zero padding falsely change that conclusion?",
+      "reveal": "The two-dimensional CA stencil is the outer rectangle minus the full guard rectangle. The exact training count sets alpha; only complete windows define calibrated tests."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Synthetic square-law range\u2013Doppler scene",
+      "plot": "power"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Rectangular training ring excludes guard rectangle and CUT",
+      "plot": "stencil"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Threshold only where every reference exists",
+      "plot": "threshold"
+    },
+    {
+      "type": "plot",
+      "title": "Border cells are untested",
+      "plot": "eligibility"
+    },
+    {
+      "type": "plot",
+      "title": "Active detection mask",
+      "plot": "decisions"
+    },
+    {
+      "type": "plot",
+      "title": "Range-window size trades coverage and locality",
+      "plot": "range_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Doppler-window size crosses a clutter ridge",
+      "plot": "doppler_sweep"
     },
     {
       "type": "callout",
@@ -102,7 +129,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

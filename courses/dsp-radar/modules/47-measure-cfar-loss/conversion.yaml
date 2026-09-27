@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "02a5dfc69ba88455244b2254da18f8ff491a52847b989613d025698692d72f3a",
+    "content_digest": "2b3f1ef1b2a958727a54d117007a68fa4f903b10be7dad7de666a103fe200e78",
     "files": [
       {
         "path": "modules/47-measure-cfar-loss/experiment.py",
-        "sha256": "ecc72c8eded8729e4b97db0be82c6df0d7b35d385fc2050ab6b9ea62b9b873ea"
+        "sha256": "b0d5717054ab4c817f54de4a5d3d0fcf68286b8d8fa75a976840d9758fcabc23"
       },
       {
         "path": "modules/47-measure-cfar-loss/lesson.md",
-        "sha256": "ceafe171bfbc66761f245ad057f31acf24b1ef3bc399fd812372366a0bdc1adc"
+        "sha256": "0c4aca8483934d4275997e38a370311676b7dc221c5123d9e4e61d5b74c20248"
       },
       {
         "path": "modules/47-measure-cfar-loss/module.yaml",
-        "sha256": "d7328bd495bc5c9c2987f09ab5279975acde252f1252f2e2ef6438518e20971d"
+        "sha256": "ecdc0fad53abdd672e814f0cd1a5592e6fb12909eef19235f2719bc2e7693f74"
       }
     ]
   },
   "content": {
     "guiding_question": "How much extra SNR does adaptive threshold estimation cost?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "CFAR loss is a horizontal SNR difference at the same Pd and Pfa. Finite reference counts make the threshold uncertain; the disclosed monotone envelope only permits inversion of finite-trial curves.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary reference cell count while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "CFAR loss is a horizontal SNR difference at the same Pd and Pfa. Finite reference counts make the threshold uncertain; the disclosed monotone envelope only permits inversion of finite-trial curves.",
+      "Reusing \u2212ln(Pfa) on an estimated mean gives a smaller apparent SNR penalty by increasing actual false alarms. It is not an equal-Pfa comparison.",
+      "Restore N(Pfa^(\u22121/N)\u22121), keep paired CUT trials and independent references, and compare at Pd=.8. Disable the toggle to reproduce the properly calibrated selected curve.",
+      "Explicit stage equations are retained in lesson.md. NumPy random streams differ from MATLAB. Plot/console presentation is adapted; no MATLAB runtime parity is claimed."
     ],
     "equations": [
       {
@@ -69,146 +69,230 @@
       "seed": 4701,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
+          "name": "trials",
+          "value": 50000,
+          "unit": "count"
         },
         {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
+          "name": "monotone_adjustment",
+          "value": 0.0,
+          "unit": "count"
         },
         {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "7919e5eeb769048d90a6155958b90f56ad5816cdd8809bf61166c5f78b5ec74e",
-          "unit": "mixed numeric signature"
+          "sha256": "29987768c00224f6f16483bbf9764a816dbd80e41ade3206c021027bb4a9086a",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "94bb41a20e762e7561586e666ce258ae688429bdc13717d1747ffe9730ca4a0c",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "63a7f140c153af02268b9c841114856fa0397fc5f85729e3132ee3ab1ae8da3b",
-          "unit": "mixed numeric signature"
+          "sha256": "fa75210485640e3e5bb0dd7d223541482d27c35e3b347986ffe18b4c89814647",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "059802ff8f4a976abfb68ab028b2c19575136c26c2feef9d1de89f059aae7765",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "b32da1efa6e5c1c66d056b7e03fb753f5e9104ed9c6c065d4f97d5d9a2b9d92e",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "b32da1efa6e5c1c66d056b7e03fb753f5e9104ed9c6c065d4f97d5d9a2b9d92e",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "5ba8829f2baca02fa56197a197897238b46be45a763dc0d171b80662229809e6",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "5ba8829f2baca02fa56197a197897238b46be45a763dc0d171b80662229809e6",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "29987768c00224f6f16483bbf9764a816dbd80e41ade3206c021027bb4a9086a",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "94bb41a20e762e7561586e666ce258ae688429bdc13717d1747ffe9730ca4a0c",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P47 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P47 explicit processing and evidence stages",
+        "target_plot_key": "thresholds",
+        "title": "Known background versus estimated threshold",
         "axes": [
           {
             "role": "x",
-            "label": "cell index",
-            "unit": "source units"
+            "label": "Trial (index)",
+            "unit": "index"
           },
           {
             "role": "y",
-            "label": "power / threshold",
-            "unit": "normalized"
+            "label": "Power (relative)",
+            "unit": "relative"
           }
         ],
-        "interpretation": "This view answers the Measure CFAR Loss guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "CFAR loss is a horizontal SNR difference at the same Pd and Pfa. Finite reference counts make the threshold uncertain; the disclosed monotone envelope only permits inversion of finite-trial curves."
       },
       {
-        "source_figure": "Pinned P47 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P47 explicit processing and evidence stages",
+        "target_plot_key": "pd",
+        "title": "Horizontal SNR cost at equal Pd and requested Pfa",
         "axes": [
           {
             "role": "x",
-            "label": "cell index",
-            "unit": "source units"
+            "label": "Input SNR (dB)",
+            "unit": "dB"
           },
           {
             "role": "y",
-            "label": "power / threshold",
-            "unit": "normalized"
+            "label": "Detection probability (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Measure CFAR Loss guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "CFAR loss is a horizontal SNR difference at the same Pd and Pfa. Finite reference counts make the threshold uncertain; the disclosed monotone envelope only permits inversion of finite-trial curves."
       },
       {
-        "source_figure": "Pinned P47 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P47 explicit processing and evidence stages",
+        "target_plot_key": "n_loss",
+        "title": "Finite reference-count loss",
         "axes": [
           {
             "role": "x",
-            "label": "cell index",
-            "unit": "source units"
+            "label": "Total training cells (count)",
+            "unit": "count"
           },
           {
             "role": "y",
-            "label": "power / threshold",
-            "unit": "normalized"
+            "label": "Extra SNR at Pd=.8 (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Measure CFAR Loss guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "CFAR loss is a horizontal SNR difference at the same Pd and Pfa. Finite reference counts make the threshold uncertain; the disclosed monotone envelope only permits inversion of finite-trial curves."
       },
       {
-        "source_figure": "Pinned P47 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P47 explicit processing and evidence stages",
+        "target_plot_key": "pfa_loss",
+        "title": "Pfa also changes the estimation cost",
         "axes": [
           {
             "role": "x",
-            "label": "cell index",
-            "unit": "source units"
+            "label": "Requested Pfa (probability)",
+            "unit": "probability"
           },
           {
             "role": "y",
-            "label": "power / threshold",
-            "unit": "normalized"
+            "label": "Extra SNR at Pd=.8 (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Measure CFAR Loss guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "CFAR loss is a horizontal SNR difference at the same Pd and Pfa. Finite reference counts make the threshold uncertain; the disclosed monotone envelope only permits inversion of finite-trial curves."
+      },
+      {
+        "source_figure": "Pinned P47 explicit processing and evidence stages",
+        "target_plot_key": "calibration",
+        "title": "The apparent free gain spends false alarms",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Total training cells (count)",
+            "unit": "count"
+          },
+          {
+            "role": "y",
+            "label": "Actual homogeneous Pfa (probability)",
+            "unit": "probability"
+          }
+        ],
+        "interpretation": "CFAR loss is a horizontal SNR difference at the same Pd and Pfa. Finite reference counts make the threshold uncertain; the disclosed monotone envelope only permits inversion of finite-trial curves."
+      },
+      {
+        "source_figure": "Pinned P47 explicit processing and evidence stages",
+        "target_plot_key": "estimate_spread",
+        "title": "More independent references reduce mean-power uncertainty",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Total training cells (count)",
+            "unit": "count"
+          },
+          {
+            "role": "y",
+            "label": "Reference-mean standard deviation (power)",
+            "unit": "power"
+          }
+        ],
+        "interpretation": "CFAR loss is a horizontal SNR difference at the same Pd and Pfa. Finite reference counts make the threshold uncertain; the disclosed monotone envelope only permits inversion of finite-trial curves."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "training_count",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          8,
+          16,
+          32,
+          64
         ],
-        "expected_observation": "Changing reference cell count moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Training count; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "design_pfa",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          0.01,
+          0.001,
+          0.0001
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Design Pfa; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "Reusing \u2212ln(Pfa) on an estimated mean gives a smaller apparent SNR penalty by increasing actual false alarms. It is not an equal-Pfa comparison.",
+      "recovery": "Restore N(Pfa^(\u22121/N)\u22121), keep paired CUT trials and independent references, and compare at Pd=.8. Disable the toggle to reproduce the properly calibrated selected curve.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Reusing \u2212ln(Pfa) on an estimated mean gives a smaller apparent SNR penalty by increasing actual false alarms. It is not an equal-Pfa comparison.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -216,63 +300,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 2000000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P47 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p41_p52.py",
     "seed": 4701,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "training_count",
+        "value": 16,
+        "unit": "cells"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "design_pfa",
+        "value": 0.001,
+        "unit": "probability"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 1.7763568394002505e-15,
+        "max_relative_error": 2.056248343136277e-16,
+        "passed": true,
         "expected": {
           "path": "modules/47-measure-cfar-loss/evidence/expected-baseline.json",
-          "sha256": "7919e5eeb769048d90a6155958b90f56ad5816cdd8809bf61166c5f78b5ec74e"
+          "sha256": "29987768c00224f6f16483bbf9764a816dbd80e41ade3206c021027bb4a9086a"
         },
         "actual": {
           "path": "modules/47-measure-cfar-loss/evidence/actual-baseline.json",
-          "sha256": "cf8d6875c298fcdb41cd25f29d693785cfc44db2c602dbc6c9db329b83d86b5a"
-        },
-        "max_absolute_error": 3.124722702807503e-13,
-        "max_relative_error": 3.124722702807503e-13,
-        "passed": true
+          "sha256": "94bb41a20e762e7561586e666ce258ae688429bdc13717d1747ffe9730ca4a0c"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 8.881784197001252e-16,
+        "max_relative_error": 1.2176290079538708e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/47-measure-cfar-loss/evidence/expected-sweep-1.json",
+          "sha256": "fa75210485640e3e5bb0dd7d223541482d27c35e3b347986ffe18b4c89814647"
+        },
+        "actual": {
+          "path": "modules/47-measure-cfar-loss/evidence/actual-sweep-1.json",
+          "sha256": "059802ff8f4a976abfb68ab028b2c19575136c26c2feef9d1de89f059aae7765"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true,
+        "expected": {
+          "path": "modules/47-measure-cfar-loss/evidence/expected-sweep-2.json",
+          "sha256": "b32da1efa6e5c1c66d056b7e03fb753f5e9104ed9c6c065d4f97d5d9a2b9d92e"
+        },
+        "actual": {
+          "path": "modules/47-measure-cfar-loss/evidence/actual-sweep-2.json",
+          "sha256": "b32da1efa6e5c1c66d056b7e03fb753f5e9104ed9c6c065d4f97d5d9a2b9d92e"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true,
         "expected": {
           "path": "modules/47-measure-cfar-loss/evidence/expected-broken.json",
-          "sha256": "63a7f140c153af02268b9c841114856fa0397fc5f85729e3132ee3ab1ae8da3b"
+          "sha256": "5ba8829f2baca02fa56197a197897238b46be45a763dc0d171b80662229809e6"
         },
         "actual": {
           "path": "modules/47-measure-cfar-loss/evidence/actual-broken.json",
-          "sha256": "1907c9770d63335f756b88ae53bd613640c380a923b3d5d76e999c90df5a16e3"
+          "sha256": "5ba8829f2baca02fa56197a197897238b46be45a763dc0d171b80662229809e6"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 3.126388037344441e-13,
-        "max_relative_error": 3.126388037344441e-13,
-        "passed": true
+        "max_absolute_error": 1.7763568394002505e-15,
+        "max_relative_error": 2.056248343136277e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/47-measure-cfar-loss/evidence/expected-recovery.json",
+          "sha256": "29987768c00224f6f16483bbf9764a816dbd80e41ade3206c021027bb4a9086a"
+        },
+        "actual": {
+          "path": "modules/47-measure-cfar-loss/evidence/actual-recovery.json",
+          "sha256": "94bb41a20e762e7561586e666ce258ae688429bdc13717d1747ffe9730ca4a0c"
+        }
       }
     ]
   },

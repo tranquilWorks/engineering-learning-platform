@@ -369,3 +369,12 @@ and P41-P84, retain sixty independent numerical scenarios and all local gates.
 P41-P52 is the next proposed twelve-item group after completion/merge and its
 own scoped contract. These repair existing lessons; no inventory expansion or
 whole-course maturity claim follows from batch size.
+
+## DSP/Radar twelve-item fidelity continuation P41-P52 — 2026-09-27
+
+Merged target PR #47 establishes baseline `f78831b23e46ff1cb9518a716ac8ba5aeab5a3ee`.
+Control PR #508 authorizes `ELP-DSP-FIDELITY-P41-P52`: clutter/Swerling, full
+range-Doppler processing, fixed thresholds, ROC and CFAR calibration/window/
+stress/Monte Carlo experiments. Preserve P01-P40 and P53-P84 and retain sixty
+independent scenarios. P53-P64 is the next proposed twelve-lesson group after
+this batch is verified, merged and separately contracted. Issue 441 stays open.

@@ -1,6 +1,4 @@
-# Create a Full Range-Doppler Map
-
-> **Guiding question:** How do matched filtering and slow-time FFT combine to separate targets?
+# P42 lesson: Create a Full Range-Doppler Map
 
 Guiding question: **How do matched filtering and slow-time FFT combine to separate targets?**
 
@@ -188,33 +186,29 @@ into the input map used by later detection lessons.
 The script requires base MATLAB only. It uses a private seed, bounded arrays,
 and no external I/O, timer, worker, hardware, or persistent state.
 
-## Use the Python GUI experiment
+## Interactive lab: Create a Full Range-Doppler Map
 
-The GUI keeps the pinned source's mental model and processing order visible. The **target velocity** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** How do matched filtering and slow-time FFT combine to separate targets?
 
-### Prediction and sweep 1 — target velocity
+The waveform is 48 samples of 8 MHz/2.4 µs LFM at 20 MHz. The scene is 512 fast-time rows × 64 pulse columns at 4 kHz PRF and 10 GHz carrier. Targets are 1200/1200/2400 m, −7.5/+10.3/+10.3 m/s, amplitudes 1/.8/.65 and phases 0/35/−50°. Delays are rounded; 24 stationary clutter scatterers and RMS .35 complex noise are added. Linear matched filtering removes its 47-sample delay. Doppler FFT divides by window sum; positive velocity means approaching. Selected shorter CPIs are prefixes of the same 64-pulse scene. The window comparison uses a 10.10-bin tone, sampled −6 dB width and a ±2-bin sidelobe exclusion. The raw fast-time display maps sample time to range for orientation, before compression.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict what doubling CPI does to velocity spacing while range resolution stays fixed. How can two targets share range yet separate in Doppler, and why does a fast-time FFT fail?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Pulse count** from 64 to 32 pulses. Predict, run, and explain the measured change using the equation; then reset.
+2. Start at the baseline. Sweep only **Hann weight** from 1 to 0 ratio. Predict, run, and explain the measured change using the equation; then reset.
+3. Enable the broken case. FFT along fast time creates fast-time frequency, not Doppler. Relabeling pulse columns as velocity cannot repair it.
+4. Recovery: Restore delay-corrected range compression, apply the selected slow-time window and FFT across pulse columns; disable the toggle for the exact selected map. Restore the controls and disable the toggle to reproduce the selected baseline exactly.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict what doubling CPI does to velocity spacing while range resolution stays fixed. How can two targets share range yet separate in Doppler, and why does a fast-time FFT fail? Support your answer with a measured value and units. Explain the failure, the recovery assumption, and what this finite experiment cannot establish.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+FFT along fast time creates fast-time frequency, not Doppler. Relabeling pulse columns as velocity cannot repair it. Do not equate seeded crossings with a field detection guarantee.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The source lesson is preserved above. NumPy private seeds reproduce this port, not MATLAB random streams; array draws use NumPy row-major order. Source figure/console presentation becomes labeled plots and metrics. Vectorized arithmetic retains the source equations; the P42 linear convolution and P50 ring convolution are independently checked. All calculations use complete stated arrays; displays may retain at most 512 line points or 128×64 heatmap coordinates, preserving zero and prominent peaks. No MATLAB execution, browser/accessibility review, hardware, or learner-effectiveness claim is made.

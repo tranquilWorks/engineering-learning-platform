@@ -1,6 +1,4 @@
-# Vary CFAR Guard and Training Cells
-
-> **Guiding question:** What happens when the CFAR reference window is too small, too large, or contaminated?
+# Lesson: the reference window is a physical assumption
 
 ## Start with the picture
 
@@ -119,33 +117,29 @@ and training cells trade estimator variance against locality. It does not
 establish performance for correlated receiver cells, measured waveforms,
 unknown target extent, real clutter, hardware, or operational radar data.
 
-## Use the Python GUI experiment
+## Interactive lab: Vary CFAR Guard and Training Cells
 
-The GUI keeps the pinned source's mental model and processing order visible. The **CFAR guard width** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** What happens when the CFAR reference window is too small, too large, or contaminated?
 
-### Prediction and sweep 1 — CFAR guard width
+The background rises gradually and has a logistic transition at cell 178. A 35 dB target at cell 88 has a sampled sinc response sinc(offset/5) over ±18 cells; the weak 18 dB target is at cell 138. Guards 0/4/10 isolate self-masking; training counts 4/12/36 use fixed guard 6 for the separate variance/locality sweep. The named contaminated case uses T=12,G=4 regardless of the selected uncontaminated controls; a 32 dB neighbor at cell 126 raises the weak CUT threshold. Recovery uses G=12 on that same contaminated scene. Window span and untested-edge count are explicit.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict the effect of larger guards on target leakage, then of more training cells on smoothness and locality. How can a neighbor change detection without changing the CUT?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Guard cells** from 4 to 0 cells. Predict, run, and explain the measured change using the equation; then reset.
+2. Start at the baseline. Sweep only **Training cells** from 12 to 36 cells. Predict, run, and explain the measured change using the equation; then reset.
+3. Enable the broken case. The named failure injects the source neighbor at cell 126 into the weak cell 138 reference window (T=12,G=4). Its CUT power is unchanged while its threshold rises.
+4. Recovery: At the same contaminated scene, use G=12 and T=12 to exclude that neighbor and recover the weak target. This consumes more edge cells. Disable the toggle to restore the selected uncontaminated baseline. Restore the controls and disable the toggle to reproduce the selected baseline exactly.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict the effect of larger guards on target leakage, then of more training cells on smoothness and locality. How can a neighbor change detection without changing the CUT? Support your answer with a measured value and units. Explain the failure, the recovery assumption, and what this finite experiment cannot establish.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+The named failure injects the source neighbor at cell 126 into the weak cell 138 reference window (T=12,G=4). Its CUT power is unchanged while its threshold rises. Do not equate seeded crossings with a field detection guarantee.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The source lesson is preserved above. NumPy private seeds reproduce this port, not MATLAB random streams; array draws use NumPy row-major order. Source figure/console presentation becomes labeled plots and metrics. Vectorized arithmetic retains the source equations; the P42 linear convolution and P50 ring convolution are independently checked. All calculations use complete stated arrays; displays may retain at most 512 line points or 128×64 heatmap coordinates, preserving zero and prominent peaks. No MATLAB execution, browser/accessibility review, hardware, or learner-effectiveness claim is made.

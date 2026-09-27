@@ -1,25 +1,18 @@
 # Current state
 
-`ELP-DSP-FIDELITY-P29-P40` continues issue 441 as a twelve-lesson batch requested
-by the owner, from merged PR #46 (`74fbe13828665783a97d047eae0c6dc6ef482745`).
-Control authorization is `a4b075fe1e4fdb35d58802668d2631b9f465eba3`.
+`ELP-DSP-FIDELITY-P41-P52` continues issue 441 as one twelve-lesson batch,
+from merged PR #47 (`f78831b23e46ff1cb9518a716ac8ba5aeab5a3ee`).
+Control PR #508 authorization: `47b907458622f3381bc93e5c19908a487c98774c`.
 
 All twelve source-specific experiments and sixty independent scenario pairs
-are implemented. Numerical comparisons passed at a declared 1e-8 tolerance;
-all required local verification passed at implementation revision
-`3c5cee0dc8bef78f9f3c8baed691f03c4023d804`: 495 focused DSP tests,
-72 contract tests, all 875 API tests in both quick and full wrappers,
-frontend typecheck/build, deterministic catalog, lint and service/scope checks.
-PR #47 is ready for review; protected merge awaits separate owner approval.
-Hosted backend CI has 22 missing-source/history failures; frontend passed.
-The group spans power budgets, ranging, pulse compression, ambiguity, Doppler,
-MTI, blind speeds and coherent/noncoherent integration.
+are implemented. Comparisons passed at 1e-8 absolute/scaled-relative tolerance;
+maximum absolute difference is 9.094947017729282e-13. Required broader validation
+is in progress. Topics span clutter/Swerling, range-Doppler, detection, ROC,
+CFAR windows/loss/variants, two-dimensional thresholds, stress and Monte Carlo.
 
-P01 is already distinct; P02-P28 are prior repairs; P29-P40 are current repairs;
-P41-P84 remain pending. Source/course identities, source map, conversion manifest,
-other courses, platform/UI and workflows remain unchanged. Only twelve coverage
-digests change. Inventory stays six courses / 290 modules / 290 interactive.
+P01 is already distinct; P02-P40 are prior repairs; P41-P52 are current repairs;
+P53-P84 remain pending. Source/course identities, source map, conversion manifest,
+other courses and platform/UI/workflows remain unchanged. Only twelve coverage
+digests change. Inventory remains six courses / 290 modules / 290 interactive.
 Whole-course numerical/curriculum/capstone maturity remains blocked.
-
-No MATLAB runtime, browser/accessibility, learner, hardware, certification,
-release/deployment or production validation is claimed.
+No MATLAB, browser/accessibility, learner, hardware or production claim.

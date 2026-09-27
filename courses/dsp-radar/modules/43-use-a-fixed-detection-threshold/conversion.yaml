@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "41071087398799f187dae77abe4098151d676311aa729792000b260d63a69792",
+    "content_digest": "34fef14ae5b2c3e6a66fb1d8ea4ae3179f987f29a4b02a3b265574f87e3535c3",
     "files": [
       {
         "path": "modules/43-use-a-fixed-detection-threshold/experiment.py",
-        "sha256": "fad0e50eba580108c252fc77ab2ae50abcc61f7480683c69bff3996d24bd94be"
+        "sha256": "3253f974de6714b3ed636f35fd51eb427ed0b8bf5d72e79fd4e349e8f912e5a7"
       },
       {
         "path": "modules/43-use-a-fixed-detection-threshold/lesson.md",
-        "sha256": "37a2bafd934c1f2f2db93b0d96cbefa0269ff5042e7676112985ded3f981e50f"
+        "sha256": "03f9f70dfac5ac2442e6ab5c183aa614e5882265caebddbeaf4b522d658e6192"
       },
       {
         "path": "modules/43-use-a-fixed-detection-threshold/module.yaml",
-        "sha256": "9c908403657ab9c7094ce4842abe2a13ec833ceee58a7e0bdbdf8c939fbcaa8c"
+        "sha256": "3962eadf9847d28a999745ade60f8da6fe4ceb0c90fa4fb989dca94bc589b479"
       }
     ]
   },
   "content": {
     "guiding_question": "Why does a threshold that works in one noise level fail in another?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "One absolute signed-amplitude threshold is calibrated for zero-mean Gaussian noise at RMS 1. Increasing noise or adding a pedestal changes its false-alarm rate; H0 and H1 counts use separate denominators.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary fixed threshold while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "One absolute signed-amplitude threshold is calibrated for zero-mean Gaussian noise at RMS 1. Increasing noise or adding a pedestal changes its false-alarm rate; H0 and H1 counts use separate denominators.",
+      "Dividing by each true RMS silently changes the detector into an oracle-adaptive threshold. A flat Pfa curve would no longer demonstrate a fixed threshold.",
+      "Restore the single threshold in native amplitude units. Disable the toggle to recover the selected noise/pedestal experiment; pedestal and RMS changes remain physically visible.",
+      "Explicit stage equations are retained in lesson.md. NumPy random streams differ from MATLAB. Plot/console presentation is adapted; no MATLAB runtime parity is claimed."
     ],
     "equations": [
       {
@@ -77,146 +77,218 @@
       "seed": 4301,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
+          "name": "trials",
+          "value": 20000,
+          "unit": "count"
         },
         {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
+          "name": "false_alarm_count",
+          "value": 193,
+          "unit": "count"
         },
         {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "detection_count",
+          "value": 19085,
+          "unit": "count"
+        },
+        {
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "1ef881111c14e71e9cfb343898172b3933efa619fe8e1a4ff7b9dd6c21011206",
-          "unit": "mixed numeric signature"
+          "sha256": "0b4e9ace29cb5f9fcf610ea77fe4e22e9121b34c47957a1ac73fb8d8f577457d",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "3de0c2dc164633c5a4d1ef686e86fd44654f605eb61b79e7f93855408c906241",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "c40454fbd6fa768c11ab2667a2c83e4448ff5815b832bf19087f4f70ea080acf",
-          "unit": "mixed numeric signature"
+          "sha256": "d4ff9f5ccfabafbf6db1b397bc7c382c4a36b435194961df74dee8cb801fda2e",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "5258584374e35baa22b36ed2190f1872d53a7811082a5fd219a75ff1c0185d51",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "d29bbb5ff256ee68f4d6f3c80b399270d28d9e5ffeebd2ba8b0339da94ec4b5e",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "b7d1e374845a793bb78ae0cc21363ebb7d7659f2be54fea9e29fe4b039334e86",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "6bd53d3701f6c842970be7e2e77a6a812b7d577a622a7a45ee472994a3cc8ac4",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "2e7f75abd6ef3a1ce476e03c908ff9c6bc77d680f6db8f33bbc8b0c0a61d7c24",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "0b4e9ace29cb5f9fcf610ea77fe4e22e9121b34c47957a1ac73fb8d8f577457d",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "3de0c2dc164633c5a4d1ef686e86fd44654f605eb61b79e7f93855408c906241",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P43 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P43 explicit processing and evidence stages",
+        "target_plot_key": "profile",
+        "title": "One reference-noise range profile",
         "axes": [
           {
             "role": "x",
-            "label": "cell index",
-            "unit": "source units"
+            "label": "Range cell (index)",
+            "unit": "index"
           },
           {
             "role": "y",
-            "label": "power / threshold",
-            "unit": "normalized"
+            "label": "Signed amplitude (relative)",
+            "unit": "relative"
           }
         ],
-        "interpretation": "This view answers the Use a Fixed Detection Threshold guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "One absolute signed-amplitude threshold is calibrated for zero-mean Gaussian noise at RMS 1. Increasing noise or adding a pedestal changes its false-alarm rate; H0 and H1 counts use separate denominators."
       },
       {
-        "source_figure": "Pinned P43 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P43 explicit processing and evidence stages",
+        "target_plot_key": "statistics",
+        "title": "Separate target-absent and target-present banks",
         "axes": [
           {
             "role": "x",
-            "label": "cell index",
-            "unit": "source units"
+            "label": "Signed amplitude (relative)",
+            "unit": "relative"
           },
           {
             "role": "y",
-            "label": "power / threshold",
-            "unit": "normalized"
+            "label": "Probability per bin (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Use a Fixed Detection Threshold guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "One absolute signed-amplitude threshold is calibrated for zero-mean Gaussian noise at RMS 1. Increasing noise or adding a pedestal changes its false-alarm rate; H0 and H1 counts use separate denominators."
       },
       {
-        "source_figure": "Pinned P43 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P43 explicit processing and evidence stages",
+        "target_plot_key": "noise",
+        "title": "Fixed threshold as noise RMS changes",
         "axes": [
           {
             "role": "x",
-            "label": "cell index",
-            "unit": "source units"
+            "label": "Noise RMS (amplitude)",
+            "unit": "amplitude"
           },
           {
             "role": "y",
-            "label": "power / threshold",
-            "unit": "normalized"
+            "label": "Probability (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Use a Fixed Detection Threshold guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "One absolute signed-amplitude threshold is calibrated for zero-mean Gaussian noise at RMS 1. Increasing noise or adding a pedestal changes its false-alarm rate; H0 and H1 counts use separate denominators."
       },
       {
-        "source_figure": "Pinned P43 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P43 explicit processing and evidence stages",
+        "target_plot_key": "pedestal",
+        "title": "A positive pedestal raises both crossing rates",
         "axes": [
           {
             "role": "x",
-            "label": "cell index",
-            "unit": "source units"
+            "label": "Pedestal (amplitude)",
+            "unit": "amplitude"
           },
           {
             "role": "y",
-            "label": "power / threshold",
-            "unit": "normalized"
+            "label": "Probability (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Use a Fixed Detection Threshold guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "One absolute signed-amplitude threshold is calibrated for zero-mean Gaussian noise at RMS 1. Increasing noise or adding a pedestal changes its false-alarm rate; H0 and H1 counts use separate denominators."
+      },
+      {
+        "source_figure": "Pinned P43 explicit processing and evidence stages",
+        "target_plot_key": "failure",
+        "title": "Silent true-RMS adaptation hides the fixed-threshold failure",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Noise RMS (amplitude)",
+            "unit": "amplitude"
+          },
+          {
+            "role": "y",
+            "label": "H0 crossing probability (ratio)",
+            "unit": "ratio"
+          }
+        ],
+        "interpretation": "One absolute signed-amplitude threshold is calibrated for zero-mean Gaussian noise at RMS 1. Increasing noise or adding a pedestal changes its false-alarm rate; H0 and H1 counts use separate denominators."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "noise_rms",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          0.75,
+          1,
+          1.5,
+          2
         ],
-        "expected_observation": "Changing fixed threshold moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Noise rms; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "clutter_pedestal",
         "values": [
-          0.0,
+          0,
           0.5,
-          1.0
+          1,
+          2
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Clutter pedestal; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "Dividing by each true RMS silently changes the detector into an oracle-adaptive threshold. A flat Pfa curve would no longer demonstrate a fixed threshold.",
+      "recovery": "Restore the single threshold in native amplitude units. Disable the toggle to recover the selected noise/pedestal experiment; pedestal and RMS changes remain physically visible.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Dividing by each true RMS silently changes the detector into an oracle-adaptive threshold. A flat Pfa curve would no longer demonstrate a fixed threshold.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -224,63 +296,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 800000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P43 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p41_p52.py",
     "seed": 4301,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "noise_rms",
+        "value": 1,
+        "unit": "amplitude"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "clutter_pedestal",
+        "value": 0,
+        "unit": "amplitude"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 9.094947017729282e-13,
+        "max_relative_error": 9.93983280626152e-16,
+        "passed": true,
         "expected": {
           "path": "modules/43-use-a-fixed-detection-threshold/evidence/expected-baseline.json",
-          "sha256": "1ef881111c14e71e9cfb343898172b3933efa619fe8e1a4ff7b9dd6c21011206"
+          "sha256": "0b4e9ace29cb5f9fcf610ea77fe4e22e9121b34c47957a1ac73fb8d8f577457d"
         },
         "actual": {
           "path": "modules/43-use-a-fixed-detection-threshold/evidence/actual-baseline.json",
-          "sha256": "e6d8012d3c1833c0d5a3d172f8425ea4ffe7e84e716a7429d399e3b15f046f13"
-        },
-        "max_absolute_error": 4.020117572167692e-13,
-        "max_relative_error": 4.020117572167692e-13,
-        "passed": true
+          "sha256": "3de0c2dc164633c5a4d1ef686e86fd44654f605eb61b79e7f93855408c906241"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 9.094947017729282e-13,
+        "max_relative_error": 2.2743053307650126e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/43-use-a-fixed-detection-threshold/evidence/expected-sweep-1.json",
+          "sha256": "d4ff9f5ccfabafbf6db1b397bc7c382c4a36b435194961df74dee8cb801fda2e"
+        },
+        "actual": {
+          "path": "modules/43-use-a-fixed-detection-threshold/evidence/actual-sweep-1.json",
+          "sha256": "5258584374e35baa22b36ed2190f1872d53a7811082a5fd219a75ff1c0185d51"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 7.389644451905042e-13,
+        "max_relative_error": 9.986006016087794e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/43-use-a-fixed-detection-threshold/evidence/expected-sweep-2.json",
+          "sha256": "d29bbb5ff256ee68f4d6f3c80b399270d28d9e5ffeebd2ba8b0339da94ec4b5e"
+        },
+        "actual": {
+          "path": "modules/43-use-a-fixed-detection-threshold/evidence/actual-sweep-2.json",
+          "sha256": "b7d1e374845a793bb78ae0cc21363ebb7d7659f2be54fea9e29fe4b039334e86"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 9.094947017729282e-13,
+        "max_relative_error": 9.93983280626152e-16,
+        "passed": true,
         "expected": {
           "path": "modules/43-use-a-fixed-detection-threshold/evidence/expected-broken.json",
-          "sha256": "c40454fbd6fa768c11ab2667a2c83e4448ff5815b832bf19087f4f70ea080acf"
+          "sha256": "6bd53d3701f6c842970be7e2e77a6a812b7d577a622a7a45ee472994a3cc8ac4"
         },
         "actual": {
           "path": "modules/43-use-a-fixed-detection-threshold/evidence/actual-broken.json",
-          "sha256": "73a612d59d8e3190b6f21d239c57a7d6c4486adf4a8ae14c1c311ceb47e008ba"
+          "sha256": "2e7f75abd6ef3a1ce476e03c908ff9c6bc77d680f6db8f33bbc8b0c0a61d7c24"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 3.155253835984695e-13,
-        "max_relative_error": 3.155253835984695e-13,
-        "passed": true
+        "max_absolute_error": 9.094947017729282e-13,
+        "max_relative_error": 9.93983280626152e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/43-use-a-fixed-detection-threshold/evidence/expected-recovery.json",
+          "sha256": "0b4e9ace29cb5f9fcf610ea77fe4e22e9121b34c47957a1ac73fb8d8f577457d"
+        },
+        "actual": {
+          "path": "modules/43-use-a-fixed-detection-threshold/evidence/actual-recovery.json",
+          "sha256": "3de0c2dc164633c5a4d1ef686e86fd44654f605eb61b79e7f93855408c906241"
+        }
       }
     ]
   },

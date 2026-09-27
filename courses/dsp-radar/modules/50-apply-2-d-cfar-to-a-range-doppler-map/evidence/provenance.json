@@ -1,0 +1,91 @@
+{
+  "item": "P50",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p50",
+    "sha256": "eee1c963fa051806d29581553be723bc8580ccbccdd1b7f00ea8492a776fac5c",
+    "byte_count": 118814,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/50-apply-2-d-cfar-to-a-range-doppler-map/experiment.py",
+    "sha256": "735f24bd8b1bdc06d12827aef1d03609a57546201f13af4a70c3663bdde56b76",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "range_training_half_width": 6,
+      "doppler_training_half_width": 4,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "range_training_half_width": 12,
+      "doppler_training_half_width": 4,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "range_training_half_width": 6,
+      "doppler_training_half_width": 8,
+      "broken_mode": false
+    },
+    "broken": {
+      "range_training_half_width": 6,
+      "doppler_training_half_width": 4,
+      "broken_mode": true
+    },
+    "recovery": {
+      "range_training_half_width": 6,
+      "doppler_training_half_width": 4,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "training_cells",
+      "unit": "cells"
+    },
+    {
+      "name": "scale_factor",
+      "unit": "ratio"
+    },
+    {
+      "name": "eligible_cells",
+      "unit": "cells"
+    },
+    {
+      "name": "eligible_fraction",
+      "unit": "ratio"
+    },
+    {
+      "name": "interior_targets_detected",
+      "unit": "targets"
+    },
+    {
+      "name": "active_edge_target_detected",
+      "unit": "boolean"
+    },
+    {
+      "name": "active_border_crossings",
+      "unit": "cells"
+    },
+    {
+      "name": "recovered_edge_testable",
+      "unit": "boolean"
+    },
+    {
+      "name": "first_target_margin",
+      "unit": "ratio"
+    },
+    {
+      "name": "h0_crossings",
+      "unit": "cells"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

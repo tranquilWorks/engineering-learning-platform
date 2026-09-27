@@ -1,169 +1,187 @@
 from __future__ import annotations
 
-from typing import Any
-
 import numpy as np
 
-SEED = 4401
-ITEM_NUMBER = 44
-PHASE = 5
-MAX_POINTS = 512
+
+def _controls(p, spec):
+    values = []
+    for key, default, choices in spec:
+        value = p.get(key, default)
+        if isinstance(value, bool) or value not in choices:
+            raise ValueError("Choose a retained physical control: " + key)
+        values.append(float(value))
+    broken = p.get("broken_mode", False)
+    if not isinstance(broken, bool):
+        raise TypeError("broken_mode must be boolean")
+    return (*values, broken)
 
 
-def _layout(title: str, x_label: str, y_label: str) -> dict[str, Any]:
+def _plot(title, xlabel, ylabel, traces):
+    data = []
+    for name, x, y in traces:
+        x, y = np.asarray(x), np.asarray(y)
+        ix = np.unique(np.linspace(0, len(x) - 1, min(512, len(x))).astype(int))
+        data.append(
+            {
+                "type": "scatter",
+                "mode": "lines",
+                "name": name,
+                "x": x[ix].tolist(),
+                "y": y[ix].tolist(),
+            }
+        )
     return {
-        "title": {"text": title, "x": 0.02, "xanchor": "left"},
-        "margin": {"l": 68, "r": 22, "t": 58, "b": 58},
-        "xaxis": {"title": x_label, "showgrid": True},
-        "yaxis": {"title": y_label, "showgrid": True},
-        "legend": {"orientation": "h", "y": 1.14},
-        "hovermode": "closest",
-        "uirevision": "keep-view",
+        "data": data,
+        "layout": {
+            "title": {"text": title},
+            "xaxis": {"title": xlabel},
+            "yaxis": {"title": ylabel},
+            "legend": {"orientation": "h"},
+        },
+        "config": {"responsive": True, "displaylogo": False},
     }
 
 
-def run(parameters: dict[str, Any]) -> dict[str, Any]:
-    primary = float(parameters["primary_scale"])
-    secondary = float(parameters["secondary_scale"])
-    noise_db = float(parameters["noise_db"])
-    broken_mode = bool(parameters["broken_mode"])
-    count = 192 + 16 * (ITEM_NUMBER % 4)
-    if count > MAX_POINTS:
-        raise ValueError("experiment exceeds the retained point ceiling")
-    rng = np.random.default_rng(SEED)
-    x = np.linspace(0.0, 1.0, count, endpoint=False)
-    variant = 1.0 + (ITEM_NUMBER % 7) / 5.0
-    noise_scale = 10.0 ** (noise_db / 20.0)
-
-    if PHASE == 1:
-        truth = np.cos(2.0 * np.pi * variant * primary * x + 0.4 * secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, count // 7) if broken_mode else measured
-    elif PHASE == 2:
-        tone = np.exp(1j * (2.0 * np.pi * (8.0 + variant * primary) * x + secondary))
-        measured = tone + noise_scale * (rng.standard_normal(count) + 1j * rng.standard_normal(count))
-        response_axis = np.fft.fftshift(np.fft.fftfreq(count, d=1.0 / count))
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / count
-        broken_response = np.abs(measured.real) if broken_mode else np.abs(measured)
-        truth = tone.real
-    elif PHASE == 3:
-        symbols = np.sign(np.sin(2.0 * np.pi * (4.0 + variant) * x))
-        carrier = np.cos(2.0 * np.pi * (18.0 + 2.0 * primary) * x + secondary)
-        truth = symbols * carrier
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(2 + 10 * secondary)) if broken_mode else measured
-    elif PHASE == 4:
-        bins = np.arange(count, dtype=float)
-        center = count * (0.25 + 0.25 * (primary - 0.5))
-        width = 2.0 + 4.0 * secondary
-        truth = np.exp(-0.5 * ((bins - center) / width) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = bins
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / np.sqrt(count)
-        broken_response = np.roll(measured, count // 3) if broken_mode else measured
-        x = bins
-    elif PHASE == 5:
-        cells = np.arange(count, dtype=float)
-        background = 0.2 + (0.45 * secondary) * (cells >= count // 2)
-        power = background + np.abs(noise_scale * rng.standard_normal(count))
-        target_bin = int(count * (0.3 + 0.25 * (primary - 0.5)))
-        power[target_bin] += 1.4
-        truth = power
-        measured = power
-        response_axis = cells
-        response = np.full(count, np.quantile(power, 0.82 + 0.1 * secondary))
-        if broken_mode:
-            response = np.full(count, np.mean(power) * (1.2 + primary))
-        broken_response = response
-        x = cells
-    elif PHASE == 6:
-        steps = np.arange(count, dtype=float)
-        truth = 0.04 * steps + 0.0002 * variant * secondary * steps**2
-        measured = truth + noise_scale * 8.0 * rng.standard_normal(count)
-        gain = np.clip(0.12 + 0.5 * primary, 0.05, 0.95)
-        response = np.empty(count)
-        response[0] = measured[0]
-        for index in range(1, count):
-            response[index] = response[index - 1] + gain * (measured[index] - response[index - 1])
-        response_axis = steps
-        broken_response = np.roll(response, 12) if broken_mode else response
-        x = steps
-    elif PHASE == 7:
-        angles = np.linspace(-90.0, 90.0, count)
-        u = np.sin(np.deg2rad(angles)) - np.sin(np.deg2rad(45.0 * (primary - 1.0)))
-        spacing = 0.45 + 0.45 * secondary
-        elements = 6 + ITEM_NUMBER % 7
-        denominator = np.sin(np.pi * spacing * u)
-        numerator = np.sin(elements * np.pi * spacing * u)
-        response = np.where(np.abs(denominator) < 1e-10, 1.0, np.abs(numerator / (elements * denominator)))
-        truth = response
-        measured = np.maximum(response + noise_scale * rng.standard_normal(count), 0.0)
-        response_axis = angles
-        broken_response = np.roll(response, 9) if broken_mode else response
-        x = angles
-    elif PHASE == 8:
-        bins = np.arange(count, dtype=float)
-        beat_bin = count * (0.15 + 0.35 * (primary - 0.5))
-        truth = np.cos(2.0 * np.pi * beat_bin * bins / count + secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(8 + 16 * secondary)) if broken_mode else measured
-        x = bins
-    else:
-        coordinate = np.linspace(-1.0, 1.0, count)
-        width = 0.05 + 0.16 / primary
-        truth = np.exp(-0.5 * ((coordinate + 0.25) / width) ** 2) + 0.65 * np.exp(-0.5 * ((coordinate - 0.3) / (1.4 * width)) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        kernel = np.ones(3 + 2 * int(secondary * 5))
-        kernel /= kernel.sum()
-        response = np.convolve(measured, kernel, mode="same")
-        response_axis = coordinate
-        broken_response = np.roll(response, 18) + 0.25 * np.roll(response, -13) if broken_mode else response
-        x = coordinate
-
-    displayed = broken_response if broken_mode else measured
-    separation = float(np.max(response) - np.median(response))
-    rmse = float(np.sqrt(np.mean((np.asarray(displayed).real - np.asarray(truth).real) ** 2)))
-    signature = [float(count), primary, secondary, noise_db, float(np.mean(np.asarray(displayed).real)), float(np.std(np.asarray(displayed).real)), separation, rmse]
-    sweep_primary = [0.6, 1.0, 1.4]
-    sweep_secondary = [0.0, 0.5, 1.0]
-    sweep_response = [variant * value for value in sweep_primary]
-    stress_response = [separation / (1.0 + value) for value in sweep_secondary]
-    title = 'Build an Empirical Radar ROC Curve'
-
+def _finish(values, plots, observation, failure, recovery, seed, broken, **extra):
     return {
         "metrics": [
-            {"id": "primary", "label": 'Detection Threshold', "value": primary, "unit": "× baseline", "emphasis": "primary"},
-            {"id": "response_separation", "label": "Response separation", "value": separation, "unit": "normalized"},
-            {"id": "model_error", "label": "Model/display error", "value": rmse, "unit": "normalized"},
-            {"id": "points", "label": "Bounded points", "value": count, "unit": "points"},
+            {"id": k, "label": k.replace("_", " "), "value": float(v), "unit": u}
+            for k, (v, u) in values.items()
         ],
-        "plots": {
-            "model_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "physical/model truth", "x": x, "y": np.asarray(truth).real},
-                {"type": "scatter", "mode": "lines", "name": "measured/processed", "x": x, "y": np.asarray(displayed).real},
-            ], "layout": _layout(title + " — model view", 'cell index', 'power / threshold'), "config": {"responsive": True, "displaylogo": False}},
-            "response_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "response", "x": response_axis, "y": np.asarray(response).real},
-            ], "layout": _layout(title + " — response view", 'cell index', 'power / threshold'), "config": {"responsive": True, "displaylogo": False}},
-            "parameter_sweeps": {"data": [
-                {"type": "scatter", "mode": "lines+markers", "name": "primary scale", "x": sweep_primary, "y": sweep_response},
-                {"type": "scatter", "mode": "lines+markers", "name": "secondary stress", "x": sweep_secondary, "y": stress_response},
-            ], "layout": _layout("Two one-variable sweeps", "control value", "response statistic"), "config": {"responsive": True, "displaylogo": False}},
-            "broken_case": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "recovered", "x": x, "y": np.asarray(measured).real},
-                {"type": "scatter", "mode": "lines", "name": "broken" if broken_mode else "enable broken mode", "x": x, "y": np.asarray(broken_response).real},
-            ], "layout": _layout("Intentional assumption failure", 'cell index', 'power / threshold'), "config": {"responsive": True, "displaylogo": False}},
-        },
+        "plots": plots,
         "explanations": {
-            "observation": f"The {title} model uses a bounded deterministic adaptive detection experiment. Primary scale={primary:.2f} and secondary stress={secondary:.2f} remain independently controllable.",
-            "broken": "Broken mode deliberately violates the lesson's central interpretation assumption so the displayed response becomes ambiguous, biased, contaminated, or defocused.",
-            "recovery": "Disable broken mode, restore both scales to 1.0 and 0.25, then connect the recovered shape to the pinned source equations before changing one control at a time.",
+            "observation": observation,
+            "broken": failure,
+            "recovery": recovery,
         },
-        "diagnostics": {"seed": SEED, "item_number": ITEM_NUMBER, "point_count": count, "signature": signature, "broken_active": broken_mode},
+        "diagnostics": dict(
+            signature=[float(v[0]) for v in values.values()],
+            signature_fields=list(values),
+            seed=seed,
+            broken_active=broken,
+            **extra,
+        ),
     }
+
+
+def run(parameters):
+    from scipy.special import ndtr
+
+    snr, threshold, broken = _controls(
+        parameters,
+        [
+            ("matched_snr_db", 6, [-6, 0, 6, 12]),
+            ("threshold_sigma", 3.090232306, [2, 3.090232306, 4]),
+        ],
+    )
+    rng = np.random.default_rng(4401)
+    template = np.array([1, 1, 1, -1, 1, -1, -1, 1, -1, 1, -1, -1, -1, 1, 1, -1])
+    energy = np.dot(template, template)
+    n0 = rng.normal(size=(16, 60000))
+    z0 = np.sum(template[:, None] * n0, axis=0) / np.sqrt(energy)
+    example0 = n0[:, 0].copy()
+    del n0
+    n1 = rng.normal(size=(16, 60000))
+    z1 = np.sum(template[:, None] * n1, axis=0) / np.sqrt(energy)
+    example1 = n1[:, 0].copy()
+    del n1
+    dp = 10 ** (snr / 20)
+    sigma = np.sqrt(energy) / dp
+    gammas = np.array([-1, 0, 1, 2, 2.5, 3.090232306, 3.5, 4, 5])
+    snrs = np.array([-6, 0, 6, 12])
+    pfa = np.array([np.mean(z0 > g) for g in gammas])
+    pd = np.array([[np.mean(10 ** (s / 20) + z1 > g) for g in gammas] for s in snrs])
+    tuned = np.sort(z0)[249]
+    active = tuned if broken else threshold
+    active_pfa = np.mean(z0 > active)
+    active_pd = np.mean(dp + z1 > active)
+    counts = np.array([500, 2000, 10000, 60000])
+    trial_pfa = np.array([np.mean(z0[:n] > threshold) for n in counts])
+    trial_pd = np.array([np.mean(dp + z1[:n] > threshold) for n in counts])
+    se = np.sqrt(trial_pd * (1 - trial_pd) / counts)
+    values = {
+        "template_energy": (energy, "amplitude² samples"),
+        "active_threshold": (active, "noise RMS"),
+        "empirical_pfa": (active_pfa, "probability"),
+        "empirical_pd": (active_pd, "probability"),
+        "analytic_design_pfa": (ndtr(-threshold), "probability"),
+        "analytic_design_pd": (ndtr(dp - threshold), "probability"),
+        "false_alarms_per_million": (1e6 * active_pfa, "crossings"),
+        "tuning_bank_pfa": (0, "probability"),
+        "held_out_pfa": (np.mean(np.sort(z0)[250:] > tuned), "probability"),
+        "recovered_pfa": (np.mean(z0 > threshold), "probability"),
+        "model_valid": (not broken, "boolean"),
+    }
+    plots = {
+        "formation": _plot(
+            "A signed matched sum forms each score",
+            "Fast-time sample (index)",
+            "Amplitude (relative)",
+            [
+                ("Template", np.arange(16), template),
+                ("H0 record", np.arange(16), sigma * example0),
+                ("H1 record", np.arange(16), template + sigma * example1),
+            ],
+        ),
+        "roc": _plot(
+            "Threshold sweeps at several matched-filter SNRs",
+            "False-alarm probability (ratio)",
+            "Detection probability (ratio)",
+            [
+                (f"{s:g} dB", np.r_[1, pfa, 0], np.r_[1, pd[i], 0])
+                for i, s in enumerate(snrs)
+            ],
+        ),
+        "threshold": _plot(
+            "Same threshold: detections and false alarms",
+            "Threshold (noise RMS)",
+            "Probability (ratio)",
+            [
+                ("Empirical Pfa", gammas, pfa),
+                ("Gaussian Pfa", gammas, ndtr(-gammas)),
+                ("Selected SNR Pd", gammas, [np.mean(dp + z1 > g) for g in gammas]),
+                ("Gaussian Pd", gammas, ndtr(dp - gammas)),
+            ],
+        ),
+        "trial_pfa": _plot(
+            "Rare events require enough opportunities",
+            "Independent trials (count)",
+            "Probability (ratio)",
+            [
+                ("Pfa", counts, trial_pfa),
+                ("One-count resolution", counts, 1 / counts),
+                ("Design", counts, np.full(4, ndtr(-threshold))),
+            ],
+        ),
+        "trial_pd": _plot(
+            "Finite-trial Pd with approximate 95% limits",
+            "Independent trials (count)",
+            "Detection probability (ratio)",
+            [
+                ("Measured", counts, trial_pd),
+                ("Lower", counts, np.maximum(0, trial_pd - 1.96 * se)),
+                ("Upper", counts, np.minimum(1, trial_pd + 1.96 * se)),
+            ],
+        ),
+        "failure": _plot(
+            "Cherry-picked tuning data cannot validate operational Pfa",
+            "Bank: tuning, remaining, recovered (index)",
+            "Pfa (ratio)",
+            [("Crossings", [0, 1, 2], [0, 1, np.mean(z0 > threshold)])],
+        ),
+    }
+    return _finish(
+        values,
+        plots,
+        "The normalized signed matched-filter score is Gaussian: H0 has mean zero and H1 shifts by √SNR. Threshold sweeps trade Pd against Pfa, while trial count sets rare-event resolution.",
+        "Selecting the 250 lowest H0 scores and placing a threshold at their maximum guarantees zero tuning crossings. The remaining bank crosses it: this selection-biased result cannot establish zero operational Pfa.",
+        "Use the predetermined threshold and full independently generated H0/H1 banks. Disable the toggle for exact replay; finite Monte Carlo counts remain estimates.",
+        4401,
+        broken,
+        trials=60000,
+        pfa=pfa.tolist(),
+        pd=pd.tolist(),
+        trial_counts=counts.tolist(),
+        trial_pfa=trial_pfa.tolist(),
+        trial_pd=trial_pd.tolist(),
+    )

@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "9b427cbbd50ec5effd59eeb7e2e7aead04a27980c827176a1e50455b9731e5ce",
+    "content_digest": "ee07480c899b69c7575aa3ff215fb7ccd02673e7faa9e7d3e0aa6f09995af505",
     "files": [
       {
         "path": "modules/44-build-an-empirical-radar-roc-curve/experiment.py",
-        "sha256": "502c14c7339c5d1f8c7ce1cccf22b1b6d3d77575deece8494b970756f6febadf"
+        "sha256": "5c6c4f4cb111f078bbe91d7cbf789e40183accd666f6bb220b6662a9da696e14"
       },
       {
         "path": "modules/44-build-an-empirical-radar-roc-curve/lesson.md",
-        "sha256": "79805c792312e309747c18186e12f2759ddd289bffd10b3aac5e6097ab67973e"
+        "sha256": "5bfeced8233f4cd5b19adb646cef938b01befbbbef5809f386da706eba5da432"
       },
       {
         "path": "modules/44-build-an-empirical-radar-roc-curve/module.yaml",
-        "sha256": "2760759a983e03b0c73b70dbf8c9eaa9bc53aff9891071d234efc4d1a82a11d9"
+        "sha256": "585f29ae76e4eac9c964a9bc44dda933662035cffb4323f523ec8215fd27450b"
       }
     ]
   },
   "content": {
     "guiding_question": "How does threshold choice trade probability of detection against false alarm?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "The normalized signed matched-filter score is Gaussian: H0 has mean zero and H1 shifts by \u221aSNR. Threshold sweeps trade Pd against Pfa, while trial count sets rare-event resolution.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary detection threshold while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "The normalized signed matched-filter score is Gaussian: H0 has mean zero and H1 shifts by \u221aSNR. Threshold sweeps trade Pd against Pfa, while trial count sets rare-event resolution.",
+      "Selecting the 250 lowest H0 scores and placing a threshold at their maximum guarantees zero tuning crossings. The remaining bank crosses it: this selection-biased result cannot establish zero operational Pfa.",
+      "Use the predetermined threshold and full independently generated H0/H1 banks. Disable the toggle for exact replay; finite Monte Carlo counts remain estimates.",
+      "Explicit stage equations are retained in lesson.md. NumPy random streams differ from MATLAB. Plot/console presentation is adapted; no MATLAB runtime parity is claimed."
     ],
     "equations": [
       {
@@ -77,146 +77,225 @@
       "seed": 4401,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
+          "name": "trials",
+          "value": 60000,
+          "unit": "count"
         },
         {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "5ee2e6bb6d8613e8510f1c80a713428ed925ed4c392ef6914cc3e17c9e5f5230",
-          "unit": "mixed numeric signature"
+          "sha256": "7b165007e58ed105980aef04f4d764a8bcc7608bc6d7c8076b20e604d7bbd023",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "7b165007e58ed105980aef04f4d764a8bcc7608bc6d7c8076b20e604d7bbd023",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "47c313c51141ece2018662b0598a9be8cf32ef7bc6318799dfb1a242d4993a88",
-          "unit": "mixed numeric signature"
+          "sha256": "f4ef325692e5165c464efaf3c719bee77a75782a08dfdb79ba8d5b3c35b55195",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "f4ef325692e5165c464efaf3c719bee77a75782a08dfdb79ba8d5b3c35b55195",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "606124fee948618ed0109297faf24000bf24bc873ef5110f7f598c696c1844e7",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "606124fee948618ed0109297faf24000bf24bc873ef5110f7f598c696c1844e7",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "89d17079a6ea326f451dc31c2f2801ec57a6253edf70543fde80e7660e4c7365",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "89d17079a6ea326f451dc31c2f2801ec57a6253edf70543fde80e7660e4c7365",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "7b165007e58ed105980aef04f4d764a8bcc7608bc6d7c8076b20e604d7bbd023",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "7b165007e58ed105980aef04f4d764a8bcc7608bc6d7c8076b20e604d7bbd023",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P44 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P44 explicit processing and evidence stages",
+        "target_plot_key": "formation",
+        "title": "A signed matched sum forms each score",
         "axes": [
           {
             "role": "x",
-            "label": "cell index",
-            "unit": "source units"
+            "label": "Fast-time sample (index)",
+            "unit": "index"
           },
           {
             "role": "y",
-            "label": "power / threshold",
-            "unit": "normalized"
+            "label": "Amplitude (relative)",
+            "unit": "relative"
           }
         ],
-        "interpretation": "This view answers the Build an Empirical Radar ROC Curve guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "The normalized signed matched-filter score is Gaussian: H0 has mean zero and H1 shifts by \u221aSNR. Threshold sweeps trade Pd against Pfa, while trial count sets rare-event resolution."
       },
       {
-        "source_figure": "Pinned P44 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P44 explicit processing and evidence stages",
+        "target_plot_key": "roc",
+        "title": "Threshold sweeps at several matched-filter SNRs",
         "axes": [
           {
             "role": "x",
-            "label": "cell index",
-            "unit": "source units"
+            "label": "False-alarm probability (ratio)",
+            "unit": "ratio"
           },
           {
             "role": "y",
-            "label": "power / threshold",
-            "unit": "normalized"
+            "label": "Detection probability (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Build an Empirical Radar ROC Curve guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "The normalized signed matched-filter score is Gaussian: H0 has mean zero and H1 shifts by \u221aSNR. Threshold sweeps trade Pd against Pfa, while trial count sets rare-event resolution."
       },
       {
-        "source_figure": "Pinned P44 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P44 explicit processing and evidence stages",
+        "target_plot_key": "threshold",
+        "title": "Same threshold: detections and false alarms",
         "axes": [
           {
             "role": "x",
-            "label": "cell index",
-            "unit": "source units"
+            "label": "Threshold (noise RMS)",
+            "unit": "noise RMS"
           },
           {
             "role": "y",
-            "label": "power / threshold",
-            "unit": "normalized"
+            "label": "Probability (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Build an Empirical Radar ROC Curve guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "The normalized signed matched-filter score is Gaussian: H0 has mean zero and H1 shifts by \u221aSNR. Threshold sweeps trade Pd against Pfa, while trial count sets rare-event resolution."
       },
       {
-        "source_figure": "Pinned P44 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P44 explicit processing and evidence stages",
+        "target_plot_key": "trial_pfa",
+        "title": "Rare events require enough opportunities",
         "axes": [
           {
             "role": "x",
-            "label": "cell index",
-            "unit": "source units"
+            "label": "Independent trials (count)",
+            "unit": "count"
           },
           {
             "role": "y",
-            "label": "power / threshold",
-            "unit": "normalized"
+            "label": "Probability (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Build an Empirical Radar ROC Curve guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "The normalized signed matched-filter score is Gaussian: H0 has mean zero and H1 shifts by \u221aSNR. Threshold sweeps trade Pd against Pfa, while trial count sets rare-event resolution."
+      },
+      {
+        "source_figure": "Pinned P44 explicit processing and evidence stages",
+        "target_plot_key": "trial_pd",
+        "title": "Finite-trial Pd with approximate 95% limits",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Independent trials (count)",
+            "unit": "count"
+          },
+          {
+            "role": "y",
+            "label": "Detection probability (ratio)",
+            "unit": "ratio"
+          }
+        ],
+        "interpretation": "The normalized signed matched-filter score is Gaussian: H0 has mean zero and H1 shifts by \u221aSNR. Threshold sweeps trade Pd against Pfa, while trial count sets rare-event resolution."
+      },
+      {
+        "source_figure": "Pinned P44 explicit processing and evidence stages",
+        "target_plot_key": "failure",
+        "title": "Cherry-picked tuning data cannot validate operational Pfa",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Bank: tuning, remaining, recovered (index)",
+            "unit": "index"
+          },
+          {
+            "role": "y",
+            "label": "Pfa (ratio)",
+            "unit": "ratio"
+          }
+        ],
+        "interpretation": "The normalized signed matched-filter score is Gaussian: H0 has mean zero and H1 shifts by \u221aSNR. Threshold sweeps trade Pd against Pfa, while trial count sets rare-event resolution."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "matched_snr_db",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          -6,
+          0,
+          6,
+          12
         ],
-        "expected_observation": "Changing detection threshold moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Matched SNR db; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "threshold_sigma",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          2,
+          3.090232306,
+          4
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Threshold sigma; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "Selecting the 250 lowest H0 scores and placing a threshold at their maximum guarantees zero tuning crossings. The remaining bank crosses it: this selection-biased result cannot establish zero operational Pfa.",
+      "recovery": "Use the predetermined threshold and full independently generated H0/H1 banks. Disable the toggle for exact replay; finite Monte Carlo counts remain estimates.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Selecting the 250 lowest H0 scores and placing a threshold at their maximum guarantees zero tuning crossings. The remaining bank crosses it: this selection-biased result cannot establish zero operational Pfa.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -224,63 +303,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 2400000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P44 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p41_p52.py",
     "seed": 4401,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "matched_snr_db",
+        "value": 6,
+        "unit": "dB"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "threshold_sigma",
+        "value": 3.090232306,
+        "unit": "noise RMS"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true,
         "expected": {
           "path": "modules/44-build-an-empirical-radar-roc-curve/evidence/expected-baseline.json",
-          "sha256": "5ee2e6bb6d8613e8510f1c80a713428ed925ed4c392ef6914cc3e17c9e5f5230"
+          "sha256": "7b165007e58ed105980aef04f4d764a8bcc7608bc6d7c8076b20e604d7bbd023"
         },
         "actual": {
           "path": "modules/44-build-an-empirical-radar-roc-curve/evidence/actual-baseline.json",
-          "sha256": "ddead290579be5fc40f60150b0bc11623359d12420c830e7f666e52df3f07802"
-        },
-        "max_absolute_error": 1.8464396678297135e-13,
-        "max_relative_error": 1.8464396678297135e-13,
-        "passed": true
+          "sha256": "7b165007e58ed105980aef04f4d764a8bcc7608bc6d7c8076b20e604d7bbd023"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true,
+        "expected": {
+          "path": "modules/44-build-an-empirical-radar-roc-curve/evidence/expected-sweep-1.json",
+          "sha256": "f4ef325692e5165c464efaf3c719bee77a75782a08dfdb79ba8d5b3c35b55195"
+        },
+        "actual": {
+          "path": "modules/44-build-an-empirical-radar-roc-curve/evidence/actual-sweep-1.json",
+          "sha256": "f4ef325692e5165c464efaf3c719bee77a75782a08dfdb79ba8d5b3c35b55195"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true,
+        "expected": {
+          "path": "modules/44-build-an-empirical-radar-roc-curve/evidence/expected-sweep-2.json",
+          "sha256": "606124fee948618ed0109297faf24000bf24bc873ef5110f7f598c696c1844e7"
+        },
+        "actual": {
+          "path": "modules/44-build-an-empirical-radar-roc-curve/evidence/actual-sweep-2.json",
+          "sha256": "606124fee948618ed0109297faf24000bf24bc873ef5110f7f598c696c1844e7"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true,
         "expected": {
           "path": "modules/44-build-an-empirical-radar-roc-curve/evidence/expected-broken.json",
-          "sha256": "47c313c51141ece2018662b0598a9be8cf32ef7bc6318799dfb1a242d4993a88"
+          "sha256": "89d17079a6ea326f451dc31c2f2801ec57a6253edf70543fde80e7660e4c7365"
         },
         "actual": {
           "path": "modules/44-build-an-empirical-radar-roc-curve/evidence/actual-broken.json",
-          "sha256": "13821665508827efa9a1089fb98a7c48654095b2369f8a504d624b6e73e26181"
+          "sha256": "89d17079a6ea326f451dc31c2f2801ec57a6253edf70543fde80e7660e4c7365"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 1.925681836212334e-13,
-        "max_relative_error": 1.925681836212334e-13,
-        "passed": true
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true,
+        "expected": {
+          "path": "modules/44-build-an-empirical-radar-roc-curve/evidence/expected-recovery.json",
+          "sha256": "7b165007e58ed105980aef04f4d764a8bcc7608bc6d7c8076b20e604d7bbd023"
+        },
+        "actual": {
+          "path": "modules/44-build-an-empirical-radar-roc-curve/evidence/actual-recovery.json",
+          "sha256": "7b165007e58ed105980aef04f4d764a8bcc7608bc6d7c8076b20e604d7bbd023"
+        }
       }
     ]
   },

@@ -1,6 +1,4 @@
-# Use Ordered-Statistic CFAR with Interfering Targets
-
-> **Guiding question:** How can CFAR resist several contaminated training cells?
+# Lesson: robustness comes from choosing which reference sample can vote
 
 ## Guiding question
 
@@ -126,33 +124,29 @@ many of the largest reference samples may influence the threshold. The rank is
 therefore a design assumption about how many cells may be contaminated, and
 its calibration is part of the detector—not an optional plotting choice.
 
-## Use the Python GUI experiment
+## Interactive lab: Use Ordered-Statistic CFAR with Interfering Targets
 
-The GUI keeps the pinned source's mental model and processing order visible. The **OS CFAR rank** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** How can CFAR resist several contaminated training cells?
 
-### Prediction and sweep 1 — OS CFAR rank
+There are N=24 exponential references, two guards per side, and a primary target at source cell 128. Four interfering targets at 115/120/136/141 contaminate its references. The OS statistic is ascending rank k; Pfa(α)=∏_{j=0}^{k−1}(N−j)/(N−j+α). Count sweeps 0/2/4/6/7/8 and strength sweeps −20/0/10/20/30 dB use 20000 paired trials with a 13 dB target. Each plotted rank is recalibrated; the broken toggle explicitly switches to rank 22 while retaining rank-18 alpha. N−k is the ideal strong-outlier capacity, not a guarantee for all reference distributions.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict the strong-outlier capacity N−k and what happens at one extra contaminator. Why does changing rank require recalibration before comparing Pd?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **OS rank** from 18 to 22 rank. Predict, run, and explain the measured change using the equation; then reset.
+2. Start at the baseline. Sweep only **Interferer power db** from 20 to 30 dB. Predict, run, and explain the measured change using the equation; then reset.
+3. Enable the broken case. The failure selects rank 22 while retaining rank-18 alpha. Its homogeneous Pfa changes, so a Pd comparison no longer has equal calibration.
+4. Recovery: Recompute alpha for the selected rank, inspect contamination count and strength, and state the lost outlier capacity. Disable the toggle for the selected rank-specific baseline. Restore the controls and disable the toggle to reproduce the selected baseline exactly.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict the strong-outlier capacity N−k and what happens at one extra contaminator. Why does changing rank require recalibration before comparing Pd? Support your answer with a measured value and units. Explain the failure, the recovery assumption, and what this finite experiment cannot establish.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+The failure selects rank 22 while retaining rank-18 alpha. Its homogeneous Pfa changes, so a Pd comparison no longer has equal calibration. Do not equate seeded crossings with a field detection guarantee.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The source lesson is preserved above. NumPy private seeds reproduce this port, not MATLAB random streams; array draws use NumPy row-major order. Source figure/console presentation becomes labeled plots and metrics. Vectorized arithmetic retains the source equations; the P42 linear convolution and P50 ring convolution are independently checked. All calculations use complete stated arrays; displays may retain at most 512 line points or 128×64 heatmap coordinates, preserving zero and prominent peaks. No MATLAB execution, browser/accessibility review, hardware, or learner-effectiveness claim is made.

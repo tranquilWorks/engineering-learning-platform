@@ -1,41 +1,25 @@
 # Handoff
 
-Owner approved target PR #46 merge and requested batches of twelve lessons on
-2026-09-27. PR #46 merged as `74fbe13828665783a97d047eae0c6dc6ef482745`, tree
-`2ac9ed6889e18f531b6d01dba794b710a2f51996`. Control PR #505 merged as
-`a4b075fe1e4fdb35d58802668d2631b9f465eba3`; active contract is an exact copy.
+Owner requested the next batch after the merge-and-continue question for PR #47.
+PR #47 merged as `f78831b23e46ff1cb9518a716ac8ba5aeab5a3ee`, tree
+`ee7d2536b91b25b670dba34c222002e401fe6747`. Control PR #508 merged as
+`47b907458622f3381bc93e5c19908a487c98774c`; active contract is an exact copy.
 
-Current branch: `codex/dsp-fidelity-p29-p40-20260927` in the isolated ELP worktree.
-Implementation: `3c5cee0dc8bef78f9f3c8baed691f03c4023d804`.
-Review: https://github.com/tranquilWorks/engineering-learning-platform/pull/47
-Local preview: http://127.0.0.1:8765/courses/dsp-radar/modules/29-build-a-radar-power-budget-experiment
-P29-P40 are implemented as one twelve-item source-fidelity repair. All sixty
-independent signatures compare within 1e-8 absolute/relative limits; maximum
-observed absolute difference is 2.2737367544323206e-13. The 90 new tests, 495 combined DSP tests, lint,
-deterministic catalog, scope/source audit and API/live TCP smoke passed.
-Contract passed 72 tests; quick and full each passed all 875 API tests.
-Full passed in 559.80 seconds for the API suite, then frontend typecheck/build
-passed (build 4.81 seconds). All mandatory local gates passed at the implementation
-revision; the final follow-up commit only records evidence in three documentation
-files. PR #47 is ready for review, not yet merged. Existing deprecation and
-large frontend chunk warnings remain.
+Branch: `codex/dsp-fidelity-p41-p52-20260927` in the isolated ELP worktree.
+All twelve P41-P52 runtimes, lessons and sixty independent scenarios are
+implemented; numerical comparisons passed at 1e-8 absolute/scaled-relative
+limits, maximum absolute difference 9.094947017729282e-13. Required broader
+verification is in progress; do not claim full validation or target merge yet.
 
-The lessons cover radar power budgets, sampled range, resolution/accuracy, LFM
-compression and sidelobes, ambiguity surfaces, unambiguous-range folding,
-coherent Doppler, fast/slow-time matrices, MTI, blind-speed diversity, and pulse
-integration. Earlier module bytes and the 67205-byte P02-P28 reference prefix
-are unchanged. Source pin: `5d73667a486df4a7b6c581e4c9406e810ed4f0f6`.
-
-Issue 441 stays open. Ledger: one already-distinct, twenty-seven prior repairs,
-twelve current repairs and forty-four pending; total 84. Catalog remains six
+Prior modules and reference bytes are preserved. DSP source stays read-only at
+`5d73667a486df4a7b6c581e4c9406e810ed4f0f6`. Ledger: one distinct, thirty-nine
+prior repairs, twelve current repairs, thirty-two pending. Catalog stays six
 courses / 290 modules / 290 interactive. Course numerical/curriculum/capstone
-maturity stays blocked for P41-P84. Next planned group is P41-P52, under a new
-contract after this batch is complete and merged. Prefer twelve at a time.
+maturity remains blocked for P53-P84, and issue 441 stays open.
+Next proposed group is P53-P64, after this batch's verification/merge and its
+own scoped contract. Prefer twelve lessons per group under owner direction.
 
-Protected target merge retains separate human authorization; the present merge
-approval applied to PR #46. Hosted checkout debt remains outside this contract:
-PR #47 implementation run 36329613925 had 853 passes and 22 failures
-(21 missing DSP source checks and one missing historical vehicle commit);
-frontend passed, container skipped. All 22 checks pass locally. Hosted CI is
-not mandatory under retained owner direction; this is not a hosted CI pass.
-No MATLAB, browser/accessibility, learner, hardware or production claim.
+Protected target merge retains separate human authorization. Current approval
+covered PR #47. Hosted CI checkout prerequisites remain outside the DSP contract;
+all required local gates remain mandatory. No MATLAB runtime, browser/accessibility,
+learner, hardware, deployment or production validation is claimed.

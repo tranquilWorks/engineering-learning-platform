@@ -3,13 +3,13 @@
   "id": "52-validate-cfar-pfa-by-monte-carlo",
   "number": 52,
   "title": "Validate CFAR Pfa by Monte Carlo",
-  "summary": "Explore validate cfar pfa by monte carlo with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "Count false alarms from independent H0 trials and report a Wilson interval. Finite-N calibration matches iid exponential-power theory; correlated Gaussian and cellwise lognormal texture violate that model.",
   "guiding_question": "Does the implemented detector actually achieve the requested false-alarm probability?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-5",
-    "Monte-Carlo-trials"
+    "radar-detection",
+    "P52"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,51 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Monte Carlo Trials",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "training_count",
+      "type": "segmented",
+      "label": "Training count",
+      "unit": "cells",
+      "default": 24,
+      "options": [
+        {
+          "label": "8",
+          "value": 8
+        },
+        {
+          "label": "16",
+          "value": 16
+        },
+        {
+          "label": "24 baseline",
+          "value": 24
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "design_pfa",
+      "type": "segmented",
+      "label": "Design Pfa",
+      "unit": "probability",
+      "default": 0.001,
+      "options": [
+        {
+          "label": "0.01",
+          "value": 0.01
+        },
+        {
+          "label": "0.003",
+          "value": 0.003
+        },
+        {
+          "label": "0.001 baseline",
+          "value": 0.001
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +75,45 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing monte carlo trials, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict how the interval narrows with independent trial count. Why can the exact iid Pfa formula fail for correlated or textured backgrounds without an implementation bug?",
+      "reveal": "Count false alarms from independent H0 trials and report a Wilson interval. Finite-N calibration matches iid exponential-power theory; correlated Gaussian and cellwise lognormal texture violate that model."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Independent square-law CUT and reference estimate",
+      "plot": "decisions"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Running rate with 95% Wilson interval",
+      "plot": "running"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Requested Pfa sweep at fixed N",
+      "plot": "pfa"
+    },
+    {
+      "type": "plot",
+      "title": "Finite-N calibration across reference counts",
+      "plot": "training"
+    },
+    {
+      "type": "plot",
+      "title": "Calibration assumptions matter",
+      "plot": "models"
+    },
+    {
+      "type": "plot",
+      "title": "Known-noise alpha overspends the finite-N budget",
+      "plot": "failure"
     },
     {
       "type": "callout",
@@ -102,7 +124,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

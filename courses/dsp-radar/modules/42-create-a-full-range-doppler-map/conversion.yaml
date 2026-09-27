@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "f34f3b1b0571eca465e17dd447f15586935908fe1096ec68cf86d274ec685fcf",
+    "content_digest": "84a9ac942cf3edbc752546ec6276fdc3a77f5b2db82ca8d0e1bce5cedf39d1f9",
     "files": [
       {
         "path": "modules/42-create-a-full-range-doppler-map/experiment.py",
-        "sha256": "7915a2c584cbfa58df122117eb59c6054274015054076cd54edd3e456f2b45bf"
+        "sha256": "006b7779cb75cb518650963acb29c7594ca00c3623ea37a589613694c3ec3025"
       },
       {
         "path": "modules/42-create-a-full-range-doppler-map/lesson.md",
-        "sha256": "82970c8c63cab526f36d9ca10c0ba6cf44545b369d3d46a0893fad4aa38e9799"
+        "sha256": "bcb0f9a3beb3aae45fe005c9830427ed5d93b1051097cea1d34917f38d4cea5a"
       },
       {
         "path": "modules/42-create-a-full-range-doppler-map/module.yaml",
-        "sha256": "65d093ba1c15e0ff8f1800c5231f397f986e24e40cf22af7bcc0a21ceb322456"
+        "sha256": "2e72d269ea990f54a32ce6706d429b5a77226bd2cf70058ee770771e81c53230"
       }
     ]
   },
   "content": {
     "guiding_question": "How do matched filtering and slow-time FFT combine to separate targets?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "Fast-time matched filtering separates range; the slow-time FFT separates signed velocity. Targets can share either coordinate and remain distinct in the two-dimensional map.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary target velocity while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Fast-time matched filtering separates range; the slow-time FFT separates signed velocity. Targets can share either coordinate and remain distinct in the two-dimensional map.",
+      "FFT along fast time creates fast-time frequency, not Doppler. Relabeling pulse columns as velocity cannot repair it.",
+      "Restore delay-corrected range compression, apply the selected slow-time window and FFT across pulse columns; disable the toggle for the exact selected map.",
+      "Explicit stage equations are retained in lesson.md. NumPy random streams differ from MATLAB. Plot/console presentation is adapted; no MATLAB runtime parity is claimed."
     ],
     "equations": [
       {
@@ -77,146 +77,259 @@
       "seed": 4201,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
+          "name": "coherent_gain",
+          "value": 31.499999999999996,
+          "unit": "count"
         },
         {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "1f36714193fce18ac668780a997a638924ca015aa4f2562308ad2e5158a22469",
-          "unit": "mixed numeric signature"
+          "sha256": "80bcb787fe51e6cdd43a8ddc958d56a70a7710ae5260dc132b5d9aad42d39f24",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "3c3c08c79bb015cd36f924d50bf7cfc4296861d6faed13f669809b248927e5fa",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "50a52d770d9e1acb87b37f7046288ff1e714f54c454d7f39407064de29e1f4fc",
-          "unit": "mixed numeric signature"
+          "sha256": "2978cfb567cc7ab09ba603105318ec4af5e5e43915fc8404496362e5bd405396",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "1b96dc8e0015561b592fef46ebeffeb2c31e9024a79c5321f4616da40598c215",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "a6d847aad56660741cfc881d29c01cdb3b7db461596e441c7d2b17a7895f99c6",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "fb9420e048c1b857772dfdfa3085c6026a3283108b5169009ac40f9838f681a3",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "191442bb5b6e7f9529bfeebda39494d7aa9aa738031f78335db8bbb46e0aac59",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "793127537e6b09c07608575cc3f28eb5061d8b8b9c3525ef6ced8513f0f1524f",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "80bcb787fe51e6cdd43a8ddc958d56a70a7710ae5260dc132b5d9aad42d39f24",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "3c3c08c79bb015cd36f924d50bf7cfc4296861d6faed13f669809b248927e5fa",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P42 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P42 explicit processing and evidence stages",
+        "target_plot_key": "waveform",
+        "title": "Explicit LFM phase law",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Fast time (\u00b5s)",
+            "unit": "\u00b5s"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Amplitude (relative)",
+            "unit": "relative"
           }
         ],
-        "interpretation": "This view answers the Create a Full Range-Doppler Map guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Fast-time matched filtering separates range; the slow-time FFT separates signed velocity. Targets can share either coordinate and remain distinct in the two-dimensional map."
       },
       {
-        "source_figure": "Pinned P42 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P42 explicit processing and evidence stages",
+        "target_plot_key": "raw",
+        "title": "Echoes before range compression",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Pulse (index)",
+            "unit": "index"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Fast-time range (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Create a Full Range-Doppler Map guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Fast-time matched filtering separates range; the slow-time FFT separates signed velocity. Targets can share either coordinate and remain distinct in the two-dimensional map."
       },
       {
-        "source_figure": "Pinned P42 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P42 explicit processing and evidence stages",
+        "target_plot_key": "compressed",
+        "title": "Matched filter with N\u22121 delay removed",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Pulse (index)",
+            "unit": "index"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Range (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Create a Full Range-Doppler Map guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Fast-time matched filtering separates range; the slow-time FFT separates signed velocity. Targets can share either coordinate and remain distinct in the two-dimensional map."
       },
       {
-        "source_figure": "Pinned P42 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P42 explicit processing and evidence stages",
+        "target_plot_key": "map",
+        "title": "Range\u2013Doppler map",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Approaching velocity (m/s)",
+            "unit": "m/s"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Range (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Create a Full Range-Doppler Map guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Fast-time matched filtering separates range; the slow-time FFT separates signed velocity. Targets can share either coordinate and remain distinct in the two-dimensional map."
+      },
+      {
+        "source_figure": "Pinned P42 explicit processing and evidence stages",
+        "target_plot_key": "shared",
+        "title": "Two velocities at the same range",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Velocity (m/s)",
+            "unit": "m/s"
+          },
+          {
+            "role": "y",
+            "label": "Amplitude (relative)",
+            "unit": "relative"
+          }
+        ],
+        "interpretation": "Fast-time matched filtering separates range; the slow-time FFT separates signed velocity. Targets can share either coordinate and remain distinct in the two-dimensional map."
+      },
+      {
+        "source_figure": "Pinned P42 explicit processing and evidence stages",
+        "target_plot_key": "cpi",
+        "title": "Longer coherent dwell narrows Doppler bins",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Pulse count (pulses)",
+            "unit": "pulses"
+          },
+          {
+            "role": "y",
+            "label": "Velocity spacing (m/s)",
+            "unit": "m/s"
+          }
+        ],
+        "interpretation": "Fast-time matched filtering separates range; the slow-time FFT separates signed velocity. Targets can share either coordinate and remain distinct in the two-dimensional map."
+      },
+      {
+        "source_figure": "Pinned P42 explicit processing and evidence stages",
+        "target_plot_key": "windows",
+        "title": "Window sidelobes and mainlobe width",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Doppler bin (index)",
+            "unit": "index"
+          },
+          {
+            "role": "y",
+            "label": "Relative amplitude (dB)",
+            "unit": "dB"
+          }
+        ],
+        "interpretation": "Fast-time matched filtering separates range; the slow-time FFT separates signed velocity. Targets can share either coordinate and remain distinct in the two-dimensional map."
+      },
+      {
+        "source_figure": "Pinned P42 explicit processing and evidence stages",
+        "target_plot_key": "failure",
+        "title": "Wrong-axis fast-time FFT: columns are still pulses",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Pulse (index)",
+            "unit": "index"
+          },
+          {
+            "role": "y",
+            "label": "Fast-time frequency (cycles/sample)",
+            "unit": "cycles/sample"
+          }
+        ],
+        "interpretation": "Fast-time matched filtering separates range; the slow-time FFT separates signed velocity. Targets can share either coordinate and remain distinct in the two-dimensional map."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "pulse_count",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          16,
+          32,
+          64
         ],
-        "expected_observation": "Changing target velocity moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Pulse count; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "hann_weight",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          0,
+          1
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Hann weight; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "FFT along fast time creates fast-time frequency, not Doppler. Relabeling pulse columns as velocity cannot repair it.",
+      "recovery": "Restore delay-corrected range compression, apply the selected slow-time window and FFT across pulse columns; disable the toggle for the exact selected map.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "FFT along fast time creates fast-time frequency, not Doppler. Relabeling pulse columns as velocity cannot repair it.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -224,63 +337,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 600000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P42 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p41_p52.py",
     "seed": 4201,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
+        "name": "pulse_count",
+        "value": 64,
+        "unit": "pulses"
+      },
+      {
+        "name": "hann_weight",
+        "value": 1,
         "unit": "ratio"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 3.979039320256561e-13,
+        "max_relative_error": 9.210733855162537e-15,
+        "passed": true,
         "expected": {
           "path": "modules/42-create-a-full-range-doppler-map/evidence/expected-baseline.json",
-          "sha256": "1f36714193fce18ac668780a997a638924ca015aa4f2562308ad2e5158a22469"
+          "sha256": "80bcb787fe51e6cdd43a8ddc958d56a70a7710ae5260dc132b5d9aad42d39f24"
         },
         "actual": {
           "path": "modules/42-create-a-full-range-doppler-map/evidence/actual-baseline.json",
-          "sha256": "4dd16480baaa46328a149a182f159426db6b6aef6bebe7f0acf4998c72cc5deb"
-        },
-        "max_absolute_error": 4.713104906350907e-13,
-        "max_relative_error": 4.713104906350907e-13,
-        "passed": true
+          "sha256": "3c3c08c79bb015cd36f924d50bf7cfc4296861d6faed13f669809b248927e5fa"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 3.979039320256561e-13,
+        "max_relative_error": 9.210733855162537e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/42-create-a-full-range-doppler-map/evidence/expected-sweep-1.json",
+          "sha256": "2978cfb567cc7ab09ba603105318ec4af5e5e43915fc8404496362e5bd405396"
+        },
+        "actual": {
+          "path": "modules/42-create-a-full-range-doppler-map/evidence/actual-sweep-1.json",
+          "sha256": "1b96dc8e0015561b592fef46ebeffeb2c31e9024a79c5321f4616da40598c215"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 3.979039320256561e-13,
+        "max_relative_error": 9.210733855162537e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/42-create-a-full-range-doppler-map/evidence/expected-sweep-2.json",
+          "sha256": "a6d847aad56660741cfc881d29c01cdb3b7db461596e441c7d2b17a7895f99c6"
+        },
+        "actual": {
+          "path": "modules/42-create-a-full-range-doppler-map/evidence/actual-sweep-2.json",
+          "sha256": "fb9420e048c1b857772dfdfa3085c6026a3283108b5169009ac40f9838f681a3"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 3.979039320256561e-13,
+        "max_relative_error": 9.210733855162537e-15,
+        "passed": true,
         "expected": {
           "path": "modules/42-create-a-full-range-doppler-map/evidence/expected-broken.json",
-          "sha256": "50a52d770d9e1acb87b37f7046288ff1e714f54c454d7f39407064de29e1f4fc"
+          "sha256": "191442bb5b6e7f9529bfeebda39494d7aa9aa738031f78335db8bbb46e0aac59"
         },
         "actual": {
           "path": "modules/42-create-a-full-range-doppler-map/evidence/actual-broken.json",
-          "sha256": "c87e226e7e9943f7e88fdba2594fff5e2b61fd0fd3810b8c86648ae108453fc8"
+          "sha256": "793127537e6b09c07608575cc3f28eb5061d8b8b9c3525ef6ced8513f0f1524f"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 4.713104906350907e-13,
-        "max_relative_error": 4.713104906350907e-13,
-        "passed": true
+        "max_absolute_error": 3.979039320256561e-13,
+        "max_relative_error": 9.210733855162537e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/42-create-a-full-range-doppler-map/evidence/expected-recovery.json",
+          "sha256": "80bcb787fe51e6cdd43a8ddc958d56a70a7710ae5260dc132b5d9aad42d39f24"
+        },
+        "actual": {
+          "path": "modules/42-create-a-full-range-doppler-map/evidence/actual-recovery.json",
+          "sha256": "3c3c08c79bb015cd36f924d50bf7cfc4296861d6faed13f669809b248927e5fa"
+        }
       }
     ]
   },
