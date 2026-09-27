@@ -10,6 +10,7 @@ from typing import Any
 
 import numpy as np
 import pytest
+from numerical_replay import assert_replay
 
 from elp_api.catalog import CourseCatalog
 from elp_api.runtime import ExperimentRuntime
@@ -238,12 +239,8 @@ def test_vehicle_native_five_scenario_evidence_and_runtime() -> None:
                 module_id,
                 parameters,
             ).diagnostics["signature"]
-            assert reference == expected["cases"][scenario]["signature"]
-            assert production == pytest.approx(
-                actual["cases"][scenario]["signature"],
-                abs=design["tolerance"]["absolute"],
-                rel=design["tolerance"]["relative"],
-            )
+            assert_replay(reference, expected["cases"][scenario]["signature"], design["tolerance"])
+            assert_replay(production, actual["cases"][scenario]["signature"], design["tolerance"])
             assert production == pytest.approx(
                 reference,
                 abs=design["tolerance"]["absolute"],

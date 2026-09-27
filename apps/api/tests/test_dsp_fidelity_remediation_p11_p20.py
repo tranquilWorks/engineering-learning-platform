@@ -82,7 +82,10 @@ def _run_scenario(
 
 
 def test_exact_control_source_and_immutable_framework_identities() -> None:
-    contract = _load_yaml(ROOT / "contracts/active-batch.yaml")
+    # Exact contract retained from completed target 01a510244801cbf2c3b7ce990693aac9dc5959c1.
+    retained = ROOT / "docs/evidence/ELP-VERIFY-REPLAY-01-p11-p20-contract.yaml"
+    assert _sha256(retained) == "a834748236ec70a0728322aa10340aad9f6f498a516fba8e2c1dda82f687f4ea"
+    contract = _load_yaml(retained)
     assert contract["batch"]["id"] == "ELP-DSP-FIDELITY-P11-P20"
     assert contract["sources"]["baseline_commit"] == "a24818f42ff267394ee4ec97727ddb7d1978e3f4"
     assert contract["sources"]["baseline_tree"] == "1b5f62cc0adaa1796c459e7def317405cea4fe37"

@@ -1,9 +1,31 @@
 # Handoff
 
-Issue 441 has its second source-fidelity repair group implemented under `ELP-DSP-FIDELITY-P11-P20`. Preserve the exact DSP source gitlink, source map, conversion manifest, schema, authoring rules, course identity, P01-P10, and P21-P84. In `coverage.yaml`, only the P11-P20 target content digests changed in this batch; every identity, status, record path, blocker, summary, and P01-P10/P21-P84 digest remains retained.
+The active batch is `ELP-VERIFY-REPLAY-01`, authorized by merged Portfolio Control
+PR #501 at `1713665398b4d570611e7e8e19195d25fb8b7b38`. It starts from target
+`01a510244801cbf2c3b7ce990693aac9dc5959c1`, where DSP P11-P20 was already merged.
 
-The next coherent issue-441 batch begins at P21. Use `courses/dsp-radar/remediation-map.yaml` as the explicit repair ledger: P01 is already distinct, P02-P10 are prior-batch repairs, P11-P20 are current-batch repairs, and P21-P84 are pending. Do not infer full-course fidelity, curriculum coverage, or capstone completion from the unchanged 84-module inventory.
+This repair changes only validation and its activation/evidence documents.
+Fixture replay has a strict per-component portability allowance capped at one
+percent of the existing scientific budget and `1e-9 * max(1, abs(saved))`.
+Fresh production/reference comparisons retain their original scientific gates.
+Historical GNC error metadata is checked against the immutable saved pair.
+DSP regressions check the exact retained P11-P20 contract, so later batch
+activation does not invalidate completed work.
 
-The current platform state is six courses, 290 modules, and 290 interactive modules. The P11-P20 focused suite covers source identity, P02-P10 regression, unique controls and normalized P02-P20 program shapes, deterministic finite runtime output, physical axes/units, five independent scenarios per current module, source-specific failure/recovery invariants, and unchanged course-level blocked status.
+See `docs/evidence/ELP-VERIFY-REPLAY-01-2026-09-26.md` for baseline failures,
+read-only audit, negative controls, verification results, and rollback.
+The reviewable repair is [PR #45](https://github.com/tranquilWorks/engineering-learning-platform/pull/45)
+on branch `codex/dsp-fidelity-continuation-20260926`; implementation commit
+`3156f62` passed the retained local gates, with subsequent evidence-only cleanup.
+Target protected-branch merge still requires human approval. After this repair
+merges, reissue the control P21-P28 contract against the exact resulting commit
+and tree before activating that manually gated batch.
 
-MATLAB runtime comparison, audio playback, browser/accessibility, learner validation, physical HIL/hardware, certification, release, deployment, credentials/settings, and production evidence remain unperformed.
+Issue 441 remains open. The repair ledger remains P01 distinct, P02-P10 repaired,
+P11-P20 repaired, and P21-P84 pending. The catalog remains six courses,
+290 modules, and 290 interactive modules. Preserve the exact DSP gitlink,
+source map, conversion manifest, coverage and maturity claims.
+
+MATLAB runtime comparison, audio playback, browser/accessibility, learner
+validation, physical HIL/hardware, certification, release, deployment,
+credentials/settings, and production evidence remain unperformed.
