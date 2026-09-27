@@ -1,0 +1,94 @@
+{
+  "item": "P28",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p28",
+    "sha256": "fffe190b7c067e8ed3ae692a699f3b055f1055ada36674ecfbf9f56b9ae189a8",
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/28-connect-thresholds-to-roc-curves-and-estimator-limits/experiment.py",
+    "sha256": "4073cd7caf4f2be99de1596f266118d479bd9d0d884a35f8d050ad6e2d4adc3f",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "matched_snr_db": 6,
+      "threshold_sigma": 1.5,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "matched_snr_db": 0,
+      "threshold_sigma": 1.5,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "matched_snr_db": 6,
+      "threshold_sigma": 3,
+      "broken_mode": false
+    },
+    "broken": {
+      "matched_snr_db": 6,
+      "threshold_sigma": 1.5,
+      "broken_mode": true
+    },
+    "recovery": {
+      "matched_snr_db": 6,
+      "threshold_sigma": 1.5,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "empirical_false_alarm",
+      "unit": "ratio"
+    },
+    {
+      "name": "empirical_detection",
+      "unit": "ratio"
+    },
+    {
+      "name": "analytic_false_alarm",
+      "unit": "ratio"
+    },
+    {
+      "name": "analytic_detection",
+      "unit": "ratio"
+    },
+    {
+      "name": "active_estimator_bias",
+      "unit": "normalized amplitude"
+    },
+    {
+      "name": "active_estimator_variance",
+      "unit": "amplitude squared"
+    },
+    {
+      "name": "unbiased_variance_bound",
+      "unit": "amplitude squared"
+    },
+    {
+      "name": "selected_bias",
+      "unit": "normalized amplitude"
+    },
+    {
+      "name": "analytic_selected_bias",
+      "unit": "normalized amplitude"
+    },
+    {
+      "name": "all_trial_recovery_bias",
+      "unit": "normalized amplitude"
+    },
+    {
+      "name": "active_estimator_trials",
+      "unit": "trials"
+    },
+    {
+      "name": "unbiased_claim_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

@@ -347,3 +347,15 @@ modules before attempting every course:
 Use those pilots to revise the schema and authoring workflow before bulk conversion.
 The separate ELP-DSP sequence above does not mark B020, B030, or this broader
 cross-course migration milestone complete.
+
+### ELP-DSP-FIDELITY-P21-P28 — Modulation, channels and statistical evidence
+
+Continue from merged replay repair PR #45 under control PR #503. The eight
+source-specific experiments replace generic runtime behavior for AM/FM,
+constellations, RRC/matched filtering, multipath equalization, LMS cancellation,
+Monte Carlo confidence and ROC/estimation. Each retains five independent scenarios,
+physical controls, explicit failure/recovery and finite-resource limits.
+
+Preserve P01-P20 and P29-P84 byte-identically. After verification, issue 441
+continues at P29; full-course numerical, curriculum and capstone claims remain
+blocked. MATLAB, browser/learner, hardware and deployment are separate gates.

@@ -4,166 +4,259 @@ from typing import Any
 
 import numpy as np
 
-SEED = 1024
-ITEM_NUMBER = 24
-PHASE = 3
-MAX_POINTS = 512
 
-
-def _layout(title: str, x_label: str, y_label: str) -> dict[str, Any]:
+def _plot(title, xlabel, ylabel, traces):
+    data = []
+    for name, x, y in traces:
+        x, y = np.asarray(x), np.asarray(y)
+        indices = np.unique(np.linspace(0, len(x) - 1, min(len(x), 512)).astype(int))
+        data.append(
+            {
+                "type": "scatter",
+                "mode": "lines",
+                "name": name,
+                "x": x[indices].tolist(),
+                "y": y[indices].tolist(),
+            }
+        )
     return {
-        "title": {"text": title, "x": 0.02, "xanchor": "left"},
-        "margin": {"l": 68, "r": 22, "t": 58, "b": 58},
-        "xaxis": {"title": x_label, "showgrid": True},
-        "yaxis": {"title": y_label, "showgrid": True},
-        "legend": {"orientation": "h", "y": 1.14},
-        "hovermode": "closest",
-        "uirevision": "keep-view",
+        "data": data,
+        "layout": {
+            "title": {"text": title},
+            "xaxis": {"title": xlabel},
+            "yaxis": {"title": ylabel},
+            "legend": {"orientation": "h"},
+        },
+        "config": {"responsive": True, "displaylogo": False},
     }
+
+
+def _result(signature, fields, plots, explanations, seed, broken, extra=None):
+    return {
+        "metrics": [
+            {
+                "id": fields[i][0],
+                "label": fields[i][0].replace("_", " "),
+                "value": float(v),
+                "unit": fields[i][1],
+            }
+            for i, v in enumerate(signature)
+        ],
+        "plots": plots,
+        "explanations": explanations,
+        "diagnostics": {
+            "signature": [float(v) for v in signature],
+            "signature_fields": [f[0] for f in fields],
+            "seed": seed,
+            "broken_active": broken,
+            **(extra or {}),
+        },
+    }
+
+
+def _rrc(rolloff, span):
+    time = np.arange(-span * 4, span * 4 + 1) / 8
+    pulse = np.empty(len(time))
+    for i, x in enumerate(time):
+        if abs(x) < 1e-12:
+            pulse[i] = 1 + rolloff * (4 / np.pi - 1)
+        elif abs(abs(x) - 1 / (4 * rolloff)) < 1e-12:
+            pulse[i] = (
+                rolloff
+                / np.sqrt(2)
+                * (
+                    (1 + 2 / np.pi) * np.sin(np.pi / (4 * rolloff))
+                    + (1 - 2 / np.pi) * np.cos(np.pi / (4 * rolloff))
+                )
+            )
+        else:
+            pulse[i] = (
+                np.sin(np.pi * x * (1 - rolloff))
+                + 4 * rolloff * x * np.cos(np.pi * x * (1 + rolloff))
+            ) / (np.pi * x * (1 - (4 * rolloff * x) ** 2))
+    return pulse / np.sqrt(np.sum(abs(pulse) ** 2))
+
+
+def _pulse_chain(rolloff, span, offset=0):
+    rng = np.random.default_rng(1024)
+    bits = (rng.random((2, 320)) >= 0.5).astype(int)
+    symbols = ((2 * bits[0] - 1) + 1j * (2 * bits[1] - 1)) / np.sqrt(2)
+    impulses = np.zeros(2560, complex)
+    impulses[::8] = symbols
+    pulse = _rrc(rolloff, span)
+    rectangular = np.ones(8) / np.sqrt(8)
+    bank = (rng.standard_normal(2625) + 1j * rng.standard_normal(2625)) / np.sqrt(2)
+    tx = np.convolve(impulses, pulse)
+    rx = tx + 10 ** (-14 / 20) * bank[: len(tx)]
+    matched = np.convolve(rx, pulse[::-1].conj())
+    indices = len(pulse) - 1 + np.arange(320) * 8
+    samples = matched[indices + offset]
+    clean = np.convolve(tx, pulse[::-1].conj())[indices]
+    raw = rx[(len(pulse) - 1) // 2 + np.arange(320) * 8] / pulse[len(pulse) // 2]
+    rect_tx = np.convolve(impulses, rectangular)
+    rect_rx = rect_tx + 10 ** (-14 / 20) * bank[: len(rect_tx)]
+    rect_samples = np.convolve(rect_rx, rectangular[::-1])[7 + np.arange(320) * 8]
+    valid = slice(span, 320 - span)
+    evm = lambda v: float(100 * np.sqrt(np.mean(abs(v[valid] - symbols[valid]) ** 2)))
+    ser = float(
+        np.mean(
+            np.any(np.array([samples.real >= 0, samples.imag >= 0]) != bits, axis=0)
+        )
+    )
+    return (
+        pulse,
+        symbols,
+        tx,
+        matched,
+        samples,
+        [evm(rect_samples), evm(raw), evm(samples), evm(clean), ser],
+    )
 
 
 def run(parameters: dict[str, Any]) -> dict[str, Any]:
-    primary = float(parameters["primary_scale"])
-    secondary = float(parameters["secondary_scale"])
-    noise_db = float(parameters["noise_db"])
-    broken_mode = bool(parameters["broken_mode"])
-    count = 192 + 16 * (ITEM_NUMBER % 4)
-    if count > MAX_POINTS:
-        raise ValueError("experiment exceeds the retained point ceiling")
-    rng = np.random.default_rng(SEED)
-    x = np.linspace(0.0, 1.0, count, endpoint=False)
-    variant = 1.0 + (ITEM_NUMBER % 7) / 5.0
-    noise_scale = 10.0 ** (noise_db / 20.0)
-
-    if PHASE == 1:
-        truth = np.cos(2.0 * np.pi * variant * primary * x + 0.4 * secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, count // 7) if broken_mode else measured
-    elif PHASE == 2:
-        tone = np.exp(1j * (2.0 * np.pi * (8.0 + variant * primary) * x + secondary))
-        measured = tone + noise_scale * (rng.standard_normal(count) + 1j * rng.standard_normal(count))
-        response_axis = np.fft.fftshift(np.fft.fftfreq(count, d=1.0 / count))
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / count
-        broken_response = np.abs(measured.real) if broken_mode else np.abs(measured)
-        truth = tone.real
-    elif PHASE == 3:
-        symbols = np.sign(np.sin(2.0 * np.pi * (4.0 + variant) * x))
-        carrier = np.cos(2.0 * np.pi * (18.0 + 2.0 * primary) * x + secondary)
-        truth = symbols * carrier
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(2 + 10 * secondary)) if broken_mode else measured
-    elif PHASE == 4:
-        bins = np.arange(count, dtype=float)
-        center = count * (0.25 + 0.25 * (primary - 0.5))
-        width = 2.0 + 4.0 * secondary
-        truth = np.exp(-0.5 * ((bins - center) / width) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = bins
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / np.sqrt(count)
-        broken_response = np.roll(measured, count // 3) if broken_mode else measured
-        x = bins
-    elif PHASE == 5:
-        cells = np.arange(count, dtype=float)
-        background = 0.2 + (0.45 * secondary) * (cells >= count // 2)
-        power = background + np.abs(noise_scale * rng.standard_normal(count))
-        target_bin = int(count * (0.3 + 0.25 * (primary - 0.5)))
-        power[target_bin] += 1.4
-        truth = power
-        measured = power
-        response_axis = cells
-        response = np.full(count, np.quantile(power, 0.82 + 0.1 * secondary))
-        if broken_mode:
-            response = np.full(count, np.mean(power) * (1.2 + primary))
-        broken_response = response
-        x = cells
-    elif PHASE == 6:
-        steps = np.arange(count, dtype=float)
-        truth = 0.04 * steps + 0.0002 * variant * secondary * steps**2
-        measured = truth + noise_scale * 8.0 * rng.standard_normal(count)
-        gain = np.clip(0.12 + 0.5 * primary, 0.05, 0.95)
-        response = np.empty(count)
-        response[0] = measured[0]
-        for index in range(1, count):
-            response[index] = response[index - 1] + gain * (measured[index] - response[index - 1])
-        response_axis = steps
-        broken_response = np.roll(response, 12) if broken_mode else response
-        x = steps
-    elif PHASE == 7:
-        angles = np.linspace(-90.0, 90.0, count)
-        u = np.sin(np.deg2rad(angles)) - np.sin(np.deg2rad(45.0 * (primary - 1.0)))
-        spacing = 0.45 + 0.45 * secondary
-        elements = 6 + ITEM_NUMBER % 7
-        denominator = np.sin(np.pi * spacing * u)
-        numerator = np.sin(elements * np.pi * spacing * u)
-        response = np.where(np.abs(denominator) < 1e-10, 1.0, np.abs(numerator / (elements * denominator)))
-        truth = response
-        measured = np.maximum(response + noise_scale * rng.standard_normal(count), 0.0)
-        response_axis = angles
-        broken_response = np.roll(response, 9) if broken_mode else response
-        x = angles
-    elif PHASE == 8:
-        bins = np.arange(count, dtype=float)
-        beat_bin = count * (0.15 + 0.35 * (primary - 0.5))
-        truth = np.cos(2.0 * np.pi * beat_bin * bins / count + secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(8 + 16 * secondary)) if broken_mode else measured
-        x = bins
-    else:
-        coordinate = np.linspace(-1.0, 1.0, count)
-        width = 0.05 + 0.16 / primary
-        truth = np.exp(-0.5 * ((coordinate + 0.25) / width) ** 2) + 0.65 * np.exp(-0.5 * ((coordinate - 0.3) / (1.4 * width)) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        kernel = np.ones(3 + 2 * int(secondary * 5))
-        kernel /= kernel.sum()
-        response = np.convolve(measured, kernel, mode="same")
-        response_axis = coordinate
-        broken_response = np.roll(response, 18) + 0.25 * np.roll(response, -13) if broken_mode else response
-        x = coordinate
-
-    displayed = broken_response if broken_mode else measured
-    separation = float(np.max(response) - np.median(response))
-    rmse = float(np.sqrt(np.mean((np.asarray(displayed).real - np.asarray(truth).real) ** 2)))
-    signature = [float(count), primary, secondary, noise_db, float(np.mean(np.asarray(displayed).real)), float(np.std(np.asarray(displayed).real)), separation, rmse]
-    sweep_primary = [0.6, 1.0, 1.4]
-    sweep_secondary = [0.0, 0.5, 1.0]
-    sweep_response = [variant * value for value in sweep_primary]
-    stress_response = [separation / (1.0 + value) for value in sweep_secondary]
-    title = 'See Pulse Shaping and Matched Filtering'
-
-    return {
-        "metrics": [
-            {"id": "primary", "label": 'Pulse Shape Rolloff', "value": primary, "unit": "× baseline", "emphasis": "primary"},
-            {"id": "response_separation", "label": "Response separation", "value": separation, "unit": "normalized"},
-            {"id": "model_error", "label": "Model/display error", "value": rmse, "unit": "normalized"},
-            {"id": "points", "label": "Bounded points", "value": count, "unit": "points"},
-        ],
-        "plots": {
-            "model_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "physical/model truth", "x": x, "y": np.asarray(truth).real},
-                {"type": "scatter", "mode": "lines", "name": "measured/processed", "x": x, "y": np.asarray(displayed).real},
-            ], "layout": _layout(title + " — model view", 'symbol or time index', 'normalized signal'), "config": {"responsive": True, "displaylogo": False}},
-            "response_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "response", "x": response_axis, "y": np.asarray(response).real},
-            ], "layout": _layout(title + " — response view", 'symbol or time index', 'normalized signal'), "config": {"responsive": True, "displaylogo": False}},
-            "parameter_sweeps": {"data": [
-                {"type": "scatter", "mode": "lines+markers", "name": "primary scale", "x": sweep_primary, "y": sweep_response},
-                {"type": "scatter", "mode": "lines+markers", "name": "secondary stress", "x": sweep_secondary, "y": stress_response},
-            ], "layout": _layout("Two one-variable sweeps", "control value", "response statistic"), "config": {"responsive": True, "displaylogo": False}},
-            "broken_case": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "recovered", "x": x, "y": np.asarray(measured).real},
-                {"type": "scatter", "mode": "lines", "name": "broken" if broken_mode else "enable broken mode", "x": x, "y": np.asarray(broken_response).real},
-            ], "layout": _layout("Intentional assumption failure", 'symbol or time index', 'normalized signal'), "config": {"responsive": True, "displaylogo": False}},
-        },
-        "explanations": {
-            "observation": f"The {title} model uses a bounded deterministic communications processing experiment. Primary scale={primary:.2f} and secondary stress={secondary:.2f} remain independently controllable.",
-            "broken": "Broken mode deliberately violates the lesson's central interpretation assumption so the displayed response becomes ambiguous, biased, contaminated, or defocused.",
-            "recovery": "Disable broken mode, restore both scales to 1.0 and 0.25, then connect the recovered shape to the pinned source equations before changing one control at a time.",
-        },
-        "diagnostics": {"seed": SEED, "item_number": ITEM_NUMBER, "point_count": count, "signature": signature, "broken_active": broken_mode},
+    rolloff = float(parameters.get("rolloff", 0.25))
+    span = int(parameters.get("span_symbols", 8))
+    broken = bool(parameters.get("broken_mode", False))
+    if rolloff not in {0.1, 0.25, 0.5, 1.0} or span not in {2, 4, 6, 8}:
+        raise ValueError("Choose a retained RRC rolloff and finite span")
+    pulse, _symbols, tx, matched, samples, metrics = _pulse_chain(
+        rolloff, span, 4 if broken else 0
+    )
+    recovery = _pulse_chain(rolloff, span)
+    signature = [
+        float(np.sum(pulse**2)),
+        len(pulse) - 1,
+        *metrics,
+        recovery[5][2],
+        float(np.max(abs(pulse - pulse[::-1]))),
+    ]
+    fields = [
+        ("pulse_energy", "normalized energy"),
+        ("total_group_delay", "samples"),
+        ("rectangular_evm", "percent"),
+        ("raw_evm", "percent"),
+        ("matched_evm", "percent"),
+        ("finite_span_isi_evm", "percent"),
+        ("symbol_error_rate", "ratio"),
+        ("aligned_recovery_evm", "percent"),
+        ("pulse_symmetry_error", "normalized amplitude"),
+    ]
+    alpha_values, span_values = [0.1, 0.25, 0.5, 1.0], [2, 4, 6, 8]
+    rr = [_pulse_chain(a, span)[5] for a in alpha_values]
+    sr = [_pulse_chain(rolloff, s)[5] for s in span_values]
+    freq = np.fft.fftshift(np.fft.fftfreq(4096, 1 / 8))
+    rect = np.ones(8) / np.sqrt(8)
+    plots = {
+        "pulses": _plot(
+            "Finite unit-energy pulses",
+            "Time (symbol periods)",
+            "Pulse amplitude (normalized)",
+            [
+                ("RRC", (np.arange(len(pulse)) - len(pulse) // 2) / 8, pulse),
+                ("rectangular", np.arange(8) / 8, rect),
+            ],
+        ),
+        "waveform": _plot(
+            "Transmit convolution and received matched output",
+            "Time (symbol periods)",
+            "In-phase (normalized amplitude)",
+            [
+                ("transmitted", np.arange(160) / 8, tx.real[:160]),
+                (
+                    "matched, delay removed",
+                    np.arange(160) / 8,
+                    matched.real[len(pulse) - 1 : len(pulse) + 159],
+                ),
+            ],
+        ),
+        "spectrum": _plot(
+            "Pulse spectral containment",
+            "Frequency (cycles/symbol)",
+            "Relative power (dB)",
+            [
+                (
+                    "RRC",
+                    freq,
+                    20
+                    * np.log10(
+                        np.maximum(
+                            abs(np.fft.fftshift(np.fft.fft(pulse, 4096))) / np.sqrt(8),
+                            1e-8,
+                        )
+                    ),
+                ),
+                (
+                    "rectangular",
+                    freq,
+                    20
+                    * np.log10(
+                        np.maximum(
+                            abs(np.fft.fftshift(np.fft.fft(rect, 4096))) / np.sqrt(8),
+                            1e-8,
+                        )
+                    ),
+                ),
+            ],
+        ),
+        "eye": _plot(
+            "Forty matched-filter eye traces",
+            "Offset (symbol periods)",
+            "In-phase (normalized amplitude)",
+            [
+                (
+                    f"symbol {k}",
+                    np.arange(-8, 9) / 8,
+                    matched.real[
+                        len(pulse) - 1 + k * 8 - 8 : len(pulse) - 1 + k * 8 + 9
+                    ],
+                )
+                for k in range(span + 1, span + 41)
+            ],
+        ),
+        "decisions": _plot(
+            "Timing controls the sampled constellation",
+            "In-phase (normalized amplitude)",
+            "Quadrature (normalized amplitude)",
+            [
+                ("active samples", samples.real, samples.imag),
+                ("aligned", recovery[4].real, recovery[4].imag),
+            ],
+        ),
+        "rolloff_sweep": _plot(
+            "Rolloff at fixed span",
+            "Rolloff (ratio)",
+            "EVM (percent)",
+            [
+                ("matched", alpha_values, [m[2] for m in rr]),
+                ("noiseless ISI", alpha_values, [m[3] for m in rr]),
+            ],
+        ),
+        "span_sweep": _plot(
+            "Span at fixed rolloff",
+            "Finite span (symbols)",
+            "EVM (percent)",
+            [
+                ("matched", span_values, [m[2] for m in sr]),
+                ("noiseless ISI", span_values, [m[3] for m in sr]),
+            ],
+        ),
     }
+    for trace in plots["decisions"]["data"]:
+        trace["mode"] = "markers"
+    return _result(
+        signature,
+        fields,
+        plots,
+        {
+            "observation": "The explicit RRC singularity limits produce a finite unit-energy pulse. The conjugate reversed receiver filter peaks after the total transmit/receive delay; finite truncation leaves measurable ISI.",
+            "broken": "Sampling four samples late is a half-symbol timing error. Even a correct matched filter cannot open the constellation at the wrong sampling instant.",
+            "recovery": "Align samples at len(pulse)-1 plus multiples of eight. Compare aligned noisy EVM, noiseless residual ISI, and the rectangular reference.",
+        },
+        1024,
+        broken,
+        {
+            "symbol_count": 320,
+            "samples_per_symbol": 8,
+            "timing_offset_samples": 4 if broken else 0,
+        },
+    )

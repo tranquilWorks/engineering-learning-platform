@@ -1,6 +1,4 @@
-# Use LMS to Cancel an Interferer
-
-> **Guiding question:** How can an adaptive filter learn an unknown coupling path?
+# P26 Lesson: Use LMS to Cancel an Interferer
 
 ## Guiding question
 
@@ -192,33 +190,27 @@ clutter/interference reference channels. Later adaptive arrays add spatial
 channels, but the central question stays the same: what portion of the unwanted
 measurement is predictable from the available reference data?
 
-## Use the Python GUI experiment
+## Interactive lab: Use LMS to Cancel an Interferer
 
-The GUI keeps the pinned source's mental model and processing order visible. The **LMS step size** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+The 6000 samples run at 8 ksample/s. Eight unknown taps change at source sample 3001. The desired signal has 700/1100 Hz tones with amplitudes 0.25/0.18 and phases 0/0.40 rad; normalized receiver noise has standard deviation 0.05. The reference bank is seed 2601. The selected stable run remains visible alongside a separate guarded 0.35-step failure. A reacquisition result of 3001 is an explicit not-reacquired sentinel, not elapsed convergence time.
 
-### Prediction and sweep 1 — LMS step size
+### Predict, manipulate, explain
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+Predict what the coefficient error does at sample 3001. Why should successful cancellation retain a nonzero two-tone waveform?
 
-### Sweep 2 — secondary stress
+1. Start at the baseline. Change only **LMS adaptation step** from 0.006 to 0.0005 ratio. Inspect its dedicated sweep and the primary processing plots. Explain which equation predicts the observed change before resetting.
+2. Start at the baseline. Change only **Reference / interference correlation** from 1 to 0 ratio. Inspect its dedicated sweep and the primary processing plots. Explain which equation predicts the observed change before resetting.
+3. Enable the broken case. Step 0.35 exceeds the white-Gaussian mean-square reference limit 0.2. The guard stops before weights exceed 10000 or error exceeds one million; no unsafe tail is fabricated.
+4. Recovery: Reset all taps and replay the same seed at step 0.006 with the correlated reference. Reacquisition requires 64 consecutive coefficient errors below 0.08; sentinel 3001 means not reacquired. Disable the toggle and restore both controls to reproduce baseline exactly.
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+### Focused check and teach-back
 
-### Intentionally broken case and recovery
+Predict what the coefficient error does at sample 3001. Why should successful cancellation retain a nonzero two-tone waveform? Explain your answer using one measured value, its units, and the relevant equation. Then describe the failure, the recovery assumption, and one limit of the model.
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+### Common mistakes
 
-## Common mistakes to avoid in the GUI
+A zero error signal would erase the desired waveform; suppression must preserve desired gain.
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+### Scope of this lab
 
-## Teach-back checklist
-
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The source equations and processing stages above are retained. NumPy seeds make the software repeatable, but the random-number stream is not claimed to match MATLAB. MATLAB figure-window cleanup and console printing are replaced by the plots and metrics here. Plot traces are bounded to 512 displayed samples; calculations use the full stated record. This lab is a simulation, not a hardware measurement.

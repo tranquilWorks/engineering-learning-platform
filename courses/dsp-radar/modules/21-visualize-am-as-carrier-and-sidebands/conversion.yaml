@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "3ff39f189b030cc8fdc438c39770b8a8cb6d07e0a1d488bca23b855c24f7dff5",
+    "content_digest": "0a4eaf7fdd2ac1c6ee43c44584f32d09404c56f46caf765f07dcb2030e7a6792",
     "files": [
       {
         "path": "modules/21-visualize-am-as-carrier-and-sidebands/experiment.py",
-        "sha256": "33a213f7df9093c360747340546b2c0ea773f70f8abbfb7c77ba85df272fc992"
+        "sha256": "7949874df567ccc6e3adb1f94c85c30bfb8dbad9c8c4635b8eb1aa525fd6aff0"
       },
       {
         "path": "modules/21-visualize-am-as-carrier-and-sidebands/lesson.md",
-        "sha256": "cae756a21a743bb895a4510d26bf71dc0137d670d8c40c916f512433abe98943"
+        "sha256": "56ffe58b4cb0a8c8e50b7bbdbacf004290116e4d5b61a67877198969633d9100"
       },
       {
         "path": "modules/21-visualize-am-as-carrier-and-sidebands/module.yaml",
-        "sha256": "a7621ac84e80067ef6df75cbfb2f5264f0ca6600ac68a51e1ae3f3044e4d006c"
+        "sha256": "3e80be5efbfc44d2ee20dfaad5ed2d26dcad874eb693360e530bddd1b6f3e2fd"
       }
     ]
   },
   "content": {
     "guiding_question": "How does a baseband waveform create RF sidebands?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "Multiplication creates carrier \u00b1 message-frequency lines; each sideband has depth/2 times the carrier amplitude. The multitone view retains both pairs.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary AM modulation index while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Multiplication creates carrier \u00b1 message-frequency lines; each sideband has depth/2 times the carrier amplitude. The multitone view retains both pairs.",
+      "At depth 1.4 the signed envelope crosses zero. Magnitude detection folds the negative envelope and distorts the message.",
+      "The explicit coherent mixer and 900 Hz lowpass retain envelope sign, even during overmodulation. Disable the failure to restore the selected depth.",
+      "Explicit stage equations are retained in lesson.md. NumPy random streams differ from MATLAB. Plot/console presentation is adapted; no MATLAB runtime parity is claimed."
     ],
     "equations": [
       {
@@ -77,146 +77,226 @@
       "seed": 1021,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
+          "name": "sample_count",
+          "value": 2000,
+          "unit": "count"
         },
         {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "23c0f39919330e833ed1c98de2df157648b71e38360fc03b18d3f95aad1fbe9e",
-          "unit": "mixed numeric signature"
+          "sha256": "33bb0422e8751b2ff3b89636150b7aa56bea50c1622a1305faa84d3252a8109b",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "97b1d04c17d44aac4e17d545ca3e17370214469c9459ee34bf06159d0f6ad461",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "bc3b986c3597b0988ca7e34d91cc49e40a72bb9a91ec3d182513686a3459b09c",
-          "unit": "mixed numeric signature"
+          "sha256": "97cca2bfc6702dbbe4363cbe9feac86909e02e73f7cda29cd8d59cd121554431",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "c769cd2b498b3ea78771c577290367f9409af29e00faf73f17cd5329115ce962",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "50cc4e9c6093f9614a635da03c0be6ca7267396ccce54ecb530ecc68a8e349b4",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "56cb26f27321592b605b50c081cb020943cacb4601132f346594ff19f8dedabd",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "bbb9f2383858053b534bfde736331849208337b211dfbe1706b75a2fa296d09e",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "24eca7f8232ce694eda94561c6c456eac56c61e4b28547d7ee02e97202a8f98b",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "33bb0422e8751b2ff3b89636150b7aa56bea50c1622a1305faa84d3252a8109b",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "97b1d04c17d44aac4e17d545ca3e17370214469c9459ee34bf06159d0f6ad461",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P21 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P21 explicit processing and evidence stages",
+        "target_plot_key": "multitone_recovery",
+        "title": "Two-tone envelope and coherent recovery",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "Time (ms)",
+            "unit": "ms"
           },
           {
             "role": "y",
-            "label": "normalized signal",
-            "unit": "normalized"
+            "label": "Message (normalized amplitude)",
+            "unit": "normalized amplitude"
           }
         ],
-        "interpretation": "This view answers the Visualize AM as Carrier and Sidebands guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Multiplication creates carrier \u00b1 message-frequency lines; each sideband has depth/2 times the carrier amplitude. The multitone view retains both pairs."
       },
       {
-        "source_figure": "Pinned P21 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P21 explicit processing and evidence stages",
+        "target_plot_key": "rf_envelope",
+        "title": "Signed envelope and magnitude detector",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "Time (ms)",
+            "unit": "ms"
           },
           {
             "role": "y",
-            "label": "normalized signal",
-            "unit": "normalized"
+            "label": "Voltage (V)",
+            "unit": "V"
           }
         ],
-        "interpretation": "This view answers the Visualize AM as Carrier and Sidebands guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Multiplication creates carrier \u00b1 message-frequency lines; each sideband has depth/2 times the carrier amplitude. The multitone view retains both pairs."
       },
       {
-        "source_figure": "Pinned P21 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P21 explicit processing and evidence stages",
+        "target_plot_key": "spectrum",
+        "title": "Carrier and sideband pairs",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "RF frequency (Hz)",
+            "unit": "Hz"
           },
           {
             "role": "y",
-            "label": "normalized signal",
-            "unit": "normalized"
+            "label": "Amplitude (V)",
+            "unit": "V"
           }
         ],
-        "interpretation": "This view answers the Visualize AM as Carrier and Sidebands guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Multiplication creates carrier \u00b1 message-frequency lines; each sideband has depth/2 times the carrier amplitude. The multitone view retains both pairs."
       },
       {
-        "source_figure": "Pinned P21 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P21 explicit processing and evidence stages",
+        "target_plot_key": "recovery",
+        "title": "Envelope versus coherent recovery",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "Time (ms)",
+            "unit": "ms"
           },
           {
             "role": "y",
-            "label": "normalized signal",
-            "unit": "normalized"
+            "label": "Message (normalized amplitude)",
+            "unit": "normalized amplitude"
           }
         ],
-        "interpretation": "This view answers the Visualize AM as Carrier and Sidebands guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Multiplication creates carrier \u00b1 message-frequency lines; each sideband has depth/2 times the carrier amplitude. The multitone view retains both pairs."
+      },
+      {
+        "source_figure": "Pinned P21 explicit processing and evidence stages",
+        "target_plot_key": "depth_sweep",
+        "title": "Depth sweep: noiseless envelope folding",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Modulation depth (ratio)",
+            "unit": "ratio"
+          },
+          {
+            "role": "y",
+            "label": "Message RMSE (normalized amplitude)",
+            "unit": "normalized amplitude"
+          }
+        ],
+        "interpretation": "Multiplication creates carrier \u00b1 message-frequency lines; each sideband has depth/2 times the carrier amplitude. The multitone view retains both pairs."
+      },
+      {
+        "source_figure": "Pinned P21 explicit processing and evidence stages",
+        "target_plot_key": "frequency_sweep",
+        "title": "Frequency sweep: sideband locations",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Message frequency (Hz)",
+            "unit": "Hz"
+          },
+          {
+            "role": "y",
+            "label": "RF sideband frequency (Hz)",
+            "unit": "Hz"
+          }
+        ],
+        "interpretation": "Multiplication creates carrier \u00b1 message-frequency lines; each sideband has depth/2 times the carrier amplitude. The multitone view retains both pairs."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "modulation_depth",
         "values": [
+          0.2,
           0.6,
           1.0,
           1.4
         ],
-        "expected_observation": "Changing AM modulation index moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only AM modulation depth; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "message_frequency_hz",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          100,
+          200,
+          400,
+          700
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Message frequency; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "At depth 1.4 the signed envelope crosses zero. Magnitude detection folds the negative envelope and distorts the message.",
+      "recovery": "The explicit coherent mixer and 900 Hz lowpass retain envelope sign, even during overmodulation. Disable the failure to restore the selected depth.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "At depth 1.4 the signed envelope crosses zero. Magnitude detection folds the negative envelope and distorts the message.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -224,63 +304,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 6000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P21 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p21_p28.py",
     "seed": 1021,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
+        "name": "modulation_depth",
+        "value": 0.6,
         "unit": "ratio"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "message_frequency_hz",
+        "value": 200,
+        "unit": "Hz"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 3.0531133177191805e-15,
+        "max_relative_error": 3.0531133177191805e-15,
+        "passed": true,
         "expected": {
           "path": "modules/21-visualize-am-as-carrier-and-sidebands/evidence/expected-baseline.json",
-          "sha256": "23c0f39919330e833ed1c98de2df157648b71e38360fc03b18d3f95aad1fbe9e"
+          "sha256": "33bb0422e8751b2ff3b89636150b7aa56bea50c1622a1305faa84d3252a8109b"
         },
         "actual": {
           "path": "modules/21-visualize-am-as-carrier-and-sidebands/evidence/actual-baseline.json",
-          "sha256": "6c0c61c625e7ab6c1c99494da23ea42d9f6971bf2ff5a0c12efd5aa944729e2e"
-        },
-        "max_absolute_error": 4.837102940413729e-13,
-        "max_relative_error": 4.837102940413729e-13,
-        "passed": true
+          "sha256": "97b1d04c17d44aac4e17d545ca3e17370214469c9459ee34bf06159d0f6ad461"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 3.2751579226442118e-15,
+        "max_relative_error": 3.2751579226442118e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/21-visualize-am-as-carrier-and-sidebands/evidence/expected-sweep-1.json",
+          "sha256": "97cca2bfc6702dbbe4363cbe9feac86909e02e73f7cda29cd8d59cd121554431"
+        },
+        "actual": {
+          "path": "modules/21-visualize-am-as-carrier-and-sidebands/evidence/actual-sweep-1.json",
+          "sha256": "c769cd2b498b3ea78771c577290367f9409af29e00faf73f17cd5329115ce962"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 3.0531133177191805e-15,
+        "max_relative_error": 3.0531133177191805e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/21-visualize-am-as-carrier-and-sidebands/evidence/expected-sweep-2.json",
+          "sha256": "50cc4e9c6093f9614a635da03c0be6ca7267396ccce54ecb530ecc68a8e349b4"
+        },
+        "actual": {
+          "path": "modules/21-visualize-am-as-carrier-and-sidebands/evidence/actual-sweep-2.json",
+          "sha256": "56cb26f27321592b605b50c081cb020943cacb4601132f346594ff19f8dedabd"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 3.0531133177191805e-15,
+        "max_relative_error": 3.0531133177191805e-15,
+        "passed": true,
         "expected": {
           "path": "modules/21-visualize-am-as-carrier-and-sidebands/evidence/expected-broken.json",
-          "sha256": "bc3b986c3597b0988ca7e34d91cc49e40a72bb9a91ec3d182513686a3459b09c"
+          "sha256": "bbb9f2383858053b534bfde736331849208337b211dfbe1706b75a2fa296d09e"
         },
         "actual": {
           "path": "modules/21-visualize-am-as-carrier-and-sidebands/evidence/actual-broken.json",
-          "sha256": "e1d08d5b420e70edeb2a2b3d9a1ae3b3ceb6b681c0ec45752bae4b00e7899771"
+          "sha256": "24eca7f8232ce694eda94561c6c456eac56c61e4b28547d7ee02e97202a8f98b"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 4.837137634883248e-13,
-        "max_relative_error": 4.837137634883248e-13,
-        "passed": true
+        "max_absolute_error": 3.0531133177191805e-15,
+        "max_relative_error": 3.0531133177191805e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/21-visualize-am-as-carrier-and-sidebands/evidence/expected-recovery.json",
+          "sha256": "33bb0422e8751b2ff3b89636150b7aa56bea50c1622a1305faa84d3252a8109b"
+        },
+        "actual": {
+          "path": "modules/21-visualize-am-as-carrier-and-sidebands/evidence/actual-recovery.json",
+          "sha256": "97b1d04c17d44aac4e17d545ca3e17370214469c9459ee34bf06159d0f6ad461"
+        }
       }
     ]
   },

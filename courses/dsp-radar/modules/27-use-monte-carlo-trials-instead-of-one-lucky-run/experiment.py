@@ -4,166 +4,194 @@ from typing import Any
 
 import numpy as np
 
-SEED = 2701
-ITEM_NUMBER = 27
-PHASE = 3
-MAX_POINTS = 512
 
-
-def _layout(title: str, x_label: str, y_label: str) -> dict[str, Any]:
+def _plot(title, xlabel, ylabel, traces):
+    data = []
+    for name, x, y in traces:
+        x, y = np.asarray(x), np.asarray(y)
+        indices = np.unique(np.linspace(0, len(x) - 1, min(len(x), 512)).astype(int))
+        data.append(
+            {
+                "type": "scatter",
+                "mode": "lines",
+                "name": name,
+                "x": x[indices].tolist(),
+                "y": y[indices].tolist(),
+            }
+        )
     return {
-        "title": {"text": title, "x": 0.02, "xanchor": "left"},
-        "margin": {"l": 68, "r": 22, "t": 58, "b": 58},
-        "xaxis": {"title": x_label, "showgrid": True},
-        "yaxis": {"title": y_label, "showgrid": True},
-        "legend": {"orientation": "h", "y": 1.14},
-        "hovermode": "closest",
-        "uirevision": "keep-view",
+        "data": data,
+        "layout": {
+            "title": {"text": title},
+            "xaxis": {"title": xlabel},
+            "yaxis": {"title": ylabel},
+            "legend": {"orientation": "h"},
+        },
+        "config": {"responsive": True, "displaylogo": False},
     }
+
+
+def _result(signature, fields, plots, explanations, seed, broken, extra=None):
+    return {
+        "metrics": [
+            {
+                "id": fields[i][0],
+                "label": fields[i][0].replace("_", " "),
+                "value": float(v),
+                "unit": fields[i][1],
+            }
+            for i, v in enumerate(signature)
+        ],
+        "plots": plots,
+        "explanations": explanations,
+        "diagnostics": {
+            "signature": [float(v) for v in signature],
+            "signature_fields": [f[0] for f in fields],
+            "seed": seed,
+            "broken_active": broken,
+            **(extra or {}),
+        },
+    }
+
+
+def _bank(ebn0):
+    rng = np.random.default_rng(2701)
+    symbols = 2 * (rng.random(4000) >= 0.5).astype(int) - 1
+    noise = rng.standard_normal((16, 4000))
+    pulse = np.ones(16) / 4
+    waveform = pulse[:, None] * symbols + np.sqrt(1 / (2 * 10 ** (ebn0 / 10))) * noise
+    statistic = np.sum(pulse[:, None] * waveform, axis=0)
+    errors = (np.where(statistic >= 0, 1, -1) != symbols).astype(int)
+    return symbols, statistic, errors
+
+
+def _wilson(errors):
+    counts = np.arange(1, len(errors) + 1)
+    rate = np.cumsum(errors) / counts
+    denominator = 1 + 1.96**2 / counts
+    center = (rate + 1.96**2 / (2 * counts)) / denominator
+    half = (
+        1.96
+        / denominator
+        * np.sqrt(rate * (1 - rate) / counts + 1.96**2 / (4 * counts**2))
+    )
+    return rate, np.maximum(0, center - half), np.minimum(1, center + half)
 
 
 def run(parameters: dict[str, Any]) -> dict[str, Any]:
-    primary = float(parameters["primary_scale"])
-    secondary = float(parameters["secondary_scale"])
-    noise_db = float(parameters["noise_db"])
-    broken_mode = bool(parameters["broken_mode"])
-    count = 192 + 16 * (ITEM_NUMBER % 4)
-    if count > MAX_POINTS:
-        raise ValueError("experiment exceeds the retained point ceiling")
-    rng = np.random.default_rng(SEED)
-    x = np.linspace(0.0, 1.0, count, endpoint=False)
-    variant = 1.0 + (ITEM_NUMBER % 7) / 5.0
-    noise_scale = 10.0 ** (noise_db / 20.0)
+    import math
 
-    if PHASE == 1:
-        truth = np.cos(2.0 * np.pi * variant * primary * x + 0.4 * secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, count // 7) if broken_mode else measured
-    elif PHASE == 2:
-        tone = np.exp(1j * (2.0 * np.pi * (8.0 + variant * primary) * x + secondary))
-        measured = tone + noise_scale * (rng.standard_normal(count) + 1j * rng.standard_normal(count))
-        response_axis = np.fft.fftshift(np.fft.fftfreq(count, d=1.0 / count))
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / count
-        broken_response = np.abs(measured.real) if broken_mode else np.abs(measured)
-        truth = tone.real
-    elif PHASE == 3:
-        symbols = np.sign(np.sin(2.0 * np.pi * (4.0 + variant) * x))
-        carrier = np.cos(2.0 * np.pi * (18.0 + 2.0 * primary) * x + secondary)
-        truth = symbols * carrier
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(2 + 10 * secondary)) if broken_mode else measured
-    elif PHASE == 4:
-        bins = np.arange(count, dtype=float)
-        center = count * (0.25 + 0.25 * (primary - 0.5))
-        width = 2.0 + 4.0 * secondary
-        truth = np.exp(-0.5 * ((bins - center) / width) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = bins
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / np.sqrt(count)
-        broken_response = np.roll(measured, count // 3) if broken_mode else measured
-        x = bins
-    elif PHASE == 5:
-        cells = np.arange(count, dtype=float)
-        background = 0.2 + (0.45 * secondary) * (cells >= count // 2)
-        power = background + np.abs(noise_scale * rng.standard_normal(count))
-        target_bin = int(count * (0.3 + 0.25 * (primary - 0.5)))
-        power[target_bin] += 1.4
-        truth = power
-        measured = power
-        response_axis = cells
-        response = np.full(count, np.quantile(power, 0.82 + 0.1 * secondary))
-        if broken_mode:
-            response = np.full(count, np.mean(power) * (1.2 + primary))
-        broken_response = response
-        x = cells
-    elif PHASE == 6:
-        steps = np.arange(count, dtype=float)
-        truth = 0.04 * steps + 0.0002 * variant * secondary * steps**2
-        measured = truth + noise_scale * 8.0 * rng.standard_normal(count)
-        gain = np.clip(0.12 + 0.5 * primary, 0.05, 0.95)
-        response = np.empty(count)
-        response[0] = measured[0]
-        for index in range(1, count):
-            response[index] = response[index - 1] + gain * (measured[index] - response[index - 1])
-        response_axis = steps
-        broken_response = np.roll(response, 12) if broken_mode else response
-        x = steps
-    elif PHASE == 7:
-        angles = np.linspace(-90.0, 90.0, count)
-        u = np.sin(np.deg2rad(angles)) - np.sin(np.deg2rad(45.0 * (primary - 1.0)))
-        spacing = 0.45 + 0.45 * secondary
-        elements = 6 + ITEM_NUMBER % 7
-        denominator = np.sin(np.pi * spacing * u)
-        numerator = np.sin(elements * np.pi * spacing * u)
-        response = np.where(np.abs(denominator) < 1e-10, 1.0, np.abs(numerator / (elements * denominator)))
-        truth = response
-        measured = np.maximum(response + noise_scale * rng.standard_normal(count), 0.0)
-        response_axis = angles
-        broken_response = np.roll(response, 9) if broken_mode else response
-        x = angles
-    elif PHASE == 8:
-        bins = np.arange(count, dtype=float)
-        beat_bin = count * (0.15 + 0.35 * (primary - 0.5))
-        truth = np.cos(2.0 * np.pi * beat_bin * bins / count + secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(8 + 16 * secondary)) if broken_mode else measured
-        x = bins
-    else:
-        coordinate = np.linspace(-1.0, 1.0, count)
-        width = 0.05 + 0.16 / primary
-        truth = np.exp(-0.5 * ((coordinate + 0.25) / width) ** 2) + 0.65 * np.exp(-0.5 * ((coordinate - 0.3) / (1.4 * width)) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        kernel = np.ones(3 + 2 * int(secondary * 5))
-        kernel /= kernel.sum()
-        response = np.convolve(measured, kernel, mode="same")
-        response_axis = coordinate
-        broken_response = np.roll(response, 18) + 0.25 * np.roll(response, -13) if broken_mode else response
-        x = coordinate
-
-    displayed = broken_response if broken_mode else measured
-    separation = float(np.max(response) - np.median(response))
-    rmse = float(np.sqrt(np.mean((np.asarray(displayed).real - np.asarray(truth).real) ** 2)))
-    signature = [float(count), primary, secondary, noise_db, float(np.mean(np.asarray(displayed).real)), float(np.std(np.asarray(displayed).real)), separation, rmse]
-    sweep_primary = [0.6, 1.0, 1.4]
-    sweep_secondary = [0.0, 0.5, 1.0]
-    sweep_response = [variant * value for value in sweep_primary]
-    stress_response = [separation / (1.0 + value) for value in sweep_secondary]
-    title = 'Use Monte Carlo Trials Instead of One Lucky Run'
-
-    return {
-        "metrics": [
-            {"id": "primary", "label": 'Monte Carlo Trials', "value": primary, "unit": "× baseline", "emphasis": "primary"},
-            {"id": "response_separation", "label": "Response separation", "value": separation, "unit": "normalized"},
-            {"id": "model_error", "label": "Model/display error", "value": rmse, "unit": "normalized"},
-            {"id": "points", "label": "Bounded points", "value": count, "unit": "points"},
-        ],
-        "plots": {
-            "model_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "physical/model truth", "x": x, "y": np.asarray(truth).real},
-                {"type": "scatter", "mode": "lines", "name": "measured/processed", "x": x, "y": np.asarray(displayed).real},
-            ], "layout": _layout(title + " — model view", 'symbol or time index', 'normalized signal'), "config": {"responsive": True, "displaylogo": False}},
-            "response_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "response", "x": response_axis, "y": np.asarray(response).real},
-            ], "layout": _layout(title + " — response view", 'symbol or time index', 'normalized signal'), "config": {"responsive": True, "displaylogo": False}},
-            "parameter_sweeps": {"data": [
-                {"type": "scatter", "mode": "lines+markers", "name": "primary scale", "x": sweep_primary, "y": sweep_response},
-                {"type": "scatter", "mode": "lines+markers", "name": "secondary stress", "x": sweep_secondary, "y": stress_response},
-            ], "layout": _layout("Two one-variable sweeps", "control value", "response statistic"), "config": {"responsive": True, "displaylogo": False}},
-            "broken_case": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "recovered", "x": x, "y": np.asarray(measured).real},
-                {"type": "scatter", "mode": "lines", "name": "broken" if broken_mode else "enable broken mode", "x": x, "y": np.asarray(broken_response).real},
-            ], "layout": _layout("Intentional assumption failure", 'symbol or time index', 'normalized signal'), "config": {"responsive": True, "displaylogo": False}},
-        },
-        "explanations": {
-            "observation": f"The {title} model uses a bounded deterministic communications processing experiment. Primary scale={primary:.2f} and secondary stress={secondary:.2f} remain independently controllable.",
-            "broken": "Broken mode deliberately violates the lesson's central interpretation assumption so the displayed response becomes ambiguous, biased, contaminated, or defocused.",
-            "recovery": "Disable broken mode, restore both scales to 1.0 and 0.25, then connect the recovered shape to the pinned source equations before changing one control at a time.",
-        },
-        "diagnostics": {"seed": SEED, "item_number": ITEM_NUMBER, "point_count": count, "signature": signature, "broken_active": broken_mode},
+    trials = int(parameters.get("trial_count", 4000))
+    ebn0 = float(parameters.get("ebn0_db", 2))
+    broken = bool(parameters.get("broken_mode", False))
+    if trials not in {10, 25, 100, 500, 4000} or ebn0 not in {-4, -2, 0, 2, 4}:
+        raise ValueError("Choose a retained independent-trial count and Eb/N0")
+    _symbols, statistic, errors = _bank(ebn0)
+    lucky = int(np.flatnonzero(errors == 0)[0])
+    active_statistics = (
+        np.repeat(statistic[lucky], trials) if broken else statistic[:trials]
+    )
+    active_errors = np.zeros(trials, dtype=int) if broken else errors[:trials]
+    rate, low, high = _wilson(active_errors)
+    recovery = _wilson(errors[:trials])
+    theory = 0.5 * math.erfc(np.sqrt(10 ** (ebn0 / 10)))
+    signature = [
+        trials,
+        ebn0,
+        rate[-1],
+        low[-1],
+        high[-1],
+        theory,
+        len(np.unique(active_statistics)),
+        float(not broken),
+        recovery[0][-1],
+        recovery[1][-1],
+        recovery[2][-1],
+        float(np.std(errors.reshape(40, 100).mean(axis=1), ddof=1)),
+    ]
+    fields = [
+        ("reported_trials", "trials"),
+        ("ebn0", "dB"),
+        ("empirical_ber", "ratio"),
+        ("nominal_wilson_lower", "ratio"),
+        ("nominal_wilson_upper", "ratio"),
+        ("analytic_awgn_ber", "ratio"),
+        ("unique_statistics", "trials"),
+        ("independence_valid", "boolean"),
+        ("recovery_ber", "ratio"),
+        ("recovery_ci_lower", "ratio"),
+        ("recovery_ci_upper", "ratio"),
+        ("hundred_trial_block_std", "ratio"),
+    ]
+    counts = [10, 25, 100, 500, 4000]
+    snrs = [-4, -2, 0, 2, 4]
+    count_runs = [_wilson(errors[:n]) for n in counts]
+    hist, edges = np.histogram(statistic, bins=np.arange(-3, 3.15, 0.15))
+    plots = {
+        "running_ber": _plot(
+            "Running BER and nominal 95% Wilson limits"
+            + (" — INVALID independence" if broken else ""),
+            "Trials processed (integer)",
+            "Bit error probability (ratio)",
+            [
+                ("running BER", np.arange(1, trials + 1), rate),
+                ("lower", np.arange(1, trials + 1), low),
+                ("upper", np.arange(1, trials + 1), high),
+                ("AWGN theory", [1, trials], [theory, theory]),
+            ],
+        ),
+        "matched_statistics": _plot(
+            "Independent-bank matched-filter distribution",
+            "Matched output (normalized amplitude)",
+            "Count (trials)",
+            [("histogram", (edges[:-1] + edges[1:]) / 2, hist)],
+        ),
+        "blocks": _plot(
+            "Forty independent 100-trial blocks",
+            "Block index (integer)",
+            "Bit error rate (ratio)",
+            [("block BER", np.arange(40), errors.reshape(40, 100).mean(axis=1))],
+        ),
+        "trial_sweep": _plot(
+            "More independent data constrains uncertainty",
+            "Independent trial count (integer)",
+            "Probability (ratio)",
+            [
+                ("BER", counts, [r[0][-1] for r in count_runs]),
+                ("Wilson lower", counts, [r[1][-1] for r in count_runs]),
+                ("Wilson upper", counts, [r[2][-1] for r in count_runs]),
+            ],
+        ),
+        "snr_sweep": _plot(
+            "Common random bank; change only Eb/N0",
+            "Eb/N0 (dB)",
+            "Bit error rate (ratio)",
+            [
+                ("empirical 4000 trials", snrs, [np.mean(_bank(s)[2]) for s in snrs]),
+                (
+                    "analytic",
+                    snrs,
+                    [0.5 * math.erfc(np.sqrt(10 ** (s / 10))) for s in snrs],
+                ),
+            ],
+        ),
     }
+    return _result(
+        signature,
+        fields,
+        plots,
+        {
+            "observation": "Every BPSK trial uses its own 16-sample noise waveform and a unit-energy rectangular matched filter. Running error counts are Bernoulli observations; Wilson bounds quantify finite-sample uncertainty.",
+            "broken": "Repeating one lucky correct waveform creates one unique statistic, zero errors, and a misleadingly narrow nominal interval. The independence validity flag is false, so that interval has no binomial coverage claim.",
+            "recovery": "Rebuild the independent bank from seed 2701. The bank and decisions reproduce exactly, while block variability remains visible. More trials reduce uncertainty; they do not improve the underlying detector.",
+        },
+        2701,
+        broken,
+        {
+            "samples_per_trial": 16,
+            "independent_bank_trials": 4000,
+            "histogram_tail_trials": int(4000 - hist.sum()),
+            "lucky_trial_index": lucky,
+            "bit_energy": 1.0,
+        },
+    )

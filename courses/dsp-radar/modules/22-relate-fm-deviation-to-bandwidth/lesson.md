@@ -1,6 +1,4 @@
-# Relate FM Deviation to Bandwidth
-
-> **Guiding question:** How does instantaneous frequency motion create an FM spectrum?
+# P22 Lesson: Relate FM Deviation to Bandwidth
 
 ## Guiding question
 
@@ -109,33 +107,27 @@ The experiment is deterministic base MATLAB with explicit operations. It is a
 sampled synthetic lesson, not a transmitter, spectrum-analyzer, hardware, HIL,
 real-time, field, or operational-radar validation.
 
-## Use the Python GUI experiment
+## Interactive lab: Relate FM Deviation to Bandwidth
 
-The GUI keeps the pinned source's mental model and processing order visible. The **FM deviation** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+The baseline record is 4800 samples at 24 ksample/s over 0.20 s. The 3 kHz carrier, 100 Hz message, 400 Hz deviation and 0.002 V receiver noise are retained. Occupied bandwidth uses clean real-RF line powers; phase slope uses the complex phasor. Recovery uses 6000 samples at 30 ksample/s.
 
-### Prediction and sweep 1 — FM deviation
+### Predict, manipulate, explain
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+Predict whether doubling deviation and doubling message frequency affect sideband spacing in the same way. Which sampling inequality must hold before phase slope is interpretable?
 
-### Sweep 2 — secondary stress
+1. Start at the baseline. Change only **Peak FM deviation** from 400 to 800 Hz. Inspect its dedicated sweep and the primary processing plots. Explain which equation predicts the observed change before resetting.
+2. Start at the baseline. Change only **Message frequency** from 100 to 400 Hz. Inspect its dedicated sweep and the primary processing plots. Explain which equation predicts the observed change before resetting.
+3. Enable the broken case. An 8 kHz carrier with 5 kHz deviation exceeds 12 kHz Nyquist at 24 ksample/s; the observed phase increments wrap. Its aliased spectrum cannot certify occupied bandwidth.
+4. Recovery: Resample the same physical failure at 30 ksample/s. The 10.2 kHz occupied span and positive guard are retained; finite-difference phase-slope error remains visible. Disable the toggle and restore both controls to reproduce baseline exactly.
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+### Focused check and teach-back
 
-### Intentionally broken case and recovery
+Predict whether doubling deviation and doubling message frequency affect sideband spacing in the same way. Which sampling inequality must hold before phase slope is interpretable? Explain your answer using one measured value, its units, and the relevant equation. Then describe the failure, the recovery assumption, and one limit of the model.
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+### Common mistakes
 
-## Common mistakes to avoid in the GUI
+Checking only carrier frequency misses the full occupied band and the instantaneous-frequency excursion.
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+### Scope of this lab
 
-## Teach-back checklist
-
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The source equations and processing stages above are retained. NumPy seeds make the software repeatable, but the random-number stream is not claimed to match MATLAB. MATLAB figure-window cleanup and console printing are replaced by the plots and metrics here. Plot traces are bounded to 512 displayed samples; calculations use the full stated record. This lab is a simulation, not a hardware measurement.

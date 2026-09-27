@@ -1,31 +1,31 @@
 # Handoff
 
-The active batch is `ELP-VERIFY-REPLAY-01`, authorized by merged Portfolio Control
-PR #501 at `1713665398b4d570611e7e8e19195d25fb8b7b38`. It starts from target
-`01a510244801cbf2c3b7ce990693aac9dc5959c1`, where DSP P11-P20 was already merged.
+The owner approved PR #45 and continuing on 2026-09-27. Numerical replay repair
+merged as `b7e684d595bd777602c9aa22cd489189efa6584b`, tree
+`19a298703ab04794e855edffb8aa83a6f0e2ba83`. Control activation PR #503 merged at
+`12ea755ee75f9fe7bc142f052362938d9cefb4c9`; the active contract is an exact copy.
 
-This repair changes only validation and its activation/evidence documents.
-Fixture replay has a strict per-component portability allowance capped at one
-percent of the existing scientific budget and `1e-9 * max(1, abs(saved))`.
-Fresh production/reference comparisons retain their original scientific gates.
-Historical GNC error metadata is checked against the immutable saved pair.
-DSP regressions check the exact retained P11-P20 contract, so later batch
-activation does not invalidate completed work.
+Current branch: `codex/dsp-fidelity-p21-p28-20260927` in the isolated ELP worktree.
+P21-P28 now have distinct source-specific algorithms, controls, plots, source
+lessons, five independent expected/actual scenarios, and failure/recovery checks.
+Verification is in progress; do not declare this batch accepted or merged until
+its required local gates pass. P01-P20 and P29-P84 module bytes remain unchanged.
 
-See `docs/evidence/ELP-VERIFY-REPLAY-01-2026-09-26.md` for baseline failures,
-read-only audit, negative controls, verification results, and rollback.
-The reviewable repair is [PR #45](https://github.com/tranquilWorks/engineering-learning-platform/pull/45)
-on branch `codex/dsp-fidelity-continuation-20260926`; implementation commit
-`3156f62` passed the retained local gates, with subsequent evidence-only cleanup.
-Target protected-branch merge still requires human approval. After this repair
-merges, reissue the control P21-P28 contract against the exact resulting commit
-and tree before activating that manually gated batch.
+The implementation covers AM/FM, BPSK/QPSK, RRC and matched filtering, multipath
+ZF/regularized inversion, eight-tap LMS, independent BPSK Monte Carlo trials and
+ROC/amplitude-estimator limits. Read-only source pin:
+`5d73667a486df4a7b6c581e4c9406e810ed4f0f6`. No MATLAB runtime parity is claimed.
 
-Issue 441 remains open. The repair ledger remains P01 distinct, P02-P10 repaired,
-P11-P20 repaired, and P21-P84 pending. The catalog remains six courses,
-290 modules, and 290 interactive modules. Preserve the exact DSP gitlink,
-source map, conversion manifest, coverage and maturity claims.
+Issue 441 stays open. Catalog remains 6 courses / 290 modules / 290 interactive.
+The ledger distinguishes one already-distinct, nineteen prior repairs, eight
+current repairs and fifty-six pending. P29 is the next source item after this
+batch. Course numerical/curriculum/capstone maturity remains blocked.
 
-MATLAB runtime comparison, audio playback, browser/accessibility, learner
-validation, physical HIL/hardware, certification, release, deployment,
-credentials/settings, and production evidence remain unperformed.
+Hosted setup debt is separate: PR #45's final CI had 723 passes and two failures
+from missing DSP submodule and historical vehicle commit in a shallow checkout;
+frontend passed. Local verification retains those source/history checks.
+No workflow/vehicle framework modification is authorized by the DSP contract.
+
+Protected target merge retains a separate human authorization requirement.
+The owner's present merge approval applied to PR #45. No browser/accessibility,
+learner, hardware, release/deployment, credentials or production claim is made.

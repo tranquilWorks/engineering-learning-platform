@@ -1,0 +1,82 @@
+{
+  "item": "P22",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p22",
+    "sha256": "fffe190b7c067e8ed3ae692a699f3b055f1055ada36674ecfbf9f56b9ae189a8",
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/22-relate-fm-deviation-to-bandwidth/experiment.py",
+    "sha256": "a5eca244e889b95f7fceecb9b17dad7e6902600d682173cc8c450ec462deefb2",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "deviation_hz": 400,
+      "message_frequency_hz": 100,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "deviation_hz": 800,
+      "message_frequency_hz": 100,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "deviation_hz": 400,
+      "message_frequency_hz": 400,
+      "broken_mode": false
+    },
+    "broken": {
+      "deviation_hz": 400,
+      "message_frequency_hz": 100,
+      "broken_mode": true
+    },
+    "recovery": {
+      "deviation_hz": 400,
+      "message_frequency_hz": 100,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "selected_modulation_index",
+      "unit": "ratio"
+    },
+    {
+      "name": "selected_occupied_98_bandwidth",
+      "unit": "Hz"
+    },
+    {
+      "name": "selected_carson_bandwidth",
+      "unit": "Hz"
+    },
+    {
+      "name": "magnitude_error",
+      "unit": "V"
+    },
+    {
+      "name": "aliased_sample_fraction",
+      "unit": "ratio"
+    },
+    {
+      "name": "phase_slope_error",
+      "unit": "Hz"
+    },
+    {
+      "name": "recovery_98_bandwidth",
+      "unit": "Hz"
+    },
+    {
+      "name": "recovery_slope_error",
+      "unit": "Hz"
+    },
+    {
+      "name": "recovery_occupied_margin",
+      "unit": "Hz"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

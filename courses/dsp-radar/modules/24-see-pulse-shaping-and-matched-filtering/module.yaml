@@ -3,13 +3,13 @@
   "id": "24-see-pulse-shaping-and-matched-filtering",
   "number": 24,
   "title": "See Pulse Shaping and Matched Filtering",
-  "summary": "Explore see pulse shaping and matched filtering with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "The explicit RRC singularity limits produce a finite unit-energy pulse. The conjugate reversed receiver filter peaks after the total transmit/receive delay; finite truncation leaves measurable ISI.",
   "guiding_question": "Why are symbols filtered before transmission and again at reception?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
     "phase-3",
-    "pulse-shape-rolloff"
+    "P24"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,59 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Pulse Shape Rolloff",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
-    },
-    {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
+      "id": "rolloff",
+      "type": "segmented",
+      "label": "RRC rolloff",
+      "unit": "ratio",
       "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
+      "options": [
+        {
+          "label": "0.1",
+          "value": 0.1
+        },
+        {
+          "label": "0.25 baseline",
+          "value": 0.25
+        },
+        {
+          "label": "0.5",
+          "value": 0.5
+        },
+        {
+          "label": "1",
+          "value": 1.0
+        }
+      ]
     },
     {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "span_symbols",
+      "type": "segmented",
+      "label": "Finite pulse span",
+      "unit": "symbols",
+      "default": 8,
+      "options": [
+        {
+          "label": "2",
+          "value": 2
+        },
+        {
+          "label": "4",
+          "value": 4
+        },
+        {
+          "label": "6",
+          "value": 6
+        },
+        {
+          "label": "8 baseline",
+          "value": 8
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +83,50 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing pulse shape rolloff, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict the combined filter delay before inspecting the constellation. Why can increasing span reduce residual ISI without changing samples per symbol?",
+      "reveal": "The explicit RRC singularity limits produce a finite unit-energy pulse. The conjugate reversed receiver filter peaks after the total transmit/receive delay; finite truncation leaves measurable ISI."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Finite unit-energy pulses",
+      "plot": "pulses"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Transmit convolution and received matched output",
+      "plot": "waveform"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Pulse spectral containment",
+      "plot": "spectrum"
+    },
+    {
+      "type": "plot",
+      "title": "Forty matched-filter eye traces",
+      "plot": "eye"
+    },
+    {
+      "type": "plot",
+      "title": "Timing controls the sampled constellation",
+      "plot": "decisions"
+    },
+    {
+      "type": "plot",
+      "title": "Rolloff at fixed span",
+      "plot": "rolloff_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Span at fixed rolloff",
+      "plot": "span_sweep"
     },
     {
       "type": "callout",
@@ -102,7 +137,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

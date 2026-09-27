@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "be88e6a79a95915efe9d9cf9acf3bbb7c13650956a6efaf2045553ef82501c25",
+    "content_digest": "a015218b4c1dfbc865c140b1429e47b765f4b4343d563a5fbc7c080856997d1d",
     "files": [
       {
         "path": "modules/25-create-and-equalize-a-multipath-channel/experiment.py",
-        "sha256": "69b5d0be1c6862a925f7758edf85aabe26c8fd22ba0ee8a72a8c97465a8e9a6b"
+        "sha256": "fcf16e76dd86887e05eb8724e388a48fc43a3963ab9b83291e15bd02589e126e"
       },
       {
         "path": "modules/25-create-and-equalize-a-multipath-channel/lesson.md",
-        "sha256": "4e5ccd96a973aaf41cc05d95a871d86180f6b22d135538b5ad304fc2cde565c3"
+        "sha256": "628b70e5bdbf112a7993e56fb4b59a7d2f45b43941a2da05159a8558876a17c7"
       },
       {
         "path": "modules/25-create-and-equalize-a-multipath-channel/module.yaml",
-        "sha256": "7c9cf5ffb536b1663f73d4c47dd3562b57010470ffd9faa8552f8eda80b9e8a7"
+        "sha256": "7bb1a5cc04fc31e6b02b554c26de6d7b46f74450ccfa65e44ac3535943832cbc"
       }
     ]
   },
   "content": {
     "guiding_question": "How do delayed copies distort symbols even when noise is small?",
-    "physical_model": "A receiver rarely sees only the direct path. Reflections from buildings, terrain, cables, or impedance discontinuities arrive later and with changed amplitude and phase. A short discrete channel is \\[ h[n]=\\sum_{p=0}^{P-1} a_p\\,\\delta[n-d_p], \\qquad r[n]=s[n]*h[n]+v[n]. \\] Each coefficient `a_p` is a complex path gain and each `d_p` is a delay. The convolution says that the receiver adds shifted copies of the pulse-shaped waveform. P07 introduced this echo-addition view; here the copies extend into neighboring QPSK decisions.",
+    "physical_model": "Delayed pulse-shaped paths smear neighboring QPSK symbols. A 31-tap causal inverse cancels the leading response; regularization also penalizes tap energy.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary multipath delay while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Delayed pulse-shaped paths smear neighboring QPSK symbols. A 31-tap causal inverse cancels the leading response; regularization also penalizes tap energy.",
+      "The [1,-0.999] path has a -60 dB DC null. Finite ZF inversion boosts noise and leaves a tail: its symbol EVM and noise gain reveal the cost.",
+      "The deep-null comparison uses lambda=0.01, nearest the 18 dB noise variance in the source grid. Regularization reduces noise enhancement but retains reported residual distortion; it does not perfectly recover lost information.",
+      "Explicit stage equations are retained in lesson.md. NumPy random streams differ from MATLAB. Plot/console presentation is adapted; no MATLAB runtime parity is claimed."
     ],
     "equations": [
       {
@@ -77,146 +77,297 @@
       "seed": 1025,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
+          "name": "symbol_count",
+          "value": 480,
+          "unit": "count"
         },
         {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
+          "name": "equalizer_taps",
+          "value": 31,
+          "unit": "count"
         },
         {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "noise_bank_samples",
+          "value": 3920,
+          "unit": "count"
+        },
+        {
+          "name": "deep_null_recovery_lambda",
+          "value": 0.01,
+          "unit": "count"
+        },
+        {
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "3976bc8042c7395e0d37e5a3f8f3f29789e2c4cbf7e42d39342b6c927531154f",
-          "unit": "mixed numeric signature"
+          "sha256": "8a105d65d5e9f14ca4b7385f6835afc3848a355100bf94882a162cd9b9887e09",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "a0652d78ca9cd99d957a7abc464e974e43570fb894364ba4edd0104b364c1e7c",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "00330cd1383235448ce1d6da05db43ed3490b4aca748d5bebbfd4a98840c191e",
-          "unit": "mixed numeric signature"
+          "sha256": "01fef2cbdae03e1826e37fe5ec84067754fd7a38f733cf030d0e948d64ec66a8",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "47dbcd614a986d9399da26471c50d17f3154a7dff06c243e9823ccc982ebac50",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "6a0bdc92bc8d63553be188dadfb775b1f277f044d593dfdf3dd2291a7dbebb04",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "a40ba6e2c952ae6ccce4ab2f56edff1354d8631047a68dbf09b9f477436c8497",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "9a86e45fb86305a746ad5a6e0bbf9f6b02ba733531b02f05ca578fed64a64e67",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "41d79f34f2475e07bf9441d4b6235fce460214d51989520ad9b70dade1c7d248",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "8a105d65d5e9f14ca4b7385f6835afc3848a355100bf94882a162cd9b9887e09",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "a0652d78ca9cd99d957a7abc464e974e43570fb894364ba4edd0104b364c1e7c",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P25 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P25 explicit processing and evidence stages",
+        "target_plot_key": "equalizer_taps",
+        "title": "Finite inverse tap magnitudes",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "Tap index (integer)",
+            "unit": "integer"
           },
           {
             "role": "y",
-            "label": "normalized signal",
-            "unit": "normalized"
+            "label": "Magnitude (gain)",
+            "unit": "gain"
           }
         ],
-        "interpretation": "This view answers the Create and Equalize a Multipath Channel guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Delayed pulse-shaped paths smear neighboring QPSK symbols. A 31-tap causal inverse cancels the leading response; regularization also penalizes tap energy."
       },
       {
-        "source_figure": "Pinned P25 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P25 explicit processing and evidence stages",
+        "target_plot_key": "eye",
+        "title": "Matched-channel eye before equalization",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "Offset (symbol periods)",
+            "unit": "symbol periods"
           },
           {
             "role": "y",
-            "label": "normalized signal",
-            "unit": "normalized"
+            "label": "In-phase (normalized amplitude)",
+            "unit": "normalized amplitude"
           }
         ],
-        "interpretation": "This view answers the Create and Equalize a Multipath Channel guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Delayed pulse-shaped paths smear neighboring QPSK symbols. A 31-tap causal inverse cancels the leading response; regularization also penalizes tap energy."
       },
       {
-        "source_figure": "Pinned P25 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P25 explicit processing and evidence stages",
+        "target_plot_key": "paths",
+        "title": "Delayed complex path coefficients",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "Delay (symbols)",
+            "unit": "symbols"
           },
           {
             "role": "y",
-            "label": "normalized signal",
-            "unit": "normalized"
+            "label": "Complex gain component (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Create and Equalize a Multipath Channel guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Delayed pulse-shaped paths smear neighboring QPSK symbols. A 31-tap causal inverse cancels the leading response; regularization also penalizes tap energy."
       },
       {
-        "source_figure": "Pinned P25 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P25 explicit processing and evidence stages",
+        "target_plot_key": "symbol_response",
+        "title": "Pulse/channel/matched-filter sampled response",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "Delay (symbols)",
+            "unit": "symbols"
           },
           {
             "role": "y",
-            "label": "normalized signal",
-            "unit": "normalized"
+            "label": "Response component (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Create and Equalize a Multipath Channel guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Delayed pulse-shaped paths smear neighboring QPSK symbols. A 31-tap causal inverse cancels the leading response; regularization also penalizes tap energy."
+      },
+      {
+        "source_figure": "Pinned P25 explicit processing and evidence stages",
+        "target_plot_key": "channel_spectrum",
+        "title": "Destructive interference produces a notch",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Frequency (cycles/symbol)",
+            "unit": "cycles/symbol"
+          },
+          {
+            "role": "y",
+            "label": "Channel magnitude (dB)",
+            "unit": "dB"
+          }
+        ],
+        "interpretation": "Delayed pulse-shaped paths smear neighboring QPSK symbols. A 31-tap causal inverse cancels the leading response; regularization also penalizes tap energy."
+      },
+      {
+        "source_figure": "Pinned P25 explicit processing and evidence stages",
+        "target_plot_key": "constellation",
+        "title": "Equalizer symbol decisions",
+        "axes": [
+          {
+            "role": "x",
+            "label": "In-phase (normalized amplitude)",
+            "unit": "normalized amplitude"
+          },
+          {
+            "role": "y",
+            "label": "Quadrature (normalized amplitude)",
+            "unit": "normalized amplitude"
+          }
+        ],
+        "interpretation": "Delayed pulse-shaped paths smear neighboring QPSK symbols. A 31-tap causal inverse cancels the leading response; regularization also penalizes tap energy."
+      },
+      {
+        "source_figure": "Pinned P25 explicit processing and evidence stages",
+        "target_plot_key": "echo_sweep",
+        "title": "Echo strength with fixed pulse and noise",
+        "axes": [
+          {
+            "role": "x",
+            "label": "One-symbol echo gain (ratio)",
+            "unit": "ratio"
+          },
+          {
+            "role": "y",
+            "label": "EVM (percent)",
+            "unit": "percent"
+          }
+        ],
+        "interpretation": "Delayed pulse-shaped paths smear neighboring QPSK symbols. A 31-tap causal inverse cancels the leading response; regularization also penalizes tap energy."
+      },
+      {
+        "source_figure": "Pinned P25 explicit processing and evidence stages",
+        "target_plot_key": "regularization_sweep",
+        "title": "Deep-null regularization tradeoff",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Regularization (ratio)",
+            "unit": "ratio"
+          },
+          {
+            "role": "y",
+            "label": "Error (percent)",
+            "unit": "percent"
+          }
+        ],
+        "interpretation": "Delayed pulse-shaped paths smear neighboring QPSK symbols. A 31-tap causal inverse cancels the leading response; regularization also penalizes tap energy."
+      },
+      {
+        "source_figure": "Pinned P25 explicit processing and evidence stages",
+        "target_plot_key": "noise_gain",
+        "title": "Deep-null inverse noise gain",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Regularization (ratio)",
+            "unit": "ratio"
+          },
+          {
+            "role": "y",
+            "label": "Noise gain (dB)",
+            "unit": "dB"
+          }
+        ],
+        "interpretation": "Delayed pulse-shaped paths smear neighboring QPSK symbols. A 31-tap causal inverse cancels the leading response; regularization also penalizes tap energy."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "echo_gain",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          0,
+          0.25,
+          0.45,
+          0.5,
+          0.75
         ],
-        "expected_observation": "Changing multipath delay moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only One-symbol echo magnitude; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "regularization",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          0.001,
+          0.01,
+          0.015848931924611134,
+          0.03,
+          0.1
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Equalizer regularization; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "The [1,-0.999] path has a -60 dB DC null. Finite ZF inversion boosts noise and leaves a tail: its symbol EVM and noise gain reveal the cost.",
+      "recovery": "The deep-null comparison uses lambda=0.01, nearest the 18 dB noise variance in the source grid. Regularization reduces noise enhancement but retains reported residual distortion; it does not perfectly recover lost information.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "The [1,-0.999] path has a -60 dB DC null. Finite ZF inversion boosts noise and leaves a tail: its symbol EVM and noise gain reveal the cost.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -224,63 +375,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 6000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P25 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p21_p28.py",
     "seed": 1025,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
+        "name": "echo_gain",
+        "value": 0.45,
         "unit": "ratio"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "regularization",
+        "value": 0.015848931924611134,
+        "unit": "ratio"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 1.1368683772161603e-13,
+        "max_relative_error": 9.920433035177205e-15,
+        "passed": true,
         "expected": {
           "path": "modules/25-create-and-equalize-a-multipath-channel/evidence/expected-baseline.json",
-          "sha256": "3976bc8042c7395e0d37e5a3f8f3f29789e2c4cbf7e42d39342b6c927531154f"
+          "sha256": "8a105d65d5e9f14ca4b7385f6835afc3848a355100bf94882a162cd9b9887e09"
         },
         "actual": {
           "path": "modules/25-create-and-equalize-a-multipath-channel/evidence/actual-baseline.json",
-          "sha256": "6453ac8ac816414120b852c64d695a81b0c5a0537c1fe8afd207683b0afb66c5"
-        },
-        "max_absolute_error": 3.745892485085278e-13,
-        "max_relative_error": 3.745892485085278e-13,
-        "passed": true
+          "sha256": "a0652d78ca9cd99d957a7abc464e974e43570fb894364ba4edd0104b364c1e7c"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 1.1368683772161603e-13,
+        "max_relative_error": 7.414218004014137e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/25-create-and-equalize-a-multipath-channel/evidence/expected-sweep-1.json",
+          "sha256": "01fef2cbdae03e1826e37fe5ec84067754fd7a38f733cf030d0e948d64ec66a8"
+        },
+        "actual": {
+          "path": "modules/25-create-and-equalize-a-multipath-channel/evidence/actual-sweep-1.json",
+          "sha256": "47dbcd614a986d9399da26471c50d17f3154a7dff06c243e9823ccc982ebac50"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 1.1368683772161603e-13,
+        "max_relative_error": 7.854827899222983e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/25-create-and-equalize-a-multipath-channel/evidence/expected-sweep-2.json",
+          "sha256": "6a0bdc92bc8d63553be188dadfb775b1f277f044d593dfdf3dd2291a7dbebb04"
+        },
+        "actual": {
+          "path": "modules/25-create-and-equalize-a-multipath-channel/evidence/actual-sweep-2.json",
+          "sha256": "a40ba6e2c952ae6ccce4ab2f56edff1354d8631047a68dbf09b9f477436c8497"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 1.1368683772161603e-13,
+        "max_relative_error": 7.414218004014137e-15,
+        "passed": true,
         "expected": {
           "path": "modules/25-create-and-equalize-a-multipath-channel/evidence/expected-broken.json",
-          "sha256": "00330cd1383235448ce1d6da05db43ed3490b4aca748d5bebbfd4a98840c191e"
+          "sha256": "9a86e45fb86305a746ad5a6e0bbf9f6b02ba733531b02f05ca578fed64a64e67"
         },
         "actual": {
           "path": "modules/25-create-and-equalize-a-multipath-channel/evidence/actual-broken.json",
-          "sha256": "8226f241c0a307168f7c351ece55b7996f5e0c3faac47c166312890789d912e6"
+          "sha256": "41d79f34f2475e07bf9441d4b6235fce460214d51989520ad9b70dade1c7d248"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 3.745892485085278e-13,
-        "max_relative_error": 3.745892485085278e-13,
-        "passed": true
+        "max_absolute_error": 1.1368683772161603e-13,
+        "max_relative_error": 9.920433035177205e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/25-create-and-equalize-a-multipath-channel/evidence/expected-recovery.json",
+          "sha256": "8a105d65d5e9f14ca4b7385f6835afc3848a355100bf94882a162cd9b9887e09"
+        },
+        "actual": {
+          "path": "modules/25-create-and-equalize-a-multipath-channel/evidence/actual-recovery.json",
+          "sha256": "a0652d78ca9cd99d957a7abc464e974e43570fb894364ba4edd0104b364c1e7c"
+        }
       }
     ]
   },

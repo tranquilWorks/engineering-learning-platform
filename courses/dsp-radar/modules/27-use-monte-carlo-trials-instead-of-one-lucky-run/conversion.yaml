@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "5c877db5ff8e351619c2266e9f5ea8fc5a38560538f67ff4a16eaedc522d3219",
+    "content_digest": "e5d6183aaa67976ad9fe8c76bdc276693e5b1dbafb9e2598d47e8da29f201e54",
     "files": [
       {
         "path": "modules/27-use-monte-carlo-trials-instead-of-one-lucky-run/experiment.py",
-        "sha256": "5a30f91798a52033ae1a5717da27ebf6eef72d0f9b027bedb32325b310cf23ef"
+        "sha256": "949be00cbaf76571c1adb94b444a5461199658416f59a581d771734132b65661"
       },
       {
         "path": "modules/27-use-monte-carlo-trials-instead-of-one-lucky-run/lesson.md",
-        "sha256": "cd07589ac59887062a56fc56be2a9c45e36fdbd85f5f3c50959cff0e835abea3"
+        "sha256": "7f0372aa53acc80ecd1d70d8e65ddb2eb83f16c4ae5c3d0837df39550996bf3e"
       },
       {
         "path": "modules/27-use-monte-carlo-trials-instead-of-one-lucky-run/module.yaml",
-        "sha256": "32a94326af96111af191c262bcfd551171f17301af2e6e485330bfc7e243e58b"
+        "sha256": "5f70cdd5eb69365c9eb8876158238052cb9f004b9b4e1946b354b486bd24f7a8"
       }
     ]
   },
   "content": {
     "guiding_question": "Why is one noise realization not enough to judge an algorithm?",
-    "physical_model": "A receiver never gets to choose its next thermal-noise waveform. Even when the transmitter, channel, and algorithm stay fixed, the next decision can differ because the noise sample differs. One successful decision therefore describes one event, not the probability of error. P23 introduced BPSK symbols and P24 introduced matched filtering. P27 repeats that transparent signal chain many times. A bit becomes \\(b_k\\in\\{-1,+1\\}\\), and a unit-energy pulse satisfies \\[ \\sum_n p^2[n]=1. \\] In trial \\(k\\), the received waveform is \\[ r_k[n]=\\sqrt{E_b}\\,b_kp[n]+w_k[n]. \\] The script explicitly correlates with the known pulse, \\[ z_k=\\sum_n p[n]r_k[n], \\] then decides \\(+1\\) when \\(z_k\\ge 0\\) and \\(-1\\) otherwise. There is no communications-toolbox detector hidden behind the decision.",
+    "physical_model": "Every BPSK trial uses its own 16-sample noise waveform and a unit-energy rectangular matched filter. Running error counts are Bernoulli observations; Wilson bounds quantify finite-sample uncertainty.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary Monte Carlo trials while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Every BPSK trial uses its own 16-sample noise waveform and a unit-energy rectangular matched filter. Running error counts are Bernoulli observations; Wilson bounds quantify finite-sample uncertainty.",
+      "Repeating one lucky correct waveform creates one unique statistic, zero errors, and a misleadingly narrow nominal interval. The independence validity flag is false, so that interval has no binomial coverage claim.",
+      "Rebuild the independent bank from seed 2701. The bank and decisions reproduce exactly, while block variability remains visible. More trials reduce uncertainty; they do not improve the underlying detector.",
+      "Explicit stage equations are retained in lesson.md. NumPy random streams differ from MATLAB. Plot/console presentation is adapted; no MATLAB runtime parity is claimed."
     ],
     "equations": [
       {
@@ -77,146 +77,230 @@
       "seed": 2701,
       "constants": [
         {
-          "name": "primary_baseline_scale",
+          "name": "samples_per_trial",
+          "value": 16,
+          "unit": "count"
+        },
+        {
+          "name": "independent_bank_trials",
+          "value": 4000,
+          "unit": "count"
+        },
+        {
+          "name": "histogram_tail_trials",
+          "value": 0,
+          "unit": "count"
+        },
+        {
+          "name": "lucky_trial_index",
+          "value": 1,
+          "unit": "count"
+        },
+        {
+          "name": "bit_energy",
           "value": 1.0,
-          "unit": "ratio"
+          "unit": "count"
         },
         {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "127beaa255d85f954cf17369a92ce7d83ec3e7dbe609a0903aed727a1c536d9f",
-          "unit": "mixed numeric signature"
+          "sha256": "1507f296616fe908eada0c648c4cc5007c3d14785194cef24ad61abaa03630d2",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "423064156c6d724f5f6a3f6b03e4440378ca2d80c7f5e6e1ad7f8f3f10ebdd6e",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "189e3d88e07c8737bf4450565bc82a2533444b0ee0a96c5e9ecb7ce0d7ab7a82",
-          "unit": "mixed numeric signature"
+          "sha256": "cf9bac1b4bbb2739082f365596cd6b70c88c1306408147258ea42e074c3191e1",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "6b3248acf9df3509e3a696e8238b9d559c51919ce79db76b75acf7d2a05aab24",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "5e0a0fee160f992065b7abd4d1211b132d9966d7688dae5cb9e8c374b44b529c",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "a8dab1a670d984bd126b8a4096b99b800e10fb56c881fd8dcadf5cf4b16dd79c",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "4fb6a5eeea5fbf79ac81aa87a21437ad4c9a6c49a428bade2ebdfdd86b5e0a1a",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "dbc1d9a34c79c1e15eae2a5013382a9f2e0394197f742b492ae794a1fbaccab2",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "1507f296616fe908eada0c648c4cc5007c3d14785194cef24ad61abaa03630d2",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "423064156c6d724f5f6a3f6b03e4440378ca2d80c7f5e6e1ad7f8f3f10ebdd6e",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P27 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P27 explicit processing and evidence stages",
+        "target_plot_key": "running_ber",
+        "title": "Running BER and nominal 95% Wilson limits",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "Trials processed (integer)",
+            "unit": "integer"
           },
           {
             "role": "y",
-            "label": "normalized signal",
-            "unit": "normalized"
+            "label": "Bit error probability (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Use Monte Carlo Trials Instead of One Lucky Run guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Every BPSK trial uses its own 16-sample noise waveform and a unit-energy rectangular matched filter. Running error counts are Bernoulli observations; Wilson bounds quantify finite-sample uncertainty."
       },
       {
-        "source_figure": "Pinned P27 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P27 explicit processing and evidence stages",
+        "target_plot_key": "matched_statistics",
+        "title": "Independent-bank matched-filter distribution",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "Matched output (normalized amplitude)",
+            "unit": "normalized amplitude"
           },
           {
             "role": "y",
-            "label": "normalized signal",
-            "unit": "normalized"
+            "label": "Count (trials)",
+            "unit": "trials"
           }
         ],
-        "interpretation": "This view answers the Use Monte Carlo Trials Instead of One Lucky Run guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Every BPSK trial uses its own 16-sample noise waveform and a unit-energy rectangular matched filter. Running error counts are Bernoulli observations; Wilson bounds quantify finite-sample uncertainty."
       },
       {
-        "source_figure": "Pinned P27 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P27 explicit processing and evidence stages",
+        "target_plot_key": "blocks",
+        "title": "Forty independent 100-trial blocks",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "Block index (integer)",
+            "unit": "integer"
           },
           {
             "role": "y",
-            "label": "normalized signal",
-            "unit": "normalized"
+            "label": "Bit error rate (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Use Monte Carlo Trials Instead of One Lucky Run guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Every BPSK trial uses its own 16-sample noise waveform and a unit-energy rectangular matched filter. Running error counts are Bernoulli observations; Wilson bounds quantify finite-sample uncertainty."
       },
       {
-        "source_figure": "Pinned P27 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P27 explicit processing and evidence stages",
+        "target_plot_key": "trial_sweep",
+        "title": "More independent data constrains uncertainty",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "Independent trial count (integer)",
+            "unit": "integer"
           },
           {
             "role": "y",
-            "label": "normalized signal",
-            "unit": "normalized"
+            "label": "Probability (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Use Monte Carlo Trials Instead of One Lucky Run guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Every BPSK trial uses its own 16-sample noise waveform and a unit-energy rectangular matched filter. Running error counts are Bernoulli observations; Wilson bounds quantify finite-sample uncertainty."
+      },
+      {
+        "source_figure": "Pinned P27 explicit processing and evidence stages",
+        "target_plot_key": "snr_sweep",
+        "title": "Common random bank; change only Eb/N0",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Eb/N0 (dB)",
+            "unit": "dB"
+          },
+          {
+            "role": "y",
+            "label": "Bit error rate (ratio)",
+            "unit": "ratio"
+          }
+        ],
+        "interpretation": "Every BPSK trial uses its own 16-sample noise waveform and a unit-energy rectangular matched filter. Running error counts are Bernoulli observations; Wilson bounds quantify finite-sample uncertainty."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "trial_count",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          10,
+          25,
+          100,
+          500,
+          4000
         ],
-        "expected_observation": "Changing Monte Carlo trials moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Independent trial count; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "ebn0_db",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          -4,
+          -2,
+          0,
+          2,
+          4
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Energy per bit / noise density; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "Repeating one lucky correct waveform creates one unique statistic, zero errors, and a misleadingly narrow nominal interval. The independence validity flag is false, so that interval has no binomial coverage claim.",
+      "recovery": "Rebuild the independent bank from seed 2701. The bank and decisions reproduce exactly, while block variability remains visible. More trials reduce uncertainty; they do not improve the underlying detector.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Repeating one lucky correct waveform creates one unique statistic, zero errors, and a misleadingly narrow nominal interval. The independence validity flag is false, so that interval has no binomial coverage claim.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -224,63 +308,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 64000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P27 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p21_p28.py",
     "seed": 2701,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "trial_count",
+        "value": 4000,
+        "unit": "trials"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "ebn0_db",
+        "value": 2,
+        "unit": "dB"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 6.938893903907228e-18,
+        "max_relative_error": 6.938893903907228e-18,
+        "passed": true,
         "expected": {
           "path": "modules/27-use-monte-carlo-trials-instead-of-one-lucky-run/evidence/expected-baseline.json",
-          "sha256": "127beaa255d85f954cf17369a92ce7d83ec3e7dbe609a0903aed727a1c536d9f"
+          "sha256": "1507f296616fe908eada0c648c4cc5007c3d14785194cef24ad61abaa03630d2"
         },
         "actual": {
           "path": "modules/27-use-monte-carlo-trials-instead-of-one-lucky-run/evidence/actual-baseline.json",
-          "sha256": "baea7f631dff240652bcbb531c86b54da214742d077a8b574f9ba7018642d883"
-        },
-        "max_absolute_error": 4.660716257376407e-13,
-        "max_relative_error": 4.660716257376407e-13,
-        "passed": true
+          "sha256": "423064156c6d724f5f6a3f6b03e4440378ca2d80c7f5e6e1ad7f8f3f10ebdd6e"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 1.3877787807814457e-17,
+        "max_relative_error": 1.3877787807814457e-17,
+        "passed": true,
+        "expected": {
+          "path": "modules/27-use-monte-carlo-trials-instead-of-one-lucky-run/evidence/expected-sweep-1.json",
+          "sha256": "cf9bac1b4bbb2739082f365596cd6b70c88c1306408147258ea42e074c3191e1"
+        },
+        "actual": {
+          "path": "modules/27-use-monte-carlo-trials-instead-of-one-lucky-run/evidence/actual-sweep-1.json",
+          "sha256": "6b3248acf9df3509e3a696e8238b9d559c51919ce79db76b75acf7d2a05aab24"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 6.938893903907228e-17,
+        "max_relative_error": 6.938893903907228e-17,
+        "passed": true,
+        "expected": {
+          "path": "modules/27-use-monte-carlo-trials-instead-of-one-lucky-run/evidence/expected-sweep-2.json",
+          "sha256": "5e0a0fee160f992065b7abd4d1211b132d9966d7688dae5cb9e8c374b44b529c"
+        },
+        "actual": {
+          "path": "modules/27-use-monte-carlo-trials-instead-of-one-lucky-run/evidence/actual-sweep-2.json",
+          "sha256": "a8dab1a670d984bd126b8a4096b99b800e10fb56c881fd8dcadf5cf4b16dd79c"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 6.938893903907228e-18,
+        "max_relative_error": 6.938893903907228e-18,
+        "passed": true,
         "expected": {
           "path": "modules/27-use-monte-carlo-trials-instead-of-one-lucky-run/evidence/expected-broken.json",
-          "sha256": "189e3d88e07c8737bf4450565bc82a2533444b0ee0a96c5e9ecb7ce0d7ab7a82"
+          "sha256": "4fb6a5eeea5fbf79ac81aa87a21437ad4c9a6c49a428bade2ebdfdd86b5e0a1a"
         },
         "actual": {
           "path": "modules/27-use-monte-carlo-trials-instead-of-one-lucky-run/evidence/actual-broken.json",
-          "sha256": "26ef6ae19c6a99ea0e8b01b3f11c5f491f2481c1c0e2cea2045db984227a3797"
+          "sha256": "dbc1d9a34c79c1e15eae2a5013382a9f2e0394197f742b492ae794a1fbaccab2"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 4.936051567483446e-13,
-        "max_relative_error": 4.660716257376407e-13,
-        "passed": true
+        "max_absolute_error": 6.938893903907228e-18,
+        "max_relative_error": 6.938893903907228e-18,
+        "passed": true,
+        "expected": {
+          "path": "modules/27-use-monte-carlo-trials-instead-of-one-lucky-run/evidence/expected-recovery.json",
+          "sha256": "1507f296616fe908eada0c648c4cc5007c3d14785194cef24ad61abaa03630d2"
+        },
+        "actual": {
+          "path": "modules/27-use-monte-carlo-trials-instead-of-one-lucky-run/evidence/actual-recovery.json",
+          "sha256": "423064156c6d724f5f6a3f6b03e4440378ca2d80c7f5e6e1ad7f8f3f10ebdd6e"
+        }
       }
     ]
   },

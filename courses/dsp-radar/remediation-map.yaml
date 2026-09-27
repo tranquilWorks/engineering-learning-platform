@@ -8,34 +8,33 @@ source:
 scope:
   total_items: 84
   already_distinct:
-    - P01
+  - P01
   repaired_in_prior_batches:
-    batch_id: ELP-DSP-FIDELITY-P02-P10
+    batch_ids:
+    - ELP-DSP-FIDELITY-P02-P10
+    - ELP-DSP-FIDELITY-P11-P20
     items:
-      - P02
-      - P03
-      - P04
-      - P05
-      - P06
-      - P07
-      - P08
-      - P09
-      - P10
+    - P02
+    - P03
+    - P04
+    - P05
+    - P06
+    - P07
+    - P08
+    - P09
+    - P10
+    - P11
+    - P12
+    - P13
+    - P14
+    - P15
+    - P16
+    - P17
+    - P18
+    - P19
+    - P20
   repaired_in_batch:
-    batch_id: ELP-DSP-FIDELITY-P11-P20
-    items:
-      - P11
-      - P12
-      - P13
-      - P14
-      - P15
-      - P16
-      - P17
-      - P18
-      - P19
-      - P20
-  pending:
-    status: generic_template_not_verified
+    batch_id: ELP-DSP-FIDELITY-P21-P28
     items:
     - P21
     - P22
@@ -45,6 +44,9 @@ scope:
     - P26
     - P27
     - P28
+  pending:
+    status: generic_template_not_verified
+    items:
     - P29
     - P30
     - P31
@@ -105,19 +107,19 @@ derived_counts:
   rule: total_items = already_distinct + repaired_in_prior_batches + repaired_in_batch + pending
   total_items: 84
   already_distinct: 1
-  repaired_in_prior_batches: 9
-  repaired_in_batch: 10
-  pending: 64
+  repaired_in_prior_batches: 19
+  repaired_in_batch: 8
+  pending: 56
 claim_boundary:
   numerically_verified: blocked
   curriculum_covered: blocked
   capstone_integrated: blocked
-  reason: P21-P84 remain generic and P84 capstone fidelity remains pending.
+  reason: P29-P84 remain generic and P84 capstone fidelity remains pending.
   explicitly_unperformed:
-    - MATLAB runtime comparison
-    - audio playback
-    - browser and accessibility validation
-    - representative learner validation
-    - physical HIL or hardware validation
-    - certification
-    - release and deployment
+  - MATLAB runtime comparison
+  - audio playback
+  - browser and accessibility validation
+  - representative learner validation
+  - physical HIL or hardware validation
+  - certification
+  - release and deployment

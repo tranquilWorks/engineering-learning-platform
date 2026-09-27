@@ -3,13 +3,13 @@
   "id": "28-connect-thresholds-to-roc-curves-and-estimator-limits",
   "number": 28,
   "title": "Connect Thresholds to ROC Curves and Estimator Limits",
-  "summary": "Explore connect thresholds to roc curves and estimator limits with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "Normalize the known-pulse matched filter by noise standard deviation. Independent H0/H1 banks trace Gaussian-tail ROC probabilities. The all-trial amplitude estimator attains variance sigma\u00b2/pulse energy under known timing and white Gaussian noise.",
   "guiding_question": "How do false alarms, detections, bias, variance, and theoretical bounds relate?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
     "phase-3",
-    "decision-threshold"
+    "P28"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,91 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Decision Threshold",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
-    },
-    {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
+      "id": "matched_snr_db",
+      "type": "segmented",
+      "label": "Matched-filter output SNR",
       "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "default": 6,
+      "options": [
+        {
+          "label": "-6",
+          "value": -6
+        },
+        {
+          "label": "-3",
+          "value": -3
+        },
+        {
+          "label": "0",
+          "value": 0
+        },
+        {
+          "label": "3",
+          "value": 3
+        },
+        {
+          "label": "6 baseline",
+          "value": 6
+        },
+        {
+          "label": "9",
+          "value": 9
+        },
+        {
+          "label": "12",
+          "value": 12
+        }
+      ]
+    },
+    {
+      "id": "threshold_sigma",
+      "type": "segmented",
+      "label": "Detection threshold",
+      "unit": "noise sigma",
+      "default": 1.5,
+      "options": [
+        {
+          "label": "-1",
+          "value": -1
+        },
+        {
+          "label": "-0.5",
+          "value": -0.5
+        },
+        {
+          "label": "0",
+          "value": 0
+        },
+        {
+          "label": "0.5",
+          "value": 0.5
+        },
+        {
+          "label": "1",
+          "value": 1
+        },
+        {
+          "label": "1.5 baseline",
+          "value": 1.5
+        },
+        {
+          "label": "2",
+          "value": 2
+        },
+        {
+          "label": "2.5",
+          "value": 2.5
+        },
+        {
+          "label": "3",
+          "value": 3
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +115,45 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing decision threshold, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict how raising a detection threshold moves both false alarms and detections. Why does estimating amplitude only after detection shift its mean?",
+      "reveal": "Normalize the known-pulse matched filter by noise standard deviation. Independent H0/H1 banks trace Gaussian-tail ROC probabilities. The all-trial amplitude estimator attains variance sigma\u00b2/pulse energy under known timing and white Gaussian noise."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Independent H0 and H1 matched scores",
+      "plot": "score_distributions"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Threshold ROC with exact limiting decisions",
+      "plot": "roc"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Raise threshold: both probabilities fall",
+      "plot": "threshold_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Unconditioned estimator and Fisher-information bound",
+      "plot": "variance_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "All-trial amplitude bias across SNR",
+      "plot": "bias_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Detection-conditioned estimates select the high tail",
+      "plot": "selection"
     },
     {
       "type": "callout",
@@ -102,7 +164,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

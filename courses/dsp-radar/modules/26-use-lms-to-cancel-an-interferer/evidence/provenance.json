@@ -1,0 +1,90 @@
+{
+  "item": "P26",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p26",
+    "sha256": "fffe190b7c067e8ed3ae692a699f3b055f1055ada36674ecfbf9f56b9ae189a8",
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/26-use-lms-to-cancel-an-interferer/experiment.py",
+    "sha256": "19527db686f7b29821797ee9dd9b4fa311dd743018acbf42464143b7e9dd5540",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "step_size": 0.006,
+      "reference_correlation": 1.0,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "step_size": 0.0005,
+      "reference_correlation": 1.0,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "step_size": 0.006,
+      "reference_correlation": 0,
+      "broken_mode": false
+    },
+    "broken": {
+      "step_size": 0.006,
+      "reference_correlation": 1.0,
+      "broken_mode": true
+    },
+    "recovery": {
+      "step_size": 0.006,
+      "reference_correlation": 1.0,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "stable_pre_suppression",
+      "unit": "dB"
+    },
+    {
+      "name": "stable_pre_desired_gain",
+      "unit": "ratio"
+    },
+    {
+      "name": "stable_post_suppression",
+      "unit": "dB"
+    },
+    {
+      "name": "stable_post_desired_gain",
+      "unit": "ratio"
+    },
+    {
+      "name": "stable_pre_coefficient_rmse",
+      "unit": "gain"
+    },
+    {
+      "name": "stable_post_coefficient_rmse",
+      "unit": "gain"
+    },
+    {
+      "name": "stable_reacquisition_or_3001_sentinel",
+      "unit": "samples"
+    },
+    {
+      "name": "unstable_guard_sample",
+      "unit": "samples"
+    },
+    {
+      "name": "active_stability_valid",
+      "unit": "boolean"
+    },
+    {
+      "name": "reset_suppression",
+      "unit": "dB"
+    },
+    {
+      "name": "reset_desired_gain",
+      "unit": "ratio"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "4ea8fc6da3ba28c94765513c90c5240830e5a97edd780b39c6e8bead25dfdc6a",
+    "content_digest": "2e5d6c3413573c06bad1a8b65ad581be6839902fc75522fc7bc4911a133b86c1",
     "files": [
       {
         "path": "modules/26-use-lms-to-cancel-an-interferer/experiment.py",
-        "sha256": "1ffacec244b8222121941c43c5f3223413dcb92386bcc78de8812c3c00e7590e"
+        "sha256": "19527db686f7b29821797ee9dd9b4fa311dd743018acbf42464143b7e9dd5540"
       },
       {
         "path": "modules/26-use-lms-to-cancel-an-interferer/lesson.md",
-        "sha256": "d03974acef7a4ea5bbc4225bfa824fe17e32e30bdf7a62ff35aa73f6e5e23bd6"
+        "sha256": "5a12e89d789f872af8725f35c09b2e80f378cdf2bcc9994de52c5a8b53656dc6"
       },
       {
         "path": "modules/26-use-lms-to-cancel-an-interferer/module.yaml",
-        "sha256": "f126627851466ec487b5f2db91cba46b4c1d6b2f1a1ee8d752ff3fa8f5a60e09"
+        "sha256": "4a91f40101bcca6d02ae1edf0dca2f7d19ee7925d6a6f15b4f8b36727cb49a47"
       }
     ]
   },
   "content": {
     "guiding_question": "How can an adaptive filter learn an unknown coupling path?",
-    "physical_model": "Imagine two receiver channels. The **primary** channel contains the signal we want plus a strong unwanted waveform. A nearby **reference** channel measures the source of that interference before it travels through an unknown cable, antenna, leakage, or multipath coupling path. The reference is not usually identical to the interference at the primary sensor. If the unknown path has (L) taps, its contribution is \\[ i[n] = \\sum_{k=0}^{L-1} h_k x[n-k] = \\mathbf{h}^{T}\\mathbf{x}_n. \\] The primary measurement is \\[ d[n] = s[n] + i[n], \\] where (s[n]) includes the desired waveform and independent receiver noise. P25 made a fixed FIR path visible. P26 asks how to estimate those taps from streaming samples when they are not known in advance.",
+    "physical_model": "Each sample predicts the coupled reference, subtracts it, then updates eight taps by mu*error*reference. The desired two-tone output should remain; zero output is not the objective.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary LMS step size while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Each sample predicts the coupled reference, subtracts it, then updates eight taps by mu*error*reference. The desired two-tone output should remain; zero output is not the objective.",
+      "Step 0.35 exceeds the white-Gaussian mean-square reference limit 0.2. The guard stops before weights exceed 10000 or error exceeds one million; no unsafe tail is fabricated.",
+      "Reset all taps and replay the same seed at step 0.006 with the correlated reference. Reacquisition requires 64 consecutive coefficient errors below 0.08; sentinel 3001 means not reacquired.",
+      "Explicit stage equations are retained in lesson.md. NumPy random streams differ from MATLAB. Plot/console presentation is adapted; no MATLAB runtime parity is claimed."
     ],
     "equations": [
       {
@@ -77,146 +77,278 @@
       "seed": 2601,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
+          "name": "sample_count",
+          "value": 6000,
+          "unit": "count"
         },
         {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
+          "name": "path_change_sample",
+          "value": 3001,
+          "unit": "count"
         },
         {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "filter_taps",
+          "value": 8,
+          "unit": "count"
+        },
+        {
+          "name": "active_output_samples",
+          "value": 6000,
+          "unit": "count"
+        },
+        {
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "d6bc0f091e77aab702da9b44e2984415186ad25408b73feaeb5c9c61ea3650c6",
-          "unit": "mixed numeric signature"
+          "sha256": "635239a408427aaccc56a0e59f6d3ccfa0cfcfe701c957d859974c6cc63bf214",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "d410c148028e55012ad02e9c1872809853b2c7aec6644a6998f83252e1407571",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "4d8d43688c64a7d5ab756373bc3e5465b28adb0cccff87ed5e0ee046f1ebb785",
-          "unit": "mixed numeric signature"
+          "sha256": "d661d1e94baa992c4f58167854e5666756b8a1b1e5d03c90b9956c3c2f4b80d1",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "6c635282eae606b365cf16975a177817c94b69a325a2c541051a28499bacd72b",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "6eae0e1a21bd48e3c55316325bc943f1ee31b00e81d24f913ab27758c18646eb",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "5b807517924c2ba3e676285e21bc09229557689f06c5c1fa5abb26ac2d9a4e43",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "bc8013eb5940f624bc662d8fa439f483cdd8316e3046947d5acd63e276dac9aa",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "5afe2a82b2c5274f9b4f89247736ad71a254db42944be987e86a28ea22fb730c",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "635239a408427aaccc56a0e59f6d3ccfa0cfcfe701c957d859974c6cc63bf214",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "d410c148028e55012ad02e9c1872809853b2c7aec6644a6998f83252e1407571",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P26 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P26 explicit processing and evidence stages",
+        "target_plot_key": "residual_power",
+        "title": "128-sample running residual power",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "Sample index (integer)",
+            "unit": "integer"
           },
           {
             "role": "y",
-            "label": "normalized signal",
-            "unit": "normalized"
+            "label": "Mean squared amplitude (normalized squared)",
+            "unit": "normalized squared"
           }
         ],
-        "interpretation": "This view answers the Use LMS to Cancel an Interferer guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Each sample predicts the coupled reference, subtracts it, then updates eight taps by mu*error*reference. The desired two-tone output should remain; zero output is not the objective."
       },
       {
-        "source_figure": "Pinned P26 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P26 explicit processing and evidence stages",
+        "target_plot_key": "waveforms",
+        "title": "Desired waveform survives cancellation",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "Time (s)",
+            "unit": "s"
           },
           {
             "role": "y",
-            "label": "normalized signal",
+            "label": "Amplitude (normalized)",
             "unit": "normalized"
           }
         ],
-        "interpretation": "This view answers the Use LMS to Cancel an Interferer guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Each sample predicts the coupled reference, subtracts it, then updates eight taps by mu*error*reference. The desired two-tone output should remain; zero output is not the objective."
       },
       {
-        "source_figure": "Pinned P26 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P26 explicit processing and evidence stages",
+        "target_plot_key": "convergence",
+        "title": "Path changes at sample 3001",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "Sample index (integer)",
+            "unit": "integer"
           },
           {
             "role": "y",
-            "label": "normalized signal",
-            "unit": "normalized"
+            "label": "Coefficient RMSE (gain)",
+            "unit": "gain"
           }
         ],
-        "interpretation": "This view answers the Use LMS to Cancel an Interferer guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Each sample predicts the coupled reference, subtracts it, then updates eight taps by mu*error*reference. The desired two-tone output should remain; zero output is not the objective."
       },
       {
-        "source_figure": "Pinned P26 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P26 explicit processing and evidence stages",
+        "target_plot_key": "coefficients",
+        "title": "Final estimated coupling coefficients",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "Tap index (integer)",
+            "unit": "integer"
           },
           {
             "role": "y",
-            "label": "normalized signal",
+            "label": "Coefficient (gain)",
+            "unit": "gain"
+          }
+        ],
+        "interpretation": "Each sample predicts the coupled reference, subtracts it, then updates eight taps by mu*error*reference. The desired two-tone output should remain; zero output is not the objective."
+      },
+      {
+        "source_figure": "Pinned P26 explicit processing and evidence stages",
+        "target_plot_key": "step_sweep",
+        "title": "Step-size convergence tradeoff",
+        "axes": [
+          {
+            "role": "x",
+            "label": "LMS step (ratio)",
+            "unit": "ratio"
+          },
+          {
+            "role": "y",
+            "label": "Post-change suppression (dB)",
+            "unit": "dB"
+          }
+        ],
+        "interpretation": "Each sample predicts the coupled reference, subtracts it, then updates eight taps by mu*error*reference. The desired two-tone output should remain; zero output is not the objective."
+      },
+      {
+        "source_figure": "Pinned P26 explicit processing and evidence stages",
+        "target_plot_key": "correlation_sweep",
+        "title": "An unrelated reference cannot predict interference",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Reference correlation (ratio)",
+            "unit": "ratio"
+          },
+          {
+            "role": "y",
+            "label": "Post-change suppression (dB)",
+            "unit": "dB"
+          }
+        ],
+        "interpretation": "Each sample predicts the coupled reference, subtracts it, then updates eight taps by mu*error*reference. The desired two-tone output should remain; zero output is not the objective."
+      },
+      {
+        "source_figure": "Pinned P26 explicit processing and evidence stages",
+        "target_plot_key": "guard",
+        "title": "Active LMS output ends before unsafe weights",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Sample index (integer)",
+            "unit": "integer"
+          },
+          {
+            "role": "y",
+            "label": "Error amplitude (normalized)",
             "unit": "normalized"
           }
         ],
-        "interpretation": "This view answers the Use LMS to Cancel an Interferer guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Each sample predicts the coupled reference, subtracts it, then updates eight taps by mu*error*reference. The desired two-tone output should remain; zero output is not the objective."
+      },
+      {
+        "source_figure": "Pinned P26 explicit processing and evidence stages",
+        "target_plot_key": "spectrum",
+        "title": "Settled post-change windowed spectra",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Frequency (Hz)",
+            "unit": "Hz"
+          },
+          {
+            "role": "y",
+            "label": "Amplitude (dB normalized)",
+            "unit": "dB normalized"
+          }
+        ],
+        "interpretation": "Each sample predicts the coupled reference, subtracts it, then updates eight taps by mu*error*reference. The desired two-tone output should remain; zero output is not the objective."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "step_size",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          0.0005,
+          0.002,
+          0.006,
+          0.012
         ],
-        "expected_observation": "Changing LMS step size moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only LMS adaptation step; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "reference_correlation",
         "values": [
-          0.0,
+          0,
+          0.25,
           0.5,
+          0.75,
           1.0
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Reference / interference correlation; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "Step 0.35 exceeds the white-Gaussian mean-square reference limit 0.2. The guard stops before weights exceed 10000 or error exceeds one million; no unsafe tail is fabricated.",
+      "recovery": "Reset all taps and replay the same seed at step 0.006 with the correlated reference. Reacquisition requires 64 consecutive coefficient errors below 0.08; sentinel 3001 means not reacquired.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Step 0.35 exceeds the white-Gaussian mean-square reference limit 0.2. The guard stops before weights exceed 10000 or error exceeds one million; no unsafe tail is fabricated.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -224,63 +356,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 6000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P26 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p21_p28.py",
     "seed": 2601,
     "inputs": [
       {
-        "name": "primary_scale",
+        "name": "step_size",
+        "value": 0.006,
+        "unit": "ratio"
+      },
+      {
+        "name": "reference_correlation",
         "value": 1.0,
         "unit": "ratio"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 1.7763568394002505e-13,
+        "max_relative_error": 5.7138431076436165e-15,
+        "passed": true,
         "expected": {
           "path": "modules/26-use-lms-to-cancel-an-interferer/evidence/expected-baseline.json",
-          "sha256": "d6bc0f091e77aab702da9b44e2984415186ad25408b73feaeb5c9c61ea3650c6"
+          "sha256": "635239a408427aaccc56a0e59f6d3ccfa0cfcfe701c957d859974c6cc63bf214"
         },
         "actual": {
           "path": "modules/26-use-lms-to-cancel-an-interferer/evidence/actual-baseline.json",
-          "sha256": "b07e35c18922fec92b496ecc9fbb2824ac28c9b09ebc0bf7f05fa5c7c6a09189"
-        },
-        "max_absolute_error": 3.6228919170211427e-13,
-        "max_relative_error": 3.6228919170211427e-13,
-        "passed": true
+          "sha256": "d410c148028e55012ad02e9c1872809853b2c7aec6644a6998f83252e1407571"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 1.7763568394002505e-13,
+        "max_relative_error": 5.7138431076436165e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/26-use-lms-to-cancel-an-interferer/evidence/expected-sweep-1.json",
+          "sha256": "d661d1e94baa992c4f58167854e5666756b8a1b1e5d03c90b9956c3c2f4b80d1"
+        },
+        "actual": {
+          "path": "modules/26-use-lms-to-cancel-an-interferer/evidence/actual-sweep-1.json",
+          "sha256": "6c635282eae606b365cf16975a177817c94b69a325a2c541051a28499bacd72b"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 1.7763568394002505e-13,
+        "max_relative_error": 5.7138431076436165e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/26-use-lms-to-cancel-an-interferer/evidence/expected-sweep-2.json",
+          "sha256": "6eae0e1a21bd48e3c55316325bc943f1ee31b00e81d24f913ab27758c18646eb"
+        },
+        "actual": {
+          "path": "modules/26-use-lms-to-cancel-an-interferer/evidence/actual-sweep-2.json",
+          "sha256": "5b807517924c2ba3e676285e21bc09229557689f06c5c1fa5abb26ac2d9a4e43"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 1.7763568394002505e-13,
+        "max_relative_error": 5.7138431076436165e-15,
+        "passed": true,
         "expected": {
           "path": "modules/26-use-lms-to-cancel-an-interferer/evidence/expected-broken.json",
-          "sha256": "4d8d43688c64a7d5ab756373bc3e5465b28adb0cccff87ed5e0ee046f1ebb785"
+          "sha256": "bc8013eb5940f624bc662d8fa439f483cdd8316e3046947d5acd63e276dac9aa"
         },
         "actual": {
           "path": "modules/26-use-lms-to-cancel-an-interferer/evidence/actual-broken.json",
-          "sha256": "b4167c574452f2116abb4601d1ce2095ef467c5baea9501d4a8037b40cb6c10c"
+          "sha256": "5afe2a82b2c5274f9b4f89247736ad71a254db42944be987e86a28ea22fb730c"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 3.622943958725422e-13,
-        "max_relative_error": 3.622943958725422e-13,
-        "passed": true
+        "max_absolute_error": 1.7763568394002505e-13,
+        "max_relative_error": 5.7138431076436165e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/26-use-lms-to-cancel-an-interferer/evidence/expected-recovery.json",
+          "sha256": "635239a408427aaccc56a0e59f6d3ccfa0cfcfe701c957d859974c6cc63bf214"
+        },
+        "actual": {
+          "path": "modules/26-use-lms-to-cancel-an-interferer/evidence/actual-recovery.json",
+          "sha256": "d410c148028e55012ad02e9c1872809853b2c7aec6644a6998f83252e1407571"
+        }
       }
     ]
   },
