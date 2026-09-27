@@ -8,7 +8,9 @@ PR #46 merged as `74fbe13828665783a97d047eae0c6dc6ef482745`, tree
 `a4b075fe1e4fdb35d58802668d2631b9f465eba3`. The active contract is byte-identical
 to that merged control artifact; repo-profile.yaml binds its revision.
 
-Work branch: `codex/dsp-fidelity-p29-p40-20260927`. The twelve existing lessons
+Work branch: `codex/dsp-fidelity-p29-p40-20260927`. Implementation revision:
+`3c5cee0dc8bef78f9f3c8baed691f03c4023d804`. Review:
+[PR #47](https://github.com/tranquilWorks/engineering-learning-platform/pull/47). The twelve existing lessons
 are repaired as one batch; this is not a course-inventory expansion. Canonical
 DSP source remains at `5d73667a486df4a7b6c581e4c9406e810ed4f0f6`, read-only and
 clean. P01-P28, P41-P84, other courses, source-map/conversion-manifest, course
@@ -96,8 +98,21 @@ control combinations run with finite results below the output-size ceiling.
 
 Exact required commands are in `contracts/verification.yaml` and the active
 batch. New P29-P40 tests: **90 passed**. All sixty independent comparisons and
-scoped lint passed. Combined DSP, contract, quick/full, deterministic catalog,
-API/live preview, source/scope and frontend checks are being finalized below.
+scoped lint passed. Combined source-attested DSP regression: **495 passed in 157.59 seconds**.
+Deterministic catalog passed (6 courses / 290 modules / 290 interactive).
+API smoke passed 36 baseline/broken/recovery executions, twelve exact recoveries
+and twelve stale-revision rejections. Live TCP checks passed HTML, health, catalog,
+twelve documents and twelve baseline executions. Scope audit passed 197 paths,
+with exactly twelve coverage digest changes. Contract: **72 passed in 60.44 seconds**. Quick wrapper / complete API suite:
+**875 passed in 613.32 seconds**, with three existing deprecation warnings.
+Full wrapper passed: **875 passed in 559.80 seconds**, with the same three
+existing Starlette/httpx and FastAPI ORJSON deprecation warnings. Frontend
+`npm run typecheck` and `npm run build` passed; Vite built in 4.81 seconds with
+the existing large Plotly chunk warning. No frontend waiver was used.
+All mandatory local gates passed at implementation revision
+`3c5cee0dc8bef78f9f3c8baed691f03c4023d804`; the final follow-up commit changes
+only this evidence, CURRENT_STATE and HANDOFF. Heavy suites are not rerun for
+those documentation-only changes.
 
 A preliminary regression exposed four missing lesson labels; the interactive
 sections now explicitly name sweeps, the broken case and the guiding question.
@@ -111,7 +126,9 @@ final suites run serially without increasing any timeout. A live server with
 cached pre-edit revisions correctly rejected a stale run; restarting the local
 preview loads the current catalog before final HTTP checks.
 
-Control PR #505 passed `scripts/validate-control-plane.sh`; a second portfolio
+Control PR #505 passed `scripts/validate-control-plane.sh` (252 root tests with
+one unrelated GitG-source skip, six analog-camera, 33 ELP and 15 Tranquility
+tests, validators and shellcheck); a second portfolio
 validation passed after the P34 description was corrected to the source's
 circular-delay-wrap failure. Hosted control job 108644756202 failed before
 executing any steps. The authorized normal control merge succeeded.
@@ -122,6 +139,32 @@ not find historical vehicle commit `4b613a79bfe3cbd997e64e8372a58956533dae2c`.
 Frontend passed and container was skipped. These checks pass in the complete
 local checkout. Hosted CI is not a completion requirement under retained owner
 direction; workflow changes are outside this DSP contract.
+
+PR #47 implementation run
+[36329613925](https://github.com/tranquilWorks/engineering-learning-platform/actions/runs/36329613925)
+ran at `3c5cee0dc8bef78f9f3c8baed691f03c4023d804`. Frontend passed. Backend job
+`108648918543` reported **853 passed / 22 failed** in 462.61 seconds. Inspected
+logs attribute 21 failures to missing DSP submodule source (one P11-P20 check,
+eight P21-P28 checks and twelve P29-P40 checks), and one to the same missing
+historical vehicle commit. Container was skipped. No numerical replay failure was reported. All 22
+source/history checks pass locally. This is not a hosted CI pass.
+
+Local verification artifacts (retained in ignored `.state/`; SHA-256 binds the
+recorded run, without adding raw logs to the course contract):
+
+| Artifact | SHA-256 |
+| --- | --- |
+| `p29-new-tests-final.txt` | `1b14da977944f07da817b58f6af2172f032afceb19096fc6cf194d77dc557882` |
+| `p29-focused-final.txt` | `3ca9e6cf3914f8cc7f3330af58e23ebc204f05a92ccdaf03cbd93df70fd99a2b` |
+| `p29-contract-final.txt` | `75cf7143bbaa0577c13c9e6ba47543098fce43f32443eb57502334c6d31a2d26` |
+| `p29-quick.txt` | `a3fe9ef44c8e590b40cabd042773f3628da48b58b920dc2b031c7ad2905e2596` |
+| `p29-full.txt` | `b914e3181dce78e09f372d320f14c4b7e09fd4568c57a552949d31afe66ac61f` |
+| `p29-lint.txt` | `82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18` |
+| `p29-catalog.json` | `e0ec19a3f9adf17cab941b6e63ba2fd0a89f5a0ca177b6997a4b612d0462e484` |
+| `p29-scope.json` | `9ab2cd9803bd3dee50e0d8071128ccd4a34f90d4bf4f05d0a6030314c90e6e5a` |
+| `p29-http-smoke.json` | `f60a57781ed2a71946e19a8970f4c72c35f7425dc0a44a4e86edf2abf0d62a89` |
+| `p29-live-preview.json` | `ea3da030d8821f8442232c9fa4ed826278ba230c970ab599a91cf8f0221f90c3` |
+| `p29-reference-summary.json` | `481ac48b2a2a603b892ab80c91741e8e65f357ba93ffc23e4043aa3b8e7b20e7` |
 
 ## Continuation and rollback
 
