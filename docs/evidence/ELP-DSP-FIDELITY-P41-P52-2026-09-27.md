@@ -8,7 +8,9 @@ Target PR #47 merged as `f78831b23e46ff1cb9518a716ac8ba5aeab5a3ee`, tree
 `47b907458622f3381bc93e5c19908a487c98774c`. The active batch is byte-identical
 to the merged control artifact and repo-profile binds that revision.
 
-Branch: `codex/dsp-fidelity-p41-p52-20260927`. This repairs twelve existing
+Branch: `codex/dsp-fidelity-p41-p52-20260927`. Implementation revision:
+`359cbed4010227bc50d8c157cd4d03ab86f1e301`. Review: [PR #48](https://github.com/tranquilWorks/engineering-learning-platform/pull/48).
+This repairs twelve existing
 lessons without expanding inventory. P01-P40, P53-P84, canonical source,
 source-map/conversion-manifest, course identity, other courses, platform/UI,
 schemas, dependencies and workflows remain unchanged. DSP source pin remains
@@ -113,8 +115,29 @@ GitG-source skip, six analog-camera, 33 ELP and 15 Tranquility tests, plus
 schemas/inventory and shellcheck. Hosted control run 36346443093, job
 108696410242, failed without executing any steps; the authorized normal merge
 succeeded. Source-specific independent replay and scoped
-lint pass. Broader focused, contract, quick/full, catalog, service and frontend
-validation is in progress; this document does not yet assert those gates pass.
+lint pass. Final source-attested DSP regression: **585 passed in 251.60 seconds**.
+API smoke passed twelve documents, 36 baseline/failure/recovery runs, twelve exact
+recoveries and twelve stale-revision rejections. Deterministic catalog passed:
+6 courses / 290 modules / 290 interactive, no errors. Scope audit passed 197
+allowed paths, exactly twelve coverage-digest changes, immutable prior reference
+prefix and clean source pin. Contract: **72 passed in 71.73 seconds**.
+Quick wrapper: **965 passed, 3 warnings in 779.45s (0:12:59)**.
+Full wrapper: **965 passed, 3 warnings in 731.98s (0:12:11)**; local frontend typecheck and build passed.
+No frontend waiver was used. Existing Starlette/httpx and FastAPI ORJSON
+deprecation warnings and the large Plotly chunk warning remain. Live TCP smoke
+passed health, catalog, HTML and all twelve documents/baseline runs.
+All mandatory local gates passed for implementation `359cbed4010227bc50d8c157cd4d03ab86f1e301`.
+The final follow-up commit changes only this evidence, CURRENT_STATE and HANDOFF.
+Heavy suites are not rerun for those documentation-only changes.
+
+The initial full wrapper reported **962 passed / 3 failed in 793.78 seconds**.
+All three failures arose during catalog construction: unchanged robotics P58
+exceeded its existing three-second runtime limit. The quick run had passed all
+965 tests. The full rerun bounds numerical-library threads with
+`OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1`; it preserves
+all tests, numerical tolerances and runtime limits. The initial failure log is
+retained as `.state/p41-full-initial-timeouts.txt`. Thread limits are local
+verification/preview environment settings, not a production configuration change.
 
 The first new-test run passed 89 checks and failed only the appended-section
 separator assertion; the prior-prefix hash itself passed. That assertion now
@@ -127,10 +150,41 @@ The final regressions include source binding, independent replay, all offered
 control combinations, physical limits, calibration, edge eligibility, plot
 wiring, finite bounded output and target-preserving heatmap coordinates.
 
+All 34 checks missing hosted checkout prerequisites pass in the complete local
+checkout.
+
 Hosted source/history checkout limitations were present on PR #47; hosted CI
 is not mandatory under retained owner direction. Local source/history gates
 remain mandatory. Any new hosted results will be reported separately from local
 validation; workflow changes remain outside this contract.
+
+PR #48 implementation hosted run
+[36348112283](https://github.com/tranquilWorks/engineering-learning-platform/actions/runs/36348112283)
+ran at `359cbed4010227bc50d8c157cd4d03ab86f1e301`. Frontend passed; backend job
+`108701338896` reported **931 passed / 34 failed**, three warnings, in 595.72
+seconds. Inspected logs attribute 33 failures to missing DSP source submodule
+contents (one P11-P20 attestation, eight P21-P28, twelve P29-P40 and twelve
+P41-P52 checks), and one to missing historical vehicle commit
+`4b613a79bfe3cbd997e64e8372a58956533dae2c`. Container was skipped. No numerical
+replay or new runtime failure was reported. The source-attestation checks pass
+in the complete local checkout. This is not a hosted CI pass.
+
+Local run artifacts are retained in ignored `.state/`; SHA-256 binds the
+recorded evidence without adding raw logs outside the approved Markdown path.
+
+| Artifact | SHA-256 |
+| --- | --- |
+| `p41-full-initial-timeouts.txt` | `0c93e467a389ca3260104193aa1aa6825a056f76fea01168c99f3cea0988a2c7` |
+| `p41-focused-final.txt` | `560a027ee1d6c1c52b6dc5c5b6332d02c216230afe593f497c03f7e304aa5b12` |
+| `p41-contract.txt` | `5218e9b97e6a4dff0bd5ae6314c4506aa0d158dd46cd285d4dbb1b932e997910` |
+| `p41-quick.txt` | `c708f2f5af4b513b0340c16518f435ab6ca88bb5d1c160236371444dc0e071b8` |
+| `p41-full.txt` | `d6db4f633fe0c4269c0fc68c645c2b2dd0c11bd1aae9d4ceb9a1da706d2bf550` |
+| `p41-lint.txt` | `82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18` |
+| `p41-catalog.json` | `e0ec19a3f9adf17cab941b6e63ba2fd0a89f5a0ca177b6997a4b612d0462e484` |
+| `p41-scope.json` | `dbd9489c260b6d06a9bdcb74f06d6780a1da1502bfc929de661a44ef46934490` |
+| `p41-http-smoke.json` | `7f6a5d477091ab8971441aadf4c14714ac81d13cd1e44b737e3169ffd0b31ced` |
+| `p41-live-preview.json` | `30a484e500b50b032b19c902ed4a4f51c301f2b6feb135ad1e6fdd4e9c451613` |
+| `p41-reference-summary.json` | `820b09ccb140418fe84e287fb0940539695eac38963b1489c2053e99ed37ad61` |
 
 ## Continuation and rollback
 
