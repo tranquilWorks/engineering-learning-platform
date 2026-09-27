@@ -1,169 +1,279 @@
 from __future__ import annotations
 
-from typing import Any
-
 import numpy as np
 
-SEED = 5001
-ITEM_NUMBER = 50
-PHASE = 5
-MAX_POINTS = 512
+
+def _controls(p, spec):
+    values = []
+    for key, default, choices in spec:
+        value = p.get(key, default)
+        if isinstance(value, bool) or value not in choices:
+            raise ValueError("Choose a retained physical control: " + key)
+        values.append(float(value))
+    broken = p.get("broken_mode", False)
+    if not isinstance(broken, bool):
+        raise TypeError("broken_mode must be boolean")
+    return (*values, broken)
 
 
-def _layout(title: str, x_label: str, y_label: str) -> dict[str, Any]:
+def _plot(title, xlabel, ylabel, traces):
+    data = []
+    for name, x, y in traces:
+        x, y = np.asarray(x), np.asarray(y)
+        ix = np.unique(np.linspace(0, len(x) - 1, min(512, len(x))).astype(int))
+        data.append(
+            {
+                "type": "scatter",
+                "mode": "lines",
+                "name": name,
+                "x": x[ix].tolist(),
+                "y": y[ix].tolist(),
+            }
+        )
     return {
-        "title": {"text": title, "x": 0.02, "xanchor": "left"},
-        "margin": {"l": 68, "r": 22, "t": 58, "b": 58},
-        "xaxis": {"title": x_label, "showgrid": True},
-        "yaxis": {"title": y_label, "showgrid": True},
-        "legend": {"orientation": "h", "y": 1.14},
-        "hovermode": "closest",
-        "uirevision": "keep-view",
+        "data": data,
+        "layout": {
+            "title": {"text": title},
+            "xaxis": {"title": xlabel},
+            "yaxis": {"title": ylabel},
+            "legend": {"orientation": "h"},
+        },
+        "config": {"responsive": True, "displaylogo": False},
     }
 
 
-def run(parameters: dict[str, Any]) -> dict[str, Any]:
-    primary = float(parameters["primary_scale"])
-    secondary = float(parameters["secondary_scale"])
-    noise_db = float(parameters["noise_db"])
-    broken_mode = bool(parameters["broken_mode"])
-    count = 192 + 16 * (ITEM_NUMBER % 4)
-    if count > MAX_POINTS:
-        raise ValueError("experiment exceeds the retained point ceiling")
-    rng = np.random.default_rng(SEED)
-    x = np.linspace(0.0, 1.0, count, endpoint=False)
-    variant = 1.0 + (ITEM_NUMBER % 7) / 5.0
-    noise_scale = 10.0 ** (noise_db / 20.0)
+def _heat(title, xlabel, ylabel, x, y, z, unit):
+    x, y, z = np.asarray(x), np.asarray(y), np.asarray(z)
 
-    if PHASE == 1:
-        truth = np.cos(2.0 * np.pi * variant * primary * x + 0.4 * secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, count // 7) if broken_mode else measured
-    elif PHASE == 2:
-        tone = np.exp(1j * (2.0 * np.pi * (8.0 + variant * primary) * x + secondary))
-        measured = tone + noise_scale * (rng.standard_normal(count) + 1j * rng.standard_normal(count))
-        response_axis = np.fft.fftshift(np.fft.fftfreq(count, d=1.0 / count))
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / count
-        broken_response = np.abs(measured.real) if broken_mode else np.abs(measured)
-        truth = tone.real
-    elif PHASE == 3:
-        symbols = np.sign(np.sin(2.0 * np.pi * (4.0 + variant) * x))
-        carrier = np.cos(2.0 * np.pi * (18.0 + 2.0 * primary) * x + secondary)
-        truth = symbols * carrier
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(2 + 10 * secondary)) if broken_mode else measured
-    elif PHASE == 4:
-        bins = np.arange(count, dtype=float)
-        center = count * (0.25 + 0.25 * (primary - 0.5))
-        width = 2.0 + 4.0 * secondary
-        truth = np.exp(-0.5 * ((bins - center) / width) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = bins
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / np.sqrt(count)
-        broken_response = np.roll(measured, count // 3) if broken_mode else measured
-        x = bins
-    elif PHASE == 5:
-        cells = np.arange(count, dtype=float)
-        background = 0.2 + (0.45 * secondary) * (cells >= count // 2)
-        power = background + np.abs(noise_scale * rng.standard_normal(count))
-        target_bin = int(count * (0.3 + 0.25 * (primary - 0.5)))
-        power[target_bin] += 1.4
-        truth = power
-        measured = power
-        response_axis = cells
-        response = np.full(count, np.quantile(power, 0.82 + 0.1 * secondary))
-        if broken_mode:
-            response = np.full(count, np.mean(power) * (1.2 + primary))
-        broken_response = response
-        x = cells
-    elif PHASE == 6:
-        steps = np.arange(count, dtype=float)
-        truth = 0.04 * steps + 0.0002 * variant * secondary * steps**2
-        measured = truth + noise_scale * 8.0 * rng.standard_normal(count)
-        gain = np.clip(0.12 + 0.5 * primary, 0.05, 0.95)
-        response = np.empty(count)
-        response[0] = measured[0]
-        for index in range(1, count):
-            response[index] = response[index - 1] + gain * (measured[index] - response[index - 1])
-        response_axis = steps
-        broken_response = np.roll(response, 12) if broken_mode else response
-        x = steps
-    elif PHASE == 7:
-        angles = np.linspace(-90.0, 90.0, count)
-        u = np.sin(np.deg2rad(angles)) - np.sin(np.deg2rad(45.0 * (primary - 1.0)))
-        spacing = 0.45 + 0.45 * secondary
-        elements = 6 + ITEM_NUMBER % 7
-        denominator = np.sin(np.pi * spacing * u)
-        numerator = np.sin(elements * np.pi * spacing * u)
-        response = np.where(np.abs(denominator) < 1e-10, 1.0, np.abs(numerator / (elements * denominator)))
-        truth = response
-        measured = np.maximum(response + noise_scale * rng.standard_normal(count), 0.0)
-        response_axis = angles
-        broken_response = np.roll(response, 9) if broken_mode else response
-        x = angles
-    elif PHASE == 8:
-        bins = np.arange(count, dtype=float)
-        beat_bin = count * (0.15 + 0.35 * (primary - 0.5))
-        truth = np.cos(2.0 * np.pi * beat_bin * bins / count + secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(8 + 16 * secondary)) if broken_mode else measured
-        x = bins
-    else:
-        coordinate = np.linspace(-1.0, 1.0, count)
-        width = 0.05 + 0.16 / primary
-        truth = np.exp(-0.5 * ((coordinate + 0.25) / width) ** 2) + 0.65 * np.exp(-0.5 * ((coordinate - 0.3) / (1.4 * width)) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        kernel = np.ones(3 + 2 * int(secondary * 5))
-        kernel /= kernel.sum()
-        response = np.convolve(measured, kernel, mode="same")
-        response_axis = coordinate
-        broken_response = np.roll(response, 18) + 0.25 * np.roll(response, -13) if broken_mode else response
-        x = coordinate
+    def indices(axis, scores, limit):
+        peaks = np.flatnonzero(
+            (scores >= np.r_[-np.inf, scores[:-1]])
+            & (scores >= np.r_[scores[1:], -np.inf])
+        )
+        keep = list(peaks[np.argsort(scores[peaks])[-12:]]) + [
+            int(np.argmin(abs(axis))),
+            0,
+            len(axis) - 1,
+        ]
+        keep = np.unique(keep)
+        grid = np.linspace(
+            0, len(axis) - 1, min(len(axis), max(2, limit - len(keep)))
+        ).astype(int)
+        return np.unique(np.r_[keep, grid])
 
-    displayed = broken_response if broken_mode else measured
-    separation = float(np.max(response) - np.median(response))
-    rmse = float(np.sqrt(np.mean((np.asarray(displayed).real - np.asarray(truth).real) ** 2)))
-    signature = [float(count), primary, secondary, noise_db, float(np.mean(np.asarray(displayed).real)), float(np.std(np.asarray(displayed).real)), separation, rmse]
-    sweep_primary = [0.6, 1.0, 1.4]
-    sweep_secondary = [0.0, 0.5, 1.0]
-    sweep_response = [variant * value for value in sweep_primary]
-    stress_response = [separation / (1.0 + value) for value in sweep_secondary]
-    title = 'Apply 2-D CFAR to a Range-Doppler Map'
+    ix = indices(x, np.max(z, axis=0), 128)
+    iy = indices(y, np.max(z, axis=1), 64)
+    return {
+        "data": [
+            {
+                "type": "heatmap",
+                "x": x[ix].tolist(),
+                "y": y[iy].tolist(),
+                "z": z[np.ix_(iy, ix)].tolist(),
+                "colorbar": {"title": unit},
+            }
+        ],
+        "layout": {
+            "title": {"text": title},
+            "xaxis": {"title": xlabel},
+            "yaxis": {"title": ylabel},
+        },
+        "config": {"responsive": True, "displaylogo": False},
+    }
 
+
+def _finish(values, plots, observation, failure, recovery, seed, broken, **extra):
     return {
         "metrics": [
-            {"id": "primary", "label": '2D Training Width', "value": primary, "unit": "× baseline", "emphasis": "primary"},
-            {"id": "response_separation", "label": "Response separation", "value": separation, "unit": "normalized"},
-            {"id": "model_error", "label": "Model/display error", "value": rmse, "unit": "normalized"},
-            {"id": "points", "label": "Bounded points", "value": count, "unit": "points"},
+            {"id": k, "label": k.replace("_", " "), "value": float(v), "unit": u}
+            for k, (v, u) in values.items()
         ],
-        "plots": {
-            "model_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "physical/model truth", "x": x, "y": np.asarray(truth).real},
-                {"type": "scatter", "mode": "lines", "name": "measured/processed", "x": x, "y": np.asarray(displayed).real},
-            ], "layout": _layout(title + " — model view", 'cell index', 'power / threshold'), "config": {"responsive": True, "displaylogo": False}},
-            "response_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "response", "x": response_axis, "y": np.asarray(response).real},
-            ], "layout": _layout(title + " — response view", 'cell index', 'power / threshold'), "config": {"responsive": True, "displaylogo": False}},
-            "parameter_sweeps": {"data": [
-                {"type": "scatter", "mode": "lines+markers", "name": "primary scale", "x": sweep_primary, "y": sweep_response},
-                {"type": "scatter", "mode": "lines+markers", "name": "secondary stress", "x": sweep_secondary, "y": stress_response},
-            ], "layout": _layout("Two one-variable sweeps", "control value", "response statistic"), "config": {"responsive": True, "displaylogo": False}},
-            "broken_case": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "recovered", "x": x, "y": np.asarray(measured).real},
-                {"type": "scatter", "mode": "lines", "name": "broken" if broken_mode else "enable broken mode", "x": x, "y": np.asarray(broken_response).real},
-            ], "layout": _layout("Intentional assumption failure", 'cell index', 'power / threshold'), "config": {"responsive": True, "displaylogo": False}},
-        },
+        "plots": plots,
         "explanations": {
-            "observation": f"The {title} model uses a bounded deterministic adaptive detection experiment. Primary scale={primary:.2f} and secondary stress={secondary:.2f} remain independently controllable.",
-            "broken": "Broken mode deliberately violates the lesson's central interpretation assumption so the displayed response becomes ambiguous, biased, contaminated, or defocused.",
-            "recovery": "Disable broken mode, restore both scales to 1.0 and 0.25, then connect the recovered shape to the pinned source equations before changing one control at a time.",
+            "observation": observation,
+            "broken": failure,
+            "recovery": recovery,
         },
-        "diagnostics": {"seed": SEED, "item_number": ITEM_NUMBER, "point_count": count, "signature": signature, "broken_active": broken_mode},
+        "diagnostics": dict(
+            signature=[float(v[0]) for v in values.values()],
+            signature_fields=list(values),
+            seed=seed,
+            broken_active=broken,
+            **extra,
+        ),
     }
+
+
+def _alpha(n, p):
+    return n * np.expm1(-np.log(p) / n)
+
+
+def _ring(power, tr, td, p=0.001):
+    from scipy.signal import convolve2d
+
+    hr, hd = tr + 2, td + 2
+    mask = np.ones((2 * hr + 1, 2 * hd + 1))
+    mask[hr - 2 : hr + 3, hd - 2 : hd + 3] = 0
+    n = int(mask.sum())
+    estimate = convolve2d(power, mask, mode="same", boundary="fill") / n
+    threshold = _alpha(n, p) * estimate
+    eligible = np.zeros(power.shape, bool)
+    eligible[hr:-hr, hd:-hd] = True
+    return threshold, eligible, n, estimate, mask
+
+
+def run(parameters):
+    tr, td, broken = _controls(
+        parameters,
+        [
+            ("range_training_half_width", 6, [3, 6, 12]),
+            ("doppler_training_half_width", 4, [2, 4, 8]),
+        ],
+    )
+    tr, td = int(tr), int(td)
+    rng = np.random.default_rng(5001)
+    r = np.arange(96) * 30.0
+    v = np.arange(-32, 32) * 0.625
+    mean = (0.8 + 1.2 * (r / r[-1]) ** 2)[:, None] * (
+        1 + 2.5 * np.exp(-((v / 2.5) ** 2))
+    )
+    power = (
+        abs(
+            np.sqrt(mean / 2)
+            * (rng.normal(size=(96, 64)) + 1j * rng.normal(size=(96, 64)))
+        )
+        ** 2
+    )
+    rows = np.array([27, 52, 75, 3])
+    cols = np.array([44, 21, 34, 7])
+    snrs = [24, 20, 18, 20]
+    rw = np.array([0.015, 0.05, 0.2, 0.55, 1, 0.55, 0.2, 0.05, 0.015])
+    dw = np.array([0.01, 0.04, 0.18, 0.5, 1, 0.5, 0.18, 0.04, 0.01])
+    support = np.zeros((96, 64), bool)
+    for row, col, snr in zip(rows, cols, snrs):
+        rr = np.arange(max(0, row - 4), min(96, row + 5))
+        cc = np.arange(max(0, col - 4), min(64, col + 5))
+        power[np.ix_(rr, cc)] += (
+            mean[row, col]
+            * 10 ** (snr / 10)
+            * rw[rr - row + 4, None]
+            * dw[None, cc - col + 4]
+        )
+        support[np.ix_(rr, cc)] = True
+    threshold, eligible, n, _estimate, mask = _ring(power, tr, td)
+    det = (power > threshold) & eligible
+    bad = power > threshold
+    active = bad if broken else det
+
+    def sweep(values, axis):
+        result = []
+        for size in values:
+            tt, ee, nn, est, _ = _ring(
+                power, int(size) if axis == 0 else tr, int(size) if axis == 1 else td
+            )
+            analysis = ee & ~support
+            dd = (power > tt) & ee
+            result.append(
+                [
+                    nn,
+                    np.mean(ee),
+                    np.sqrt(np.mean((est[analysis] / mean[analysis] - 1) ** 2)),
+                    sum(dd[rows[:3], cols[:3]]),
+                    sum(dd[~support]),
+                ]
+            )
+        return np.array(result)
+
+    rs = np.array([3, 6, 12])
+    ds = np.array([2, 4, 8])
+    rstats = sweep(rs, 0)
+    dstats = sweep(ds, 1)
+    values = {
+        "training_cells": (n, "cells"),
+        "scale_factor": (_alpha(n, 0.001), "ratio"),
+        "eligible_cells": (sum(eligible.ravel()), "cells"),
+        "eligible_fraction": (np.mean(eligible), "ratio"),
+        "interior_targets_detected": (sum(det[rows[:3], cols[:3]]), "targets"),
+        "active_edge_target_detected": (active[3, 7], "boolean"),
+        "active_border_crossings": (sum(active[~eligible]), "cells"),
+        "recovered_edge_testable": (eligible[3, 7], "boolean"),
+        "first_target_margin": (power[27, 44] / threshold[27, 44], "ratio"),
+        "h0_crossings": (sum(det[~support]), "cells"),
+        "model_valid": (not broken, "boolean"),
+    }
+    # Display eligibility separately; no fabricated zero threshold denotes an untested border.
+    ir = np.arange(tr + 2, 96 - tr - 2)
+    ic = np.arange(td + 2, 64 - td - 2)
+    plots = {
+        "power": _heat(
+            "Synthetic square-law range–Doppler scene",
+            "Velocity (m/s)",
+            "Range (m)",
+            v,
+            r,
+            10 * np.log10(power),
+            "dB power",
+        ),
+        "stencil": _heat(
+            "Rectangular training ring excludes guard rectangle and CUT",
+            "Doppler offset (bins)",
+            "Range offset (bins)",
+            np.arange(-td - 2, td + 3),
+            np.arange(-tr - 2, tr + 3),
+            mask,
+            "training=1",
+        ),
+        "threshold": _heat(
+            "Threshold only where every reference exists",
+            "Velocity (m/s)",
+            "Range (m)",
+            v[ic],
+            r[ir],
+            10 * np.log10(threshold[np.ix_(ir, ic)]),
+            "dB power",
+        ),
+        "eligibility": _heat(
+            "Border cells are untested",
+            "Velocity (m/s)",
+            "Range (m)",
+            v,
+            r,
+            eligible.astype(int),
+            "eligible=1",
+        ),
+        "decisions": _heat(
+            "Active detection mask",
+            "Velocity (m/s)",
+            "Range (m)",
+            v,
+            r,
+            active.astype(int),
+            "detection=1",
+        ),
+        "range_sweep": _plot(
+            "Range-window size trades coverage and locality",
+            "Range training half-width (bins)",
+            "Fraction or normalized RMSE (ratio)",
+            [("Eligible", rs, rstats[:, 1]), ("Estimate RMSE", rs, rstats[:, 2])],
+        ),
+        "doppler_sweep": _plot(
+            "Doppler-window size crosses a clutter ridge",
+            "Doppler training half-width (bins)",
+            "Fraction or normalized RMSE (ratio)",
+            [("Eligible", ds, dstats[:, 1]), ("Estimate RMSE", ds, dstats[:, 2])],
+        ),
+    }
+    return _finish(
+        values,
+        plots,
+        "The two-dimensional CA stencil is the outer rectangle minus the full guard rectangle. The exact training count sets alpha; only complete windows define calibrated tests.",
+        "Zero-padding missing border powers while retaining the full N produces artificially low finite thresholds and makes an edge target appear testable.",
+        "Retain decisions only inside the complete-stencil eligibility mask. The border target remains untested rather than missed. Disable the toggle to restore that policy.",
+        5001,
+        broken,
+        shape=[96, 64],
+        range_sweep=rstats.tolist(),
+        doppler_sweep=dstats.tolist(),
+        target_eligibility=eligible[rows, cols].tolist(),
+        target_detections=det[rows, cols].tolist(),
+    )

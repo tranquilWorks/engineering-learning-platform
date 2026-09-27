@@ -1,6 +1,4 @@
-# Implement 1-D Cell-Averaging CFAR
-
-> **Guiding question:** How can the threshold adapt to the local noise level?
+# P45 lesson: Implement 1-D Cell-Averaging CFAR
 
 ## Guiding question
 
@@ -126,33 +124,29 @@ The experiment is a bounded synthetic model. It is not MATLAB-runtime evidence
 unless it is actually run and recorded, and it is not hardware, HIL, field,
 real-time, or operational-radar validation.
 
-## Use the Python GUI experiment
+## Interactive lab: Implement 1-D Cell-Averaging CFAR
 
-The GUI keeps the pinned source's mental model and processing order visible. The **CFAR Pfa** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** How can the threshold adapt to the local noise level?
 
-### Prediction and sweep 1 — CFAR Pfa
+A 256-cell profile at 15 m spacing uses μ_i=.65+.0045i+.32[1+sin(2π(i−18)/190)] and circular complex noise. Targets at cells 62/132/211 have SNR 19/17/20 dB and phases .2/−.8/1.1 rad. Each CUT excludes two guards and averages twelve references per side. α=N(Pfa^(−1/N)−1), N=24. Incomplete edge cells are omitted from the threshold trace. The power-scale control scales background and targets together; it does not hold target power fixed.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict how alpha changes when requested Pfa decreases. Why must multiplying all powers by two leave the decisions unchanged, and why is a dB average inappropriate?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Design Pfa** from 0.001 to 0.01 probability. Predict, run, and explain the measured change using the equation; then reset.
+2. Start at the baseline. Sweep only **Scene power scale** from 1 to 2 ratio. Predict, run, and explain the measured change using the equation; then reset.
+3. Enable the broken case. Averaging dB powers computes a geometric mean, lowers the noise estimate, and breaks the exponential-power calibration.
+4. Recovery: Restore the arithmetic mean in linear power, retain the guard/CUT exclusion and skip incomplete edge windows. Disable the toggle to replay the selected scene. Restore the controls and disable the toggle to reproduce the selected baseline exactly.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict how alpha changes when requested Pfa decreases. Why must multiplying all powers by two leave the decisions unchanged, and why is a dB average inappropriate? Support your answer with a measured value and units. Explain the failure, the recovery assumption, and what this finite experiment cannot establish.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+Averaging dB powers computes a geometric mean, lowers the noise estimate, and breaks the exponential-power calibration. Do not equate seeded crossings with a field detection guarantee.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The source lesson is preserved above. NumPy private seeds reproduce this port, not MATLAB random streams; array draws use NumPy row-major order. Source figure/console presentation becomes labeled plots and metrics. Vectorized arithmetic retains the source equations; the P42 linear convolution and P50 ring convolution are independently checked. All calculations use complete stated arrays; displays may retain at most 512 line points or 128×64 heatmap coordinates, preserving zero and prominent peaks. No MATLAB execution, browser/accessibility review, hardware, or learner-effectiveness claim is made.

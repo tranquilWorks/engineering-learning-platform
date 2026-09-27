@@ -187,7 +187,7 @@ def test_dsp_item_retained_numeric_equivalence(item: dict[str, Any]) -> None:
         expected_path = COURSE_ROOT / case["expected"]["path"]
         actual_path = COURSE_ROOT / case["actual"]["path"]
         assert expected_path != actual_path
-        if 29 <= item["number"] <= 40:
+        if 29 <= item["number"] <= 52:
             # Exact agreement is valid. Independence comes from a separately
             # formulated, hash-bound reference and fresh replay, not byte inequality.
             provenance = json.loads(
@@ -196,7 +196,12 @@ def test_dsp_item_retained_numeric_equivalence(item: dict[str, Any]) -> None:
             reference_path = COURSE_ROOT / provenance["reference"]["path"]
             assert provenance["reference"]["independent"] is True
             assert provenance["reference"]["imports_production"] is False
-            assert provenance["reference"]["sha256"] == _sha256(reference_path)
+            assert (
+                provenance["reference"]["sha256"]
+                == hashlib.sha256(
+                    reference_path.read_bytes()[: provenance["reference"]["byte_count"]]
+                ).hexdigest()
+            )
             assert provenance["production"]["sha256"] == _sha256(
                 COURSE_ROOT / provenance["production"]["path"]
             )

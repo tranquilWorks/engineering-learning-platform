@@ -3,13 +3,13 @@
   "id": "41-model-ground-clutter-and-swerling-targets",
   "number": 41,
   "title": "Model Ground Clutter and Swerling Targets",
-  "summary": "Explore model ground clutter and swerling targets with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "Clutter has a range-dependent mean and memory. Swerling I/III hold power through a dwell; II/IV redraw every pulse. Equal average SNR does not imply equal integration stability.",
   "guiding_question": "Why do clutter and target amplitude fluctuate differently from white noise?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-4",
-    "fluctuation-strength"
+    "radar-detection",
+    "P41"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,55 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Fluctuation Strength",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "range_correlation",
+      "type": "segmented",
+      "label": "Range correlation",
+      "unit": "correlation",
+      "default": 0.85,
+      "options": [
+        {
+          "label": "0",
+          "value": 0
+        },
+        {
+          "label": "0.5",
+          "value": 0.5
+        },
+        {
+          "label": "0.85 baseline",
+          "value": 0.85
+        },
+        {
+          "label": "0.97",
+          "value": 0.97
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
+      "id": "target_snr_db",
+      "type": "segmented",
+      "label": "Target SNR db",
       "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "default": -3,
+      "options": [
+        {
+          "label": "-6",
+          "value": -6
+        },
+        {
+          "label": "-3 baseline",
+          "value": -3
+        },
+        {
+          "label": "0",
+          "value": 0
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +79,65 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing fluctuation strength, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict which Swerling models retain dwell-to-dwell power variation after more pulses. How do range correlation and a changing mean power affect a global threshold?",
+      "reveal": "Clutter has a range-dependent mean and memory. Swerling I/III hold power through a dwell; II/IV redraw every pulse. Equal average SNR does not imply equal integration stability."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Correlated clutter plus white noise",
+      "plot": "background"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Range-dependent mean power",
+      "plot": "profile"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Clutter memory in both dimensions",
+      "plot": "correlation"
+    },
+    {
+      "type": "plot",
+      "title": "Slow versus pulse-to-pulse target fluctuation",
+      "plot": "powers"
+    },
+    {
+      "type": "plot",
+      "title": "Noncoherent integration at equal average SNR",
+      "plot": "integration"
+    },
+    {
+      "type": "plot",
+      "title": "Fast fluctuations average within a dwell",
+      "plot": "variation"
+    },
+    {
+      "type": "plot",
+      "title": "Change range correlation alone",
+      "plot": "rho_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "One global threshold versus known local normalization",
+      "plot": "failure"
+    },
+    {
+      "type": "plot",
+      "title": "Range mixing changes the aggregate amplitude distribution",
+      "plot": "amplitude_distribution"
+    },
+    {
+      "type": "plot",
+      "title": "Fast fluctuations narrow dwell-average power",
+      "plot": "dwell_distribution"
     },
     {
       "type": "callout",
@@ -102,7 +148,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

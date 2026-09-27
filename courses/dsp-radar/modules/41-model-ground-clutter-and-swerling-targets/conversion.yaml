@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "91758c565a8bb6ff40778de517e5c0e9b28db187597e82b6f3457180e06d93bd",
+    "content_digest": "5cc4735a63d83f7d7c7c7e6020579135f4d6bf9ec123079e8ca501729976e1e6",
     "files": [
       {
         "path": "modules/41-model-ground-clutter-and-swerling-targets/experiment.py",
-        "sha256": "ca007b7d78d45f8761b870c39d383411800aba825b04ae1177da3e32d3fedd3b"
+        "sha256": "1cbeb70924ec3a121793faeeb253650805f777885ddcf2cc57c0241f5e81ac65"
       },
       {
         "path": "modules/41-model-ground-clutter-and-swerling-targets/lesson.md",
-        "sha256": "d6b95c8ef54ce96b02c2169dce149171610c440b8060a6b03dd45d57b0180d7e"
+        "sha256": "fcaabd7258052efacb91f92c9ef7f8cd8f5a5b716072ca7dd4e25a0f25dc17ab"
       },
       {
         "path": "modules/41-model-ground-clutter-and-swerling-targets/module.yaml",
-        "sha256": "0374d300e41e09d63ad3b87c10a389aad6c5408111251e41ff2ab37c28176e97"
+        "sha256": "22060e24c393a0b97a3ec2596441334dbfeb30e43a421cc17008b0b662293ff0"
       }
     ]
   },
   "content": {
     "guiding_question": "Why do clutter and target amplitude fluctuate differently from white noise?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "Clutter has a range-dependent mean and memory. Swerling I/III hold power through a dwell; II/IV redraw every pulse. Equal average SNR does not imply equal integration stability.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary fluctuation strength while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Clutter has a range-dependent mean and memory. Swerling I/III hold power through a dwell; II/IV redraw every pulse. Equal average SNR does not imply equal integration stability.",
+      "One global white-background threshold overspends false alarms near the radar and underspends them farther away.",
+      "Normalize by the known local expected clutter-plus-noise power. This is an oracle-background comparison, not an estimated CFAR algorithm; disable the toggle to replay it.",
+      "Explicit stage equations are retained in lesson.md. NumPy random streams differ from MATLAB. Plot/console presentation is adapted; no MATLAB runtime parity is claimed."
     ],
     "equations": [
       {
@@ -77,146 +77,297 @@
       "seed": 4101,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
+          "name": "target_trials",
+          "value": 2000,
+          "unit": "count"
         },
         {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "caecc611d3f5057123083593e45795832c349ff020ee262fc881bb2124bdfb54",
-          "unit": "mixed numeric signature"
+          "sha256": "94c99240644e0faa281b7f59fc9ecf66049ffbe0d3d42d5aed9dde9bdc818142",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "6aa291ddea653e4e3cdb0c7851f7a1e90c136d9111a7fe8676d1220f415557ba",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "925568bbc20156a52f556aed36f5b047464116334b69e4f2cc82d1d730cc61f0",
-          "unit": "mixed numeric signature"
+          "sha256": "7fa4da8615d86fd0c934165abdddf48ea986188de5d310fecd572adb999bcdba",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "2fa3247ba0d58668cae2c1e6367aa5344a6f4c84545b648b873ee957656c90d9",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "2516ee1468cdd4faf860163f9dd5f261203e5cd9aa77c6e8aba627a0e8b7a108",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "a8bec7ebf8dd339d05f9ca95f13466e23e56825c587a8d87cbf77bac77d2e9a0",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "843d5ebd61bbdb0a6a7002bdc8c008cfbdd45ed0fa5c6f9c556a881a1cc404f5",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "ac43d811340be8696cce99cddac9aa48b0ed71ce627b98f7fa73df2d85c51245",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "94c99240644e0faa281b7f59fc9ecf66049ffbe0d3d42d5aed9dde9bdc818142",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "6aa291ddea653e4e3cdb0c7851f7a1e90c136d9111a7fe8676d1220f415557ba",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P41 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P41 explicit processing and evidence stages",
+        "target_plot_key": "background",
+        "title": "Correlated clutter plus white noise",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Range (km)",
+            "unit": "km"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Pulse (index)",
+            "unit": "index"
           }
         ],
-        "interpretation": "This view answers the Model Ground Clutter and Swerling Targets guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Clutter has a range-dependent mean and memory. Swerling I/III hold power through a dwell; II/IV redraw every pulse. Equal average SNR does not imply equal integration stability."
       },
       {
-        "source_figure": "Pinned P41 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P41 explicit processing and evidence stages",
+        "target_plot_key": "profile",
+        "title": "Range-dependent mean power",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Range (km)",
+            "unit": "km"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Power (relative)",
+            "unit": "relative"
           }
         ],
-        "interpretation": "This view answers the Model Ground Clutter and Swerling Targets guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Clutter has a range-dependent mean and memory. Swerling I/III hold power through a dwell; II/IV redraw every pulse. Equal average SNR does not imply equal integration stability."
       },
       {
-        "source_figure": "Pinned P41 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P41 explicit processing and evidence stages",
+        "target_plot_key": "correlation",
+        "title": "Clutter memory in both dimensions",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Lag (bins or pulses)",
+            "unit": "bins or pulses"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Correlation (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Model Ground Clutter and Swerling Targets guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Clutter has a range-dependent mean and memory. Swerling I/III hold power through a dwell; II/IV redraw every pulse. Equal average SNR does not imply equal integration stability."
       },
       {
-        "source_figure": "Pinned P41 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P41 explicit processing and evidence stages",
+        "target_plot_key": "powers",
+        "title": "Slow versus pulse-to-pulse target fluctuation",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Pulse (index)",
+            "unit": "index"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Target power / mean (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Model Ground Clutter and Swerling Targets guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Clutter has a range-dependent mean and memory. Swerling I/III hold power through a dwell; II/IV redraw every pulse. Equal average SNR does not imply equal integration stability."
+      },
+      {
+        "source_figure": "Pinned P41 explicit processing and evidence stages",
+        "target_plot_key": "integration",
+        "title": "Noncoherent integration at equal average SNR",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Integrated pulses (count)",
+            "unit": "count"
+          },
+          {
+            "role": "y",
+            "label": "Threshold crossings (probability)",
+            "unit": "probability"
+          }
+        ],
+        "interpretation": "Clutter has a range-dependent mean and memory. Swerling I/III hold power through a dwell; II/IV redraw every pulse. Equal average SNR does not imply equal integration stability."
+      },
+      {
+        "source_figure": "Pinned P41 explicit processing and evidence stages",
+        "target_plot_key": "variation",
+        "title": "Fast fluctuations average within a dwell",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Integrated pulses (count)",
+            "unit": "count"
+          },
+          {
+            "role": "y",
+            "label": "Clean power CV (ratio)",
+            "unit": "ratio"
+          }
+        ],
+        "interpretation": "Clutter has a range-dependent mean and memory. Swerling I/III hold power through a dwell; II/IV redraw every pulse. Equal average SNR does not imply equal integration stability."
+      },
+      {
+        "source_figure": "Pinned P41 explicit processing and evidence stages",
+        "target_plot_key": "rho_sweep",
+        "title": "Change range correlation alone",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Prescribed correlation (ratio)",
+            "unit": "ratio"
+          },
+          {
+            "role": "y",
+            "label": "Measured lag-one (ratio)",
+            "unit": "ratio"
+          }
+        ],
+        "interpretation": "Clutter has a range-dependent mean and memory. Swerling I/III hold power through a dwell; II/IV redraw every pulse. Equal average SNR does not imply equal integration stability."
+      },
+      {
+        "source_figure": "Pinned P41 explicit processing and evidence stages",
+        "target_plot_key": "failure",
+        "title": "One global threshold versus known local normalization",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Range (km)",
+            "unit": "km"
+          },
+          {
+            "role": "y",
+            "label": "H0 crossings (probability)",
+            "unit": "probability"
+          }
+        ],
+        "interpretation": "Clutter has a range-dependent mean and memory. Swerling I/III hold power through a dwell; II/IV redraw every pulse. Equal average SNR does not imply equal integration stability."
+      },
+      {
+        "source_figure": "Pinned P41 explicit processing and evidence stages",
+        "target_plot_key": "amplitude_distribution",
+        "title": "Range mixing changes the aggregate amplitude distribution",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Amplitude / RMS (ratio)",
+            "unit": "ratio"
+          },
+          {
+            "role": "y",
+            "label": "Probability density (per ratio)",
+            "unit": "per ratio"
+          }
+        ],
+        "interpretation": "Clutter has a range-dependent mean and memory. Swerling I/III hold power through a dwell; II/IV redraw every pulse. Equal average SNR does not imply equal integration stability."
+      },
+      {
+        "source_figure": "Pinned P41 explicit processing and evidence stages",
+        "target_plot_key": "dwell_distribution",
+        "title": "Fast fluctuations narrow dwell-average power",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Dwell power / mean (ratio)",
+            "unit": "ratio"
+          },
+          {
+            "role": "y",
+            "label": "Probability per bin (ratio)",
+            "unit": "ratio"
+          }
+        ],
+        "interpretation": "Clutter has a range-dependent mean and memory. Swerling I/III hold power through a dwell; II/IV redraw every pulse. Equal average SNR does not imply equal integration stability."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "range_correlation",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          0,
+          0.5,
+          0.85,
+          0.97
         ],
-        "expected_observation": "Changing fluctuation strength moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Range correlation; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "target_snr_db",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          -6,
+          -3,
+          0
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Target SNR db; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "One global white-background threshold overspends false alarms near the radar and underspends them farther away.",
+      "recovery": "Normalize by the known local expected clutter-plus-noise power. This is an oracle-background comparison, not an estimated CFAR algorithm; disable the toggle to replay it.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "One global white-background threshold overspends false alarms near the radar and underspends them farther away.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -224,63 +375,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 1200000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P41 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p41_p52.py",
     "seed": 4101,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "range_correlation",
+        "value": 0.85,
+        "unit": "correlation"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "target_snr_db",
+        "value": -3,
+        "unit": "dB"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 2.220446049250313e-16,
+        "max_relative_error": 2.220446049250313e-16,
+        "passed": true,
         "expected": {
           "path": "modules/41-model-ground-clutter-and-swerling-targets/evidence/expected-baseline.json",
-          "sha256": "caecc611d3f5057123083593e45795832c349ff020ee262fc881bb2124bdfb54"
+          "sha256": "94c99240644e0faa281b7f59fc9ecf66049ffbe0d3d42d5aed9dde9bdc818142"
         },
         "actual": {
           "path": "modules/41-model-ground-clutter-and-swerling-targets/evidence/actual-baseline.json",
-          "sha256": "3f3d3355be6407ce3f402e2dc1ed8a0c2c3df94502423fd60a7be3aad7dea1d7"
-        },
-        "max_absolute_error": 3.8691272408186705e-13,
-        "max_relative_error": 3.8691272408186705e-13,
-        "passed": true
+          "sha256": "6aa291ddea653e4e3cdb0c7851f7a1e90c136d9111a7fe8676d1220f415557ba"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 2.220446049250313e-16,
+        "max_relative_error": 2.220446049250313e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/41-model-ground-clutter-and-swerling-targets/evidence/expected-sweep-1.json",
+          "sha256": "7fa4da8615d86fd0c934165abdddf48ea986188de5d310fecd572adb999bcdba"
+        },
+        "actual": {
+          "path": "modules/41-model-ground-clutter-and-swerling-targets/evidence/actual-sweep-1.json",
+          "sha256": "2fa3247ba0d58668cae2c1e6367aa5344a6f4c84545b648b873ee957656c90d9"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 2.220446049250313e-16,
+        "max_relative_error": 2.220446049250313e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/41-model-ground-clutter-and-swerling-targets/evidence/expected-sweep-2.json",
+          "sha256": "2516ee1468cdd4faf860163f9dd5f261203e5cd9aa77c6e8aba627a0e8b7a108"
+        },
+        "actual": {
+          "path": "modules/41-model-ground-clutter-and-swerling-targets/evidence/actual-sweep-2.json",
+          "sha256": "a8bec7ebf8dd339d05f9ca95f13466e23e56825c587a8d87cbf77bac77d2e9a0"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 2.220446049250313e-16,
+        "max_relative_error": 2.220446049250313e-16,
+        "passed": true,
         "expected": {
           "path": "modules/41-model-ground-clutter-and-swerling-targets/evidence/expected-broken.json",
-          "sha256": "925568bbc20156a52f556aed36f5b047464116334b69e4f2cc82d1d730cc61f0"
+          "sha256": "843d5ebd61bbdb0a6a7002bdc8c008cfbdd45ed0fa5c6f9c556a881a1cc404f5"
         },
         "actual": {
           "path": "modules/41-model-ground-clutter-and-swerling-targets/evidence/actual-broken.json",
-          "sha256": "a0490f1ec91a2478b82554b6ca7df4a467eaa82efea379c7003913dadde44afc"
+          "sha256": "ac43d811340be8696cce99cddac9aa48b0ed71ce627b98f7fa73df2d85c51245"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 4.4630965589931293e-13,
-        "max_relative_error": 4.4630965589931293e-13,
-        "passed": true
+        "max_absolute_error": 2.220446049250313e-16,
+        "max_relative_error": 2.220446049250313e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/41-model-ground-clutter-and-swerling-targets/evidence/expected-recovery.json",
+          "sha256": "94c99240644e0faa281b7f59fc9ecf66049ffbe0d3d42d5aed9dde9bdc818142"
+        },
+        "actual": {
+          "path": "modules/41-model-ground-clutter-and-swerling-targets/evidence/actual-recovery.json",
+          "sha256": "6aa291ddea653e4e3cdb0c7851f7a1e90c136d9111a7fe8676d1220f415557ba"
+        }
       }
     ]
   },

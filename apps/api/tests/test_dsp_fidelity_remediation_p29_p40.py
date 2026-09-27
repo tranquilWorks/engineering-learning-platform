@@ -136,9 +136,12 @@ def test_independent_reference_provenance_and_no_production_imports(references):
         provenance = json.loads((_folder(number) / "evidence/provenance.json").read_text())
         assert provenance["reference"]["independent"] is True
         assert provenance["reference"]["imports_production"] is False
-        # Each new reference binds the whole append-only file at this batch.
+        # Historical provenance binds the exact append-only prefix for this batch.
         prior_bytes = (COURSE / "remediation_reference_cases.py").read_bytes()
-        assert provenance["reference"]["sha256"] == hashlib.sha256(prior_bytes).hexdigest()
+        assert (
+            provenance["reference"]["sha256"]
+            == hashlib.sha256(prior_bytes[: provenance["reference"]["byte_count"]]).hexdigest()
+        )
         assert provenance["production"]["sha256"] == _sha(_folder(number) / "experiment.py")
         assert provenance["scenarios"] == references.SCENARIOS[f"P{number}"]
 

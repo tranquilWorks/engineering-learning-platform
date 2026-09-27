@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "b650ba36895d4b9f127e6f76165a1ddfa31522e0b44adeadad995dabb809001c",
+    "content_digest": "680e328ceaabbad470fc26781a34e4cbbf5502914810672572cb16667906af94",
     "files": [
       {
         "path": "modules/52-validate-cfar-pfa-by-monte-carlo/experiment.py",
-        "sha256": "255d042d86d30904de5b2f5e69441c13e0eb6cb9e408349e80bc1c2a45b55355"
+        "sha256": "f48573bf653a35d644d30175bbfdf4aee1410ecc7962a456c72e69132ba5439b"
       },
       {
         "path": "modules/52-validate-cfar-pfa-by-monte-carlo/lesson.md",
-        "sha256": "7265e8ac25eea9738bc95b2e7f486a99d44b4b085a83d62348232f417b3070e4"
+        "sha256": "846bb98cb5a1d2f36ddf562f862482d9794f0f7008f7340f85a3a61fff71c3c2"
       },
       {
         "path": "modules/52-validate-cfar-pfa-by-monte-carlo/module.yaml",
-        "sha256": "c0b4d732ca7f9014293f6a98ef03b70ade75516c5841818010cf41aa7f9bb06b"
+        "sha256": "446478c2b9a3bcc21f5582c5808d03f31e82b92e9c97a43882a039da6f68c3aa"
       }
     ]
   },
   "content": {
     "guiding_question": "Does the implemented detector actually achieve the requested false-alarm probability?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "Count false alarms from independent H0 trials and report a Wilson interval. Finite-N calibration matches iid exponential-power theory; correlated Gaussian and cellwise lognormal texture violate that model.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary Monte Carlo trials while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Count false alarms from independent H0 trials and report a Wilson interval. Finite-N calibration matches iid exponential-power theory; correlated Gaussian and cellwise lognormal texture violate that model.",
+      "Using \u2212ln(Pfa) on a finite reference mean raises actual Pfa. A small or zero count is also not evidence of zero operational risk.",
+      "Restore N(Pfa^(\u22121/N)\u22121), retain all 200000 independent trials and the interval, and disclose the background model. Disable the toggle for exact finite-N replay.",
+      "Explicit stage equations are retained in lesson.md. NumPy random streams differ from MATLAB. Plot/console presentation is adapted; no MATLAB runtime parity is claimed."
     ],
     "equations": [
       {
@@ -69,146 +69,229 @@
       "seed": 5201,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
+          "name": "trials",
+          "value": 200000,
+          "unit": "count"
         },
         {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
+          "name": "block_trials",
+          "value": 2000,
+          "unit": "count"
         },
         {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "f350c814b85c14fc87eb90fbb264dada02a02c7c0b1a1127f167c12f513db590",
-          "unit": "mixed numeric signature"
+          "sha256": "be7cd23c9a3397fd4b5898acac0e3406d3585cac418a770f0d46e7f0a01e88f0",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "a4fb598e272eb0bc9f36669b49c87dd8c947b4585ea0bf009faff573bad3f6b7",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "f9037b36af01a62da74654c67630ff4ef3d7eac4dbe4d16b5ea26cc9bf157b17",
-          "unit": "mixed numeric signature"
+          "sha256": "a63ab74cc1a811932247f7b7d9900ccc63d544f034242bde740f569b2eeb9c00",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "0747cafa0dfd7e8a6a5ae788c924aa7151145e5c659a6eb806d78a9ab91852fb",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "117d84ca27b1c0a47dfabbda78646dbbe81ad11f4d9925f202e6b4e86a11f423",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "9907b7bf022577aa5ba25f3e657f79edfb81f615ae7655d80ea6b43e3fbde170",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "7fa1e2ee0eefdebe830f4354734948a619c799e194f68df576c46fce295f0185",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "264d6886f3c0f6c2fbc7ea474c46889212e34b1e2b0cacb24da11bd6c10011f0",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "be7cd23c9a3397fd4b5898acac0e3406d3585cac418a770f0d46e7f0a01e88f0",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "a4fb598e272eb0bc9f36669b49c87dd8c947b4585ea0bf009faff573bad3f6b7",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P52 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P52 explicit processing and evidence stages",
+        "target_plot_key": "decisions",
+        "title": "Independent square-law CUT and reference estimate",
         "axes": [
           {
             "role": "x",
-            "label": "cell index",
-            "unit": "source units"
+            "label": "Trial (index)",
+            "unit": "index"
           },
           {
             "role": "y",
-            "label": "power / threshold",
-            "unit": "normalized"
+            "label": "Power (relative)",
+            "unit": "relative"
           }
         ],
-        "interpretation": "This view answers the Validate CFAR Pfa by Monte Carlo guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Count false alarms from independent H0 trials and report a Wilson interval. Finite-N calibration matches iid exponential-power theory; correlated Gaussian and cellwise lognormal texture violate that model."
       },
       {
-        "source_figure": "Pinned P52 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P52 explicit processing and evidence stages",
+        "target_plot_key": "running",
+        "title": "Running rate with 95% Wilson interval",
         "axes": [
           {
             "role": "x",
-            "label": "cell index",
-            "unit": "source units"
+            "label": "Independent trials (count)",
+            "unit": "count"
           },
           {
             "role": "y",
-            "label": "power / threshold",
-            "unit": "normalized"
+            "label": "Pfa (probability)",
+            "unit": "probability"
           }
         ],
-        "interpretation": "This view answers the Validate CFAR Pfa by Monte Carlo guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Count false alarms from independent H0 trials and report a Wilson interval. Finite-N calibration matches iid exponential-power theory; correlated Gaussian and cellwise lognormal texture violate that model."
       },
       {
-        "source_figure": "Pinned P52 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P52 explicit processing and evidence stages",
+        "target_plot_key": "pfa",
+        "title": "Requested Pfa sweep at fixed N",
         "axes": [
           {
             "role": "x",
-            "label": "cell index",
-            "unit": "source units"
+            "label": "Requested Pfa (probability)",
+            "unit": "probability"
           },
           {
             "role": "y",
-            "label": "power / threshold",
-            "unit": "normalized"
+            "label": "Measured Pfa (probability)",
+            "unit": "probability"
           }
         ],
-        "interpretation": "This view answers the Validate CFAR Pfa by Monte Carlo guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Count false alarms from independent H0 trials and report a Wilson interval. Finite-N calibration matches iid exponential-power theory; correlated Gaussian and cellwise lognormal texture violate that model."
       },
       {
-        "source_figure": "Pinned P52 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P52 explicit processing and evidence stages",
+        "target_plot_key": "training",
+        "title": "Finite-N calibration across reference counts",
         "axes": [
           {
             "role": "x",
-            "label": "cell index",
-            "unit": "source units"
+            "label": "Total training cells (count)",
+            "unit": "count"
           },
           {
             "role": "y",
-            "label": "power / threshold",
-            "unit": "normalized"
+            "label": "Pfa (probability)",
+            "unit": "probability"
           }
         ],
-        "interpretation": "This view answers the Validate CFAR Pfa by Monte Carlo guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Count false alarms from independent H0 trials and report a Wilson interval. Finite-N calibration matches iid exponential-power theory; correlated Gaussian and cellwise lognormal texture violate that model."
+      },
+      {
+        "source_figure": "Pinned P52 explicit processing and evidence stages",
+        "target_plot_key": "models",
+        "title": "Calibration assumptions matter",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Model: iid, correlated, texture (index)",
+            "unit": "index"
+          },
+          {
+            "role": "y",
+            "label": "Pfa (probability)",
+            "unit": "probability"
+          }
+        ],
+        "interpretation": "Count false alarms from independent H0 trials and report a Wilson interval. Finite-N calibration matches iid exponential-power theory; correlated Gaussian and cellwise lognormal texture violate that model."
+      },
+      {
+        "source_figure": "Pinned P52 explicit processing and evidence stages",
+        "target_plot_key": "failure",
+        "title": "Known-noise alpha overspends the finite-N budget",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Rule: known-noise, finite-N (index)",
+            "unit": "index"
+          },
+          {
+            "role": "y",
+            "label": "Pfa (probability)",
+            "unit": "probability"
+          }
+        ],
+        "interpretation": "Count false alarms from independent H0 trials and report a Wilson interval. Finite-N calibration matches iid exponential-power theory; correlated Gaussian and cellwise lognormal texture violate that model."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "training_count",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          8,
+          16,
+          24
         ],
-        "expected_observation": "Changing Monte Carlo trials moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Training count; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "design_pfa",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          0.01,
+          0.003,
+          0.001
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Design Pfa; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "Using \u2212ln(Pfa) on a finite reference mean raises actual Pfa. A small or zero count is also not evidence of zero operational risk.",
+      "recovery": "Restore N(Pfa^(\u22121/N)\u22121), retain all 200000 independent trials and the interval, and disclose the background model. Disable the toggle for exact finite-N replay.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Using \u2212ln(Pfa) on a finite reference mean raises actual Pfa. A small or zero count is also not evidence of zero operational risk.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -216,63 +299,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 1000000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P52 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p41_p52.py",
     "seed": 5201,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "training_count",
+        "value": 24,
+        "unit": "cells"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "design_pfa",
+        "value": 0.001,
+        "unit": "probability"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 1.734723475976807e-18,
+        "max_relative_error": 1.734723475976807e-18,
+        "passed": true,
         "expected": {
           "path": "modules/52-validate-cfar-pfa-by-monte-carlo/evidence/expected-baseline.json",
-          "sha256": "f350c814b85c14fc87eb90fbb264dada02a02c7c0b1a1127f167c12f513db590"
+          "sha256": "be7cd23c9a3397fd4b5898acac0e3406d3585cac418a770f0d46e7f0a01e88f0"
         },
         "actual": {
           "path": "modules/52-validate-cfar-pfa-by-monte-carlo/evidence/actual-baseline.json",
-          "sha256": "325bbdc83a71f0fc387ff7b2d06ee8659649d60321be9994fd31679a81c11faf"
-        },
-        "max_absolute_error": 1.5482060078397808e-13,
-        "max_relative_error": 1.5482060078397808e-13,
-        "passed": true
+          "sha256": "a4fb598e272eb0bc9f36669b49c87dd8c947b4585ea0bf009faff573bad3f6b7"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 6.505213034913027e-19,
+        "max_relative_error": 6.505213034913027e-19,
+        "passed": true,
+        "expected": {
+          "path": "modules/52-validate-cfar-pfa-by-monte-carlo/evidence/expected-sweep-1.json",
+          "sha256": "a63ab74cc1a811932247f7b7d9900ccc63d544f034242bde740f569b2eeb9c00"
+        },
+        "actual": {
+          "path": "modules/52-validate-cfar-pfa-by-monte-carlo/evidence/actual-sweep-1.json",
+          "sha256": "0747cafa0dfd7e8a6a5ae788c924aa7151145e5c659a6eb806d78a9ab91852fb"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 1.7763568394002505e-15,
+        "max_relative_error": 2.7027042279311776e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/52-validate-cfar-pfa-by-monte-carlo/evidence/expected-sweep-2.json",
+          "sha256": "117d84ca27b1c0a47dfabbda78646dbbe81ad11f4d9925f202e6b4e86a11f423"
+        },
+        "actual": {
+          "path": "modules/52-validate-cfar-pfa-by-monte-carlo/evidence/actual-sweep-2.json",
+          "sha256": "9907b7bf022577aa5ba25f3e657f79edfb81f615ae7655d80ea6b43e3fbde170"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 2.6020852139652106e-18,
+        "max_relative_error": 2.6020852139652106e-18,
+        "passed": true,
         "expected": {
           "path": "modules/52-validate-cfar-pfa-by-monte-carlo/evidence/expected-broken.json",
-          "sha256": "f9037b36af01a62da74654c67630ff4ef3d7eac4dbe4d16b5ea26cc9bf157b17"
+          "sha256": "7fa1e2ee0eefdebe830f4354734948a619c799e194f68df576c46fce295f0185"
         },
         "actual": {
           "path": "modules/52-validate-cfar-pfa-by-monte-carlo/evidence/actual-broken.json",
-          "sha256": "8c67fd7a67cf6b3227e210d18b819d13cb1831029c0f4d3d5af2c4104812d404"
+          "sha256": "264d6886f3c0f6c2fbc7ea474c46889212e34b1e2b0cacb24da11bd6c10011f0"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 4.596323321948148e-13,
-        "max_relative_error": 4.596323321948148e-13,
-        "passed": true
+        "max_absolute_error": 1.734723475976807e-18,
+        "max_relative_error": 1.734723475976807e-18,
+        "passed": true,
+        "expected": {
+          "path": "modules/52-validate-cfar-pfa-by-monte-carlo/evidence/expected-recovery.json",
+          "sha256": "be7cd23c9a3397fd4b5898acac0e3406d3585cac418a770f0d46e7f0a01e88f0"
+        },
+        "actual": {
+          "path": "modules/52-validate-cfar-pfa-by-monte-carlo/evidence/actual-recovery.json",
+          "sha256": "a4fb598e272eb0bc9f36669b49c87dd8c947b4585ea0bf009faff573bad3f6b7"
+        }
       }
     ]
   },

@@ -3,13 +3,13 @@
   "id": "51-stress-cfar-with-clutter-edges-sidelobes-and-multiple-targets",
   "number": 51,
   "title": "Stress CFAR with Clutter Edges, Sidelobes, and Multiple Targets",
-  "summary": "Explore stress cfar with clutter edges, sidelobes, and multiple targets with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "No single CFAR rule wins across clutter edges, sidelobes and crowded targets. Inspect the reference statistic behind each disagreement and distinguish modeled response artifacts from true H0 crossings.",
   "guiding_question": "Where do standard CFAR assumptions break?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-5",
-    "interference-strength"
+    "radar-detection",
+    "P51"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,55 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Interference Strength",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
-    },
-    {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
+      "id": "clutter_contrast_db",
+      "type": "segmented",
+      "label": "Clutter contrast db",
       "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "default": 12,
+      "options": [
+        {
+          "label": "0",
+          "value": 0
+        },
+        {
+          "label": "6",
+          "value": 6
+        },
+        {
+          "label": "12 baseline",
+          "value": 12
+        },
+        {
+          "label": "18",
+          "value": 18
+        }
+      ]
+    },
+    {
+      "id": "os_rank",
+      "type": "segmented",
+      "label": "OS rank",
+      "unit": "rank",
+      "default": 18,
+      "options": [
+        {
+          "label": "12",
+          "value": 12
+        },
+        {
+          "label": "18 baseline",
+          "value": 18
+        },
+        {
+          "label": "22",
+          "value": 22
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +79,45 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing interference strength, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict where CA, GO, SO and OS disagree in the combined scene. Which crossings are target-response artifacts, which are H0, and what reference statistic explains each miss?",
+      "reveal": "No single CFAR rule wins across clutter edges, sidelobes and crowded targets. Inspect the reference statistic behind each disagreement and distinguish modeled response artifacts from true H0 crossings."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Same scene, four explicit reference statistics",
+      "plot": "scene"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Weak-neighbor, edge and crowded CUT statistics",
+      "plot": "inspection"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Target misses are distinct from noncenter crossings",
+      "plot": "misses"
+    },
+    {
+      "type": "plot",
+      "title": "Edge-zone noncenter crossings include response artifacts",
+      "plot": "contrast"
+    },
+    {
+      "type": "plot",
+      "title": "Contamination alternates between both reference sides",
+      "plot": "crowding"
+    },
+    {
+      "type": "plot",
+      "title": "Shared alpha breaks equal nominal Pfa",
+      "plot": "calibration"
     },
     {
       "type": "callout",
@@ -102,7 +128,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

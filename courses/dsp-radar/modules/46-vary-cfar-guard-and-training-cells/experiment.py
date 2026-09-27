@@ -1,169 +1,214 @@
 from __future__ import annotations
 
-from typing import Any
-
 import numpy as np
 
-SEED = 4601
-ITEM_NUMBER = 46
-PHASE = 5
-MAX_POINTS = 512
+
+def _controls(p, spec):
+    values = []
+    for key, default, choices in spec:
+        value = p.get(key, default)
+        if isinstance(value, bool) or value not in choices:
+            raise ValueError("Choose a retained physical control: " + key)
+        values.append(float(value))
+    broken = p.get("broken_mode", False)
+    if not isinstance(broken, bool):
+        raise TypeError("broken_mode must be boolean")
+    return (*values, broken)
 
 
-def _layout(title: str, x_label: str, y_label: str) -> dict[str, Any]:
+def _plot(title, xlabel, ylabel, traces):
+    data = []
+    for name, x, y in traces:
+        x, y = np.asarray(x), np.asarray(y)
+        ix = np.unique(np.linspace(0, len(x) - 1, min(512, len(x))).astype(int))
+        data.append(
+            {
+                "type": "scatter",
+                "mode": "lines",
+                "name": name,
+                "x": x[ix].tolist(),
+                "y": y[ix].tolist(),
+            }
+        )
     return {
-        "title": {"text": title, "x": 0.02, "xanchor": "left"},
-        "margin": {"l": 68, "r": 22, "t": 58, "b": 58},
-        "xaxis": {"title": x_label, "showgrid": True},
-        "yaxis": {"title": y_label, "showgrid": True},
-        "legend": {"orientation": "h", "y": 1.14},
-        "hovermode": "closest",
-        "uirevision": "keep-view",
+        "data": data,
+        "layout": {
+            "title": {"text": title},
+            "xaxis": {"title": xlabel},
+            "yaxis": {"title": ylabel},
+            "legend": {"orientation": "h"},
+        },
+        "config": {"responsive": True, "displaylogo": False},
     }
 
 
-def run(parameters: dict[str, Any]) -> dict[str, Any]:
-    primary = float(parameters["primary_scale"])
-    secondary = float(parameters["secondary_scale"])
-    noise_db = float(parameters["noise_db"])
-    broken_mode = bool(parameters["broken_mode"])
-    count = 192 + 16 * (ITEM_NUMBER % 4)
-    if count > MAX_POINTS:
-        raise ValueError("experiment exceeds the retained point ceiling")
-    rng = np.random.default_rng(SEED)
-    x = np.linspace(0.0, 1.0, count, endpoint=False)
-    variant = 1.0 + (ITEM_NUMBER % 7) / 5.0
-    noise_scale = 10.0 ** (noise_db / 20.0)
-
-    if PHASE == 1:
-        truth = np.cos(2.0 * np.pi * variant * primary * x + 0.4 * secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, count // 7) if broken_mode else measured
-    elif PHASE == 2:
-        tone = np.exp(1j * (2.0 * np.pi * (8.0 + variant * primary) * x + secondary))
-        measured = tone + noise_scale * (rng.standard_normal(count) + 1j * rng.standard_normal(count))
-        response_axis = np.fft.fftshift(np.fft.fftfreq(count, d=1.0 / count))
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / count
-        broken_response = np.abs(measured.real) if broken_mode else np.abs(measured)
-        truth = tone.real
-    elif PHASE == 3:
-        symbols = np.sign(np.sin(2.0 * np.pi * (4.0 + variant) * x))
-        carrier = np.cos(2.0 * np.pi * (18.0 + 2.0 * primary) * x + secondary)
-        truth = symbols * carrier
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(2 + 10 * secondary)) if broken_mode else measured
-    elif PHASE == 4:
-        bins = np.arange(count, dtype=float)
-        center = count * (0.25 + 0.25 * (primary - 0.5))
-        width = 2.0 + 4.0 * secondary
-        truth = np.exp(-0.5 * ((bins - center) / width) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = bins
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / np.sqrt(count)
-        broken_response = np.roll(measured, count // 3) if broken_mode else measured
-        x = bins
-    elif PHASE == 5:
-        cells = np.arange(count, dtype=float)
-        background = 0.2 + (0.45 * secondary) * (cells >= count // 2)
-        power = background + np.abs(noise_scale * rng.standard_normal(count))
-        target_bin = int(count * (0.3 + 0.25 * (primary - 0.5)))
-        power[target_bin] += 1.4
-        truth = power
-        measured = power
-        response_axis = cells
-        response = np.full(count, np.quantile(power, 0.82 + 0.1 * secondary))
-        if broken_mode:
-            response = np.full(count, np.mean(power) * (1.2 + primary))
-        broken_response = response
-        x = cells
-    elif PHASE == 6:
-        steps = np.arange(count, dtype=float)
-        truth = 0.04 * steps + 0.0002 * variant * secondary * steps**2
-        measured = truth + noise_scale * 8.0 * rng.standard_normal(count)
-        gain = np.clip(0.12 + 0.5 * primary, 0.05, 0.95)
-        response = np.empty(count)
-        response[0] = measured[0]
-        for index in range(1, count):
-            response[index] = response[index - 1] + gain * (measured[index] - response[index - 1])
-        response_axis = steps
-        broken_response = np.roll(response, 12) if broken_mode else response
-        x = steps
-    elif PHASE == 7:
-        angles = np.linspace(-90.0, 90.0, count)
-        u = np.sin(np.deg2rad(angles)) - np.sin(np.deg2rad(45.0 * (primary - 1.0)))
-        spacing = 0.45 + 0.45 * secondary
-        elements = 6 + ITEM_NUMBER % 7
-        denominator = np.sin(np.pi * spacing * u)
-        numerator = np.sin(elements * np.pi * spacing * u)
-        response = np.where(np.abs(denominator) < 1e-10, 1.0, np.abs(numerator / (elements * denominator)))
-        truth = response
-        measured = np.maximum(response + noise_scale * rng.standard_normal(count), 0.0)
-        response_axis = angles
-        broken_response = np.roll(response, 9) if broken_mode else response
-        x = angles
-    elif PHASE == 8:
-        bins = np.arange(count, dtype=float)
-        beat_bin = count * (0.15 + 0.35 * (primary - 0.5))
-        truth = np.cos(2.0 * np.pi * beat_bin * bins / count + secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(8 + 16 * secondary)) if broken_mode else measured
-        x = bins
-    else:
-        coordinate = np.linspace(-1.0, 1.0, count)
-        width = 0.05 + 0.16 / primary
-        truth = np.exp(-0.5 * ((coordinate + 0.25) / width) ** 2) + 0.65 * np.exp(-0.5 * ((coordinate - 0.3) / (1.4 * width)) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        kernel = np.ones(3 + 2 * int(secondary * 5))
-        kernel /= kernel.sum()
-        response = np.convolve(measured, kernel, mode="same")
-        response_axis = coordinate
-        broken_response = np.roll(response, 18) + 0.25 * np.roll(response, -13) if broken_mode else response
-        x = coordinate
-
-    displayed = broken_response if broken_mode else measured
-    separation = float(np.max(response) - np.median(response))
-    rmse = float(np.sqrt(np.mean((np.asarray(displayed).real - np.asarray(truth).real) ** 2)))
-    signature = [float(count), primary, secondary, noise_db, float(np.mean(np.asarray(displayed).real)), float(np.std(np.asarray(displayed).real)), separation, rmse]
-    sweep_primary = [0.6, 1.0, 1.4]
-    sweep_secondary = [0.0, 0.5, 1.0]
-    sweep_response = [variant * value for value in sweep_primary]
-    stress_response = [separation / (1.0 + value) for value in sweep_secondary]
-    title = 'Vary CFAR Guard and Training Cells'
-
+def _finish(values, plots, observation, failure, recovery, seed, broken, **extra):
     return {
         "metrics": [
-            {"id": "primary", "label": 'Cfar Guard Width', "value": primary, "unit": "× baseline", "emphasis": "primary"},
-            {"id": "response_separation", "label": "Response separation", "value": separation, "unit": "normalized"},
-            {"id": "model_error", "label": "Model/display error", "value": rmse, "unit": "normalized"},
-            {"id": "points", "label": "Bounded points", "value": count, "unit": "points"},
+            {"id": k, "label": k.replace("_", " "), "value": float(v), "unit": u}
+            for k, (v, u) in values.items()
         ],
-        "plots": {
-            "model_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "physical/model truth", "x": x, "y": np.asarray(truth).real},
-                {"type": "scatter", "mode": "lines", "name": "measured/processed", "x": x, "y": np.asarray(displayed).real},
-            ], "layout": _layout(title + " — model view", 'cell index', 'power / threshold'), "config": {"responsive": True, "displaylogo": False}},
-            "response_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "response", "x": response_axis, "y": np.asarray(response).real},
-            ], "layout": _layout(title + " — response view", 'cell index', 'power / threshold'), "config": {"responsive": True, "displaylogo": False}},
-            "parameter_sweeps": {"data": [
-                {"type": "scatter", "mode": "lines+markers", "name": "primary scale", "x": sweep_primary, "y": sweep_response},
-                {"type": "scatter", "mode": "lines+markers", "name": "secondary stress", "x": sweep_secondary, "y": stress_response},
-            ], "layout": _layout("Two one-variable sweeps", "control value", "response statistic"), "config": {"responsive": True, "displaylogo": False}},
-            "broken_case": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "recovered", "x": x, "y": np.asarray(measured).real},
-                {"type": "scatter", "mode": "lines", "name": "broken" if broken_mode else "enable broken mode", "x": x, "y": np.asarray(broken_response).real},
-            ], "layout": _layout("Intentional assumption failure", 'cell index', 'power / threshold'), "config": {"responsive": True, "displaylogo": False}},
-        },
+        "plots": plots,
         "explanations": {
-            "observation": f"The {title} model uses a bounded deterministic adaptive detection experiment. Primary scale={primary:.2f} and secondary stress={secondary:.2f} remain independently controllable.",
-            "broken": "Broken mode deliberately violates the lesson's central interpretation assumption so the displayed response becomes ambiguous, biased, contaminated, or defocused.",
-            "recovery": "Disable broken mode, restore both scales to 1.0 and 0.25, then connect the recovered shape to the pinned source equations before changing one control at a time.",
+            "observation": observation,
+            "broken": failure,
+            "recovery": recovery,
         },
-        "diagnostics": {"seed": SEED, "item_number": ITEM_NUMBER, "point_count": count, "signature": signature, "broken_active": broken_mode},
+        "diagnostics": dict(
+            signature=[float(v[0]) for v in values.values()],
+            signature_fields=list(values),
+            seed=seed,
+            broken_active=broken,
+            **extra,
+        ),
     }
+
+
+def _alpha(n, p):
+    return n * np.expm1(-np.log(p) / n)
+
+
+def _refs(length, t, g):
+    cuts = np.arange(t + g, length - t - g)
+    offsets = np.r_[np.arange(-t - g, -g), np.arange(g + 1, g + t + 1)]
+    return cuts, cuts[:, None] + offsets
+
+
+def _ca(power, t, g, p, geometric=False):
+    cuts, refs = _refs(len(power), t, g)
+    samples = power[refs]
+    estimate = (
+        np.exp(np.mean(np.log(np.maximum(samples, 1e-300)), axis=1))
+        if geometric
+        else np.mean(samples, axis=1)
+    )
+    threshold = _alpha(2 * t, p) * estimate
+    return cuts, threshold, power[cuts] > threshold, estimate
+
+
+def run(parameters):
+    guard, training, broken = _controls(
+        parameters,
+        [("guard_cells", 4, [0, 4, 10]), ("training_cells", 12, [4, 12, 36])],
+    )
+    g, t = int(guard), int(training)
+    cells = np.arange(1, 257)
+    mean = 0.75 + 0.003 * cells + 2.8 / (1 + np.exp(-(cells - 178) / 5.5))
+    rng = np.random.default_rng(4601)
+    noise = np.sqrt(mean / 2) * (rng.normal(size=256) + 1j * rng.normal(size=256))
+    received = noise.copy()
+    offsets = np.arange(-18, 19)
+    response = np.sinc(offsets / 5)
+    strong = 87
+    weak = 137
+    signal = np.sqrt(mean[strong] * 10**3.5) * np.exp(0.4j) * response
+    received[strong + offsets] += signal
+    received[weak] += np.sqrt(mean[weak] * 10**1.8) * np.exp(-0.7j)
+    power = abs(received) ** 2
+    target_power = np.zeros(256)
+    target_power[strong + offsets] = abs(signal) ** 2
+    target_power[weak] = mean[weak] * 10**1.8
+    cuts, threshold, _det, _ = _ca(power, t, g, 0.001)
+    guards = np.array([0, 4, 10])
+    margins = []
+    leak = []
+    for v in guards:
+        cc, tt, _, _ = _ca(power, 12, int(v), 0.001)
+        _, refs = _refs(256, 12, int(v))
+        margins.append(power[strong] / tt[strong - cc[0]])
+        leak.append(np.mean(target_power[refs[strong - cc[0]]]))
+    trains = np.array([4, 12, 36])
+    rough = []
+    locality = []
+    for v in trains:
+        cc, _, _, est = _ca(abs(noise) ** 2, int(v), 6, 0.001)
+        _, refs = _refs(256, int(v), 6)
+        expected = mean[refs].mean(axis=1)
+        quiet = np.arange(69, 100) - cc[0]
+        edge = np.arange(164, 190) - cc[0]
+        rough.append(np.mean(abs(np.diff(est[quiet]))) / np.mean(mean[69:100]))
+        locality.append(np.mean(abs(expected[edge] / mean[164:190] - 1)))
+    contaminated = received.copy()
+    contaminated[125] += np.sqrt(mean[125] * 10**3.2) * np.exp(1.1j)
+    bad_power = abs(contaminated) ** 2
+    bc, bt, bd, _ = _ca(bad_power, 12, 4, 0.001)
+    rc, rt, rd, _ = _ca(bad_power, 12, 12, 0.001)
+    active_weak = (
+        (bad_power[weak] / bt[weak - bc[0]])
+        if broken
+        else power[weak] / threshold[weak - cuts[0]]
+    )
+    values = {
+        "window_span": ((2 * (t + g) + 1) * 15, "m"),
+        "excluded_edges": (2 * (t + g), "cells"),
+        "strong_target_margin": (power[strong] / threshold[strong - cuts[0]], "ratio"),
+        "active_weak_margin": (active_weak, "ratio"),
+        "contaminated_weak_margin": (bad_power[weak] / bt[weak - bc[0]], "ratio"),
+        "recovered_weak_margin": (bad_power[weak] / rt[weak - rc[0]], "ratio"),
+        "weak_power_change": (bad_power[weak] - power[weak], "power"),
+        "small_guard_leakage": (leak[0], "power"),
+        "large_guard_leakage": (leak[-1], "power"),
+        "small_window_locality_error": (locality[0], "ratio"),
+        "large_window_locality_error": (locality[-1], "ratio"),
+        "model_valid": (not broken, "boolean"),
+    }
+    plots = {
+        "profile": _plot(
+            "Guard and training geometry in a changing background",
+            "Range (m)",
+            "Power (relative)",
+            [
+                ("Observed", 15 * (cells - 1), power),
+                ("Selected threshold", 15 * cuts, threshold),
+            ],
+        ),
+        "response": _plot(
+            "Sampled-sinc mainlobe and sidelobes",
+            "Offset (cells)",
+            "Target amplitude (normalized)",
+            [("Response", offsets, response)],
+        ),
+        "guards": _plot(
+            "Guard width reduces target leakage into references",
+            "Guard cells per side (count)",
+            "Power or margin (relative)",
+            [
+                ("Reference target power", guards, leak),
+                ("CUT / threshold", guards, margins),
+            ],
+        ),
+        "training": _plot(
+            "Larger training windows trade variance for locality",
+            "Training cells per side (count)",
+            "Normalized error (ratio)",
+            [
+                ("Estimate roughness", trains, rough),
+                ("Expected locality error", trains, locality),
+            ],
+        ),
+        "contamination": _plot(
+            "The same weak CUT can be masked by its neighbor",
+            "Range (m)",
+            "Power (relative)",
+            [
+                ("Contaminated scene", 15 * (cells - 1), bad_power),
+                ("G=4 masked", 15 * bc, bt),
+                ("G=12 recovery", 15 * rc, rt),
+            ],
+        ),
+    }
+    return _finish(
+        values,
+        plots,
+        "Guards exclude target response; training cells estimate background. Larger windows can smooth fluctuations while mixing different background powers. Inspect leakage, locality and excluded edges together.",
+        "The named failure injects the source neighbor at cell 126 into the weak cell 138 reference window (T=12,G=4). Its CUT power is unchanged while its threshold rises.",
+        "At the same contaminated scene, use G=12 and T=12 to exclude that neighbor and recover the weak target. This consumes more edge cells. Disable the toggle to restore the selected uncontaminated baseline.",
+        4601,
+        broken,
+        guard_margins=margins,
+        guard_leakage=leak,
+        training_roughness=rough,
+        training_locality_error=locality,
+        recovered_weak_detected=bool(rd[weak - rc[0]]),
+        broken_weak_detected=bool(bd[weak - bc[0]]),
+    )

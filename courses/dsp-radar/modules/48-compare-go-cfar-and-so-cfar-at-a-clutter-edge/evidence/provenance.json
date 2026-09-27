@@ -1,0 +1,91 @@
+{
+  "item": "P48",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p48",
+    "sha256": "eee1c963fa051806d29581553be723bc8580ccbccdd1b7f00ea8492a776fac5c",
+    "byte_count": 118814,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/48-compare-go-cfar-and-so-cfar-at-a-clutter-edge/experiment.py",
+    "sha256": "042f2b004a94b91292462dc170fe029593ba9b656ba9fe2cd064576568e1d275",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "clutter_step_db": 12,
+      "interferer_power_db": 20,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "clutter_step_db": 18,
+      "interferer_power_db": 20,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "clutter_step_db": 12,
+      "interferer_power_db": 10,
+      "broken_mode": false
+    },
+    "broken": {
+      "clutter_step_db": 12,
+      "interferer_power_db": 20,
+      "broken_mode": true
+    },
+    "recovery": {
+      "clutter_step_db": 12,
+      "interferer_power_db": 20,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "go_alpha",
+      "unit": "ratio"
+    },
+    {
+      "name": "so_alpha",
+      "unit": "ratio"
+    },
+    {
+      "name": "active_edge_pfa",
+      "unit": "probability"
+    },
+    {
+      "name": "recovered_go_edge_pfa",
+      "unit": "probability"
+    },
+    {
+      "name": "contaminated_go_pd",
+      "unit": "probability"
+    },
+    {
+      "name": "contaminated_so_pd",
+      "unit": "probability"
+    },
+    {
+      "name": "shared_ca_go_pfa",
+      "unit": "probability"
+    },
+    {
+      "name": "shared_ca_so_pfa",
+      "unit": "probability"
+    },
+    {
+      "name": "go_edge_threshold",
+      "unit": "power"
+    },
+    {
+      "name": "so_edge_threshold",
+      "unit": "power"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

@@ -1,6 +1,4 @@
-# Compare GO-CFAR and SO-CFAR at a Clutter Edge
-
-> **Guiding question:** Which side of a changing background should control the threshold?
+# Lesson: the protected failure decides which side controls
 
 ## Start with the physical edge
 
@@ -120,33 +118,29 @@ target probes, and a deliberate one-sided training contaminator. It does not
 validate rare-event `Pfa`, correlated or measured clutter, fluctuating targets,
 2-D CFAR, sidelobes, hardware, or an operational radar.
 
-## Use the Python GUI experiment
+## Interactive lab: Compare GO-CFAR and SO-CFAR at a Clutter Edge
 
-The GUI keeps the pinned source's mental model and processing order visible. The **clutter edge ratio** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** Which side of a changing background should control the threshold?
 
-### Prediction and sweep 1 — clutter edge ratio
+GO uses max(left mean,right mean); SO uses min. Each side has twelve exponential reference powers. Their different homogeneous Pfa integrals are calibrated separately with bounded bisection. The 240-cell scene has an edge at source cell 121 and a 12 dB step; isolated baseline probes intentionally use background-only references. The 25000-trial contrast sweep puts CUT and right references on the high side. A separate weak 13 dB CUT sweep contaminates one left reference. Target additions in the profile are power additions; the Monte Carlo target is a coherent complex-amplitude addition. These are distinct stated models.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict which side of a clutter edge GO protects. Why can the same rule mask a weak target under one-sided contamination, and why does SO need a different alpha?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Clutter step db** from 12 to 18 dB. Predict, run, and explain the measured change using the equation; then reset.
+2. Start at the baseline. Sweep only **Interferer power db** from 20 to 10 dB. Predict, run, and explain the measured change using the equation; then reset.
+3. Enable the broken case. Always choosing SO because it preserved one weak target causes excess high-side edge crossings. A shared CA multiplier also fails to give GO and SO the same nominal Pfa.
+4. Recovery: Restore statistic-specific calibration and choose GO for the protected edge-false-alarm comparison. Disable the toggle; retain the separate SO advantage under one-sided contamination. Restore the controls and disable the toggle to reproduce the selected baseline exactly.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict which side of a clutter edge GO protects. Why can the same rule mask a weak target under one-sided contamination, and why does SO need a different alpha? Support your answer with a measured value and units. Explain the failure, the recovery assumption, and what this finite experiment cannot establish.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+Always choosing SO because it preserved one weak target causes excess high-side edge crossings. A shared CA multiplier also fails to give GO and SO the same nominal Pfa. Do not equate seeded crossings with a field detection guarantee.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The source lesson is preserved above. NumPy private seeds reproduce this port, not MATLAB random streams; array draws use NumPy row-major order. Source figure/console presentation becomes labeled plots and metrics. Vectorized arithmetic retains the source equations; the P42 linear convolution and P50 ring convolution are independently checked. All calculations use complete stated arrays; displays may retain at most 512 line points or 128×64 heatmap coordinates, preserving zero and prominent peaks. No MATLAB execution, browser/accessibility review, hardware, or learner-effectiveness claim is made.

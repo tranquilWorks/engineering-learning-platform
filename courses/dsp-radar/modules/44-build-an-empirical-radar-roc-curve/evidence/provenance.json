@@ -1,0 +1,91 @@
+{
+  "item": "P44",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p44",
+    "sha256": "eee1c963fa051806d29581553be723bc8580ccbccdd1b7f00ea8492a776fac5c",
+    "byte_count": 118814,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/44-build-an-empirical-radar-roc-curve/experiment.py",
+    "sha256": "5c6c4f4cb111f078bbe91d7cbf789e40183accd666f6bb220b6662a9da696e14",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "matched_snr_db": 6,
+      "threshold_sigma": 3.090232306,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "matched_snr_db": 12,
+      "threshold_sigma": 3.090232306,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "matched_snr_db": 6,
+      "threshold_sigma": 2,
+      "broken_mode": false
+    },
+    "broken": {
+      "matched_snr_db": 6,
+      "threshold_sigma": 3.090232306,
+      "broken_mode": true
+    },
+    "recovery": {
+      "matched_snr_db": 6,
+      "threshold_sigma": 3.090232306,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "template_energy",
+      "unit": "amplitude\u00b2 samples"
+    },
+    {
+      "name": "active_threshold",
+      "unit": "noise RMS"
+    },
+    {
+      "name": "empirical_pfa",
+      "unit": "probability"
+    },
+    {
+      "name": "empirical_pd",
+      "unit": "probability"
+    },
+    {
+      "name": "analytic_design_pfa",
+      "unit": "probability"
+    },
+    {
+      "name": "analytic_design_pd",
+      "unit": "probability"
+    },
+    {
+      "name": "false_alarms_per_million",
+      "unit": "crossings"
+    },
+    {
+      "name": "tuning_bank_pfa",
+      "unit": "probability"
+    },
+    {
+      "name": "held_out_pfa",
+      "unit": "probability"
+    },
+    {
+      "name": "recovered_pfa",
+      "unit": "probability"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

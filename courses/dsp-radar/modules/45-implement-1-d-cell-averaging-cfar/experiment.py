@@ -1,169 +1,198 @@
 from __future__ import annotations
 
-from typing import Any
-
 import numpy as np
 
-SEED = 4501
-ITEM_NUMBER = 45
-PHASE = 5
-MAX_POINTS = 512
+
+def _controls(p, spec):
+    values = []
+    for key, default, choices in spec:
+        value = p.get(key, default)
+        if isinstance(value, bool) or value not in choices:
+            raise ValueError("Choose a retained physical control: " + key)
+        values.append(float(value))
+    broken = p.get("broken_mode", False)
+    if not isinstance(broken, bool):
+        raise TypeError("broken_mode must be boolean")
+    return (*values, broken)
 
 
-def _layout(title: str, x_label: str, y_label: str) -> dict[str, Any]:
+def _plot(title, xlabel, ylabel, traces):
+    data = []
+    for name, x, y in traces:
+        x, y = np.asarray(x), np.asarray(y)
+        ix = np.unique(np.linspace(0, len(x) - 1, min(512, len(x))).astype(int))
+        data.append(
+            {
+                "type": "scatter",
+                "mode": "lines",
+                "name": name,
+                "x": x[ix].tolist(),
+                "y": y[ix].tolist(),
+            }
+        )
     return {
-        "title": {"text": title, "x": 0.02, "xanchor": "left"},
-        "margin": {"l": 68, "r": 22, "t": 58, "b": 58},
-        "xaxis": {"title": x_label, "showgrid": True},
-        "yaxis": {"title": y_label, "showgrid": True},
-        "legend": {"orientation": "h", "y": 1.14},
-        "hovermode": "closest",
-        "uirevision": "keep-view",
+        "data": data,
+        "layout": {
+            "title": {"text": title},
+            "xaxis": {"title": xlabel},
+            "yaxis": {"title": ylabel},
+            "legend": {"orientation": "h"},
+        },
+        "config": {"responsive": True, "displaylogo": False},
     }
 
 
-def run(parameters: dict[str, Any]) -> dict[str, Any]:
-    primary = float(parameters["primary_scale"])
-    secondary = float(parameters["secondary_scale"])
-    noise_db = float(parameters["noise_db"])
-    broken_mode = bool(parameters["broken_mode"])
-    count = 192 + 16 * (ITEM_NUMBER % 4)
-    if count > MAX_POINTS:
-        raise ValueError("experiment exceeds the retained point ceiling")
-    rng = np.random.default_rng(SEED)
-    x = np.linspace(0.0, 1.0, count, endpoint=False)
-    variant = 1.0 + (ITEM_NUMBER % 7) / 5.0
-    noise_scale = 10.0 ** (noise_db / 20.0)
-
-    if PHASE == 1:
-        truth = np.cos(2.0 * np.pi * variant * primary * x + 0.4 * secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, count // 7) if broken_mode else measured
-    elif PHASE == 2:
-        tone = np.exp(1j * (2.0 * np.pi * (8.0 + variant * primary) * x + secondary))
-        measured = tone + noise_scale * (rng.standard_normal(count) + 1j * rng.standard_normal(count))
-        response_axis = np.fft.fftshift(np.fft.fftfreq(count, d=1.0 / count))
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / count
-        broken_response = np.abs(measured.real) if broken_mode else np.abs(measured)
-        truth = tone.real
-    elif PHASE == 3:
-        symbols = np.sign(np.sin(2.0 * np.pi * (4.0 + variant) * x))
-        carrier = np.cos(2.0 * np.pi * (18.0 + 2.0 * primary) * x + secondary)
-        truth = symbols * carrier
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(2 + 10 * secondary)) if broken_mode else measured
-    elif PHASE == 4:
-        bins = np.arange(count, dtype=float)
-        center = count * (0.25 + 0.25 * (primary - 0.5))
-        width = 2.0 + 4.0 * secondary
-        truth = np.exp(-0.5 * ((bins - center) / width) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = bins
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / np.sqrt(count)
-        broken_response = np.roll(measured, count // 3) if broken_mode else measured
-        x = bins
-    elif PHASE == 5:
-        cells = np.arange(count, dtype=float)
-        background = 0.2 + (0.45 * secondary) * (cells >= count // 2)
-        power = background + np.abs(noise_scale * rng.standard_normal(count))
-        target_bin = int(count * (0.3 + 0.25 * (primary - 0.5)))
-        power[target_bin] += 1.4
-        truth = power
-        measured = power
-        response_axis = cells
-        response = np.full(count, np.quantile(power, 0.82 + 0.1 * secondary))
-        if broken_mode:
-            response = np.full(count, np.mean(power) * (1.2 + primary))
-        broken_response = response
-        x = cells
-    elif PHASE == 6:
-        steps = np.arange(count, dtype=float)
-        truth = 0.04 * steps + 0.0002 * variant * secondary * steps**2
-        measured = truth + noise_scale * 8.0 * rng.standard_normal(count)
-        gain = np.clip(0.12 + 0.5 * primary, 0.05, 0.95)
-        response = np.empty(count)
-        response[0] = measured[0]
-        for index in range(1, count):
-            response[index] = response[index - 1] + gain * (measured[index] - response[index - 1])
-        response_axis = steps
-        broken_response = np.roll(response, 12) if broken_mode else response
-        x = steps
-    elif PHASE == 7:
-        angles = np.linspace(-90.0, 90.0, count)
-        u = np.sin(np.deg2rad(angles)) - np.sin(np.deg2rad(45.0 * (primary - 1.0)))
-        spacing = 0.45 + 0.45 * secondary
-        elements = 6 + ITEM_NUMBER % 7
-        denominator = np.sin(np.pi * spacing * u)
-        numerator = np.sin(elements * np.pi * spacing * u)
-        response = np.where(np.abs(denominator) < 1e-10, 1.0, np.abs(numerator / (elements * denominator)))
-        truth = response
-        measured = np.maximum(response + noise_scale * rng.standard_normal(count), 0.0)
-        response_axis = angles
-        broken_response = np.roll(response, 9) if broken_mode else response
-        x = angles
-    elif PHASE == 8:
-        bins = np.arange(count, dtype=float)
-        beat_bin = count * (0.15 + 0.35 * (primary - 0.5))
-        truth = np.cos(2.0 * np.pi * beat_bin * bins / count + secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(8 + 16 * secondary)) if broken_mode else measured
-        x = bins
-    else:
-        coordinate = np.linspace(-1.0, 1.0, count)
-        width = 0.05 + 0.16 / primary
-        truth = np.exp(-0.5 * ((coordinate + 0.25) / width) ** 2) + 0.65 * np.exp(-0.5 * ((coordinate - 0.3) / (1.4 * width)) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        kernel = np.ones(3 + 2 * int(secondary * 5))
-        kernel /= kernel.sum()
-        response = np.convolve(measured, kernel, mode="same")
-        response_axis = coordinate
-        broken_response = np.roll(response, 18) + 0.25 * np.roll(response, -13) if broken_mode else response
-        x = coordinate
-
-    displayed = broken_response if broken_mode else measured
-    separation = float(np.max(response) - np.median(response))
-    rmse = float(np.sqrt(np.mean((np.asarray(displayed).real - np.asarray(truth).real) ** 2)))
-    signature = [float(count), primary, secondary, noise_db, float(np.mean(np.asarray(displayed).real)), float(np.std(np.asarray(displayed).real)), separation, rmse]
-    sweep_primary = [0.6, 1.0, 1.4]
-    sweep_secondary = [0.0, 0.5, 1.0]
-    sweep_response = [variant * value for value in sweep_primary]
-    stress_response = [separation / (1.0 + value) for value in sweep_secondary]
-    title = 'Implement 1-D Cell-Averaging CFAR'
-
+def _finish(values, plots, observation, failure, recovery, seed, broken, **extra):
     return {
         "metrics": [
-            {"id": "primary", "label": 'Cfar Pfa', "value": primary, "unit": "× baseline", "emphasis": "primary"},
-            {"id": "response_separation", "label": "Response separation", "value": separation, "unit": "normalized"},
-            {"id": "model_error", "label": "Model/display error", "value": rmse, "unit": "normalized"},
-            {"id": "points", "label": "Bounded points", "value": count, "unit": "points"},
+            {"id": k, "label": k.replace("_", " "), "value": float(v), "unit": u}
+            for k, (v, u) in values.items()
         ],
-        "plots": {
-            "model_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "physical/model truth", "x": x, "y": np.asarray(truth).real},
-                {"type": "scatter", "mode": "lines", "name": "measured/processed", "x": x, "y": np.asarray(displayed).real},
-            ], "layout": _layout(title + " — model view", 'cell index', 'power / threshold'), "config": {"responsive": True, "displaylogo": False}},
-            "response_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "response", "x": response_axis, "y": np.asarray(response).real},
-            ], "layout": _layout(title + " — response view", 'cell index', 'power / threshold'), "config": {"responsive": True, "displaylogo": False}},
-            "parameter_sweeps": {"data": [
-                {"type": "scatter", "mode": "lines+markers", "name": "primary scale", "x": sweep_primary, "y": sweep_response},
-                {"type": "scatter", "mode": "lines+markers", "name": "secondary stress", "x": sweep_secondary, "y": stress_response},
-            ], "layout": _layout("Two one-variable sweeps", "control value", "response statistic"), "config": {"responsive": True, "displaylogo": False}},
-            "broken_case": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "recovered", "x": x, "y": np.asarray(measured).real},
-                {"type": "scatter", "mode": "lines", "name": "broken" if broken_mode else "enable broken mode", "x": x, "y": np.asarray(broken_response).real},
-            ], "layout": _layout("Intentional assumption failure", 'cell index', 'power / threshold'), "config": {"responsive": True, "displaylogo": False}},
-        },
+        "plots": plots,
         "explanations": {
-            "observation": f"The {title} model uses a bounded deterministic adaptive detection experiment. Primary scale={primary:.2f} and secondary stress={secondary:.2f} remain independently controllable.",
-            "broken": "Broken mode deliberately violates the lesson's central interpretation assumption so the displayed response becomes ambiguous, biased, contaminated, or defocused.",
-            "recovery": "Disable broken mode, restore both scales to 1.0 and 0.25, then connect the recovered shape to the pinned source equations before changing one control at a time.",
+            "observation": observation,
+            "broken": failure,
+            "recovery": recovery,
         },
-        "diagnostics": {"seed": SEED, "item_number": ITEM_NUMBER, "point_count": count, "signature": signature, "broken_active": broken_mode},
+        "diagnostics": dict(
+            signature=[float(v[0]) for v in values.values()],
+            signature_fields=list(values),
+            seed=seed,
+            broken_active=broken,
+            **extra,
+        ),
     }
+
+
+def _alpha(n, p):
+    return n * np.expm1(-np.log(p) / n)
+
+
+def _refs(length, t, g):
+    cuts = np.arange(t + g, length - t - g)
+    offsets = np.r_[np.arange(-t - g, -g), np.arange(g + 1, g + t + 1)]
+    return cuts, cuts[:, None] + offsets
+
+
+def _ca(power, t, g, p, geometric=False):
+    cuts, refs = _refs(len(power), t, g)
+    samples = power[refs]
+    estimate = (
+        np.exp(np.mean(np.log(np.maximum(samples, 1e-300)), axis=1))
+        if geometric
+        else np.mean(samples, axis=1)
+    )
+    threshold = _alpha(2 * t, p) * estimate
+    return cuts, threshold, power[cuts] > threshold, estimate
+
+
+def run(parameters):
+    pfa, scale, broken = _controls(
+        parameters,
+        [
+            ("design_pfa", 0.001, [0.01, 0.001, 0.0001]),
+            ("scene_power_scale", 1, [0.5, 1, 2]),
+        ],
+    )
+    cells = np.arange(1, 257)
+    mean = 0.65 + 0.0045 * cells + 0.32 * (1 + np.sin(2 * np.pi * (cells - 18) / 190))
+    rng = np.random.default_rng(4501)
+    received = np.sqrt(mean / 2) * (rng.normal(size=256) + 1j * rng.normal(size=256))
+    targets = np.array([61, 131, 210])
+    received[targets] += np.sqrt(
+        mean[targets] * 10 ** (np.array([19, 17, 20]) / 10)
+    ) * np.exp(1j * np.array([0.2, -0.8, 1.1]))
+    power = scale * abs(received) ** 2
+    cuts, threshold, det, estimate = _ca(power, 12, 2, pfa)
+    _, bad, _bd, be = _ca(power, 12, 2, pfa, True)
+    active = bad if broken else threshold
+    active_det = power[cuts] > active
+    mask = np.isin(cuts, targets)
+    pfs = np.array([0.01, 0.001, 0.0001])
+    alphas = _alpha(24, pfs)
+    scaling = np.array([0.5, 1, 2])
+    ratios = []
+    for factor in scaling:
+        ratios.append(np.median(_ca(power * factor, 12, 2, pfa)[1] / threshold))
+    values = {
+        "scale_factor": (_alpha(24, pfa), "ratio"),
+        "eligible_cells": (len(cuts), "cells"),
+        "excluded_edges": (256 - len(cuts), "cells"),
+        "target_detections": (sum(active_det[mask]), "targets"),
+        "non_target_crossings": (sum(active_det[~mask]), "cells"),
+        "active_noise_at_middle_target": (
+            (be if broken else estimate)[131 - cuts[0]],
+            "power",
+        ),
+        "active_threshold_at_middle_target": (active[131 - cuts[0]], "power"),
+        "geometric_threshold_ratio": (np.median(bad / threshold), "ratio"),
+        "recovered_target_detections": (sum(det[mask]), "targets"),
+        "model_valid": (not broken, "boolean"),
+    }
+    cut = 131
+    _, refs = _refs(256, 12, 2)
+    example = refs[cut - cuts[0]]
+    plots = {
+        "profile": _plot(
+            "CA-CFAR adapts to local power",
+            "Range (m)",
+            "Linear power (relative)",
+            [
+                ("Observed", 15 * (cells - 1), power),
+                ("Active threshold", 15 * cuts, active),
+                ("Known background", 15 * (cells - 1), scale * mean),
+            ],
+        ),
+        "window": _plot(
+            "Reference cells exclude CUT and guards",
+            "Offset from middle CUT (cells)",
+            "Training power (relative)",
+            [("References", example - cut, power[example])],
+        ),
+        "estimate": _plot(
+            "Arithmetic and geometric estimates differ",
+            "Range (m)",
+            "Estimated noise power (relative)",
+            [
+                ("Arithmetic", 15 * cuts, estimate),
+                ("dB mean converted back", 15 * cuts, be),
+            ],
+        ),
+        "pfa_sweep": _plot(
+            "Requested Pfa changes alpha",
+            "Requested Pfa (probability)",
+            "Scale factor (ratio)",
+            [("Finite N=24", pfs, alphas)],
+        ),
+        "scale_sweep": _plot(
+            "Scaling all powers scales the threshold",
+            "Whole-scene power scale (ratio)",
+            "Threshold scale (ratio)",
+            [("Measured", scaling, ratios)],
+        ),
+        "failure": _plot(
+            "A dB average underestimates arithmetic mean power",
+            "Range (m)",
+            "Threshold power (relative)",
+            [
+                ("Linear recovery", 15 * cuts, threshold),
+                ("Geometric failure", 15 * cuts, bad),
+            ],
+        ),
+    }
+    return _finish(
+        values,
+        plots,
+        "CA-CFAR averages 24 linear-power references and uses α=N(Pfa^(−1/N)−1). Only complete windows are eligible; scaling the entire scene preserves decisions.",
+        "Averaging dB powers computes a geometric mean, lowers the noise estimate, and breaks the exponential-power calibration.",
+        "Restore the arithmetic mean in linear power, retain the guard/CUT exclusion and skip incomplete edge windows. Disable the toggle to replay the selected scene.",
+        4501,
+        broken,
+        eligible_first=int(cuts[0] + 1),
+        eligible_last=int(cuts[-1] + 1),
+        reference_cells=(example + 1).tolist(),
+        target_cells=(targets + 1).tolist(),
+        scale_invariant=all(
+            np.array_equal(_ca(power * f, 12, 2, pfa)[2], det) for f in scaling
+        ),
+    )

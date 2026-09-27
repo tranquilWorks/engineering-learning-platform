@@ -1,6 +1,4 @@
-# Model Ground Clutter and Swerling Targets
-
-> **Guiding question:** Why do clutter and target amplitude fluctuate differently from white noise?
+# Lesson: the average power hides memory and fluctuation
 
 ## Guiding question
 
@@ -190,33 +188,29 @@ threshold and CFAR behavior.
   intentionally invalid stationary-background assumption used to motivate
   local normalization.
 
-## Use the Python GUI experiment
+## Interactive lab: Model Ground Clutter and Swerling Targets
 
-The GUI keeps the pinned source's mental model and processing order visible. The **fluctuation strength** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** Why do clutter and target amplitude fluctuate differently from white noise?
 
-### Prediction and sweep 1 — fluctuation strength
+The background is 64 pulses by 96 range cells from 0.25 km at 0.05 km spacing. Prescribed clutter power is 0.1+25(R/0.25 km)^−2; unit speckle follows separable AR(1), with slow-time coefficient 0.92. Thermal-noise power is 1. The five target models use 2000 trials, mean SNR −3 dB, phase 35°, and up to 32 pulses. Exponential power gives Swerling I/II; a two-exponential sum gives III/IV. A separate 1024-trial background bank tests global versus known-local-power thresholds at Pfa=.05. Correlation sweeps reuse the same innovations. Sample CV uses the n−1 convention.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict which Swerling models retain dwell-to-dwell power variation after more pulses. How do range correlation and a changing mean power affect a global threshold?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Range correlation** from 0.85 to 0.5 correlation. Predict, run, and explain the measured change using the equation; then reset.
+2. Start at the baseline. Sweep only **Target SNR db** from -3 to 0 dB. Predict, run, and explain the measured change using the equation; then reset.
+3. Enable the broken case. One global white-background threshold overspends false alarms near the radar and underspends them farther away.
+4. Recovery: Normalize by the known local expected clutter-plus-noise power. This is an oracle-background comparison, not an estimated CFAR algorithm; disable the toggle to replay it. Restore the controls and disable the toggle to reproduce the selected baseline exactly.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict which Swerling models retain dwell-to-dwell power variation after more pulses. How do range correlation and a changing mean power affect a global threshold? Support your answer with a measured value and units. Explain the failure, the recovery assumption, and what this finite experiment cannot establish.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+One global white-background threshold overspends false alarms near the radar and underspends them farther away. Do not equate seeded crossings with a field detection guarantee.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The source lesson is preserved above. NumPy private seeds reproduce this port, not MATLAB random streams; array draws use NumPy row-major order. Source figure/console presentation becomes labeled plots and metrics. Vectorized arithmetic retains the source equations; the P42 linear convolution and P50 ring convolution are independently checked. All calculations use complete stated arrays; displays may retain at most 512 line points or 128×64 heatmap coordinates, preserving zero and prominent peaks. No MATLAB execution, browser/accessibility review, hardware, or learner-effectiveness claim is made.

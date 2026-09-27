@@ -1,6 +1,4 @@
-# Build an Empirical Radar ROC Curve
-
-> **Guiding question:** How does threshold choice trade probability of detection against false alarm?
+# P44 lesson: Build an Empirical Radar ROC Curve
 
 Guiding question: **How does threshold choice trade probability of detection against false alarm?**
 
@@ -186,33 +184,29 @@ filtering, and P28 for the earlier general ROC connection.
 The script is a bounded, in-memory, seeded base-MATLAB simulation. It performs
 no file, network, device, hardware, real-time, or operational-radar work.
 
-## Use the Python GUI experiment
+## Interactive lab: Build an Empirical Radar ROC Curve
 
-The GUI keeps the pinned source's mental model and processing order visible. The **detection threshold** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** How does threshold choice trade probability of detection against false alarm?
 
-### Prediction and sweep 1 — detection threshold
+A signed 16-sample ±1 template has energy 16. Independent 60000-record H0 and H1 noise banks produce u=sᵀx/(σ√E), with H1 shift √SNR. The source template is retained exactly. SNRs −6/0/6/12 dB and nine thresholds form ROCs; the design threshold 3.090232306 corresponds to Pfa≈.001. Prefix trial counts 500/2000/10000/60000 show resolution and approximate 95% Pd bars. The failure deliberately selects the 250 lowest H0 scores; the remaining bank is selection-biased, not an independent validation bank. Recovery uses the predetermined threshold and complete H0/H1 banks.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict how raising the threshold changes both Pd and Pfa. How many false alarms does Pfa=.001 imply across one million searched cells, and what can 500 trials resolve?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Matched SNR db** from 6 to 12 dB. Predict, run, and explain the measured change using the equation; then reset.
+2. Start at the baseline. Sweep only **Threshold sigma** from 3.09023 to 2 noise RMS. Predict, run, and explain the measured change using the equation; then reset.
+3. Enable the broken case. Selecting the 250 lowest H0 scores and placing a threshold at their maximum guarantees zero tuning crossings. The remaining bank crosses it: this selection-biased result cannot establish zero operational Pfa.
+4. Recovery: Use the predetermined threshold and full independently generated H0/H1 banks. Disable the toggle for exact replay; finite Monte Carlo counts remain estimates. Restore the controls and disable the toggle to reproduce the selected baseline exactly.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict how raising the threshold changes both Pd and Pfa. How many false alarms does Pfa=.001 imply across one million searched cells, and what can 500 trials resolve? Support your answer with a measured value and units. Explain the failure, the recovery assumption, and what this finite experiment cannot establish.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+Selecting the 250 lowest H0 scores and placing a threshold at their maximum guarantees zero tuning crossings. The remaining bank crosses it: this selection-biased result cannot establish zero operational Pfa. Do not equate seeded crossings with a field detection guarantee.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The source lesson is preserved above. NumPy private seeds reproduce this port, not MATLAB random streams; array draws use NumPy row-major order. Source figure/console presentation becomes labeled plots and metrics. Vectorized arithmetic retains the source equations; the P42 linear convolution and P50 ring convolution are independently checked. All calculations use complete stated arrays; displays may retain at most 512 line points or 128×64 heatmap coordinates, preserving zero and prominent peaks. No MATLAB execution, browser/accessibility review, hardware, or learner-effectiveness claim is made.

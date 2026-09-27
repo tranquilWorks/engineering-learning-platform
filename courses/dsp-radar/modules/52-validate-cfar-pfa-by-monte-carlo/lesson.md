@@ -1,6 +1,4 @@
-# Validate CFAR Pfa by Monte Carlo
-
-> **Guiding question:** Does the implemented detector actually achieve the requested false-alarm probability?
+# Lesson: a requested probability is a model claim to test
 
 ## Start with the counted event
 
@@ -147,33 +145,29 @@ closes Phase 5 by auditing the probability claim itself: define a valid H0
 trial, count numerator and denominator, attach uncertainty, compare with exact
 homogeneous theory, and then break one assumption at a time.
 
-## Use the Python GUI experiment
+## Interactive lab: Validate CFAR Pfa by Monte Carlo
 
-The GUI keeps the pinned source's mental model and processing order visible. The **Monte Carlo trials** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** Does the implemented detector actually achieve the requested false-alarm probability?
 
-### Prediction and sweep 1 — Monte Carlo trials
+The H0 baseline uses 200000 independent trials in blocks of 2000. Each block draws one CUT plus 64 references; selected N uses a prefix. Requested Pfa .01/.003/.001 and N=8/16/24/32/64 sweeps share trials. Wilson intervals use z=1.96 and include zero-count uncertainty. Model mismatch keeps N and alpha fixed: correlated Gaussian samples share a common component with correlation .65, while independent-cell lognormal texture has log standard deviation .9 and unit mean. Trials remain independent across rows. The largest control N is 24 to retain the source random-work ceiling while the reference-count sweep still reaches 64.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict how the interval narrows with independent trial count. Why can the exact iid Pfa formula fail for correlated or textured backgrounds without an implementation bug?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Training count** from 24 to 8 cells. Predict, run, and explain the measured change using the equation; then reset.
+2. Start at the baseline. Sweep only **Design Pfa** from 0.001 to 0.003 probability. Predict, run, and explain the measured change using the equation; then reset.
+3. Enable the broken case. Using −ln(Pfa) on a finite reference mean raises actual Pfa. A small or zero count is also not evidence of zero operational risk.
+4. Recovery: Restore N(Pfa^(−1/N)−1), retain all 200000 independent trials and the interval, and disclose the background model. Disable the toggle for exact finite-N replay. Restore the controls and disable the toggle to reproduce the selected baseline exactly.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict how the interval narrows with independent trial count. Why can the exact iid Pfa formula fail for correlated or textured backgrounds without an implementation bug? Support your answer with a measured value and units. Explain the failure, the recovery assumption, and what this finite experiment cannot establish.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+Using −ln(Pfa) on a finite reference mean raises actual Pfa. A small or zero count is also not evidence of zero operational risk. Do not equate seeded crossings with a field detection guarantee.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The source lesson is preserved above. NumPy private seeds reproduce this port, not MATLAB random streams; array draws use NumPy row-major order. Source figure/console presentation becomes labeled plots and metrics. Vectorized arithmetic retains the source equations; the P42 linear convolution and P50 ring convolution are independently checked. All calculations use complete stated arrays; displays may retain at most 512 line points or 128×64 heatmap coordinates, preserving zero and prominent peaks. No MATLAB execution, browser/accessibility review, hardware, or learner-effectiveness claim is made.

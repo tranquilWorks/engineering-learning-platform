@@ -3,13 +3,13 @@
   "id": "43-use-a-fixed-detection-threshold",
   "number": 43,
   "title": "Use a Fixed Detection Threshold",
-  "summary": "Explore use a fixed detection threshold with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "One absolute signed-amplitude threshold is calibrated for zero-mean Gaussian noise at RMS 1. Increasing noise or adding a pedestal changes its false-alarm rate; H0 and H1 counts use separate denominators.",
   "guiding_question": "Why does a threshold that works in one noise level fail in another?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-5",
-    "fixed-threshold"
+    "radar-detection",
+    "P43"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,59 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Fixed Threshold",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "noise_rms",
+      "type": "segmented",
+      "label": "Noise rms",
+      "unit": "amplitude",
+      "default": 1,
+      "options": [
+        {
+          "label": "0.75",
+          "value": 0.75
+        },
+        {
+          "label": "1 baseline",
+          "value": 1
+        },
+        {
+          "label": "1.5",
+          "value": 1.5
+        },
+        {
+          "label": "2",
+          "value": 2
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "clutter_pedestal",
+      "type": "segmented",
+      "label": "Clutter pedestal",
+      "unit": "amplitude",
+      "default": 0,
+      "options": [
+        {
+          "label": "0 baseline",
+          "value": 0
+        },
+        {
+          "label": "0.5",
+          "value": 0.5
+        },
+        {
+          "label": "1",
+          "value": 1
+        },
+        {
+          "label": "2",
+          "value": 2
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +83,40 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing fixed threshold, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict the false-alarm change when noise RMS doubles while the native-amplitude threshold stays fixed. Why is division by the true RMS a different experiment?",
+      "reveal": "One absolute signed-amplitude threshold is calibrated for zero-mean Gaussian noise at RMS 1. Increasing noise or adding a pedestal changes its false-alarm rate; H0 and H1 counts use separate denominators."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "One reference-noise range profile",
+      "plot": "profile"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Separate target-absent and target-present banks",
+      "plot": "statistics"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Fixed threshold as noise RMS changes",
+      "plot": "noise"
+    },
+    {
+      "type": "plot",
+      "title": "A positive pedestal raises both crossing rates",
+      "plot": "pedestal"
+    },
+    {
+      "type": "plot",
+      "title": "Silent true-RMS adaptation hides the fixed-threshold failure",
+      "plot": "failure"
     },
     {
       "type": "callout",
@@ -102,7 +127,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

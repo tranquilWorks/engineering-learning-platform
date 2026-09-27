@@ -1,0 +1,87 @@
+{
+  "item": "P45",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p45",
+    "sha256": "eee1c963fa051806d29581553be723bc8580ccbccdd1b7f00ea8492a776fac5c",
+    "byte_count": 118814,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/45-implement-1-d-cell-averaging-cfar/experiment.py",
+    "sha256": "28f32f5ca8b495b6b5b2b1a8b4501c5947058d67838306c34070272f843ff335",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "design_pfa": 0.001,
+      "scene_power_scale": 1,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "design_pfa": 0.01,
+      "scene_power_scale": 1,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "design_pfa": 0.001,
+      "scene_power_scale": 2,
+      "broken_mode": false
+    },
+    "broken": {
+      "design_pfa": 0.001,
+      "scene_power_scale": 1,
+      "broken_mode": true
+    },
+    "recovery": {
+      "design_pfa": 0.001,
+      "scene_power_scale": 1,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "scale_factor",
+      "unit": "ratio"
+    },
+    {
+      "name": "eligible_cells",
+      "unit": "cells"
+    },
+    {
+      "name": "excluded_edges",
+      "unit": "cells"
+    },
+    {
+      "name": "target_detections",
+      "unit": "targets"
+    },
+    {
+      "name": "non_target_crossings",
+      "unit": "cells"
+    },
+    {
+      "name": "active_noise_at_middle_target",
+      "unit": "power"
+    },
+    {
+      "name": "active_threshold_at_middle_target",
+      "unit": "power"
+    },
+    {
+      "name": "geometric_threshold_ratio",
+      "unit": "ratio"
+    },
+    {
+      "name": "recovered_target_detections",
+      "unit": "targets"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

@@ -3,13 +3,13 @@
   "id": "48-compare-go-cfar-and-so-cfar-at-a-clutter-edge",
   "number": 48,
   "title": "Compare GO-CFAR and SO-CFAR at a Clutter Edge",
-  "summary": "Explore compare go-cfar and so-cfar at a clutter edge with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "GO protects the high side of a clutter edge; SO can preserve a weak target when one reference side is contaminated. Each statistic needs its own homogeneous calibration.",
   "guiding_question": "Which side of a changing background should control the threshold?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-5",
-    "clutter-edge-ratio"
+    "radar-detection",
+    "P48"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,55 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Clutter Edge Ratio",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
-    },
-    {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
+      "id": "clutter_step_db",
+      "type": "segmented",
+      "label": "Clutter step db",
       "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "default": 12,
+      "options": [
+        {
+          "label": "0",
+          "value": 0
+        },
+        {
+          "label": "6",
+          "value": 6
+        },
+        {
+          "label": "12 baseline",
+          "value": 12
+        },
+        {
+          "label": "18",
+          "value": 18
+        }
+      ]
+    },
+    {
+      "id": "interferer_power_db",
+      "type": "segmented",
+      "label": "Interferer power db",
+      "unit": "dB",
+      "default": 20,
+      "options": [
+        {
+          "label": "0",
+          "value": 0
+        },
+        {
+          "label": "10",
+          "value": 10
+        },
+        {
+          "label": "20 baseline",
+          "value": 20
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +79,40 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing clutter edge ratio, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict which side of a clutter edge GO protects. Why can the same rule mask a weak target under one-sided contamination, and why does SO need a different alpha?",
+      "reveal": "GO protects the high side of a clutter edge; SO can preserve a weak target when one reference side is contaminated. Each statistic needs its own homogeneous calibration."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Individually calibrated GO and SO at a clutter edge",
+      "plot": "profile"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "The two side means explain the decision",
+      "plot": "sides"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "High-side CUT against mixed reference populations",
+      "plot": "edge"
+    },
+    {
+      "type": "plot",
+      "title": "One contaminated side can make GO mask a weak CUT",
+      "plot": "interferer"
+    },
+    {
+      "type": "plot",
+      "title": "A shared CA multiplier is not equal-Pfa calibration",
+      "plot": "calibration"
     },
     {
       "type": "callout",
@@ -102,7 +123,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

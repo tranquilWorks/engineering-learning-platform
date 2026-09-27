@@ -1,0 +1,103 @@
+{
+  "item": "P41",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p41",
+    "sha256": "eee1c963fa051806d29581553be723bc8580ccbccdd1b7f00ea8492a776fac5c",
+    "byte_count": 118814,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/41-model-ground-clutter-and-swerling-targets/experiment.py",
+    "sha256": "1cbeb70924ec3a121793faeeb253650805f777885ddcf2cc57c0241f5e81ac65",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "range_correlation": 0.85,
+      "target_snr_db": -3,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "range_correlation": 0.5,
+      "target_snr_db": -3,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "range_correlation": 0.85,
+      "target_snr_db": 0,
+      "broken_mode": false
+    },
+    "broken": {
+      "range_correlation": 0.85,
+      "target_snr_db": -3,
+      "broken_mode": true
+    },
+    "recovery": {
+      "range_correlation": 0.85,
+      "target_snr_db": -3,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "near_clutter_power",
+      "unit": "power"
+    },
+    {
+      "name": "far_clutter_power",
+      "unit": "power"
+    },
+    {
+      "name": "range_lag1",
+      "unit": "correlation"
+    },
+    {
+      "name": "slow_time_lag1",
+      "unit": "correlation"
+    },
+    {
+      "name": "swerling_i_cv_16",
+      "unit": "ratio"
+    },
+    {
+      "name": "swerling_ii_cv_16",
+      "unit": "ratio"
+    },
+    {
+      "name": "swerling_iii_cv_16",
+      "unit": "ratio"
+    },
+    {
+      "name": "swerling_iv_cv_16",
+      "unit": "ratio"
+    },
+    {
+      "name": "active_near_pfa",
+      "unit": "probability"
+    },
+    {
+      "name": "active_far_pfa",
+      "unit": "probability"
+    },
+    {
+      "name": "recovered_near_pfa",
+      "unit": "probability"
+    },
+    {
+      "name": "steady_pd_16",
+      "unit": "probability"
+    },
+    {
+      "name": "swerling_ii_pd_16",
+      "unit": "probability"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

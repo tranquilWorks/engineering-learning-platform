@@ -2417,3 +2417,712 @@ _REFERENCES.update({f"P{n}": globals()[f"_p{n}"] for n in range(29, 41)})
 
 # Scenario declarations for P29-P40.
 SCENARIOS.update({'P29': {'baseline': {'rcs_m2': 1, 'transmit_power_kw': 100, 'broken_mode': False}, 'sweep_1': {'rcs_m2': 0.1, 'transmit_power_kw': 100, 'broken_mode': False}, 'sweep_2': {'rcs_m2': 1, 'transmit_power_kw': 400, 'broken_mode': False}, 'broken': {'rcs_m2': 1, 'transmit_power_kw': 100, 'broken_mode': True}, 'recovery': {'rcs_m2': 1, 'transmit_power_kw': 100, 'broken_mode': False}}, 'P30': {'baseline': {'sample_rate_mhz': 20, 'delay_us': 6.0175, 'broken_mode': False}, 'sweep_1': {'sample_rate_mhz': 40, 'delay_us': 6.0175, 'broken_mode': False}, 'sweep_2': {'sample_rate_mhz': 20, 'delay_us': 6.0375, 'broken_mode': False}, 'broken': {'sample_rate_mhz': 20, 'delay_us': 6.0175, 'broken_mode': True}, 'recovery': {'sample_rate_mhz': 20, 'delay_us': 6.0175, 'broken_mode': False}}, 'P31': {'baseline': {'bandwidth_mhz': 4, 'target_separation_m': 22, 'broken_mode': False}, 'sweep_1': {'bandwidth_mhz': 8, 'target_separation_m': 22, 'broken_mode': False}, 'sweep_2': {'bandwidth_mhz': 4, 'target_separation_m': 45, 'broken_mode': False}, 'broken': {'bandwidth_mhz': 4, 'target_separation_m': 22, 'broken_mode': True}, 'recovery': {'bandwidth_mhz': 4, 'target_separation_m': 22, 'broken_mode': False}}, 'P32': {'baseline': {'bandwidth_mhz': 8, 'pulse_duration_us': 10, 'broken_mode': False}, 'sweep_1': {'bandwidth_mhz': 16, 'pulse_duration_us': 10, 'broken_mode': False}, 'sweep_2': {'bandwidth_mhz': 8, 'pulse_duration_us': 20, 'broken_mode': False}, 'broken': {'bandwidth_mhz': 8, 'pulse_duration_us': 10, 'broken_mode': True}, 'recovery': {'bandwidth_mhz': 8, 'pulse_duration_us': 10, 'broken_mode': False}}, 'P33': {'baseline': {'taper_strength': 1, 'separation_samples': 17, 'broken_mode': False}, 'sweep_1': {'taper_strength': 0, 'separation_samples': 17, 'broken_mode': False}, 'sweep_2': {'taper_strength': 1, 'separation_samples': 7, 'broken_mode': False}, 'broken': {'taper_strength': 1, 'separation_samples': 17, 'broken_mode': True}, 'recovery': {'taper_strength': 1, 'separation_samples': 17, 'broken_mode': False}}, 'P34': {'baseline': {'bandwidth_mhz': 3, 'duration_us': 13, 'broken_mode': False}, 'sweep_1': {'bandwidth_mhz': 1.5, 'duration_us': 13, 'broken_mode': False}, 'sweep_2': {'bandwidth_mhz': 3, 'duration_us': 6.5, 'broken_mode': False}, 'broken': {'bandwidth_mhz': 3, 'duration_us': 13, 'broken_mode': True}, 'recovery': {'bandwidth_mhz': 3, 'duration_us': 13, 'broken_mode': False}}, 'P35': {'baseline': {'prf_khz': 20, 'true_range_km': 18, 'broken_mode': False}, 'sweep_1': {'prf_khz': 10, 'true_range_km': 18, 'broken_mode': False}, 'sweep_2': {'prf_khz': 20, 'true_range_km': 8, 'broken_mode': False}, 'broken': {'prf_khz': 20, 'true_range_km': 18, 'broken_mode': True}, 'recovery': {'prf_khz': 20, 'true_range_km': 18, 'broken_mode': False}}, 'P36': {'baseline': {'velocity_mps': 15, 'carrier_ghz': 10, 'broken_mode': False}, 'sweep_1': {'velocity_mps': -10, 'carrier_ghz': 10, 'broken_mode': False}, 'sweep_2': {'velocity_mps': 15, 'carrier_ghz': 15, 'broken_mode': False}, 'broken': {'velocity_mps': 15, 'carrier_ghz': 10, 'broken_mode': True}, 'recovery': {'velocity_mps': 15, 'carrier_ghz': 10, 'broken_mode': False}}, 'P37': {'baseline': {'middle_target_range_m': 900, 'middle_velocity_mps': 12, 'broken_mode': False}, 'sweep_1': {'middle_target_range_m': 750, 'middle_velocity_mps': 12, 'broken_mode': False}, 'sweep_2': {'middle_target_range_m': 900, 'middle_velocity_mps': -18, 'broken_mode': False}, 'broken': {'middle_target_range_m': 900, 'middle_velocity_mps': 12, 'broken_mode': True}, 'recovery': {'middle_target_range_m': 900, 'middle_velocity_mps': 12, 'broken_mode': False}}, 'P38': {'baseline': {'slow_target_velocity_mps': 3, 'prf_khz': 5, 'broken_mode': False}, 'sweep_1': {'slow_target_velocity_mps': 15, 'prf_khz': 5, 'broken_mode': False}, 'sweep_2': {'slow_target_velocity_mps': 3, 'prf_khz': 9, 'broken_mode': False}, 'broken': {'slow_target_velocity_mps': 3, 'prf_khz': 5, 'broken_mode': True}, 'recovery': {'slow_target_velocity_mps': 3, 'prf_khz': 5, 'broken_mode': False}}, 'P39': {'baseline': {'secondary_prf_khz': 5.3, 'primary_blind_speed_multiple': 1, 'broken_mode': False}, 'sweep_1': {'secondary_prf_khz': 4.5, 'primary_blind_speed_multiple': 1, 'broken_mode': False}, 'sweep_2': {'secondary_prf_khz': 5.3, 'primary_blind_speed_multiple': 0.5, 'broken_mode': False}, 'broken': {'secondary_prf_khz': 5.3, 'primary_blind_speed_multiple': 1, 'broken_mode': True}, 'recovery': {'secondary_prf_khz': 5.3, 'primary_blind_speed_multiple': 1, 'broken_mode': False}}, 'P40': {'baseline': {'pulse_count': 32, 'input_snr_db': -8, 'broken_mode': False}, 'sweep_1': {'pulse_count': 64, 'input_snr_db': -8, 'broken_mode': False}, 'sweep_2': {'pulse_count': 32, 'input_snr_db': 0, 'broken_mode': False}, 'broken': {'pulse_count': 32, 'input_snr_db': -8, 'broken_mode': True}, 'recovery': {'pulse_count': 32, 'input_snr_db': -8, 'broken_mode': False}}})
+# P41-P52 independent references. Prior bytes above remain immutable.
+# Inputs use the same documented NumPy draws, never production computations.
+# Alternate filters, real-coordinate algebra, direct stencil summation,
+# quadrature calibration, and independent score/interval equations are used.
+
+
+def _r41_normal(rng, shape):
+    return rng.normal(size=shape), rng.normal(size=shape)
+
+
+def _r41_filter(white, rho, axis):
+    from scipy.signal import lfilter
+
+    x = np.array(white, copy=True) * np.sqrt(1 - rho * rho)
+    first = [slice(None)] * x.ndim
+    first[axis] = 0
+    x[tuple(first)] = white[tuple(first)]
+    return lfilter([1], [1, -rho], x, axis=axis)
+
+
+def _p41(p):
+    rho = p["range_correlation"]
+    snr = p["target_snr_db"]
+    rng = np.random.default_rng(4101)
+    a, b = _r41_normal(rng, (64, 96))
+    field = _r41_filter(_r41_filter((a + 1j * b) / np.sqrt(2), rho, 1), 0.92, 0)
+    _r41_normal(rng, (64, 96))
+
+    def correlation(x, y):
+        cross = np.sum(x.real * y.real + x.imag * y.imag)
+        return cross / np.sqrt(
+            np.sum(x.real * x.real + x.imag * x.imag)
+            * np.sum(y.real * y.real + y.imag * y.imag)
+        )
+
+    rc = correlation(field[:, :-1], field[:, 1:])
+    tc = correlation(field[:-1], field[1:])
+    power = 10 ** (snr / 10)
+    slow = -power * np.log(rng.random((2000, 1)))
+    fast = -power * np.log(rng.random((2000, 32)))
+    slow2 = -power / 2 * (np.log(rng.random((2000, 1))) + np.log(rng.random((2000, 1))))
+    fast2 = (
+        -power / 2 * (np.log(rng.random((2000, 32))) + np.log(rng.random((2000, 32))))
+    )
+    cv = []
+    for x in [slow, fast[:, :16], slow2, fast2[:, :16]]:
+        means = np.sum(x, axis=1) / x.shape[1]
+        avg = np.sum(means) / 2000
+        cv.append(np.sqrt(np.sum((means - avg) ** 2) / 1999) / avg)
+    nr, ni = _r41_normal(rng, (2000, 32))
+    hr, hi = _r41_normal(rng, (2000, 32))
+    h0 = (hr * hr + hi * hi) / 2
+    threshold = np.partition(np.sum(h0[:, :16], axis=1) / 16, 1899)[1899]
+    probabilities = []
+    for target_power in [np.full((2000, 16), power), fast[:, :16]]:
+        re = np.sqrt(target_power) * np.cos(np.deg2rad(35)) + nr[:, :16] / np.sqrt(2)
+        im = np.sqrt(target_power) * np.sin(np.deg2rad(35)) + ni[:, :16] / np.sqrt(2)
+        probabilities.append(
+            np.count_nonzero(np.sum(re * re + im * im, axis=1) / 16 > threshold) / 2000
+        )
+    a, b = _r41_normal(rng, (1024, 96))
+    w = _r41_filter((a + 1j * b) / np.sqrt(2), rho, 1)
+    a, b = _r41_normal(rng, (1024, 96))
+    ranges = 0.25 + 0.05 * np.arange(96)
+    profile = 0.1 + 25 * (0.25 / ranges) ** 2
+    re = w.real * np.sqrt(profile) + a / np.sqrt(2)
+    im = w.imag * np.sqrt(profile) + b / np.sqrt(2)
+    bp = re * re + im * im
+    good = np.sum(bp > -(profile + 1) * np.log(0.05), axis=0) / 1024
+    threshold = (
+        -np.sum(profile + 1) / 96 * np.log(0.05)
+        if p["broken_mode"]
+        else -(profile + 1) * np.log(0.05)
+    )
+    active = np.sum(bp > threshold, axis=0) / 1024
+    return [
+        profile[0],
+        profile[-1],
+        rc,
+        tc,
+        *cv,
+        np.sum(active[:16]) / 16,
+        np.sum(active[-16:]) / 16,
+        np.sum(good[:16]) / 16,
+        *probabilities,
+        float(not p["broken_mode"]),
+    ]
+
+
+def _p42(p):
+    from scipy.signal import fftconvolve
+
+    c = 299792458.0
+    wavelength = c / 1e10
+    n = int(p["pulse_count"])
+    taper = p["hann_weight"]
+    t = (np.arange(48) - 23.5) / 20e6
+    angle = np.pi * 8e6 / 2.4e-6 * t * t
+    pulse = np.cos(angle) + 1j * np.sin(angle)
+    raw = np.zeros((512, 64), complex)
+    delays = [160, 160, 320]
+    for d, v, amp, phase in zip(
+        delays, [-7.5, 10.3, 10.3], [1, 0.8, 0.65], [0, 35, -50]
+    ):
+        a = np.deg2rad(phase) + 4 * np.pi * v / wavelength * np.arange(64) / 4000
+        raw[d : d + 48] += amp * np.outer(pulse, np.cos(a) + 1j * np.sin(a))
+    rng = np.random.default_rng(4201)
+    ds = np.floor(np.linspace(24, 452, 24) + 0.5).astype(int)
+    a, b = _r41_normal(rng, 24)
+    coef = 0.055 / np.sqrt(2 * (1 + ds / 80)) * (a + 1j * b)
+    for d, value in zip(ds, coef):
+        raw[d : d + 48] += value * pulse[:, None]
+    a, b = _r41_normal(rng, (512, 64))
+    raw += 0.35 / np.sqrt(2) * (a + 1j * b)
+    rc = fftconvolve(raw, pulse[::-1, None].conj(), mode="full", axes=0)[47:559, :n]
+    window = (1 - taper) + taper * (
+        0.5 - 0.5 * np.cos(2 * np.pi * np.arange(n) / (n - 1))
+    )
+    # Direct DFT on pulse columns, independently of the production FFT.
+    bins = np.arange(-n // 2, n // 2)
+    basis = np.exp(-2j * np.pi * np.outer(np.arange(n), bins) / n)
+    rd = (rc * window) @ basis / np.sum(window)
+    va = bins * 4000 / n * wavelength / 2
+    ra = np.arange(512) * c / 40e6
+    measured = []
+    peaks = []
+    for d, v in zip(delays, [-7.5, 10.3, 10.3]):
+        j = int(np.argmin(abs(va - v)))
+        rr = np.arange(d - 4, d + 5)
+        jj = np.arange(max(0, j - 2), min(n, j + 3))
+        mag = abs(rd[np.ix_(rr, jj)])
+        row, col = np.unravel_index(np.argmax(mag), mag.shape)
+        measured.append((ra[rr[row]], va[jj[col]]))
+        peaks.append(mag[row, col])
+    side = []
+    k = np.arange(64)
+    tone = np.exp(2j * np.pi * 10.1 * k / 64)
+    dft = np.exp(-2j * np.pi * np.outer(k, np.arange(-32, 32)) / 64)
+    for window in [np.ones(64), 0.5 - 0.5 * np.cos(2 * np.pi * k / 63)]:
+        mag = abs((tone * window) @ dft) / sum(window)
+        db = 20 * np.log10(np.maximum(mag / max(mag), 10 ** (-55 / 20)))
+        side.append(max(db[abs(k - np.argmax(mag)) > 2]))
+    active_peak = (
+        np.max(abs(np.fft.fft(rc, axis=0)))
+        if p["broken_mode"]
+        else max(abs(rd).ravel())
+    )
+    return [
+        c / 40e6,
+        c / 16e6,
+        4000 / n * wavelength / 2,
+        measured[0][0],
+        measured[0][1],
+        measured[1][1],
+        measured[2][0],
+        peaks[0],
+        *side,
+        active_peak,
+        float(not p["broken_mode"]),
+    ]
+
+
+def _p43(p):
+    from scipy.stats import norm
+
+    sigma = p["noise_rms"]
+    mu = p["clutter_pedestal"]
+    rng = np.random.default_rng(4301)
+    h0 = rng.normal(size=20000)
+    h1 = rng.normal(size=20000)
+    profile = rng.normal(size=256)
+    targets = [47, 102, 170, 225]
+    profile[targets] += 4
+    gamma = norm.isf(0.01)
+    active = sigma * gamma if p["broken_mode"] else gamma
+    fa = np.count_nonzero(h0 > (active - mu) / sigma) / 20000
+    pd = np.count_nonzero(h1 > (active - mu - 4) / sigma) / 20000
+    return [
+        gamma,
+        active,
+        fa,
+        pd,
+        20000 * (1 - pd),
+        norm.sf((active - mu) / sigma),
+        norm.sf((active - mu - 4) / sigma),
+        np.count_nonzero(h0 > (gamma - mu) / sigma) / 20000,
+        np.count_nonzero(profile[targets] > gamma),
+        np.count_nonzero(h0 > (gamma if p["broken_mode"] else gamma / 2)) / 20000,
+        float(not p["broken_mode"]),
+    ]
+
+
+def _p44(p):
+    from scipy.stats import norm
+
+    rng = np.random.default_rng(4401)
+    template = np.array([1, 1, 1, -1, 1, -1, -1, 1, -1, 1, -1, -1, -1, 1, 1, -1]) / 4
+    a = rng.normal(size=(16, 60000))
+    h0 = np.einsum("i,ij->j", template, a)
+    a = rng.normal(size=(16, 60000))
+    h1 = np.einsum("i,ij->j", template, a)
+    g = p["threshold_sigma"]
+    shift = np.sqrt(10 ** (p["matched_snr_db"] / 10))
+    active = np.partition(h0, 249)[249] if p["broken_mode"] else g
+    fa = np.count_nonzero(h0 > active) / 60000
+    pd = np.count_nonzero(h1 > active - shift) / 60000
+    return [
+        16,
+        active,
+        fa,
+        pd,
+        norm.sf(g),
+        norm.sf(g - shift),
+        1e6 * fa,
+        0,
+        1,
+        np.count_nonzero(h0 > g) / 60000,
+        float(not p["broken_mode"]),
+    ]
+
+
+def _r45_stencil(power, t, g, geometric=False):
+    # Direct per-CUT summation independently of production's indexed matrix.
+    out = []
+    for cut in range(t + g, len(power) - t - g):
+        samples = list(power[cut - g - t : cut - g]) + list(
+            power[cut + g + 1 : cut + g + t + 1]
+        )
+        out.append(
+            np.exp(sum(np.log(samples)) / (2 * t))
+            if geometric
+            else sum(samples) / (2 * t)
+        )
+    return np.asarray(out)
+
+
+def _r45_alpha(n, p):
+    return n * (p ** (-1 / n) - 1)
+
+
+def _p45(p):
+    index = np.arange(1, 257)
+    mean = 0.65 + 0.0045 * index + 0.32 * (1 + np.sin(2 * np.pi * (index - 18) / 190))
+    rng = np.random.default_rng(4501)
+    a, b = _r41_normal(rng, 256)
+    re = a * np.sqrt(mean / 2)
+    im = b * np.sqrt(mean / 2)
+    targets = np.array([61, 131, 210])
+    amplitude = np.sqrt(mean[targets] * 10 ** (np.array([19, 17, 20]) / 10))
+    ph = np.array([0.2, -0.8, 1.1])
+    re[targets] += amplitude * np.cos(ph)
+    im[targets] += amplitude * np.sin(ph)
+    power = p["scene_power_scale"] * (re * re + im * im)
+    avg = _r45_stencil(power, 12, 2)
+    geo = _r45_stencil(power, 12, 2, True)
+    alpha = _r45_alpha(24, p["design_pfa"])
+    active = geo if p["broken_mode"] else avg
+    det = power[14:-14] > alpha * active
+    mask = np.isin(np.arange(14, 242), targets)
+    j = 131 - 14
+    return [
+        alpha,
+        228,
+        28,
+        np.count_nonzero(det & mask),
+        np.count_nonzero(det & ~mask),
+        active[j],
+        alpha * active[j],
+        np.median(geo / avg),
+        np.count_nonzero((power[14:-14] > alpha * avg) & mask),
+        float(not p["broken_mode"]),
+    ]
+
+
+def _p46(p):
+    t = int(p["training_cells"])
+    g = int(p["guard_cells"])
+    cells = np.arange(1, 257)
+    mean = 0.75 + 0.003 * cells + 2.8 / (1 + np.exp((178 - cells) / 5.5))
+    rng = np.random.default_rng(4601)
+    a, b = _r41_normal(rng, 256)
+    re = a * np.sqrt(mean / 2)
+    im = b * np.sqrt(mean / 2)
+    offs = np.arange(-18, 19)
+    response = np.sinc(offs / 5)
+    amp = np.sqrt(mean[87] * 10**3.5)
+    re[87 + offs] += amp * response * np.cos(0.4)
+    im[87 + offs] += amp * response * np.sin(0.4)
+    ampw = np.sqrt(mean[137] * 10**1.8)
+    re[137] += ampw * np.cos(-0.7)
+    im[137] += ampw * np.sin(-0.7)
+    power = re * re + im * im
+    threshold = _r45_alpha(2 * t, 0.001) * _r45_stencil(power, t, g)
+    re[125] += np.sqrt(mean[125] * 10**3.2) * np.cos(1.1)
+    im[125] += np.sqrt(mean[125] * 10**3.2) * np.sin(1.1)
+    bad = re * re + im * im
+    bt = _r45_alpha(24, 0.001) * _r45_stencil(bad, 12, 4)
+    rt = _r45_alpha(24, 0.001) * _r45_stencil(bad, 12, 12)
+    target = np.zeros(256)
+    target[87 + offs] = amp * amp * response * response
+    target[137] = ampw * ampw
+    leak = [_r45_stencil(target, 12, guard)[87 - 12 - guard] for guard in [0, 10]]
+    locality = []
+    for train in [4, 36]:
+        expected = _r45_stencil(mean, train, 6)
+        locality.append(
+            np.mean(abs(expected[np.arange(164, 190) - train - 6] / mean[164:190] - 1))
+        )
+    bm = bad[137] / bt[121]
+    rm = bad[137] / rt[113]
+    wm = power[137] / threshold[137 - t - g]
+    return [
+        (2 * (t + g) + 1) * 15,
+        2 * (t + g),
+        power[87] / threshold[87 - t - g],
+        bm if p["broken_mode"] else wm,
+        bm,
+        rm,
+        bad[137] - power[137],
+        *leak,
+        *locality,
+        float(not p["broken_mode"]),
+    ]
+
+
+def _p47(p):
+    from scipy.interpolate import interp1d
+
+    n = int(p["training_count"])
+    pfa = p["design_pfa"]
+    rng = np.random.default_rng(4701)
+    a, b = _r41_normal(rng, 50000)
+    a /= np.sqrt(2)
+    b /= np.sqrt(2)
+    angle = 2 * np.pi * rng.random(50000)
+    means = np.empty((50000, 4))
+    ns = [8, 16, 32, 64]
+    for start in range(0, 50000, 2000):
+        x, y = _r41_normal(rng, (2000, 64))
+        squares = (x * x + y * y) / 2
+        for j, num in enumerate(ns):
+            means[start : start + 2000, j] = np.sum(squares[:, :num], axis=1) / num
+    snrs = np.linspace(3, 17, 29)
+    amplitudes = 10 ** (snrs / 20)
+    scores = (a[:, None] + np.cos(angle)[:, None] * amplitudes) ** 2 + (
+        b[:, None] + np.sin(angle)[:, None] * amplitudes
+    ) ** 2
+    known = -np.log(pfa)
+    estimate = means[:, ns.index(n)]
+    proper = _r45_alpha(n, pfa)
+    active = known if p["broken_mode"] else proper
+
+    def inverse(threshold):
+        raw = (
+            np.count_nonzero(scores > np.asarray(threshold)[:, None], axis=0) / 50000
+            if np.ndim(threshold)
+            else np.count_nonzero(scores > threshold, axis=0) / 50000
+        )
+        envelope = np.maximum.accumulate(raw)
+        upper = np.flatnonzero(envelope >= 0.8)[0]
+        lo = upper - 1
+        result = float(interp1d(envelope[lo : upper + 1], snrs[lo : upper + 1])(0.8))
+        return result, float(max(envelope - raw))
+
+    ksnr, kadj = inverse(known)
+    asnr, aadj = inverse(active * estimate)
+    rsnr, _ = inverse(proper * estimate)
+    adjustments = [kadj, aadj] + [
+        inverse(_r45_alpha(num, pfa) * means[:, j])[1] for j, num in enumerate(ns)
+    ]
+    h0 = a * a + b * b
+    return [
+        known,
+        active,
+        ksnr,
+        asnr,
+        asnr - ksnr,
+        np.count_nonzero(h0 > active * estimate) / 50000,
+        (1 + active / n) ** (-n),
+        rsnr - ksnr,
+        np.sqrt(np.mean((estimate - np.mean(estimate)) ** 2)),
+        max(adjustments),
+        float(not p["broken_mode"]),
+    ]
+
+
+from functools import lru_cache as _r48_cache
+
+
+@_r48_cache(maxsize=128)
+def _r48_probability(alpha, t, variant):
+    from scipy.integrate import quad
+    from scipy.special import gammainc, gammaincc, gammaln
+
+    # Integrate the density of max/min of two independent Gamma side means.
+    def integrand(x):
+        if x <= 0:
+            return 0.0
+        pdf = np.exp(t * np.log(t) + (t - 1) * np.log(x) - t * x - gammaln(t))
+        weight = gammainc(t, t * x) if variant == "GO" else gammaincc(t, t * x)
+        return 2 * np.exp(-alpha * x) * pdf * weight
+
+    return quad(integrand, 0, np.inf, epsabs=1e-13, epsrel=1e-11)[0]
+
+
+@_r48_cache(maxsize=128)
+def _r48_scale(t, p, variant):
+    from scipy.optimize import brentq
+
+    return brentq(lambda a: _r48_probability(a, t, variant) - p, 0.01, 100, xtol=1e-12)
+
+
+def _r49_probability(alpha, n, k):
+    from scipy.special import gammaln
+
+    # Laplace transform through the beta-function form of the order statistic.
+    return np.exp(
+        gammaln(n + 1)
+        - gammaln(n - k + 1)
+        + gammaln(n - k + alpha + 1)
+        - gammaln(n + alpha + 1)
+    )
+
+
+@_r48_cache(maxsize=128)
+def _r49_scale(n, k, p):
+    from scipy.optimize import brentq
+
+    return brentq(lambda a: _r49_probability(a, n, k) - p, 0.001, 100, xtol=1e-12)
+
+
+def _p48(p):
+    rng = np.random.default_rng(4801)
+    cells = np.arange(240)
+    mean = np.where(cells >= 120, 10 ** (p["clutter_step_db"] / 10), 1)
+    bg = -mean * np.log(rng.random(240))
+    ago = _r48_scale(12, 0.001, "GO")
+    aso = _r48_scale(12, 0.001, "SO")
+    ca = _r45_alpha(24, 0.001)
+    left = -np.log(rng.random((25000, 12)))
+    right = -np.log(rng.random((25000, 12)))
+    cut = -np.log(rng.random(25000))
+    lm = np.sum(left, axis=1) / 12
+    rm = np.sum(right, axis=1) / 12
+    a, b = _r41_normal(rng, 25000)
+    target = (a / np.sqrt(2) + np.sqrt(10**1.3)) ** 2 + b * b / 2
+    q = 10 ** (p["clutter_step_db"] / 10)
+    contaminated = lm + 10 ** (p["interferer_power_db"] / 10) / 12
+    gp = np.count_nonzero(q * cut > ago * np.maximum(lm, q * rm)) / 25000
+    sp = np.count_nonzero(q * cut > aso * np.minimum(lm, q * rm)) / 25000
+    el = np.sum(bg[106:118]) / 12
+    er = np.sum(bg[123:135]) / 12
+    return [
+        ago,
+        aso,
+        sp if p["broken_mode"] else gp,
+        gp,
+        np.count_nonzero(target > ago * np.maximum(contaminated, rm)) / 25000,
+        np.count_nonzero(target > aso * np.minimum(contaminated, rm)) / 25000,
+        _r48_probability(ca, 12, "GO"),
+        _r48_probability(ca, 12, "SO"),
+        ago * max(el, er),
+        aso * min(el, er),
+        float(not p["broken_mode"]),
+    ]
+
+
+def _p49(p):
+    k = int(p["os_rank"])
+    db = p["interferer_power_db"]
+    rng = np.random.default_rng(4901)
+    power = -np.log(rng.random(256))
+    power[127] += 10**1.5
+    power[[114, 119, 135, 140]] += 10 ** (db / 10)
+    refs = np.r_[power[113:125], power[130:142]]
+    proper = _r49_scale(24, k, 0.001)
+    active = _r49_scale(24, 18, 0.001) if p["broken_mode"] else proper
+    rank = 22 if p["broken_mode"] else k
+    bank = -np.log(rng.random((20000, 24)))
+    a, b = _r41_normal(rng, 20000)
+    target = (a / np.sqrt(2) + np.sqrt(10**1.3)) ** 2 + b * b / 2
+    bank[:, :4] += 10 ** (db / 10)
+    order = np.partition(bank, rank - 1, axis=1)[:, rank - 1]
+    return [
+        rank,
+        active,
+        _r49_probability(active, 24, rank),
+        24 - rank,
+        power[127] / (_r45_alpha(24, 0.001) * sum(refs) / 24),
+        power[127] / (active * np.partition(refs, rank - 1)[rank - 1]),
+        np.count_nonzero(target > active * order) / 20000,
+        proper,
+        _r49_probability(proper, 24, k),
+        float(not p["broken_mode"]),
+    ]
+
+
+def _p50(p):
+    rng = np.random.default_rng(5001)
+    r = np.arange(96) * 30
+    v = np.arange(-32, 32) * 0.625
+    mean = np.outer(0.8 + 1.2 * (r / r[-1]) ** 2, 1 + 2.5 * np.exp(-((v / 2.5) ** 2)))
+    a, b = _r41_normal(rng, (96, 64))
+    power = mean * (a * a + b * b) / 2
+    support = np.zeros((96, 64), bool)
+    rows = [27, 52, 75, 3]
+    cols = [44, 21, 34, 7]
+    rw = [0.015, 0.05, 0.2, 0.55, 1, 0.55, 0.2, 0.05, 0.015]
+    dw = [0.01, 0.04, 0.18, 0.5, 1, 0.5, 0.18, 0.04, 0.01]
+    for rr, cc, snr in zip(rows, cols, [24, 20, 18, 20]):
+        for dr in range(-4, 5):
+            for dc in range(-4, 5):
+                if 0 <= rr + dr < 96 and 0 <= cc + dc < 64:
+                    power[rr + dr, cc + dc] += (
+                        mean[rr, cc] * 10 ** (snr / 10) * rw[dr + 4] * dw[dc + 4]
+                    )
+                    support[rr + dr, cc + dc] = True
+    hr = int(p["range_training_half_width"]) + 2
+    hd = int(p["doppler_training_half_width"]) + 2
+    n = (2 * hr + 1) * (2 * hd + 1) - 25
+    alpha = _r45_alpha(n, 0.001)
+    # Summed-area rectangle subtraction, not production convolution.
+    cumulative = np.pad(power, ((1, 0), (1, 0))).cumsum(0).cumsum(1)
+
+    def rectangle(r0, r1, c0, c1):
+        r0, r1 = max(r0, 0), min(r1, 96)
+        c0, c1 = max(c0, 0), min(c1, 64)
+        return (
+            cumulative[r1, c1]
+            - cumulative[r0, c1]
+            - cumulative[r1, c0]
+            + cumulative[r0, c0]
+        )
+
+    threshold = np.empty((96, 64))
+    eligible = np.zeros((96, 64), bool)
+    eligible[hr:-hr, hd:-hd] = True
+    for rr in range(96):
+        for cc in range(64):
+            threshold[rr, cc] = (
+                alpha
+                * (
+                    rectangle(rr - hr, rr + hr + 1, cc - hd, cc + hd + 1)
+                    - rectangle(rr - 2, rr + 3, cc - 2, cc + 3)
+                )
+                / n
+            )
+    det = (power > threshold) & eligible
+    active = power > threshold if p["broken_mode"] else det
+    return [
+        n,
+        alpha,
+        np.count_nonzero(eligible),
+        np.count_nonzero(eligible) / 6144,
+        np.count_nonzero(det[rows[:3], cols[:3]]),
+        float(active[3, 7]),
+        np.count_nonzero(active & ~eligible),
+        float(eligible[3, 7]),
+        power[27, 44] / threshold[27, 44],
+        np.count_nonzero(det & ~support),
+        float(not p["broken_mode"]),
+    ]
+
+
+def _p51(p):
+    k = int(p["os_rank"])
+    ca = _r45_alpha(24, 0.001)
+    scales = [
+        ca,
+        _r48_scale(12, 0.001, "GO"),
+        _r48_scale(12, 0.001, "SO"),
+        _r49_scale(24, k, 0.001),
+    ]
+    if p["broken_mode"]:
+        scales = [ca] * 4
+    cells = np.arange(1, 257)
+    rng = np.random.default_rng(5101)
+    u = -np.log(rng.random(256))
+    mean = (
+        (1 + 0.2 * np.cos(2 * np.pi * cells / 83))
+        * np.where(cells >= 145, 10 ** (p["clutter_contrast_db"] / 10), 1)
+        * (1 + 2.5 * np.exp(-0.5 * ((cells - 220) / 18) ** 2))
+    )
+    power = u * mean
+    response = np.array(
+        [
+            0.004,
+            0.008,
+            0.015,
+            0.025,
+            0.01,
+            0.05,
+            0.02,
+            0.12,
+            0.03,
+            0.25,
+            0.55,
+            0.85,
+            1,
+            0.85,
+            0.55,
+            0.25,
+            0.03,
+            0.12,
+            0.02,
+            0.05,
+            0.01,
+            0.025,
+            0.015,
+            0.008,
+            0.004,
+        ]
+    )
+    targets = [69, 81, 140, 204, 193, 197, 211, 215]
+    total = np.zeros(256)
+    for center, snr in zip(targets, [28, 14, 14, 13, 20, 20, 20, 20]):
+        addition = mean[center] * 10 ** (snr / 10) * response
+        power[center - 12 : center + 13] += addition
+        total[center - 12 : center + 13] += addition
+    detection = np.zeros((256, 4), bool)
+    for cut in range(15, 241):
+        left = power[cut - 15 : cut - 3]
+        right = power[cut + 4 : cut + 16]
+        refs = np.r_[left, right]
+        lm = sum(left) / 12
+        rm = sum(right) / 12
+        statistics = [
+            sum(refs) / 24,
+            max(lm, rm),
+            min(lm, rm),
+            np.partition(refs, k - 1)[k - 1],
+        ]
+        detection[cut] = [power[cut] > a * x for a, x in zip(scales, statistics)]
+    truth = np.zeros(256, bool)
+    truth[targets] = True
+    artifact = (total > 0) & ~truth
+    misses = np.count_nonzero(~detection[targets], axis=0)
+    h0 = np.count_nonzero(detection[:, 0] & ~truth & ~artifact)
+    art = np.count_nonzero(detection[:, 0] & artifact)
+    disagree = np.count_nonzero(np.any(detection != detection[:, [0]], axis=1))
+    law = [
+        (1 + scales[0] / 24) ** -24,
+        _r48_probability(scales[1], 12, "GO"),
+        _r48_probability(scales[2], 12, "SO"),
+        _r49_probability(scales[3], 24, k),
+    ]
+    return [*law, *misses, h0, art, disagree, scales[3], float(not p["broken_mode"])]
+
+
+def _r52_interval(count, n):
+    # Solve the Wilson score inequality's quadratic in the unknown probability.
+    z2 = 1.96**2
+    rate = count / n
+    a = n + z2
+    b = -(2 * n * rate + z2)
+    c = n * rate * rate
+    disc = np.sqrt(b * b - 4 * a * c)
+    return (-b - disc) / (2 * a), (-b + disc) / (2 * a)
+
+
+def _p52(p):
+    n = int(p["training_count"])
+    pfa = p["design_pfa"]
+    rng = np.random.default_rng(5201)
+    proper = _r45_alpha(n, pfa)
+    known = -np.log(pfa)
+    good = bad = 0
+    for _ in range(100):
+        a, b = _r41_normal(rng, (2000, 65))
+        square = (a * a + b * b) / 2
+        ratio = square[:, 0] / (np.sum(square[:, 1 : n + 1], axis=1) / n)
+        good += np.count_nonzero(ratio > proper)
+        bad += np.count_nonzero(ratio > known)
+    correlated = textured = 0
+    for _ in range(100):
+        cr, ci = _r41_normal(rng, (2000, 1))
+        ir, ii = _r41_normal(rng, (2000, n + 1))
+        re = (np.sqrt(0.65) * cr + np.sqrt(0.35) * ir) / np.sqrt(2)
+        im = (np.sqrt(0.65) * ci + np.sqrt(0.35) * ii) / np.sqrt(2)
+        cp = re * re + im * im
+        correlated += np.count_nonzero(
+            n * cp[:, 0] / np.sum(cp[:, 1:], axis=1) > proper
+        )
+        a, b = _r41_normal(rng, (2000, n + 1))
+        driver = rng.normal(size=(2000, n + 1))
+        tp = (a * a + b * b) / 2 * np.exp(0.9 * driver - 0.405)
+        textured += np.count_nonzero(n * tp[:, 0] / np.sum(tp[:, 1:], axis=1) > proper)
+    count = bad if p["broken_mode"] else good
+    alpha = known if p["broken_mode"] else proper
+    lo, hi = _r52_interval(count, 200000)
+    return [
+        alpha,
+        count,
+        count / 200000,
+        (1 + alpha / n) ** (-n),
+        lo,
+        hi,
+        correlated / 200000,
+        textured / 200000,
+        good / 200000,
+        (1 + proper / n) ** (-n),
+        float(not p["broken_mode"]),
+    ]
+
+
+_REFERENCES.update({f"P{n}": globals()[f"_p{n}"] for n in range(41, 53)})
+
+# Scenario declarations for P41-P52.
+SCENARIOS.update({'P41': {'baseline': {'range_correlation': 0.85, 'target_snr_db': -3, 'broken_mode': False}, 'sweep_1': {'range_correlation': 0.5, 'target_snr_db': -3, 'broken_mode': False}, 'sweep_2': {'range_correlation': 0.85, 'target_snr_db': 0, 'broken_mode': False}, 'broken': {'range_correlation': 0.85, 'target_snr_db': -3, 'broken_mode': True}, 'recovery': {'range_correlation': 0.85, 'target_snr_db': -3, 'broken_mode': False}}, 'P42': {'baseline': {'pulse_count': 64, 'hann_weight': 1, 'broken_mode': False}, 'sweep_1': {'pulse_count': 32, 'hann_weight': 1, 'broken_mode': False}, 'sweep_2': {'pulse_count': 64, 'hann_weight': 0, 'broken_mode': False}, 'broken': {'pulse_count': 64, 'hann_weight': 1, 'broken_mode': True}, 'recovery': {'pulse_count': 64, 'hann_weight': 1, 'broken_mode': False}}, 'P43': {'baseline': {'noise_rms': 1, 'clutter_pedestal': 0, 'broken_mode': False}, 'sweep_1': {'noise_rms': 2, 'clutter_pedestal': 0, 'broken_mode': False}, 'sweep_2': {'noise_rms': 1, 'clutter_pedestal': 1, 'broken_mode': False}, 'broken': {'noise_rms': 1, 'clutter_pedestal': 0, 'broken_mode': True}, 'recovery': {'noise_rms': 1, 'clutter_pedestal': 0, 'broken_mode': False}}, 'P44': {'baseline': {'matched_snr_db': 6, 'threshold_sigma': 3.090232306, 'broken_mode': False}, 'sweep_1': {'matched_snr_db': 12, 'threshold_sigma': 3.090232306, 'broken_mode': False}, 'sweep_2': {'matched_snr_db': 6, 'threshold_sigma': 2, 'broken_mode': False}, 'broken': {'matched_snr_db': 6, 'threshold_sigma': 3.090232306, 'broken_mode': True}, 'recovery': {'matched_snr_db': 6, 'threshold_sigma': 3.090232306, 'broken_mode': False}}, 'P45': {'baseline': {'design_pfa': 0.001, 'scene_power_scale': 1, 'broken_mode': False}, 'sweep_1': {'design_pfa': 0.01, 'scene_power_scale': 1, 'broken_mode': False}, 'sweep_2': {'design_pfa': 0.001, 'scene_power_scale': 2, 'broken_mode': False}, 'broken': {'design_pfa': 0.001, 'scene_power_scale': 1, 'broken_mode': True}, 'recovery': {'design_pfa': 0.001, 'scene_power_scale': 1, 'broken_mode': False}}, 'P46': {'baseline': {'guard_cells': 4, 'training_cells': 12, 'broken_mode': False}, 'sweep_1': {'guard_cells': 0, 'training_cells': 12, 'broken_mode': False}, 'sweep_2': {'guard_cells': 4, 'training_cells': 36, 'broken_mode': False}, 'broken': {'guard_cells': 4, 'training_cells': 12, 'broken_mode': True}, 'recovery': {'guard_cells': 4, 'training_cells': 12, 'broken_mode': False}}, 'P47': {'baseline': {'training_count': 16, 'design_pfa': 0.001, 'broken_mode': False}, 'sweep_1': {'training_count': 64, 'design_pfa': 0.001, 'broken_mode': False}, 'sweep_2': {'training_count': 16, 'design_pfa': 0.01, 'broken_mode': False}, 'broken': {'training_count': 16, 'design_pfa': 0.001, 'broken_mode': True}, 'recovery': {'training_count': 16, 'design_pfa': 0.001, 'broken_mode': False}}, 'P48': {'baseline': {'clutter_step_db': 12, 'interferer_power_db': 20, 'broken_mode': False}, 'sweep_1': {'clutter_step_db': 18, 'interferer_power_db': 20, 'broken_mode': False}, 'sweep_2': {'clutter_step_db': 12, 'interferer_power_db': 10, 'broken_mode': False}, 'broken': {'clutter_step_db': 12, 'interferer_power_db': 20, 'broken_mode': True}, 'recovery': {'clutter_step_db': 12, 'interferer_power_db': 20, 'broken_mode': False}}, 'P49': {'baseline': {'os_rank': 18, 'interferer_power_db': 20, 'broken_mode': False}, 'sweep_1': {'os_rank': 22, 'interferer_power_db': 20, 'broken_mode': False}, 'sweep_2': {'os_rank': 18, 'interferer_power_db': 30, 'broken_mode': False}, 'broken': {'os_rank': 18, 'interferer_power_db': 20, 'broken_mode': True}, 'recovery': {'os_rank': 18, 'interferer_power_db': 20, 'broken_mode': False}}, 'P50': {'baseline': {'range_training_half_width': 6, 'doppler_training_half_width': 4, 'broken_mode': False}, 'sweep_1': {'range_training_half_width': 12, 'doppler_training_half_width': 4, 'broken_mode': False}, 'sweep_2': {'range_training_half_width': 6, 'doppler_training_half_width': 8, 'broken_mode': False}, 'broken': {'range_training_half_width': 6, 'doppler_training_half_width': 4, 'broken_mode': True}, 'recovery': {'range_training_half_width': 6, 'doppler_training_half_width': 4, 'broken_mode': False}}, 'P51': {'baseline': {'clutter_contrast_db': 12, 'os_rank': 18, 'broken_mode': False}, 'sweep_1': {'clutter_contrast_db': 18, 'os_rank': 18, 'broken_mode': False}, 'sweep_2': {'clutter_contrast_db': 12, 'os_rank': 22, 'broken_mode': False}, 'broken': {'clutter_contrast_db': 12, 'os_rank': 18, 'broken_mode': True}, 'recovery': {'clutter_contrast_db': 12, 'os_rank': 18, 'broken_mode': False}}, 'P52': {'baseline': {'training_count': 24, 'design_pfa': 0.001, 'broken_mode': False}, 'sweep_1': {'training_count': 8, 'design_pfa': 0.001, 'broken_mode': False}, 'sweep_2': {'training_count': 24, 'design_pfa': 0.003, 'broken_mode': False}, 'broken': {'training_count': 24, 'design_pfa': 0.001, 'broken_mode': True}, 'recovery': {'training_count': 24, 'design_pfa': 0.001, 'broken_mode': False}}})

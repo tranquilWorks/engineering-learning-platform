@@ -3,13 +3,13 @@
   "id": "46-vary-cfar-guard-and-training-cells",
   "number": 46,
   "title": "Vary CFAR Guard and Training Cells",
-  "summary": "Explore vary cfar guard and training cells with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "Guards exclude target response; training cells estimate background. Larger windows can smooth fluctuations while mixing different background powers. Inspect leakage, locality and excluded edges together.",
   "guiding_question": "What happens when the CFAR reference window is too small, too large, or contaminated?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-5",
-    "CFAR-guard-width"
+    "radar-detection",
+    "P46"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,51 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Cfar Guard Width",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "guard_cells",
+      "type": "segmented",
+      "label": "Guard cells",
+      "unit": "cells",
+      "default": 4,
+      "options": [
+        {
+          "label": "0",
+          "value": 0
+        },
+        {
+          "label": "4 baseline",
+          "value": 4
+        },
+        {
+          "label": "10",
+          "value": 10
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "training_cells",
+      "type": "segmented",
+      "label": "Training cells",
+      "unit": "cells",
+      "default": 12,
+      "options": [
+        {
+          "label": "4",
+          "value": 4
+        },
+        {
+          "label": "12 baseline",
+          "value": 12
+        },
+        {
+          "label": "36",
+          "value": 36
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +75,40 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing cfar guard width, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict the effect of larger guards on target leakage, then of more training cells on smoothness and locality. How can a neighbor change detection without changing the CUT?",
+      "reveal": "Guards exclude target response; training cells estimate background. Larger windows can smooth fluctuations while mixing different background powers. Inspect leakage, locality and excluded edges together."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Guard and training geometry in a changing background",
+      "plot": "profile"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Sampled-sinc mainlobe and sidelobes",
+      "plot": "response"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Guard width reduces target leakage into references",
+      "plot": "guards"
+    },
+    {
+      "type": "plot",
+      "title": "Larger training windows trade variance for locality",
+      "plot": "training"
+    },
+    {
+      "type": "plot",
+      "title": "The same weak CUT can be masked by its neighbor",
+      "plot": "contamination"
     },
     {
       "type": "callout",
@@ -102,7 +119,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

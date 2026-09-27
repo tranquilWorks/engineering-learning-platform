@@ -1,0 +1,91 @@
+{
+  "item": "P43",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p43",
+    "sha256": "eee1c963fa051806d29581553be723bc8580ccbccdd1b7f00ea8492a776fac5c",
+    "byte_count": 118814,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/43-use-a-fixed-detection-threshold/experiment.py",
+    "sha256": "3253f974de6714b3ed636f35fd51eb427ed0b8bf5d72e79fd4e349e8f912e5a7",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "noise_rms": 1,
+      "clutter_pedestal": 0,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "noise_rms": 2,
+      "clutter_pedestal": 0,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "noise_rms": 1,
+      "clutter_pedestal": 1,
+      "broken_mode": false
+    },
+    "broken": {
+      "noise_rms": 1,
+      "clutter_pedestal": 0,
+      "broken_mode": true
+    },
+    "recovery": {
+      "noise_rms": 1,
+      "clutter_pedestal": 0,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "fixed_threshold",
+      "unit": "amplitude"
+    },
+    {
+      "name": "active_threshold",
+      "unit": "amplitude"
+    },
+    {
+      "name": "empirical_pfa",
+      "unit": "probability"
+    },
+    {
+      "name": "empirical_pd",
+      "unit": "probability"
+    },
+    {
+      "name": "miss_count",
+      "unit": "trials"
+    },
+    {
+      "name": "analytic_pfa",
+      "unit": "probability"
+    },
+    {
+      "name": "analytic_pd",
+      "unit": "probability"
+    },
+    {
+      "name": "recovered_pfa",
+      "unit": "probability"
+    },
+    {
+      "name": "profile_target_detections",
+      "unit": "targets"
+    },
+    {
+      "name": "active_pfa_at_double_noise",
+      "unit": "probability"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

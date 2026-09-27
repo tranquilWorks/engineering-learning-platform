@@ -1,6 +1,4 @@
-# Stress CFAR with Clutter Edges, Sidelobes, and Multiple Targets
-
-> **Guiding question:** Where do standard CFAR assumptions break?
+# Lesson: Where do standard CFAR assumptions break?
 
 ## Start with the physical training window
 
@@ -150,33 +148,29 @@ P50 established complete-stencil/no-decision boundaries. P51 combines those
 operations in one adverse scene; P52 separately measures achieved Pfa rather
 than inferring it from this illustrative profile.
 
-## Use the Python GUI experiment
+## Interactive lab: Stress CFAR with Clutter Edges, Sidelobes, and Multiple Targets
 
-The GUI keeps the pinned source's mental model and processing order visible. The **interference strength** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** Where do standard CFAR assumptions break?
 
-### Prediction and sweep 1 — interference strength
+A 256-cell scene at 30 m combines a 12 dB edge at cell 145, a smooth hump near 220, a strong finite response at 70, weak neighbor at 82, edge target at 141, and crowded target at 205 with interferers 194/198/212/216. The exact 25-sample source power response is retained. All four detectors use twelve training cells and three guards per side with separate Pfa=.001 calibration. The reference-count sweep uses 12000 paired trials and alternates contamination between sides. Truth centers, modeled response artifacts and true H0 crossings are classified separately. Detailed disagreement diagnostics include CUT power, four thresholds and decisions; homogeneous calibration does not promise homogeneous performance in this stress scene.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict where CA, GO, SO and OS disagree in the combined scene. Which crossings are target-response artifacts, which are H0, and what reference statistic explains each miss?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Clutter contrast db** from 12 to 18 dB. Predict, run, and explain the measured change using the equation; then reset.
+2. Start at the baseline. Sweep only **OS rank** from 18 to 22 rank. Predict, run, and explain the measured change using the equation; then reset.
+3. Enable the broken case. Applying CA alpha to GO, SO and OS while claiming equal nominal Pfa makes the detector comparison unfair.
+4. Recovery: Restore all four statistic-specific scale factors on the same scene; disable the toggle. Nonhomogeneous scenes can still depart from homogeneous Pfa calibration. Restore the controls and disable the toggle to reproduce the selected baseline exactly.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict where CA, GO, SO and OS disagree in the combined scene. Which crossings are target-response artifacts, which are H0, and what reference statistic explains each miss? Support your answer with a measured value and units. Explain the failure, the recovery assumption, and what this finite experiment cannot establish.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+Applying CA alpha to GO, SO and OS while claiming equal nominal Pfa makes the detector comparison unfair. Do not equate seeded crossings with a field detection guarantee.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The source lesson is preserved above. NumPy private seeds reproduce this port, not MATLAB random streams; array draws use NumPy row-major order. Source figure/console presentation becomes labeled plots and metrics. Vectorized arithmetic retains the source equations; the P42 linear convolution and P50 ring convolution are independently checked. All calculations use complete stated arrays; displays may retain at most 512 line points or 128×64 heatmap coordinates, preserving zero and prominent peaks. No MATLAB execution, browser/accessibility review, hardware, or learner-effectiveness claim is made.

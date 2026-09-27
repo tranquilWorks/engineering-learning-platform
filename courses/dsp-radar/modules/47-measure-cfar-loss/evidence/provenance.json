@@ -1,0 +1,91 @@
+{
+  "item": "P47",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p47",
+    "sha256": "eee1c963fa051806d29581553be723bc8580ccbccdd1b7f00ea8492a776fac5c",
+    "byte_count": 118814,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/47-measure-cfar-loss/experiment.py",
+    "sha256": "b0d5717054ab4c817f54de4a5d3d0fcf68286b8d8fa75a976840d9758fcabc23",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "training_count": 16,
+      "design_pfa": 0.001,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "training_count": 64,
+      "design_pfa": 0.001,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "training_count": 16,
+      "design_pfa": 0.01,
+      "broken_mode": false
+    },
+    "broken": {
+      "training_count": 16,
+      "design_pfa": 0.001,
+      "broken_mode": true
+    },
+    "recovery": {
+      "training_count": 16,
+      "design_pfa": 0.001,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "known_noise_threshold",
+      "unit": "power"
+    },
+    {
+      "name": "active_alpha",
+      "unit": "ratio"
+    },
+    {
+      "name": "known_snr_at_pd80",
+      "unit": "dB"
+    },
+    {
+      "name": "active_snr_at_pd80",
+      "unit": "dB"
+    },
+    {
+      "name": "active_cfar_loss",
+      "unit": "dB"
+    },
+    {
+      "name": "active_empirical_pfa",
+      "unit": "probability"
+    },
+    {
+      "name": "active_theoretical_pfa",
+      "unit": "probability"
+    },
+    {
+      "name": "recovered_cfar_loss",
+      "unit": "dB"
+    },
+    {
+      "name": "reference_std",
+      "unit": "power"
+    },
+    {
+      "name": "maximum_monotone_adjustment",
+      "unit": "probability"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

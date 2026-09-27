@@ -3,13 +3,13 @@
   "id": "42-create-a-full-range-doppler-map",
   "number": 42,
   "title": "Create a Full Range-Doppler Map",
-  "summary": "Explore create a full range-doppler map with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "Fast-time matched filtering separates range; the slow-time FFT separates signed velocity. Targets can share either coordinate and remain distinct in the two-dimensional map.",
   "guiding_question": "How do matched filtering and slow-time FFT combine to separate targets?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-4",
-    "target-velocity"
+    "radar-detection",
+    "P42"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,47 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Target Velocity",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "pulse_count",
+      "type": "segmented",
+      "label": "Pulse count",
+      "unit": "pulses",
+      "default": 64,
+      "options": [
+        {
+          "label": "16",
+          "value": 16
+        },
+        {
+          "label": "32",
+          "value": 32
+        },
+        {
+          "label": "64 baseline",
+          "value": 64
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "hann_weight",
+      "type": "segmented",
+      "label": "Hann weight",
+      "unit": "ratio",
+      "default": 1,
+      "options": [
+        {
+          "label": "0",
+          "value": 0
+        },
+        {
+          "label": "1 baseline",
+          "value": 1
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +71,55 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing target velocity, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict what doubling CPI does to velocity spacing while range resolution stays fixed. How can two targets share range yet separate in Doppler, and why does a fast-time FFT fail?",
+      "reveal": "Fast-time matched filtering separates range; the slow-time FFT separates signed velocity. Targets can share either coordinate and remain distinct in the two-dimensional map."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Explicit LFM phase law",
+      "plot": "waveform"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Echoes before range compression",
+      "plot": "raw"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Matched filter with N\u22121 delay removed",
+      "plot": "compressed"
+    },
+    {
+      "type": "plot",
+      "title": "Range\u2013Doppler map",
+      "plot": "map"
+    },
+    {
+      "type": "plot",
+      "title": "Two velocities at the same range",
+      "plot": "shared"
+    },
+    {
+      "type": "plot",
+      "title": "Longer coherent dwell narrows Doppler bins",
+      "plot": "cpi"
+    },
+    {
+      "type": "plot",
+      "title": "Window sidelobes and mainlobe width",
+      "plot": "windows"
+    },
+    {
+      "type": "plot",
+      "title": "Wrong-axis fast-time FFT: columns are still pulses",
+      "plot": "failure"
     },
     {
       "type": "callout",
@@ -102,7 +130,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {
