@@ -1,28 +1,25 @@
 # Current state
 
-`ELP-DSP-FIDELITY-P21-P28` continues issue 441 from merged numerical replay repair
-`b7e684d595bd777602c9aa22cd489189efa6584b`, authorized by control
-`12ea755ee75f9fe7bc142f052362938d9cefb4c9`. Implementation and independent
-scenario comparisons are complete. All mandatory local verification passed:
-quick/full each passed 785 tests, plus source-attested DSP, contract, catalog,
-lint, frontend typecheck/build, scope and API/live HTTP smoke checks.
-[PR #46](https://github.com/tranquilWorks/engineering-learning-platform/pull/46)
-is ready for review and awaits protected-merge approval. Hosted backend CI still
-fails source/history checks because its checkout omits their prerequisites;
-frontend CI passed at implementation revision `152ddf6`.
+`ELP-DSP-FIDELITY-P29-P40` continues issue 441 as a twelve-lesson batch requested
+by the owner, from merged PR #46 (`74fbe13828665783a97d047eae0c6dc6ef482745`).
+Control authorization is `a4b075fe1e4fdb35d58802668d2631b9f465eba3`.
 
-The eight lessons now expose AM envelope/coherent recovery, FM occupied bandwidth
-and phase aliasing, energy-consistent BPSK/QPSK, explicit finite RRC pulses and
-matched-filter delay, finite ZF/regularized multipath equalizers, changing-path
-LMS, Wilson uncertainty from independent trials, and ROC/estimator selection bias.
-Five named scenarios per lesson retain independent formulas and alternate
-algorithms, with a declared absolute/relative signature tolerance of 1e-8.
+All twelve source-specific experiments and sixty independent scenario pairs
+are implemented. Numerical comparisons passed at a declared 1e-8 tolerance;
+all required local verification passed at implementation revision
+`3c5cee0dc8bef78f9f3c8baed691f03c4023d804`: 495 focused DSP tests,
+72 contract tests, all 875 API tests in both quick and full wrappers,
+frontend typecheck/build, deterministic catalog, lint and service/scope checks.
+PR #47 is ready for review; protected merge awaits separate owner approval.
+Hosted backend CI has 22 missing-source/history failures; frontend passed.
+The group spans power budgets, ranging, pulse compression, ambiguity, Doppler,
+MTI, blind speeds and coherent/noncoherent integration.
 
-P01 remains the distinct initial conversion; P02-P20 are prior repairs;
-P21-P28 are current repairs; P29-P84 remain pending. All other module bytes,
-source pins, source map and conversion manifest are unchanged. Only eight target
-content digests change in coverage.yaml. Catalog remains six courses, 290 modules,
-290 interactive experiments. Inventory does not imply course completion.
+P01 is already distinct; P02-P28 are prior repairs; P29-P40 are current repairs;
+P41-P84 remain pending. Source/course identities, source map, conversion manifest,
+other courses, platform/UI and workflows remain unchanged. Only twelve coverage
+digests change. Inventory stays six courses / 290 modules / 290 interactive.
+Whole-course numerical/curriculum/capstone maturity remains blocked.
 
-MATLAB, browser/accessibility, learner, physical/hardware, certification,
-release/deployment and production verification remain unperformed.
+No MATLAB runtime, browser/accessibility, learner, hardware, certification,
+release/deployment or production validation is claimed.

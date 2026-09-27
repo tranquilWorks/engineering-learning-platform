@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "329e55b6a8c54410f278f64ee186c893508965786837d6a495cd2b5bf1152336",
+    "content_digest": "e839890991e73c545ee0ed70d966626d50ed713100b82557077128f27b5d745d",
     "files": [
       {
         "path": "modules/30-measure-range-from-echo-delay/experiment.py",
-        "sha256": "745da1dfb180eb3754a552668b7f15bfdc5eeabc382a082b1652ea93a6c5593e"
+        "sha256": "b696bc06e5327fd3e3e624e876d44c6702bfc74114bd0d7b22c7973d4d00154f"
       },
       {
         "path": "modules/30-measure-range-from-echo-delay/lesson.md",
-        "sha256": "6f13d7eed2a92f783f8fbbd622a2ec762512f31c2eafbf7fcb0528aa9416cef6"
+        "sha256": "f7c74a394e8617e2b5efa87d6f0e42c8943f6c425315a6bbb852074a62e8c7ce"
       },
       {
         "path": "modules/30-measure-range-from-echo-delay/module.yaml",
-        "sha256": "f01a563178113d64d1d77ad49d851bfca41a52ddbf0d02fbfe98ceddd1d9cce9"
+        "sha256": "04c6048a66021370868695839829d22ad14e44626aa0158bfb40b68ada85ae0a"
       }
     ]
   },
   "content": {
     "guiding_question": "How does round-trip delay become target range?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "A zero-extended fractional echo is correlated with a one-microsecond pulse. Parabolic refinement locates the peak but does not add bandwidth.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary echo delay while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "A zero-extended fractional echo is correlated with a one-microsecond pulse. Parabolic refinement locates the peak but does not add bandwidth.",
+      "Using c\u03c4 reports twice the refined monostatic range.",
+      "Disable the failure to restore c\u03c4/2 with identical samples and correlation.",
+      "Explicit stage equations are retained in lesson.md. NumPy random streams differ from MATLAB. Plot/console presentation is adapted; no MATLAB runtime parity is claimed."
     ],
     "equations": [
       {
@@ -77,146 +77,244 @@
       "seed": 3001,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
+          "name": "record_samples",
+          "value": 320,
+          "unit": "count"
         },
         {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "883691589653f0f98df9a264fdb7c98312b5ca6774e5a75d7bcd1d3fb0a5f904",
-          "unit": "mixed numeric signature"
+          "sha256": "47c9a960fdd17f519b1a30631398e19953dce53839a677aa303d0d021cac2b3d",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "7599faffaee023818a778861973b3a825f080af2e2cf1bd158121399a508039e",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "603a1f3ef50e3abc2adefba7e83979d5a566576bb0e41ceb929b1c33e0b5f4c8",
-          "unit": "mixed numeric signature"
+          "sha256": "3920ce4ff6b82ae72cdf1eb3b46646efffaa581b36354bdc2bcc393d6fc517f1",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "8fb302fbef3f3f8400d37c0d814026c35d6566df8ceeb88d43260b3a96d9543a",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "3bb5b5aac1e45bdff6b588ba55f85278cea959fe0a6ea47375a0c0e60e218a87",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "d7f91396e986f3accf1c4b4888ecce195c18a0fd0396da1cef7b24d77433d7c6",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "50177fbffc1cc4116ac8036c49b7afb90b08e0a7a8e4feffe59d49ba5d637841",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "91909d8557805b2d6fe0f1c254b66a49274818493f5e669398a5f2fe19f53dea",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "47c9a960fdd17f519b1a30631398e19953dce53839a677aa303d0d021cac2b3d",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "7599faffaee023818a778861973b3a825f080af2e2cf1bd158121399a508039e",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P30 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P30 explicit processing and evidence stages",
+        "target_plot_key": "echo",
+        "title": "Sample the continuous delay before locating its peak",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Fast time (\u00b5s)",
+            "unit": "\u00b5s"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Amplitude (relative)",
+            "unit": "relative"
           }
         ],
-        "interpretation": "This view answers the Measure Range from Echo Delay guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "A zero-extended fractional echo is correlated with a one-microsecond pulse. Parabolic refinement locates the peak but does not add bandwidth."
       },
       {
-        "source_figure": "Pinned P30 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P30 explicit processing and evidence stages",
+        "target_plot_key": "pulse",
+        "title": "Finite transmitted pulse",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Pulse time (\u00b5s)",
+            "unit": "\u00b5s"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Amplitude (relative)",
+            "unit": "relative"
           }
         ],
-        "interpretation": "This view answers the Measure Range from Echo Delay guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "A zero-extended fractional echo is correlated with a one-microsecond pulse. Parabolic refinement locates the peak but does not add bandwidth."
       },
       {
-        "source_figure": "Pinned P30 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P30 explicit processing and evidence stages",
+        "target_plot_key": "correlation",
+        "title": "Nonnegative-lag matched sum",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Candidate range (m)",
+            "unit": "m"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Correlation (amplitude sum)",
+            "unit": "amplitude sum"
           }
         ],
-        "interpretation": "This view answers the Measure Range from Echo Delay guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "A zero-extended fractional echo is correlated with a one-microsecond pulse. Parabolic refinement locates the peak but does not add bandwidth."
       },
       {
-        "source_figure": "Pinned P30 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P30 explicit processing and evidence stages",
+        "target_plot_key": "rate_sweep",
+        "title": "Sampling changes the grid",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Sample rate (MHz)",
+            "unit": "MHz"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Range error (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Measure Range from Echo Delay guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "A zero-extended fractional echo is correlated with a one-microsecond pulse. Parabolic refinement locates the peak but does not add bandwidth."
+      },
+      {
+        "source_figure": "Pinned P30 explicit processing and evidence stages",
+        "target_plot_key": "fraction_sweep",
+        "title": "A staircase versus a local peak fit",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Fractional delay (samples)",
+            "unit": "samples"
+          },
+          {
+            "role": "y",
+            "label": "Delay error (samples)",
+            "unit": "samples"
+          }
+        ],
+        "interpretation": "A zero-extended fractional echo is correlated with a one-microsecond pulse. Parabolic refinement locates the peak but does not add bandwidth."
+      },
+      {
+        "source_figure": "Pinned P30 explicit processing and evidence stages",
+        "target_plot_key": "separation",
+        "title": "A finer grid does not narrow the pulse",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Range (m)",
+            "unit": "m"
+          },
+          {
+            "role": "y",
+            "label": "Correlation (amplitude sum)",
+            "unit": "amplitude sum"
+          }
+        ],
+        "interpretation": "A zero-extended fractional echo is correlated with a one-microsecond pulse. Parabolic refinement locates the peak but does not add bandwidth."
+      },
+      {
+        "source_figure": "Pinned P30 explicit processing and evidence stages",
+        "target_plot_key": "ranging",
+        "title": "Round-trip geometry",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Method: true, refined, active (index)",
+            "unit": "index"
+          },
+          {
+            "role": "y",
+            "label": "Range (m)",
+            "unit": "m"
+          }
+        ],
+        "interpretation": "A zero-extended fractional echo is correlated with a one-microsecond pulse. Parabolic refinement locates the peak but does not add bandwidth."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "sample_rate_mhz",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          10,
+          20,
+          40
         ],
-        "expected_observation": "Changing echo delay moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Sample rate mhz; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "delay_us",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          6,
+          6.0125,
+          6.0175,
+          6.025,
+          6.0375
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Delay us; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "Using c\u03c4 reports twice the refined monostatic range.",
+      "recovery": "Disable the failure to restore c\u03c4/2 with identical samples and correlation.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Using c\u03c4 reports twice the refined monostatic range.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -224,63 +322,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 50000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P30 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p29_p40.py",
     "seed": 3001,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "sample_rate_mhz",
+        "value": 20,
+        "unit": "MHz"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "delay_us",
+        "value": 6.0175,
+        "unit": "\u00b5s"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 3.552713678800501e-15,
+        "max_relative_error": 1.8089074945551926e-16,
+        "passed": true,
         "expected": {
           "path": "modules/30-measure-range-from-echo-delay/evidence/expected-baseline.json",
-          "sha256": "883691589653f0f98df9a264fdb7c98312b5ca6774e5a75d7bcd1d3fb0a5f904"
+          "sha256": "47c9a960fdd17f519b1a30631398e19953dce53839a677aa303d0d021cac2b3d"
         },
         "actual": {
           "path": "modules/30-measure-range-from-echo-delay/evidence/actual-baseline.json",
-          "sha256": "d0f08675e205e193e87e2072920fa80e2b44b789da06137e673dc7db146815ea"
-        },
-        "max_absolute_error": 4.3759440515600545e-13,
-        "max_relative_error": 4.3759440515600545e-13,
-        "passed": true
+          "sha256": "7599faffaee023818a778861973b3a825f080af2e2cf1bd158121399a508039e"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 7.105427357601002e-15,
+        "max_relative_error": 1.7977903649884751e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/30-measure-range-from-echo-delay/evidence/expected-sweep-1.json",
+          "sha256": "3920ce4ff6b82ae72cdf1eb3b46646efffaa581b36354bdc2bcc393d6fc517f1"
+        },
+        "actual": {
+          "path": "modules/30-measure-range-from-echo-delay/evidence/actual-sweep-1.json",
+          "sha256": "8fb302fbef3f3f8400d37c0d814026c35d6566df8ceeb88d43260b3a96d9543a"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 3.552713678800501e-15,
+        "max_relative_error": 1.79941390270878e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/30-measure-range-from-echo-delay/evidence/expected-sweep-2.json",
+          "sha256": "3bb5b5aac1e45bdff6b588ba55f85278cea959fe0a6ea47375a0c0e60e218a87"
+        },
+        "actual": {
+          "path": "modules/30-measure-range-from-echo-delay/evidence/actual-sweep-2.json",
+          "sha256": "d7f91396e986f3accf1c4b4888ecce195c18a0fd0396da1cef7b24d77433d7c6"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 3.552713678800501e-15,
+        "max_relative_error": 1.8089074945551926e-16,
+        "passed": true,
         "expected": {
           "path": "modules/30-measure-range-from-echo-delay/evidence/expected-broken.json",
-          "sha256": "603a1f3ef50e3abc2adefba7e83979d5a566576bb0e41ceb929b1c33e0b5f4c8"
+          "sha256": "50177fbffc1cc4116ac8036c49b7afb90b08e0a7a8e4feffe59d49ba5d637841"
         },
         "actual": {
           "path": "modules/30-measure-range-from-echo-delay/evidence/actual-broken.json",
-          "sha256": "72f7e69ae8a664d845456b817fddfe26e8dbef62089ff12a76543e8a5a9d376e"
+          "sha256": "91909d8557805b2d6fe0f1c254b66a49274818493f5e669398a5f2fe19f53dea"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 4.794498131843739e-13,
-        "max_relative_error": 4.794498131843739e-13,
-        "passed": true
+        "max_absolute_error": 3.552713678800501e-15,
+        "max_relative_error": 1.8089074945551926e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/30-measure-range-from-echo-delay/evidence/expected-recovery.json",
+          "sha256": "47c9a960fdd17f519b1a30631398e19953dce53839a677aa303d0d021cac2b3d"
+        },
+        "actual": {
+          "path": "modules/30-measure-range-from-echo-delay/evidence/actual-recovery.json",
+          "sha256": "7599faffaee023818a778861973b3a825f080af2e2cf1bd158121399a508039e"
+        }
       }
     ]
   },

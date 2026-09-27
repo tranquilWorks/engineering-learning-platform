@@ -3,13 +3,13 @@
   "id": "36-measure-doppler-from-pulse-to-pulse-phase",
   "number": 36,
   "title": "Measure Doppler from Pulse-to-Pulse Phase",
-  "summary": "Explore measure doppler from pulse-to-pulse phase with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "Complex samples preserve pulse-to-pulse phase. Adjacent products, an unwrapped phase slope and a windowed FFT estimate signed Doppler; frequencies outside \u00b1PRF/2 alias.",
   "guiding_question": "How does target velocity create coherent phase progression across pulses?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-4",
-    "radial-velocity"
+    "radar-foundations",
+    "P36"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,63 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Radial Velocity",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "velocity_mps",
+      "type": "segmented",
+      "label": "Velocity mps",
+      "unit": "m/s",
+      "default": 15,
+      "options": [
+        {
+          "label": "-20",
+          "value": -20
+        },
+        {
+          "label": "-10",
+          "value": -10
+        },
+        {
+          "label": "0",
+          "value": 0
+        },
+        {
+          "label": "10",
+          "value": 10
+        },
+        {
+          "label": "15 baseline",
+          "value": 15
+        },
+        {
+          "label": "20",
+          "value": 20
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "carrier_ghz",
+      "type": "segmented",
+      "label": "Carrier ghz",
+      "unit": "GHz",
+      "default": 10,
+      "options": [
+        {
+          "label": "5",
+          "value": 5
+        },
+        {
+          "label": "10 baseline",
+          "value": 10
+        },
+        {
+          "label": "15",
+          "value": 15
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +87,50 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing radial velocity, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict how a negative velocity changes phase direction. Can a magnitude-only record retain the sign or frequency of coherent Doppler?",
+      "reveal": "Complex samples preserve pulse-to-pulse phase. Adjacent products, an unwrapped phase slope and a windowed FFT estimate signed Doppler; frequencies outside \u00b1PRF/2 alias."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "A coherent phasor retains direction",
+      "plot": "iq"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Approaching motion is positive phase progression",
+      "plot": "phase"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Magnitude-only processing collapses Doppler toward DC",
+      "plot": "spectrum"
+    },
+    {
+      "type": "plot",
+      "title": "Signed velocity changes signed Doppler",
+      "plot": "velocity_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Same velocity at different wavelengths",
+      "plot": "carrier_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Longer dwell gives closer Doppler bins",
+      "plot": "count_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Finite FFT peak versus physical Doppler",
+      "plot": "count_peaks"
     },
     {
       "type": "callout",
@@ -102,7 +141,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

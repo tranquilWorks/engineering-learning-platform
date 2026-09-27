@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "a62b1fb2d7e8bc1694d98df2c3db6a117fc370b6a742dae79edebc4069b5cc4e",
+    "content_digest": "6b5c525a8258e28bab12f02882d1c1d156a7d00b5ec95621c45d9b61334b0310",
     "files": [
       {
         "path": "modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller/experiment.py",
-        "sha256": "d07eedcacac01490cff735271dec6d1a6169ee3810187037238e266234364f10"
+        "sha256": "bae697a66991e0bedd07b1eb7ee18786483185200933b6127b631b88a3e09261"
       },
       {
         "path": "modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller/lesson.md",
-        "sha256": "5c1f27712bf932b2f678cd09e2b385723bc9a4b6280590e36122df27588fdbc6"
+        "sha256": "bda16a01afc8997226d130d2b79110f9e9a6ed9a797585c5ab3529446d6122b2"
       },
       {
         "path": "modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller/module.yaml",
-        "sha256": "e6991a317523c4ccc5cfe3216484a6012bde87306057d4f16a65b12bab79fd18"
+        "sha256": "b3d7b56b0d8b5acc17c3668cd6631c0757af74bd582a48c7b3c1a6fa4082a38a"
       }
     ]
   },
   "content": {
     "guiding_question": "How do simple delay-line cancellers remove stationary clutter?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "[1,-1] and [1,-2,1] operate across coherent pulse columns. Stationary clutter cancels, while white-noise power grows by two and six. Valid outputs have N-1 and N-2 looks.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary clutter Doppler while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "[1,-1] and [1,-2,1] operate across coherent pulse columns. Stationary clutter cancels, while white-noise power grows by two and six. Valid outputs have N-1 and N-2 looks.",
+      "The failure differences neighboring range rows. Clutter varies across range, so its edges survive and the output has the wrong shape.",
+      "Disable the failure to restore slow-time subtraction, correct output axes and the original seeded scene.",
+      "Explicit stage equations are retained in lesson.md. NumPy random streams differ from MATLAB. Plot/console presentation is adapted; no MATLAB runtime parity is claimed."
     ],
     "equations": [
       {
@@ -69,146 +69,251 @@
       "seed": 3801,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
+          "name": "fast_time_samples",
+          "value": 128,
+          "unit": "count"
         },
         {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
+          "name": "pulse_count",
+          "value": 64,
+          "unit": "count"
         },
         {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "e11275ca99695ff043bce70029de016d2f80a7367a64ef991bad7e4b8165a89a",
-          "unit": "mixed numeric signature"
+          "sha256": "ce2894d147f840bb536e30ca5544e67627293e2072f1c8f303c37d424f12fe59",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "9e4c97ea9395836b0ff4b3299c6b24572b91c5855a54aadd945a152444e6f713",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "b7c2c38f8736b4006697f8d80349f706d4ba3091003b58e8e8d1287440fefa59",
-          "unit": "mixed numeric signature"
+          "sha256": "b5099f32f52fc2a9245917bab3954711fa54a6e9ece55be43a7888b8314fab3c",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "2e6367d70841a647fb8a55de625980d3eb0a91d1d45daa8f5ad99028fb756b58",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "3fb5b2b793012215f53ae56fea012ff0ddd0f0b85ae0f055ac92374c663ce6c6",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "246aaf92d14ba32c870589b5afd2b0c9a90d9caff0dfda88c12735a482883912",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "27850890b804899da1d5404acb4f225e0a31377fd9c5873f10d443e3f77ead90",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "16fa97b75632f820512de5d59c3a3d83a17a98e51645e924a2bafb76c41e7c79",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "ce2894d147f840bb536e30ca5544e67627293e2072f1c8f303c37d424f12fe59",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "9e4c97ea9395836b0ff4b3299c6b24572b91c5855a54aadd945a152444e6f713",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P38 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P38 explicit processing and evidence stages",
+        "target_plot_key": "scene",
+        "title": "Strong stationary clutter and moving targets",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Pulse (index)",
+            "unit": "index"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Range (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Implement a Two-Pulse and Three-Pulse MTI Canceller guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "[1,-1] and [1,-2,1] operate across coherent pulse columns. Stationary clutter cancels, while white-noise power grows by two and six. Valid outputs have N-1 and N-2 looks."
       },
       {
-        "source_figure": "Pinned P38 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P38 explicit processing and evidence stages",
+        "target_plot_key": "profiles",
+        "title": "Slow-time subtraction suppresses stationary clutter",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Range (m)",
+            "unit": "m"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "RMS amplitude (relative)",
+            "unit": "relative"
           }
         ],
-        "interpretation": "This view answers the Implement a Two-Pulse and Three-Pulse MTI Canceller guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "[1,-1] and [1,-2,1] operate across coherent pulse columns. Stationary clutter cancels, while white-noise power grows by two and six. Valid outputs have N-1 and N-2 looks."
       },
       {
-        "source_figure": "Pinned P38 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P38 explicit processing and evidence stages",
+        "target_plot_key": "response",
+        "title": "Periodic Doppler nulls",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Doppler (Hz)",
+            "unit": "Hz"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Amplitude gain (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Implement a Two-Pulse and Three-Pulse MTI Canceller guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "[1,-1] and [1,-2,1] operate across coherent pulse columns. Stationary clutter cancels, while white-noise power grows by two and six. Valid outputs have N-1 and N-2 looks."
       },
       {
-        "source_figure": "Pinned P38 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P38 explicit processing and evidence stages",
+        "target_plot_key": "velocity_sweep",
+        "title": "The deeper DC notch also removes slow targets",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Velocity (m/s)",
+            "unit": "m/s"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Amplitude gain (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Implement a Two-Pulse and Three-Pulse MTI Canceller guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "[1,-1] and [1,-2,1] operate across coherent pulse columns. Stationary clutter cancels, while white-noise power grows by two and six. Valid outputs have N-1 and N-2 looks."
+      },
+      {
+        "source_figure": "Pinned P38 explicit processing and evidence stages",
+        "target_plot_key": "prf_sweep",
+        "title": "Same 12 m/s target, different sample spacing",
+        "axes": [
+          {
+            "role": "x",
+            "label": "PRF (kHz)",
+            "unit": "kHz"
+          },
+          {
+            "role": "y",
+            "label": "Amplitude gain (ratio)",
+            "unit": "ratio"
+          }
+        ],
+        "interpretation": "[1,-1] and [1,-2,1] operate across coherent pulse columns. Stationary clutter cancels, while white-noise power grows by two and six. Valid outputs have N-1 and N-2 looks."
+      },
+      {
+        "source_figure": "Pinned P38 explicit processing and evidence stages",
+        "target_plot_key": "noise",
+        "title": "Amplitude gain must be compared with noise cost",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Canceller order (differences)",
+            "unit": "differences"
+          },
+          {
+            "role": "y",
+            "label": "Noise power gain (ratio)",
+            "unit": "ratio"
+          }
+        ],
+        "interpretation": "[1,-1] and [1,-2,1] operate across coherent pulse columns. Stationary clutter cancels, while white-noise power grows by two and six. Valid outputs have N-1 and N-2 looks."
+      },
+      {
+        "source_figure": "Pinned P38 explicit processing and evidence stages",
+        "target_plot_key": "target_snr",
+        "title": "Signal amplification is not automatically SNR gain",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Target velocity (m/s)",
+            "unit": "m/s"
+          },
+          {
+            "role": "y",
+            "label": "Output / input SNR (dB)",
+            "unit": "dB"
+          }
+        ],
+        "interpretation": "[1,-1] and [1,-2,1] operate across coherent pulse columns. Stationary clutter cancels, while white-noise power grows by two and six. Valid outputs have N-1 and N-2 looks."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "slow_target_velocity_mps",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          -15,
+          -3,
+          0,
+          3,
+          15
         ],
-        "expected_observation": "Changing clutter Doppler moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Slow target velocity mps; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "prf_khz",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          3,
+          4,
+          5,
+          7,
+          9
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Prf khz; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "The failure differences neighboring range rows. Clutter varies across range, so its edges survive and the output has the wrong shape.",
+      "recovery": "Disable the failure to restore slow-time subtraction, correct output axes and the original seeded scene.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "The failure differences neighboring range rows. Clutter varies across range, so its edges survive and the output has the wrong shape.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -216,63 +321,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 1000000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P38 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p29_p40.py",
     "seed": 3801,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "slow_target_velocity_mps",
+        "value": 3,
+        "unit": "m/s"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "prf_khz",
+        "value": 5,
+        "unit": "kHz"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 8.881784197001252e-16,
+        "max_relative_error": 4.377501292772299e-16,
+        "passed": true,
         "expected": {
           "path": "modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller/evidence/expected-baseline.json",
-          "sha256": "e11275ca99695ff043bce70029de016d2f80a7367a64ef991bad7e4b8165a89a"
+          "sha256": "ce2894d147f840bb536e30ca5544e67627293e2072f1c8f303c37d424f12fe59"
         },
         "actual": {
           "path": "modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller/evidence/actual-baseline.json",
-          "sha256": "41c99f0e399e7b3331ce3be1508026fb9569c194ec6798b76fbdd474ea5c9630"
-        },
-        "max_absolute_error": 3.625502675852488e-13,
-        "max_relative_error": 3.625502675852488e-13,
-        "passed": true
+          "sha256": "9e4c97ea9395836b0ff4b3299c6b24572b91c5855a54aadd945a152444e6f713"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 8.881784197001252e-16,
+        "max_relative_error": 4.377501292772299e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller/evidence/expected-sweep-1.json",
+          "sha256": "b5099f32f52fc2a9245917bab3954711fa54a6e9ece55be43a7888b8314fab3c"
+        },
+        "actual": {
+          "path": "modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller/evidence/actual-sweep-1.json",
+          "sha256": "2e6367d70841a647fb8a55de625980d3eb0a91d1d45daa8f5ad99028fb756b58"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 8.881784197001252e-16,
+        "max_relative_error": 4.377501292772299e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller/evidence/expected-sweep-2.json",
+          "sha256": "3fb5b2b793012215f53ae56fea012ff0ddd0f0b85ae0f055ac92374c663ce6c6"
+        },
+        "actual": {
+          "path": "modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller/evidence/actual-sweep-2.json",
+          "sha256": "246aaf92d14ba32c870589b5afd2b0c9a90d9caff0dfda88c12735a482883912"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 8.881784197001252e-16,
+        "max_relative_error": 4.377501292772299e-16,
+        "passed": true,
         "expected": {
           "path": "modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller/evidence/expected-broken.json",
-          "sha256": "b7c2c38f8736b4006697f8d80349f706d4ba3091003b58e8e8d1287440fefa59"
+          "sha256": "27850890b804899da1d5404acb4f225e0a31377fd9c5873f10d443e3f77ead90"
         },
         "actual": {
           "path": "modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller/evidence/actual-broken.json",
-          "sha256": "91dd1c4892843a1d4c9122aa0035141ea3f6c5d47e651b3495d50d28486da52d"
+          "sha256": "16fa97b75632f820512de5d59c3a3d83a17a98e51645e924a2bafb76c41e7c79"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 2.360334150353083e-13,
-        "max_relative_error": 2.360334150353083e-13,
-        "passed": true
+        "max_absolute_error": 8.881784197001252e-16,
+        "max_relative_error": 4.377501292772299e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller/evidence/expected-recovery.json",
+          "sha256": "ce2894d147f840bb536e30ca5544e67627293e2072f1c8f303c37d424f12fe59"
+        },
+        "actual": {
+          "path": "modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller/evidence/actual-recovery.json",
+          "sha256": "9e4c97ea9395836b0ff4b3299c6b24572b91c5855a54aadd945a152444e6f713"
+        }
       }
     ]
   },

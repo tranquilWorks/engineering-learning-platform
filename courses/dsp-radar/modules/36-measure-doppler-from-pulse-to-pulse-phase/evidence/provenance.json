@@ -1,0 +1,83 @@
+{
+  "item": "P36",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p36",
+    "sha256": "639080c7d5ee1da82ee8753edf755d41b68631ba751622b55c074a33d84fc09d",
+    "byte_count": 90006,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/36-measure-doppler-from-pulse-to-pulse-phase/experiment.py",
+    "sha256": "7d0451d94d7a4109ed322d4a79067d4f2cabec62cc569da170a82ad9d60841d8",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "velocity_mps": 15,
+      "carrier_ghz": 10,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "velocity_mps": -10,
+      "carrier_ghz": 10,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "velocity_mps": 15,
+      "carrier_ghz": 15,
+      "broken_mode": false
+    },
+    "broken": {
+      "velocity_mps": 15,
+      "carrier_ghz": 10,
+      "broken_mode": true
+    },
+    "recovery": {
+      "velocity_mps": 15,
+      "carrier_ghz": 10,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "true_doppler",
+      "unit": "Hz"
+    },
+    {
+      "name": "true_phase_increment",
+      "unit": "rad/pulse"
+    },
+    {
+      "name": "active_phase_doppler",
+      "unit": "Hz"
+    },
+    {
+      "name": "active_slope_doppler",
+      "unit": "Hz"
+    },
+    {
+      "name": "active_fft_doppler",
+      "unit": "Hz"
+    },
+    {
+      "name": "active_velocity",
+      "unit": "m/s"
+    },
+    {
+      "name": "velocity_limit",
+      "unit": "m/s"
+    },
+    {
+      "name": "fft_bin_spacing",
+      "unit": "Hz"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

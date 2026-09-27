@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "3434ca1d266a7787a23fb391588b14144b1300bdb709dbe3fd129195fa966f2a",
+    "content_digest": "22d89876368c1eae893df6d687c50e281f821e43f7d8cb6c5453aaf2fb408413",
     "files": [
       {
         "path": "modules/40-compare-coherent-and-noncoherent-integration/experiment.py",
-        "sha256": "b3e16224d2e2c6b7185d87c0d4df70f8ce63826ad556d5b03a956ecdddd6a0e6"
+        "sha256": "2b847f7f993fb6cdb165be59a52bdf1b95f07c52807da7b63073211a08335110"
       },
       {
         "path": "modules/40-compare-coherent-and-noncoherent-integration/lesson.md",
-        "sha256": "49dd556a6df45eaa3edf1900afb9b85738834429b31b569f9845892289047416"
+        "sha256": "284b68d6a033657facf7d66c85b6c8fead70d28ad84b6570f1c94b7b88e071a8"
       },
       {
         "path": "modules/40-compare-coherent-and-noncoherent-integration/module.yaml",
-        "sha256": "9fbf4db3fd440938ce153eb3741e99d9abc45e292d0bc488c9f411bf1792fa5d"
+        "sha256": "94e463d5daac23e731ec1e96968767e8daf3a2840c782f7e289afba314a80b5d"
       }
     ]
   },
   "content": {
     "guiding_question": "When should pulse phases be added and when should magnitudes be added?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "Known phase alignment gives coherent SNR N\u03c1. Noncoherent power has a different distribution: its standardized separation is \u221aN\u03c1. The Gaussian-jitter sweep is an ensemble expectation.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary pulse count while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Known phase alignment gives coherent SNR N\u03c1. Noncoherent power has a different distribution: its standardized separation is \u221aN\u03c1. The Gaussian-jitter sweep is an ensemble expectation.",
+      "The prescribed 0\u00b0,90\u00b0,180\u00b0,-90\u00b0 error cycle cancels the clean nominally aligned sum while preserving pulse energy. It is not a typical random-jitter realization.",
+      "Track and derotate the actual pulse errors to restore unit coherent signal fraction; disable the demonstration to replay the baseline. Recovery assumes known phase errors.",
+      "Explicit stage equations are retained in lesson.md. NumPy random streams differ from MATLAB. Plot/console presentation is adapted; no MATLAB runtime parity is claimed."
     ],
     "equations": [
       {
@@ -77,146 +77,245 @@
       "seed": 4001,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
+          "name": "pulse_count",
+          "value": 32,
+          "unit": "count"
         },
         {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "40124e63ceed00abbd5229967b5e7c64b13c2a4f67e1ae4a6152d84481c20c29",
-          "unit": "mixed numeric signature"
+          "sha256": "1b503162f8b42e3e21c9c628d2e8d5a4eb838d4e5f82249e712720935f382b97",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "bb66026f36f4cb3e5dfa1d6603d2b4d0727c7fa0f0320d2a6474485fec9839fd",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "15dd5eb63234663c67aa4bdd4294771a77fe2d19009a810f78d8eb5487f42007",
-          "unit": "mixed numeric signature"
+          "sha256": "353766e511f7055184f0b0f4e56106d43e7a34bc98d4d1a7cc147c262105ff21",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "8c9c040105dfa60b621f56b20f82a7c428c237ddb9ba801a7fb0d7ea96fdc0ef",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "cfe4e7c2c28384676cc25f910e354dc3e36b6c4321a4b94a2817e95aaceadeb7",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "8a61f11bd93b0dc22d2fedc0379238644aea4c547e4507b5d9ca456bbf00cc46",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "c11792f553927aa24586fb8f657961f5b7e0d7972cb7ab7c3dc646790b62313c",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "5377d46a72c867762dca96cebf2d93a380244fd1962f0bcca4f951a0fcf35f1b",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "1b503162f8b42e3e21c9c628d2e8d5a4eb838d4e5f82249e712720935f382b97",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "bb66026f36f4cb3e5dfa1d6603d2b4d0727c7fa0f0320d2a6474485fec9839fd",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P40 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P40 explicit processing and evidence stages",
+        "target_plot_key": "iq",
+        "title": "Align a trustworthy phase reference before summing",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "I (relative)",
+            "unit": "relative"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Q (relative)",
+            "unit": "relative"
           }
         ],
-        "interpretation": "This view answers the Compare Coherent and Noncoherent Integration guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Known phase alignment gives coherent SNR N\u03c1. Noncoherent power has a different distribution: its standardized separation is \u221aN\u03c1. The Gaussian-jitter sweep is an ensemble expectation."
       },
       {
-        "source_figure": "Pinned P40 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P40 explicit processing and evidence stages",
+        "target_plot_key": "coherent_path",
+        "title": "Cumulative complex sum",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Sum I (relative)",
+            "unit": "relative"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Sum Q (relative)",
+            "unit": "relative"
           }
         ],
-        "interpretation": "This view answers the Compare Coherent and Noncoherent Integration guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Known phase alignment gives coherent SNR N\u03c1. Noncoherent power has a different distribution: its standardized separation is \u221aN\u03c1. The Gaussian-jitter sweep is an ensemble expectation."
       },
       {
-        "source_figure": "Pinned P40 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P40 explicit processing and evidence stages",
+        "target_plot_key": "power",
+        "title": "Power sums contain positive noise energy",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Integrated pulses (count)",
+            "unit": "count"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Power statistic (relative)",
+            "unit": "relative"
           }
         ],
-        "interpretation": "This view answers the Compare Coherent and Noncoherent Integration guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Known phase alignment gives coherent SNR N\u03c1. Noncoherent power has a different distribution: its standardized separation is \u221aN\u03c1. The Gaussian-jitter sweep is an ensemble expectation."
       },
       {
-        "source_figure": "Pinned P40 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P40 explicit processing and evidence stages",
+        "target_plot_key": "count_snr",
+        "title": "Stable-phase coherent gain",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Pulse count (pulses)",
+            "unit": "pulses"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Output SNR (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Compare Coherent and Noncoherent Integration guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Known phase alignment gives coherent SNR N\u03c1. Noncoherent power has a different distribution: its standardized separation is \u221aN\u03c1. The Gaussian-jitter sweep is an ensemble expectation."
+      },
+      {
+        "source_figure": "Pinned P40 explicit processing and evidence stages",
+        "target_plot_key": "detectability",
+        "title": "Compare noise-standardized mean separations",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Pulse count (pulses)",
+            "unit": "pulses"
+          },
+          {
+            "role": "y",
+            "label": "Detectability (noise std)",
+            "unit": "noise std"
+          }
+        ],
+        "interpretation": "Known phase alignment gives coherent SNR N\u03c1. Noncoherent power has a different distribution: its standardized separation is \u221aN\u03c1. The Gaussian-jitter sweep is an ensemble expectation."
+      },
+      {
+        "source_figure": "Pinned P40 explicit processing and evidence stages",
+        "target_plot_key": "jitter",
+        "title": "Independent Gaussian phase jitter removes cross terms",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Jitter std (deg)",
+            "unit": "deg"
+          },
+          {
+            "role": "y",
+            "label": "Normalized signal power (ratio)",
+            "unit": "ratio"
+          }
+        ],
+        "interpretation": "Known phase alignment gives coherent SNR N\u03c1. Noncoherent power has a different distribution: its standardized separation is \u221aN\u03c1. The Gaussian-jitter sweep is an ensemble expectation."
+      },
+      {
+        "source_figure": "Pinned P40 explicit processing and evidence stages",
+        "target_plot_key": "failure",
+        "title": "Quadrature cancellation and known-error recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Case: active, tracked, power (index)",
+            "unit": "index"
+          },
+          {
+            "role": "y",
+            "label": "Signal fraction (ratio)",
+            "unit": "ratio"
+          }
+        ],
+        "interpretation": "Known phase alignment gives coherent SNR N\u03c1. Noncoherent power has a different distribution: its standardized separation is \u221aN\u03c1. The Gaussian-jitter sweep is an ensemble expectation."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "pulse_count",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          4,
+          8,
+          16,
+          32,
+          64
         ],
-        "expected_observation": "Changing pulse count moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Pulse count; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "input_snr_db",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          -16,
+          -8,
+          0,
+          8
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Input snr db; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "The prescribed 0\u00b0,90\u00b0,180\u00b0,-90\u00b0 error cycle cancels the clean nominally aligned sum while preserving pulse energy. It is not a typical random-jitter realization.",
+      "recovery": "Track and derotate the actual pulse errors to restore unit coherent signal fraction; disable the demonstration to replay the baseline. Recovery assumes known phase errors.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "The prescribed 0\u00b0,90\u00b0,180\u00b0,-90\u00b0 error cycle cancels the clean nominally aligned sum while preserving pulse energy. It is not a typical random-jitter realization.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -224,63 +323,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 50000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P40 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p29_p40.py",
     "seed": 4001,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "pulse_count",
+        "value": 32,
+        "unit": "pulses"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "input_snr_db",
+        "value": -8,
+        "unit": "dB"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 2.842170943040401e-14,
+        "max_relative_error": 1.116634463726997e-16,
+        "passed": true,
         "expected": {
           "path": "modules/40-compare-coherent-and-noncoherent-integration/evidence/expected-baseline.json",
-          "sha256": "40124e63ceed00abbd5229967b5e7c64b13c2a4f67e1ae4a6152d84481c20c29"
+          "sha256": "1b503162f8b42e3e21c9c628d2e8d5a4eb838d4e5f82249e712720935f382b97"
         },
         "actual": {
           "path": "modules/40-compare-coherent-and-noncoherent-integration/evidence/actual-baseline.json",
-          "sha256": "c35a8d0c68e0f6d409bec8c3526a4dcf36b20c35a098c8609585f67dfac90208"
-        },
-        "max_absolute_error": 4.399258735077183e-13,
-        "max_relative_error": 4.399258735077183e-13,
-        "passed": true
+          "sha256": "bb66026f36f4cb3e5dfa1d6603d2b4d0727c7fa0f0320d2a6474485fec9839fd"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 1.7053025658242404e-13,
+        "max_relative_error": 4.607839667590726e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/40-compare-coherent-and-noncoherent-integration/evidence/expected-sweep-1.json",
+          "sha256": "353766e511f7055184f0b0f4e56106d43e7a34bc98d4d1a7cc147c262105ff21"
+        },
+        "actual": {
+          "path": "modules/40-compare-coherent-and-noncoherent-integration/evidence/actual-sweep-1.json",
+          "sha256": "8c9c040105dfa60b621f56b20f82a7c428c237ddb9ba801a7fb0d7ea96fdc0ef"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 1.1368683772161603e-13,
+        "max_relative_error": 1.1406284896928692e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/40-compare-coherent-and-noncoherent-integration/evidence/expected-sweep-2.json",
+          "sha256": "cfe4e7c2c28384676cc25f910e354dc3e36b6c4321a4b94a2817e95aaceadeb7"
+        },
+        "actual": {
+          "path": "modules/40-compare-coherent-and-noncoherent-integration/evidence/actual-sweep-2.json",
+          "sha256": "8a61f11bd93b0dc22d2fedc0379238644aea4c547e4507b5d9ca456bbf00cc46"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 2.842170943040401e-14,
+        "max_relative_error": 1.116634463726997e-16,
+        "passed": true,
         "expected": {
           "path": "modules/40-compare-coherent-and-noncoherent-integration/evidence/expected-broken.json",
-          "sha256": "15dd5eb63234663c67aa4bdd4294771a77fe2d19009a810f78d8eb5487f42007"
+          "sha256": "c11792f553927aa24586fb8f657961f5b7e0d7972cb7ab7c3dc646790b62313c"
         },
         "actual": {
           "path": "modules/40-compare-coherent-and-noncoherent-integration/evidence/actual-broken.json",
-          "sha256": "0972ba13dc47fd756f4972183b71fb47f23da5d4f20332a2c7b9c284f4caddd8"
+          "sha256": "5377d46a72c867762dca96cebf2d93a380244fd1962f0bcca4f951a0fcf35f1b"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 4.3991893461381437e-13,
-        "max_relative_error": 4.3991893461381437e-13,
-        "passed": true
+        "max_absolute_error": 2.842170943040401e-14,
+        "max_relative_error": 1.116634463726997e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/40-compare-coherent-and-noncoherent-integration/evidence/expected-recovery.json",
+          "sha256": "1b503162f8b42e3e21c9c628d2e8d5a4eb838d4e5f82249e712720935f382b97"
+        },
+        "actual": {
+          "path": "modules/40-compare-coherent-and-noncoherent-integration/evidence/actual-recovery.json",
+          "sha256": "bb66026f36f4cb3e5dfa1d6603d2b4d0727c7fa0f0320d2a6474485fec9839fd"
+        }
       }
     ]
   },

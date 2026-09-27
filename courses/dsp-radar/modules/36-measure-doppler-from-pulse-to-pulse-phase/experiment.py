@@ -1,169 +1,182 @@
 from __future__ import annotations
 
-from typing import Any
-
 import numpy as np
 
-SEED = 3601
-ITEM_NUMBER = 36
-PHASE = 4
-MAX_POINTS = 512
+C = 299792458.0
 
 
-def _layout(title: str, x_label: str, y_label: str) -> dict[str, Any]:
+def _plot(title, x_label, y_label, traces):
+    data = []
+    for name, x, y in traces:
+        x, y = np.asarray(x), np.asarray(y)
+        i = np.unique(np.linspace(0, len(x) - 1, min(512, len(x))).astype(int))
+        data.append(
+            {
+                "type": "scatter",
+                "mode": "lines",
+                "name": name,
+                "x": x[i].tolist(),
+                "y": y[i].tolist(),
+            }
+        )
     return {
-        "title": {"text": title, "x": 0.02, "xanchor": "left"},
-        "margin": {"l": 68, "r": 22, "t": 58, "b": 58},
-        "xaxis": {"title": x_label, "showgrid": True},
-        "yaxis": {"title": y_label, "showgrid": True},
-        "legend": {"orientation": "h", "y": 1.14},
-        "hovermode": "closest",
-        "uirevision": "keep-view",
+        "data": data,
+        "layout": {
+            "title": {"text": title},
+            "xaxis": {"title": x_label},
+            "yaxis": {"title": y_label},
+            "legend": {"orientation": "h"},
+        },
+        "config": {"responsive": True, "displaylogo": False},
     }
 
 
-def run(parameters: dict[str, Any]) -> dict[str, Any]:
-    primary = float(parameters["primary_scale"])
-    secondary = float(parameters["secondary_scale"])
-    noise_db = float(parameters["noise_db"])
-    broken_mode = bool(parameters["broken_mode"])
-    count = 192 + 16 * (ITEM_NUMBER % 4)
-    if count > MAX_POINTS:
-        raise ValueError("experiment exceeds the retained point ceiling")
-    rng = np.random.default_rng(SEED)
-    x = np.linspace(0.0, 1.0, count, endpoint=False)
-    variant = 1.0 + (ITEM_NUMBER % 7) / 5.0
-    noise_scale = 10.0 ** (noise_db / 20.0)
-
-    if PHASE == 1:
-        truth = np.cos(2.0 * np.pi * variant * primary * x + 0.4 * secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, count // 7) if broken_mode else measured
-    elif PHASE == 2:
-        tone = np.exp(1j * (2.0 * np.pi * (8.0 + variant * primary) * x + secondary))
-        measured = tone + noise_scale * (rng.standard_normal(count) + 1j * rng.standard_normal(count))
-        response_axis = np.fft.fftshift(np.fft.fftfreq(count, d=1.0 / count))
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / count
-        broken_response = np.abs(measured.real) if broken_mode else np.abs(measured)
-        truth = tone.real
-    elif PHASE == 3:
-        symbols = np.sign(np.sin(2.0 * np.pi * (4.0 + variant) * x))
-        carrier = np.cos(2.0 * np.pi * (18.0 + 2.0 * primary) * x + secondary)
-        truth = symbols * carrier
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(2 + 10 * secondary)) if broken_mode else measured
-    elif PHASE == 4:
-        bins = np.arange(count, dtype=float)
-        center = count * (0.25 + 0.25 * (primary - 0.5))
-        width = 2.0 + 4.0 * secondary
-        truth = np.exp(-0.5 * ((bins - center) / width) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = bins
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / np.sqrt(count)
-        broken_response = np.roll(measured, count // 3) if broken_mode else measured
-        x = bins
-    elif PHASE == 5:
-        cells = np.arange(count, dtype=float)
-        background = 0.2 + (0.45 * secondary) * (cells >= count // 2)
-        power = background + np.abs(noise_scale * rng.standard_normal(count))
-        target_bin = int(count * (0.3 + 0.25 * (primary - 0.5)))
-        power[target_bin] += 1.4
-        truth = power
-        measured = power
-        response_axis = cells
-        response = np.full(count, np.quantile(power, 0.82 + 0.1 * secondary))
-        if broken_mode:
-            response = np.full(count, np.mean(power) * (1.2 + primary))
-        broken_response = response
-        x = cells
-    elif PHASE == 6:
-        steps = np.arange(count, dtype=float)
-        truth = 0.04 * steps + 0.0002 * variant * secondary * steps**2
-        measured = truth + noise_scale * 8.0 * rng.standard_normal(count)
-        gain = np.clip(0.12 + 0.5 * primary, 0.05, 0.95)
-        response = np.empty(count)
-        response[0] = measured[0]
-        for index in range(1, count):
-            response[index] = response[index - 1] + gain * (measured[index] - response[index - 1])
-        response_axis = steps
-        broken_response = np.roll(response, 12) if broken_mode else response
-        x = steps
-    elif PHASE == 7:
-        angles = np.linspace(-90.0, 90.0, count)
-        u = np.sin(np.deg2rad(angles)) - np.sin(np.deg2rad(45.0 * (primary - 1.0)))
-        spacing = 0.45 + 0.45 * secondary
-        elements = 6 + ITEM_NUMBER % 7
-        denominator = np.sin(np.pi * spacing * u)
-        numerator = np.sin(elements * np.pi * spacing * u)
-        response = np.where(np.abs(denominator) < 1e-10, 1.0, np.abs(numerator / (elements * denominator)))
-        truth = response
-        measured = np.maximum(response + noise_scale * rng.standard_normal(count), 0.0)
-        response_axis = angles
-        broken_response = np.roll(response, 9) if broken_mode else response
-        x = angles
-    elif PHASE == 8:
-        bins = np.arange(count, dtype=float)
-        beat_bin = count * (0.15 + 0.35 * (primary - 0.5))
-        truth = np.cos(2.0 * np.pi * beat_bin * bins / count + secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(8 + 16 * secondary)) if broken_mode else measured
-        x = bins
-    else:
-        coordinate = np.linspace(-1.0, 1.0, count)
-        width = 0.05 + 0.16 / primary
-        truth = np.exp(-0.5 * ((coordinate + 0.25) / width) ** 2) + 0.65 * np.exp(-0.5 * ((coordinate - 0.3) / (1.4 * width)) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        kernel = np.ones(3 + 2 * int(secondary * 5))
-        kernel /= kernel.sum()
-        response = np.convolve(measured, kernel, mode="same")
-        response_axis = coordinate
-        broken_response = np.roll(response, 18) + 0.25 * np.roll(response, -13) if broken_mode else response
-        x = coordinate
-
-    displayed = broken_response if broken_mode else measured
-    separation = float(np.max(response) - np.median(response))
-    rmse = float(np.sqrt(np.mean((np.asarray(displayed).real - np.asarray(truth).real) ** 2)))
-    signature = [float(count), primary, secondary, noise_db, float(np.mean(np.asarray(displayed).real)), float(np.std(np.asarray(displayed).real)), separation, rmse]
-    sweep_primary = [0.6, 1.0, 1.4]
-    sweep_secondary = [0.0, 0.5, 1.0]
-    sweep_response = [variant * value for value in sweep_primary]
-    stress_response = [separation / (1.0 + value) for value in sweep_secondary]
-    title = 'Measure Doppler from Pulse-to-Pulse Phase'
-
+def _finish(values, plots, observation, failure, recovery, seed, broken, **extra):
     return {
         "metrics": [
-            {"id": "primary", "label": 'Radial Velocity', "value": primary, "unit": "× baseline", "emphasis": "primary"},
-            {"id": "response_separation", "label": "Response separation", "value": separation, "unit": "normalized"},
-            {"id": "model_error", "label": "Model/display error", "value": rmse, "unit": "normalized"},
-            {"id": "points", "label": "Bounded points", "value": count, "unit": "points"},
+            {"id": k, "label": k.replace("_", " "), "value": float(v), "unit": u}
+            for k, (v, u) in values.items()
         ],
-        "plots": {
-            "model_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "physical/model truth", "x": x, "y": np.asarray(truth).real},
-                {"type": "scatter", "mode": "lines", "name": "measured/processed", "x": x, "y": np.asarray(displayed).real},
-            ], "layout": _layout(title + " — model view", 'range bin', 'normalized response'), "config": {"responsive": True, "displaylogo": False}},
-            "response_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "response", "x": response_axis, "y": np.asarray(response).real},
-            ], "layout": _layout(title + " — response view", 'range bin', 'normalized response'), "config": {"responsive": True, "displaylogo": False}},
-            "parameter_sweeps": {"data": [
-                {"type": "scatter", "mode": "lines+markers", "name": "primary scale", "x": sweep_primary, "y": sweep_response},
-                {"type": "scatter", "mode": "lines+markers", "name": "secondary stress", "x": sweep_secondary, "y": stress_response},
-            ], "layout": _layout("Two one-variable sweeps", "control value", "response statistic"), "config": {"responsive": True, "displaylogo": False}},
-            "broken_case": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "recovered", "x": x, "y": np.asarray(measured).real},
-                {"type": "scatter", "mode": "lines", "name": "broken" if broken_mode else "enable broken mode", "x": x, "y": np.asarray(broken_response).real},
-            ], "layout": _layout("Intentional assumption failure", 'range bin', 'normalized response'), "config": {"responsive": True, "displaylogo": False}},
-        },
+        "plots": plots,
         "explanations": {
-            "observation": f"The {title} model uses a bounded deterministic pulse-radar processing experiment. Primary scale={primary:.2f} and secondary stress={secondary:.2f} remain independently controllable.",
-            "broken": "Broken mode deliberately violates the lesson's central interpretation assumption so the displayed response becomes ambiguous, biased, contaminated, or defocused.",
-            "recovery": "Disable broken mode, restore both scales to 1.0 and 0.25, then connect the recovered shape to the pinned source equations before changing one control at a time.",
+            "observation": observation,
+            "broken": failure,
+            "recovery": recovery,
         },
-        "diagnostics": {"seed": SEED, "item_number": ITEM_NUMBER, "point_count": count, "signature": signature, "broken_active": broken_mode},
+        "diagnostics": dict(
+            signature=[float(v[0]) for v in values.values()],
+            signature_fields=list(values),
+            seed=seed,
+            broken_active=broken,
+            **extra,
+        ),
     }
+
+
+def _controls(p, spec):
+    values = []
+    for key, default, choices in spec:
+        value = p.get(key, default)
+        if isinstance(value, bool) or value not in choices:
+            raise ValueError("Choose a retained physical control: " + key)
+        values.append(float(value))
+    broken = p.get("broken_mode", False)
+    if not isinstance(broken, bool):
+        raise TypeError("broken_mode must be boolean")
+    return (*values, broken)
+
+
+def _db(x):
+    return 20 * np.log10(np.maximum(np.abs(x), 1e-12))
+
+
+def run(parameters):
+    velocity, carrier, broken = _controls(
+        parameters,
+        [
+            ("velocity_mps", 15, [-20, -10, 0, 10, 15, 20]),
+            ("carrier_ghz", 10, [5, 10, 15]),
+        ],
+    )
+    wavelength = C / (carrier * 1e9)
+    fd = 2 * velocity / wavelength
+    prf = 4000
+    n = 32
+    k = np.arange(n)
+    time = k / prf
+    clean = np.exp(1j * (np.deg2rad(25) + 2 * np.pi * fd * time))
+    rng = np.random.default_rng(3601)
+    received = clean + 0.1 / np.sqrt(2) * (rng.normal(size=n) + 1j * rng.normal(size=n))
+    active = abs(received) if broken else received
+    phase = np.angle(np.sum(np.conj(active[:-1]) * active[1:]))
+    phase_fd = phase * prf / (2 * np.pi)
+    unwrapped = np.unwrap(np.angle(active))
+    center = time - np.mean(time)
+    slope = (
+        np.dot(center, unwrapped - np.mean(unwrapped))
+        / np.dot(center, center)
+        / (2 * np.pi)
+    )
+    axis = np.fft.fftshift(np.fft.fftfreq(n, 1 / prf))
+    spectrum = np.fft.fftshift(np.fft.fft(active * np.hanning(n)))
+    peak = axis[np.argmax(abs(spectrum))]
+    counts = np.array([8, 16, 32, 64])
+    vs = np.array([-20, -10, 0, 10, 20])
+    cs = np.array([5, 10, 15])
+    values = {
+        "true_doppler": (fd, "Hz"),
+        "true_phase_increment": (2 * np.pi * fd / prf, "rad/pulse"),
+        "active_phase_doppler": (phase_fd, "Hz"),
+        "active_slope_doppler": (slope, "Hz"),
+        "active_fft_doppler": (peak, "Hz"),
+        "active_velocity": (phase_fd * wavelength / 2, "m/s"),
+        "velocity_limit": (wavelength * prf / 4, "m/s"),
+        "fft_bin_spacing": (prf / n, "Hz"),
+        "model_valid": (not broken, "boolean"),
+    }
+    plots = {
+        "iq": _plot(
+            "A coherent phasor retains direction",
+            "I (relative)",
+            "Q (relative)",
+            [("Received", np.real(active), np.imag(active))],
+        ),
+        "phase": _plot(
+            "Approaching motion is positive phase progression",
+            "Slow time (ms)",
+            "Unwrapped phase (rad)",
+            [
+                ("Active", time * 1000, unwrapped),
+                ("Clean", time * 1000, np.unwrap(np.angle(clean))),
+            ],
+        ),
+        "spectrum": _plot(
+            "Magnitude-only processing collapses Doppler toward DC",
+            "Doppler (Hz)",
+            "Normalized magnitude (dB)",
+            [("Active FFT", axis, _db(spectrum / max(abs(spectrum))))],
+        ),
+        "velocity_sweep": _plot(
+            "Signed velocity changes signed Doppler",
+            "Velocity (m/s)",
+            "Doppler (Hz)",
+            [("fd=2v/λ", vs, 2 * vs / wavelength)],
+        ),
+        "carrier_sweep": _plot(
+            "Same velocity at different wavelengths",
+            "Carrier (GHz)",
+            "Doppler (Hz)",
+            [("Doppler", cs, 2 * velocity * cs * 1e9 / C)],
+        ),
+        "count_sweep": _plot(
+            "Longer dwell gives closer Doppler bins",
+            "Pulse count (pulses)",
+            "Doppler spacing (Hz)",
+            [("PRF/N", counts, prf / counts)],
+        ),
+    }
+    count_peaks = []
+    for count in counts:
+        sequence = np.exp(
+            1j * (np.deg2rad(25) + 2 * np.pi * fd * np.arange(count) / prf)
+        )
+        transformed = np.fft.fftshift(np.fft.fft(sequence * np.hanning(count)))
+        count_peaks.append(
+            np.fft.fftshift(np.fft.fftfreq(count, 1 / prf))[np.argmax(abs(transformed))]
+        )
+    plots["count_peaks"] = _plot(
+        "Finite FFT peak versus physical Doppler",
+        "Pulse count (pulses)",
+        "Doppler (Hz)",
+        [("FFT peak", counts, count_peaks), ("True", counts, np.full(len(counts), fd))],
+    )
+    return _finish(
+        values,
+        plots,
+        "Complex samples preserve pulse-to-pulse phase. Adjacent products, an unwrapped phase slope and a windowed FFT estimate signed Doppler; frequencies outside ±PRF/2 alias.",
+        "Taking magnitude first erases phase: adjacent-product Doppler becomes zero and the FFT peaks at DC.",
+        "Disable the failure to restore coherent I/Q and the identical private-seed samples.",
+        3601,
+        broken,
+        pulse_count=n,
+    )

@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "99ce6cc74f11dbb4ee7687226c82dc9e15b8fb5bb5bf118a005517c04217b970",
+    "content_digest": "b848741fa89026a37891c0da3d51f2884b80b729e840c4887d92f28ce71bb5ce",
     "files": [
       {
         "path": "modules/37-build-a-pulse-doppler-data-matrix/experiment.py",
-        "sha256": "d81a5af2cbe4355c14b6653610b1c6ef7c8e93b7fd926f43fc1645d0345a8634"
+        "sha256": "2f9361075fae13d20db518d56647c2b77b7ecd310a07e545e6d9f8341a5e2039"
       },
       {
         "path": "modules/37-build-a-pulse-doppler-data-matrix/lesson.md",
-        "sha256": "3f4649145ac335a1c4ca690d233bc391a03fd7e83cc634f414a443c3dd08c579"
+        "sha256": "ab4ca7bc07c4e99647895252095928c8e28156a4dd2605353cdd541e2b2f8f73"
       },
       {
         "path": "modules/37-build-a-pulse-doppler-data-matrix/module.yaml",
-        "sha256": "199afc594aa345f907571cc023663c89c700267bd8e9cd3afb46fa1378ac3614"
+        "sha256": "819ff380a5e219bbc8c2ab88566aa0b4471b0539d9bebf4790008bb93bdbf1f2"
       }
     ]
   },
   "content": {
     "guiding_question": "What are fast time and slow time in a radar data block?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "Three separable range-envelope \u00d7 slow-time-phasor components form a 256\u00d732 complex matrix. The captured range span is shorter than the PRF ambiguity interval.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary fast time range while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Three separable range-envelope \u00d7 slow-time-phasor components form a 256\u00d732 complex matrix. The captured range span is shorter than the PRF ambiguity interval.",
+      "Taking magnitude of the matrix preserves target-looking range peaks but destroys the middle target's Doppler phase.",
+      "Disable the failure to restore the complex matrix, row/column meaning and exact noise realization.",
+      "Explicit stage equations are retained in lesson.md. NumPy random streams differ from MATLAB. Plot/console presentation is adapted; no MATLAB runtime parity is claimed."
     ],
     "equations": [
       {
@@ -69,146 +69,230 @@
       "seed": 3701,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
+          "name": "fast_time_samples",
+          "value": 256,
+          "unit": "count"
         },
         {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
+          "name": "pulse_count",
+          "value": 32,
+          "unit": "count"
         },
         {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "d1f0668dcd08c1b71cfa3395ac44e493268cc051184d33108fa87b6cda33f922",
-          "unit": "mixed numeric signature"
+          "sha256": "569884bc836b1d737d192b31ef1821ad9144e2a9a28f7aafe0c8333d68407d3c",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "569884bc836b1d737d192b31ef1821ad9144e2a9a28f7aafe0c8333d68407d3c",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "b0477da01af46455712c93269937b826223d7da0fc8a243deddd71d343670a27",
-          "unit": "mixed numeric signature"
+          "sha256": "596dd23f1d3d93359ebb1c7d6fe3d62411d8a09758a87332b9cd4e0468b50760",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "1c893cb3b517c2d75a3e8a764c2d350a5583c31f82205dc2abf4503aaa7f25e6",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "8a98aabbad2d307570492c15c2b4796b845670c4525b107ad565cb0e57b71d4b",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "8a98aabbad2d307570492c15c2b4796b845670c4525b107ad565cb0e57b71d4b",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "a876e4d8bb170745c46e83f80b98d9b40b60448f5511305abd51fbb1a78fa273",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "a876e4d8bb170745c46e83f80b98d9b40b60448f5511305abd51fbb1a78fa273",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "569884bc836b1d737d192b31ef1821ad9144e2a9a28f7aafe0c8333d68407d3c",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "569884bc836b1d737d192b31ef1821ad9144e2a9a28f7aafe0c8333d68407d3c",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P37 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P37 explicit processing and evidence stages",
+        "target_plot_key": "matrix",
+        "title": "Rows are fast time; columns are coherent pulses",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Pulse (index)",
+            "unit": "index"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Range (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Build a Pulse-Doppler Data Matrix guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Three separable range-envelope \u00d7 slow-time-phasor components form a 256\u00d732 complex matrix. The captured range span is shorter than the PRF ambiguity interval."
       },
       {
-        "source_figure": "Pinned P37 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P37 explicit processing and evidence stages",
+        "target_plot_key": "profiles",
+        "title": "Moving across a column changes fast-time range",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Range (m)",
+            "unit": "m"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Magnitude (relative)",
+            "unit": "relative"
           }
         ],
-        "interpretation": "This view answers the Build a Pulse-Doppler Data Matrix guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Three separable range-envelope \u00d7 slow-time-phasor components form a 256\u00d732 complex matrix. The captured range span is shorter than the PRF ambiguity interval."
       },
       {
-        "source_figure": "Pinned P37 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P37 explicit processing and evidence stages",
+        "target_plot_key": "phase",
+        "title": "Moving across a row follows slow-time phase",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Slow time (ms)",
+            "unit": "ms"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Unwrapped phase (rad)",
+            "unit": "rad"
           }
         ],
-        "interpretation": "This view answers the Build a Pulse-Doppler Data Matrix guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Three separable range-envelope \u00d7 slow-time-phasor components form a 256\u00d732 complex matrix. The captured range span is shorter than the PRF ambiguity interval."
       },
       {
-        "source_figure": "Pinned P37 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P37 explicit processing and evidence stages",
+        "target_plot_key": "doppler",
+        "title": "Middle-target slow-time FFT",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Doppler (Hz)",
+            "unit": "Hz"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Normalized magnitude (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Build a Pulse-Doppler Data Matrix guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Three separable range-envelope \u00d7 slow-time-phasor components form a 256\u00d732 complex matrix. The captured range span is shorter than the PRF ambiguity interval."
+      },
+      {
+        "source_figure": "Pinned P37 explicit processing and evidence stages",
+        "target_plot_key": "range_sweep",
+        "title": "Range moves the Gaussian response across rows",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Range (m)",
+            "unit": "m"
+          },
+          {
+            "role": "y",
+            "label": "Range response (relative)",
+            "unit": "relative"
+          }
+        ],
+        "interpretation": "Three separable range-envelope \u00d7 slow-time-phasor components form a 256\u00d732 complex matrix. The captured range span is shorter than the PRF ambiguity interval."
+      },
+      {
+        "source_figure": "Pinned P37 explicit processing and evidence stages",
+        "target_plot_key": "velocity_sweep",
+        "title": "Velocity moves phase without changing range row",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Velocity (m/s)",
+            "unit": "m/s"
+          },
+          {
+            "role": "y",
+            "label": "Phase increment (rad/pulse)",
+            "unit": "rad/pulse"
+          }
+        ],
+        "interpretation": "Three separable range-envelope \u00d7 slow-time-phasor components form a 256\u00d732 complex matrix. The captured range span is shorter than the PRF ambiguity interval."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "middle_target_range_m",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          750,
+          900,
+          1050
         ],
-        "expected_observation": "Changing fast time range moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Middle target range m; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "middle_velocity_mps",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          -18,
+          0,
+          12,
+          18
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Middle velocity mps; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "Taking magnitude of the matrix preserves target-looking range peaks but destroys the middle target's Doppler phase.",
+      "recovery": "Disable the failure to restore the complex matrix, row/column meaning and exact noise realization.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Taking magnitude of the matrix preserves target-looking range peaks but destroys the middle target's Doppler phase.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -216,63 +300,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 1000000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P37 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p29_p40.py",
     "seed": 3701,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "middle_target_range_m",
+        "value": 900,
+        "unit": "m"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "middle_velocity_mps",
+        "value": 12,
+        "unit": "m/s"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true,
         "expected": {
           "path": "modules/37-build-a-pulse-doppler-data-matrix/evidence/expected-baseline.json",
-          "sha256": "d1f0668dcd08c1b71cfa3395ac44e493268cc051184d33108fa87b6cda33f922"
+          "sha256": "569884bc836b1d737d192b31ef1821ad9144e2a9a28f7aafe0c8333d68407d3c"
         },
         "actual": {
           "path": "modules/37-build-a-pulse-doppler-data-matrix/evidence/actual-baseline.json",
-          "sha256": "1687558ad2cd059509dcfd4deb43e9122e85f0a3925780ea8d77ad56ea7b39ec"
-        },
-        "max_absolute_error": 3.5745018056587696e-13,
-        "max_relative_error": 3.5745018056587696e-13,
-        "passed": true
+          "sha256": "569884bc836b1d737d192b31ef1821ad9144e2a9a28f7aafe0c8333d68407d3c"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 2.2737367544323206e-13,
+        "max_relative_error": 2.8394034944326607e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/37-build-a-pulse-doppler-data-matrix/evidence/expected-sweep-1.json",
+          "sha256": "596dd23f1d3d93359ebb1c7d6fe3d62411d8a09758a87332b9cd4e0468b50760"
+        },
+        "actual": {
+          "path": "modules/37-build-a-pulse-doppler-data-matrix/evidence/actual-sweep-1.json",
+          "sha256": "1c893cb3b517c2d75a3e8a764c2d350a5583c31f82205dc2abf4503aaa7f25e6"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true,
+        "expected": {
+          "path": "modules/37-build-a-pulse-doppler-data-matrix/evidence/expected-sweep-2.json",
+          "sha256": "8a98aabbad2d307570492c15c2b4796b845670c4525b107ad565cb0e57b71d4b"
+        },
+        "actual": {
+          "path": "modules/37-build-a-pulse-doppler-data-matrix/evidence/actual-sweep-2.json",
+          "sha256": "8a98aabbad2d307570492c15c2b4796b845670c4525b107ad565cb0e57b71d4b"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true,
         "expected": {
           "path": "modules/37-build-a-pulse-doppler-data-matrix/evidence/expected-broken.json",
-          "sha256": "b0477da01af46455712c93269937b826223d7da0fc8a243deddd71d343670a27"
+          "sha256": "a876e4d8bb170745c46e83f80b98d9b40b60448f5511305abd51fbb1a78fa273"
         },
         "actual": {
           "path": "modules/37-build-a-pulse-doppler-data-matrix/evidence/actual-broken.json",
-          "sha256": "247b83c4602730d42e89a406a4672f1289c681e745f23806fdffd7ea95539c50"
+          "sha256": "a876e4d8bb170745c46e83f80b98d9b40b60448f5511305abd51fbb1a78fa273"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 3.1845359682591834e-13,
-        "max_relative_error": 3.1845359682591834e-13,
-        "passed": true
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true,
+        "expected": {
+          "path": "modules/37-build-a-pulse-doppler-data-matrix/evidence/expected-recovery.json",
+          "sha256": "569884bc836b1d737d192b31ef1821ad9144e2a9a28f7aafe0c8333d68407d3c"
+        },
+        "actual": {
+          "path": "modules/37-build-a-pulse-doppler-data-matrix/evidence/actual-recovery.json",
+          "sha256": "569884bc836b1d737d192b31ef1821ad9144e2a9a28f7aafe0c8333d68407d3c"
+        }
       }
     ]
   },

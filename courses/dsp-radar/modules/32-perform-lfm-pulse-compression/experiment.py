@@ -1,169 +1,213 @@
 from __future__ import annotations
 
-from typing import Any
-
 import numpy as np
 
-SEED = 3201
-ITEM_NUMBER = 32
-PHASE = 4
-MAX_POINTS = 512
+C = 299792458.0
 
 
-def _layout(title: str, x_label: str, y_label: str) -> dict[str, Any]:
+def _plot(title, x_label, y_label, traces):
+    data = []
+    for name, x, y in traces:
+        x, y = np.asarray(x), np.asarray(y)
+        i = np.unique(np.linspace(0, len(x) - 1, min(512, len(x))).astype(int))
+        data.append(
+            {
+                "type": "scatter",
+                "mode": "lines",
+                "name": name,
+                "x": x[i].tolist(),
+                "y": y[i].tolist(),
+            }
+        )
     return {
-        "title": {"text": title, "x": 0.02, "xanchor": "left"},
-        "margin": {"l": 68, "r": 22, "t": 58, "b": 58},
-        "xaxis": {"title": x_label, "showgrid": True},
-        "yaxis": {"title": y_label, "showgrid": True},
-        "legend": {"orientation": "h", "y": 1.14},
-        "hovermode": "closest",
-        "uirevision": "keep-view",
+        "data": data,
+        "layout": {
+            "title": {"text": title},
+            "xaxis": {"title": x_label},
+            "yaxis": {"title": y_label},
+            "legend": {"orientation": "h"},
+        },
+        "config": {"responsive": True, "displaylogo": False},
     }
 
 
-def run(parameters: dict[str, Any]) -> dict[str, Any]:
-    primary = float(parameters["primary_scale"])
-    secondary = float(parameters["secondary_scale"])
-    noise_db = float(parameters["noise_db"])
-    broken_mode = bool(parameters["broken_mode"])
-    count = 192 + 16 * (ITEM_NUMBER % 4)
-    if count > MAX_POINTS:
-        raise ValueError("experiment exceeds the retained point ceiling")
-    rng = np.random.default_rng(SEED)
-    x = np.linspace(0.0, 1.0, count, endpoint=False)
-    variant = 1.0 + (ITEM_NUMBER % 7) / 5.0
-    noise_scale = 10.0 ** (noise_db / 20.0)
-
-    if PHASE == 1:
-        truth = np.cos(2.0 * np.pi * variant * primary * x + 0.4 * secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, count // 7) if broken_mode else measured
-    elif PHASE == 2:
-        tone = np.exp(1j * (2.0 * np.pi * (8.0 + variant * primary) * x + secondary))
-        measured = tone + noise_scale * (rng.standard_normal(count) + 1j * rng.standard_normal(count))
-        response_axis = np.fft.fftshift(np.fft.fftfreq(count, d=1.0 / count))
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / count
-        broken_response = np.abs(measured.real) if broken_mode else np.abs(measured)
-        truth = tone.real
-    elif PHASE == 3:
-        symbols = np.sign(np.sin(2.0 * np.pi * (4.0 + variant) * x))
-        carrier = np.cos(2.0 * np.pi * (18.0 + 2.0 * primary) * x + secondary)
-        truth = symbols * carrier
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(2 + 10 * secondary)) if broken_mode else measured
-    elif PHASE == 4:
-        bins = np.arange(count, dtype=float)
-        center = count * (0.25 + 0.25 * (primary - 0.5))
-        width = 2.0 + 4.0 * secondary
-        truth = np.exp(-0.5 * ((bins - center) / width) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = bins
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / np.sqrt(count)
-        broken_response = np.roll(measured, count // 3) if broken_mode else measured
-        x = bins
-    elif PHASE == 5:
-        cells = np.arange(count, dtype=float)
-        background = 0.2 + (0.45 * secondary) * (cells >= count // 2)
-        power = background + np.abs(noise_scale * rng.standard_normal(count))
-        target_bin = int(count * (0.3 + 0.25 * (primary - 0.5)))
-        power[target_bin] += 1.4
-        truth = power
-        measured = power
-        response_axis = cells
-        response = np.full(count, np.quantile(power, 0.82 + 0.1 * secondary))
-        if broken_mode:
-            response = np.full(count, np.mean(power) * (1.2 + primary))
-        broken_response = response
-        x = cells
-    elif PHASE == 6:
-        steps = np.arange(count, dtype=float)
-        truth = 0.04 * steps + 0.0002 * variant * secondary * steps**2
-        measured = truth + noise_scale * 8.0 * rng.standard_normal(count)
-        gain = np.clip(0.12 + 0.5 * primary, 0.05, 0.95)
-        response = np.empty(count)
-        response[0] = measured[0]
-        for index in range(1, count):
-            response[index] = response[index - 1] + gain * (measured[index] - response[index - 1])
-        response_axis = steps
-        broken_response = np.roll(response, 12) if broken_mode else response
-        x = steps
-    elif PHASE == 7:
-        angles = np.linspace(-90.0, 90.0, count)
-        u = np.sin(np.deg2rad(angles)) - np.sin(np.deg2rad(45.0 * (primary - 1.0)))
-        spacing = 0.45 + 0.45 * secondary
-        elements = 6 + ITEM_NUMBER % 7
-        denominator = np.sin(np.pi * spacing * u)
-        numerator = np.sin(elements * np.pi * spacing * u)
-        response = np.where(np.abs(denominator) < 1e-10, 1.0, np.abs(numerator / (elements * denominator)))
-        truth = response
-        measured = np.maximum(response + noise_scale * rng.standard_normal(count), 0.0)
-        response_axis = angles
-        broken_response = np.roll(response, 9) if broken_mode else response
-        x = angles
-    elif PHASE == 8:
-        bins = np.arange(count, dtype=float)
-        beat_bin = count * (0.15 + 0.35 * (primary - 0.5))
-        truth = np.cos(2.0 * np.pi * beat_bin * bins / count + secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(8 + 16 * secondary)) if broken_mode else measured
-        x = bins
-    else:
-        coordinate = np.linspace(-1.0, 1.0, count)
-        width = 0.05 + 0.16 / primary
-        truth = np.exp(-0.5 * ((coordinate + 0.25) / width) ** 2) + 0.65 * np.exp(-0.5 * ((coordinate - 0.3) / (1.4 * width)) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        kernel = np.ones(3 + 2 * int(secondary * 5))
-        kernel /= kernel.sum()
-        response = np.convolve(measured, kernel, mode="same")
-        response_axis = coordinate
-        broken_response = np.roll(response, 18) + 0.25 * np.roll(response, -13) if broken_mode else response
-        x = coordinate
-
-    displayed = broken_response if broken_mode else measured
-    separation = float(np.max(response) - np.median(response))
-    rmse = float(np.sqrt(np.mean((np.asarray(displayed).real - np.asarray(truth).real) ** 2)))
-    signature = [float(count), primary, secondary, noise_db, float(np.mean(np.asarray(displayed).real)), float(np.std(np.asarray(displayed).real)), separation, rmse]
-    sweep_primary = [0.6, 1.0, 1.4]
-    sweep_secondary = [0.0, 0.5, 1.0]
-    sweep_response = [variant * value for value in sweep_primary]
-    stress_response = [separation / (1.0 + value) for value in sweep_secondary]
-    title = 'Perform LFM Pulse Compression'
-
+def _finish(values, plots, observation, failure, recovery, seed, broken, **extra):
     return {
         "metrics": [
-            {"id": "primary", "label": 'Chirp Bandwidth', "value": primary, "unit": "× baseline", "emphasis": "primary"},
-            {"id": "response_separation", "label": "Response separation", "value": separation, "unit": "normalized"},
-            {"id": "model_error", "label": "Model/display error", "value": rmse, "unit": "normalized"},
-            {"id": "points", "label": "Bounded points", "value": count, "unit": "points"},
+            {"id": k, "label": k.replace("_", " "), "value": float(v), "unit": u}
+            for k, (v, u) in values.items()
         ],
-        "plots": {
-            "model_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "physical/model truth", "x": x, "y": np.asarray(truth).real},
-                {"type": "scatter", "mode": "lines", "name": "measured/processed", "x": x, "y": np.asarray(displayed).real},
-            ], "layout": _layout(title + " — model view", 'range bin', 'normalized response'), "config": {"responsive": True, "displaylogo": False}},
-            "response_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "response", "x": response_axis, "y": np.asarray(response).real},
-            ], "layout": _layout(title + " — response view", 'range bin', 'normalized response'), "config": {"responsive": True, "displaylogo": False}},
-            "parameter_sweeps": {"data": [
-                {"type": "scatter", "mode": "lines+markers", "name": "primary scale", "x": sweep_primary, "y": sweep_response},
-                {"type": "scatter", "mode": "lines+markers", "name": "secondary stress", "x": sweep_secondary, "y": stress_response},
-            ], "layout": _layout("Two one-variable sweeps", "control value", "response statistic"), "config": {"responsive": True, "displaylogo": False}},
-            "broken_case": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "recovered", "x": x, "y": np.asarray(measured).real},
-                {"type": "scatter", "mode": "lines", "name": "broken" if broken_mode else "enable broken mode", "x": x, "y": np.asarray(broken_response).real},
-            ], "layout": _layout("Intentional assumption failure", 'range bin', 'normalized response'), "config": {"responsive": True, "displaylogo": False}},
-        },
+        "plots": plots,
         "explanations": {
-            "observation": f"The {title} model uses a bounded deterministic pulse-radar processing experiment. Primary scale={primary:.2f} and secondary stress={secondary:.2f} remain independently controllable.",
-            "broken": "Broken mode deliberately violates the lesson's central interpretation assumption so the displayed response becomes ambiguous, biased, contaminated, or defocused.",
-            "recovery": "Disable broken mode, restore both scales to 1.0 and 0.25, then connect the recovered shape to the pinned source equations before changing one control at a time.",
+            "observation": observation,
+            "broken": failure,
+            "recovery": recovery,
         },
-        "diagnostics": {"seed": SEED, "item_number": ITEM_NUMBER, "point_count": count, "signature": signature, "broken_active": broken_mode},
+        "diagnostics": dict(
+            signature=[float(v[0]) for v in values.values()],
+            signature_fields=list(values),
+            seed=seed,
+            broken_active=broken,
+            **extra,
+        ),
     }
+
+
+def _controls(p, spec):
+    values = []
+    for key, default, choices in spec:
+        value = p.get(key, default)
+        if isinstance(value, bool) or value not in choices:
+            raise ValueError("Choose a retained physical control: " + key)
+        values.append(float(value))
+    broken = p.get("broken_mode", False)
+    if not isinstance(broken, bool):
+        raise TypeError("broken_mode must be boolean")
+    return (*values, broken)
+
+
+def _db(x):
+    return 20 * np.log10(np.maximum(np.abs(x), 1e-12))
+
+
+def _width(a, spacing):
+    a = np.abs(a)
+    peak = int(np.argmax(a))
+    h = a[peak] / np.sqrt(2)
+    left = right = peak
+    while left > 0 and a[left] >= h:
+        left -= 1
+    while right < len(a) - 1 and a[right] >= h:
+        right += 1
+    l = left + (h - a[left]) / (a[left + 1] - a[left])
+    r = right - 1 + (h - a[right - 1]) / (a[right] - a[right - 1])
+    return float((r - l) * spacing)
+
+
+def _lfm(bandwidth, duration):
+    n = round(duration * 40e6)
+    t = (np.arange(n) - (n - 1) / 2) / 40e6
+    return np.exp(1j * np.pi * bandwidth / duration * t * t)
+
+
+def run(parameters):
+    bandwidth, duration, broken = _controls(
+        parameters,
+        [("bandwidth_mhz", 8, [4, 8, 16]), ("pulse_duration_us", 10, [5, 10, 20])],
+    )
+    fs = 40e6
+    b = bandwidth * 1e6
+    t = duration * 1e-6
+    pulse = _lfm(b, t)
+    n = len(pulse)
+    delay = round(2 * 2400 / C * fs)
+    second = round(2 * 2475 / C * fs)
+    first = np.zeros(1600, complex)
+    other = first.copy()
+    first[delay : delay + n] = pulse
+    other[second : second + n] = 0.65 * pulse
+    rng = np.random.default_rng(3201)
+    noise = 2 / np.sqrt(2) * (rng.normal(size=1600) + 1j * rng.normal(size=1600))
+    replica = _lfm(0.55 * b, t) if broken else pulse
+    h = np.conj(replica[::-1])
+    matched = np.convolve(first + other + noise, h)
+    isolated = np.convolve(first, h)
+    correct = np.convolve(first, np.conj(pulse[::-1]))
+    nr = np.convolve(noise, np.conj(pulse[::-1]))
+    out_noise = np.mean(abs(nr[n - 1 : 1600]) ** 2)
+    output_snr = 10 * np.log10(max(abs(correct)) ** 2 / out_noise)
+    input_inband = 10 * np.log10(1 / (4 * b / fs))
+    spacing = C / (2 * fs)
+    values = {
+        "time_bandwidth": (b * t, "ratio"),
+        "raw_range_extent": (C * t / 2, "m"),
+        "nominal_resolution": (C / (2 * b), "m"),
+        "correct_width": (_width(correct, spacing), "m"),
+        "active_width": (_width(isolated, spacing), "m"),
+        "active_peak_loss": (
+            20 * np.log10(max(abs(isolated)) / max(abs(correct))),
+            "dB",
+        ),
+        "predicted_bt_gain": (10 * np.log10(b * t), "dB"),
+        "measured_bt_gain": (output_snr - input_inband, "dB"),
+        "sampled_gain": (10 * np.log10(n), "dB"),
+        "model_valid": (not broken, "boolean"),
+    }
+    axis = (np.arange(len(matched)) - (n - 1)) * spacing
+    view = (axis > 2200) & (axis < 2700)
+    bs = np.array([4, 8, 16])
+    ts = np.array([5, 10, 20])
+    width_for = lambda bb, tt: _width(
+        np.convolve(_lfm(bb, tt), np.conj(_lfm(bb, tt)[::-1])), spacing
+    )
+    plots = {
+        "chirp": _plot(
+            "LFM has constant magnitude and rotating phase",
+            "Pulse time (µs)",
+            "Amplitude (relative)",
+            [
+                ("I", np.arange(n) / fs * 1e6, pulse.real),
+                ("Q", np.arange(n) / fs * 1e6, pulse.imag),
+            ],
+        ),
+        "frequency": _plot(
+            "Frequency labels time inside the pulse",
+            "Pulse time (µs)",
+            "Instantaneous frequency (MHz)",
+            [
+                (
+                    "Frequency",
+                    np.arange(n) / fs * 1e6,
+                    b / t * (np.arange(n) - (n - 1) / 2) / fs / 1e6,
+                )
+            ],
+        ),
+        "raw": _plot(
+            "Long raw echoes overlap",
+            "Fast time (µs)",
+            "Echo magnitude (relative)",
+            [
+                ("Clean", np.arange(1600) / fs * 1e6, abs(first + other)),
+                ("Noisy", np.arange(1600) / fs * 1e6, abs(first + other + noise)),
+            ],
+        ),
+        "compression": _plot(
+            "Delay-corrected matched output",
+            "Range (m)",
+            "Magnitude relative to exact peak (dB)",
+            [
+                ("Noisy pair", axis[view], _db(matched[view] / n)),
+                ("Active isolated", axis[view], _db(isolated[view] / n)),
+                ("Exact replica", axis[view], _db(correct[view] / n)),
+            ],
+        ),
+        "bandwidth_sweep": _plot(
+            "Bandwidth sets compressed width",
+            "Bandwidth (MHz)",
+            "Width (m)",
+            [("Width", bs, [width_for(v * 1e6, t) for v in bs])],
+        ),
+        "duration_width": _plot(
+            "Duration changes energy at fixed bandwidth",
+            "Duration (µs)",
+            "Width (m)",
+            [("Width", ts, [width_for(b, v * 1e-6) for v in ts])],
+        ),
+        "duration_gain": _plot(
+            "Gain referenced to B-Hz input noise",
+            "Duration (µs)",
+            "BT gain (dB)",
+            [("Gain", ts, 10 * np.log10(b * ts * 1e-6))],
+        ),
+    }
+    return _finish(
+        values,
+        plots,
+        "The conjugate-reversed chirp compresses long overlapping echoes. Bandwidth sets width; duration supplies energy. FsT and BT use different input-noise references.",
+        "A 0.55B replica leaves phase mismatch: the isolated peak loses height and broadens on the same reference scale.",
+        "Disable the failure to use the exact transmitted replica and reproduce the baseline seeded record.",
+        3201,
+        broken,
+        record_samples=1600,
+        pulse_samples=n,
+    )

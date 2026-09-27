@@ -1,6 +1,4 @@
-# Compare Coherent and Noncoherent Integration
-
-> **Guiding question:** When should pulse phases be added and when should magnitudes be added?
+# Lesson: phase is information only when its reference is trustworthy
 
 ## Guiding question
 
@@ -101,33 +99,29 @@ The experiment models one complex range bin, constant target amplitude, independ
 - **“The broken quadrature cycle is typical random jitter.”** It is a deterministic worst-case teaching pattern chosen to make cancellation exact and visible.
 - **“More pulses always help coherently.”** Only if the phase model remains valid over the integration interval.
 
-## Use the Python GUI experiment
+## Interactive lab: Compare Coherent and Noncoherent Integration
 
-The GUI keeps the pinned source's mental model and processing order visible. The **pulse count** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** When should pulse phases be added and when should magnitudes be added?
 
-### Prediction and sweep 1 — pulse count
+The baseline is 32 pulses, unit target amplitude, −8 dB per-pulse SNR, initial phase 25° and 35° nominal increment. Seed 4001 produces circular complex noise. Actual noisy coherent/noncoherent statistics are distinct from their analytic expectations. The Gaussian-jitter curve is an ensemble formula; the quadrature failure is a clean prescribed sequence. Known-error recovery is not a phase-acquisition algorithm.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict coherent gain when pulse count doubles with trustworthy phase. Why do the coherent and noncoherent power statistics need different noise normalizations?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Change only **Pulse count** from 32 to 64 pulses. Predict and explain the change using the source equation, then reset.
+2. Start at the baseline. Change only **Input snr db** from -8 to 0 dB. Predict and explain the change using the source equation, then reset.
+3. Enable the broken case. The prescribed 0°,90°,180°,-90° error cycle cancels the clean nominally aligned sum while preserving pulse energy. It is not a typical random-jitter realization.
+4. Recovery: Track and derotate the actual pulse errors to restore unit coherent signal fraction; disable the demonstration to replay the baseline. Recovery assumes known phase errors. Restore both controls and disable the toggle to reproduce the selected baseline exactly.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict coherent gain when pulse count doubles with trustworthy phase. Why do the coherent and noncoherent power statistics need different noise normalizations? Explain your answer using a measured value and units, then describe the failure and the recovery assumption.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+The prescribed 0°,90°,180°,-90° error cycle cancels the clean nominally aligned sum while preserving pulse energy. It is not a typical random-jitter realization. Avoid treating a clean seeded demonstration as field performance.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The pinned source lesson above describes the original MATLAB model. This interactive version uses bounded NumPy arrays and the same physical stages, with an independent numerical reference. Vectorized sums and linear convolution replace nested MATLAB accumulation loops without circular wrapping. NumPy seeds are reproducible but are not MATLAB RNG parity. MATLAB figure cleanup and console output become plots and metrics. Line displays retain at most 512 points; heatmaps retain at most 128 columns and 64 rows, while calculations use the full stated arrays. No MATLAB execution, visual/accessibility review, hardware, or learner-effectiveness claim is made.

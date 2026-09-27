@@ -1,0 +1,91 @@
+{
+  "item": "P31",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p31",
+    "sha256": "639080c7d5ee1da82ee8753edf755d41b68631ba751622b55c074a33d84fc09d",
+    "byte_count": 90006,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/31-separate-range-resolution-from-range-accuracy/experiment.py",
+    "sha256": "fbf2170691cfbf0f45da4feb4b574d480b55d354f61a87e0a446881f3706394f",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "bandwidth_mhz": 4,
+      "target_separation_m": 22,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "bandwidth_mhz": 8,
+      "target_separation_m": 22,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "bandwidth_mhz": 4,
+      "target_separation_m": 45,
+      "broken_mode": false
+    },
+    "broken": {
+      "bandwidth_mhz": 4,
+      "target_separation_m": 22,
+      "broken_mode": true
+    },
+    "recovery": {
+      "bandwidth_mhz": 4,
+      "target_separation_m": 22,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "nominal_range_scale",
+      "unit": "m"
+    },
+    {
+      "name": "measured_response_width",
+      "unit": "m"
+    },
+    {
+      "name": "physical_peak_count",
+      "unit": "count"
+    },
+    {
+      "name": "active_claimed_count",
+      "unit": "count"
+    },
+    {
+      "name": "false_display_separation",
+      "unit": "m"
+    },
+    {
+      "name": "integer_error",
+      "unit": "m"
+    },
+    {
+      "name": "refined_error",
+      "unit": "m"
+    },
+    {
+      "name": "low_snr_rmse",
+      "unit": "m"
+    },
+    {
+      "name": "high_snr_rmse",
+      "unit": "m"
+    },
+    {
+      "name": "wideband_peak_count",
+      "unit": "count"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

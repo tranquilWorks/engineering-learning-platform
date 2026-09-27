@@ -1,6 +1,4 @@
-# Implement a Two-Pulse and Three-Pulse MTI Canceller
-
-> **Guiding question:** How do simple delay-line cancellers remove stationary clutter?
+# Lesson: A Difference Across Pulses Is a Doppler Filter
 
 ## Start with the physical picture
 
@@ -161,33 +159,29 @@ avoiding artificial boundary transients.
 - P38 filters those columns with explicit delay-line cancellers.
 - P39 examines the periodic blind-speed consequence.
 
-## Use the Python GUI experiment
+## Interactive lab: Implement a Two-Pulse and Three-Pulse MTI Canceller
 
-The GUI keeps the pinned source's mental model and processing order visible. The **clutter Doppler** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** How do simple delay-line cancellers remove stationary clutter?
 
-### Prediction and sweep 1 — clutter Doppler
+The matrix is 128×64. Source clutter bins 25/63/100 become zero-based 24/62/99, with amplitudes 20/12/8 and width 1.8 bins. Targets at source bins 63/92 have velocities 3/15 m/s, amplitudes 1/0.8 and width 1.2 bins. Noise RMS is 0.08 with seed 3801. The velocity control moves the slow target only. Valid differences omit unavailable boundary looks; no zero padding creates a false transient.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict the effect of taking a second slow-time difference on a slow target and on white-noise power. What does subtracting neighboring range rows actually measure?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Change only **Slow target velocity mps** from 3 to 15 m/s. Predict and explain the change using the source equation, then reset.
+2. Start at the baseline. Change only **Prf khz** from 5 to 9 kHz. Predict and explain the change using the source equation, then reset.
+3. Enable the broken case. The failure differences neighboring range rows. Clutter varies across range, so its edges survive and the output has the wrong shape.
+4. Recovery: Disable the failure to restore slow-time subtraction, correct output axes and the original seeded scene. Restore both controls and disable the toggle to reproduce the selected baseline exactly.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict the effect of taking a second slow-time difference on a slow target and on white-noise power. What does subtracting neighboring range rows actually measure? Explain your answer using a measured value and units, then describe the failure and the recovery assumption.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+The failure differences neighboring range rows. Clutter varies across range, so its edges survive and the output has the wrong shape. Avoid treating a clean seeded demonstration as field performance.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The pinned source lesson above describes the original MATLAB model. This interactive version uses bounded NumPy arrays and the same physical stages, with an independent numerical reference. Vectorized sums and linear convolution replace nested MATLAB accumulation loops without circular wrapping. NumPy seeds are reproducible but are not MATLAB RNG parity. MATLAB figure cleanup and console output become plots and metrics. Line displays retain at most 512 points; heatmaps retain at most 128 columns and 64 rows, while calculations use the full stated arrays. No MATLAB execution, visual/accessibility review, hardware, or learner-effectiveness claim is made.

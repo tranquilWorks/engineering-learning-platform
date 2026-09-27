@@ -1,10 +1,5 @@
 schema_version: 1
 commands:
-  dsp-fidelity-p21-p28:
-  - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3
-    -B -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py
-    apps/api/tests/test_dsp_fidelity_remediation_p21_p28.py apps/api/tests/test_dsp_conversion_framework.py
-    apps/api/tests/test_dsp_course.py apps/api/tests/test_course_caliber_status.py
   backend:
   - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests
   contract:
@@ -14,17 +9,21 @@ commands:
   full:
   - ./scripts/agent-verify.sh full
   deterministic-catalog:
-  - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute
-    --deterministic --json
+  - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic
+    --json
   frontend:
   - npm run typecheck
   - npm run build
   lint:
   - .venv/bin/ruff check apps/api/tests/test_dsp_fidelity_remediation*.py courses/dsp-radar/remediation_reference_cases.py
-    courses/dsp-radar/modules/2[1-8]-*
+    courses/dsp-radar/modules/29-* courses/dsp-radar/modules/3[0-9]-* courses/dsp-radar/modules/40-*
   scope:
   - git diff --check
-  - git diff --check
-  - git diff --name-only b7e684d595bd777602c9aa22cd489189efa6584b
-evidence_boundary: Eight deterministic software source-fidelity repairs only. P29-P84, learner validation,
-  MATLAB runtime and physical/production claims remain pending.
+  - git diff --name-only 74fbe13828665783a97d047eae0c6dc6ef482745
+  dsp-fidelity-p29-p40:
+  - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3
+    -B -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py
+    apps/api/tests/test_dsp_fidelity_remediation_p21_p28.py apps/api/tests/test_dsp_fidelity_remediation_p29_p40.py
+    apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py apps/api/tests/test_course_caliber_status.py
+evidence_boundary: Twelve deterministic software source-fidelity repairs only. P41-P84, learner validation,
+  MATLAB runtime, hardware and production claims remain pending.

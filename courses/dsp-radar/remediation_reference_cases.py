@@ -1883,3 +1883,537 @@ _REFERENCES.update(
 
 # Scenario declarations for the P21-P28 continuation.
 SCENARIOS.update({'P21': {'baseline': {'modulation_depth': 0.6, 'message_frequency_hz': 200, 'broken_mode': False}, 'sweep_1': {'modulation_depth': 1.4, 'message_frequency_hz': 200, 'broken_mode': False}, 'sweep_2': {'modulation_depth': 0.6, 'message_frequency_hz': 700, 'broken_mode': False}, 'broken': {'modulation_depth': 0.6, 'message_frequency_hz': 200, 'broken_mode': True}, 'recovery': {'modulation_depth': 0.6, 'message_frequency_hz': 200, 'broken_mode': False}}, 'P22': {'baseline': {'deviation_hz': 400, 'message_frequency_hz': 100, 'broken_mode': False}, 'sweep_1': {'deviation_hz': 800, 'message_frequency_hz': 100, 'broken_mode': False}, 'sweep_2': {'deviation_hz': 400, 'message_frequency_hz': 400, 'broken_mode': False}, 'broken': {'deviation_hz': 400, 'message_frequency_hz': 100, 'broken_mode': True}, 'recovery': {'deviation_hz': 400, 'message_frequency_hz': 100, 'broken_mode': False}}, 'P23': {'baseline': {'ebn0_db': 6, 'phase_error_deg': 12, 'broken_mode': False}, 'sweep_1': {'ebn0_db': 0, 'phase_error_deg': 12, 'broken_mode': False}, 'sweep_2': {'ebn0_db': 6, 'phase_error_deg': 50, 'broken_mode': False}, 'broken': {'ebn0_db': 6, 'phase_error_deg': 12, 'broken_mode': True}, 'recovery': {'ebn0_db': 6, 'phase_error_deg': 12, 'broken_mode': False}}, 'P24': {'baseline': {'rolloff': 0.25, 'span_symbols': 8, 'broken_mode': False}, 'sweep_1': {'rolloff': 0.1, 'span_symbols': 8, 'broken_mode': False}, 'sweep_2': {'rolloff': 0.25, 'span_symbols': 2, 'broken_mode': False}, 'broken': {'rolloff': 0.25, 'span_symbols': 8, 'broken_mode': True}, 'recovery': {'rolloff': 0.25, 'span_symbols': 8, 'broken_mode': False}}, 'P25': {'baseline': {'echo_gain': 0.45, 'regularization': 0.015848931924611134, 'broken_mode': False}, 'sweep_1': {'echo_gain': 0.75, 'regularization': 0.015848931924611134, 'broken_mode': False}, 'sweep_2': {'echo_gain': 0.45, 'regularization': 0.1, 'broken_mode': False}, 'broken': {'echo_gain': 0.45, 'regularization': 0.015848931924611134, 'broken_mode': True}, 'recovery': {'echo_gain': 0.45, 'regularization': 0.015848931924611134, 'broken_mode': False}}, 'P26': {'baseline': {'step_size': 0.006, 'reference_correlation': 1.0, 'broken_mode': False}, 'sweep_1': {'step_size': 0.0005, 'reference_correlation': 1.0, 'broken_mode': False}, 'sweep_2': {'step_size': 0.006, 'reference_correlation': 0, 'broken_mode': False}, 'broken': {'step_size': 0.006, 'reference_correlation': 1.0, 'broken_mode': True}, 'recovery': {'step_size': 0.006, 'reference_correlation': 1.0, 'broken_mode': False}}, 'P27': {'baseline': {'trial_count': 4000, 'ebn0_db': 2, 'broken_mode': False}, 'sweep_1': {'trial_count': 100, 'ebn0_db': 2, 'broken_mode': False}, 'sweep_2': {'trial_count': 4000, 'ebn0_db': -2, 'broken_mode': False}, 'broken': {'trial_count': 4000, 'ebn0_db': 2, 'broken_mode': True}, 'recovery': {'trial_count': 4000, 'ebn0_db': 2, 'broken_mode': False}}, 'P28': {'baseline': {'matched_snr_db': 6, 'threshold_sigma': 1.5, 'broken_mode': False}, 'sweep_1': {'matched_snr_db': 0, 'threshold_sigma': 1.5, 'broken_mode': False}, 'sweep_2': {'matched_snr_db': 6, 'threshold_sigma': 3, 'broken_mode': False}, 'broken': {'matched_snr_db': 6, 'threshold_sigma': 1.5, 'broken_mode': True}, 'recovery': {'matched_snr_db': 6, 'threshold_sigma': 1.5, 'broken_mode': False}}})
+
+# P29-P40 independent references. Earlier bytes are retained verbatim.
+# Alternate propagation/correlation formulations and analytic sufficient statistics.
+def _oracle_echo(pulse, length, delay):
+    """Distribute each source sample into its two neighboring destination bins."""
+    destination = np.arange(len(pulse)) + delay
+    lower = np.floor(destination).astype(int)
+    fraction = destination - lower
+    result = np.zeros(length, dtype=np.asarray(pulse).dtype)
+    for offset, weights in [(0, 1 - fraction), (1, fraction)]:
+        indexes = lower + offset
+        valid = (indexes >= 0) & (indexes < length)
+        np.add.at(result, indexes[valid], np.asarray(pulse)[valid] * weights[valid])
+    return result
+
+
+def _oracle_width(values, spacing):
+    a = abs(values)
+    peak = int(np.argmax(a))
+    threshold = a[peak] / np.sqrt(2)
+    left = np.flatnonzero(a[:peak] < threshold)[-1]
+    right = peak + 1 + np.flatnonzero(a[peak + 1 :] < threshold)[0]
+    l = left + np.interp(threshold, a[left : left + 2], [0.0, 1.0])
+    r = right - np.interp(threshold, a[right - 1 : right + 1][::-1], [0.0, 1.0])
+    return (r - l) * spacing
+
+
+def _oracle_refine(values, index=None):
+    a = abs(values)
+    i = int(np.argmax(a)) if index is None else int(index)
+    # Solve the three-point quadratic explicitly as a small least-squares fit.
+    coefficients = np.polynomial.polynomial.polyfit(
+        [-1.0, 0.0, 1.0], a[i - 1 : i + 2], 2
+    )
+    offset = (
+        -coefficients[1] / (2 * coefficients[2]) if 2 * coefficients[2] < -1e-10 else 0
+    )
+    return i + np.clip(offset, -0.5, 0.5)
+
+
+def _oracle_peaks(a, threshold=0.35):
+    # Source rule chooses the first sample of a flat top, if present.
+    a = abs(a)
+    return sum(
+        a[i] > a[i - 1] and a[i] >= a[i + 1] and a[i] >= max(a) * threshold
+        for i in range(1, len(a) - 1)
+    )
+
+
+def _p29(p):
+    c = 299792458.0
+    rcs = p["rcs_m2"]
+    power = p["transmit_power_kw"]
+    broken = p["broken_mode"]
+    # Log-domain link budget independently verifies the multiplicative production equation.
+    received = (
+        10 * np.log10(power * 1000)
+        + 70
+        + 20 * np.log10(c / 1e10)
+        + 10 * np.log10(rcs)
+        - 30 * np.log10(4 * np.pi)
+        - 40 * np.log10(40000)
+        - 6
+        + 30
+    )
+    noise_db = 10 * np.log10(1.380649e-23) + 10 * np.log10(290) + 60 + 4 + 30
+    margin = received - noise_db - 13
+    rng = np.random.default_rng(2901)
+    iq = rng.normal(size=(2, 4096))
+    measured = noise_db + 10 * np.log10(np.mean(iq[0] ** 2 + iq[1] ** 2) / 2)
+    return [
+        received,
+        noise_db,
+        measured,
+        margin,
+        40 * 10 ** (margin / 40),
+        -20 if broken else -40,
+        10 * np.log10(16),
+        16,
+        received - (20 if broken else 40) * np.log10(2.5),
+        float(not broken),
+    ]
+
+
+def _p30(p):
+    from scipy.signal import correlate
+
+    c = 299792458.0
+    fs = p["sample_rate_mhz"] * 1e6
+    delay = p["delay_us"] * 1e-6
+    pulse = np.ones(round(fs * 1e-6))
+    count = round(fs * 16e-6)
+    echo = _oracle_echo(pulse, count, delay * fs)
+    received = echo + 0.03 * np.random.default_rng(3001).normal(size=count)
+    response = correlate(received, pulse, mode="valid", method="fft")
+    integer = int(np.argmax(abs(response)))
+    refined = _oracle_refine(response) * c / (2 * fs)
+    counts = []
+    for separation in [0.5, 1.5]:
+        second = 0.65 * _oracle_echo(pulse, count, (delay + separation * 1e-6) * fs)
+        counts.append(
+            _oracle_peaks(
+                correlate(echo + second, pulse, mode="valid", method="direct"), 0.25
+            )
+        )
+    return [
+        c * delay / 2,
+        c * integer / (2 * fs),
+        refined,
+        refined * (2 if p["broken_mode"] else 1),
+        c / (2 * fs),
+        refined - c * delay / 2,
+        max(response),
+        *counts,
+        float(not p["broken_mode"]),
+    ]
+
+
+def _oracle_gaussian(bandwidth, separation):
+    from scipy.signal import fftconvolve
+
+    c = 299792458.0
+    fs = 80e6
+    sigma = np.sqrt(np.log(2)) / (np.pi * bandwidth)
+    half = int(np.ceil(4 * sigma * fs))
+    t = np.arange(-half, half + 1) / fs
+    pulse = np.exp(-((t / sigma) ** 2) / 2)
+    pulse /= np.sqrt(np.dot(pulse, pulse))
+    first = _oracle_echo(pulse, 960, 2 * 900.37 / c * fs)
+    second = _oracle_echo(pulse, 960, 2 * (900.37 + separation) / c * fs)
+    clean = fftconvolve(first, pulse[::-1], mode="valid")
+    rng = np.random.default_rng(3101)
+    noise = rng.normal(size=960)
+    scale = max(clean) / np.sqrt(1e5)
+    pair = fftconvolve(first + second + scale * noise, pulse[::-1], mode="valid")
+    single = fftconvolve(first + scale * noise, pulse[::-1], mode="valid")
+    return pulse, first, clean, pair, single, rng
+
+
+def _p31(p):
+    from scipy.signal import fftconvolve
+
+    c = 299792458.0
+    spacing = c / 160e6
+    b = p["bandwidth_mhz"] * 1e6
+    sep = p["target_separation_m"]
+    pulse, first, clean, pair, single, rng = _oracle_gaussian(b, sep)
+    axis = np.arange(len(clean)) * spacing
+    gate = np.flatnonzero(abs(axis - 900.37) <= 80)
+    i = gate[np.argmax(abs(single[gate]))]
+    refined = _oracle_refine(single, i) * spacing
+    mask = abs(clean) >= max(abs(clean)) / np.sqrt(2)
+    locations = np.flatnonzero(mask)
+    fine = np.linspace(axis[0], axis[-1], (len(axis) - 1) * 16 + 1)
+    display = np.interp(fine, axis, abs(pair))
+    g = np.flatnonzero((fine >= 820.37) & (fine <= 980.37 + sep))
+    largest = g[np.argsort(display[g], kind="stable")[-2:]]
+    noise = rng.normal(size=(128, 960))
+    rmses = []
+    for snr in [0, 30]:
+        errors = []
+        for row in noise:
+            output = fftconvolve(
+                first + max(clean) / 10 ** (snr / 20) * row, pulse[::-1], mode="valid"
+            )
+            index = gate[np.argmax(abs(output[gate]))]
+            errors.append(_oracle_refine(output, index) * spacing - 900.37)
+        rmses.append(np.linalg.norm(errors) / np.sqrt(128))
+    count = _oracle_peaks(pair)
+    wide = _oracle_peaks(_oracle_gaussian(8e6, sep)[3])
+    return [
+        c / (2 * b),
+        (locations[-1] - locations[0]) * spacing,
+        count,
+        2 if p["broken_mode"] else count,
+        abs(fine[largest[1]] - fine[largest[0]]),
+        axis[i] - 900.37,
+        refined - 900.37,
+        *rmses,
+        wide,
+        float(not p["broken_mode"]),
+    ]
+
+
+def _oracle_chirp(b, t):
+    # Phase as a polynomial in integer sample coordinate, rather than squared time.
+    count = round(t * 40e6)
+    coordinate = np.arange(count) - (count - 1) / 2
+    phase = np.pi * b / (t * 40e6**2) * coordinate**2
+    return np.cos(phase) + 1j * np.sin(phase)
+
+
+def _p32(p):
+    from scipy.signal import fftconvolve
+
+    c = 299792458.0
+    b = p["bandwidth_mhz"] * 1e6
+    t = p["pulse_duration_us"] * 1e-6
+    wave = _oracle_chirp(b, t)
+    n = len(wave)
+    first = np.pad(wave, (round(4800 / c * 40e6), 1600 - n - round(4800 / c * 40e6)))
+    matched = fftconvolve(first, np.conj(wave[::-1]))
+    replica = _oracle_chirp(0.55 * b, t) if p["broken_mode"] else wave
+    active = fftconvolve(first, np.conj(replica[::-1]))
+    rng = np.random.default_rng(3201)
+    noise = np.sqrt(2) * (rng.normal(size=1600) + 1j * rng.normal(size=1600))
+    filtered = fftconvolve(noise, np.conj(wave[::-1]))[n - 1 : 1600]
+    measured = 10 * np.log10(
+        max(abs(matched)) ** 2 / np.mean(abs(filtered) ** 2)
+    ) + 10 * np.log10(4 * b / 40e6)
+    return [
+        b * t,
+        c * t / 2,
+        c / (2 * b),
+        _oracle_width(matched, c / 80e6),
+        _oracle_width(active, c / 80e6),
+        20 * np.log10(max(abs(active)) / max(abs(matched))),
+        10 * np.log10(b * t),
+        measured,
+        10 * np.log10(n),
+        float(not p["broken_mode"]),
+    ]
+
+
+def _oracle_pslr(a):
+    from scipy.signal import find_peaks
+
+    a = abs(a)
+    i = int(np.argmax(a))
+    minima = find_peaks(-a)[0]
+    l = minima[minima < i][-1]
+    r = minima[minima > i][0]
+    return 20 * np.log10(max(max(a[:l]), max(a[r + 1 :])) / a[i])
+
+
+def _p33(p):
+    from scipy.signal import fftconvolve
+
+    c = 299792458.0
+    n = 400
+    wave = _oracle_chirp(8e6, 10e-6)
+    delay = round(4800 / c * 40e6)
+    alpha = 1 if p["broken_mode"] else p["taper_strength"]
+    sep = 7 if p["broken_mode"] else int(p["separation_samples"])
+    weights = 1 - alpha + alpha * np.sin(np.pi * np.arange(n) / (n - 1)) ** 2
+    strong = np.pad(wave, (delay, 1600 - delay - n))
+    weak = 0.04 * np.pad(wave, (delay + sep, 1600 - delay - sep - n))
+    rect = fftconvolve(strong, np.conj(wave[::-1]))
+    response = fftconvolve(strong, np.conj((wave * weights)[::-1]))
+    clean = fftconvolve(strong + weak, np.conj((wave * weights)[::-1]))
+    i = delay + sep + n - 1
+    rng = np.random.default_rng(3301)
+    noise = 0.12 / np.sqrt(2) * (rng.normal(size=1600) + 1j * rng.normal(size=1600))
+    noisy = fftconvolve(strong + weak + noise, np.conj((wave * weights)[::-1]))
+    return [
+        _oracle_width(rect, c / 80e6),
+        _oracle_width(response, c / 80e6),
+        _oracle_pslr(rect),
+        _oracle_pslr(response),
+        10 * np.log10(np.mean(weights) ** 2 / np.mean(weights**2)),
+        20 * np.log10(0.04 * sum(weights) / abs(response[i])),
+        float(abs(clean[i]) > max(abs(clean[i - 1]), abs(clean[i + 1]))),
+        sep * c / 80e6,
+        abs(noisy[i]) / sum(weights),
+        float(not p["broken_mode"]),
+    ]
+
+
+def _oracle_ambiguity(signal, fd):
+    from scipy.signal import correlate
+
+    # Modulate first, then correlate: a different summation order from overlap matrices.
+    n = len(signal)
+    energy = float(np.vdot(signal, signal).real)
+    return np.array(
+        [
+            abs(
+                correlate(
+                    signal * np.exp(-2j * np.pi * f * np.arange(n) / 1e7),
+                    signal,
+                    mode="full",
+                    method="direct",
+                )
+            )
+            / energy
+            for f in fd
+        ]
+    )
+
+
+def _p34(p):
+    b = p["bandwidth_mhz"] * 1e6
+    t = p["duration_us"] * 1e-6
+    n = round(t * 1e7)
+    time = (np.arange(n) - (n - 1) / 2) / 1e7
+    phase = np.pi * b / t * time * time
+    lfm = np.cos(phase) + 1j * np.sin(phase)
+    polarities = np.where(np.random.default_rng(3401).random(31) >= 0.5, 1.0, -1.0)
+    code = np.kron(polarities[:13], np.ones(10))
+    fd = np.linspace(-200e3, 200e3, 101)
+    rect = _oracle_ambiguity(np.ones(n), fd)
+    chirp = _oracle_ambiguity(lfm, fd)
+    coded = _oracle_ambiguity(code, [0])[0]
+    delay = np.arange(1 - n, n) / 10
+    ridge = delay[np.argmax(chirp[80])]
+    pslr = 20 * np.log10(max(coded[abs(np.arange(-129, 130)) >= 10]))
+    return [
+        _oracle_width(rect[50], 0.1),
+        _oracle_width(chirp[50], 0.1),
+        _oracle_width(coded, 0.1),
+        _oracle_width(rect[:, n - 1], 4),
+        ridge,
+        120000 / (b / t) * 1e6,
+        1 if p["broken_mode"] else 1 / n,
+        1 / n,
+        pslr,
+        float(not p["broken_mode"]),
+    ]
+
+
+def _p35(p):
+    c = 299792458.0
+    prf = p["prf_khz"] * 1000
+    true = p["true_range_km"] * 1000
+    pri = 1 / prf
+    delay = 2 * true / c
+    order = int(delay // pri)
+    remainder = delay - order * pri
+    ru = c * pri / 2
+    samples = round(20e6 / prf)
+    count = 6 * samples
+    rng = np.random.default_rng(3501)
+    iq = rng.normal(size=(2, count))
+    return [
+        ru / 1000,
+        order,
+        remainder * c / 2000,
+        true / 1000 if p["broken_mode"] else remainder * c / 2000,
+        (round(delay * 20e6) - order * samples) * c / 40e9,
+        delay * 1e6,
+        (ru - 25) / 1000,
+        0.025,
+        0.004**2 * np.mean(iq[0] ** 2 + iq[1] ** 2) / 2,
+        float(not p["broken_mode"]),
+    ]
+
+
+def _p36(p):
+    c = 299792458.0
+    wavelength = c / (p["carrier_ghz"] * 1e9)
+    fd = 2 * p["velocity_mps"] / wavelength
+    n = 32
+    prf = 4000
+    phase = np.deg2rad(25) + 2 * np.pi * fd * np.arange(n) / prf
+    rng = np.random.default_rng(3601)
+    real = np.cos(phase) + 0.1 / np.sqrt(2) * rng.normal(size=n)
+    imag = np.sin(phase) + 0.1 / np.sqrt(2) * rng.normal(size=n)
+    if p["broken_mode"]:
+        real, imag = np.hypot(real, imag), np.zeros(n)
+    angle = np.arctan2(
+        np.dot(real[:-1], imag[1:]) - np.dot(imag[:-1], real[1:]),
+        np.dot(real[:-1], real[1:]) + np.dot(imag[:-1], imag[1:]),
+    )
+    estimate = angle * prf / (2 * np.pi)
+    slope = np.polynomial.polynomial.polyfit(
+        np.arange(n) / prf, np.unwrap(np.arctan2(imag, real)), 1
+    )[1] / (2 * np.pi)
+    # Direct DFT matrix independently checks the production FFT peak convention.
+    frequencies = np.arange(-n // 2, n // 2) * prf / n
+    spectrum = np.exp(
+        -2j * np.pi * frequencies[:, None] * np.arange(n)[None, :] / prf
+    ) @ ((real + 1j * imag) * np.hanning(n))
+    peak = frequencies[np.argmax(abs(spectrum))]
+    return [
+        fd,
+        2 * np.pi * fd / prf,
+        estimate,
+        slope,
+        peak,
+        estimate * wavelength / 2,
+        wavelength * prf / 4,
+        prf / n,
+        float(not p["broken_mode"]),
+    ]
+
+
+def _p37(p):
+    c = 299792458.0
+    wavelength = c / 1e10
+    prf = 5000
+    spacing = c / 40e6
+    rows = 256
+    columns = 32
+    ranges = np.array([450, p["middle_target_range_m"], 1200])
+    bins = np.rint(ranges / spacing).astype(int)
+    velocities = np.array([0, p["middle_velocity_mps"], -18])
+    amplitudes = np.array([1, 0.75, 0.55])
+    phases = np.deg2rad([0, 40, -30])
+    # Only the selected row is needed; compute its three physical contributions directly.
+    gains = np.exp(-0.5 * ((bins[1] - bins) / 1.2) ** 2) * amplitudes
+    angles = (
+        phases[:, None]
+        + 2 * np.pi * (2 * velocities / wavelength)[:, None] * np.arange(columns) / prf
+    )
+    signal = gains @ np.exp(1j * angles)
+    rng = np.random.default_rng(3701)
+    noise = rng.normal(size=(rows, columns)) + 1j * rng.normal(size=(rows, columns))
+    trace = signal + 0.02 / np.sqrt(2) * noise[bins[1]]
+    if p["broken_mode"]:
+        trace = abs(trace)
+    adjacent = np.vdot(trace[:-1], trace[1:])
+    estimate = np.arctan2(adjacent.imag, adjacent.real) * prf / (2 * np.pi)
+    freq = np.arange(-16, 16) * prf / columns
+    dft = np.exp(-2j * np.pi * freq[:, None] * np.arange(columns) / prf) @ (
+        trace * np.hanning(columns)
+    )
+    return [
+        bins[1],
+        bins[1] * spacing,
+        bins[1] * spacing - ranges[1],
+        2 * velocities[1] / wavelength,
+        estimate,
+        freq[np.argmax(abs(dft))],
+        (rows - 1) * spacing,
+        c / (2 * prf),
+        max(abs(velocities)) * 31 / prf / spacing,
+        float(not p["broken_mode"]),
+    ]
+
+
+def _p38(p):
+    from scipy.signal import lfilter
+
+    c = 299792458.0
+    wavelength = c / 1e10
+    prf = p["prf_khz"] * 1000
+    phase = 2 * np.pi * 2 * p["slow_target_velocity_mps"] / wavelength / prf
+    gain = 2 * abs(np.sin(phase / 2))
+    rng = np.random.default_rng(3801)
+    noise = rng.normal(size=(128, 64)) + 1j * rng.normal(size=(128, 64))
+    two = lfilter([1, -1], [1], noise, axis=1)[:, 1:]
+    three = lfilter([1, -2, 1], [1], noise, axis=1)[:, 2:]
+    variance = np.mean(abs(noise) ** 2)
+    profile = sum(
+        a
+        * np.exp(1j * np.deg2rad(phase_deg))
+        * np.exp(-0.5 * ((np.arange(128) - b) / 1.8) ** 2)
+        for a, b, phase_deg in zip([20, 12, 8], [24, 62, 99], [0, 50, -35])
+    )
+    residual = (
+        np.sqrt(np.mean(abs(np.diff(profile)) ** 2) / np.mean(abs(profile) ** 2))
+        if p["broken_mode"]
+        else 0
+    )
+    return [
+        residual,
+        gain,
+        gain**2,
+        np.mean(abs(two) ** 2) / variance,
+        np.mean(abs(three) ** 2) / variance,
+        2,
+        6,
+        wavelength * prf / 2,
+        127 if p["broken_mode"] else 128,
+        64 if p["broken_mode"] else 63,
+        float(not p["broken_mode"]),
+    ]
+
+
+def _p39(p):
+    from scipy.signal import lfilter
+
+    c = 299792458.0
+    wavelength = c / 1e10
+    fd = p["primary_blind_speed_multiple"] * 4000
+    velocity = fd * wavelength / 2
+    secondary = 4000 if p["broken_mode"] else p["secondary_prf_khz"] * 1000
+    first = abs(np.sin(np.pi * fd / 4000))
+    second = abs(np.sin(np.pi * fd / secondary))
+    recovered = max(first, abs(np.sin(np.pi * fd / 5300)))
+    rng = np.random.default_rng(3901)
+    rng.normal(size=32)
+    rng.normal(size=32)
+    noise = 0.02 / np.sqrt(2) * (rng.normal(size=32) + 1j * rng.normal(size=32))
+    sequence = (
+        np.exp(1j * (np.deg2rad(20) + 2 * np.pi * fd * np.arange(32) / secondary))
+        + noise
+    )
+    observed = lfilter([1, -1], [1], sequence)[1:]
+    return [
+        velocity,
+        fd,
+        first,
+        second,
+        max(first, second),
+        recovered,
+        float(max(first, second) >= 0.3),
+        secondary,
+        0,
+        np.sqrt(np.mean(abs(observed) ** 2)) / 2,
+        float(not p["broken_mode"]),
+    ]
+
+
+def _p40(p):
+    n = int(p["pulse_count"])
+    rho = 10 ** (p["input_snr_db"] / 10)
+    angle = np.deg2rad(25 + 35 * np.arange(n))
+    rng = np.random.default_rng(4001)
+    x = np.cos(angle) + rng.normal(size=n) / np.sqrt(2 * rho)
+    y = np.sin(angle) + rng.normal(size=n) / np.sqrt(2 * rho)
+    rotated_real = x * np.cos(angle) + y * np.sin(angle)
+    rotated_imag = y * np.cos(angle) - x * np.sin(angle)
+    coherent = rotated_real.sum() ** 2 + rotated_imag.sum() ** 2
+    power = np.dot(x, x) + np.dot(y, y)
+    # A complete four-point roots-of-unity cycle has zero sum and unit energy.
+    return [
+        10 * np.log10(n * rho),
+        n * rho,
+        np.sqrt(n) * rho,
+        0 if p["broken_mode"] else 1,
+        1,
+        1,
+        coherent,
+        power,
+        1 + (n - 1) * np.exp(-((np.pi / 2) ** 2)),
+        float(not p["broken_mode"]),
+    ]
+
+
+_REFERENCES.update({f"P{n}": globals()[f"_p{n}"] for n in range(29, 41)})
+
+# Scenario declarations for P29-P40.
+SCENARIOS.update({'P29': {'baseline': {'rcs_m2': 1, 'transmit_power_kw': 100, 'broken_mode': False}, 'sweep_1': {'rcs_m2': 0.1, 'transmit_power_kw': 100, 'broken_mode': False}, 'sweep_2': {'rcs_m2': 1, 'transmit_power_kw': 400, 'broken_mode': False}, 'broken': {'rcs_m2': 1, 'transmit_power_kw': 100, 'broken_mode': True}, 'recovery': {'rcs_m2': 1, 'transmit_power_kw': 100, 'broken_mode': False}}, 'P30': {'baseline': {'sample_rate_mhz': 20, 'delay_us': 6.0175, 'broken_mode': False}, 'sweep_1': {'sample_rate_mhz': 40, 'delay_us': 6.0175, 'broken_mode': False}, 'sweep_2': {'sample_rate_mhz': 20, 'delay_us': 6.0375, 'broken_mode': False}, 'broken': {'sample_rate_mhz': 20, 'delay_us': 6.0175, 'broken_mode': True}, 'recovery': {'sample_rate_mhz': 20, 'delay_us': 6.0175, 'broken_mode': False}}, 'P31': {'baseline': {'bandwidth_mhz': 4, 'target_separation_m': 22, 'broken_mode': False}, 'sweep_1': {'bandwidth_mhz': 8, 'target_separation_m': 22, 'broken_mode': False}, 'sweep_2': {'bandwidth_mhz': 4, 'target_separation_m': 45, 'broken_mode': False}, 'broken': {'bandwidth_mhz': 4, 'target_separation_m': 22, 'broken_mode': True}, 'recovery': {'bandwidth_mhz': 4, 'target_separation_m': 22, 'broken_mode': False}}, 'P32': {'baseline': {'bandwidth_mhz': 8, 'pulse_duration_us': 10, 'broken_mode': False}, 'sweep_1': {'bandwidth_mhz': 16, 'pulse_duration_us': 10, 'broken_mode': False}, 'sweep_2': {'bandwidth_mhz': 8, 'pulse_duration_us': 20, 'broken_mode': False}, 'broken': {'bandwidth_mhz': 8, 'pulse_duration_us': 10, 'broken_mode': True}, 'recovery': {'bandwidth_mhz': 8, 'pulse_duration_us': 10, 'broken_mode': False}}, 'P33': {'baseline': {'taper_strength': 1, 'separation_samples': 17, 'broken_mode': False}, 'sweep_1': {'taper_strength': 0, 'separation_samples': 17, 'broken_mode': False}, 'sweep_2': {'taper_strength': 1, 'separation_samples': 7, 'broken_mode': False}, 'broken': {'taper_strength': 1, 'separation_samples': 17, 'broken_mode': True}, 'recovery': {'taper_strength': 1, 'separation_samples': 17, 'broken_mode': False}}, 'P34': {'baseline': {'bandwidth_mhz': 3, 'duration_us': 13, 'broken_mode': False}, 'sweep_1': {'bandwidth_mhz': 1.5, 'duration_us': 13, 'broken_mode': False}, 'sweep_2': {'bandwidth_mhz': 3, 'duration_us': 6.5, 'broken_mode': False}, 'broken': {'bandwidth_mhz': 3, 'duration_us': 13, 'broken_mode': True}, 'recovery': {'bandwidth_mhz': 3, 'duration_us': 13, 'broken_mode': False}}, 'P35': {'baseline': {'prf_khz': 20, 'true_range_km': 18, 'broken_mode': False}, 'sweep_1': {'prf_khz': 10, 'true_range_km': 18, 'broken_mode': False}, 'sweep_2': {'prf_khz': 20, 'true_range_km': 8, 'broken_mode': False}, 'broken': {'prf_khz': 20, 'true_range_km': 18, 'broken_mode': True}, 'recovery': {'prf_khz': 20, 'true_range_km': 18, 'broken_mode': False}}, 'P36': {'baseline': {'velocity_mps': 15, 'carrier_ghz': 10, 'broken_mode': False}, 'sweep_1': {'velocity_mps': -10, 'carrier_ghz': 10, 'broken_mode': False}, 'sweep_2': {'velocity_mps': 15, 'carrier_ghz': 15, 'broken_mode': False}, 'broken': {'velocity_mps': 15, 'carrier_ghz': 10, 'broken_mode': True}, 'recovery': {'velocity_mps': 15, 'carrier_ghz': 10, 'broken_mode': False}}, 'P37': {'baseline': {'middle_target_range_m': 900, 'middle_velocity_mps': 12, 'broken_mode': False}, 'sweep_1': {'middle_target_range_m': 750, 'middle_velocity_mps': 12, 'broken_mode': False}, 'sweep_2': {'middle_target_range_m': 900, 'middle_velocity_mps': -18, 'broken_mode': False}, 'broken': {'middle_target_range_m': 900, 'middle_velocity_mps': 12, 'broken_mode': True}, 'recovery': {'middle_target_range_m': 900, 'middle_velocity_mps': 12, 'broken_mode': False}}, 'P38': {'baseline': {'slow_target_velocity_mps': 3, 'prf_khz': 5, 'broken_mode': False}, 'sweep_1': {'slow_target_velocity_mps': 15, 'prf_khz': 5, 'broken_mode': False}, 'sweep_2': {'slow_target_velocity_mps': 3, 'prf_khz': 9, 'broken_mode': False}, 'broken': {'slow_target_velocity_mps': 3, 'prf_khz': 5, 'broken_mode': True}, 'recovery': {'slow_target_velocity_mps': 3, 'prf_khz': 5, 'broken_mode': False}}, 'P39': {'baseline': {'secondary_prf_khz': 5.3, 'primary_blind_speed_multiple': 1, 'broken_mode': False}, 'sweep_1': {'secondary_prf_khz': 4.5, 'primary_blind_speed_multiple': 1, 'broken_mode': False}, 'sweep_2': {'secondary_prf_khz': 5.3, 'primary_blind_speed_multiple': 0.5, 'broken_mode': False}, 'broken': {'secondary_prf_khz': 5.3, 'primary_blind_speed_multiple': 1, 'broken_mode': True}, 'recovery': {'secondary_prf_khz': 5.3, 'primary_blind_speed_multiple': 1, 'broken_mode': False}}, 'P40': {'baseline': {'pulse_count': 32, 'input_snr_db': -8, 'broken_mode': False}, 'sweep_1': {'pulse_count': 64, 'input_snr_db': -8, 'broken_mode': False}, 'sweep_2': {'pulse_count': 32, 'input_snr_db': 0, 'broken_mode': False}, 'broken': {'pulse_count': 32, 'input_snr_db': -8, 'broken_mode': True}, 'recovery': {'pulse_count': 32, 'input_snr_db': -8, 'broken_mode': False}}})

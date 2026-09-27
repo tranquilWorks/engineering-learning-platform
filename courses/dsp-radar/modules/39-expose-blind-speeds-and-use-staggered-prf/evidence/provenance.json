@@ -1,0 +1,91 @@
+{
+  "item": "P39",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p39",
+    "sha256": "639080c7d5ee1da82ee8753edf755d41b68631ba751622b55c074a33d84fc09d",
+    "byte_count": 90006,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/39-expose-blind-speeds-and-use-staggered-prf/experiment.py",
+    "sha256": "cce999029a838da7eff21f537b8e496d6b17cbefe833f9d8c8e002ffde8d1fac",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "secondary_prf_khz": 5.3,
+      "primary_blind_speed_multiple": 1,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "secondary_prf_khz": 4.5,
+      "primary_blind_speed_multiple": 1,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "secondary_prf_khz": 5.3,
+      "primary_blind_speed_multiple": 0.5,
+      "broken_mode": false
+    },
+    "broken": {
+      "secondary_prf_khz": 5.3,
+      "primary_blind_speed_multiple": 1,
+      "broken_mode": true
+    },
+    "recovery": {
+      "secondary_prf_khz": 5.3,
+      "primary_blind_speed_multiple": 1,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "target_velocity",
+      "unit": "m/s"
+    },
+    {
+      "name": "target_doppler",
+      "unit": "Hz"
+    },
+    {
+      "name": "primary_normalized_gain",
+      "unit": "ratio"
+    },
+    {
+      "name": "active_secondary_gain",
+      "unit": "ratio"
+    },
+    {
+      "name": "active_fused_gain",
+      "unit": "ratio"
+    },
+    {
+      "name": "diverse_5300_gain",
+      "unit": "ratio"
+    },
+    {
+      "name": "active_detection",
+      "unit": "boolean"
+    },
+    {
+      "name": "active_secondary_prf",
+      "unit": "Hz"
+    },
+    {
+      "name": "stationary_fused_gain",
+      "unit": "ratio"
+    },
+    {
+      "name": "observed_secondary_rms",
+      "unit": "relative"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

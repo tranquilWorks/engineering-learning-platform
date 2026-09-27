@@ -132,7 +132,9 @@ def test_independent_reference_provenance_and_no_production_imports(references):
         provenance = json.loads((_folder(number) / "evidence/provenance.json").read_text())
         assert provenance["reference"]["independent"] is True
         assert provenance["reference"]["imports_production"] is False
-        assert provenance["reference"]["sha256"] == _sha(COURSE / "remediation_reference_cases.py")
+        # P29-P40 adds references without altering this historically attested prefix.
+        prior_bytes = (COURSE / "remediation_reference_cases.py").read_bytes()[:67205]
+        assert provenance["reference"]["sha256"] == hashlib.sha256(prior_bytes).hexdigest()
         assert provenance["production"]["sha256"] == _sha(_folder(number) / "experiment.py")
         assert provenance["scenarios"] == references.SCENARIOS[f"P{number}"]
 

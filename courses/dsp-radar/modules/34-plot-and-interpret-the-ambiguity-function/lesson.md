@@ -1,6 +1,4 @@
-# Plot and Interpret the Ambiguity Function
-
-> **Guiding question:** How does a waveform respond to simultaneous delay and Doppler mismatch?
+# P34 lesson: Plot and Interpret the Ambiguity Function
 
 Guiding question: **How does a waveform respond to simultaneous delay and Doppler mismatch?**
 
@@ -161,33 +159,29 @@ not yet a pulse-Doppler data cube.
 
 Completion means you can point to the main lobe and explain which waveform is best for a chosen delay/Doppler requirement.
 
-## Use the Python GUI experiment
+## Interactive lab: Plot and Interpret the Ambiguity Function
 
-The GUI keeps the pinned source's mental model and processing order visible. The **delay Doppler mismatch** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** How does a waveform respond to simultaneous delay and Doppler mismatch?
 
-### Prediction and sweep 1 — delay Doppler mismatch
+Sampling is 10 MHz. Baseline rectangle and LFM duration is 13 µs, LFM bandwidth 3 MHz, code length 13 chips at 1 µs/chip. Seed 3401 supplies a 31-chip polarity bank; the 7/13/31-chip sweep uses prefixes. The duration control changes rectangle/LFM only; the code comparison remains at 13 chips. Full surfaces use 101 Doppler bins over ±200 kHz and every finite delay; only their display is downsampled. The 26 µs duration case is a cut-only sweep, preserving the source surface bound.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict the sign of the LFM ridge at positive Doppler mismatch. Why should a finite rectangular pulse have almost no overlap at extreme delay?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Change only **Bandwidth mhz** from 3 to 1.5 MHz. Predict and explain the change using the source equation, then reset.
+2. Start at the baseline. Change only **Duration us** from 13 to 6.5 µs. Predict and explain the change using the source equation, then reset.
+3. Enable the broken case. Circularly wrapping the rectangular pulse produces unit correlation even at extreme delay, inventing overlap that propagation cannot supply.
+4. Recovery: Disable the failure to restore finite zero-filled overlap; the extreme-delay magnitude returns to 1/N. Restore both controls and disable the toggle to reproduce the selected baseline exactly.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict the sign of the LFM ridge at positive Doppler mismatch. Why should a finite rectangular pulse have almost no overlap at extreme delay? Explain your answer using a measured value and units, then describe the failure and the recovery assumption.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+Circularly wrapping the rectangular pulse produces unit correlation even at extreme delay, inventing overlap that propagation cannot supply. Avoid treating a clean seeded demonstration as field performance.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The pinned source lesson above describes the original MATLAB model. This interactive version uses bounded NumPy arrays and the same physical stages, with an independent numerical reference. Vectorized sums and linear convolution replace nested MATLAB accumulation loops without circular wrapping. NumPy seeds are reproducible but are not MATLAB RNG parity. MATLAB figure cleanup and console output become plots and metrics. Line displays retain at most 512 points; heatmaps retain at most 128 columns and 64 rows, while calculations use the full stated arrays. No MATLAB execution, visual/accessibility review, hardware, or learner-effectiveness claim is made.

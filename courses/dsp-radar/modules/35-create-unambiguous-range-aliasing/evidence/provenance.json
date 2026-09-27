@@ -1,0 +1,87 @@
+{
+  "item": "P35",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p35",
+    "sha256": "639080c7d5ee1da82ee8753edf755d41b68631ba751622b55c074a33d84fc09d",
+    "byte_count": 90006,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/35-create-unambiguous-range-aliasing/experiment.py",
+    "sha256": "19aa5e2129d6dbba48516d09f5e5c98d9eba3a89b06ddc9b3e7f1cd83f93222b",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "prf_khz": 20,
+      "true_range_km": 18,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "prf_khz": 10,
+      "true_range_km": 18,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "prf_khz": 20,
+      "true_range_km": 8,
+      "broken_mode": false
+    },
+    "broken": {
+      "prf_khz": 20,
+      "true_range_km": 18,
+      "broken_mode": true
+    },
+    "recovery": {
+      "prf_khz": 20,
+      "true_range_km": 18,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "unambiguous_range",
+      "unit": "km"
+    },
+    {
+      "name": "ambiguity_order",
+      "unit": "count"
+    },
+    {
+      "name": "apparent_range",
+      "unit": "km"
+    },
+    {
+      "name": "active_reported_range",
+      "unit": "km"
+    },
+    {
+      "name": "sampled_apparent_range",
+      "unit": "km"
+    },
+    {
+      "name": "round_trip_delay",
+      "unit": "\u00b5s"
+    },
+    {
+      "name": "below_boundary",
+      "unit": "km"
+    },
+    {
+      "name": "above_boundary",
+      "unit": "km"
+    },
+    {
+      "name": "receiver_noise_power",
+      "unit": "relative power"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}
