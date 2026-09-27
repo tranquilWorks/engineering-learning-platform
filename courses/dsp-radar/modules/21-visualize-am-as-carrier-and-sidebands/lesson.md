@@ -1,6 +1,4 @@
-# Visualize AM as Carrier and Sidebands
-
-> **Guiding question:** How does a baseband waveform create RF sidebands?
+# P21 Lesson — A Message Makes Translated Copies of Itself
 
 ## Guiding question
 
@@ -170,33 +168,27 @@ The central idea is simple but powerful: multiplication translates spectral
 content, and a receiver's phase knowledge determines whether envelope sign is
 recoverable.
 
-## Use the Python GUI experiment
+## Interactive lab: Visualize AM as Carrier and Sidebands
 
-The GUI keeps the pinned source's mental model and processing order visible. The **AM modulation index** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+The 2000-sample record is 0.10 s at 20 ksample/s. The 3 kHz carrier, 0.005 V seeded receiver noise, 100/350 Hz multitone weights 0.6/0.4, analytic magnitude mask and explicit 900 Hz coherent lowpass are retained. The depth sweep is noiseless so folding is isolated from noise.
 
-### Prediction and sweep 1 — AM modulation index
+### Predict, manipulate, explain
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+Predict whether the two sideband amplitudes or their offsets change when you change depth. What fails when the signed envelope crosses zero?
 
-### Sweep 2 — secondary stress
+1. Start at the baseline. Change only **AM modulation depth** from 0.6 to 1.4 ratio. Inspect its dedicated sweep and the primary processing plots. Explain which equation predicts the observed change before resetting.
+2. Start at the baseline. Change only **Message frequency** from 200 to 700 Hz. Inspect its dedicated sweep and the primary processing plots. Explain which equation predicts the observed change before resetting.
+3. Enable the broken case. At depth 1.4 the signed envelope crosses zero. Magnitude detection folds the negative envelope and distorts the message.
+4. Recovery: The explicit coherent mixer and 900 Hz lowpass retain envelope sign, even during overmodulation. Disable the failure to restore the selected depth. Disable the toggle and restore both controls to reproduce baseline exactly.
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+### Focused check and teach-back
 
-### Intentionally broken case and recovery
+Predict whether the two sideband amplitudes or their offsets change when you change depth. What fails when the signed envelope crosses zero? Explain your answer using one measured value, its units, and the relevant equation. Then describe the failure, the recovery assumption, and one limit of the model.
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+### Common mistakes
 
-## Common mistakes to avoid in the GUI
+A magnitude envelope loses the sign of an overmodulated waveform.
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+### Scope of this lab
 
-## Teach-back checklist
-
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The source equations and processing stages above are retained. NumPy seeds make the software repeatable, but the random-number stream is not claimed to match MATLAB. MATLAB figure-window cleanup and console printing are replaced by the plots and metrics here. Plot traces are bounded to 512 displayed samples; calculations use the full stated record. This lab is a simulation, not a hardware measurement.

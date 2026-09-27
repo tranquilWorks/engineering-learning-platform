@@ -1,19 +1,28 @@
 # Current state
 
-The active validation repair is `ELP-VERIFY-REPLAY-01`, based on target
-`01a510244801cbf2c3b7ce990693aac9dc5959c1` and merged control
-`1713665398b4d570611e7e8e19195d25fb8b7b38`. It repairs numerical fixture replay
-portability without changing course algorithms, fixtures, scientific tolerances
-or learner behavior. Historical GNC metadata and fresh scientific accuracy are
-checked separately. Verification and remaining integration steps are retained in
-`docs/evidence/ELP-VERIFY-REPLAY-01-2026-09-26.md` and `docs/HANDOFF.md`.
+`ELP-DSP-FIDELITY-P21-P28` continues issue 441 from merged numerical replay repair
+`b7e684d595bd777602c9aa22cd489189efa6584b`, authorized by control
+`12ea755ee75f9fe7bc142f052362938d9cefb4c9`. Implementation and independent
+scenario comparisons are complete. All mandatory local verification passed:
+quick/full each passed 785 tests, plus source-attested DSP, contract, catalog,
+lint, frontend typecheck/build, scope and API/live HTTP smoke checks.
+[PR #46](https://github.com/tranquilWorks/engineering-learning-platform/pull/46)
+is ready for review and awaits protected-merge approval. Hosted backend CI still
+fails source/history checks because its checkout omits their prerequisites;
+frontend CI passed at implementation revision `152ddf6`.
 
-The retained course implementation below was completed before this repair.
+The eight lessons now expose AM envelope/coherent recovery, FM occupied bandwidth
+and phase aliasing, energy-consistent BPSK/QPSK, explicit finite RRC pulses and
+matched-filter delay, finite ZF/regularized multipath equalizers, changing-path
+LMS, Wilson uncertainty from independent trials, and ROC/estimator selection bias.
+Five named scenarios per lesson retain independent formulas and alternate
+algorithms, with a declared absolute/relative signature tolerance of 1e-8.
 
-`ELP-DSP-FIDELITY-P11-P20` is the second incremental repair batch for issue 441. It starts from exact target baseline `a24818f42ff267394ee4ec97727ddb7d1978e3f4` (tree `1b5f62cc0adaa1796c459e7def317405cea4fe37`) and merged Portfolio Control authorization `8306551de3f32f9cb15c38efb3f5ab1e886756f0`.
+P01 remains the distinct initial conversion; P02-P20 are prior repairs;
+P21-P28 are current repairs; P29-P84 remain pending. All other module bytes,
+source pins, source map and conversion manifest are unchanged. Only eight target
+content digests change in coverage.yaml. Catalog remains six courses, 290 modules,
+290 interactive experiments. Inventory does not imply course completion.
 
-DSP/Radar P11-P20 now use ten distinct source-faithful bounded NumPy experiments. They cover FFT-bin mapping, leakage and windows, zero padding versus true resolution, periodogram/Welch PSD, STFT tradeoffs, analytic signals, complex downconversion, real versus complex sampling, I/Q impairment correction, and noisy tone estimation. Each retains baseline, two one-variable sweeps, a named broken case, exact recovery, and five independently formulated evidence scenarios. Generic controls and shared `PHASE` dispatch are absent from P02-P20, and normalized AST checks prevent unexplained identical implementation shapes across that repaired range.
-
-The remediation ledger is deliberately incremental: P01 is the prior distinct conversion, P02-P10 are prior-batch repairs, P11-P20 are current-batch repairs, and P21-P84 remain pending. DSP/Radar therefore stays blocked at `numerically_verified`, `curriculum_covered`, and `capstone_integrated`; issue 441 remains open. The catalog remains six courses, 290 modules, and 290 interactive experiments.
-
-MATLAB runtime comparison, audio playback, browser/accessibility validation, representative learner validation, physical HIL/hardware, certification, release, deployment, credentials/settings, and production validation remain explicitly unperformed.
+MATLAB, browser/accessibility, learner, physical/hardware, certification,
+release/deployment and production verification remain unperformed.

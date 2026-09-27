@@ -3,13 +3,13 @@
   "id": "21-visualize-am-as-carrier-and-sidebands",
   "number": 21,
   "title": "Visualize AM as Carrier and Sidebands",
-  "summary": "Explore visualize am as carrier and sidebands with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "Multiplication creates carrier \u00b1 message-frequency lines; each sideband has depth/2 times the carrier amplitude. The multitone view retains both pairs.",
   "guiding_question": "How does a baseband waveform create RF sidebands?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
     "phase-3",
-    "AM-modulation-index"
+    "P21"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,59 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Am Modulation Index",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "modulation_depth",
+      "type": "segmented",
+      "label": "AM modulation depth",
+      "unit": "ratio",
+      "default": 0.6,
+      "options": [
+        {
+          "label": "0.2",
+          "value": 0.2
+        },
+        {
+          "label": "0.6 baseline",
+          "value": 0.6
+        },
+        {
+          "label": "1",
+          "value": 1.0
+        },
+        {
+          "label": "1.4",
+          "value": 1.4
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "message_frequency_hz",
+      "type": "segmented",
+      "label": "Message frequency",
+      "unit": "Hz",
+      "default": 200,
+      "options": [
+        {
+          "label": "100",
+          "value": 100
+        },
+        {
+          "label": "200 baseline",
+          "value": 200
+        },
+        {
+          "label": "400",
+          "value": 400
+        },
+        {
+          "label": "700",
+          "value": 700
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +83,45 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing am modulation index, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict whether the two sideband amplitudes or their offsets change when you change depth. What fails when the signed envelope crosses zero?",
+      "reveal": "Multiplication creates carrier \u00b1 message-frequency lines; each sideband has depth/2 times the carrier amplitude. The multitone view retains both pairs."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Two-tone envelope and coherent recovery",
+      "plot": "multitone_recovery"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Signed envelope and magnitude detector",
+      "plot": "rf_envelope"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Carrier and sideband pairs",
+      "plot": "spectrum"
+    },
+    {
+      "type": "plot",
+      "title": "Envelope versus coherent recovery",
+      "plot": "recovery"
+    },
+    {
+      "type": "plot",
+      "title": "Depth sweep: noiseless envelope folding",
+      "plot": "depth_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Frequency sweep: sideband locations",
+      "plot": "frequency_sweep"
     },
     {
       "type": "callout",
@@ -102,7 +132,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

@@ -3,13 +3,13 @@
   "id": "22-relate-fm-deviation-to-bandwidth",
   "number": 22,
   "title": "Relate FM Deviation to Bandwidth",
-  "summary": "Explore relate fm deviation to bandwidth with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "FM phase slope moves while magnitude stays fixed. The smallest symmetric span containing 98% of retained RF line power is measured separately from Carson's approximation.",
   "guiding_question": "How does instantaneous frequency motion create an FM spectrum?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
     "phase-3",
-    "FM-deviation"
+    "P22"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,59 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Fm Deviation",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "deviation_hz",
+      "type": "segmented",
+      "label": "Peak FM deviation",
+      "unit": "Hz",
+      "default": 400,
+      "options": [
+        {
+          "label": "50",
+          "value": 50
+        },
+        {
+          "label": "200",
+          "value": 200
+        },
+        {
+          "label": "400 baseline",
+          "value": 400
+        },
+        {
+          "label": "800",
+          "value": 800
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "message_frequency_hz",
+      "type": "segmented",
+      "label": "Message frequency",
+      "unit": "Hz",
+      "default": 100,
+      "options": [
+        {
+          "label": "50",
+          "value": 50
+        },
+        {
+          "label": "100 baseline",
+          "value": 100
+        },
+        {
+          "label": "200",
+          "value": 200
+        },
+        {
+          "label": "400",
+          "value": 400
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +83,50 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing fm deviation, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict whether doubling deviation and doubling message frequency affect sideband spacing in the same way. Which sampling inequality must hold before phase slope is interpretable?",
+      "reveal": "FM phase slope moves while magnitude stays fixed. The smallest symmetric span containing 98% of retained RF line power is measured separately from Carson's approximation."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Real RF observation at the selected baseline",
+      "plot": "rf_waveform"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Intended and sampled phase slope",
+      "plot": "phase_slope"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "FM keeps constant phasor magnitude",
+      "plot": "magnitude"
+    },
+    {
+      "type": "plot",
+      "title": "Noisy baseline RF spectrum",
+      "plot": "spectrum"
+    },
+    {
+      "type": "plot",
+      "title": "Retained line-power ladder",
+      "plot": "sideband_power"
+    },
+    {
+      "type": "plot",
+      "title": "Deviation-only bandwidth sweep",
+      "plot": "deviation_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Message-frequency-only bandwidth sweep",
+      "plot": "frequency_sweep"
     },
     {
       "type": "callout",
@@ -102,7 +137,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

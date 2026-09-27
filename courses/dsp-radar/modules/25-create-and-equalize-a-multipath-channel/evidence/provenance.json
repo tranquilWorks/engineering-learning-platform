@@ -1,0 +1,106 @@
+{
+  "item": "P25",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p25",
+    "sha256": "fffe190b7c067e8ed3ae692a699f3b055f1055ada36674ecfbf9f56b9ae189a8",
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/25-create-and-equalize-a-multipath-channel/experiment.py",
+    "sha256": "fcf16e76dd86887e05eb8724e388a48fc43a3963ab9b83291e15bd02589e126e",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "echo_gain": 0.45,
+      "regularization": 0.015848931924611134,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "echo_gain": 0.75,
+      "regularization": 0.015848931924611134,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "echo_gain": 0.45,
+      "regularization": 0.1,
+      "broken_mode": false
+    },
+    "broken": {
+      "echo_gain": 0.45,
+      "regularization": 0.015848931924611134,
+      "broken_mode": true
+    },
+    "recovery": {
+      "echo_gain": 0.45,
+      "regularization": 0.015848931924611134,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "unequalized_evm",
+      "unit": "percent"
+    },
+    {
+      "name": "zf_evm",
+      "unit": "percent"
+    },
+    {
+      "name": "regularized_evm",
+      "unit": "percent"
+    },
+    {
+      "name": "unequalized_ser",
+      "unit": "ratio"
+    },
+    {
+      "name": "zf_ser",
+      "unit": "ratio"
+    },
+    {
+      "name": "regularized_ser",
+      "unit": "ratio"
+    },
+    {
+      "name": "zf_noise_gain",
+      "unit": "dB"
+    },
+    {
+      "name": "regularized_noise_gain",
+      "unit": "dB"
+    },
+    {
+      "name": "residual_impulse_error",
+      "unit": "percent"
+    },
+    {
+      "name": "minimum_channel_response",
+      "unit": "dB"
+    },
+    {
+      "name": "deep_null_zf_evm",
+      "unit": "percent"
+    },
+    {
+      "name": "deep_null_recovery_evm",
+      "unit": "percent"
+    },
+    {
+      "name": "deep_null_zf_gain",
+      "unit": "dB"
+    },
+    {
+      "name": "deep_null_recovery_gain",
+      "unit": "dB"
+    },
+    {
+      "name": "deep_null_residual",
+      "unit": "percent"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

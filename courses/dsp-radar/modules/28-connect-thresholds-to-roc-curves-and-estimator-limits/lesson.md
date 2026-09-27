@@ -1,6 +1,4 @@
-# Connect Thresholds to ROC Curves and Estimator Limits
-
-> **Guiding question:** How do false alarms, detections, bias, variance, and theoretical bounds relate?
+# Lesson: one noisy statistic, two different questions
 
 ## Guiding question
 
@@ -162,33 +160,27 @@ Prerequisites: P27 for Monte Carlo independence, P08 for correlation, and P24
 for matched-filter intuition. The experiment is an in-memory, bounded,
 base-MATLAB synthetic model; it is not hardware or operational-radar evidence.
 
-## Use the Python GUI experiment
+## Interactive lab: Connect Thresholds to ROC Curves and Estimator Limits
 
-The GUI keeps the pinned source's mental model and processing order visible. The **decision threshold** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+Seed 2801 produces two separate 12000-trial, 16-sample Gaussian banks. The signed known pulse has energy 16, amplitude 1 and a default matched-filter SNR of 6 dB. The 1.5-sigma operating threshold is distinct from the amplitude estimator. The unbiased variance bound assumes known pulse/timing, independent white Gaussian noise and estimation from all trials.
 
-### Prediction and sweep 1 — decision threshold
+### Predict, manipulate, explain
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+Predict how raising a detection threshold moves both false alarms and detections. Why does estimating amplitude only after detection shift its mean?
 
-### Sweep 2 — secondary stress
+1. Start at the baseline. Change only **Matched-filter output SNR** from 6 to 0 dB. Inspect its dedicated sweep and the primary processing plots. Explain which equation predicts the observed change before resetting.
+2. Start at the baseline. Change only **Detection threshold** from 1.5 to 3 noise sigma. Inspect its dedicated sweep and the primary processing plots. Explain which equation predicts the observed change before resetting.
+3. Enable the broken case. Keeping only detected H1 trials selects high amplitude estimates. Its positive bias invalidates the unbiased-estimator claim; a smaller selected variance is not evidence of beating the unbiased CRLB.
+4. Recovery: Restore all 12000 independent H1 trials before estimating amplitude. The recovered bias and SNR-dependent variance are checked separately from the detector operating point. Disable the toggle and restore both controls to reproduce baseline exactly.
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+### Focused check and teach-back
 
-### Intentionally broken case and recovery
+Predict how raising a detection threshold moves both false alarms and detections. Why does estimating amplitude only after detection shift its mean? Explain your answer using one measured value, its units, and the relevant equation. Then describe the failure, the recovery assumption, and one limit of the model.
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+### Common mistakes
 
-## Common mistakes to avoid in the GUI
+A detector-conditioned estimate is biased; its variance is not governed by the unbiased-estimator claim.
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+### Scope of this lab
 
-## Teach-back checklist
-
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The source equations and processing stages above are retained. NumPy seeds make the software repeatable, but the random-number stream is not claimed to match MATLAB. MATLAB figure-window cleanup and console printing are replaced by the plots and metrics here. Plot traces are bounded to 512 displayed samples; calculations use the full stated record. This lab is a simulation, not a hardware measurement.

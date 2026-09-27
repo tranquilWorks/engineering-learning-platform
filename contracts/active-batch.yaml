@@ -1,16 +1,20 @@
 schema_version: 1
+batch:
+  id: ELP-DSP-FIDELITY-P21-P28
+  title: DSP/Radar modulation, channels, adaptation, and statistical evidence fidelity
+  goal: Repair the eight phase-three experiments with their pinned source algorithms, learner-visible processing
+    stages, and independent numerical evidence.
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
   - products/engineering-learning-platform/COURSE_CALIBER.md
   - products/engineering-learning-platform/course-caliber.yaml
   - tranquilWorks/portfolio-control#441
-  - products/engineering-learning-platform/continuations/2026-09-26-dsp-resume.md#broad-verification-result-and-numerical-portability-blocker
-  baseline_commit: 01a510244801cbf2c3b7ce990693aac9dc5959c1
-  baseline_tree: a757015ceca672e34d0d73bc94d6527cf5c6f0fb
+  baseline_commit: b7e684d595bd777602c9aa22cd489189efa6584b
+  baseline_tree: 19a298703ab04794e855edffb8aa83a6f0e2ba83
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_baseline: 4242483b454e9e5b63dfee7907bec8c136a6ee36
-  control_plane_path: products/engineering-learning-platform/batches/ELP-VERIFY-REPLAY-01.yaml
+  control_plane_baseline: 1713665398b4d570611e7e8e19195d25fb8b7b38
+  control_plane_path: products/engineering-learning-platform/batches/ELP-DSP-FIDELITY-P21-P28.yaml
   target_repository: tranquilWorks/engineering-learning-platform
   source_repository: tranquilWorks/dsp-radar_learning
   source_pin: 5d73667a486df4a7b6c581e4c9406e810ed4f0f6
@@ -21,31 +25,50 @@ sources:
   conversion_manifest_sha256: 1244c6dea11ea11b880e0f26d54ce81dea42ea1ab4981d4d5180c440eb7890a4
   coverage_sha256: 9d737d5d490ea0a19f2da8e003fa60ee9cf969d7c94505a904ce69e7455e87fc
   milestone: products/engineering-learning-platform/roadmap.yaml#authorized-dsp-item-conversion-lane
-batch:
-  id: ELP-VERIFY-REPLAY-01
-  title: Restore portable numerical fixture replay before DSP continuation
-  goal: Repair floating-point replay checks while preserving all course algorithms, independent oracles, fixtures,
-    scientific acceptance tolerances, hashes, and maturity claims.
 dependencies:
 - ELP-DSP-FIDELITY-P11-P20
+- ELP-VERIFY-REPLAY-01
 scope:
   allowed_paths:
-  - apps/api/tests/numerical_replay.py
-  - apps/api/tests/test_numerical_replay.py
-  - apps/api/tests/test_gnc_course.py
-  - apps/api/tests/test_gnc_expansion.py
-  - apps/api/tests/test_robotics_expansion.py
-  - apps/api/tests/test_vehicle_dynamics_expansion.py
-  - apps/api/tests/test_dsp_fidelity_remediation.py
+  - courses/dsp-radar/remediation-map.yaml
+  - courses/dsp-radar/remediation_reference_cases.py
+  - courses/dsp-radar/coverage.yaml
   - apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py
+  - apps/api/tests/test_dsp_fidelity_remediation.py
+  - apps/api/tests/test_dsp_conversion_framework.py
+  - apps/api/tests/test_dsp_course.py
+  - apps/api/tests/test_course_caliber_status.py
   - contracts/active-batch.yaml
   - contracts/repo-profile.yaml
   - contracts/verification.yaml
+  - docs/COURSE_CALIBER.md
+  - docs/course-caliber-status.yaml
   - docs/CURRENT_STATE.md
   - docs/HANDOFF.md
-  - docs/evidence/ELP-VERIFY-REPLAY-01-*
+  - docs/ROADMAP.md
+  - courses/dsp-radar/modules/21-*/**
+  - courses/dsp-radar/modules/22-*/**
+  - courses/dsp-radar/modules/23-*/**
+  - courses/dsp-radar/modules/24-*/**
+  - courses/dsp-radar/modules/25-*/**
+  - courses/dsp-radar/modules/26-*/**
+  - courses/dsp-radar/modules/27-*/**
+  - courses/dsp-radar/modules/28-*/**
+  - apps/api/tests/test_dsp_fidelity_remediation_p21_p28.py
+  - docs/evidence/ELP-DSP-FIDELITY-P21-P28-*.md
   forbidden_paths:
-  - courses/**
+  - courses/dsp-radar-learning
+  - courses/dsp-radar-learning/**
+  - courses/dsp-radar/source-map.yaml
+  - courses/dsp-radar/conversion-manifest.yaml
+  - courses/dsp-radar/conversion.schema.json
+  - courses/dsp-radar/course.yaml
+  - courses/dsp-radar/AUTHORING.md
+  - courses/controls-gnc/**
+  - courses/robotics-autonomy/**
+  - courses/vehicle-dynamics/**
+  - courses/demo-radar/**
+  - courses/platform-showcase/**
   - apps/api/src/**
   - apps/web/**
   - packages/**
@@ -54,82 +77,102 @@ scope:
   - .gitmodules
   - package.json
   - package-lock.json
-  - apps/api/pyproject.toml
-  - apps/web/package.json
+  - courses/dsp-radar/modules/0[1-9]-*/**
+  - courses/dsp-radar/modules/1[0-9]-*/**
+  - courses/dsp-radar/modules/20-*/**
+  - courses/dsp-radar/modules/29-*/**
+  - courses/dsp-radar/modules/[3-7][0-9]-*/**
+  - courses/dsp-radar/modules/8[0-4]-*/**
 acceptance:
-- Start only after the exact control contract is merged, from clean target 01a510244801cbf2c3b7ce990693aac9dc5959c1
-  tree a757015ceca672e34d0d73bc94d6527cf5c6f0fb. Record the exact control revision in the target profile.
-- Preserve every course, source pin, production algorithm, independent oracle, saved expected/actual fixture, evidence
-  hash, scientific tolerance and catalog/maturity claim byte-for-byte. Catalog remains six courses, 290 modules
-  and 290 interactive modules.
-- Introduce a test-only replay comparator for finite one-dimensional same-shaped signatures. Bound each replay difference
-  by the smaller of 1e-9 times max(1,abs(saved)) and one percent of the declared per-component scientific budget
-  max(absolute_tolerance,relative_tolerance*abs(saved)). Validate tolerance inputs and reject invalid, nonfinite,
-  wrong-shaped or empty signatures. No vector-global scale may hide a small-component change.
-- The replay ceiling is a portability allowance, not a new scientific acceptance threshold. Retain all fresh production
-  versus independently recomputed reference checks under unchanged per-course scientific tolerances, exact fixture
-  hashes, parameter/origin identity, same-run determinism, and teaching invariants.
-- For GNC P01-P24, validate recorded comparison/error metrics from the immutable saved reference/production pair,
-  and independently require newly computed reference/production metrics to pass the original scientific budgets.
-  Do not require present floating-point error maxima to be bit-identical to historical maxima.
-- Apply the replay policy only to the four failing GNC/Robotics/Vehicle test files. Convert DSP historical active-contract
-  assertions into retained-history assertions against the exact completed P11-P20 commit; continue checking the
-  immutable DSP source map, pin, tree, titles, module behaviors and repair ledger.
-- 'Add positive near-roundoff and negative regression tests: material drift within a loose scientific tolerance
-  still fails replay, a large unrelated component cannot hide a small-component error, shape/order/length mismatches
-  and NaN/Inf fail, invalid tolerances fail, and corrupted saved error metadata fails. A failing scientific comparison
-  cannot be rescued by replay allowance.'
-- Retain a read-only audit of all repaired reference scenarios. The preliminary 780-case reference audit had worst
-  scaled difference 1.173e-10 in GNC P18 continuous integration, and 9.095e-13 outside that case. Preserve failed
-  baseline evidence; do not regenerate fixtures.
-- Run targeted replay/course regressions, DSP source-attested regression, contract, quick and full wrappers, deterministic
-  full catalog, Python lint, frontend typecheck/build and exact scope/source immutability checks. All required local
-  gates must pass before readiness.
-- End with a reviewable target change and exact evidence. Target merge retains its human authorization requirement.
-  P21-P28 remains pending and must be rebound to the exact merged repair baseline before activation. No MATLAB,
-  browser/accessibility, learner, hardware, release/deployment or production claim is made.
+- Start after this exact control contract merges, from clean target main b7e684d595bd777602c9aa22cd489189efa6584b,
+  tree 19a298703ab04794e855edffb8aa83a6f0e2ba83. Preserve all canonical source bytes and pins.
+- Repair exactly P21-P28 in numeric order. Preserve P01-P20 and P29-P84 byte-identically, all other courses, framework
+  identities, source map and conversion manifest. Update only P21-P28 target_content_digest entries in coverage.yaml.
+- 'P21: explicit conventional AM at 20 kHz with 3 kHz carrier, 200 Hz baseline message, 0.6 depth, single/multitone
+  spectral pairs, signed versus analytic magnitude envelope, coherent 900 Hz lowpass recovery, depth and message-frequency
+  sweeps, and 1.4 overmodulation failure.'
+- 'P22: complex FM at 24 kHz with 3 kHz carrier, 100 Hz message and 400 Hz deviation, phase slope and sideband power,
+  98 percent occupied bandwidth and Carson approximation, deviation/message sweeps, and 8 kHz carrier plus 5 kHz
+  deviation aliasing recovered at 30 kHz.'
+- 'P23: 400 deterministic BPSK/QPSK symbols, energy-consistent Eb/N0, bit mapping, noisy rotated constellations,
+  sign decisions and BER, noise and phase sweeps, 55 degree carrier-reference failure at 16 dB and exact inverse-rotation
+  recovery.'
+- 'P24: explicit finite unit-energy root-raised-cosine pulse with removable singularities, rectangular comparison,
+  320 QPSK symbols at eight samples per symbol, transmit convolution, reversed-conjugate matched filter and correct
+  group delay, spectra/eye/symbol error, rolloff and span sweeps, half-symbol timing failure and aligned recovery.'
+- 'P25: 480 pulse-shaped QPSK symbols through explicit delayed complex paths, matched-filter symbol-rate response,
+  31-tap finite zero-forcing and regularized equalizers, echo-strength and regularization sweeps, deep-null [1,-0.999]
+  noise amplification, and bounded regularized recovery with residual distortion reported.'
+- 'P26: explicit eight-tap LMS recurrence on 6000 samples at 8 kHz, changing unknown interference path at sample
+  3001, desired two-tone signal, convergence/reacquisition and coefficient error, step-size and reference-correlation
+  sweeps, guarded oversized-step divergence and reset/recovery. Preserve source seed 2601.'
+- 'P27: 4000 independent BPSK trials with a 16-sample unit-energy matched filter, running BER, explicit 95 percent
+  Wilson intervals, block variability, trial-count and Eb/N0 sweeps, duplicated lucky-trial pseudoreplication failure
+  and independent-bank recovery. Preserve source seed 2701.'
+- 'P28: independent H0/H1 Gaussian matched-filter trials, 16-sample known pulse, threshold ROC, analytic Gaussian
+  detection tails, unbiased amplitude estimator and variance bound across SNR, selected-detections estimation bias
+  and all-trial recovery. Preserve 12000-trial bound and source seed 2801.'
+- Every item has concrete physical controls, deterministic bounded NumPy processing, finite results, correctly labeled
+  plots with separated incompatible units, baseline/two sweeps/broken/recovery, limiting cases, interpretation checks,
+  and teach-back. Retain important source stages and explicitly document any omitted behavior; never silently replace
+  a source algorithm.
+- Expected values come from independently formulated references (closed form, alternate algorithm, or separately
+  formulated oracle), never production imports or perturbed production values. Retain five named scenarios per item,
+  origins, units, tolerances and measured errors. Distinguish NumPy seeded data from MATLAB runtime parity.
+- Extend semantic and normalized-AST anti-template checks through P28. Regress P02-P20 without changing their modules.
+  Historical P11-P20 contract tests may be updated to validate immutable prior facts rather than incorrectly require
+  the old batch to remain active.
+- Remediation ledger reports one already-distinct, nineteen prior repaired, eight current repaired, fifty-six pending,
+  total eighty-four. Course numerically_verified/curriculum_covered/capstone_integrated remain blocked for P29-P84.
+- All local source-attested, focused, backend, contract, quick/full, deterministic catalog, lint, frontend typecheck/build
+  and diff/scope checks pass. Catalog remains 6 courses / 290 modules / 290 interactive. Hosted CI is not a completion
+  requirement under retained owner direction.
+- No MATLAB runtime, browser/accessibility, representative learner, hardware/HIL, certification, release/deployment
+  or production claim without actual evidence. Target protected-branch merge retains its separate authorization.
 validation:
   local:
-  - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src .venv/bin/python -B -m pytest -q apps/api/tests/test_numerical_replay.py
-    apps/api/tests/test_gnc_course.py apps/api/tests/test_gnc_expansion.py apps/api/tests/test_robotics_expansion.py
-    apps/api/tests/test_vehicle_dynamics_expansion.py
-  - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src .venv/bin/python
-    -B -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py
-    apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py apps/api/tests/test_course_caliber_status.py
+  - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B
+    -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py
+    apps/api/tests/test_dsp_fidelity_remediation_p21_p28.py apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py
+    apps/api/tests/test_course_caliber_status.py
+  - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests
   - ./scripts/agent-verify.sh contract
   - ./scripts/agent-verify.sh quick
   - ./scripts/agent-verify.sh full
-  - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src .venv/bin/python -B scripts/validate_courses.py --execute
-    --deterministic --json
-  - .venv/bin/ruff check --ignore UP038 apps/api/tests/numerical_replay.py apps/api/tests/test_numerical_replay.py
-    apps/api/tests/test_gnc_course.py apps/api/tests/test_gnc_expansion.py apps/api/tests/test_robotics_expansion.py
-    apps/api/tests/test_vehicle_dynamics_expansion.py apps/api/tests/test_dsp_fidelity_remediation.py apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py
+  - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic
+    --json
+  - npm run typecheck
+  - npm run build
   - git diff --check
-  - git diff --exit-code 01a510244801cbf2c3b7ce990693aac9dc5959c1 -- courses apps/api/src apps/web packages scripts
-    .github .gitmodules
+  - .venv/bin/ruff check apps/api/tests/test_dsp_fidelity_remediation*.py courses/dsp-radar/remediation_reference_cases.py
+    courses/dsp-radar/modules/2[1-8]-*
+  - git diff --check
+  - git diff --name-only b7e684d595bd777602c9aa22cd489189efa6584b
   focused_tests_to_add:
-  - Replay bound, finite/type/shape validation and material-drift rejection.
-  - Saved error-metadata integrity and unchanged live scientific acceptance.
-  - Retained completed DSP contract rather than permanent active-batch identity.
+  - Check source-specific invariants, boundaries, finite deterministic output and physical labels for P21-P28.
+  - Replay five independently formulated evidence cases for each repaired item.
+  - Regress P02-P20; reject identical normalized algorithms and generic controls through P28.
+  - Preserve source identities, counts, immutable module bytes and blocked whole-course maturity.
   required_ci:
-  - Retained owner-directed local verification is mandatory; hosted CI is not a completion requirement. Report hosted
-    checks separately when run.
+  - Hosted CI is not required by retained owner direction; exact local contract, quick, full, source, scope, lint
+    and frontend gates remain mandatory.
 risk:
-  class: moderate
+  class: high
   hazards:
-  - A replay allowance masks an algorithm or fixture change.
-  - Historical metrics are silently replaced or fresh scientific gates weakened.
+  - Generic templates renamed as physical algorithms.
+  - Wrong noise-energy, pulse normalization, delay, signed frequency or trial-independence conventions.
+  - Circular correctness references or false course-completion claims.
   stop_conditions:
-  - Any course/source/fixture/scientific-tolerance change is needed.
-  - Replay errors exceed the bounded policy or fresh scientific acceptance fails.
-  - A mandatory local gate fails or is skipped.
+  - Source or immutable module drift.
+  - Need to change generic UI/runtime/dependencies or unrelated courses.
+  - Independent evidence or a mandatory gate cannot be made credible.
 rollback:
-  strategy: Revert only the target validation repair and activation overlay; restore the prior strict replay tests.
-    Course artifacts and learner state never change.
+  strategy: Revert the isolated target change to restore the merged numerical-replay repair baseline, preserving source pins and
+    all other courses.
 evidence:
   output:
-  - docs/evidence/ELP-VERIFY-REPLAY-01-2026-09-26.md
-  - Retained initial failures, measured replay audit, negative controls, source/scope preservation and exact verification
-    results.
-  claim_boundary: Validation portability for unchanged software simulations only. No new module implementation or
-    expanded scientific tolerance; no MATLAB, learner, physical or production claim.
+  - docs/evidence/ELP-DSP-FIDELITY-P21-P28-2026-09-27.md
+  - Per-item source mapping and five independent expected/actual cases.
+  - Exact verification commands, counts, source/scope preservation, residual limitations and next batch.
+  claim_boundary: Eight deterministic software source-fidelity repairs only. P29-P84, learner validation, MATLAB
+    runtime and physical/production claims remain pending.

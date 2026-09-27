@@ -1452,3 +1452,434 @@ def expected_signature(item_id: str, scenario: str) -> list[float]:
     return [
         float(value) for value in _REFERENCES[item_id](SCENARIOS[item_id][scenario])
     ]
+
+
+# P21-P28: independent formulations. Shared seeded inputs define reproducible
+# Python scenarios; they do not claim the MATLAB random streams are identical.
+
+
+def _p21(p: dict[str, Any]) -> list[float]:
+    from scipy.signal import hilbert
+
+    depth = 1.4 if p["broken_mode"] else p["modulation_depth"]
+    frequency = p["message_frequency_hz"]
+    t = np.arange(2000) / 20000
+    noise = np.random.default_rng(1021).normal(size=2000) * 0.005
+    carrier = np.cos(6000 * np.pi * t)
+    message = np.cos(2 * np.pi * frequency * t)
+    voltage = (1 + depth * message) * carrier + noise
+    envelope = (np.abs(hilbert(voltage)) - 1) / depth
+    # Real Fourier-series projection, independently expressing the 900 Hz LPF.
+    basis = 2 * np.pi * np.arange(1, 91)[:, None] * 10 * t
+    mixed = 2 * voltage * carrier
+    dc = np.mean(mixed)
+    recovered = (
+        dc
+        + 2
+        / 2000
+        * (
+            (np.cos(basis) @ mixed) @ np.cos(basis)
+            + (np.sin(basis) @ mixed) @ np.sin(basis)
+        )
+        - 1
+    ) / depth
+    amplitude = lambda f, v: 2 * abs(np.sum(v * np.exp(-2j * np.pi * f * t))) / 2000
+    multi = (
+        1
+        + p["modulation_depth"]
+        * (0.6 * np.cos(200 * np.pi * t) + 0.4 * np.cos(700 * np.pi * t))
+    ) * carrier + noise
+    return [
+        depth,
+        frequency,
+        amplitude(3000, voltage),
+        amplitude(3000 - frequency, voltage),
+        amplitude(3000 + frequency, voltage),
+        np.min(1 + depth * message),
+        np.linalg.norm(envelope - message) / np.sqrt(2000),
+        np.linalg.norm(recovered - message) / np.sqrt(2000),
+        *[amplitude(f, multi) for f in [2650, 2900, 3100, 3350]],
+    ]
+
+
+def _p22(p: dict[str, Any]) -> list[float]:
+    from scipy.special import jv
+
+    deviation, fm = p["deviation_hz"], p["message_frequency_hz"]
+
+    def bandwidth(d, f):
+        orders = np.arange(-150, 151)
+        power = jv(orders, d / f) ** 2
+        return (
+            2
+            * f
+            * next(
+                k
+                for k in range(151)
+                if np.sum(power[abs(orders) <= k]) >= 0.98 * np.sum(power)
+            )
+        )
+
+    def phase_errors(fs, fc, d, f):
+        t = np.arange(round(0.2 * fs)) / fs
+        theta = 2 * np.pi * fc * t + d / f * np.sin(2 * np.pi * f * t)
+        delta = np.diff(theta)
+        derivative = ((delta + np.pi) % (2 * np.pi) - np.pi) * fs / (2 * np.pi)
+        error = abs(derivative - (fc + d * np.cos(2 * np.pi * f * t[1:])))
+        return np.mean(error > 6000), np.max(error)
+
+    alias, error = (
+        phase_errors(24000, 8000, 5000, 100)
+        if p["broken_mode"]
+        else phase_errors(24000, 3000, deviation, fm)
+    )
+    recovery_bw = bandwidth(5000, 100)
+    return [
+        deviation / fm,
+        bandwidth(deviation, fm),
+        2 * (deviation + fm),
+        0,
+        alias,
+        error,
+        recovery_bw,
+        phase_errors(30000, 8000, 5000, 100)[1],
+        15000 - 8000 - recovery_bw / 2,
+    ]
+
+
+def _p23(p: dict[str, Any]) -> list[float]:
+    snr, phase = (16, 55) if p["broken_mode"] else (p["ebn0_db"], p["phase_error_deg"])
+    rng = np.random.default_rng(1023)
+    b = 2 * (rng.random(400) >= 0.5).astype(int) - 1
+    q = 2 * (rng.random((2, 400)) >= 0.5).astype(int) - 1
+    br, _bi, qr, qi = [rng.normal(size=400) for _ in range(4)]
+    c, s = np.cos(np.deg2rad(phase)), np.sin(np.deg2rad(phase))
+    sb, sq = (2 * 10 ** (snr / 10)) ** -0.5, (4 * 10 ** (snr / 10)) ** -0.5
+    observed_b = b * c + sb * br
+    observed_i = (q[0] * c - q[1] * s) / np.sqrt(2) + sq * qr
+    observed_q = (q[0] * s + q[1] * c) / np.sqrt(2) + sq * qi
+    corrected_i = c * observed_i + s * observed_q
+    corrected_q = -s * observed_i + c * observed_q
+    return [
+        snr,
+        phase,
+        1,
+        1,
+        sb,
+        sq,
+        np.mean(np.sign(observed_b) != b),
+        (
+            np.count_nonzero(np.sign(observed_i) != q[0])
+            + np.count_nonzero(np.sign(observed_q) != q[1])
+        )
+        / 800,
+        (
+            np.count_nonzero(np.sign(corrected_i) != q[0])
+            + np.count_nonzero(np.sign(corrected_q) != q[1])
+        )
+        / 800,
+    ]
+
+
+def _oracle_rrc(alpha, span):
+    x = np.linspace(-span / 2, span / 2, span * 8 + 1)
+    y = np.zeros_like(x)
+    zero = x == 0
+    singular = np.isclose(abs(x), 1 / (4 * alpha), atol=1e-12, rtol=0)
+    regular = ~(zero | singular)
+    t = x[regular]
+    # sinc form keeps the removable zero branch separate from ±1/(4 alpha).
+    y[regular] = (
+        np.sinc((1 - alpha) * t) * (1 - alpha)
+        + 4 * alpha / np.pi * np.cos(np.pi * (1 + alpha) * t)
+    ) / (1 - 16 * alpha**2 * t * t)
+    y[zero] = 1 - alpha + 4 * alpha / np.pi
+    y[singular] = (
+        alpha
+        / np.sqrt(2)
+        * (
+            (1 + 2 / np.pi) * np.sin(np.pi / (4 * alpha))
+            + (1 - 2 / np.pi) * np.cos(np.pi / (4 * alpha))
+        )
+    )
+    return y / np.linalg.norm(y)
+
+
+def _p24(p: dict[str, Any]) -> list[float]:
+    from scipy.signal import fftconvolve
+
+    alpha, span = p["rolloff"], p["span_symbols"]
+    rng = np.random.default_rng(1024)
+    bits = rng.random((2, 320)) >= 0.5
+    symbols = (
+        (2 * bits[0].astype(int) - 1) + 1j * (2 * bits[1].astype(int) - 1)
+    ) / np.sqrt(2)
+    impulses = np.zeros(2560, complex)
+    impulses[::8] = symbols
+    noise = (rng.normal(size=2625) + 1j * rng.normal(size=2625)) * np.sqrt(
+        0.5 * 10 ** (-14 / 10)
+    )
+    pulse = _oracle_rrc(alpha, span)
+    tx = fftconvolve(impulses, pulse)
+    rx = tx + noise[: len(tx)]
+    matched = fftconvolve(rx, pulse[::-1])
+    indices = span * 8 + np.arange(320) * 8
+    aligned = matched[indices]
+    selected = matched[indices + (4 if p["broken_mode"] else 0)]
+    raw = rx[span * 4 + np.arange(320) * 8] / pulse[span * 4]
+    clean = fftconvolve(tx, pulse[::-1])[indices]
+    rectangular = np.ones(8) / np.sqrt(8)
+    rect_tx = fftconvolve(impulses, rectangular)
+    rect = fftconvolve(rect_tx + noise[: len(rect_tx)], rectangular)[
+        7 + np.arange(320) * 8
+    ]
+
+    def evm(v):
+        error = v[span:-span] - symbols[span:-span]
+        return 100 * np.linalg.norm(error) / np.sqrt(320 - 2 * span)
+
+    errors = np.logical_or(
+        (selected.real >= 0) != bits[0], (selected.imag >= 0) != bits[1]
+    )
+    return [
+        np.dot(pulse, pulse),
+        span * 8,
+        evm(rect),
+        evm(raw),
+        evm(selected),
+        evm(clean),
+        np.count_nonzero(errors) / 320,
+        evm(aligned),
+        np.max(abs(pulse - pulse[::-1])),
+    ]
+
+
+def _oracle_channel(echo, lam, deep):
+    from scipy.signal import fftconvolve
+
+    rng = np.random.default_rng(1025)
+    bits = rng.random((2, 480)) >= 0.5
+    symbols = (
+        (2 * bits[0].astype(int) - 1) + 1j * (2 * bits[1].astype(int) - 1)
+    ) / np.sqrt(2)
+    pulse = _oracle_rrc(0.25, 8)
+    tx = np.zeros(3840 + 64, complex)
+    # Overlap-add the explicit delayed pulse for each symbol, independent of convolution.
+    for i, symbol in enumerate(symbols):
+        tx[8 * i : 8 * i + 65] += symbol * pulse
+    taps = (
+        np.array([1, -0.999], complex)
+        if deep
+        else np.array([1, echo * np.exp(0.45j), 0.2 * np.exp(-0.8j)])
+    )
+    propagated = np.zeros(len(tx) + 8 * (len(taps) - 1), complex)
+    for i, tap in enumerate(taps):
+        propagated[8 * i : 8 * i + len(tx)] += tap * tx
+    noise = (rng.normal(size=3920) + 1j * rng.normal(size=3920)) * np.sqrt(
+        0.5 * 10 ** (-18 / 10)
+    )
+    matched = fftconvolve(propagated + noise[: len(propagated)], pulse[::-1])
+    sampled = matched[64 + 8 * np.arange(480 + len(taps) - 1)]
+    inverse = np.zeros(31, complex)
+    inverse[0] = 1 / taps[0]
+    for k in range(1, 31):
+        inverse[k] = (
+            -sum(taps[j] * inverse[k - j] for j in range(1, min(k + 1, len(taps))))
+            / taps[0]
+        )
+    rows = np.arange(len(taps) + 30)[:, None] - np.arange(31)[None, :]
+    matrix = np.where(
+        (rows >= 0) & (rows < len(taps)), taps[np.clip(rows, 0, len(taps) - 1)], 0
+    )
+    target = np.zeros(len(taps) + 30)
+    target[0] = 1
+    augmented = np.vstack([matrix, np.sqrt(lam) * np.eye(31)])
+    regular = np.linalg.lstsq(augmented, np.r_[target, np.zeros(31)], rcond=None)[0]
+    outputs = [
+        sampled[:480],
+        fftconvolve(sampled, inverse)[:480],
+        fftconvolve(sampled, regular)[:480],
+    ]
+    evm = [100 * np.linalg.norm(v[40:-40] - symbols[40:-40]) / 20 for v in outputs]
+    ser = [
+        np.mean(
+            np.logical_or(
+                (v.real[40:-40] >= 0) != bits[0, 40:-40],
+                (v.imag[40:-40] >= 0) != bits[1, 40:-40],
+            )
+        )
+        for v in outputs
+    ]
+    gains = [10 * np.log10(np.vdot(w, w).real) for w in [inverse, regular]]
+    residual = 100 * np.linalg.norm(matrix @ regular - target)
+    omega = 2 * np.pi * np.arange(2048) / 2048
+    response = sum(taps[j] * np.exp(-1j * j * omega) for j in range(len(taps)))
+    return [*evm, *ser, *gains, residual, 20 * np.log10(max(min(abs(response)), 1e-12))]
+
+
+def _p25(p: dict[str, Any]) -> list[float]:
+    active = _oracle_channel(p["echo_gain"], p["regularization"], p["broken_mode"])
+    deep = _oracle_channel(p["echo_gain"], 0.01, True)
+    return [*active, deep[1], deep[2], deep[6], deep[7], deep[8]]
+
+
+def _oracle_lms(mu, correlation):
+    before = np.array([0.8, -0.5, 0.3, 0.2, -0.15, 0.1, 0.05, -0.03])
+    after = np.array([0.35, 0.7, -0.45, 0.25, 0.15, -0.1, 0.08, 0.03])
+    rng = np.random.default_rng(2601)
+    x, other, noise = [rng.normal(size=6000) for _ in range(3)]
+    x = x / np.sqrt(np.dot(x, x) / 6000)
+    other = other / np.sqrt(np.dot(other, other) / 6000)
+    noise = noise / np.sqrt(np.dot(noise, noise) / 6000)
+    t = np.arange(6000) / 8000
+    desired = 0.25 * np.sin(1400 * np.pi * t) + 0.18 * np.sin(2200 * np.pi * t + 0.4)
+    delay = np.lib.stride_tricks.sliding_window_view(np.pad(x, (7, 0)), 8)[:, ::-1]
+    interference = np.r_[delay[:3000] @ before, delay[3000:] @ after]
+    primary = desired + 0.05 * noise + interference
+    ref = correlation * x + np.sqrt(1 - correlation**2) * other
+    vectors = np.lib.stride_tricks.sliding_window_view(np.pad(ref, (7, 0)), 8)[:, ::-1]
+    weights = np.zeros(8)
+    error = []
+    residual = []
+    mismatch = []
+    stop = 6000
+    for k, row in enumerate(vectors):
+        predicted = np.sum(weights * row)
+        e = primary[k] - predicted
+        candidate = (np.eye(8) - mu * np.outer(row, row)) @ weights + mu * primary[
+            k
+        ] * row
+        if np.linalg.norm(candidate) > 1e4 or abs(e) > 1e6:
+            stop = k
+            break
+        weights = candidate
+        error.append(e)
+        residual.append(interference[k] - predicted)
+        mismatch.append(
+            np.linalg.norm(weights - (before if k < 3000 else after)) / np.sqrt(8)
+        )
+    if stop < 6000:
+        return [], stop + 1
+    values = []
+    error = np.array(error)
+    residual = np.array(residual)
+    for a, b in [(1976, 3000), (4976, 6000)]:
+        values.extend(
+            [
+                10
+                * np.log10(
+                    np.dot(interference[a:b], interference[a:b])
+                    / np.dot(residual[a:b], residual[a:b])
+                ),
+                np.dot(error[a:b], desired[a:b]) / np.dot(desired[a:b], desired[a:b]),
+            ]
+        )
+    count = 0
+    reacquired = 3001
+    for k, value in enumerate(mismatch[3000:]):
+        count = count + 1 if value < 0.08 else 0
+        if count == 64:
+            reacquired = k + 1
+            break
+    return [*values, mismatch[2999], mismatch[-1], reacquired], 6001
+
+
+def _p26(p: dict[str, Any]) -> list[float]:
+    stable, _ = _oracle_lms(p["step_size"], p["reference_correlation"])
+    _, stop = _oracle_lms(0.35, 1)
+    recovery, _ = _oracle_lms(0.006, 1)
+    return [*stable, stop, float(not p["broken_mode"]), *recovery[:2]]
+
+
+def _oracle_interval(k, n):
+    # Wilson limits are the roots of the binomial score-test quadratic.
+    a = n + 1.96**2
+    b = -(2 * k + 1.96**2)
+    c = k * k / n
+    root = np.sqrt(max(b * b - 4 * a * c, 0))
+    return max(0, (-b - root) / (2 * a)), min(1, (-b + root) / (2 * a))
+
+
+def _p27(p: dict[str, Any]) -> list[float]:
+    import math
+
+    rng = np.random.default_rng(2701)
+    bits = rng.random(4000) >= 0.5
+    noise = rng.normal(size=(16, 4000))
+    statistic = (
+        2 * bits.astype(int)
+        - 1
+        + np.sum(noise, axis=0) * np.sqrt(1 / (2 * 10 ** (p["ebn0_db"] / 10))) / 4
+    )
+    errors = (statistic >= 0) != bits
+    n = p["trial_count"]
+    k = int(np.count_nonzero(errors[:n]))
+    lo, hi = _oracle_interval(k, n)
+    active_k = 0 if p["broken_mode"] else k
+    alo, ahi = _oracle_interval(active_k, n)
+    blocks = np.array(
+        [np.mean(errors[start : start + 100]) for start in range(0, 4000, 100)]
+    )
+    return [
+        n,
+        p["ebn0_db"],
+        active_k / n,
+        alo,
+        ahi,
+        0.5 * math.erfc(np.sqrt(10 ** (p["ebn0_db"] / 10))),
+        1 if p["broken_mode"] else n,
+        float(not p["broken_mode"]),
+        k / n,
+        lo,
+        hi,
+        np.std(blocks, ddof=1),
+    ]
+
+
+def _p28(p: dict[str, Any]) -> list[float]:
+    import math
+
+    template = np.array([1, 1, 1, -1, 1, -1, -1, 1, -1, 1, -1, -1, -1, 1, 1, -1])
+    rng = np.random.default_rng(2801)
+    noise0, noise1 = rng.normal(size=(16, 12000)), rng.normal(size=(16, 12000))
+    projection0 = template @ noise0 / 4
+    projection1 = template @ noise1 / 4
+    dprime = 10 ** (p["matched_snr_db"] / 20)
+    threshold = p["threshold_sigma"]
+    score0, score1 = projection0, dprime + projection1
+    estimates = 1 + projection1 / dprime
+    selected = estimates[score1 >= threshold]
+    active = selected if p["broken_mode"] else estimates
+    q = lambda x: math.erfc(x / np.sqrt(2)) / 2
+    alpha = threshold - dprime
+    return [
+        np.mean(score0 >= threshold),
+        np.mean(score1 >= threshold),
+        q(threshold),
+        q(alpha),
+        np.mean(active) - 1,
+        np.var(active, ddof=1),
+        1 / dprime**2,
+        np.mean(selected) - 1,
+        np.exp(-(alpha**2) / 2) / (np.sqrt(2 * np.pi) * q(alpha) * dprime),
+        np.mean(estimates) - 1,
+        len(active),
+        float(not p["broken_mode"]),
+    ]
+
+
+_REFERENCES.update(
+    {
+        "P21": _p21,
+        "P22": _p22,
+        "P23": _p23,
+        "P24": _p24,
+        "P25": _p25,
+        "P26": _p26,
+        "P27": _p27,
+        "P28": _p28,
+    }
+)
+
+# Scenario declarations for the P21-P28 continuation.
+SCENARIOS.update({'P21': {'baseline': {'modulation_depth': 0.6, 'message_frequency_hz': 200, 'broken_mode': False}, 'sweep_1': {'modulation_depth': 1.4, 'message_frequency_hz': 200, 'broken_mode': False}, 'sweep_2': {'modulation_depth': 0.6, 'message_frequency_hz': 700, 'broken_mode': False}, 'broken': {'modulation_depth': 0.6, 'message_frequency_hz': 200, 'broken_mode': True}, 'recovery': {'modulation_depth': 0.6, 'message_frequency_hz': 200, 'broken_mode': False}}, 'P22': {'baseline': {'deviation_hz': 400, 'message_frequency_hz': 100, 'broken_mode': False}, 'sweep_1': {'deviation_hz': 800, 'message_frequency_hz': 100, 'broken_mode': False}, 'sweep_2': {'deviation_hz': 400, 'message_frequency_hz': 400, 'broken_mode': False}, 'broken': {'deviation_hz': 400, 'message_frequency_hz': 100, 'broken_mode': True}, 'recovery': {'deviation_hz': 400, 'message_frequency_hz': 100, 'broken_mode': False}}, 'P23': {'baseline': {'ebn0_db': 6, 'phase_error_deg': 12, 'broken_mode': False}, 'sweep_1': {'ebn0_db': 0, 'phase_error_deg': 12, 'broken_mode': False}, 'sweep_2': {'ebn0_db': 6, 'phase_error_deg': 50, 'broken_mode': False}, 'broken': {'ebn0_db': 6, 'phase_error_deg': 12, 'broken_mode': True}, 'recovery': {'ebn0_db': 6, 'phase_error_deg': 12, 'broken_mode': False}}, 'P24': {'baseline': {'rolloff': 0.25, 'span_symbols': 8, 'broken_mode': False}, 'sweep_1': {'rolloff': 0.1, 'span_symbols': 8, 'broken_mode': False}, 'sweep_2': {'rolloff': 0.25, 'span_symbols': 2, 'broken_mode': False}, 'broken': {'rolloff': 0.25, 'span_symbols': 8, 'broken_mode': True}, 'recovery': {'rolloff': 0.25, 'span_symbols': 8, 'broken_mode': False}}, 'P25': {'baseline': {'echo_gain': 0.45, 'regularization': 0.015848931924611134, 'broken_mode': False}, 'sweep_1': {'echo_gain': 0.75, 'regularization': 0.015848931924611134, 'broken_mode': False}, 'sweep_2': {'echo_gain': 0.45, 'regularization': 0.1, 'broken_mode': False}, 'broken': {'echo_gain': 0.45, 'regularization': 0.015848931924611134, 'broken_mode': True}, 'recovery': {'echo_gain': 0.45, 'regularization': 0.015848931924611134, 'broken_mode': False}}, 'P26': {'baseline': {'step_size': 0.006, 'reference_correlation': 1.0, 'broken_mode': False}, 'sweep_1': {'step_size': 0.0005, 'reference_correlation': 1.0, 'broken_mode': False}, 'sweep_2': {'step_size': 0.006, 'reference_correlation': 0, 'broken_mode': False}, 'broken': {'step_size': 0.006, 'reference_correlation': 1.0, 'broken_mode': True}, 'recovery': {'step_size': 0.006, 'reference_correlation': 1.0, 'broken_mode': False}}, 'P27': {'baseline': {'trial_count': 4000, 'ebn0_db': 2, 'broken_mode': False}, 'sweep_1': {'trial_count': 100, 'ebn0_db': 2, 'broken_mode': False}, 'sweep_2': {'trial_count': 4000, 'ebn0_db': -2, 'broken_mode': False}, 'broken': {'trial_count': 4000, 'ebn0_db': 2, 'broken_mode': True}, 'recovery': {'trial_count': 4000, 'ebn0_db': 2, 'broken_mode': False}}, 'P28': {'baseline': {'matched_snr_db': 6, 'threshold_sigma': 1.5, 'broken_mode': False}, 'sweep_1': {'matched_snr_db': 0, 'threshold_sigma': 1.5, 'broken_mode': False}, 'sweep_2': {'matched_snr_db': 6, 'threshold_sigma': 3, 'broken_mode': False}, 'broken': {'matched_snr_db': 6, 'threshold_sigma': 1.5, 'broken_mode': True}, 'recovery': {'matched_snr_db': 6, 'threshold_sigma': 1.5, 'broken_mode': False}}})

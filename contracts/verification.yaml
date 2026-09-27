@@ -1,13 +1,12 @@
 schema_version: 1
 commands:
-  replay:
-  - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src .venv/bin/python -B -m pytest -q apps/api/tests/test_numerical_replay.py
-    apps/api/tests/test_gnc_course.py apps/api/tests/test_gnc_expansion.py apps/api/tests/test_robotics_expansion.py
-    apps/api/tests/test_vehicle_dynamics_expansion.py
-  dsp-fidelity-p11-p20:
-  - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src .venv/bin/python
+  dsp-fidelity-p21-p28:
+  - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3
     -B -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py
-    apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py apps/api/tests/test_course_caliber_status.py
+    apps/api/tests/test_dsp_fidelity_remediation_p21_p28.py apps/api/tests/test_dsp_conversion_framework.py
+    apps/api/tests/test_dsp_course.py apps/api/tests/test_course_caliber_status.py
+  backend:
+  - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests
   contract:
   - ./scripts/agent-verify.sh contract
   quick:
@@ -15,16 +14,17 @@ commands:
   full:
   - ./scripts/agent-verify.sh full
   deterministic-catalog:
-  - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src .venv/bin/python -B scripts/validate_courses.py
-    --execute --deterministic --json
+  - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute
+    --deterministic --json
+  frontend:
+  - npm run typecheck
+  - npm run build
   lint:
-  - .venv/bin/ruff check --ignore UP038 apps/api/tests/numerical_replay.py apps/api/tests/test_numerical_replay.py
-    apps/api/tests/test_gnc_course.py apps/api/tests/test_gnc_expansion.py apps/api/tests/test_robotics_expansion.py
-    apps/api/tests/test_vehicle_dynamics_expansion.py apps/api/tests/test_dsp_fidelity_remediation.py
-    apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py
+  - .venv/bin/ruff check apps/api/tests/test_dsp_fidelity_remediation*.py courses/dsp-radar/remediation_reference_cases.py
+    courses/dsp-radar/modules/2[1-8]-*
   scope:
   - git diff --check
-  - git diff --exit-code 01a510244801cbf2c3b7ce990693aac9dc5959c1 -- courses apps/api/src apps/web packages
-    scripts .github .gitmodules
-evidence_boundary: Validation portability for unchanged software simulations only. No new module implementation
-  or expanded scientific tolerance; no MATLAB, learner, physical or production claim.
+  - git diff --check
+  - git diff --name-only b7e684d595bd777602c9aa22cd489189efa6584b
+evidence_boundary: Eight deterministic software source-fidelity repairs only. P29-P84, learner validation,
+  MATLAB runtime and physical/production claims remain pending.

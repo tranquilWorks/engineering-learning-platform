@@ -1,6 +1,4 @@
-# See Pulse Shaping and Matched Filtering
-
-> **Guiding question:** Why are symbols filtered before transmission and again at reception?
+# P24 Lesson: See Pulse Shaping and Matched Filtering
 
 ## Guiding question
 
@@ -134,33 +132,27 @@ receiver processing that must occur before one clean point per symbol reaches
 those regions. P07's echo-addition view of convolution and P09's FIR delay
 language are the other useful foundations.
 
-## Use the Python GUI experiment
+## Interactive lab: See Pulse Shaping and Matched Filtering
 
-The GUI keeps the pinned source's mental model and processing order visible. The **pulse shape rolloff** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+There are 320 QPSK symbols at eight samples per symbol, Es/N0=14 dB and a maximum eight-symbol RRC span. Both pulses have unit energy. The RRC uses explicit limits at zero and ±1/(4 rolloff). Noiseless ISI excludes span-sized edge guards; symbol error rate includes all 320 decisions.
 
-### Prediction and sweep 1 — pulse shape rolloff
+### Predict, manipulate, explain
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+Predict the combined filter delay before inspecting the constellation. Why can increasing span reduce residual ISI without changing samples per symbol?
 
-### Sweep 2 — secondary stress
+1. Start at the baseline. Change only **RRC rolloff** from 0.25 to 0.1 ratio. Inspect its dedicated sweep and the primary processing plots. Explain which equation predicts the observed change before resetting.
+2. Start at the baseline. Change only **Finite pulse span** from 8 to 2 symbols. Inspect its dedicated sweep and the primary processing plots. Explain which equation predicts the observed change before resetting.
+3. Enable the broken case. Sampling four samples late is a half-symbol timing error. Even a correct matched filter cannot open the constellation at the wrong sampling instant.
+4. Recovery: Align samples at len(pulse)-1 plus multiples of eight. Compare aligned noisy EVM, noiseless residual ISI, and the rectangular reference. Disable the toggle and restore both controls to reproduce baseline exactly.
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+### Focused check and teach-back
 
-### Intentionally broken case and recovery
+Predict the combined filter delay before inspecting the constellation. Why can increasing span reduce residual ISI without changing samples per symbol? Explain your answer using one measured value, its units, and the relevant equation. Then describe the failure, the recovery assumption, and one limit of the model.
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+### Common mistakes
 
-## Common mistakes to avoid in the GUI
+Sampling at the transmit delay alone ignores the receive-filter delay.
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+### Scope of this lab
 
-## Teach-back checklist
-
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The source equations and processing stages above are retained. NumPy seeds make the software repeatable, but the random-number stream is not claimed to match MATLAB. MATLAB figure-window cleanup and console printing are replaced by the plots and metrics here. Plot traces are bounded to 512 displayed samples; calculations use the full stated record. This lab is a simulation, not a hardware measurement.

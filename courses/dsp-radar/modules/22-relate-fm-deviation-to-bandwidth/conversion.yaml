@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "a011517a122d5e0b7d741d77906b715bdd9769d5142b43dce6f0eda1ddb3cba9",
+    "content_digest": "0eaa501d06821115718e5c4878d04b39374ea4cc179d7cbcad00a43abce00783",
     "files": [
       {
         "path": "modules/22-relate-fm-deviation-to-bandwidth/experiment.py",
-        "sha256": "7b859923b7ef2c2231e9d1351c1cd85c8356066530474663b2ee108b33bead2a"
+        "sha256": "a5eca244e889b95f7fceecb9b17dad7e6902600d682173cc8c450ec462deefb2"
       },
       {
         "path": "modules/22-relate-fm-deviation-to-bandwidth/lesson.md",
-        "sha256": "905bdb94c4bd803d59db2e410fa2b2ff05f3c00b38178db1ccf8bca64e89b6c2"
+        "sha256": "18297e9a7ce46f8d8d35457988d335fbc4210becb1afeac4f3293f6991babec2"
       },
       {
         "path": "modules/22-relate-fm-deviation-to-bandwidth/module.yaml",
-        "sha256": "accd80c3e49e2428208a52cdc42bc5c64a79457a7b37203ef84c71d8c4e1635f"
+        "sha256": "7c254a29c5a8e847854dc2a75c5e3c1e35f84fb68678c244ea42a393560042ce"
       }
     ]
   },
   "content": {
     "guiding_question": "How does instantaneous frequency motion create an FM spectrum?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "FM phase slope moves while magnitude stays fixed. The smallest symmetric span containing 98% of retained RF line power is measured separately from Carson's approximation.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary FM deviation while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "FM phase slope moves while magnitude stays fixed. The smallest symmetric span containing 98% of retained RF line power is measured separately from Carson's approximation.",
+      "An 8 kHz carrier with 5 kHz deviation exceeds 12 kHz Nyquist at 24 ksample/s; the observed phase increments wrap. Its aliased spectrum cannot certify occupied bandwidth.",
+      "Resample the same physical failure at 30 ksample/s. The 10.2 kHz occupied span and positive guard are retained; finite-difference phase-slope error remains visible.",
+      "Explicit stage equations are retained in lesson.md. NumPy random streams differ from MATLAB. Plot/console presentation is adapted; no MATLAB runtime parity is claimed."
     ],
     "equations": [
       {
@@ -69,146 +69,249 @@
       "seed": 1022,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
+          "name": "sample_count",
+          "value": 4800,
+          "unit": "count"
         },
         {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
+          "name": "recovery_sample_count",
+          "value": 6000,
+          "unit": "count"
         },
         {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "9aba054e817fff5da0bf27795b53b594efb7757f8fb84942a83b00fbd4ea2993",
-          "unit": "mixed numeric signature"
+          "sha256": "08365cb6d7b79e852b28140beec22fbdd6901c18797e2000dc7c01eb6f4c0005",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "a0f463477a4ceec8ac12090b4340fd2a3e2db436396d618f351ed53306a6c8fd",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "8c60749fff11f82efab306d64e7072e2c62567c14901235d03ffe7d0b723635c",
-          "unit": "mixed numeric signature"
+          "sha256": "efb07f03cd669c8ed40584828cbd79de0dba822475a0a9d1ea43dd4e0f5d1447",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "5da4608dba7774611e3c861994adb9a81cb310d29e5643f28b58650e198a7d14",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "197fa79f37ee2df872b77132a8b86f7c8f3e254bad6c304b646c6e8009203ed9",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "c4184b19b43550a9fe45a238b906ef9f0160cac2eeac6dda945e7ef1ed503ab4",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "07d638551c793aefb31987f8f91eb2d5bad21a0dc6aaacd183eb469a6ea5120e",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "75788d552896ee7a843ab668b6d18c716df16c190ae997075d3fdc59fc33774e",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "08365cb6d7b79e852b28140beec22fbdd6901c18797e2000dc7c01eb6f4c0005",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "a0f463477a4ceec8ac12090b4340fd2a3e2db436396d618f351ed53306a6c8fd",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P22 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P22 explicit processing and evidence stages",
+        "target_plot_key": "rf_waveform",
+        "title": "Real RF observation at the selected baseline",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "Time (ms)",
+            "unit": "ms"
           },
           {
             "role": "y",
-            "label": "normalized signal",
-            "unit": "normalized"
+            "label": "Voltage (V)",
+            "unit": "V"
           }
         ],
-        "interpretation": "This view answers the Relate FM Deviation to Bandwidth guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "FM phase slope moves while magnitude stays fixed. The smallest symmetric span containing 98% of retained RF line power is measured separately from Carson's approximation."
       },
       {
-        "source_figure": "Pinned P22 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P22 explicit processing and evidence stages",
+        "target_plot_key": "phase_slope",
+        "title": "Intended and sampled phase slope",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "Time (ms)",
+            "unit": "ms"
           },
           {
             "role": "y",
-            "label": "normalized signal",
-            "unit": "normalized"
+            "label": "Frequency (Hz)",
+            "unit": "Hz"
           }
         ],
-        "interpretation": "This view answers the Relate FM Deviation to Bandwidth guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "FM phase slope moves while magnitude stays fixed. The smallest symmetric span containing 98% of retained RF line power is measured separately from Carson's approximation."
       },
       {
-        "source_figure": "Pinned P22 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P22 explicit processing and evidence stages",
+        "target_plot_key": "magnitude",
+        "title": "FM keeps constant phasor magnitude",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "Time (ms)",
+            "unit": "ms"
           },
           {
             "role": "y",
-            "label": "normalized signal",
-            "unit": "normalized"
+            "label": "Magnitude (V)",
+            "unit": "V"
           }
         ],
-        "interpretation": "This view answers the Relate FM Deviation to Bandwidth guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "FM phase slope moves while magnitude stays fixed. The smallest symmetric span containing 98% of retained RF line power is measured separately from Carson's approximation."
       },
       {
-        "source_figure": "Pinned P22 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P22 explicit processing and evidence stages",
+        "target_plot_key": "spectrum",
+        "title": "Noisy baseline RF spectrum",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "RF frequency (Hz)",
+            "unit": "Hz"
           },
           {
             "role": "y",
-            "label": "normalized signal",
-            "unit": "normalized"
+            "label": "Amplitude (V)",
+            "unit": "V"
           }
         ],
-        "interpretation": "This view answers the Relate FM Deviation to Bandwidth guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "FM phase slope moves while magnitude stays fixed. The smallest symmetric span containing 98% of retained RF line power is measured separately from Carson's approximation."
+      },
+      {
+        "source_figure": "Pinned P22 explicit processing and evidence stages",
+        "target_plot_key": "sideband_power",
+        "title": "Retained line-power ladder",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Sideband order (integer)",
+            "unit": "integer"
+          },
+          {
+            "role": "y",
+            "label": "Power fraction (ratio)",
+            "unit": "ratio"
+          }
+        ],
+        "interpretation": "FM phase slope moves while magnitude stays fixed. The smallest symmetric span containing 98% of retained RF line power is measured separately from Carson's approximation."
+      },
+      {
+        "source_figure": "Pinned P22 explicit processing and evidence stages",
+        "target_plot_key": "deviation_sweep",
+        "title": "Deviation-only bandwidth sweep",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Deviation (Hz)",
+            "unit": "Hz"
+          },
+          {
+            "role": "y",
+            "label": "Bandwidth (Hz)",
+            "unit": "Hz"
+          }
+        ],
+        "interpretation": "FM phase slope moves while magnitude stays fixed. The smallest symmetric span containing 98% of retained RF line power is measured separately from Carson's approximation."
+      },
+      {
+        "source_figure": "Pinned P22 explicit processing and evidence stages",
+        "target_plot_key": "frequency_sweep",
+        "title": "Message-frequency-only bandwidth sweep",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Message frequency (Hz)",
+            "unit": "Hz"
+          },
+          {
+            "role": "y",
+            "label": "Bandwidth (Hz)",
+            "unit": "Hz"
+          }
+        ],
+        "interpretation": "FM phase slope moves while magnitude stays fixed. The smallest symmetric span containing 98% of retained RF line power is measured separately from Carson's approximation."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "deviation_hz",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          50,
+          200,
+          400,
+          800
         ],
-        "expected_observation": "Changing FM deviation moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Peak FM deviation; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "message_frequency_hz",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          50,
+          100,
+          200,
+          400
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Message frequency; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "An 8 kHz carrier with 5 kHz deviation exceeds 12 kHz Nyquist at 24 ksample/s; the observed phase increments wrap. Its aliased spectrum cannot certify occupied bandwidth.",
+      "recovery": "Resample the same physical failure at 30 ksample/s. The 10.2 kHz occupied span and positive guard are retained; finite-difference phase-slope error remains visible.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "An 8 kHz carrier with 5 kHz deviation exceeds 12 kHz Nyquist at 24 ksample/s; the observed phase increments wrap. Its aliased spectrum cannot certify occupied bandwidth.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -216,63 +319,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 6000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P22 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p21_p28.py",
     "seed": 1022,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "deviation_hz",
+        "value": 400,
+        "unit": "Hz"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "message_frequency_hz",
+        "value": 100,
+        "unit": "Hz"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 2.220446049250313e-16,
+        "max_relative_error": 2.220446049250313e-16,
+        "passed": true,
         "expected": {
           "path": "modules/22-relate-fm-deviation-to-bandwidth/evidence/expected-baseline.json",
-          "sha256": "9aba054e817fff5da0bf27795b53b594efb7757f8fb84942a83b00fbd4ea2993"
+          "sha256": "08365cb6d7b79e852b28140beec22fbdd6901c18797e2000dc7c01eb6f4c0005"
         },
         "actual": {
           "path": "modules/22-relate-fm-deviation-to-bandwidth/evidence/actual-baseline.json",
-          "sha256": "fb29043887af17e56e96c11f30926c2399e4dd413ae9df88be4659d194ac00e8"
-        },
-        "max_absolute_error": 1.0613732115416497e-13,
-        "max_relative_error": 1.0613732115416497e-13,
-        "passed": true
+          "sha256": "a0f463477a4ceec8ac12090b4340fd2a3e2db436396d618f351ed53306a6c8fd"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 2.220446049250313e-16,
+        "max_relative_error": 2.220446049250313e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/22-relate-fm-deviation-to-bandwidth/evidence/expected-sweep-1.json",
+          "sha256": "efb07f03cd669c8ed40584828cbd79de0dba822475a0a9d1ea43dd4e0f5d1447"
+        },
+        "actual": {
+          "path": "modules/22-relate-fm-deviation-to-bandwidth/evidence/actual-sweep-1.json",
+          "sha256": "5da4608dba7774611e3c861994adb9a81cb310d29e5643f28b58650e198a7d14"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 2.220446049250313e-16,
+        "max_relative_error": 2.220446049250313e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/22-relate-fm-deviation-to-bandwidth/evidence/expected-sweep-2.json",
+          "sha256": "197fa79f37ee2df872b77132a8b86f7c8f3e254bad6c304b646c6e8009203ed9"
+        },
+        "actual": {
+          "path": "modules/22-relate-fm-deviation-to-bandwidth/evidence/actual-sweep-2.json",
+          "sha256": "c4184b19b43550a9fe45a238b906ef9f0160cac2eeac6dda945e7ef1ed503ab4"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 2.220446049250313e-16,
+        "max_relative_error": 2.220446049250313e-16,
+        "passed": true,
         "expected": {
           "path": "modules/22-relate-fm-deviation-to-bandwidth/evidence/expected-broken.json",
-          "sha256": "8c60749fff11f82efab306d64e7072e2c62567c14901235d03ffe7d0b723635c"
+          "sha256": "07d638551c793aefb31987f8f91eb2d5bad21a0dc6aaacd183eb469a6ea5120e"
         },
         "actual": {
           "path": "modules/22-relate-fm-deviation-to-bandwidth/evidence/actual-broken.json",
-          "sha256": "593308ab043e065d8c008e98d4210d4a2f44eff4b62518162689bee7ae1873b4"
+          "sha256": "75788d552896ee7a843ab668b6d18c716df16c190ae997075d3fdc59fc33774e"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 2.05613304160579e-13,
-        "max_relative_error": 1.7519105159307752e-13,
-        "passed": true
+        "max_absolute_error": 2.220446049250313e-16,
+        "max_relative_error": 2.220446049250313e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/22-relate-fm-deviation-to-bandwidth/evidence/expected-recovery.json",
+          "sha256": "08365cb6d7b79e852b28140beec22fbdd6901c18797e2000dc7c01eb6f4c0005"
+        },
+        "actual": {
+          "path": "modules/22-relate-fm-deviation-to-bandwidth/evidence/actual-recovery.json",
+          "sha256": "a0f463477a4ceec8ac12090b4340fd2a3e2db436396d618f351ed53306a6c8fd"
+        }
       }
     ]
   },

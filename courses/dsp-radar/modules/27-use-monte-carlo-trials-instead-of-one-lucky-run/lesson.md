@@ -1,6 +1,4 @@
-# Use Monte Carlo Trials Instead of One Lucky Run
-
-> **Guiding question:** Why is one noise realization not enough to judge an algorithm?
+# P27 Lesson: Use Monte Carlo Trials Instead of One Lucky Run
 
 ## Guiding question
 
@@ -165,33 +163,27 @@ define one trial, vary the random input independently, retain the operating
 condition, report uncertainty, and distinguish reproducibility from evidence
 volume.
 
-## Use the Python GUI experiment
+## Interactive lab: Use Monte Carlo Trials Instead of One Lucky Run
 
-The GUI keeps the pinned source's mental model and processing order visible. The **Monte Carlo trials** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+Seed 2701 produces 4000 independent BPSK trials, each a 16-sample unit-energy pulse plus independent real Gaussian noise. Trial-count choices are prefixes of this bank. SNR sweeps reuse the same unit-noise bank, and block plots always show the forty 100-trial baseline blocks. A reset reproduces the bank exactly; reproducibility does not make its different trials duplicates.
 
-### Prediction and sweep 1 — Monte Carlo trials
+### Predict, manipulate, explain
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+Predict how interval width changes when independent trials grow from 100 to 4000. Does duplicating one correct waveform justify the same uncertainty?
 
-### Sweep 2 — secondary stress
+1. Start at the baseline. Change only **Independent trial count** from 4000 to 100 trials. Inspect its dedicated sweep and the primary processing plots. Explain which equation predicts the observed change before resetting.
+2. Start at the baseline. Change only **Energy per bit / noise density** from 2 to -2 dB. Inspect its dedicated sweep and the primary processing plots. Explain which equation predicts the observed change before resetting.
+3. Enable the broken case. Repeating one lucky correct waveform creates one unique statistic, zero errors, and a misleadingly narrow nominal interval. The independence validity flag is false, so that interval has no binomial coverage claim.
+4. Recovery: Rebuild the independent bank from seed 2701. The bank and decisions reproduce exactly, while block variability remains visible. More trials reduce uncertainty; they do not improve the underlying detector. Disable the toggle and restore both controls to reproduce baseline exactly.
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+### Focused check and teach-back
 
-### Intentionally broken case and recovery
+Predict how interval width changes when independent trials grow from 100 to 4000. Does duplicating one correct waveform justify the same uncertainty? Explain your answer using one measured value, its units, and the relevant equation. Then describe the failure, the recovery assumption, and one limit of the model.
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+### Common mistakes
 
-## Common mistakes to avoid in the GUI
+Repeating one lucky observation does not create independent Bernoulli trials.
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+### Scope of this lab
 
-## Teach-back checklist
-
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The source equations and processing stages above are retained. NumPy seeds make the software repeatable, but the random-number stream is not claimed to match MATLAB. MATLAB figure-window cleanup and console printing are replaced by the plots and metrics here. Plot traces are bounded to 512 displayed samples; calculations use the full stated record. This lab is a simulation, not a hardware measurement.

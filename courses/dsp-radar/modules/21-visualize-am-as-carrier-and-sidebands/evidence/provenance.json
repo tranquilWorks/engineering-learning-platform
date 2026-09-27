@@ -1,0 +1,94 @@
+{
+  "item": "P21",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p21",
+    "sha256": "fffe190b7c067e8ed3ae692a699f3b055f1055ada36674ecfbf9f56b9ae189a8",
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/21-visualize-am-as-carrier-and-sidebands/experiment.py",
+    "sha256": "7949874df567ccc6e3adb1f94c85c30bfb8dbad9c8c4635b8eb1aa525fd6aff0",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "modulation_depth": 0.6,
+      "message_frequency_hz": 200,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "modulation_depth": 1.4,
+      "message_frequency_hz": 200,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "modulation_depth": 0.6,
+      "message_frequency_hz": 700,
+      "broken_mode": false
+    },
+    "broken": {
+      "modulation_depth": 0.6,
+      "message_frequency_hz": 200,
+      "broken_mode": true
+    },
+    "recovery": {
+      "modulation_depth": 0.6,
+      "message_frequency_hz": 200,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "active_depth",
+      "unit": "ratio"
+    },
+    {
+      "name": "message_frequency",
+      "unit": "Hz"
+    },
+    {
+      "name": "carrier_amplitude",
+      "unit": "V"
+    },
+    {
+      "name": "lower_sideband",
+      "unit": "V"
+    },
+    {
+      "name": "upper_sideband",
+      "unit": "V"
+    },
+    {
+      "name": "minimum_signed_envelope",
+      "unit": "V"
+    },
+    {
+      "name": "envelope_rmse",
+      "unit": "normalized amplitude"
+    },
+    {
+      "name": "coherent_rmse",
+      "unit": "normalized amplitude"
+    },
+    {
+      "name": "multitone_line_2650",
+      "unit": "V"
+    },
+    {
+      "name": "multitone_line_2900",
+      "unit": "V"
+    },
+    {
+      "name": "multitone_line_3100",
+      "unit": "V"
+    },
+    {
+      "name": "multitone_line_3350",
+      "unit": "V"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

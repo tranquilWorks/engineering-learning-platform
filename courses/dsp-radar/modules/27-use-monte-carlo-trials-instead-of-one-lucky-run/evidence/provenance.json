@@ -1,0 +1,94 @@
+{
+  "item": "P27",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p27",
+    "sha256": "fffe190b7c067e8ed3ae692a699f3b055f1055ada36674ecfbf9f56b9ae189a8",
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/27-use-monte-carlo-trials-instead-of-one-lucky-run/experiment.py",
+    "sha256": "949be00cbaf76571c1adb94b444a5461199658416f59a581d771734132b65661",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "trial_count": 4000,
+      "ebn0_db": 2,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "trial_count": 100,
+      "ebn0_db": 2,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "trial_count": 4000,
+      "ebn0_db": -2,
+      "broken_mode": false
+    },
+    "broken": {
+      "trial_count": 4000,
+      "ebn0_db": 2,
+      "broken_mode": true
+    },
+    "recovery": {
+      "trial_count": 4000,
+      "ebn0_db": 2,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "reported_trials",
+      "unit": "trials"
+    },
+    {
+      "name": "ebn0",
+      "unit": "dB"
+    },
+    {
+      "name": "empirical_ber",
+      "unit": "ratio"
+    },
+    {
+      "name": "nominal_wilson_lower",
+      "unit": "ratio"
+    },
+    {
+      "name": "nominal_wilson_upper",
+      "unit": "ratio"
+    },
+    {
+      "name": "analytic_awgn_ber",
+      "unit": "ratio"
+    },
+    {
+      "name": "unique_statistics",
+      "unit": "trials"
+    },
+    {
+      "name": "independence_valid",
+      "unit": "boolean"
+    },
+    {
+      "name": "recovery_ber",
+      "unit": "ratio"
+    },
+    {
+      "name": "recovery_ci_lower",
+      "unit": "ratio"
+    },
+    {
+      "name": "recovery_ci_upper",
+      "unit": "ratio"
+    },
+    {
+      "name": "hundred_trial_block_std",
+      "unit": "ratio"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

@@ -3,13 +3,13 @@
   "id": "25-create-and-equalize-a-multipath-channel",
   "number": 25,
   "title": "Create and Equalize a Multipath Channel",
-  "summary": "Explore create and equalize a multipath channel with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "Delayed pulse-shaped paths smear neighboring QPSK symbols. A 31-tap causal inverse cancels the leading response; regularization also penalizes tap energy.",
   "guiding_question": "How do delayed copies distort symbols even when noise is small?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
     "phase-3",
-    "multipath-delay"
+    "P25"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,67 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Multipath Delay",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "echo_gain",
+      "type": "segmented",
+      "label": "One-symbol echo magnitude",
+      "unit": "ratio",
+      "default": 0.45,
+      "options": [
+        {
+          "label": "0",
+          "value": 0
+        },
+        {
+          "label": "0.25",
+          "value": 0.25
+        },
+        {
+          "label": "0.45 baseline",
+          "value": 0.45
+        },
+        {
+          "label": "0.5",
+          "value": 0.5
+        },
+        {
+          "label": "0.75",
+          "value": 0.75
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "regularization",
+      "type": "segmented",
+      "label": "Equalizer regularization",
+      "unit": "ratio",
+      "default": 0.015848931924611134,
+      "options": [
+        {
+          "label": "0.001",
+          "value": 0.001
+        },
+        {
+          "label": "0.01",
+          "value": 0.01
+        },
+        {
+          "label": "0.0158489 baseline",
+          "value": 0.015848931924611134
+        },
+        {
+          "label": "0.03",
+          "value": 0.03
+        },
+        {
+          "label": "0.1",
+          "value": 0.1
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +91,60 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing multipath delay, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict which equalizer has larger noise gain near a channel null. Can a regularized inverse reduce EVM while retaining more impulse-response distortion?",
+      "reveal": "Delayed pulse-shaped paths smear neighboring QPSK symbols. A 31-tap causal inverse cancels the leading response; regularization also penalizes tap energy."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Finite inverse tap magnitudes",
+      "plot": "equalizer_taps"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Matched-channel eye before equalization",
+      "plot": "eye"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Delayed complex path coefficients",
+      "plot": "paths"
+    },
+    {
+      "type": "plot",
+      "title": "Pulse/channel/matched-filter sampled response",
+      "plot": "symbol_response"
+    },
+    {
+      "type": "plot",
+      "title": "Destructive interference produces a notch",
+      "plot": "channel_spectrum"
+    },
+    {
+      "type": "plot",
+      "title": "Equalizer symbol decisions",
+      "plot": "constellation"
+    },
+    {
+      "type": "plot",
+      "title": "Echo strength with fixed pulse and noise",
+      "plot": "echo_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Deep-null regularization tradeoff",
+      "plot": "regularization_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Deep-null inverse noise gain",
+      "plot": "noise_gain"
     },
     {
       "type": "callout",
@@ -102,7 +155,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "208c836c86cee14bf15f12d940c39945b3692888b48065cdc9435ca88902cf61",
+    "content_digest": "bb338049baf38ede50808e68e2b491336087c3a401b2b32f1024910b6e2730e5",
     "files": [
       {
         "path": "modules/23-build-bpsk-and-qpsk-constellation-intuition/experiment.py",
-        "sha256": "1d9f33bfce859e1ebc98d9fad4c2708c015372f6637aa6e3dcae67886947e7b9"
+        "sha256": "e46c1bf218f2e38779cebb4413fba3151879d311cae703f0273e1cf6cfb1eefb"
       },
       {
         "path": "modules/23-build-bpsk-and-qpsk-constellation-intuition/lesson.md",
-        "sha256": "79117c9dceb16f9b4ad3ce4fa7950faf3a0d177f89f90d7d04d9d77d3a334fc4"
+        "sha256": "ec6598a2908eb8f27bf428441958203a2373e9559547da81e694d4f361afc811"
       },
       {
         "path": "modules/23-build-bpsk-and-qpsk-constellation-intuition/module.yaml",
-        "sha256": "c0d1ac2714c808f551ea44b8711e139069e73b305affae03954bd70ee262f86d"
+        "sha256": "2103526c2a3f239da7f766ef5ff69063526f23972834ec2e4e45021a2c85af7c"
       }
     ]
   },
   "content": {
     "guiding_question": "What do symbols, phase states, and decision regions look like in IQ?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "Both maps have unit symbol energy, but QPSK carries two bits per symbol. At equal Eb/N0 its noise standard deviation per coordinate is smaller by sqrt(2).",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary constellation order while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Both maps have unit symbol energy, but QPSK carries two bits per symbol. At equal Eb/N0 its noise standard deviation per coordinate is smaller by sqrt(2).",
+      "At 55 degrees and 16 dB, QPSK clusters are tight but cross the fixed receiver sign boundaries. More SNR does not fix the wrong phase reference.",
+      "Multiply the received QPSK samples by the exact inverse carrier rotation before sign decisions. This demonstration assumes the phase error is known; it does not implement carrier acquisition.",
+      "Explicit stage equations are retained in lesson.md. NumPy random streams differ from MATLAB. Plot/console presentation is adapted; no MATLAB runtime parity is claimed."
     ],
     "equations": [
       {
@@ -69,146 +69,230 @@
       "seed": 1023,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
+          "name": "symbol_count",
+          "value": 400,
+          "unit": "count"
         },
         {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "94f4305bb542655114b124bc0a674cd967bf1dc3509d09d5a585855ee4c0a4d4",
-          "unit": "mixed numeric signature"
+          "sha256": "483b8848f097a609ba9d63975732cdd0a7820db613f3c4d5f19e601874b49c85",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "d153c418dff443502b9d84e1239db4dc59eb85ac23564c7097f0cf7a595415d1",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "17da0de81254a207c55681f21176ae619df993dcb58f91cd353574758ce2d7dd",
-          "unit": "mixed numeric signature"
+          "sha256": "aa65ac86a2d4e1cb76d1a3f47ea52e50670691e9688a8a9044bd78bb49e26ba6",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "974ff0a273a9efb919549818c48bca0acef3998470b485fd92894f2e65f86d15",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "4c2f0cce41d9b2ebb46b6f12fb189f807f53e52ae951891ec423c3f8fcaf9ef9",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "0c6b1ea4283ea647dc60e29a0d1ec7f7f8884a37097d485207da926bd0f8f5c2",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "0fa1de676b15b064f070b22d137c3220ec32021fdba52bdead88feff994bfdee",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "63f5f9cd3e0342e72254a556cbe90e130a7e63243d5d028389c1e09c5ecedbb4",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "483b8848f097a609ba9d63975732cdd0a7820db613f3c4d5f19e601874b49c85",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "d153c418dff443502b9d84e1239db4dc59eb85ac23564c7097f0cf7a595415d1",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P23 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P23 explicit processing and evidence stages",
+        "target_plot_key": "bit_mapping",
+        "title": "Input bits before symbol mapping",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "Symbol index (integer)",
+            "unit": "integer"
           },
           {
             "role": "y",
-            "label": "normalized signal",
-            "unit": "normalized"
+            "label": "Bit value (0 or 1)",
+            "unit": "0 or 1"
           }
         ],
-        "interpretation": "This view answers the Build BPSK and QPSK Constellation Intuition guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Both maps have unit symbol energy, but QPSK carries two bits per symbol. At equal Eb/N0 its noise standard deviation per coordinate is smaller by sqrt(2)."
       },
       {
-        "source_figure": "Pinned P23 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P23 explicit processing and evidence stages",
+        "target_plot_key": "symbol_mapping",
+        "title": "First 24 mapped QPSK symbols",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "Symbol index (integer)",
+            "unit": "integer"
           },
           {
             "role": "y",
-            "label": "normalized signal",
-            "unit": "normalized"
+            "label": "Coordinate (normalized amplitude)",
+            "unit": "normalized amplitude"
           }
         ],
-        "interpretation": "This view answers the Build BPSK and QPSK Constellation Intuition guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Both maps have unit symbol energy, but QPSK carries two bits per symbol. At equal Eb/N0 its noise standard deviation per coordinate is smaller by sqrt(2)."
       },
       {
-        "source_figure": "Pinned P23 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P23 explicit processing and evidence stages",
+        "target_plot_key": "constellation",
+        "title": "Noisy QPSK and exact inverse rotation",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "In-phase (normalized amplitude)",
+            "unit": "normalized amplitude"
           },
           {
             "role": "y",
-            "label": "normalized signal",
-            "unit": "normalized"
+            "label": "Quadrature (normalized amplitude)",
+            "unit": "normalized amplitude"
           }
         ],
-        "interpretation": "This view answers the Build BPSK and QPSK Constellation Intuition guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Both maps have unit symbol energy, but QPSK carries two bits per symbol. At equal Eb/N0 its noise standard deviation per coordinate is smaller by sqrt(2)."
       },
       {
-        "source_figure": "Pinned P23 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P23 explicit processing and evidence stages",
+        "target_plot_key": "bpsk",
+        "title": "BPSK uses the I sign",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "In-phase (normalized amplitude)",
+            "unit": "normalized amplitude"
           },
           {
             "role": "y",
-            "label": "normalized signal",
-            "unit": "normalized"
+            "label": "Quadrature (normalized amplitude)",
+            "unit": "normalized amplitude"
           }
         ],
-        "interpretation": "This view answers the Build BPSK and QPSK Constellation Intuition guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Both maps have unit symbol energy, but QPSK carries two bits per symbol. At equal Eb/N0 its noise standard deviation per coordinate is smaller by sqrt(2)."
+      },
+      {
+        "source_figure": "Pinned P23 explicit processing and evidence stages",
+        "target_plot_key": "noise_sweep",
+        "title": "Eb/N0 sweep at selected phase",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Eb/N0 (dB)",
+            "unit": "dB"
+          },
+          {
+            "role": "y",
+            "label": "Bit error rate (ratio)",
+            "unit": "ratio"
+          }
+        ],
+        "interpretation": "Both maps have unit symbol energy, but QPSK carries two bits per symbol. At equal Eb/N0 its noise standard deviation per coordinate is smaller by sqrt(2)."
+      },
+      {
+        "source_figure": "Pinned P23 explicit processing and evidence stages",
+        "target_plot_key": "phase_sweep",
+        "title": "Phase sweep at 8 dB Eb/N0",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Phase error (deg)",
+            "unit": "deg"
+          },
+          {
+            "role": "y",
+            "label": "Bit error rate (ratio)",
+            "unit": "ratio"
+          }
+        ],
+        "interpretation": "Both maps have unit symbol energy, but QPSK carries two bits per symbol. At equal Eb/N0 its noise standard deviation per coordinate is smaller by sqrt(2)."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "ebn0_db",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          -4,
+          0,
+          4,
+          6,
+          8,
+          16
         ],
-        "expected_observation": "Changing constellation order moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Energy per bit / noise density; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "phase_error_deg",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          0,
+          12,
+          15,
+          30,
+          50,
+          55
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Receiver phase error; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "At 55 degrees and 16 dB, QPSK clusters are tight but cross the fixed receiver sign boundaries. More SNR does not fix the wrong phase reference.",
+      "recovery": "Multiply the received QPSK samples by the exact inverse carrier rotation before sign decisions. This demonstration assumes the phase error is known; it does not implement carrier acquisition.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "At 55 degrees and 16 dB, QPSK clusters are tight but cross the fixed receiver sign boundaries. More SNR does not fix the wrong phase reference.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -216,63 +300,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 6000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P23 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p21_p28.py",
     "seed": 1023,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "ebn0_db",
+        "value": 6,
+        "unit": "dB"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "phase_error_deg",
+        "value": 12,
+        "unit": "deg"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 5.551115123125783e-17,
+        "max_relative_error": 5.551115123125783e-17,
+        "passed": true,
         "expected": {
           "path": "modules/23-build-bpsk-and-qpsk-constellation-intuition/evidence/expected-baseline.json",
-          "sha256": "94f4305bb542655114b124bc0a674cd967bf1dc3509d09d5a585855ee4c0a4d4"
+          "sha256": "483b8848f097a609ba9d63975732cdd0a7820db613f3c4d5f19e601874b49c85"
         },
         "actual": {
           "path": "modules/23-build-bpsk-and-qpsk-constellation-intuition/evidence/actual-baseline.json",
-          "sha256": "63064fa5b13cc09b8c976774ba3153686cdd816218775a50ec83a1713a09d8a0"
-        },
-        "max_absolute_error": 4.866662628444374e-13,
-        "max_relative_error": 4.866662628444374e-13,
-        "passed": true
+          "sha256": "d153c418dff443502b9d84e1239db4dc59eb85ac23564c7097f0cf7a595415d1"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 1.1102230246251565e-16,
+        "max_relative_error": 1.1102230246251565e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/23-build-bpsk-and-qpsk-constellation-intuition/evidence/expected-sweep-1.json",
+          "sha256": "aa65ac86a2d4e1cb76d1a3f47ea52e50670691e9688a8a9044bd78bb49e26ba6"
+        },
+        "actual": {
+          "path": "modules/23-build-bpsk-and-qpsk-constellation-intuition/evidence/actual-sweep-1.json",
+          "sha256": "974ff0a273a9efb919549818c48bca0acef3998470b485fd92894f2e65f86d15"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 5.551115123125783e-17,
+        "max_relative_error": 5.551115123125783e-17,
+        "passed": true,
+        "expected": {
+          "path": "modules/23-build-bpsk-and-qpsk-constellation-intuition/evidence/expected-sweep-2.json",
+          "sha256": "4c2f0cce41d9b2ebb46b6f12fb189f807f53e52ae951891ec423c3f8fcaf9ef9"
+        },
+        "actual": {
+          "path": "modules/23-build-bpsk-and-qpsk-constellation-intuition/evidence/actual-sweep-2.json",
+          "sha256": "0c6b1ea4283ea647dc60e29a0d1ec7f7f8884a37097d485207da926bd0f8f5c2"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 1.3877787807814457e-17,
+        "max_relative_error": 1.3877787807814457e-17,
+        "passed": true,
         "expected": {
           "path": "modules/23-build-bpsk-and-qpsk-constellation-intuition/evidence/expected-broken.json",
-          "sha256": "17da0de81254a207c55681f21176ae619df993dcb58f91cd353574758ce2d7dd"
+          "sha256": "0fa1de676b15b064f070b22d137c3220ec32021fdba52bdead88feff994bfdee"
         },
         "actual": {
           "path": "modules/23-build-bpsk-and-qpsk-constellation-intuition/evidence/actual-broken.json",
-          "sha256": "149011c2174ef3ee20b42bd03fe43f678fdbbbc45a73d8622c2cfa352ec04181"
+          "sha256": "63f5f9cd3e0342e72254a556cbe90e130a7e63243d5d028389c1e09c5ecedbb4"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 4.866662628444374e-13,
-        "max_relative_error": 4.866662628444374e-13,
-        "passed": true
+        "max_absolute_error": 5.551115123125783e-17,
+        "max_relative_error": 5.551115123125783e-17,
+        "passed": true,
+        "expected": {
+          "path": "modules/23-build-bpsk-and-qpsk-constellation-intuition/evidence/expected-recovery.json",
+          "sha256": "483b8848f097a609ba9d63975732cdd0a7820db613f3c4d5f19e601874b49c85"
+        },
+        "actual": {
+          "path": "modules/23-build-bpsk-and-qpsk-constellation-intuition/evidence/actual-recovery.json",
+          "sha256": "d153c418dff443502b9d84e1239db4dc59eb85ac23564c7097f0cf7a595415d1"
+        }
       }
     ]
   },

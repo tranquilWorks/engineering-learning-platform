@@ -1,6 +1,4 @@
-# Create and Equalize a Multipath Channel
-
-> **Guiding question:** How do delayed copies distort symbols even when noise is small?
+# P25 Lesson: Create and Equalize a Multipath Channel
 
 ## Guiding question
 
@@ -138,33 +136,27 @@ and P09 provides FIR/frequency-response language. The experiment uses base
 MATLAB and exposes every essential operation; it does not use `comm.LinearEqualizer`,
 `equalize`, `awgn`, `rcosdesign`, or another Communications Toolbox black box.
 
-## Use the Python GUI experiment
+## Interactive lab: Create and Equalize a Multipath Channel
 
-The GUI keeps the pinned source's mental model and processing order visible. The **multipath delay** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+There are 480 QPSK symbols, eight samples per symbol, a span-8 rolloff-0.25 RRC and Es/N0=18 dB. The baseline paths are [1,0.45 exp(j0.45),0.20 exp(-j0.80)] with delays [0,1,2] symbols. Equalizers have 31 taps; metrics exclude 40 symbols at each end. A fixed 3920-sample NumPy noise bank is reused across channels, unlike the sequential MATLAB noise draws. The symbol-rate equalizer models the delayed path coefficients; finite RRC truncation remains visible in the complete sampled response. This is a finite regularized least-squares inverse, not an assertion of an exact colored-noise Wiener solution.
 
-### Prediction and sweep 1 — multipath delay
+### Predict, manipulate, explain
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+Predict which equalizer has larger noise gain near a channel null. Can a regularized inverse reduce EVM while retaining more impulse-response distortion?
 
-### Sweep 2 — secondary stress
+1. Start at the baseline. Change only **One-symbol echo magnitude** from 0.45 to 0.75 ratio. Inspect its dedicated sweep and the primary processing plots. Explain which equation predicts the observed change before resetting.
+2. Start at the baseline. Change only **Equalizer regularization** from 0.0158489 to 0.1 ratio. Inspect its dedicated sweep and the primary processing plots. Explain which equation predicts the observed change before resetting.
+3. Enable the broken case. The [1,-0.999] path has a -60 dB DC null. Finite ZF inversion boosts noise and leaves a tail: its symbol EVM and noise gain reveal the cost.
+4. Recovery: The deep-null comparison uses lambda=0.01, nearest the 18 dB noise variance in the source grid. Regularization reduces noise enhancement but retains reported residual distortion; it does not perfectly recover lost information. Disable the toggle and restore both controls to reproduce baseline exactly.
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+### Focused check and teach-back
 
-### Intentionally broken case and recovery
+Predict which equalizer has larger noise gain near a channel null. Can a regularized inverse reduce EVM while retaining more impulse-response distortion? Explain your answer using one measured value, its units, and the relevant equation. Then describe the failure, the recovery assumption, and one limit of the model.
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+### Common mistakes
 
-## Common mistakes to avoid in the GUI
+A finite ZF inverse neither removes all tails nor avoids noise amplification at a null.
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+### Scope of this lab
 
-## Teach-back checklist
-
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The source equations and processing stages above are retained. NumPy seeds make the software repeatable, but the random-number stream is not claimed to match MATLAB. MATLAB figure-window cleanup and console printing are replaced by the plots and metrics here. Plot traces are bounded to 512 displayed samples; calculations use the full stated record. This lab is a simulation, not a hardware measurement.

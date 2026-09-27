@@ -1,0 +1,82 @@
+{
+  "item": "P23",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p23",
+    "sha256": "fffe190b7c067e8ed3ae692a699f3b055f1055ada36674ecfbf9f56b9ae189a8",
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/23-build-bpsk-and-qpsk-constellation-intuition/experiment.py",
+    "sha256": "e46c1bf218f2e38779cebb4413fba3151879d311cae703f0273e1cf6cfb1eefb",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "ebn0_db": 6,
+      "phase_error_deg": 12,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "ebn0_db": 0,
+      "phase_error_deg": 12,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "ebn0_db": 6,
+      "phase_error_deg": 50,
+      "broken_mode": false
+    },
+    "broken": {
+      "ebn0_db": 6,
+      "phase_error_deg": 12,
+      "broken_mode": true
+    },
+    "recovery": {
+      "ebn0_db": 6,
+      "phase_error_deg": 12,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "ebn0",
+      "unit": "dB"
+    },
+    {
+      "name": "phase_error",
+      "unit": "deg"
+    },
+    {
+      "name": "bpsk_symbol_energy",
+      "unit": "normalized energy"
+    },
+    {
+      "name": "qpsk_symbol_energy",
+      "unit": "normalized energy"
+    },
+    {
+      "name": "bpsk_noise_sigma",
+      "unit": "normalized amplitude"
+    },
+    {
+      "name": "qpsk_noise_sigma",
+      "unit": "normalized amplitude"
+    },
+    {
+      "name": "bpsk_ber",
+      "unit": "ratio"
+    },
+    {
+      "name": "qpsk_ber",
+      "unit": "ratio"
+    },
+    {
+      "name": "inverse_rotation_ber",
+      "unit": "ratio"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

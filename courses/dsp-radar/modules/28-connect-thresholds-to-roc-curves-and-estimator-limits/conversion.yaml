@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "12881a23c7ad06443a46a2b0c866c9abe4d0e75805f632aee423c0d3d0671532",
+    "content_digest": "e054b205ac139b66e795c12022fe34f65c2b9ff0d5758374d97fa72be8ecbd28",
     "files": [
       {
         "path": "modules/28-connect-thresholds-to-roc-curves-and-estimator-limits/experiment.py",
-        "sha256": "128e8512351db6682e2a94b905dedfc832d9a6407b397af480a17764790a50aa"
+        "sha256": "4073cd7caf4f2be99de1596f266118d479bd9d0d884a35f8d050ad6e2d4adc3f"
       },
       {
         "path": "modules/28-connect-thresholds-to-roc-curves-and-estimator-limits/lesson.md",
-        "sha256": "447d3ee144f43bc0b8e0e43e7ee2e4b71a6851a047bac753346dadb21ed6340c"
+        "sha256": "7a0445e25ae469b4cb8967c980a4cc118c66f5e1bcebdb785368da251add3de3"
       },
       {
         "path": "modules/28-connect-thresholds-to-roc-curves-and-estimator-limits/module.yaml",
-        "sha256": "454c5c774421ceace1a6a0efa1df9a94e3eb110573f8c5cda9a2b204c84759d0"
+        "sha256": "f187845db77b5a4cbff9b4fb824ac026c1735d96e8d2909aef4fd8530febde49"
       }
     ]
   },
   "content": {
     "guiding_question": "How do false alarms, detections, bias, variance, and theoretical bounds relate?",
-    "physical_model": "A receiver knows the shape and timing of a real pulse `s`, but it does not know whether that pulse is present in a record. It compares two hypotheses: \\[ H_0:\\;\\mathbf r=\\mathbf n,\\qquad H_1:\\;\\mathbf r=A\\mathbf s+\\mathbf n, \\] where each noise sample is independent Gaussian with mean zero and variance \\(\\sigma^2\\). This module uses real noise, so \\(\\sigma^2\\) is explicitly the variance of one real sample. The matched filter reduces each record to \\[ u=\\frac{\\mathbf s^T\\mathbf r}{\\sigma\\sqrt{\\mathbf s^T\\mathbf s}}. \\] Under \\(H_0\\), \\(u\\) has mean zero and variance one. Under \\(H_1\\), it still has variance one but its mean is \\[ d'=\\frac{A\\sqrt{\\mathbf s^T\\mathbf s}}{\\sigma}=\\sqrt{\\mathrm{SNR}_{MF}}, \\] where the final equality uses this experiment's known positive signal polarity (A>0). For an allowed signed amplitude, the more general relation is (d'=\\operatorname{sign}(A)\\sqrt{\\mathrm{SNR}_{MF}}). The pulse samples add coherently in the numerator; independent noise adds in power. That is why signal energy, observation duration, and SNR separate the two distributions.",
+    "physical_model": "Normalize the known-pulse matched filter by noise standard deviation. Independent H0/H1 banks trace Gaussian-tail ROC probabilities. The all-trial amplitude estimator attains variance sigma\u00b2/pulse energy under known timing and white Gaussian noise.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary decision threshold while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Normalize the known-pulse matched filter by noise standard deviation. Independent H0/H1 banks trace Gaussian-tail ROC probabilities. The all-trial amplitude estimator attains variance sigma\u00b2/pulse energy under known timing and white Gaussian noise.",
+      "Keeping only detected H1 trials selects high amplitude estimates. Its positive bias invalidates the unbiased-estimator claim; a smaller selected variance is not evidence of beating the unbiased CRLB.",
+      "Restore all 12000 independent H1 trials before estimating amplitude. The recovered bias and SNR-dependent variance are checked separately from the detector operating point.",
+      "Explicit stage equations are retained in lesson.md. NumPy random streams differ from MATLAB. Plot/console presentation is adapted; no MATLAB runtime parity is claimed."
     ],
     "equations": [
       {
@@ -77,146 +77,254 @@
       "seed": 2801,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
+          "name": "trial_count",
+          "value": 12000,
+          "unit": "count"
         },
         {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
+          "name": "samples_per_trial",
+          "value": 16,
+          "unit": "count"
         },
         {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "template_energy",
+          "value": 16.0,
+          "unit": "count"
+        },
+        {
+          "name": "histogram_h0_tail_probability",
+          "value": 0.0,
+          "unit": "count"
+        },
+        {
+          "name": "histogram_h1_tail_probability",
+          "value": 0.0,
+          "unit": "count"
+        },
+        {
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "ffe1acf1f9302d2019ced5dd6321ea4362e21b1c9416e307d17a3d80d8088915",
-          "unit": "mixed numeric signature"
+          "sha256": "7ef2cb622b7c00844a7560e6e70317eeec038dc1f7ab3d8370073a05cf82a187",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "3fdfaf1a94dd371a0463f235314987cf141d18bd248004254c19de6f5c9a35ec",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "e0243dcf7f54ffa10cc297a77f1ae14ca8bac825f5cf2903ca9e731fe18642f9",
-          "unit": "mixed numeric signature"
+          "sha256": "5fd5cfe766c8b0485c03d0787380b73fc7c3ce4051e4d43c6122191e38f659f0",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "9007d25b76b2509d254c9d8e41eca200981daed6149712cdf09564935be350be",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "b77e2e0529ffacad7a0efc55935e2482b4657632913ed4307419825fe177e5fe",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "8525e6e66e1d9738cfc155f0a69ce9740ff6142539a61093ad14d7f1c61488dc",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "e7bacc29ee73b0459e1c85491d7b6e46e774249321b52e6c891b79ca383df3a2",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "f679452af13aeda9dab7febea545613d8609d80a1eadb32e15f893d4ab476b04",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "7ef2cb622b7c00844a7560e6e70317eeec038dc1f7ab3d8370073a05cf82a187",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "3fdfaf1a94dd371a0463f235314987cf141d18bd248004254c19de6f5c9a35ec",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P28 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P28 explicit processing and evidence stages",
+        "target_plot_key": "score_distributions",
+        "title": "Independent H0 and H1 matched scores",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "Statistic (noise sigma)",
+            "unit": "noise sigma"
           },
           {
             "role": "y",
-            "label": "normalized signal",
-            "unit": "normalized"
+            "label": "Probability per bin (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Connect Thresholds to ROC Curves and Estimator Limits guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Normalize the known-pulse matched filter by noise standard deviation. Independent H0/H1 banks trace Gaussian-tail ROC probabilities. The all-trial amplitude estimator attains variance sigma\u00b2/pulse energy under known timing and white Gaussian noise."
       },
       {
-        "source_figure": "Pinned P28 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P28 explicit processing and evidence stages",
+        "target_plot_key": "roc",
+        "title": "Threshold ROC with exact limiting decisions",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "False alarm probability (ratio)",
+            "unit": "ratio"
           },
           {
             "role": "y",
-            "label": "normalized signal",
-            "unit": "normalized"
+            "label": "Detection probability (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Connect Thresholds to ROC Curves and Estimator Limits guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Normalize the known-pulse matched filter by noise standard deviation. Independent H0/H1 banks trace Gaussian-tail ROC probabilities. The all-trial amplitude estimator attains variance sigma\u00b2/pulse energy under known timing and white Gaussian noise."
       },
       {
-        "source_figure": "Pinned P28 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P28 explicit processing and evidence stages",
+        "target_plot_key": "threshold_sweep",
+        "title": "Raise threshold: both probabilities fall",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "Threshold (noise sigma)",
+            "unit": "noise sigma"
           },
           {
             "role": "y",
-            "label": "normalized signal",
-            "unit": "normalized"
+            "label": "Probability (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Connect Thresholds to ROC Curves and Estimator Limits guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Normalize the known-pulse matched filter by noise standard deviation. Independent H0/H1 banks trace Gaussian-tail ROC probabilities. The all-trial amplitude estimator attains variance sigma\u00b2/pulse energy under known timing and white Gaussian noise."
       },
       {
-        "source_figure": "Pinned P28 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P28 explicit processing and evidence stages",
+        "target_plot_key": "variance_sweep",
+        "title": "Unconditioned estimator and Fisher-information bound",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "Matched-filter SNR (dB)",
+            "unit": "dB"
           },
           {
             "role": "y",
-            "label": "normalized signal",
+            "label": "Variance (amplitude squared)",
+            "unit": "amplitude squared"
+          }
+        ],
+        "interpretation": "Normalize the known-pulse matched filter by noise standard deviation. Independent H0/H1 banks trace Gaussian-tail ROC probabilities. The all-trial amplitude estimator attains variance sigma\u00b2/pulse energy under known timing and white Gaussian noise."
+      },
+      {
+        "source_figure": "Pinned P28 explicit processing and evidence stages",
+        "target_plot_key": "bias_sweep",
+        "title": "All-trial amplitude bias across SNR",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Matched-filter SNR (dB)",
+            "unit": "dB"
+          },
+          {
+            "role": "y",
+            "label": "Bias (normalized amplitude)",
+            "unit": "normalized amplitude"
+          }
+        ],
+        "interpretation": "Normalize the known-pulse matched filter by noise standard deviation. Independent H0/H1 banks trace Gaussian-tail ROC probabilities. The all-trial amplitude estimator attains variance sigma\u00b2/pulse energy under known timing and white Gaussian noise."
+      },
+      {
+        "source_figure": "Pinned P28 explicit processing and evidence stages",
+        "target_plot_key": "selection",
+        "title": "Detection-conditioned estimates select the high tail",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Population (0=all; 1=detected)",
+            "unit": "0=all; 1=detected"
+          },
+          {
+            "role": "y",
+            "label": "Mean amplitude (normalized)",
             "unit": "normalized"
           }
         ],
-        "interpretation": "This view answers the Connect Thresholds to ROC Curves and Estimator Limits guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Normalize the known-pulse matched filter by noise standard deviation. Independent H0/H1 banks trace Gaussian-tail ROC probabilities. The all-trial amplitude estimator attains variance sigma\u00b2/pulse energy under known timing and white Gaussian noise."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "matched_snr_db",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          -6,
+          -3,
+          0,
+          3,
+          6,
+          9,
+          12
         ],
-        "expected_observation": "Changing decision threshold moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Matched-filter output SNR; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "threshold_sigma",
         "values": [
-          0.0,
+          -1,
+          -0.5,
+          0,
           0.5,
-          1.0
+          1,
+          1.5,
+          2,
+          2.5,
+          3
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Detection threshold; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "Keeping only detected H1 trials selects high amplitude estimates. Its positive bias invalidates the unbiased-estimator claim; a smaller selected variance is not evidence of beating the unbiased CRLB.",
+      "recovery": "Restore all 12000 independent H1 trials before estimating amplitude. The recovered bias and SNR-dependent variance are checked separately from the detector operating point.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Keeping only detected H1 trials selects high amplitude estimates. Its positive bias invalidates the unbiased-estimator claim; a smaller selected variance is not evidence of beating the unbiased CRLB.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -224,63 +332,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 384000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P28 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p21_p28.py",
     "seed": 2801,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "matched_snr_db",
+        "value": 6,
+        "unit": "dB"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "threshold_sigma",
+        "value": 1.5,
+        "unit": "noise sigma"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 2.220446049250313e-16,
+        "max_relative_error": 2.220446049250313e-16,
+        "passed": true,
         "expected": {
           "path": "modules/28-connect-thresholds-to-roc-curves-and-estimator-limits/evidence/expected-baseline.json",
-          "sha256": "ffe1acf1f9302d2019ced5dd6321ea4362e21b1c9416e307d17a3d80d8088915"
+          "sha256": "7ef2cb622b7c00844a7560e6e70317eeec038dc1f7ab3d8370073a05cf82a187"
         },
         "actual": {
           "path": "modules/28-connect-thresholds-to-roc-curves-and-estimator-limits/evidence/actual-baseline.json",
-          "sha256": "b7ccc702871add0a23ce7b000f212fe0e63273965a88b07bef32f97329561433"
-        },
-        "max_absolute_error": 4.338751580235112e-13,
-        "max_relative_error": 4.338751580235112e-13,
-        "passed": true
+          "sha256": "3fdfaf1a94dd371a0463f235314987cf141d18bd248004254c19de6f5c9a35ec"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 2.220446049250313e-16,
+        "max_relative_error": 1.9459199950359992e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/28-connect-thresholds-to-roc-curves-and-estimator-limits/evidence/expected-sweep-1.json",
+          "sha256": "5fd5cfe766c8b0485c03d0787380b73fc7c3ce4051e4d43c6122191e38f659f0"
+        },
+        "actual": {
+          "path": "modules/28-connect-thresholds-to-roc-curves-and-estimator-limits/evidence/actual-sweep-1.json",
+          "sha256": "9007d25b76b2509d254c9d8e41eca200981daed6149712cdf09564935be350be"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 1.1102230246251565e-16,
+        "max_relative_error": 1.1102230246251565e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/28-connect-thresholds-to-roc-curves-and-estimator-limits/evidence/expected-sweep-2.json",
+          "sha256": "b77e2e0529ffacad7a0efc55935e2482b4657632913ed4307419825fe177e5fe"
+        },
+        "actual": {
+          "path": "modules/28-connect-thresholds-to-roc-curves-and-estimator-limits/evidence/actual-sweep-2.json",
+          "sha256": "8525e6e66e1d9738cfc155f0a69ce9740ff6142539a61093ad14d7f1c61488dc"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 2.220446049250313e-16,
+        "max_relative_error": 2.220446049250313e-16,
+        "passed": true,
         "expected": {
           "path": "modules/28-connect-thresholds-to-roc-curves-and-estimator-limits/evidence/expected-broken.json",
-          "sha256": "e0243dcf7f54ffa10cc297a77f1ae14ca8bac825f5cf2903ca9e731fe18642f9"
+          "sha256": "e7bacc29ee73b0459e1c85491d7b6e46e774249321b52e6c891b79ca383df3a2"
         },
         "actual": {
           "path": "modules/28-connect-thresholds-to-roc-curves-and-estimator-limits/evidence/actual-broken.json",
-          "sha256": "e720bbe2f8c8ec87f540aca983fc88ee412bdb1c3e040c0d8565d380574fa023"
+          "sha256": "f679452af13aeda9dab7febea545613d8609d80a1eadb32e15f893d4ab476b04"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 4.338751580235112e-13,
-        "max_relative_error": 4.338751580235112e-13,
-        "passed": true
+        "max_absolute_error": 2.220446049250313e-16,
+        "max_relative_error": 2.220446049250313e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/28-connect-thresholds-to-roc-curves-and-estimator-limits/evidence/expected-recovery.json",
+          "sha256": "7ef2cb622b7c00844a7560e6e70317eeec038dc1f7ab3d8370073a05cf82a187"
+        },
+        "actual": {
+          "path": "modules/28-connect-thresholds-to-roc-curves-and-estimator-limits/evidence/actual-recovery.json",
+          "sha256": "3fdfaf1a94dd371a0463f235314987cf141d18bd248004254c19de6f5c9a35ec"
+        }
       }
     ]
   },

@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "7fedd7bb7f279317f9fa8c97523bf832d571617eb7526b1b2659fa07a51dc452",
+    "content_digest": "68e9044597333bf8abf555d115da66a4c6bb9eb7f52d88a2168203fdb3954b7a",
     "files": [
       {
         "path": "modules/24-see-pulse-shaping-and-matched-filtering/experiment.py",
-        "sha256": "8dac526a02bfe323c7364148b2de471ad9b02567fd4021e3310fd68874a31a75"
+        "sha256": "3da11138cab828a63eb325a56917b760e676f0ba923d1bbe164ac0dc33f95511"
       },
       {
         "path": "modules/24-see-pulse-shaping-and-matched-filtering/lesson.md",
-        "sha256": "417a4d9e909e978769117debee02d200b92a8875a9512ae0fc95bb803e034df3"
+        "sha256": "3491d2b3a17c16d47a3a7dcc0d638e9d2a8e3458542442b3bcee272a6d3c2b3d"
       },
       {
         "path": "modules/24-see-pulse-shaping-and-matched-filtering/module.yaml",
-        "sha256": "063a68b0f2ef7c2e2d871b562d51c1895d76ed669da980e6c392a1ea7d2ba540"
+        "sha256": "2276ca5e2e7d7bdce0172431df3810c1dc55805af073bf9ba97a4a3d85490994"
       }
     ]
   },
   "content": {
     "guiding_question": "Why are symbols filtered before transmission and again at reception?",
-    "physical_model": "A QPSK symbol is one desired I/Q point per symbol interval. A transmitter cannot send isolated mathematical points, so it launches a pulse for every symbol. Those shifted pulses add to make a continuous complex-envelope waveform. Pulse shaping chooses how that waveform occupies time and frequency. A rectangular pulse changes abruptly at symbol boundaries. It is compact in time, but its sinc-shaped spectrum has slowly decaying sidelobes. A root-raised-cosine (RRC) pulse spreads smoothly across several symbols. Its roll-off parameter trades occupied bandwidth for a gentler time response. The neighboring RRC pulses visibly overlap. Overlap is not automatically intersymbol interference (ISI): what matters is the combined response at the receiver's decision times.",
+    "physical_model": "The explicit RRC singularity limits produce a finite unit-energy pulse. The conjugate reversed receiver filter peaks after the total transmit/receive delay; finite truncation leaves measurable ISI.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary pulse shape rolloff while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "The explicit RRC singularity limits produce a finite unit-energy pulse. The conjugate reversed receiver filter peaks after the total transmit/receive delay; finite truncation leaves measurable ISI.",
+      "Sampling four samples late is a half-symbol timing error. Even a correct matched filter cannot open the constellation at the wrong sampling instant.",
+      "Align samples at len(pulse)-1 plus multiples of eight. Compare aligned noisy EVM, noiseless residual ISI, and the rectangular reference.",
+      "Explicit stage equations are retained in lesson.md. NumPy random streams differ from MATLAB. Plot/console presentation is adapted; no MATLAB runtime parity is claimed."
     ],
     "equations": [
       {
@@ -77,146 +77,254 @@
       "seed": 1024,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
+          "name": "symbol_count",
+          "value": 320,
+          "unit": "count"
         },
         {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
+          "name": "samples_per_symbol",
+          "value": 8,
+          "unit": "count"
         },
         {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "timing_offset_samples",
+          "value": 0,
+          "unit": "count"
+        },
+        {
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "262da7cad2365c53f634f3bd17b82f5f3ba2739cc1cc7839dc607c2165b16e57",
-          "unit": "mixed numeric signature"
+          "sha256": "ca9f2b17f62d1e5f3abb2bd87052b51b1b3b2e813e5479eda36ececc7c4ab4c6",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "f65ac839e44f9bd2b8e6d7c5756be8c30b369d1363d109ad34662a659a13f65d",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "83e5b991eeee6ae3da2b6ac3c7472dec7b213fd3eeb72576af4defb638f2abd7",
-          "unit": "mixed numeric signature"
+          "sha256": "c943b97f297df4ae0c406c8ff7d770dcdd1a170617805c24cafb7cb96b34f901",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "165773425e6d5e2e88c51fe239857c3679424a5a6c71d9ccaf7e5f80a00a1aae",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "fdba2573e3ca0a2419f118e468544913668efd4c2745b534e9d7f97ad91f8cf8",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "63f1a40281b3ba0f33764bc5f30f502637797e2f1f954f942eb28dba61d1d033",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "08e9f72161396f5bb30b5d103644ec52a4bf0762a5e63a98e82c621363d7433f",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "4fb453ee265589deb6d79dd421f32e37c751eabd043f979cbb7e7b64c2d4a6ab",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "ca9f2b17f62d1e5f3abb2bd87052b51b1b3b2e813e5479eda36ececc7c4ab4c6",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "f65ac839e44f9bd2b8e6d7c5756be8c30b369d1363d109ad34662a659a13f65d",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P24 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P24 explicit processing and evidence stages",
+        "target_plot_key": "pulses",
+        "title": "Finite unit-energy pulses",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "Time (symbol periods)",
+            "unit": "symbol periods"
           },
           {
             "role": "y",
-            "label": "normalized signal",
+            "label": "Pulse amplitude (normalized)",
             "unit": "normalized"
           }
         ],
-        "interpretation": "This view answers the See Pulse Shaping and Matched Filtering guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "The explicit RRC singularity limits produce a finite unit-energy pulse. The conjugate reversed receiver filter peaks after the total transmit/receive delay; finite truncation leaves measurable ISI."
       },
       {
-        "source_figure": "Pinned P24 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P24 explicit processing and evidence stages",
+        "target_plot_key": "waveform",
+        "title": "Transmit convolution and received matched output",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "Time (symbol periods)",
+            "unit": "symbol periods"
           },
           {
             "role": "y",
-            "label": "normalized signal",
-            "unit": "normalized"
+            "label": "In-phase (normalized amplitude)",
+            "unit": "normalized amplitude"
           }
         ],
-        "interpretation": "This view answers the See Pulse Shaping and Matched Filtering guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "The explicit RRC singularity limits produce a finite unit-energy pulse. The conjugate reversed receiver filter peaks after the total transmit/receive delay; finite truncation leaves measurable ISI."
       },
       {
-        "source_figure": "Pinned P24 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P24 explicit processing and evidence stages",
+        "target_plot_key": "spectrum",
+        "title": "Pulse spectral containment",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "Frequency (cycles/symbol)",
+            "unit": "cycles/symbol"
           },
           {
             "role": "y",
-            "label": "normalized signal",
-            "unit": "normalized"
+            "label": "Relative power (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the See Pulse Shaping and Matched Filtering guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "The explicit RRC singularity limits produce a finite unit-energy pulse. The conjugate reversed receiver filter peaks after the total transmit/receive delay; finite truncation leaves measurable ISI."
       },
       {
-        "source_figure": "Pinned P24 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P24 explicit processing and evidence stages",
+        "target_plot_key": "eye",
+        "title": "Forty matched-filter eye traces",
         "axes": [
           {
             "role": "x",
-            "label": "symbol or time index",
-            "unit": "source units"
+            "label": "Offset (symbol periods)",
+            "unit": "symbol periods"
           },
           {
             "role": "y",
-            "label": "normalized signal",
-            "unit": "normalized"
+            "label": "In-phase (normalized amplitude)",
+            "unit": "normalized amplitude"
           }
         ],
-        "interpretation": "This view answers the See Pulse Shaping and Matched Filtering guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "The explicit RRC singularity limits produce a finite unit-energy pulse. The conjugate reversed receiver filter peaks after the total transmit/receive delay; finite truncation leaves measurable ISI."
+      },
+      {
+        "source_figure": "Pinned P24 explicit processing and evidence stages",
+        "target_plot_key": "decisions",
+        "title": "Timing controls the sampled constellation",
+        "axes": [
+          {
+            "role": "x",
+            "label": "In-phase (normalized amplitude)",
+            "unit": "normalized amplitude"
+          },
+          {
+            "role": "y",
+            "label": "Quadrature (normalized amplitude)",
+            "unit": "normalized amplitude"
+          }
+        ],
+        "interpretation": "The explicit RRC singularity limits produce a finite unit-energy pulse. The conjugate reversed receiver filter peaks after the total transmit/receive delay; finite truncation leaves measurable ISI."
+      },
+      {
+        "source_figure": "Pinned P24 explicit processing and evidence stages",
+        "target_plot_key": "rolloff_sweep",
+        "title": "Rolloff at fixed span",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Rolloff (ratio)",
+            "unit": "ratio"
+          },
+          {
+            "role": "y",
+            "label": "EVM (percent)",
+            "unit": "percent"
+          }
+        ],
+        "interpretation": "The explicit RRC singularity limits produce a finite unit-energy pulse. The conjugate reversed receiver filter peaks after the total transmit/receive delay; finite truncation leaves measurable ISI."
+      },
+      {
+        "source_figure": "Pinned P24 explicit processing and evidence stages",
+        "target_plot_key": "span_sweep",
+        "title": "Span at fixed rolloff",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Finite span (symbols)",
+            "unit": "symbols"
+          },
+          {
+            "role": "y",
+            "label": "EVM (percent)",
+            "unit": "percent"
+          }
+        ],
+        "interpretation": "The explicit RRC singularity limits produce a finite unit-energy pulse. The conjugate reversed receiver filter peaks after the total transmit/receive delay; finite truncation leaves measurable ISI."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "rolloff",
         "values": [
-          0.6,
-          1.0,
-          1.4
-        ],
-        "expected_observation": "Changing pulse shape rolloff moves the source-specific response while secondary stress remains fixed."
-      },
-      {
-        "control": "secondary_scale",
-        "values": [
-          0.0,
+          0.1,
+          0.25,
           0.5,
           1.0
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only RRC rolloff; inspect the corresponding source-specific sweep and explain the governing equation."
+      },
+      {
+        "control": "span_symbols",
+        "values": [
+          2,
+          4,
+          6,
+          8
+        ],
+        "expected_observation": "Change only Finite pulse span; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "Sampling four samples late is a half-symbol timing error. Even a correct matched filter cannot open the constellation at the wrong sampling instant.",
+      "recovery": "Align samples at len(pulse)-1 plus multiples of eight. Compare aligned noisy EVM, noiseless residual ISI, and the rectangular reference.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Sampling four samples late is a half-symbol timing error. Even a correct matched filter cannot open the constellation at the wrong sampling instant.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -224,63 +332,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 6000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P24 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p21_p28.py",
     "seed": 1024,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
+        "name": "rolloff",
+        "value": 0.25,
         "unit": "ratio"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "span_symbols",
+        "value": 8,
+        "unit": "symbols"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 3.552713678800501e-15,
+        "max_relative_error": 8.881784197001252e-16,
+        "passed": true,
         "expected": {
           "path": "modules/24-see-pulse-shaping-and-matched-filtering/evidence/expected-baseline.json",
-          "sha256": "262da7cad2365c53f634f3bd17b82f5f3ba2739cc1cc7839dc607c2165b16e57"
+          "sha256": "ca9f2b17f62d1e5f3abb2bd87052b51b1b3b2e813e5479eda36ececc7c4ab4c6"
         },
         "actual": {
           "path": "modules/24-see-pulse-shaping-and-matched-filtering/evidence/actual-baseline.json",
-          "sha256": "c763fb1810f454fae7b759c43276efa5bc1c73a686ca4bb1ab64aa5c37641eba"
-        },
-        "max_absolute_error": 4.5154505134981093e-13,
-        "max_relative_error": 4.5154505134981093e-13,
-        "passed": true
+          "sha256": "f65ac839e44f9bd2b8e6d7c5756be8c30b369d1363d109ad34662a659a13f65d"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 7.105427357601002e-15,
+        "max_relative_error": 3.5587339756980254e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/24-see-pulse-shaping-and-matched-filtering/evidence/expected-sweep-1.json",
+          "sha256": "c943b97f297df4ae0c406c8ff7d770dcdd1a170617805c24cafb7cb96b34f901"
+        },
+        "actual": {
+          "path": "modules/24-see-pulse-shaping-and-matched-filtering/evidence/actual-sweep-1.json",
+          "sha256": "165773425e6d5e2e88c51fe239857c3679424a5a6c71d9ccaf7e5f80a00a1aae"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 1.4210854715202004e-14,
+        "max_relative_error": 2.765002593071895e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/24-see-pulse-shaping-and-matched-filtering/evidence/expected-sweep-2.json",
+          "sha256": "fdba2573e3ca0a2419f118e468544913668efd4c2745b534e9d7f97ad91f8cf8"
+        },
+        "actual": {
+          "path": "modules/24-see-pulse-shaping-and-matched-filtering/evidence/actual-sweep-2.json",
+          "sha256": "63f1a40281b3ba0f33764bc5f30f502637797e2f1f954f942eb28dba61d1d033"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 1.4210854715202004e-14,
+        "max_relative_error": 8.881784197001252e-16,
+        "passed": true,
         "expected": {
           "path": "modules/24-see-pulse-shaping-and-matched-filtering/evidence/expected-broken.json",
-          "sha256": "83e5b991eeee6ae3da2b6ac3c7472dec7b213fd3eeb72576af4defb638f2abd7"
+          "sha256": "08e9f72161396f5bb30b5d103644ec52a4bf0762a5e63a98e82c621363d7433f"
         },
         "actual": {
           "path": "modules/24-see-pulse-shaping-and-matched-filtering/evidence/actual-broken.json",
-          "sha256": "ad8b451dada5513ec515eb63c25dc6ae1c45299238a660e600801f0aee83f47f"
+          "sha256": "4fb453ee265589deb6d79dd421f32e37c751eabd043f979cbb7e7b64c2d4a6ab"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 4.5153811245590703e-13,
-        "max_relative_error": 4.5153811245590703e-13,
-        "passed": true
+        "max_absolute_error": 3.552713678800501e-15,
+        "max_relative_error": 8.881784197001252e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/24-see-pulse-shaping-and-matched-filtering/evidence/expected-recovery.json",
+          "sha256": "ca9f2b17f62d1e5f3abb2bd87052b51b1b3b2e813e5479eda36ececc7c4ab4c6"
+        },
+        "actual": {
+          "path": "modules/24-see-pulse-shaping-and-matched-filtering/evidence/actual-recovery.json",
+          "sha256": "f65ac839e44f9bd2b8e6d7c5756be8c30b369d1363d109ad34662a659a13f65d"
+        }
       }
     ]
   },

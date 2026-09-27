@@ -1,0 +1,82 @@
+{
+  "item": "P24",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p24",
+    "sha256": "fffe190b7c067e8ed3ae692a699f3b055f1055ada36674ecfbf9f56b9ae189a8",
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/24-see-pulse-shaping-and-matched-filtering/experiment.py",
+    "sha256": "3da11138cab828a63eb325a56917b760e676f0ba923d1bbe164ac0dc33f95511",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "rolloff": 0.25,
+      "span_symbols": 8,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "rolloff": 0.1,
+      "span_symbols": 8,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "rolloff": 0.25,
+      "span_symbols": 2,
+      "broken_mode": false
+    },
+    "broken": {
+      "rolloff": 0.25,
+      "span_symbols": 8,
+      "broken_mode": true
+    },
+    "recovery": {
+      "rolloff": 0.25,
+      "span_symbols": 8,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "pulse_energy",
+      "unit": "normalized energy"
+    },
+    {
+      "name": "total_group_delay",
+      "unit": "samples"
+    },
+    {
+      "name": "rectangular_evm",
+      "unit": "percent"
+    },
+    {
+      "name": "raw_evm",
+      "unit": "percent"
+    },
+    {
+      "name": "matched_evm",
+      "unit": "percent"
+    },
+    {
+      "name": "finite_span_isi_evm",
+      "unit": "percent"
+    },
+    {
+      "name": "symbol_error_rate",
+      "unit": "ratio"
+    },
+    {
+      "name": "aligned_recovery_evm",
+      "unit": "percent"
+    },
+    {
+      "name": "pulse_symmetry_error",
+      "unit": "normalized amplitude"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}
