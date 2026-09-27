@@ -121,12 +121,12 @@ def test_remediation_ledger_distinguishes_prior_current_and_pending() -> None:
     scope = ledger["scope"]
     assert scope["already_distinct"] == ["P01"]
     assert scope["repaired_in_prior_batches"]["items"] == [
-        f"P{number:02d}" for number in range(2, 21)
+        f"P{number:02d}" for number in range(2, 29)
     ]
-    assert scope["repaired_in_batch"]["batch_id"] == "ELP-DSP-FIDELITY-P21-P28"
-    assert scope["repaired_in_prior_batches"]["items"][9:] == ITEM_IDS
-    assert scope["repaired_in_batch"]["items"] == [f"P{n}" for n in range(21, 29)]
-    assert scope["pending"]["items"] == [f"P{number:02d}" for number in range(29, 85)]
+    assert scope["repaired_in_batch"]["batch_id"] == "ELP-DSP-FIDELITY-P29-P40"
+    assert scope["repaired_in_prior_batches"]["items"][9:19] == ITEM_IDS
+    assert scope["repaired_in_batch"]["items"] == [f"P{n}" for n in range(29, 41)]
+    assert scope["pending"]["items"] == [f"P{number:02d}" for number in range(41, 85)]
     assert ledger["derived_counts"] == {
         "rule": (
             "total_items = already_distinct + repaired_in_prior_batches + "
@@ -134,9 +134,9 @@ def test_remediation_ledger_distinguishes_prior_current_and_pending() -> None:
         ),
         "total_items": 84,
         "already_distinct": 1,
-        "repaired_in_prior_batches": 19,
-        "repaired_in_batch": 8,
-        "pending": 56,
+        "repaired_in_prior_batches": 27,
+        "repaired_in_batch": 12,
+        "pending": 44,
     }
     assert ledger["claim_boundary"]["numerically_verified"] == "blocked"
     assert ledger["claim_boundary"]["curriculum_covered"] == "blocked"
@@ -157,7 +157,7 @@ def test_repaired_controls_and_normalized_program_shapes_are_distinct() -> None:
             value: object = "text" if isinstance(node.value, str) else 0
             return ast.copy_location(ast.Constant(value=value), node)
 
-    for number in range(2, 29):
+    for number in range(2, 41):
         module_root = _module_root(number)
         module = json.loads((module_root / "module.yaml").read_text(encoding="utf-8"))
         controls = {control["id"] for control in module["controls"]}

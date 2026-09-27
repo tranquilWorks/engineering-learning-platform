@@ -359,3 +359,13 @@ physical controls, explicit failure/recovery and finite-resource limits.
 Preserve P01-P20 and P29-P84 byte-identically. After verification, issue 441
 continues at P29; full-course numerical, curriculum and capstone claims remain
 blocked. MATLAB, browser/learner, hardware and deployment are separate gates.
+
+## DSP/Radar twelve-item fidelity continuation P29-P40 — 2026-09-27
+
+Owner approved merge of PR #46 and requested twelve lessons per batch. Active
+contract `ELP-DSP-FIDELITY-P29-P40`, authorized by control PR #505, repairs the
+radar foundations through integration as one reviewable unit. Preserve P01-P28
+and P41-P84, retain sixty independent numerical scenarios and all local gates.
+P41-P52 is the next proposed twelve-item group after completion/merge and its
+own scoped contract. These repair existing lessons; no inventory expansion or
+whole-course maturity claim follows from batch size.

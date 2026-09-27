@@ -3,13 +3,13 @@
   "id": "31-separate-range-resolution-from-range-accuracy",
   "number": 31,
   "title": "Separate Range Resolution from Range Accuracy",
-  "summary": "Explore separate range resolution from range accuracy with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "A unit-energy Gaussian pulse separates matched-response width from isolated-target bias, standard deviation and RMSE over 128 trials.",
   "guiding_question": "Why can an estimate be precise even when two targets cannot be resolved?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-4",
-    "target-separation"
+    "radar-foundations",
+    "P31"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,51 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Target Separation",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "bandwidth_mhz",
+      "type": "segmented",
+      "label": "Bandwidth mhz",
+      "unit": "MHz",
+      "default": 4,
+      "options": [
+        {
+          "label": "2",
+          "value": 2
+        },
+        {
+          "label": "4 baseline",
+          "value": 4
+        },
+        {
+          "label": "8",
+          "value": 8
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "target_separation_m",
+      "type": "segmented",
+      "label": "Target separation m",
+      "unit": "m",
+      "default": 22,
+      "options": [
+        {
+          "label": "10",
+          "value": 10
+        },
+        {
+          "label": "22 baseline",
+          "value": 22
+        },
+        {
+          "label": "45",
+          "value": 45
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +75,40 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing target separation, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict which improves with more SNR: isolated-target accuracy or the physical width of this fixed waveform. Can two adjacent display samples be counted as two targets?",
+      "reveal": "A unit-energy Gaussian pulse separates matched-response width from isolated-target bias, standard deviation and RMSE over 128 trials."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Count physical peaks, not adjacent display points",
+      "plot": "pair"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Bandwidth changes width",
+      "plot": "bandwidth_sweep"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Actual separation creates distinct peaks",
+      "plot": "separation_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Accuracy improves while waveform width stays fixed",
+      "plot": "accuracy"
+    },
+    {
+      "type": "plot",
+      "title": "Dense interpolation adds no independent information",
+      "plot": "display"
     },
     {
       "type": "callout",
@@ -102,7 +119,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

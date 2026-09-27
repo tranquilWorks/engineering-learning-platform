@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "69c51297310071c00a518a4067b67733ad0eeb21dd585eaf811d6fa75fb4681e",
+    "content_digest": "9afcbc1dc85306b121dcd3269d36e1f5c43154463c3fb7539600e6ca42ee9f8d",
     "files": [
       {
         "path": "modules/33-control-pulse-compression-sidelobes/experiment.py",
-        "sha256": "0bb1f4aba5e64916590521a23e10125fb51bdacd6c4271cd4fd6346acb79fa5f"
+        "sha256": "54f017fb68d8a39d9039aabdb9d42c87e2a50ea06e6eb98983a57b1a0d7da8dd"
       },
       {
         "path": "modules/33-control-pulse-compression-sidelobes/lesson.md",
-        "sha256": "4e5180f2b2785c424da5a16ce52e30cb816957e9cfba17d81d4d8d319ab168fd"
+        "sha256": "fe5dc10776a37edf18f62debb8a3791ace3011b924155dbfba76ea8c1ed8aa96"
       },
       {
         "path": "modules/33-control-pulse-compression-sidelobes/module.yaml",
-        "sha256": "e0ac2a751ed19451c99fea7e29bef24e69a6291624d37eccbff313e485f8204a"
+        "sha256": "504557c8a55541967b1743cc95eaf42f293a3dae03d45e00c91dd859328be5cb"
       }
     ]
   },
   "content": {
     "guiding_question": "Why can a strong target hide a weak nearby target after matched filtering?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "Cosine receive weighting lowers sidelobes while broadening the mainlobe and losing output SNR. Weak-target margin compares its peak with strong-target leakage.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary range window strength while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Cosine receive weighting lowers sidelobes while broadening the mainlobe and losing output SNR. Weak-target margin compares its peak with strong-target leakage.",
+      "The failure forces full Hann weighting and seven-sample separation: low sidelobes alone do not reveal a target inside the broadened response.",
+      "Disable the failure and restore 17-sample separation with full taper; inspect margin, local peak and width together.",
+      "Explicit stage equations are retained in lesson.md. NumPy random streams differ from MATLAB. Plot/console presentation is adapted; no MATLAB runtime parity is claimed."
     ],
     "equations": [
       {
@@ -77,146 +77,230 @@
       "seed": 3301,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
+          "name": "record_samples",
+          "value": 1600,
+          "unit": "count"
         },
         {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
+          "name": "pulse_samples",
+          "value": 400,
+          "unit": "count"
         },
         {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "0191222d2eb6e61e98103833e4e0d407fc15d4954f32ecf2b6a8bdcfe3b07424",
-          "unit": "mixed numeric signature"
+          "sha256": "5b05fd0546e12d261792eac3f58261428b4990201ac09767224f521e1b732826",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "59cf8487d9fa2746ed3b13f31ae9fc240ba32c2c5cd9a2a99bcc341f09786860",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "ca63c0f3a453b9b8b91ee1ffe830580953af55162fa11382901f916d14b3e2c0",
-          "unit": "mixed numeric signature"
+          "sha256": "7d9ba72a1a26631b6920bbc82cb249d8fca868dbfee31ff093b62d74e235d0e0",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "3818b01b5a4532d7ffd5b887dbd75a6f96dd9bdb7bd50d14934f7160ae14ef1f",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "d417df50e2ef451fdcaf397f0df13b767768af71f5c3ef6c3022eed90536491d",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "3595a4193586d33ef62f1c80df1362a54f504d47aba7e9f2916036b86a8bb560",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "e20f2f591a23a0b0bb3ea402f61cfb1ef0df3c81f69fccae8559d7e9264618ed",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "3b08910b62395ed03ff5b9594cee1dfeb1c42961582d220b917609d6ec3fe122",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "5b05fd0546e12d261792eac3f58261428b4990201ac09767224f521e1b732826",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "59cf8487d9fa2746ed3b13f31ae9fc240ba32c2c5cd9a2a99bcc341f09786860",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P33 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P33 explicit processing and evidence stages",
+        "target_plot_key": "weights",
+        "title": "Receive weighting only",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Pulse sample (index)",
+            "unit": "index"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Weight (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Control Pulse-Compression Sidelobes guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Cosine receive weighting lowers sidelobes while broadening the mainlobe and losing output SNR. Weak-target margin compares its peak with strong-target leakage."
       },
       {
-        "source_figure": "Pinned P33 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P33 explicit processing and evidence stages",
+        "target_plot_key": "isolated",
+        "title": "Sidelobes and mainlobe width",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Range (m)",
+            "unit": "m"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Magnitude relative to own peak (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Control Pulse-Compression Sidelobes guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Cosine receive weighting lowers sidelobes while broadening the mainlobe and losing output SNR. Weak-target margin compares its peak with strong-target leakage."
       },
       {
-        "source_figure": "Pinned P33 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P33 explicit processing and evidence stages",
+        "target_plot_key": "scene",
+        "title": "Can the weak target clear strong-target leakage?",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Range (m)",
+            "unit": "m"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Magnitude relative to strong peak (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Control Pulse-Compression Sidelobes guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Cosine receive weighting lowers sidelobes while broadening the mainlobe and losing output SNR. Weak-target margin compares its peak with strong-target leakage."
       },
       {
-        "source_figure": "Pinned P33 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P33 explicit processing and evidence stages",
+        "target_plot_key": "taper_width",
+        "title": "Taper broadens the mainlobe",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Taper strength (ratio)",
+            "unit": "ratio"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Width (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Control Pulse-Compression Sidelobes guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Cosine receive weighting lowers sidelobes while broadening the mainlobe and losing output SNR. Weak-target margin compares its peak with strong-target leakage."
+      },
+      {
+        "source_figure": "Pinned P33 explicit processing and evidence stages",
+        "target_plot_key": "taper_cost",
+        "title": "Sidelobe reduction has a noise cost",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Taper strength (ratio)",
+            "unit": "ratio"
+          },
+          {
+            "role": "y",
+            "label": "Relative power (dB)",
+            "unit": "dB"
+          }
+        ],
+        "interpretation": "Cosine receive weighting lowers sidelobes while broadening the mainlobe and losing output SNR. Weak-target margin compares its peak with strong-target leakage."
+      },
+      {
+        "source_figure": "Pinned P33 explicit processing and evidence stages",
+        "target_plot_key": "separation_sweep",
+        "title": "Width can mask a close target despite low sidelobes",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Separation (m)",
+            "unit": "m"
+          },
+          {
+            "role": "y",
+            "label": "Weak / leakage margin (dB)",
+            "unit": "dB"
+          }
+        ],
+        "interpretation": "Cosine receive weighting lowers sidelobes while broadening the mainlobe and losing output SNR. Weak-target margin compares its peak with strong-target leakage."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "taper_strength",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          0,
+          0.5,
+          1
         ],
-        "expected_observation": "Changing range window strength moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Taper strength; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "separation_samples",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          7,
+          13,
+          17,
+          32
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Separation samples; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "The failure forces full Hann weighting and seven-sample separation: low sidelobes alone do not reveal a target inside the broadened response.",
+      "recovery": "Disable the failure and restore 17-sample separation with full taper; inspect margin, local peak and width together.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "The failure forces full Hann weighting and seven-sample separation: low sidelobes alone do not reveal a target inside the broadened response.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -224,63 +308,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 500000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P33 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p29_p40.py",
     "seed": 3301,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
+        "name": "taper_strength",
+        "value": 1,
         "unit": "ratio"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "separation_samples",
+        "value": 17,
+        "unit": "samples"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 1.7763568394002505e-14,
+        "max_relative_error": 1.7545170651733732e-15,
+        "passed": true,
         "expected": {
           "path": "modules/33-control-pulse-compression-sidelobes/evidence/expected-baseline.json",
-          "sha256": "0191222d2eb6e61e98103833e4e0d407fc15d4954f32ecf2b6a8bdcfe3b07424"
+          "sha256": "5b05fd0546e12d261792eac3f58261428b4990201ac09767224f521e1b732826"
         },
         "actual": {
           "path": "modules/33-control-pulse-compression-sidelobes/evidence/actual-baseline.json",
-          "sha256": "30db1814855e2a5579f85752d0beed81a741b7a4d9068e18777a4e27667847bf"
-        },
-        "max_absolute_error": 4.1799896877137144e-13,
-        "max_relative_error": 4.1799896877137144e-13,
-        "passed": true
+          "sha256": "59cf8487d9fa2746ed3b13f31ae9fc240ba32c2c5cd9a2a99bcc341f09786860"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 1.7763568394002505e-15,
+        "max_relative_error": 3.926106616296911e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/33-control-pulse-compression-sidelobes/evidence/expected-sweep-1.json",
+          "sha256": "7d9ba72a1a26631b6920bbc82cb249d8fca868dbfee31ff093b62d74e235d0e0"
+        },
+        "actual": {
+          "path": "modules/33-control-pulse-compression-sidelobes/evidence/actual-sweep-1.json",
+          "sha256": "3818b01b5a4532d7ffd5b887dbd75a6f96dd9bdb7bd50d14934f7160ae14ef1f"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 3.552713678800501e-15,
+        "max_relative_error": 1.7545170651733732e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/33-control-pulse-compression-sidelobes/evidence/expected-sweep-2.json",
+          "sha256": "d417df50e2ef451fdcaf397f0df13b767768af71f5c3ef6c3022eed90536491d"
+        },
+        "actual": {
+          "path": "modules/33-control-pulse-compression-sidelobes/evidence/actual-sweep-2.json",
+          "sha256": "3595a4193586d33ef62f1c80df1362a54f504d47aba7e9f2916036b86a8bb560"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 3.552713678800501e-15,
+        "max_relative_error": 1.7545170651733732e-15,
+        "passed": true,
         "expected": {
           "path": "modules/33-control-pulse-compression-sidelobes/evidence/expected-broken.json",
-          "sha256": "ca63c0f3a453b9b8b91ee1ffe830580953af55162fa11382901f916d14b3e2c0"
+          "sha256": "e20f2f591a23a0b0bb3ea402f61cfb1ef0df3c81f69fccae8559d7e9264618ed"
         },
         "actual": {
           "path": "modules/33-control-pulse-compression-sidelobes/evidence/actual-broken.json",
-          "sha256": "a4f2faea44f8f887c6199e698306abcf1280da8df01403fa28e0e5e144c0486d"
+          "sha256": "3b08910b62395ed03ff5b9594cee1dfeb1c42961582d220b917609d6ec3fe122"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 4.1799896877137144e-13,
-        "max_relative_error": 4.1799896877137144e-13,
-        "passed": true
+        "max_absolute_error": 1.7763568394002505e-14,
+        "max_relative_error": 1.7545170651733732e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/33-control-pulse-compression-sidelobes/evidence/expected-recovery.json",
+          "sha256": "5b05fd0546e12d261792eac3f58261428b4990201ac09767224f521e1b732826"
+        },
+        "actual": {
+          "path": "modules/33-control-pulse-compression-sidelobes/evidence/actual-recovery.json",
+          "sha256": "59cf8487d9fa2746ed3b13f31ae9fc240ba32c2c5cd9a2a99bcc341f09786860"
+        }
       }
     ]
   },

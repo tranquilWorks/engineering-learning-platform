@@ -1,0 +1,87 @@
+{
+  "item": "P40",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p40",
+    "sha256": "639080c7d5ee1da82ee8753edf755d41b68631ba751622b55c074a33d84fc09d",
+    "byte_count": 90006,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/40-compare-coherent-and-noncoherent-integration/experiment.py",
+    "sha256": "2b847f7f993fb6cdb165be59a52bdf1b95f07c52807da7b63073211a08335110",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "pulse_count": 32,
+      "input_snr_db": -8,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "pulse_count": 64,
+      "input_snr_db": -8,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "pulse_count": 32,
+      "input_snr_db": 0,
+      "broken_mode": false
+    },
+    "broken": {
+      "pulse_count": 32,
+      "input_snr_db": -8,
+      "broken_mode": true
+    },
+    "recovery": {
+      "pulse_count": 32,
+      "input_snr_db": -8,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "coherent_output_snr",
+      "unit": "dB"
+    },
+    {
+      "name": "coherent_detectability",
+      "unit": "noise std"
+    },
+    {
+      "name": "noncoherent_detectability",
+      "unit": "noise std"
+    },
+    {
+      "name": "active_signal_power_fraction",
+      "unit": "ratio"
+    },
+    {
+      "name": "recovered_signal_power_fraction",
+      "unit": "ratio"
+    },
+    {
+      "name": "noncoherent_signal_energy_fraction",
+      "unit": "ratio"
+    },
+    {
+      "name": "observed_coherent_statistic",
+      "unit": "relative power"
+    },
+    {
+      "name": "observed_noncoherent_statistic",
+      "unit": "relative power"
+    },
+    {
+      "name": "jitter_90deg_effective_gain",
+      "unit": "ratio"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

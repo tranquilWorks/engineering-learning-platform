@@ -1,0 +1,91 @@
+{
+  "item": "P38",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p38",
+    "sha256": "639080c7d5ee1da82ee8753edf755d41b68631ba751622b55c074a33d84fc09d",
+    "byte_count": 90006,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller/experiment.py",
+    "sha256": "bae697a66991e0bedd07b1eb7ee18786483185200933b6127b631b88a3e09261",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "slow_target_velocity_mps": 3,
+      "prf_khz": 5,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "slow_target_velocity_mps": 15,
+      "prf_khz": 5,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "slow_target_velocity_mps": 3,
+      "prf_khz": 9,
+      "broken_mode": false
+    },
+    "broken": {
+      "slow_target_velocity_mps": 3,
+      "prf_khz": 5,
+      "broken_mode": true
+    },
+    "recovery": {
+      "slow_target_velocity_mps": 3,
+      "prf_khz": 5,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "active_clutter_residual",
+      "unit": "ratio"
+    },
+    {
+      "name": "slow_target_two_gain",
+      "unit": "amplitude ratio"
+    },
+    {
+      "name": "slow_target_three_gain",
+      "unit": "amplitude ratio"
+    },
+    {
+      "name": "two_noise_power_gain",
+      "unit": "power ratio"
+    },
+    {
+      "name": "three_noise_power_gain",
+      "unit": "power ratio"
+    },
+    {
+      "name": "two_noise_theory",
+      "unit": "power ratio"
+    },
+    {
+      "name": "three_noise_theory",
+      "unit": "power ratio"
+    },
+    {
+      "name": "blind_speed_spacing",
+      "unit": "m/s"
+    },
+    {
+      "name": "active_output_rows",
+      "unit": "rows"
+    },
+    {
+      "name": "active_output_columns",
+      "unit": "pulses"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

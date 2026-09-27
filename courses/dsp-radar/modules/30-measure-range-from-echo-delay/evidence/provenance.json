@@ -1,0 +1,87 @@
+{
+  "item": "P30",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p30",
+    "sha256": "639080c7d5ee1da82ee8753edf755d41b68631ba751622b55c074a33d84fc09d",
+    "byte_count": 90006,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/30-measure-range-from-echo-delay/experiment.py",
+    "sha256": "b696bc06e5327fd3e3e624e876d44c6702bfc74114bd0d7b22c7973d4d00154f",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "sample_rate_mhz": 20,
+      "delay_us": 6.0175,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "sample_rate_mhz": 40,
+      "delay_us": 6.0175,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "sample_rate_mhz": 20,
+      "delay_us": 6.0375,
+      "broken_mode": false
+    },
+    "broken": {
+      "sample_rate_mhz": 20,
+      "delay_us": 6.0175,
+      "broken_mode": true
+    },
+    "recovery": {
+      "sample_rate_mhz": 20,
+      "delay_us": 6.0175,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "true_range",
+      "unit": "m"
+    },
+    {
+      "name": "integer_range",
+      "unit": "m"
+    },
+    {
+      "name": "refined_range",
+      "unit": "m"
+    },
+    {
+      "name": "active_reported_range",
+      "unit": "m"
+    },
+    {
+      "name": "range_sample_step",
+      "unit": "m"
+    },
+    {
+      "name": "refined_error",
+      "unit": "m"
+    },
+    {
+      "name": "peak",
+      "unit": "amplitude sum"
+    },
+    {
+      "name": "close_pair_peaks",
+      "unit": "count"
+    },
+    {
+      "name": "wide_pair_peaks",
+      "unit": "count"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

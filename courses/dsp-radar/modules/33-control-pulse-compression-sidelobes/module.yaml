@@ -3,13 +3,13 @@
   "id": "33-control-pulse-compression-sidelobes",
   "number": 33,
   "title": "Control Pulse-Compression Sidelobes",
-  "summary": "Explore control pulse-compression sidelobes with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "Cosine receive weighting lowers sidelobes while broadening the mainlobe and losing output SNR. Weak-target margin compares its peak with strong-target leakage.",
   "guiding_question": "Why can a strong target hide a weak nearby target after matched filtering?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-4",
-    "range-window-strength"
+    "radar-foundations",
+    "P33"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,55 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Range Window Strength",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "taper_strength",
+      "type": "segmented",
+      "label": "Taper strength",
+      "unit": "ratio",
+      "default": 1,
+      "options": [
+        {
+          "label": "0",
+          "value": 0
+        },
+        {
+          "label": "0.5",
+          "value": 0.5
+        },
+        {
+          "label": "1 baseline",
+          "value": 1
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "separation_samples",
+      "type": "segmented",
+      "label": "Separation samples",
+      "unit": "samples",
+      "default": 17,
+      "options": [
+        {
+          "label": "7",
+          "value": 7
+        },
+        {
+          "label": "13",
+          "value": 13
+        },
+        {
+          "label": "17 baseline",
+          "value": 17
+        },
+        {
+          "label": "32",
+          "value": 32
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +79,45 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing range window strength, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict the weak-target visibility when sidelobes decrease but the mainlobe grows. Why must you inspect width and noise loss as well as PSLR?",
+      "reveal": "Cosine receive weighting lowers sidelobes while broadening the mainlobe and losing output SNR. Weak-target margin compares its peak with strong-target leakage."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Receive weighting only",
+      "plot": "weights"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Sidelobes and mainlobe width",
+      "plot": "isolated"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Can the weak target clear strong-target leakage?",
+      "plot": "scene"
+    },
+    {
+      "type": "plot",
+      "title": "Taper broadens the mainlobe",
+      "plot": "taper_width"
+    },
+    {
+      "type": "plot",
+      "title": "Sidelobe reduction has a noise cost",
+      "plot": "taper_cost"
+    },
+    {
+      "type": "plot",
+      "title": "Width can mask a close target despite low sidelobes",
+      "plot": "separation_sweep"
     },
     {
       "type": "callout",
@@ -102,7 +128,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

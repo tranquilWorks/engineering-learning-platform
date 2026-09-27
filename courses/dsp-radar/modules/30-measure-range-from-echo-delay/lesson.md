@@ -1,6 +1,4 @@
-# Measure Range from Echo Delay
-
-> **Guiding question:** How does round-trip delay become target range?
+# P30 Lesson: Measure Range from Echo Delay
 
 ## Guiding question
 
@@ -142,33 +140,29 @@ The runtime path is base MATLAB only and uses bounded loops and finite arrays.
 No toolbox, file, network, hardware, worker, timer, or external transaction is
 part of the experiment.
 
-## Use the Python GUI experiment
+## Interactive lab: Measure Range from Echo Delay
 
-The GUI keeps the pinned source's mental model and processing order visible. The **echo delay** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** How does round-trip delay become target range?
 
-### Prediction and sweep 1 — echo delay
+A 1 µs rectangular pulse is observed in a 16 µs record. The baseline delay is 6.0175 µs, or 120.35 samples at 20 MHz. Piecewise-linear zero extension retains fractional edge weights; the maximum lag has a three-point parabolic refinement. Noise sigma is 0.03 with seed 3001. All displayed sweeps are noiseless to isolate grid and separation effects.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict the range-bin spacing when sampling doubles. Does a sub-bin estimate narrow the waveform response or create the ability to separate two targets?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Change only **Sample rate mhz** from 20 to 40 MHz. Predict and explain the change using the source equation, then reset.
+2. Start at the baseline. Change only **Delay us** from 6.0175 to 6.0375 µs. Predict and explain the change using the source equation, then reset.
+3. Enable the broken case. Using cτ reports twice the refined monostatic range.
+4. Recovery: Disable the failure to restore cτ/2 with identical samples and correlation. Restore both controls and disable the toggle to reproduce the selected baseline exactly.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict the range-bin spacing when sampling doubles. Does a sub-bin estimate narrow the waveform response or create the ability to separate two targets? Explain your answer using a measured value and units, then describe the failure and the recovery assumption.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+Using cτ reports twice the refined monostatic range. Avoid treating a clean seeded demonstration as field performance.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The pinned source lesson above describes the original MATLAB model. This interactive version uses bounded NumPy arrays and the same physical stages, with an independent numerical reference. Vectorized sums and linear convolution replace nested MATLAB accumulation loops without circular wrapping. NumPy seeds are reproducible but are not MATLAB RNG parity. MATLAB figure cleanup and console output become plots and metrics. Line displays retain at most 512 points; heatmaps retain at most 128 columns and 64 rows, while calculations use the full stated arrays. No MATLAB execution, visual/accessibility review, hardware, or learner-effectiveness claim is made.

@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "9aa10258a28bb2ef6c6a70884876add213a056e10ea5d26e1e4c84e9e97d9554",
+    "content_digest": "64163b67a170d698426d530fb01d6f32fb936aa9e692df5ff61a14a17695b1e5",
     "files": [
       {
         "path": "modules/34-plot-and-interpret-the-ambiguity-function/experiment.py",
-        "sha256": "144d851eaa57319f381f359b150c0ab4d721821884abc83eda4a8ee1e8581ccf"
+        "sha256": "0c3820360dfd301d81f0e552f7e1826eee8264a895e791136f380708ccb60621"
       },
       {
         "path": "modules/34-plot-and-interpret-the-ambiguity-function/lesson.md",
-        "sha256": "0d1d6d5dc94cd2490f07a656ae70310d056e576d5f9f31b7e2207df6b8132704"
+        "sha256": "b4daa17572c62cc1336858908cb46cf1808497f0e5211f8906bd76e207a8d1fe"
       },
       {
         "path": "modules/34-plot-and-interpret-the-ambiguity-function/module.yaml",
-        "sha256": "2509409a64cbb401920eaf7b4480fc1379f42ea436eabe18fe0da092fd8b22b8"
+        "sha256": "ce67397e8074982d6429503596b72ea52f8ee6a30bc50b902b428f0ac9ca2647"
       }
     ]
   },
   "content": {
     "guiding_question": "How does a waveform respond to simultaneous delay and Doppler mismatch?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "Delay-Doppler sums use only zero-filled overlap. Rectangle, LFM and a seeded 13-chip code expose different cuts; the LFM ridge follows fd divided by chirp rate.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary delay Doppler mismatch while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Delay-Doppler sums use only zero-filled overlap. Rectangle, LFM and a seeded 13-chip code expose different cuts; the LFM ridge follows fd divided by chirp rate.",
+      "Circularly wrapping the rectangular pulse produces unit correlation even at extreme delay, inventing overlap that propagation cannot supply.",
+      "Disable the failure to restore finite zero-filled overlap; the extreme-delay magnitude returns to 1/N.",
+      "Explicit stage equations are retained in lesson.md. NumPy random streams differ from MATLAB. Plot/console presentation is adapted; no MATLAB runtime parity is claimed."
     ],
     "equations": [
       {
@@ -77,146 +77,336 @@
       "seed": 3401,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
+          "name": "surface_doppler_bins",
+          "value": 101,
+          "unit": "count"
         },
         {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
+          "name": "surface_samples",
+          "value": 130,
+          "unit": "count"
         },
         {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "84564f4398686e02a722950da0c71d3027ae3e9999210467535a0becaed8bdcb",
-          "unit": "mixed numeric signature"
+          "sha256": "f4b1093ca23aa3f44ff11d1ce511cbb6d805d5744287485d9b501733a6e9b8a6",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "f4b1093ca23aa3f44ff11d1ce511cbb6d805d5744287485d9b501733a6e9b8a6",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "9e419f7099116f31cecfab11cd7a7b32944c9b52c407cbdff6fd91faaa55b18b",
-          "unit": "mixed numeric signature"
+          "sha256": "83a8438441d25f1c1be300148e41e846573f114b68c98577f390f14e04b2f091",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "83a8438441d25f1c1be300148e41e846573f114b68c98577f390f14e04b2f091",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "f1052b848b4cb890ecc6ea58b201272b60040e1fecb03551fbc41726565452a2",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "f1052b848b4cb890ecc6ea58b201272b60040e1fecb03551fbc41726565452a2",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "ee6fd5a8c05bfe2d2445802a76ba7b88b39ff7dcd9da10621fa134297627400d",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "ee6fd5a8c05bfe2d2445802a76ba7b88b39ff7dcd9da10621fa134297627400d",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "f4b1093ca23aa3f44ff11d1ce511cbb6d805d5744287485d9b501733a6e9b8a6",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "f4b1093ca23aa3f44ff11d1ce511cbb6d805d5744287485d9b501733a6e9b8a6",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P34 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P34 explicit processing and evidence stages",
+        "target_plot_key": "rectangular_surface",
+        "title": "rectangular_surface delay-Doppler magnitude",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Delay mismatch (\u00b5s)",
+            "unit": "\u00b5s"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Doppler mismatch (kHz)",
+            "unit": "kHz"
           }
         ],
-        "interpretation": "This view answers the Plot and Interpret the Ambiguity Function guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Delay-Doppler sums use only zero-filled overlap. Rectangle, LFM and a seeded 13-chip code expose different cuts; the LFM ridge follows fd divided by chirp rate."
       },
       {
-        "source_figure": "Pinned P34 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P34 explicit processing and evidence stages",
+        "target_plot_key": "lfm_surface",
+        "title": "lfm_surface delay-Doppler magnitude",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Delay mismatch (\u00b5s)",
+            "unit": "\u00b5s"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Doppler mismatch (kHz)",
+            "unit": "kHz"
           }
         ],
-        "interpretation": "This view answers the Plot and Interpret the Ambiguity Function guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Delay-Doppler sums use only zero-filled overlap. Rectangle, LFM and a seeded 13-chip code expose different cuts; the LFM ridge follows fd divided by chirp rate."
       },
       {
-        "source_figure": "Pinned P34 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P34 explicit processing and evidence stages",
+        "target_plot_key": "code_surface",
+        "title": "code_surface delay-Doppler magnitude",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Delay mismatch (\u00b5s)",
+            "unit": "\u00b5s"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Doppler mismatch (kHz)",
+            "unit": "kHz"
           }
         ],
-        "interpretation": "This view answers the Plot and Interpret the Ambiguity Function guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Delay-Doppler sums use only zero-filled overlap. Rectangle, LFM and a seeded 13-chip code expose different cuts; the LFM ridge follows fd divided by chirp rate."
       },
       {
-        "source_figure": "Pinned P34 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P34 explicit processing and evidence stages",
+        "target_plot_key": "delay_cut",
+        "title": "Zero-Doppler cut and circular-wrap failure",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Delay (\u00b5s)",
+            "unit": "\u00b5s"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Normalized magnitude (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Plot and Interpret the Ambiguity Function guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Delay-Doppler sums use only zero-filled overlap. Rectangle, LFM and a seeded 13-chip code expose different cuts; the LFM ridge follows fd divided by chirp rate."
+      },
+      {
+        "source_figure": "Pinned P34 explicit processing and evidence stages",
+        "target_plot_key": "doppler_cut",
+        "title": "Zero-delay cut",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Doppler (kHz)",
+            "unit": "kHz"
+          },
+          {
+            "role": "y",
+            "label": "Normalized magnitude (ratio)",
+            "unit": "ratio"
+          }
+        ],
+        "interpretation": "Delay-Doppler sums use only zero-filled overlap. Rectangle, LFM and a seeded 13-chip code expose different cuts; the LFM ridge follows fd divided by chirp rate."
+      },
+      {
+        "source_figure": "Pinned P34 explicit processing and evidence stages",
+        "target_plot_key": "ridge",
+        "title": "LFM delay and Doppler are coupled",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Doppler mismatch (kHz)",
+            "unit": "kHz"
+          },
+          {
+            "role": "y",
+            "label": "Peak delay (\u00b5s)",
+            "unit": "\u00b5s"
+          }
+        ],
+        "interpretation": "Delay-Doppler sums use only zero-filled overlap. Rectangle, LFM and a seeded 13-chip code expose different cuts; the LFM ridge follows fd divided by chirp rate."
+      },
+      {
+        "source_figure": "Pinned P34 explicit processing and evidence stages",
+        "target_plot_key": "duration_delay",
+        "title": "Duration widens delay response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Duration (\u00b5s)",
+            "unit": "\u00b5s"
+          },
+          {
+            "role": "y",
+            "label": "Delay width (\u00b5s)",
+            "unit": "\u00b5s"
+          }
+        ],
+        "interpretation": "Delay-Doppler sums use only zero-filled overlap. Rectangle, LFM and a seeded 13-chip code expose different cuts; the LFM ridge follows fd divided by chirp rate."
+      },
+      {
+        "source_figure": "Pinned P34 explicit processing and evidence stages",
+        "target_plot_key": "duration_doppler",
+        "title": "Longer duration narrows Doppler response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Duration (\u00b5s)",
+            "unit": "\u00b5s"
+          },
+          {
+            "role": "y",
+            "label": "Doppler width (kHz)",
+            "unit": "kHz"
+          }
+        ],
+        "interpretation": "Delay-Doppler sums use only zero-filled overlap. Rectangle, LFM and a seeded 13-chip code expose different cuts; the LFM ridge follows fd divided by chirp rate."
+      },
+      {
+        "source_figure": "Pinned P34 explicit processing and evidence stages",
+        "target_plot_key": "bandwidth_sweep",
+        "title": "Bandwidth narrows the LFM delay cut",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Bandwidth (MHz)",
+            "unit": "MHz"
+          },
+          {
+            "role": "y",
+            "label": "Delay width (\u00b5s)",
+            "unit": "\u00b5s"
+          }
+        ],
+        "interpretation": "Delay-Doppler sums use only zero-filled overlap. Rectangle, LFM and a seeded 13-chip code expose different cuts; the LFM ridge follows fd divided by chirp rate."
+      },
+      {
+        "source_figure": "Pinned P34 explicit processing and evidence stages",
+        "target_plot_key": "code_sweep",
+        "title": "Seeded prefixes change code sidelobes",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Code length (chips)",
+            "unit": "chips"
+          },
+          {
+            "role": "y",
+            "label": "Peak sidelobe ratio (dB)",
+            "unit": "dB"
+          }
+        ],
+        "interpretation": "Delay-Doppler sums use only zero-filled overlap. Rectangle, LFM and a seeded 13-chip code expose different cuts; the LFM ridge follows fd divided by chirp rate."
+      },
+      {
+        "source_figure": "Pinned P34 explicit processing and evidence stages",
+        "target_plot_key": "code_delay_width",
+        "title": "Chip length and finite-code delay width",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Code length (chips)",
+            "unit": "chips"
+          },
+          {
+            "role": "y",
+            "label": "Delay width (\u00b5s)",
+            "unit": "\u00b5s"
+          }
+        ],
+        "interpretation": "Delay-Doppler sums use only zero-filled overlap. Rectangle, LFM and a seeded 13-chip code expose different cuts; the LFM ridge follows fd divided by chirp rate."
+      },
+      {
+        "source_figure": "Pinned P34 explicit processing and evidence stages",
+        "target_plot_key": "code_doppler_width",
+        "title": "Longer code narrows Doppler cut",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Code length (chips)",
+            "unit": "chips"
+          },
+          {
+            "role": "y",
+            "label": "Doppler width (kHz)",
+            "unit": "kHz"
+          }
+        ],
+        "interpretation": "Delay-Doppler sums use only zero-filled overlap. Rectangle, LFM and a seeded 13-chip code expose different cuts; the LFM ridge follows fd divided by chirp rate."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "bandwidth_mhz",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          1.5,
+          3,
+          4.5
         ],
-        "expected_observation": "Changing delay Doppler mismatch moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Bandwidth mhz; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "duration_us",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          6.5,
+          13
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Duration us; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "Circularly wrapping the rectangular pulse produces unit correlation even at extreme delay, inventing overlap that propagation cannot supply.",
+      "recovery": "Disable the failure to restore finite zero-filled overlap; the extreme-delay magnitude returns to 1/N.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Circularly wrapping the rectangular pulse produces unit correlation even at extreme delay, inventing overlap that propagation cannot supply.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -224,63 +414,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 500000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P34 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p29_p40.py",
     "seed": 3401,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "bandwidth_mhz",
+        "value": 3,
+        "unit": "MHz"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "duration_us",
+        "value": 13,
+        "unit": "\u00b5s"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true,
         "expected": {
           "path": "modules/34-plot-and-interpret-the-ambiguity-function/evidence/expected-baseline.json",
-          "sha256": "84564f4398686e02a722950da0c71d3027ae3e9999210467535a0becaed8bdcb"
+          "sha256": "f4b1093ca23aa3f44ff11d1ce511cbb6d805d5744287485d9b501733a6e9b8a6"
         },
         "actual": {
           "path": "modules/34-plot-and-interpret-the-ambiguity-function/evidence/actual-baseline.json",
-          "sha256": "8b5972234bcc289d0e6a5d1bd3abf2d76035f270607540c567d79a64b442f0ec"
-        },
-        "max_absolute_error": 1.9595436384634013e-13,
-        "max_relative_error": 1.9595436384634013e-13,
-        "passed": true
+          "sha256": "f4b1093ca23aa3f44ff11d1ce511cbb6d805d5744287485d9b501733a6e9b8a6"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true,
+        "expected": {
+          "path": "modules/34-plot-and-interpret-the-ambiguity-function/evidence/expected-sweep-1.json",
+          "sha256": "83a8438441d25f1c1be300148e41e846573f114b68c98577f390f14e04b2f091"
+        },
+        "actual": {
+          "path": "modules/34-plot-and-interpret-the-ambiguity-function/evidence/actual-sweep-1.json",
+          "sha256": "83a8438441d25f1c1be300148e41e846573f114b68c98577f390f14e04b2f091"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true,
+        "expected": {
+          "path": "modules/34-plot-and-interpret-the-ambiguity-function/evidence/expected-sweep-2.json",
+          "sha256": "f1052b848b4cb890ecc6ea58b201272b60040e1fecb03551fbc41726565452a2"
+        },
+        "actual": {
+          "path": "modules/34-plot-and-interpret-the-ambiguity-function/evidence/actual-sweep-2.json",
+          "sha256": "f1052b848b4cb890ecc6ea58b201272b60040e1fecb03551fbc41726565452a2"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true,
         "expected": {
           "path": "modules/34-plot-and-interpret-the-ambiguity-function/evidence/expected-broken.json",
-          "sha256": "9e419f7099116f31cecfab11cd7a7b32944c9b52c407cbdff6fd91faaa55b18b"
+          "sha256": "ee6fd5a8c05bfe2d2445802a76ba7b88b39ff7dcd9da10621fa134297627400d"
         },
         "actual": {
           "path": "modules/34-plot-and-interpret-the-ambiguity-function/evidence/actual-broken.json",
-          "sha256": "9320bc8c8c497b45688eecd9978ff3de7cd74e21404b84e8ab299bcff970ed42"
+          "sha256": "ee6fd5a8c05bfe2d2445802a76ba7b88b39ff7dcd9da10621fa134297627400d"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 1.9595436384634013e-13,
-        "max_relative_error": 1.9595436384634013e-13,
-        "passed": true
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true,
+        "expected": {
+          "path": "modules/34-plot-and-interpret-the-ambiguity-function/evidence/expected-recovery.json",
+          "sha256": "f4b1093ca23aa3f44ff11d1ce511cbb6d805d5744287485d9b501733a6e9b8a6"
+        },
+        "actual": {
+          "path": "modules/34-plot-and-interpret-the-ambiguity-function/evidence/actual-recovery.json",
+          "sha256": "f4b1093ca23aa3f44ff11d1ce511cbb6d805d5744287485d9b501733a6e9b8a6"
+        }
       }
     ]
   },

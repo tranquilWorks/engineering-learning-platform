@@ -3,13 +3,13 @@
   "id": "32-perform-lfm-pulse-compression",
   "number": 32,
   "title": "Perform LFM Pulse Compression",
-  "summary": "Explore perform lfm pulse compression with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "The conjugate-reversed chirp compresses long overlapping echoes. Bandwidth sets width; duration supplies energy. FsT and BT use different input-noise references.",
   "guiding_question": "How can a long energetic pulse achieve short-pulse range resolution?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-4",
-    "chirp-bandwidth"
+    "radar-foundations",
+    "P32"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,51 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Chirp Bandwidth",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "bandwidth_mhz",
+      "type": "segmented",
+      "label": "Bandwidth mhz",
+      "unit": "MHz",
+      "default": 8,
+      "options": [
+        {
+          "label": "4",
+          "value": 4
+        },
+        {
+          "label": "8 baseline",
+          "value": 8
+        },
+        {
+          "label": "16",
+          "value": 16
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "pulse_duration_us",
+      "type": "segmented",
+      "label": "Pulse duration us",
+      "unit": "\u00b5s",
+      "default": 10,
+      "options": [
+        {
+          "label": "5",
+          "value": 5
+        },
+        {
+          "label": "10 baseline",
+          "value": 10
+        },
+        {
+          "label": "20",
+          "value": 20
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +75,50 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing chirp bandwidth, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict what changes when bandwidth doubles at fixed duration, then when duration doubles at fixed bandwidth. Which input-noise bandwidth defines each processing-gain label?",
+      "reveal": "The conjugate-reversed chirp compresses long overlapping echoes. Bandwidth sets width; duration supplies energy. FsT and BT use different input-noise references."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "LFM has constant magnitude and rotating phase",
+      "plot": "chirp"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Frequency labels time inside the pulse",
+      "plot": "frequency"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Long raw echoes overlap",
+      "plot": "raw"
+    },
+    {
+      "type": "plot",
+      "title": "Delay-corrected matched output",
+      "plot": "compression"
+    },
+    {
+      "type": "plot",
+      "title": "Bandwidth sets compressed width",
+      "plot": "bandwidth_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Duration changes energy at fixed bandwidth",
+      "plot": "duration_width"
+    },
+    {
+      "type": "plot",
+      "title": "Gain referenced to B-Hz input noise",
+      "plot": "duration_gain"
     },
     {
       "type": "callout",
@@ -102,7 +129,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

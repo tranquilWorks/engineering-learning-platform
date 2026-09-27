@@ -3,13 +3,13 @@
   "id": "29-build-a-radar-power-budget-experiment",
   "number": 29,
   "title": "Build a Radar Power-Budget Experiment",
-  "summary": "Explore build a radar power-budget experiment with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "Echo power follows Pt Gt Gr \u03bb\u00b2 \u03c3 / ((4\u03c0)\u00b3 R\u2074 L); noise follows kTBF. Positive margin is not detection probability.",
   "guiding_question": "How quickly does received echo power fall with range?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-4",
-    "target-range"
+    "radar-foundations",
+    "P29"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,51 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Target Range",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "rcs_m2",
+      "type": "segmented",
+      "label": "Rcs m2",
+      "unit": "m\u00b2",
+      "default": 1,
+      "options": [
+        {
+          "label": "0.1",
+          "value": 0.1
+        },
+        {
+          "label": "1 baseline",
+          "value": 1
+        },
+        {
+          "label": "10",
+          "value": 10
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "transmit_power_kw",
+      "type": "segmented",
+      "label": "Transmit power kw",
+      "unit": "kW",
+      "default": 100,
+      "options": [
+        {
+          "label": "25",
+          "value": 25
+        },
+        {
+          "label": "100 baseline",
+          "value": 100
+        },
+        {
+          "label": "400",
+          "value": 400
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +75,45 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing target range, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict the cost of doubling range before inspecting the curves. Can one agreement at 40 km prove that the spreading law is correct?",
+      "reveal": "Echo power follows Pt Gt Gr \u03bb\u00b2 \u03c3 / ((4\u03c0)\u00b3 R\u2074 L); noise follows kTBF. Positive margin is not detection probability."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Two spreading trips",
+      "plot": "power"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Detection margin is a power criterion",
+      "plot": "margin"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Change only RCS",
+      "plot": "rcs_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Frequency at fixed antenna gains",
+      "plot": "frequency_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Fourth-root range growth",
+      "plot": "power_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "0 baseline; 1 Pt\u00d72; 2 Gt+3; 3 Gr+3; 4 wavelength\u00d72; 5 loss/2; 6 RCS\u00d72",
+      "plot": "sensitivity"
     },
     {
       "type": "callout",
@@ -102,7 +124,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

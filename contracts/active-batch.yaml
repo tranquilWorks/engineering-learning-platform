@@ -1,20 +1,20 @@
 schema_version: 1
 batch:
-  id: ELP-DSP-FIDELITY-P21-P28
-  title: DSP/Radar modulation, channels, adaptation, and statistical evidence fidelity
-  goal: Repair the eight phase-three experiments with their pinned source algorithms, learner-visible processing
-    stages, and independent numerical evidence.
+  id: ELP-DSP-FIDELITY-P29-P40
+  title: DSP/Radar power, ranging, pulse compression, Doppler and integration fidelity
+  goal: Repair twelve consecutive radar experiments as one source-faithful batch, with physical learner controls,
+    visible processing stages, independent numerical evidence and explicit failure/recovery.
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
   - products/engineering-learning-platform/COURSE_CALIBER.md
   - products/engineering-learning-platform/course-caliber.yaml
   - tranquilWorks/portfolio-control#441
-  baseline_commit: b7e684d595bd777602c9aa22cd489189efa6584b
-  baseline_tree: 19a298703ab04794e855edffb8aa83a6f0e2ba83
+  baseline_commit: 74fbe13828665783a97d047eae0c6dc6ef482745
+  baseline_tree: 2ac9ed6889e18f531b6d01dba794b710a2f51996
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_baseline: 1713665398b4d570611e7e8e19195d25fb8b7b38
-  control_plane_path: products/engineering-learning-platform/batches/ELP-DSP-FIDELITY-P21-P28.yaml
+  control_plane_baseline: 845e6180b9bf84dafb813ae023e19d4eedacb105
+  control_plane_path: products/engineering-learning-platform/batches/ELP-DSP-FIDELITY-P29-P40.yaml
   target_repository: tranquilWorks/engineering-learning-platform
   source_repository: tranquilWorks/dsp-radar_learning
   source_pin: 5d73667a486df4a7b6c581e4c9406e810ed4f0f6
@@ -23,11 +23,10 @@ sources:
   source_file_set_sha256: c2511015b195a48bd847bd1f1cdeed92384a10eddf0b23e755590af4fb66ddca
   source_map_sha256: 5b2751769cf70d7c4faad148fecd2db16e7995982122777fa012bfbda7850bf5
   conversion_manifest_sha256: 1244c6dea11ea11b880e0f26d54ce81dea42ea1ab4981d4d5180c440eb7890a4
-  coverage_sha256: 9d737d5d490ea0a19f2da8e003fa60ee9cf969d7c94505a904ce69e7455e87fc
+  coverage_sha256: a915cbb2fbe1466981b42986eeea91e7096fe28277bc06237065c223b05b534e
   milestone: products/engineering-learning-platform/roadmap.yaml#authorized-dsp-item-conversion-lane
 dependencies:
-- ELP-DSP-FIDELITY-P11-P20
-- ELP-VERIFY-REPLAY-01
+- ELP-DSP-FIDELITY-P21-P28
 scope:
   allowed_paths:
   - courses/dsp-radar/remediation-map.yaml
@@ -46,16 +45,21 @@ scope:
   - docs/CURRENT_STATE.md
   - docs/HANDOFF.md
   - docs/ROADMAP.md
-  - courses/dsp-radar/modules/21-*/**
-  - courses/dsp-radar/modules/22-*/**
-  - courses/dsp-radar/modules/23-*/**
-  - courses/dsp-radar/modules/24-*/**
-  - courses/dsp-radar/modules/25-*/**
-  - courses/dsp-radar/modules/26-*/**
-  - courses/dsp-radar/modules/27-*/**
-  - courses/dsp-radar/modules/28-*/**
   - apps/api/tests/test_dsp_fidelity_remediation_p21_p28.py
-  - docs/evidence/ELP-DSP-FIDELITY-P21-P28-*.md
+  - apps/api/tests/test_dsp_fidelity_remediation_p29_p40.py
+  - docs/evidence/ELP-DSP-FIDELITY-P29-P40-*.md
+  - courses/dsp-radar/modules/29-*/**
+  - courses/dsp-radar/modules/30-*/**
+  - courses/dsp-radar/modules/31-*/**
+  - courses/dsp-radar/modules/32-*/**
+  - courses/dsp-radar/modules/33-*/**
+  - courses/dsp-radar/modules/34-*/**
+  - courses/dsp-radar/modules/35-*/**
+  - courses/dsp-radar/modules/36-*/**
+  - courses/dsp-radar/modules/37-*/**
+  - courses/dsp-radar/modules/38-*/**
+  - courses/dsp-radar/modules/39-*/**
+  - courses/dsp-radar/modules/40-*/**
   forbidden_paths:
   - courses/dsp-radar-learning
   - courses/dsp-radar-learning/**
@@ -79,62 +83,77 @@ scope:
   - package-lock.json
   - courses/dsp-radar/modules/0[1-9]-*/**
   - courses/dsp-radar/modules/1[0-9]-*/**
-  - courses/dsp-radar/modules/20-*/**
-  - courses/dsp-radar/modules/29-*/**
-  - courses/dsp-radar/modules/[3-7][0-9]-*/**
+  - courses/dsp-radar/modules/2[0-8]-*/**
+  - courses/dsp-radar/modules/4[1-9]-*/**
+  - courses/dsp-radar/modules/[5-7][0-9]-*/**
   - courses/dsp-radar/modules/8[0-4]-*/**
 acceptance:
-- Start after this exact control contract merges, from clean target main b7e684d595bd777602c9aa22cd489189efa6584b,
-  tree 19a298703ab04794e855edffb8aa83a6f0e2ba83. Preserve all canonical source bytes and pins.
-- Repair exactly P21-P28 in numeric order. Preserve P01-P20 and P29-P84 byte-identically, all other courses, framework
-  identities, source map and conversion manifest. Update only P21-P28 target_content_digest entries in coverage.yaml.
-- 'P21: explicit conventional AM at 20 kHz with 3 kHz carrier, 200 Hz baseline message, 0.6 depth, single/multitone
-  spectral pairs, signed versus analytic magnitude envelope, coherent 900 Hz lowpass recovery, depth and message-frequency
-  sweeps, and 1.4 overmodulation failure.'
-- 'P22: complex FM at 24 kHz with 3 kHz carrier, 100 Hz message and 400 Hz deviation, phase slope and sideband power,
-  98 percent occupied bandwidth and Carson approximation, deviation/message sweeps, and 8 kHz carrier plus 5 kHz
-  deviation aliasing recovered at 30 kHz.'
-- 'P23: 400 deterministic BPSK/QPSK symbols, energy-consistent Eb/N0, bit mapping, noisy rotated constellations,
-  sign decisions and BER, noise and phase sweeps, 55 degree carrier-reference failure at 16 dB and exact inverse-rotation
-  recovery.'
-- 'P24: explicit finite unit-energy root-raised-cosine pulse with removable singularities, rectangular comparison,
-  320 QPSK symbols at eight samples per symbol, transmit convolution, reversed-conjugate matched filter and correct
-  group delay, spectra/eye/symbol error, rolloff and span sweeps, half-symbol timing failure and aligned recovery.'
-- 'P25: 480 pulse-shaped QPSK symbols through explicit delayed complex paths, matched-filter symbol-rate response,
-  31-tap finite zero-forcing and regularized equalizers, echo-strength and regularization sweeps, deep-null [1,-0.999]
-  noise amplification, and bounded regularized recovery with residual distortion reported.'
-- 'P26: explicit eight-tap LMS recurrence on 6000 samples at 8 kHz, changing unknown interference path at sample
-  3001, desired two-tone signal, convergence/reacquisition and coefficient error, step-size and reference-correlation
-  sweeps, guarded oversized-step divergence and reset/recovery. Preserve source seed 2601.'
-- 'P27: 4000 independent BPSK trials with a 16-sample unit-energy matched filter, running BER, explicit 95 percent
-  Wilson intervals, block variability, trial-count and Eb/N0 sweeps, duplicated lucky-trial pseudoreplication failure
-  and independent-bank recovery. Preserve source seed 2701.'
-- 'P28: independent H0/H1 Gaussian matched-filter trials, 16-sample known pulse, threshold ROC, analytic Gaussian
-  detection tails, unbiased amplitude estimator and variance bound across SNR, selected-detections estimation bias
-  and all-trial recovery. Preserve 12000-trial bound and source seed 2801.'
-- Every item has concrete physical controls, deterministic bounded NumPy processing, finite results, correctly labeled
-  plots with separated incompatible units, baseline/two sweeps/broken/recovery, limiting cases, interpretation checks,
-  and teach-back. Retain important source stages and explicitly document any omitted behavior; never silently replace
-  a source algorithm.
-- Expected values come from independently formulated references (closed form, alternate algorithm, or separately
-  formulated oracle), never production imports or perturbed production values. Retain five named scenarios per item,
-  origins, units, tolerances and measured errors. Distinguish NumPy seeded data from MATLAB runtime parity.
-- Extend semantic and normalized-AST anti-template checks through P28. Regress P02-P20 without changing their modules.
-  Historical P11-P20 contract tests may be updated to validate immutable prior facts rather than incorrectly require
-  the old batch to remain active.
-- Remediation ledger reports one already-distinct, nineteen prior repaired, eight current repaired, fifty-six pending,
-  total eighty-four. Course numerically_verified/curriculum_covered/capstone_integrated remain blocked for P29-P84.
-- All local source-attested, focused, backend, contract, quick/full, deterministic catalog, lint, frontend typecheck/build
-  and diff/scope checks pass. Catalog remains 6 courses / 290 modules / 290 interactive. Hosted CI is not a completion
-  requirement under retained owner direction.
-- No MATLAB runtime, browser/accessibility, representative learner, hardware/HIL, certification, release/deployment
-  or production claim without actual evidence. Target protected-branch merge retains its separate authorization.
+- Start only after this exact control contract merges, from clean target main 74fbe13828665783a97d047eae0c6dc6ef482745,
+  tree 2ac9ed6889e18f531b6d01dba794b710a2f51996. Owner approved merge of PR 46 and requested twelve items per batch
+  on 2026-09-27.
+- Repair exactly P29-P40 as one twelve-item batch. Preserve P01-P28 and P41-P84 module bytes, canonical source/pin,
+  every other course, platform, identities, source map and conversion manifest. Only twelve coverage target_content_digest
+  values may change.
+- 'P29: monostatic R^-4 radar equation, 100 kW/35 dBi gains/10 GHz/1 m2/6 dB loss; kTBF noise and 13 dB detection
+  margin, RCS/frequency/power sweeps, range-doubling 16x cost, anchored inverse-square failure and fourth-power
+  recovery; seed 2901.'
+- 'P30: 20 MHz sampled 1 microsecond rectangular pulse, fractional 6.0175 microsecond echo delay with zero extension,
+  explicit nonnegative-lag correlation and parabolic sub-bin estimate; sample-rate/fractional-delay/two-target sweeps;
+  missing round-trip factor failure and c*tau/2 recovery; seed 3001.'
+- 'P31: finite Gaussian pulse at 80 MHz, 4 MHz baseline bandwidth, 900.37 m isolated target and 22 m pair spacing;
+  physical matched-response width, two-peak counting, bandwidth/spacing sweeps and 128-trial SNR-dependent accuracy;
+  dense-display interpolation failure, physical peak counting and wider-bandwidth recovery; seed 3101.'
+- 'P32: explicit 40 MHz sampled 8 MHz/10 microsecond LFM phase law, two zero-extended echoes 75 m apart, conjugate-reversed
+  matched filter with delay-corrected range axis; bandwidth/duration sweeps, Fs*T versus B*T gain with stated noise
+  convention; 0.55B replica mismatch and exact-replica recovery; seed 3201.'
+- 'P33: rectangular versus cosine-tapered LFM receive filters, weak 0.04-amplitude target at 17-sample separation;
+  mainlobe width, peak sidelobe ratio, output SNR loss and masking on consistent scales; taper/separation sweeps,
+  seven-sample excessive-width failure and validated-separation recovery; seed 3301.'
+- 'P34: explicit delay-Doppler correlation surfaces and cuts for rectangular, LFM and seeded binary-phase-coded
+  pulses; 10 MHz sample rate, 13 microsecond duration, 3 MHz LFM and 13 chips; duration/bandwidth/code-length sweeps;
+  finite-Doppler LFM ridge plus circular-delay-wraparound failure and zero-filled recovery; seed 3401.'
+- 'P35: six periodic pulses at 20 kHz PRF with 18 km true target, explicit timeline and modulo PRI folding; 20 MHz
+  sampling and 2 microsecond pulse; PRF/range sweeps and boundary checks; false transmitted-pulse identity failure
+  and apparent-range recovery; seed 3501.'
+- 'P36: coherent complex slow-time samples, approaching-positive signed velocity, lambda=c/fc and fd=2v/lambda,
+  32 pulses/4 kHz/10 GHz/15 m/s; phase increments and FFT with units; velocity/carrier/count sweeps; magnitude-only
+  loss of Doppler and complex-data recovery; seed 3601.'
+- 'P37: explicit 256 fast-time rows by 32 slow-time columns, three Gaussian range responses at 450/900/1200 m and
+  0/12/-18 m/s; 20 MHz/5 kHz/10 GHz; physical axes, range profiles, selected-range phase/FFT, range/velocity sweeps;
+  magnitude-only failure and complex-matrix recovery; seed 3701.'
+- 'P38: 128x64 radar matrix with strong stationary clutter and weaker moving targets; explicit [1,-1] and [1,-2,1]
+  slow-time cancellers, transfer-function nulls, signal/clutter/noise response, 2x/6x white-noise gain, velocity/PRF
+  sweeps; wrong fast-time-axis failure and slow-time recovery; seed 3801.'
+- 'P39: separate coherent dwells at 4.0 and 5.3 kHz, target at primary first blind speed, explicit two-pulse subtraction,
+  normalized velocity responses and noncoherent fusion, second-PRF sweep; duplicated-PRF failure and diverse-PRF
+  recovery without claiming removal of stationary/common nulls; seed 3901.'
+- 'P40: 32-pulse weak target at -8 dB with known 35-degree progression, complex phase alignment versus power sums
+  with different noise-normalized statistics; pulse-count and Gaussian-jitter sweeps; deterministic quadrature phase
+  cycle destroys coherent sum and tracked-phase recovery restores it; seed 4001.'
+- Every item retains important source stages, source lesson text and guiding question; physical controls, equations,
+  units, bounded deterministic processing, baseline/two sweeps/broken/recovery, interpretation checks and teach-back.
+  Explicitly document porting choices and omitted presentation behavior.
+- Expected numerical signatures use independent formulas or alternate algorithms, never production imports or perturbed
+  production values. Retain sixty five-scenario comparisons with units, provenance, file hashes, tolerances and
+  measured errors. NumPy RNG is not MATLAB runtime parity.
+- Regress P02-P28 without changing their modules or prior reference bytes; extend independent references append-only
+  and verify historical provenance against its retained prefix. Extend semantic/normalized-AST anti-template checks
+  through P40. Historical contract tests must permit the new active batch while retaining immutable facts.
+- 'Remediation ledger: one already-distinct, twenty-seven prior repairs, twelve current repairs, forty-four pending,
+  total eighty-four. Whole-course numerical/curriculum/capstone maturity stays blocked for P41-P84; issue 441 remains
+  open.'
+- All required local focused DSP, backend, contract, quick/full, deterministic catalog, lint, frontend typecheck/build,
+  service smoke, and scope/source checks pass. Catalog stays 6 courses / 290 modules / 290 interactive. Hosted CI
+  is not required under retained owner direction; missing hosted checkout prerequisites remain documented.
+- No MATLAB execution, browser/accessibility, representative learner, hardware/HIL, certification, deployment or
+  production claims without actual evidence. Protected target merge retains separate human approval. Subsequent
+  learning batches should prefer twelve consecutive items under the owner request.
 validation:
   local:
   - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B
     -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py
-    apps/api/tests/test_dsp_fidelity_remediation_p21_p28.py apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py
-    apps/api/tests/test_course_caliber_status.py
+    apps/api/tests/test_dsp_fidelity_remediation_p21_p28.py apps/api/tests/test_dsp_fidelity_remediation_p29_p40.py
+    apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py apps/api/tests/test_course_caliber_status.py
   - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests
   - ./scripts/agent-verify.sh contract
   - ./scripts/agent-verify.sh quick
@@ -145,14 +164,15 @@ validation:
   - npm run build
   - git diff --check
   - .venv/bin/ruff check apps/api/tests/test_dsp_fidelity_remediation*.py courses/dsp-radar/remediation_reference_cases.py
-    courses/dsp-radar/modules/2[1-8]-*
+    courses/dsp-radar/modules/29-* courses/dsp-radar/modules/3[0-9]-* courses/dsp-radar/modules/40-*
   - git diff --check
-  - git diff --name-only b7e684d595bd777602c9aa22cd489189efa6584b
+  - git diff --name-only 74fbe13828665783a97d047eae0c6dc6ef482745
   focused_tests_to_add:
-  - Check source-specific invariants, boundaries, finite deterministic output and physical labels for P21-P28.
-  - Replay five independently formulated evidence cases for each repaired item.
-  - Regress P02-P20; reject identical normalized algorithms and generic controls through P28.
-  - Preserve source identities, counts, immutable module bytes and blocked whole-course maturity.
+  - Verify all twelve source identities, physical stages, finite deterministic output, control boundaries and units.
+  - Replay all sixty independent signatures with retained provenance and source/production/evidence hashes.
+  - Assert physical limits, zero extension, round-trip factors, delay alignment, gain/noise normalizations, matrix
+    orientation, nulls and recovery.
+  - Regress prior repairs, reject normalized algorithm reuse through P40 and preserve blocked course-level maturity.
   required_ci:
   - Hosted CI is not required by retained owner direction; exact local contract, quick, full, source, scope, lint
     and frontend gates remain mandatory.
@@ -167,12 +187,11 @@ risk:
   - Need to change generic UI/runtime/dependencies or unrelated courses.
   - Independent evidence or a mandatory gate cannot be made credible.
 rollback:
-  strategy: Revert the isolated target change to restore the merged numerical-replay repair baseline, preserving source pins and
-    all other courses.
+  strategy: Revert this isolated batch to merged PR 46 baseline, preserving all source pins and other courses.
 evidence:
   output:
-  - docs/evidence/ELP-DSP-FIDELITY-P21-P28-2026-09-27.md
+  - docs/evidence/ELP-DSP-FIDELITY-P29-P40-2026-09-27.md
   - Per-item source mapping and five independent expected/actual cases.
-  - Exact verification commands, counts, source/scope preservation, residual limitations and next batch.
-  claim_boundary: Eight deterministic software source-fidelity repairs only. P29-P84, learner validation, MATLAB
-    runtime and physical/production claims remain pending.
+  - Exact verification commands/results, source/scope preservation, remaining limitations and next batch.
+  claim_boundary: Twelve deterministic software source-fidelity repairs only. P41-P84, learner validation, MATLAB
+    runtime, hardware and production claims remain pending.

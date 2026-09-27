@@ -3,13 +3,13 @@
   "id": "37-build-a-pulse-doppler-data-matrix",
   "number": 37,
   "title": "Build a Pulse-Doppler Data Matrix",
-  "summary": "Explore build a pulse-doppler data matrix with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "Three separable range-envelope \u00d7 slow-time-phasor components form a 256\u00d732 complex matrix. The captured range span is shorter than the PRF ambiguity interval.",
   "guiding_question": "What are fast time and slow time in a radar data block?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-4",
-    "fast-time-range"
+    "radar-foundations",
+    "P37"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,55 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Fast Time Range",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "middle_target_range_m",
+      "type": "segmented",
+      "label": "Middle target range m",
+      "unit": "m",
+      "default": 900,
+      "options": [
+        {
+          "label": "750",
+          "value": 750
+        },
+        {
+          "label": "900 baseline",
+          "value": 900
+        },
+        {
+          "label": "1050",
+          "value": 1050
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "middle_velocity_mps",
+      "type": "segmented",
+      "label": "Middle velocity mps",
+      "unit": "m/s",
+      "default": 12,
+      "options": [
+        {
+          "label": "-18",
+          "value": -18
+        },
+        {
+          "label": "0",
+          "value": 0
+        },
+        {
+          "label": "12 baseline",
+          "value": 12
+        },
+        {
+          "label": "18",
+          "value": 18
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +79,45 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing fast time range, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict which matrix axis changes when range changes and which phase history changes when velocity changes. Is the recorded range span the same as the PRF ambiguity interval?",
+      "reveal": "Three separable range-envelope \u00d7 slow-time-phasor components form a 256\u00d732 complex matrix. The captured range span is shorter than the PRF ambiguity interval."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Rows are fast time; columns are coherent pulses",
+      "plot": "matrix"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Moving across a column changes fast-time range",
+      "plot": "profiles"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Moving across a row follows slow-time phase",
+      "plot": "phase"
+    },
+    {
+      "type": "plot",
+      "title": "Middle-target slow-time FFT",
+      "plot": "doppler"
+    },
+    {
+      "type": "plot",
+      "title": "Range moves the Gaussian response across rows",
+      "plot": "range_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Velocity moves phase without changing range row",
+      "plot": "velocity_sweep"
     },
     {
       "type": "callout",
@@ -102,7 +128,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

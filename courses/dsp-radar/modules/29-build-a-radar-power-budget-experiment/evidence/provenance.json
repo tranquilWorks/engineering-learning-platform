@@ -1,0 +1,87 @@
+{
+  "item": "P29",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p29",
+    "sha256": "639080c7d5ee1da82ee8753edf755d41b68631ba751622b55c074a33d84fc09d",
+    "byte_count": 90006,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/29-build-a-radar-power-budget-experiment/experiment.py",
+    "sha256": "379048328a4d088a852e739a05b6137b59385d3c9f1d84b3990bc82bfe44e2ad",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "rcs_m2": 1,
+      "transmit_power_kw": 100,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "rcs_m2": 0.1,
+      "transmit_power_kw": 100,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "rcs_m2": 1,
+      "transmit_power_kw": 400,
+      "broken_mode": false
+    },
+    "broken": {
+      "rcs_m2": 1,
+      "transmit_power_kw": 100,
+      "broken_mode": true
+    },
+    "recovery": {
+      "rcs_m2": 1,
+      "transmit_power_kw": 100,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "reference_echo",
+      "unit": "dBm"
+    },
+    {
+      "name": "noise_floor",
+      "unit": "dBm"
+    },
+    {
+      "name": "measured_noise",
+      "unit": "dBm"
+    },
+    {
+      "name": "reference_margin",
+      "unit": "dB"
+    },
+    {
+      "name": "threshold_range",
+      "unit": "km"
+    },
+    {
+      "name": "active_decade_slope",
+      "unit": "dB/decade"
+    },
+    {
+      "name": "range_doubling_cost",
+      "unit": "dB"
+    },
+    {
+      "name": "power_required_to_double_range",
+      "unit": "ratio"
+    },
+    {
+      "name": "active_power_at_100km",
+      "unit": "dBm"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

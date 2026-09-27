@@ -3,13 +3,13 @@
   "id": "39-expose-blind-speeds-and-use-staggered-prf",
   "number": 39,
   "title": "Expose Blind Speeds and Use Staggered PRF",
-  "summary": "Explore expose blind speeds and use staggered prf with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "A two-pulse canceller nulls fd=m PRF. Separate 4.0 and 5.3 kHz dwells move nonzero blind speeds; their normalized magnitudes are fused by maximum, not complex addition.",
   "guiding_question": "Why can a moving target vanish in an MTI radar?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-4",
-    "target-velocity"
+    "radar-foundations",
+    "P39"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,75 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Target Velocity",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "secondary_prf_khz",
+      "type": "segmented",
+      "label": "Secondary prf khz",
+      "unit": "kHz",
+      "default": 5.3,
+      "options": [
+        {
+          "label": "4",
+          "value": 4
+        },
+        {
+          "label": "4.2",
+          "value": 4.2
+        },
+        {
+          "label": "4.5",
+          "value": 4.5
+        },
+        {
+          "label": "4.9",
+          "value": 4.9
+        },
+        {
+          "label": "5.3 baseline",
+          "value": 5.3
+        },
+        {
+          "label": "5.7",
+          "value": 5.7
+        },
+        {
+          "label": "6.2",
+          "value": 6.2
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "primary_blind_speed_multiple",
+      "type": "segmented",
+      "label": "Primary blind speed multiple",
+      "unit": "ratio",
+      "default": 1,
+      "options": [
+        {
+          "label": "0",
+          "value": 0
+        },
+        {
+          "label": "0.5",
+          "value": 0.5
+        },
+        {
+          "label": "1 baseline",
+          "value": 1
+        },
+        {
+          "label": "1.5",
+          "value": 1.5
+        },
+        {
+          "label": "2",
+          "value": 2
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +99,40 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing target velocity, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict the first blind speed at 4.0 kHz and why another 4.0 kHz dwell cannot recover it. Which null remains even with a diverse PRF?",
+      "reveal": "A two-pulse canceller nulls fd=m PRF. Separate 4.0 and 5.3 kHz dwells move nonzero blind speeds; their normalized magnitudes are fused by maximum, not complex addition."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Separate coherent dwells use different pulse intervals",
+      "plot": "phasors"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "A blind target repeats its phasor",
+      "plot": "differences"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Noncoherent maximum combines two normalized gains",
+      "plot": "velocity_response"
+    },
+    {
+      "type": "plot",
+      "title": "Illustrative threshold 0.30",
+      "plot": "coverage"
+    },
+    {
+      "type": "plot",
+      "title": "Diversity moves a blind-speed null",
+      "plot": "prf_sweep"
     },
     {
       "type": "callout",
@@ -102,7 +143,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

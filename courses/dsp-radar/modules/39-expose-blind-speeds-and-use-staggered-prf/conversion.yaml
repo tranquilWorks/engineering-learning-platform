@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "2b82278c305db6a5e04d7777eec8df35bdebcf1a339db1ab042f164b581d548e",
+    "content_digest": "cebd61fbc45da49ad4be660b7523b15676b4fbf2a2830584c44c701f1c1a5470",
     "files": [
       {
         "path": "modules/39-expose-blind-speeds-and-use-staggered-prf/experiment.py",
-        "sha256": "3184633e0ef3ce35aef71ed96713e1f5ccdfb807c091e733da6d89b301103b3f"
+        "sha256": "cce999029a838da7eff21f537b8e496d6b17cbefe833f9d8c8e002ffde8d1fac"
       },
       {
         "path": "modules/39-expose-blind-speeds-and-use-staggered-prf/lesson.md",
-        "sha256": "ae3839992f76e287937a8269c9a0796138aaadb5687ba28ef8403b921e3e120b"
+        "sha256": "26400f826fdc988fd4fed4745a77aee61374b5cc64f9a95e605ac68eb879d9a8"
       },
       {
         "path": "modules/39-expose-blind-speeds-and-use-staggered-prf/module.yaml",
-        "sha256": "f428b465ffb31da51663db4792b267436c95e768609d0a0607098981311f60e8"
+        "sha256": "63dce9e254e7e652f355ef80bf638b71d21724ed05f38c3571f79bbdd23813fb"
       }
     ]
   },
   "content": {
     "guiding_question": "Why can a moving target vanish in an MTI radar?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "A two-pulse canceller nulls fd=m PRF. Separate 4.0 and 5.3 kHz dwells move nonzero blind speeds; their normalized magnitudes are fused by maximum, not complex addition.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary target velocity while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "A two-pulse canceller nulls fd=m PRF. Separate 4.0 and 5.3 kHz dwells move nonzero blind speeds; their normalized magnitudes are fused by maximum, not complex addition.",
+      "Using 4.0 kHz twice duplicates the same blind-speed holes. A repeated observation supplies no PRF diversity.",
+      "Disable the failure and select 5.3 kHz for the primary first-blind-speed target. The zero-velocity null and possible shared nonzero nulls remain.",
+      "Explicit stage equations are retained in lesson.md. NumPy random streams differ from MATLAB. Plot/console presentation is adapted; no MATLAB runtime parity is claimed."
     ],
     "equations": [
       {
@@ -77,146 +77,212 @@
       "seed": 3901,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
+          "name": "pulse_count",
+          "value": 32,
+          "unit": "count"
         },
         {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "764fcd84a6b1ca709d00f8cfd279da1e9a9e9e64b162144f02a545c11272c855",
-          "unit": "mixed numeric signature"
+          "sha256": "4475368e3b28fd6b168b09b6fa4417cb5ca61bd6689f6deb67ddb37c16edebb0",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "fd862b574503b3573db16ec31ceab3daadaaa5cd5194674efd200978471211dd",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "e616fbf0d7aa55c94627688ee90024ec34045d8283b3d33fada2ce7fc677458b",
-          "unit": "mixed numeric signature"
+          "sha256": "9e71a4c2aa2c72b855d469e1b71401f24587abc95bacdba187a376aad0867005",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "acf10b467c3a287b2a76c4a371a157f907fd8c256f0fc2d3e37ce1336dac852e",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "b47d7409e6f8dcbe0f1dc64783971d6707c53d10c8f66b84f333173533f756ca",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "b47d7409e6f8dcbe0f1dc64783971d6707c53d10c8f66b84f333173533f756ca",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "385f4908f192f9d19c147b6366342c2b0329032b6c9f9a503160d8a709b81fda",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "b017aadf4d2007e384f8879ea12232fde773996ba602d568a82ab55c85db923a",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "4475368e3b28fd6b168b09b6fa4417cb5ca61bd6689f6deb67ddb37c16edebb0",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "fd862b574503b3573db16ec31ceab3daadaaa5cd5194674efd200978471211dd",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P39 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P39 explicit processing and evidence stages",
+        "target_plot_key": "phasors",
+        "title": "Separate coherent dwells use different pulse intervals",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Pulse (index)",
+            "unit": "index"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Phase modulo one turn (rad)",
+            "unit": "rad"
           }
         ],
-        "interpretation": "This view answers the Expose Blind Speeds and Use Staggered PRF guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "A two-pulse canceller nulls fd=m PRF. Separate 4.0 and 5.3 kHz dwells move nonzero blind speeds; their normalized magnitudes are fused by maximum, not complex addition."
       },
       {
-        "source_figure": "Pinned P39 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P39 explicit processing and evidence stages",
+        "target_plot_key": "differences",
+        "title": "A blind target repeats its phasor",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Difference (index)",
+            "unit": "index"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Canceller magnitude (relative)",
+            "unit": "relative"
           }
         ],
-        "interpretation": "This view answers the Expose Blind Speeds and Use Staggered PRF guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "A two-pulse canceller nulls fd=m PRF. Separate 4.0 and 5.3 kHz dwells move nonzero blind speeds; their normalized magnitudes are fused by maximum, not complex addition."
       },
       {
-        "source_figure": "Pinned P39 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P39 explicit processing and evidence stages",
+        "target_plot_key": "velocity_response",
+        "title": "Noncoherent maximum combines two normalized gains",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Velocity (m/s)",
+            "unit": "m/s"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Normalized amplitude (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Expose Blind Speeds and Use Staggered PRF guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "A two-pulse canceller nulls fd=m PRF. Separate 4.0 and 5.3 kHz dwells move nonzero blind speeds; their normalized magnitudes are fused by maximum, not complex addition."
       },
       {
-        "source_figure": "Pinned P39 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P39 explicit processing and evidence stages",
+        "target_plot_key": "coverage",
+        "title": "Illustrative threshold 0.30",
         "axes": [
           {
             "role": "x",
-            "label": "range bin",
-            "unit": "source units"
+            "label": "Velocity (m/s)",
+            "unit": "m/s"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Threshold decision (boolean)",
+            "unit": "boolean"
           }
         ],
-        "interpretation": "This view answers the Expose Blind Speeds and Use Staggered PRF guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "A two-pulse canceller nulls fd=m PRF. Separate 4.0 and 5.3 kHz dwells move nonzero blind speeds; their normalized magnitudes are fused by maximum, not complex addition."
+      },
+      {
+        "source_figure": "Pinned P39 explicit processing and evidence stages",
+        "target_plot_key": "prf_sweep",
+        "title": "Diversity moves a blind-speed null",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Secondary PRF (kHz)",
+            "unit": "kHz"
+          },
+          {
+            "role": "y",
+            "label": "Normalized amplitude (ratio)",
+            "unit": "ratio"
+          }
+        ],
+        "interpretation": "A two-pulse canceller nulls fd=m PRF. Separate 4.0 and 5.3 kHz dwells move nonzero blind speeds; their normalized magnitudes are fused by maximum, not complex addition."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "secondary_prf_khz",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          4,
+          4.2,
+          4.5,
+          4.9,
+          5.3,
+          5.7,
+          6.2
         ],
-        "expected_observation": "Changing target velocity moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Secondary prf khz; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "primary_blind_speed_multiple",
         "values": [
-          0.0,
+          0,
           0.5,
-          1.0
+          1,
+          1.5,
+          2
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Primary blind speed multiple; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "Using 4.0 kHz twice duplicates the same blind-speed holes. A repeated observation supplies no PRF diversity.",
+      "recovery": "Disable the failure and select 5.3 kHz for the primary first-blind-speed target. The zero-velocity null and possible shared nonzero nulls remain.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Using 4.0 kHz twice duplicates the same blind-speed holes. A repeated observation supplies no PRF diversity.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -224,63 +290,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 100000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P39 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p29_p40.py",
     "seed": 3901,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
+        "name": "secondary_prf_khz",
+        "value": 5.3,
+        "unit": "kHz"
+      },
+      {
+        "name": "primary_blind_speed_multiple",
+        "value": 1,
         "unit": "ratio"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 5.537960805263831e-15,
+        "max_relative_error": 5.537960805263831e-15,
+        "passed": true,
         "expected": {
           "path": "modules/39-expose-blind-speeds-and-use-staggered-prf/evidence/expected-baseline.json",
-          "sha256": "764fcd84a6b1ca709d00f8cfd279da1e9a9e9e64b162144f02a545c11272c855"
+          "sha256": "4475368e3b28fd6b168b09b6fa4417cb5ca61bd6689f6deb67ddb37c16edebb0"
         },
         "actual": {
           "path": "modules/39-expose-blind-speeds-and-use-staggered-prf/evidence/actual-baseline.json",
-          "sha256": "a36b660929e5b8361e3853448b9958573d27fee8d0df928f418fb592f45fa1b8"
-        },
-        "max_absolute_error": 2.948197241892103e-13,
-        "max_relative_error": 2.948197241892103e-13,
-        "passed": true
+          "sha256": "fd862b574503b3573db16ec31ceab3daadaaa5cd5194674efd200978471211dd"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 5.537960805263831e-15,
+        "max_relative_error": 5.537960805263831e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/39-expose-blind-speeds-and-use-staggered-prf/evidence/expected-sweep-1.json",
+          "sha256": "9e71a4c2aa2c72b855d469e1b71401f24587abc95bacdba187a376aad0867005"
+        },
+        "actual": {
+          "path": "modules/39-expose-blind-speeds-and-use-staggered-prf/evidence/actual-sweep-1.json",
+          "sha256": "acf10b467c3a287b2a76c4a371a157f907fd8c256f0fc2d3e37ce1336dac852e"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true,
+        "expected": {
+          "path": "modules/39-expose-blind-speeds-and-use-staggered-prf/evidence/expected-sweep-2.json",
+          "sha256": "b47d7409e6f8dcbe0f1dc64783971d6707c53d10c8f66b84f333173533f756ca"
+        },
+        "actual": {
+          "path": "modules/39-expose-blind-speeds-and-use-staggered-prf/evidence/actual-sweep-2.json",
+          "sha256": "b47d7409e6f8dcbe0f1dc64783971d6707c53d10c8f66b84f333173533f756ca"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 5.537960805263831e-15,
+        "max_relative_error": 5.537960805263831e-15,
+        "passed": true,
         "expected": {
           "path": "modules/39-expose-blind-speeds-and-use-staggered-prf/evidence/expected-broken.json",
-          "sha256": "e616fbf0d7aa55c94627688ee90024ec34045d8283b3d33fada2ce7fc677458b"
+          "sha256": "385f4908f192f9d19c147b6366342c2b0329032b6c9f9a503160d8a709b81fda"
         },
         "actual": {
           "path": "modules/39-expose-blind-speeds-and-use-staggered-prf/evidence/actual-broken.json",
-          "sha256": "03c8322e3a1b5019042ffda689668433e817a7928ba38482e82a1a3d69d0e4bb"
+          "sha256": "b017aadf4d2007e384f8879ea12232fde773996ba602d568a82ab55c85db923a"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 2.948197241892103e-13,
-        "max_relative_error": 2.948197241892103e-13,
-        "passed": true
+        "max_absolute_error": 5.537960805263831e-15,
+        "max_relative_error": 5.537960805263831e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/39-expose-blind-speeds-and-use-staggered-prf/evidence/expected-recovery.json",
+          "sha256": "4475368e3b28fd6b168b09b6fa4417cb5ca61bd6689f6deb67ddb37c16edebb0"
+        },
+        "actual": {
+          "path": "modules/39-expose-blind-speeds-and-use-staggered-prf/evidence/actual-recovery.json",
+          "sha256": "fd862b574503b3573db16ec31ceab3daadaaa5cd5194674efd200978471211dd"
+        }
       }
     ]
   },

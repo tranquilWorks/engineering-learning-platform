@@ -1,0 +1,87 @@
+{
+  "item": "P32",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p32",
+    "sha256": "639080c7d5ee1da82ee8753edf755d41b68631ba751622b55c074a33d84fc09d",
+    "byte_count": 90006,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/32-perform-lfm-pulse-compression/experiment.py",
+    "sha256": "fabfb974572e72f2222077ff90e8aedcd6cc829c5b6599c6acac769229869735",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "bandwidth_mhz": 8,
+      "pulse_duration_us": 10,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "bandwidth_mhz": 16,
+      "pulse_duration_us": 10,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "bandwidth_mhz": 8,
+      "pulse_duration_us": 20,
+      "broken_mode": false
+    },
+    "broken": {
+      "bandwidth_mhz": 8,
+      "pulse_duration_us": 10,
+      "broken_mode": true
+    },
+    "recovery": {
+      "bandwidth_mhz": 8,
+      "pulse_duration_us": 10,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "time_bandwidth",
+      "unit": "ratio"
+    },
+    {
+      "name": "raw_range_extent",
+      "unit": "m"
+    },
+    {
+      "name": "nominal_resolution",
+      "unit": "m"
+    },
+    {
+      "name": "correct_width",
+      "unit": "m"
+    },
+    {
+      "name": "active_width",
+      "unit": "m"
+    },
+    {
+      "name": "active_peak_loss",
+      "unit": "dB"
+    },
+    {
+      "name": "predicted_bt_gain",
+      "unit": "dB"
+    },
+    {
+      "name": "measured_bt_gain",
+      "unit": "dB"
+    },
+    {
+      "name": "sampled_gain",
+      "unit": "dB"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

@@ -3,13 +3,13 @@
   "id": "35-create-unambiguous-range-aliasing",
   "number": 35,
   "title": "Create Unambiguous-Range Aliasing",
-  "summary": "Explore create unambiguous-range aliasing with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "PRI=1/PRF and Ru=c/(2 PRF). Six explicit pulses show how a distant echo is assigned to the current listening interval.",
   "guiding_question": "Why can a distant target appear at a shorter false range?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-4",
-    "target-range"
+    "radar-foundations",
+    "P35"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,55 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Target Range",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "prf_khz",
+      "type": "segmented",
+      "label": "Prf khz",
+      "unit": "kHz",
+      "default": 20,
+      "options": [
+        {
+          "label": "10",
+          "value": 10
+        },
+        {
+          "label": "15",
+          "value": 15
+        },
+        {
+          "label": "20 baseline",
+          "value": 20
+        },
+        {
+          "label": "25",
+          "value": 25
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "true_range_km",
+      "type": "segmented",
+      "label": "True range km",
+      "unit": "km",
+      "default": 18,
+      "options": [
+        {
+          "label": "3",
+          "value": 3
+        },
+        {
+          "label": "8",
+          "value": 8
+        },
+        {
+          "label": "18 baseline",
+          "value": 18
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +79,40 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing target range, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict where an 18 km target appears at 20 kHz PRF. Which piece of information is absent when the receiver labels an echo using the current PRI?",
+      "reveal": "PRI=1/PRF and Ru=c/(2 PRF). Six explicit pulses show how a distant echo is assigned to the current listening interval."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Echoes arrive after later transmissions",
+      "plot": "timeline"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "The listening interval lacks the original pulse label",
+      "plot": "folded"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "PRF changes both folding interval and apparent range",
+      "plot": "prf_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "True range folds modulo the unambiguous interval",
+      "plot": "range_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Pulse identity assumption changes the answer",
+      "plot": "report"
     },
     {
       "type": "callout",
@@ -102,7 +123,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

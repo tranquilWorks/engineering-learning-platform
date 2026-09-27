@@ -1,6 +1,4 @@
-# Expose Blind Speeds and Use Staggered PRF
-
-> **Guiding question:** Why can a moving target vanish in an MTI radar?
+# Lesson: a moving target can look stationary to a sampled canceller
 
 ## Guiding question
 
@@ -77,33 +75,29 @@ Staggering moves the nonzero blind-speed nulls; it does not remove the zero-velo
 
 P39 treats each PRF dwell separately and combines its evidence. Later pulse-Doppler processing and detection modules will add coherent/noncoherent integration, clutter models, range-Doppler maps, and adaptive thresholds. The durable idea is already visible: diversity helps only when the second observation moves the failure mechanism.
 
-## Use the Python GUI experiment
+## Interactive lab: Expose Blind Speeds and Use Staggered PRF
 
-The GUI keeps the pinned source's mental model and processing order visible. The **target velocity** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** Why can a moving target vanish in an MTI radar?
 
-### Prediction and sweep 1 — target velocity
+Carrier is 10 GHz. Each PRF has a separate 32-pulse coherent dwell with target initial phase 20° and noise RMS 0.02; seed 3901 draws the two noise banks sequentially. The velocity control is a multiple of the primary blind-speed spacing; changing it leaves both PRFs fixed. Responses are normalized by the two-pulse maximum amplitude 2, and fusion takes their maximum. The 0.30 threshold is illustrative and is not a probability-of-detection claim.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict the first blind speed at 4.0 kHz and why another 4.0 kHz dwell cannot recover it. Which null remains even with a diverse PRF?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Change only **Secondary prf khz** from 5.3 to 4.5 kHz. Predict and explain the change using the source equation, then reset.
+2. Start at the baseline. Change only **Primary blind speed multiple** from 1 to 0.5 ratio. Predict and explain the change using the source equation, then reset.
+3. Enable the broken case. Using 4.0 kHz twice duplicates the same blind-speed holes. A repeated observation supplies no PRF diversity.
+4. Recovery: Disable the failure and select 5.3 kHz for the primary first-blind-speed target. The zero-velocity null and possible shared nonzero nulls remain. Restore both controls and disable the toggle to reproduce the selected baseline exactly.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict the first blind speed at 4.0 kHz and why another 4.0 kHz dwell cannot recover it. Which null remains even with a diverse PRF? Explain your answer using a measured value and units, then describe the failure and the recovery assumption.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+Using 4.0 kHz twice duplicates the same blind-speed holes. A repeated observation supplies no PRF diversity. Avoid treating a clean seeded demonstration as field performance.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The pinned source lesson above describes the original MATLAB model. This interactive version uses bounded NumPy arrays and the same physical stages, with an independent numerical reference. Vectorized sums and linear convolution replace nested MATLAB accumulation loops without circular wrapping. NumPy seeds are reproducible but are not MATLAB RNG parity. MATLAB figure cleanup and console output become plots and metrics. Line displays retain at most 512 points; heatmaps retain at most 128 columns and 64 rows, while calculations use the full stated arrays. No MATLAB execution, visual/accessibility review, hardware, or learner-effectiveness claim is made.

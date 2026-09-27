@@ -1,0 +1,87 @@
+{
+  "item": "P37",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p37",
+    "sha256": "639080c7d5ee1da82ee8753edf755d41b68631ba751622b55c074a33d84fc09d",
+    "byte_count": 90006,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/37-build-a-pulse-doppler-data-matrix/experiment.py",
+    "sha256": "2f9361075fae13d20db518d56647c2b77b7ecd310a07e545e6d9f8341a5e2039",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "middle_target_range_m": 900,
+      "middle_velocity_mps": 12,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "middle_target_range_m": 750,
+      "middle_velocity_mps": 12,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "middle_target_range_m": 900,
+      "middle_velocity_mps": -18,
+      "broken_mode": false
+    },
+    "broken": {
+      "middle_target_range_m": 900,
+      "middle_velocity_mps": 12,
+      "broken_mode": true
+    },
+    "recovery": {
+      "middle_target_range_m": 900,
+      "middle_velocity_mps": 12,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "middle_range_bin",
+      "unit": "zero-based index"
+    },
+    {
+      "name": "sampled_middle_range",
+      "unit": "m"
+    },
+    {
+      "name": "range_error",
+      "unit": "m"
+    },
+    {
+      "name": "true_middle_doppler",
+      "unit": "Hz"
+    },
+    {
+      "name": "active_middle_doppler",
+      "unit": "Hz"
+    },
+    {
+      "name": "active_fft_peak",
+      "unit": "Hz"
+    },
+    {
+      "name": "range_axis_span",
+      "unit": "m"
+    },
+    {
+      "name": "prf_unambiguous_range",
+      "unit": "m"
+    },
+    {
+      "name": "neglected_migration",
+      "unit": "bins"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

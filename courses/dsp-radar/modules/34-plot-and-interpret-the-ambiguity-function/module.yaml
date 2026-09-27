@@ -3,13 +3,13 @@
   "id": "34-plot-and-interpret-the-ambiguity-function",
   "number": 34,
   "title": "Plot and Interpret the Ambiguity Function",
-  "summary": "Explore plot and interpret the ambiguity function with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "Delay-Doppler sums use only zero-filled overlap. Rectangle, LFM and a seeded 13-chip code expose different cuts; the LFM ridge follows fd divided by chirp rate.",
   "guiding_question": "How does a waveform respond to simultaneous delay and Doppler mismatch?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-4",
-    "delay-Doppler-mismatch"
+    "radar-foundations",
+    "P34"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,47 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Delay Doppler Mismatch",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "bandwidth_mhz",
+      "type": "segmented",
+      "label": "Bandwidth mhz",
+      "unit": "MHz",
+      "default": 3,
+      "options": [
+        {
+          "label": "1.5",
+          "value": 1.5
+        },
+        {
+          "label": "3 baseline",
+          "value": 3
+        },
+        {
+          "label": "4.5",
+          "value": 4.5
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "duration_us",
+      "type": "segmented",
+      "label": "Duration us",
+      "unit": "\u00b5s",
+      "default": 13,
+      "options": [
+        {
+          "label": "6.5",
+          "value": 6.5
+        },
+        {
+          "label": "13 baseline",
+          "value": 13
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +71,75 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing delay doppler mismatch, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict the sign of the LFM ridge at positive Doppler mismatch. Why should a finite rectangular pulse have almost no overlap at extreme delay?",
+      "reveal": "Delay-Doppler sums use only zero-filled overlap. Rectangle, LFM and a seeded 13-chip code expose different cuts; the LFM ridge follows fd divided by chirp rate."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "rectangular_surface delay-Doppler magnitude",
+      "plot": "rectangular_surface"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "lfm_surface delay-Doppler magnitude",
+      "plot": "lfm_surface"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "code_surface delay-Doppler magnitude",
+      "plot": "code_surface"
+    },
+    {
+      "type": "plot",
+      "title": "Zero-Doppler cut and circular-wrap failure",
+      "plot": "delay_cut"
+    },
+    {
+      "type": "plot",
+      "title": "Zero-delay cut",
+      "plot": "doppler_cut"
+    },
+    {
+      "type": "plot",
+      "title": "LFM delay and Doppler are coupled",
+      "plot": "ridge"
+    },
+    {
+      "type": "plot",
+      "title": "Duration widens delay response",
+      "plot": "duration_delay"
+    },
+    {
+      "type": "plot",
+      "title": "Longer duration narrows Doppler response",
+      "plot": "duration_doppler"
+    },
+    {
+      "type": "plot",
+      "title": "Bandwidth narrows the LFM delay cut",
+      "plot": "bandwidth_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Seeded prefixes change code sidelobes",
+      "plot": "code_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Chip length and finite-code delay width",
+      "plot": "code_delay_width"
+    },
+    {
+      "type": "plot",
+      "title": "Longer code narrows Doppler cut",
+      "plot": "code_doppler_width"
     },
     {
       "type": "callout",
@@ -102,7 +150,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {
