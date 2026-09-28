@@ -11,12 +11,25 @@ const browser = await chromium.launch({ headless: true });
 const rows = [], interactions = [], screenshots = [];
 const saveReport = () => {
   const file = `${out}/browser-report.json`;
-  fs.writeFileSync(`${file}.tmp`, JSON.stringify({ validation_level: 'automated_chromium', browser_version: browser.version(), base, rows, interactions, screenshots, manual_screen_reader: 'not_run', representative_learners: 'not_run' }, null, 2) + '\n');
+  fs.writeFileSync(`${file}.tmp`, JSON.stringify({ validation_level: 'automated_chromium', browser_version: browser.version(), base, experiment_request_concurrency: 1, concurrent_capacity_claimed: false, rows, interactions, screenshots, manual_screen_reader: 'not_run', representative_learners: 'not_run' }, null, 2) + '\n');
   fs.renameSync(`${file}.tmp`, file);
 };
 const selected = process.env.ELP_BROWSER_COURSE;
 for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 1000 }, mobile: { width: 390, height: 844 } })) {
   const context = await browser.newContext({ viewport: size });
+  // Inspect pages in parallel, but pace real experiment requests like one learner.
+  // No request parameters, response bodies, runtime limits or assertions change.
+  let runTurn = Promise.resolve();
+  await context.route('**/run', async route => {
+    const previous = runTurn;
+    let release;
+    runTurn = new Promise(resolve => { release = resolve; });
+    await previous;
+    try {
+      await route.continue();
+      await route.request().response();
+    } finally { release(); }
+  });
   await Promise.all(catalog.filter(c => !selected || c.id === selected).map(async course => {
     const page = await context.newPage();
     page.setDefaultTimeout(30000);

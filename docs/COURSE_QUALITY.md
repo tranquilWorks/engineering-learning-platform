@@ -104,3 +104,11 @@ Playwright package. The host must supply Chromium's operating-system libraries;
 this is development verification tooling, not a runtime container dependency.
 Numeric alias rejection tightens authoring validation: remove duplicate `1`/`1.0`
 choices from an ambiguous manifest. The audit found no such current manifests.
+
+Concurrent-load limitation: six simultaneous lesson pages on the two-CPU container
+produced an observed three-second runtime deadline miss in DSP P26, despite its
+passing sequential HTTP check. The retained `browser-load-observation.json`
+records that failure. The final delivery driver paces actual experiment requests
+one at a time while inspecting pages in parallel; it changes neither request
+parameters nor server responses or runtime deadlines. Concurrent-user capacity
+is not certified by the delivery sweep.

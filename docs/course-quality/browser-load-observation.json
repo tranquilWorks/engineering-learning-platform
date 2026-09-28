@@ -1,0 +1,22 @@
+{
+  "validation_level": "observed_concurrent_load_failure",
+  "image": "sha256:352810adcae74a500176e5785198851e4f0fb0bed26e7866e9135771f9948cda",
+  "container_cpus": 2,
+  "parallel_lesson_pages": 6,
+  "rows_before_interruption": 239,
+  "failures": [
+    {
+      "course": "dsp-radar",
+      "module": "26-use-lms-to-cancel-an-interferer",
+      "viewport": "desktop",
+      "status": "failed",
+      "content_digest": "2e5d6c3413573c06bad1a8b65ad581be6839902fc75522fc7bc4911a133b86c1",
+      "failure": "TimeoutError: page.waitForFunction: Timeout 60000ms exceeded.",
+      "runtime_errors": [
+        "experiment exceeded 3.00 seconds"
+      ],
+      "errors": []
+    }
+  ],
+  "interpretation": "One observed runtime deadline miss under six-page load. Sequential real HTTP checks passed all 290 lessons. Final delivery sweep paces genuine experiment requests one at a time, with unchanged parameters, responses, runtime deadlines and assertions. Concurrent capacity is not certified."
+}
