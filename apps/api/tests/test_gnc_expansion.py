@@ -420,7 +420,8 @@ def test_gnc_capstone_requirement_traces_and_teaching_invariants() -> None:
 
     survey = result(67, {"broken_mode": False})
     unconstrained_survey = result(67, {"broken_mode": True})
-    assert survey.diagnostics["signature"][1:] == [0.0, 1.0]
+    assert survey.diagnostics["signature"][1] < 1e-10
+    assert survey.diagnostics["signature"][2] == 1.0
     assert survey.diagnostics["requirements"]["SURVEY-PASS"]["passed"] is True
     assert unconstrained_survey.diagnostics["signature"][1] > 0
     assert unconstrained_survey.diagnostics["signature"][2] == 0
@@ -428,7 +429,7 @@ def test_gnc_capstone_requirement_traces_and_teaching_invariants() -> None:
 
     software_hil = result(68, {"broken_mode": False})
     suppressed_watchdog = result(68, {"broken_mode": True})
-    assert software_hil.diagnostics["signature"] == [0.0, 0.05, 1.0]
+    assert software_hil.diagnostics["signature"] == [1 / 475, 0.05, 1.0]
     assert all(item["passed"] for item in software_hil.diagnostics["requirements"].values())
-    assert suppressed_watchdog.diagnostics["signature"] == [1.0, 0.0, 0.0]
+    assert suppressed_watchdog.diagnostics["signature"] == [1 / 475, 0.0, 0.0]
     assert suppressed_watchdog.diagnostics["requirements"]["SAFE-1"]["passed"] is False

@@ -7,9 +7,10 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- identify theta from excitation
-- design K(theta_hat) and estimator covariance
-- stress delta in declared uncertainty set
+- A=exp(-a dt), B=b(1-A)/a for normalized xdot=-a x+b u
+- '[Ahat,Bhat]=argmin sum(x_next-Ahat*x-Bhat*u)^2 with rank([x,u])=2'
+- K=(Ahat-exp(-2dt))/Bhat; u=clip((1-Ahat+Bhat*K)/Bhat-K*xhat,-3,3)
+- Pprior=Ahat^2 P+Q; L=Pprior/(Pprior+R); NEES=(x-xhat)^2/P
 signature:
 - field: worst_tracking_error
   unit: '1'
@@ -17,11 +18,11 @@ signature:
   unit: '1'
 - field: requirements_passed
   unit: bool
-teaching_invariant: The capstone passes only when identification conditioning, tracking error, estimator consistency,
-  and actuator authority all pass their named requirements.
+teaching_invariant: Zero uncertainty makes all three stressed plants identical. Constant equilibrium excitation
+  has rank one and cannot identify two coefficients.
 limiting_cases:
-- At zero uncertainty/noise the nominal chain reaches its numerical floor.
-- A pass flag is the conjunction of traced requirements, not an average score.
+- Zero uncertainty makes all three stressed plants identical.
+- Constant equilibrium excitation has rank one and cannot identify two coefficients.
 scenarios:
   baseline: &id001
     plant_uncertainty: 0.2

@@ -7,6 +7,9 @@ signatures for the reviewed bounded scenarios.
 
 from __future__ import annotations
 
+import hashlib
+import json
+from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -1181,51 +1184,579 @@ def _p60(p: dict[str, Any]) -> list[float]:
 
 
 def _p61(p: dict[str, Any]) -> list[float]:
-    a=float(p["major_radius_m"]); n=round(float(p["point_count"])); end=1.8*np.pi if p["broken_mode"] else 2*np.pi; q=np.linspace(0,end,n); b=.6*a; x=a*np.cos(q); y=b*np.sin(q); dx=-a*np.sin(q); dy=b*np.cos(q); ddx=-a*np.cos(q); ddy=-b*np.sin(q); k=(dx*ddy-dy*ddx)/(dx*dx+dy*dy)**1.5; ds=np.hypot(np.diff(x),np.diff(y)); integral=float(np.sum(.5*(k[:-1]+k[1:])*ds))
-    return [float(ds.sum()),float(np.max(np.abs(k))),float(np.mean(k)),float(np.rad2deg(np.unwrap(np.arctan2(dy,dx))[-1]-np.unwrap(np.arctan2(dy,dx))[0])),float(np.hypot(x[-1]-x[0],y[-1]-y[0])),abs(integral-2*np.pi)]
+    a = float(p["major_radius_m"])
+    b = 0.6 * a
+    n = round(float(p["point_count"]))
+    theta = np.linspace(0, (1.8 if p["broken_mode"] else 2) * np.pi, n)
+    curvature = a * b / (a * a * np.sin(theta) ** 2 + b * b * np.cos(theta) ** 2) ** 1.5
+    # Chord length via half-angle ellipse identity, not differenced xy arrays.
+    mid = (theta[1:] + theta[:-1]) / 2
+    ds = (
+        2
+        * np.sin(np.diff(theta) / 2)
+        * np.sqrt(a * a * np.sin(mid) ** 2 + b * b * np.cos(mid) ** 2)
+    )
+    angle = np.unwrap(np.angle(-a * np.sin(theta) + 1j * b * np.cos(theta)))
+    closure = abs(a * (np.cos(theta[-1]) - 1) + 1j * b * np.sin(theta[-1]))
+    total = sum(
+        float(ds[i]) * (curvature[i] + curvature[i + 1]) / 2 for i in range(n - 1)
+    )
+    return [
+        float(sum(ds)),
+        float(max(curvature)),
+        float(sum(curvature) / n),
+        float((angle[-1] - angle[0]) * 180 / np.pi),
+        float(closure),
+        float(abs(total - 2 * np.pi)),
+    ]
 
 
 def _p62(p: dict[str, Any]) -> list[float]:
-    v=float(p["speed_m_s"]); mu=float(p["friction_coefficient"]); m=1450.; g=9.81; down=.5*1.225*2.*1.25*v*v; drag=.5*1.225*2.*.36*v*v; cap=mu*(m*g+down); accel=max(0.,min(cap,210000./v)-drag)/m; brake=(cap+drag)/m; lat=cap/m; residual=max(0.,(np.hypot(.9,.9) if p["broken_mode"] else 1.)-1.)
-    return [accel,brake,lat,down,drag,residual]
+    speed = float(p["speed_m_s"])
+    friction = float(p["friction_coefficient"])
+    down = 0.5 * 1.225 * 2 * 1.25 * speed**2
+    drag = 0.5 * 1.225 * 2 * 0.36 * speed**2
+    normal = 1450 * 9.81 + down
+    limit = friction * normal
+    available = limit if speed == 0 else min(limit, 210000 / speed)
+    lateral = (0.9 if p["broken_mode"] else 0.6) * limit
+    longitudinal = 0.9 * limit if p["broken_mode"] else min(0.6 * limit, available)
+    residual = max(0.0, np.sqrt(longitudinal**2 + lateral**2) / limit - 1)
+    return [
+        (available - drag) / 1450,
+        (limit + drag) / 1450,
+        limit / 1450,
+        down,
+        drag,
+        float(residual),
+    ]
 
 
 def _p63(p: dict[str, Any]) -> list[float]:
-    bound=float(p["maximum_offset_m"]); w=float(p["smoothness_weight"]); s=np.linspace(0,1,160); base=.008+.012*np.sin(2*np.pi*s)**2; candidates=np.linspace(-bound,bound,41); scores=[]
-    for o in candidates:
-        k=base/(1-o*base); length=4200*(1+.0008*o*o); scores.append(length/np.mean(np.sqrt(11.5/np.maximum(k,1e-6)))+w*o*o)
-    offset=float(candidates[int(np.argmin(scores))]); residual=0.
-    if p["broken_mode"]: offset=1.2*bound; residual=offset-bound
-    k=base/(1-offset*base); length=4200*(1+.0008*offset*offset); speed=np.sqrt(11.5/k); baseline=4200/np.mean(np.sqrt(11.5/base))
-    return [offset,length,float(k.max()),float(speed.min()),float(baseline-length/np.mean(speed)),float(bound-abs(offset)),float(max(0,residual))]
+    bound = float(p["maximum_offset_m"])
+    penalty = float(p["smoothness_weight"])
+    measures = []
+    for index in range(256):
+        angle = (index + 0.5) * 2 * np.pi / 256
+        tangent = (180**2 * np.sin(angle) ** 2 + 90**2 * np.cos(angle) ** 2) ** 0.5
+        measures.append((tangent * 2 * np.pi / 256, 16200 / tangent**3))
+
+    def evaluate(offset):
+        lengths = [ds * (1 - offset * k) for ds, k in measures]
+        curves = [k / (1 - offset * k) for _, k in measures]
+        velocities = [(11.5 / k) ** 0.5 for k in curves]
+        time = sum(length / v for length, v in zip(lengths, velocities))
+        return time, sum(lengths), max(curves), min(velocities)
+
+    candidates = [-bound + index * (2 * bound / 40) for index in range(41)]
+    chosen = min(
+        candidates, key=lambda value: evaluate(value)[0] + penalty * value * value
+    )
+    if p["broken_mode"]:
+        chosen = 1.2 * bound
+    time, length, peak, minimum = evaluate(chosen)
+    return [
+        chosen,
+        float(length),
+        float(peak),
+        float(minimum),
+        float(evaluate(0)[0] - time),
+        bound - abs(chosen),
+        max(0.0, abs(chosen) - bound),
+    ]
 
 
 def _p64(p: dict[str, Any]) -> list[float]:
-    g=float(p["grip_scale"]); e=float(p["energy_limit_mj"]); n=120; ds=30.; s=np.arange(n)*ds; k=.004+.018*(.5+.5*np.sin(2*np.pi*s/s[-1]*3))**2; v=np.sqrt(9.81*g/k); a=3.2*g; b=8.*g
-    for i in range(1,n): v[i]=min(v[i],np.sqrt(v[i-1]**2+2*a*ds),72.)
-    if not p["broken_mode"]:
-        for i in range(n-2,-1,-1): v[i]=min(v[i],np.sqrt(v[i+1]**2+2*b*ds))
-    reach=float(np.max(np.maximum(0.,v[:-1]**2-v[1:]**2-2*b*ds)))+(1.0 if p["broken_mode"] else 0.0); lap=float(np.sum(ds/np.maximum(v,1.))); energy=float(min(e,np.sum((1200*a+180.)*ds)/1e6))
-    return [lap,float(v.min()),float(v.max()),energy,80.+2.2*energy,reach]
+    # Simultaneous Jacobi reachability, independently of production in-place passes.
+    grip = float(p["grip_scale"])
+    budget = float(p["energy_limit_mj"]) * 1e6
+    angle = (np.arange(128) + 0.5) * 2 * np.pi / 128
+    tangent = np.sqrt(180**2 * np.sin(angle) ** 2 + 90**2 * np.cos(angle) ** 2)
+    distance = tangent * 2 * np.pi / 128
+    curvature = 16200 / tangent**3
+    reserve = 0.5 * grip * 1450 * 9.81
+    rolling = 0.012 * 1450 * 9.81
+    square = np.minimum(np.sqrt(3) * reserve / (1450 * curvature), 5184.0)
+    for _ in range(1024):
+        drive = np.minimum(reserve, 210000 / np.maximum(np.sqrt(square), 1e-9))
+        downstream = square + 2 * distance * (drive - 0.441 * square - rolling) / 1450
+        candidate = np.minimum(square, np.roll(np.maximum(0, downstream), 1))
+        if not p["broken_mode"]:
+            upstream = (
+                np.roll(square, -1) + 2 * distance * (reserve + rolling) / 1450
+            ) / (1 - 2 * distance * 0.441 / 1450)
+            candidate = np.minimum(candidate, upstream)
+        if np.max(abs(candidate - square)) < 1e-11:
+            square = candidate
+            break
+        square = candidate
+    else:
+        raise ValueError("Independent cyclic solver failed convergence")
+    # E(beta) is piecewise linear. Solve on its active positive-work segments.
+    coefficient = (
+        0.5 * 1450 * (np.roll(square, -1) - square) + 0.441 * square * distance
+    )
+    constant = rolling * distance
+    feasible = budget >= sum(constant)
+    if not feasible:
+        beta = 0.0
+    elif sum(np.maximum(coefficient + constant, 0)) <= budget:
+        beta = 1.0
+    else:
+        breakpoints = sorted(
+            {
+                0.0,
+                1.0,
+                *[
+                    float(-b / a)
+                    for a, b in zip(coefficient, constant)
+                    if a < 0 and 0 < -b / a < 1
+                ],
+            }
+        )
+        beta = None
+        for interval in range(len(breakpoints)-1):
+            left, right = breakpoints[interval:interval+2]
+            active = coefficient * ((left + right) / 2) + constant > 0
+            slope = sum(coefficient[active])
+            intercept = sum(constant[active])
+            if slope > 0:
+                root = (budget - intercept) / slope
+                if left - 1e-12 <= root <= right + 1e-12:
+                    beta = float(np.clip(root, 0, 1))
+                    break
+        if beta is None:
+            raise ValueError("No energy-budget root")
+    square *= beta
+    speed = np.sqrt(square)
+    work = (
+        0.5 * 1450 * (np.roll(square, -1) - square)
+        + (0.441 * square + rolling) * distance
+    )
+    force = work / distance
+    excess = max(
+        0.0,
+        float(max(force - np.minimum(reserve, 210000 / np.maximum(speed, 1e-9)))),
+        float(max(-force - reserve)),
+    )
+    time = float(sum(distance / speed)) if feasible and min(speed) > 0 else 0.0
+    return [
+        time,
+        float(min(speed)),
+        float(max(speed)),
+        float(sum(np.maximum(work, 0)) / 1e6),
+        float(20 + sum(np.maximum(-work, 0)) / 16000),
+        excess,
+    ]
 
 
 def _p65(p: dict[str, Any]) -> list[float]:
-    a=float(p["aero_scale"]); t=float(p["tire_scale"]); x=np.array([[-1,-1],[-1,1],[1,-1],[1,1]],float); y=90-2*a*x[:,0]-3*t*x[:,1]-1.2*a*t*x[:,0]*x[:,1]
-    if p["broken_mode"]: X=np.c_[np.ones(2),x[[0,3]]]; coef=np.linalg.lstsq(X,y[[0,3]],rcond=None)[0]; pred=np.c_[np.ones(4),x]@coef; interaction=0.; rank=float(np.linalg.matrix_rank(X))
-    else: X=np.c_[np.ones(4),x,x[:,0]*x[:,1]]; coef=np.linalg.solve(X,y); pred=X@coef; interaction=float(coef[3]); rank=float(np.linalg.matrix_rank(X))
-    return [round(float(v),12) for v in (-2*coef[1],-2*coef[2],-4*interaction,np.sqrt(np.mean((pred-y)**2)),y.min(),rank,abs(pred[-1]-y[-1]))]
+    a = float(p["aero_scale"])
+    t = float(p["tire_scale"])
+    points = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
+
+    def response(x, y):
+        return 90 - 2 * a * x - 3 * t * y - 1.2 * a * t * x * y
+
+    observed = [response(x, y) for x, y in points]
+    if p["broken_mode"]:
+        intercept = (observed[0] + observed[3]) / 2
+        c1 = c2 = (observed[3] - observed[0]) / 4
+        interaction = 0.0
+        rank = 2
+    else:
+        intercept = sum(observed) / 4
+        c1 = sum(x * z for (x, _), z in zip(points, observed)) / 4
+        c2 = sum(y * z for (_, y), z in zip(points, observed)) / 4
+        interaction = sum(x * y * z for (x, y), z in zip(points, observed)) / 4
+        rank = 4
+
+    def error(x, y):
+        return intercept + c1 * x + c2 * y + interaction * x * y - response(x, y)
+
+    rms = (sum(error(x, y) ** 2 for x, y in points) / 4) ** 0.5
+    unused = [(-0.5, 0.25), (0.25, -0.5), (0.5, 0.5)]
+    held = (sum(error(x, y) ** 2 for x, y in unused) / len(unused)) ** 0.5
+    return [
+        round(float(v), 12)
+        for v in [-2 * c1, -2 * c2, -4 * interaction, rms, min(observed), rank, held]
+    ]
 
 
 def _p66(p: dict[str, Any]) -> list[float]:
-    v=float(p["validation_fraction"]); f=float(p["fault_severity"]); status=np.ones(9); residual=.08+.04*f+.02*(.3-v)**2; trace=0.
-    if p["broken_mode"]: status[[1,2,5,7]]=0.; residual+=.45*f; trace=4.
-    return [float(status.sum()),9.,residual,float(status.mean()),float(1+(f>1.4)),trace,float(status[-1])]
+    # Raw bytes shared as inputs only. Manual decoding, two-point transforms,
+    # scalar trajectory and explicit 2x2 least squares are independent oracles.
+    folder = Path(__file__).resolve().parent / "fixtures"
+    metadata = json.loads((folder / "manifest.json").read_text())
+    can = [
+        json.loads(row)
+        for row in (folder / "gr86-can-replay-v1.jsonl").read_text().splitlines()
+    ]
+    ble = [
+        json.loads(row)
+        for row in (folder / "racechrono-ble-replay-v1.jsonl").read_text().splitlines()
+    ]
+    hash_errors = sum(
+        hashlib.sha256((folder / e["path"]).read_bytes()).hexdigest() != e["sha256"]
+        for e in metadata["files"][:2]
+    )
+    canonical = {
+        r["sequence"]: (
+            r["source_time_us"],
+            int(r["can_id"], 16),
+            r["data_hex"].upper(),
+        )
+        for r in can
+    }
+
+    def parts(row):
+        text = row["payload_hex"]
+        octets = [int(text[i : i + 2], 16) for i in range(0, len(text), 2)]
+        return sum(octets[i] * 256**i for i in range(4)), octets[4:]
+
+    def defects(records):
+        count = 0
+        seen = set()
+        for r in records:
+            clock, identifier, payload = canonical[r["sequence"]]
+            decoded, data = parts(r)
+            count += int(
+                r["sequence"] in seen
+                or clock != r["source_time_us"]
+                or identifier != decoded
+                or "".join(f"{b:02X}" for b in data) != payload
+            )
+            seen.add(r["sequence"])
+        return count
+
+    provenance = (
+        hash_errors
+        + defects(ble)
+        + int(metadata["measured_vehicle_data"] is not False)
+        + int(metadata["provenance_class"] != "synthetic_protocol_fixture")
+    )
+    faulty = [dict(r) for r in ble]
+    wheel_indices = [i for i, r in enumerate(can) if int(r["can_id"], 16) == 313]
+    severity = float(p["fault_severity"])
+    broken = p["broken_mode"]
+    for i in [wheel_indices[10]] + ([wheel_indices[50]] if severity > 1.4 else []):
+        text = faulty[i]["payload_hex"]
+        faulty[i]["payload_hex"] = (
+            text[:8] + f"{int(text[8:10], 16) ^ 4:02X}" + text[10:]
+        )
+    faulty.insert(wheel_indices[20], dict(faulty[wheel_indices[20]]))
+    faults = defects(faulty)
+    records = (
+        faulty
+        if broken
+        else [
+            {
+                "sequence": key,
+                "source_time_us": value[0],
+                "payload_hex": "".join(
+                    f"{(value[1] >> (8 * i)) & 255:02X}" for i in range(4)
+                )
+                + value[2],
+            }
+            for key, value in sorted(canonical.items())
+        ]
+    )
+    unresolved = defects(records)
+
+    def decode(rows):
+        speeds = {}
+        rates = {}
+        for r in rows:
+            identifier, data = parts(r)
+            time = r["source_time_us"] / 1e6
+            if identifier == 313:
+                speeds[time] = sum(
+                    256 * data[i] + data[i + 1] for i in (0, 2, 4, 6)
+                ) / (4 * 128 * 3.6)
+            if identifier == 722:
+                rates[time] = ((256 * data[0] + data[1]) - 32768) * np.pi / 18000
+        return (
+            sorted(speeds),
+            [speeds[t] for t in sorted(speeds)],
+            sorted(rates),
+            [rates[t] for t in sorted(rates)],
+        )
+
+    t, v0, yt, y0 = decode(ble)
+    tx, vx, ty, vy = decode(records)
+    gain = 1 + 0.0008 * severity
+    offset = 0.02 * severity
+    first = offset
+    last = 2 * gain + offset
+    fitted_gain = (last - first) / 2
+
+    def correct_time(values):
+        observed = np.asarray(values) * gain + offset
+        return observed if broken else (observed - first) / fitted_gain
+
+    clock_residual = max(abs(correct_time([0, 1, 2]) - np.array([0, 1, 2])))
+    sensor_gain = 1 + 0.02 * severity
+    bias = 0.2 * severity
+    low = bias
+    high = 30 * sensor_gain + bias
+
+    def correct_speed(values):
+        raw = np.asarray(values) * sensor_gain + bias
+        return raw if broken else 30 * (raw - low) / (high - low)
+
+    calibration_residual = abs(float(correct_speed([15])[0]) - 15)
+    yaw_bias = np.pi / 360 * severity
+    calibrated_yaw = np.asarray(vy) + yaw_bias
+    if not broken:
+        calibrated_yaw -= yaw_bias  # measured zero-rate calibration
+    v = np.interp(t, correct_time(tx), correct_speed(vx))
+    y = np.interp(t, correct_time(ty), calibrated_yaw)
+    true_yaw = np.interp(t, yt, y0)
+
+    def endpoint(vel, rate):
+        east = north = heading = 0.0
+        for i in range(len(t) - 1):
+            dt = t[i + 1] - t[i]
+            east += vel[i] * dt * np.cos(heading)
+            north += vel[i] * dt * np.sin(heading)
+            heading += rate[i] * dt
+        return complex(east, north)
+
+    trajectory_error = abs(endpoint(v, y) - endpoint(v0, true_yaw))
+    a = [0.0] + [(v[i] - v[i - 1]) / (t[i] - t[i - 1]) for i in range(1, len(t))]
+    a0 = [0.0] + [(v0[i] - v0[i - 1]) / (t[i] - t[i - 1]) for i in range(1, len(t))]
+    force = [
+        1450 * a0[i] + 0.45 * v0[i] ** 2 + 2 * np.sin(0.9 * i) for i in range(len(t))
+    ]
+    split = int((1 - float(p["validation_fraction"])) * len(t))
+    aa = ab = bb = af = bf = 0.0
+    for i in range(1, split):
+        x, z = a[i], v[i] ** 2
+        aa += x * x
+        ab += x * z
+        bb += z * z
+        af += x * force[i]
+        bf += z * force[i]
+    determinant = aa * bb - ab * ab
+    mass = (af * bb - bf * ab) / determinant
+    drag = (bf * aa - af * ab) / determinant
+    held = (
+        sum(
+            (mass * a[i] + drag * v[i] ** 2 - force[i]) ** 2
+            for i in range(split, len(t))
+        )
+        / (len(t) - split)
+    ) ** 0.5
+    information = 1 - abs(ab / (aa * bb) ** 0.5)
+    rms = (sum((v[i] - v0[i]) ** 2 for i in range(len(t))) / len(t)) ** 0.5
+    recovery = max(abs(v[i] - v0[i]) for i in range(len(t)))
+    checks = [
+        provenance == 0,
+        clock_residual <= 1.1e-9,
+        calibration_residual <= 1.1e-9,
+        trajectory_error <= 0.05 + 1e-10,
+        rms <= 0.01 + 1e-10,
+        held <= 20 + 1e-10,
+        information >= 0.001 - 1e-10,
+        unresolved == 0,
+        recovery <= 0.01 + 1e-10,
+    ]
+    passed = sum(checks)
+    return [
+        float(passed),
+        9.0,
+        float(held),
+        passed / 9,
+        float(faults),
+        float(9 - passed),
+        float(checks[-1]),
+    ]
+
+
+def _reference_twin(setup, factor, broken):
+    # Scalar force balances and Gauss-Seidel passes; no production helpers/data.
+    weight = 1450 * 9.81
+    reference_load = weight / 4
+    calibration_slip = [0.005, 0.01, 0.02, 0.03, 0.12, 0.16]
+    calibration_force = [
+        min(70000 * x, 1.15 * reference_load) for x in calibration_slip
+    ]
+    slope = sum(
+        x * y for x, y in zip(calibration_slip[:4], calibration_force[:4])
+    ) / sum(x * x for x in calibration_slip[:4])
+    mu = sum(calibration_force[4:]) / (2 * reference_load)
+    fit_error = max(
+        abs(min(slope * x, mu * reference_load) - min(70000 * x, 1.15 * reference_load))
+        for x in [0.04, 0.07]
+    )
+    mu *= factor * (1 + 0.3 * setup)
+    c = 0.6125 * 0.72 * (1 + setup)
+    roll = 0.012 * weight
+    ratios = [3.63, 2.19, 1.54, 1.21, 1, 0.77]
+
+    def engine(square):
+        speed = square**0.5
+        forces = []
+        for gear in ratios:
+            total = gear * 4.1
+            rpm = speed * total * 30 / (np.pi * 0.31)
+            if 2000 <= rpm <= 7400:
+                torque = float(
+                    np.interp(
+                        rpm,
+                        [2000, 3000, 4000, 5000, 6000, 7000, 7400],
+                        [170, 205, 225, 230, 225, 200, 180],
+                    )
+                )
+                forces.append(torque * total * 0.9 / 0.31)
+        return max(forces, default=0.0)
+
+    def contact(square, curve, extra):
+        aero = 1.53125 * (1 + 2 * setup) * square
+        front_total = 0.53 * weight + 0.5 * aero * (1 + int(extra))
+        rear_total = 0.47 * weight + 0.5 * aero * (1 + int(extra))
+        moved = 1450 * square * curve * 0.5 / 1.52
+        fraction = 0.55 + 0.1 * setup
+        wheel = [
+            front_total / 2 + moved * fraction,
+            front_total / 2 - moved * fraction,
+            rear_total / 2 + moved * (1 - fraction),
+            rear_total / 2 - moved * (1 - fraction),
+        ]
+        grip = (
+            mu
+            * reference_load
+            * sum((max(0, fz) / reference_load) ** 0.9 for fz in wheel)
+        )
+        return grip, wheel, aero
+
+    candidates = []
+    for offset in np.linspace(-1.5, 1.5, 9):
+        curves = []
+        lengths = []
+        squares = []
+        for index in range(96):
+            angle = (index + 0.5) * np.pi / 48
+            norm = (180**2 * np.sin(angle) ** 2 + 110**2 * np.cos(angle) ** 2) ** 0.5
+            curve = 19800 / norm**3
+            scale = 1 - offset * curve
+            curves.append(curve / scale)
+            lengths.append(norm * np.pi / 48 * scale)
+            lo, hi = 25.0, 4900.0
+            for _ in range(44):
+                trial = (lo + hi) / 2
+                grip, wheel, _ = contact(trial, curves[-1], broken)
+                if 1450 * trial * curves[-1] <= 0.8 * grip and min(wheel) >= 200:
+                    lo = trial
+                else:
+                    hi = trial
+            squares.append(lo)
+        for iteration in range(1024):
+            old = list(squares)
+            for i in range(96):
+                j = (i + 1) % 96
+                grip, _, _ = contact(squares[i], curves[i], broken)
+                traction = min(0.6 * grip, engine(squares[i]))
+                allowance = (
+                    squares[i]
+                    + 2 * lengths[i] * (traction - c * squares[i] - roll) / 1450
+                )
+                squares[j] = min(squares[j], allowance)
+            for i in reversed(range(96)):
+                j = (i + 1) % 96
+                grip, _, _ = contact(squares[i], curves[i], broken)
+                braking = min(0.6 * grip, 7500 * (1 + setup))
+                allowance = (squares[j] + 2 * lengths[i] * (braking + roll) / 1450) / (
+                    1 - 2 * lengths[i] * c / 1450
+                )
+                squares[i] = min(squares[i], allowance)
+            if max(abs(a - b) for a, b in zip(old, squares)) < 1e-10:
+                break
+        else:
+            raise ValueError("Independent twin reachability did not converge")
+        time = sum(d / w**0.5 for d, w in zip(lengths, squares))
+        utilization = []
+        loads = []
+        propulsion = []
+        reach = []
+        heat = 0.0
+        ledger = []
+        for i in range(96):
+            next_w = squares[(i + 1) % 96]
+            w = squares[i]
+            ds = lengths[i]
+            k = curves[i]
+            force = 1450 * (next_w - w) / (2 * ds) + c * w + roll
+            used, used_wheel, aero = contact(w, k, broken)
+            physical, wheel, _ = contact(w, k, False)
+            utilization.append((force**2 + (1450 * w * k) ** 2) ** 0.5 / physical)
+            loads.extend(wheel)
+            propulsion.append(force - engine(w))
+            reach.extend(
+                [
+                    force - min(0.6 * used, engine(w)),
+                    -force - min(0.6 * used, 7500 * (1 + setup)),
+                ]
+            )
+            heat += max(0, -force * ds)
+            ledger.append(abs(sum(used_wheel) - weight - aero) / (weight + aero))
+        candidates.append(
+            {
+                "time": float(time),
+                "offset": float(offset),
+                "fit": float(fit_error),
+                "util": float(max(utilization)),
+                "load": float(min(loads)),
+                "propulsion": float(max(0, max(propulsion))),
+                "temperature": 20 + heat / 16000,
+                "ledger": float(max(ledger)),
+                "geometry": float(
+                    abs(sum(d * k for d, k in zip(lengths, curves)) - 2 * np.pi)
+                ),
+                "reach": float(max(0, max(reach))),
+            }
+        )
+    return min(candidates, key=lambda row: row["time"])
 
 
 def _p67(p: dict[str, Any]) -> list[float]:
-    d=float(p["setup_delta"]); u=float(p["uncertainty_fraction"]); lap=92.-20*d; status=np.ones(11); residual=0.
-    if p["broken_mode"]: status[[1,4,7,9]]=0.; residual=.35+d
-    return [float(status.sum()),11.,lap,lap*u,20*d,residual,float(status[-1])]
+    setup = float(p["setup_delta"])
+    uncertainty = float(p["uncertainty_fraction"])
+    broken = p["broken_mode"]
+    current = _reference_twin(setup, 1, broken)
+    base = _reference_twin(0, 1, False)
+    endpoints = [
+        _reference_twin(setup, 1 - uncertainty, broken)["time"],
+        _reference_twin(setup, 1 + uncertainty, broken)["time"],
+    ]
+    clean = _reference_twin(setup, 1, False)
+    replay = _reference_twin(setup, 1, False)
+    recovery = abs(clean["time"] - replay["time"])
+    coverage = max(
+        0, min(endpoints) - current["time"], current["time"] - max(endpoints)
+    )
+    checks = [
+        current["fit"] <= 1.01e-8,
+        current["util"] <= 1.000001 + 1e-10,
+        current["load"] >= 200 - 1e-10,
+        current["propulsion"] <= 1e-5 + 1e-10,
+        current["temperature"] <= 450 + 1e-10,
+        current["ledger"] <= 2e-10,
+        current["geometry"] <= 1e-6 + 1e-10,
+        abs(current["offset"]) <= 1.5 + 1e-10,
+        current["reach"] <= 1e-5 + 1e-10,
+        coverage <= 1.01e-8,
+        recovery <= 2e-10,
+    ]
+    return [
+        float(sum(checks)),
+        11.0,
+        current["time"],
+        max(endpoints) - min(endpoints),
+        base["time"] - current["time"],
+        current["ledger"],
+        float(checks[-1]),
+    ]
 
 
 _DISPATCH = {

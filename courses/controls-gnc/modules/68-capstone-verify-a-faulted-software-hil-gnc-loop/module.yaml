@@ -2,8 +2,8 @@ schema_version: 1
 id: 68-capstone-verify-a-faulted-software-hil-gnc-loop
 number: 68
 title: 'Capstone: Verify a Faulted Software-HIL GNC Loop'
-summary: Run deterministic timing and packet-fault accounting, exercise a fail-zero watchdog, and retain a requirements
-  verdict plus physical-gap statement.
+summary: Does 12 ms latency become one 20 ms tick, and will a safe watchdog still permit tracking to fail at 80
+  ms?
 guiding_question: Does the integrated software-HIL loop meet traced timing, fault-response, and pass/fail requirements
   without claiming physical hardware?
 status: implemented
@@ -42,10 +42,8 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: A software-HIL pass requires every named timing and fault-response requirement to pass; physical I/O and
-    real-time scheduling remain an explicit evidence gap.
-  reveal: Restore timestamp checks and fail-zero watchdog, rerun the deterministic fault schedule, and retain the
-    physical-HIL gap.
+  text: Does 12 ms latency become one 20 ms tick, and will a safe watchdog still permit tracking to fail at 80 ms?
+  reveal: Compare the executed quantities with their physical units and the worked explanation in the lesson.
 - type: controls
   title: Design controls
 - type: metrics
@@ -54,6 +52,9 @@ blocks:
   plots:
   - response
   - mechanism
+- type: table
+  title: Computed requirements
+  table: requirements
 - type: callout
   tone: info
   title: Current interpretation

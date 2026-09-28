@@ -1,28 +1,61 @@
 schema_version: 1
 item_id: P61
 module: 61-build-track-geometry-and-curvature
-provenance: {kind: python-first-native, source_equivalence_claimed: false, competency_map: ../../competency-map.yaml, matlab_runtime: not_run}
+provenance:
+  kind: python-first-native
+  source_equivalence_claimed: false
+  competency_map: ../../competency-map.yaml
+  matlab_runtime: not_run
 governing_equations:
-- L=sum ds
-- kappa=(x'y''-y'x'')/(x'^2+y'^2)^(3/2)
-- integral kappa ds=2 pi
+- x=a cos(theta), y=0.6a sin(theta) in m
+- kappa=ab/(a^2 sin(theta)^2+b^2 cos(theta)^2)^(3/2) in 1/m
+- L=sum chord lengths; integral kappa ds -> 2pi rad as sampling increases
 signature:
-- {field: track_length, unit: "1"}
-- {field: peak_curvature, unit: "1"}
-- {field: mean_curvature, unit: "1"}
-- {field: heading_closure, unit: "1"}
-- {field: position_closure, unit: "1"}
-- {field: curvature_integral_residual, unit: "1"}
-teaching_invariant: Closed geometry must satisfy position, heading, and signed-curvature closure.
+- field: track_length
+  unit: m
+- field: peak_curvature
+  unit: 1/m
+- field: parameter_sample_mean_curvature
+  unit: 1/m
+- field: heading_closure
+  unit: deg
+- field: position_closure
+  unit: m
+- field: curvature_integral_residual
+  unit: rad
+teaching_invariant: For a circle, curvature=1/R and n-segment chord length=2nR sin(pi/n). Uniform geometric scaling
+  inversely scales curvature and preserves total curvature.
 limiting_cases:
-- At the lower first-control bound, the governing constraint remains finite and auditable.
-- At the upper second-control bound, the coupled residual remains the decisive validity check.
+- For a circle, curvature=1/R and n-segment chord length=2nR sin(pi/n).
+- Uniform geometric scaling inversely scales curvature and preserves total curvature.
 scenarios:
-  baseline: {major_radius_m: 60, point_count: 181, broken_mode: false}
-  sweep_1: {major_radius_m: 40, point_count: 181, broken_mode: false}
-  sweep_2: {major_radius_m: 60, point_count: 301, broken_mode: false}
-  broken: {major_radius_m: 60, point_count: 181, broken_mode: true}
-  recovery: {major_radius_m: 60, point_count: 181, broken_mode: false}
-independent_reference: {path: ../../expansion_reference_cases.py, imports_production: false, derived_from_production_output: false, perturbs_production_output: false}
-tolerance: {absolute: 1.0e-08, relative: 1.0e-08}
-claim_boundary: Deterministic synthetic software only; no measured vehicle validation, MATLAB, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.
+  baseline:
+    major_radius_m: 60
+    point_count: 181
+    broken_mode: false
+  sweep_1:
+    major_radius_m: 40
+    point_count: 181
+    broken_mode: false
+  sweep_2:
+    major_radius_m: 60
+    point_count: 301
+    broken_mode: false
+  broken:
+    major_radius_m: 60
+    point_count: 181
+    broken_mode: true
+  recovery:
+    major_radius_m: 60
+    point_count: 181
+    broken_mode: false
+independent_reference:
+  path: ../../expansion_reference_cases.py
+  imports_production: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+tolerance:
+  absolute: 1.0e-08
+  relative: 1.0e-08
+claim_boundary: Deterministic synthetic software only; no measured vehicle validation, MATLAB, learner, browser/accessibility,
+  physical HIL/hardware, certification, release, deployment, or production claim.

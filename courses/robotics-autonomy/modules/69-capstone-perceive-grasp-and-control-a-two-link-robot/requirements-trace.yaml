@@ -3,22 +3,71 @@ capstone_id: CAP-TWO-LINK-MANIPULATION
 module_id: P69
 requirements:
 - id: R69-PERCEPTION
-  prerequisite_modules: [P46, P62]
+  prerequisite_modules:
+  - P46
+  - P62
   mechanism: Transform the visual object estimate into the base frame and gate pickup on physical error.
   evidence: pickup_position_error
+  quantity: Pickup position error
+  unit: m
+  operator: <=
+  threshold: 0.055
 - id: R69-KINEMATICS
-  prerequisite_modules: [P29, P40]
+  prerequisite_modules:
+  - P29
+  - P40
   mechanism: Solve and forward-check a reachable two-link joint configuration.
   evidence: reach requirement margin and approach trace
+  quantity: Reach cosine magnitude
+  unit: '1'
+  operator: <=
+  threshold: 1
 - id: R69-GRASP
-  prerequisite_modules: [P61]
+  prerequisite_modules:
+  - P61
   mechanism: Require positive frictional closure margin before contact-force control.
   evidence: closure requirement margin
+  quantity: Two-contact vertical support margin
+  unit: N
+  operator: '>='
+  threshold: 0
 - id: R69-CONTACT
-  prerequisite_modules: [P38, P39]
+  prerequisite_modules:
+  - P38
+  - P39
   mechanism: Regulate final contact force while retaining nonnegative passivity-tank energy.
   evidence: contact-error and energy requirement margins
+  quantity: Final force error
+  unit: N
+  operator: <=
+  threshold: 3
 - id: R69-INTERFACE
-  prerequisite_modules: [P66, P67]
+  prerequisite_modules:
+  - P66
+  - P67
   mechanism: Accept success only after typed frame interfaces and the replayed timing fault recover.
   evidence: interface recovery requirement margin
+  quantity: Expired nonzero commands plus source-order inversions
+  unit: count
+  operator: <=
+  threshold: 0
+- id: R69-ENERGY
+  prerequisite_modules:
+  - P38
+  - P39
+  mechanism: Debit exact positive spring work including first contact.
+  evidence: minimum tank energy and contact history
+  quantity: Minimum tank energy
+  unit: J
+  operator: '>='
+  threshold: 0
+- id: R69-RECOVERY
+  prerequisite_modules:
+  - P66
+  - P67
+  mechanism: Measure final force after fresh post-gap source commands.
+  evidence: post-gap force error and accepted source ticks
+  quantity: Post-gap fresh-command force error
+  unit: N
+  operator: <=
+  threshold: 3

@@ -1,36 +1,35 @@
-# Current state — course quality continuation
+# Current engineering-learning position — 2026-09-28
 
-The native browser/container catalog contains four revised engineering curricula:
-DSP/Radar **84**, Controls/GNC **68**, Robotics/Autonomy **69**, and Vehicle Dynamics
-**67** lessons, plus two examples (**6 courses, 290 interactive modules**). Thirteen
-source repositories are pinned; nine remain source-only.
+All 288 native engineering lessons and two examples are embedded in Engineering
+Learning: six courses, 290 interactive modules. Nine other pinned sources remain
+source-only. Inventory does not establish course-wide quality acceptance.
 
-DSP fidelity P01–P84 is implemented and merged through [PR51](https://github.com/tranquilWorks/engineering-learning-platform/pull/51),
-merge `b8d760e6721ae0b94aaa503f4ca1599592266442`. Item-level repair completion does
-not close aggregate competency or cumulative-assessment acceptance.
+The twelve-lesson revision is implemented and locally verified in
+[PR53](https://github.com/tranquilWorks/engineering-learning-platform/pull/53):
+Controls P66–P68, Robotics P68–P69 and Vehicle P61–P67 now execute the declared
+bounded mechanisms and expose computed requirements. Sixty independent comparisons,
+40 physical/preservation tests, mandatory contract/quick/full gates, 290 container
+HTTP checks, 580 desktop/mobile pages and 36 interactions passed. Generic 2D plots
+fall back to SVG when WebGL initialization fails; actual curves and label spacing
+were reviewed. See the exact [evidence](evidence/ELP-SEMANTIC-QUALITY-12-2026-09-28.md).
 
-The active delivery batch fixes actual math, mobile keyboard/navigation,
-revision isolation and numeric browser-control defects, embeds lesson review
-notes, and retains per-lesson browser/container checks. Backend contract,
-quick/full verification, catalog and focused browser checks passed. All 290 container HTTP checks and all 580 desktop/mobile page checks passed; see
-[delivery evidence](evidence/ELP-COURSE-DELIVERY-QUALITY-01-2026-09-28.md).
+The browser retains **60 additional blocked findings**: Controls 19, Robotics 25,
+Vehicle 16. These are separate repair scopes; the twelve fixes do not promote
+those course aggregates. The initial audit found 72 affected lessons.
 
-Direct semantic inspection reopened twelve lessons: **Controls P66–68,
-Robotics P68–69, Vehicle P61–67**. Their specific limitations are visible in the
-browser and recorded in [the quality board](COURSE_QUALITY.md). All four courses'
-aggregate numerical/curriculum/capstone maturity remains blocked pending the
-corresponding reviews. Existing item-level evidence remains available.
+Next is the separately contracted DSP aggregate review: embed all 84 authored
+checkpoints, ten cumulative assessments and their competency/prerequisite map,
+replay the 417 retained independent comparisons, and verify actual browser access.
+These drafts are not yet embedded or accepted. Start from the actual PR53 merge.
 
-The authorized sequence is delivery-quality closure, a separate twelve-lesson
-semantic repair, then DSP aggregate competency/cumulative assessment. No new
-lesson inventory or source-only conversion is included. Manual screen-reader,
-representative learner, MATLAB, physical hardware and production validation
-remain unperformed. Hosted CI is separately reported and nonmandatory under the
-retained owner direction; required local gates remain mandatory.
+Representative learner, manual screen-reader, MATLAB, measured vehicle/hardware
+and production validation remain not_run. Concurrent-user capacity is not
+certified; browser experiment requests are paced one at a time. Hosted CI is
+reported separately and is not claimed green. No production deployment occurred.
 
-The wider model review subsequently found 60 additional issues beyond the first
-twelve, for **72 affected lessons**. See
-[the additional register](course-quality/additional-semantic-findings.md). The
-first twelve-lesson repair contract does not cover those 60; they remain blocked
-pending separate scope and implementation. No aggregate acceptance follows from
-finishing only the initial group.
+Browser recheck boundary: the final all-page invocation exited 1 after one
+Robotics P58 mobile request exceeded its unchanged three-second deadline. It
+retained 579 initial passes. Three isolated desktop/mobile repetitions on the
+same image passed all six checks; the reconciled 580 identities retain the
+original failed row and links to every recheck. This is not an initial clean
+sweep or concurrent-capacity certification; the timeout cause is not proven.

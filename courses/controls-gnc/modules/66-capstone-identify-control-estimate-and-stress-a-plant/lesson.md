@@ -1,75 +1,56 @@
-# Capstone: Identify, Control, Estimate, and Stress a Plant
+# Identify, control, estimate, and stress one plant
 
-**Guiding question:** Can one evidence chain carry an identified model through controller, estimator, and uncertainty stress tests?
-
-Reuse identification information, loop design, and covariance consistency to produce a requirements-traced software-only capstone verdict. This is a Python-first native design derived from the reviewed competency map. It is not presented as a conversion of the pinned MATLAB source and it stays inside deterministic software simulation.
-
-## Why this lesson exists
-
-The numerical result is not the objective by itself. The objective is to connect a design decision to a governing relation, an observable consequence, a failure mechanism, and a recovery check. Record the assumptions before interpreting any curve.
+The claim is deliberately small: a known synthetic calibration record identifies a normalized first-order plant; that model then drives a feedback controller and a scalar estimator across three uncertain plants. Passing a plot by eye cannot replace passing each stage.
 
 ## Model and equations
 
-$$\text{identify theta from excitation}$$
-$$\text{design K(theta_hat) and estimator covariance}$$
-$$\text{stress delta in declared uncertainty set}$$
+With normalized state $x$ and command $u$, $\dot x=-a x+b u$, where $a$ and $b$ have units $\mathrm{s^{-1}}$. Holding a command for $\Delta t=0.02\,\mathrm{s}$ gives
 
-Carry units through the model. A pole or zero is reported in inverse seconds, angular frequency in radians per second, phase in degrees or radians as labeled, and dimensionless ratios as `1`. The experiment evaluates the displayed equations directly; it does not call a black-box synthesis toolbox.
+\[x_{k+1}=A x_k+B u_k,\qquad A=e^{-a\Delta t},\quad B=\frac b a(1-A).\]
 
-## Predict before running
+Four hundred known-state calibration samples fit $[\hat A,\hat B]$ by least squares on columns $[x_k,u_k]$. Sines at two discrete frequencies excite both columns. This is not identification from noisy, unknown physical states.
 
-The capstone passes only when identification conditioning, tracking error, estimator consistency, and actuator authority all pass their named requirements. State which output should move first and which quantity should remain invariant before changing a control.
+Place the nominal discrete pole at $p=e^{-2\Delta t}$: $K=(\hat A-p)/\hat B$, $N=(1-\hat A+\hat B K)/\hat B$, and $u=\operatorname{clip}(N-K\hat x,-3,3)$. The scalar Kalman recursion propagates $P^-=\hat A^2P+Q$, uses $L=P^-/(P^-+R)$ and updates $P=(1-L)P^-$. Healthy tuning uses $R=\sigma^2$ and $Q=10^{-5}+(0.1\delta)^2$ in squared normalized-state units per sample. This declared process allowance is a tuning model for mismatch, not a measured disturbance covariance.
+
+The three actual plants use $a=1+s$, $b=1-s/2$ for $s\in\{-\delta,0,\delta\}$. Measurement noise is deterministic: $\sigma[\sin(0.73k)+\cos(1.17k)]$. Mean NEES is the measured average of $(x-\hat x)^2/P$; it is not a probabilistic coverage test for this sinusoidal sequence.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read all three signature metrics.
-2. Inspect the response plot for the external behavior, then the mechanism plot for the governing internal relation.
-3. Check the units and limiting cases before accepting a stability, equivalence, or performance statement.
-4. Save the baseline, change one variable only, and explain the direction of change from the equations.
+Predict which stress plant tracks worst. At $a=b=1$, $A=0.980199$, $B=0.019801$, $K\approx0.980199$ and $N\approx1.980199$. A zero initial estimate therefore commands about 1.98 before saturation. Run uncertainty 0.2 and noise 0.1. Inspect the executed state traces, then the requirement table: calibration rank 2, worst settled RMS below 0.35, command at most 3, and mean NEES at most 6. These are explicit teaching thresholds, not a universal control specification.
 
-## Requirements trace
-
-- `ID-1`: the excitation-information condition proxy must be at least `2.0`; a stale model fails this requirement even if a downstream curve looks smooth.
-- `CTRL-1`: worst normalized tracking error across the declared uncertainty family must remain below `0.35`.
-- `ACT-1`: the control-effort proxy must not exceed the normalized authority limit `3.0`.
-- `EST-1`: maximum NEES must remain below the declared consistency ceiling `6.0`.
-
-The `requirements_passed` metric is the logical conjunction of these four booleans. No averaging or compensating trade is allowed, and the diagnostic payload retains every requirement value, operator, threshold, and verdict.
+Only samples 300–599 enter settled tracking and consistency metrics. The baseline worst tracking RMS is about 0.176 and maximum mean NEES about 0.746. The requirement table explains why a visually plausible response may still be invalid.
 
 ## Two one-variable sweeps
 
-1. Hold `measurement_noise` at `0.1 1` and sweep `plant_uncertainty` from `0.0` through `0.2` to `0.8 1`.
-2. Restore `plant_uncertainty` to `0.2 1` and sweep `measurement_noise` from `0.01` through `0.1` to `0.5 1`.
-
-Do not tune both at once until you can attribute each metric change to one term in the equations. The retained evidence uses one endpoint from each sweep in addition to the baseline.
+1. Keep noise 0.1; raise uncertainty from 0.2 to 0.8. Predict a tracking failure from weaker gain and slower dynamics. The worst RMS grows to about 0.786 even though identification and command limits still pass.
+2. Restore uncertainty 0.2; raise noise from 0.1 to 0.5. Explain why filter tuning changes both estimation and closed-loop behavior. Compare actual tracking RMS and mean NEES rather than asserting every error must increase monotonically.
 
 ## Intentionally broken case
 
-Broken mode reuses a stale nominal model and underreports estimator covariance under the same uncertainty/noise stress. Broken mode is a named counterexample, not an alternative design recommendation.
+The broken calibration holds $x=u=1$, making both regressors identical. Rank drops to one. An explicit stale fallback supplies runnable coefficients, while the estimator underreports covariance. The controls retain your uncertainty and noise values. A low tracking error cannot rescue the failed identification and consistency requirements.
 
 ## Recovery
 
-Re-identify, redesign, and rerun the exact stress family; do not waive a failed upstream requirement. The recovery case restores the exact baseline inputs so the evidence can prove that the failure is reversible rather than merely different.
+Disable broken mode with the same controls. Persistent excitation, the fitted model and declared covariance tuning return. Repeating the baseline must reproduce its signature exactly.
 
 ## Limiting cases and invariants
 
-- At zero uncertainty/noise the nominal chain reaches its numerical floor.
-- A pass flag is the conjunction of traced requirements, not an average score.
-
-Teaching invariant: The capstone passes only when identification conditioning, tracking error, estimator consistency, and actuator authority all pass their named requirements.
+At zero uncertainty all three true plants coincide. With zero internal measurement-noise input, state estimates approach the measured state; the numerical variance floor keeps the equations finite. At equilibrium excitation, two coefficients cannot be separately identified. Every applied command remains within ±3 in both modes.
 
 ## Independent evidence
 
-Expected signatures are produced by `expansion_reference_cases.py`, which imports no production experiment and consumes no production result. Production signatures are retained separately. Each baseline, two sweeps, broken case, and recovery case records fields, units, tolerances, measured error, and the named invariant. Agreement supports only these equations and scenarios; it is not MATLAB execution, broad robust certification, or physical validation.
+The reference solves the two-column normal equations explicitly and uses an information-form scalar update. It imports no production experiment and generates the expected baseline, two sweeps, fault and recovery vectors. Additional checks reconstruct the state recurrence and rank from the retained histories.
 
 ## Common mistakes
 
-- Reading a plotted shape without checking its sign convention, units, or contour/path definition.
-- Treating a local, frequency-limited, or nominal result as a global guarantee.
-- Changing both design controls and then assigning causality to one of them.
-- Confusing a recovery that looks better with a recovery that restores the baseline invariant.
-- Claiming source equivalence, physical hardware evidence, or learner effectiveness from this software-only lab.
+Do not use estimator covariance as observed error, confuse a successful fallback with successful identification, or call three sampled plants a robust-stability proof.
 
 ## Teach-back
 
-Derive one signature quantity from the displayed equations, explain what the broken case violates, and name one result that this lab cannot establish. Then describe how the two sweeps separate sensitivity to `plant_uncertainty` from sensitivity to `measurement_noise`.
+- Why is the constant calibration rank one? Both columns are the same, so many coefficient pairs explain the observations.
+- Why can a noise sweep alter tracking? Feedback uses the estimate, so estimation error enters the command.
+- Does NEES below 6 certify uncertainty coverage? No; the deterministic noise and three stress points do not establish a sampling distribution.
+
+## Cumulative assessment
+
+Before claiming this model valid, derive $A,B,K,N$ with units; identify a failed requirement in the 0.8 uncertainty run from an actual quantity; and recover the broken calibration without changing the stress controls. Full credit requires all three explanations and the repeated recovery values, not just a pass count.

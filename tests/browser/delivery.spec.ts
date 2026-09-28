@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, chromium } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 const path = '/courses/dsp-radar/modules/84-run-the-end-to-end-radar-processing-capstone';
 test('source equations, revision disclosure, plot ranges and mobile keyboard navigation', async ({ page }) => {
@@ -79,7 +79,7 @@ test('numeric menu defaults survive JavaScript serialization', async ({ page }) 
   await expect(page.locator('.runtime-error')).toHaveCount(0);
 });
 test('content review notes remain distinct from execution failures', async ({ page }) => {
-  await page.goto('/courses/vehicle-dynamics/modules/67-capstone-calibrate-and-predict-with-a-gr86-digital-twin');
+  await page.goto('/courses/robotics-autonomy/modules/26-compose-rotations-and-poses-on-so-3-and-se-3');
   await expect(page.getByRole('note')).toContainText('Under revision');
   await expect(page.locator('.js-plotly-plot')).toHaveCount(2);
   await expect(page.locator('.runtime-error')).toHaveCount(0);
@@ -146,4 +146,87 @@ test('authored axis and colorbar units appear in the rendered charts', async ({ 
   await expect(page.locator('.y2title')).toHaveText('Bin spacing (Hz)');
   await page.goto('/courses/dsp-radar/modules/70-create-an-fmcw-range-doppler-map');
   await expect(page.locator('.cbtitle').filter({ hasText: /^dB$/ }).first()).toBeVisible();
+});
+
+
+test('repaired capstone exposes scoped review and computed requirement failure', async ({ page }) => {
+  await page.goto('/courses/controls-gnc/modules/66-capstone-identify-control-estimate-and-stress-a-plant');
+  await expect(page.locator('.compute-status:visible').first()).toContainText('Experiment synchronized');
+  await expect(page.locator('.lesson-content-note')).toHaveCount(0);
+  await page.getByText('Lesson review and evidence', { exact: true }).click();
+  await expect(page.getByText('Scoped model revision:', { exact: true })).toBeVisible();
+  const rank = page.getByRole('row').filter({ hasText: 'Calibration regressor rank' });
+  await expect(rank).toContainText('pass');
+  const response = page.waitForResponse(r => r.url().endsWith('/run') && r.request().method() === 'POST');
+  await page.locator('.control-panel:visible').getByRole('checkbox').check();
+  expect((await response).ok()).toBe(true);
+  await expect(rank).toContainText('fail');
+  await expect(page.locator('.runtime-error')).toHaveCount(0);
+});
+
+test('repaired bounded plots keep drawn SVG curves after failure and reset', async ({ page }) => {
+  await page.goto('/courses/vehicle-dynamics/modules/64-run-a-forward-backward-lap-time-simulation');
+  const controls = page.locator('.control-panel:visible');
+  const assertDrawn = async () => {
+    await expect(page.locator('.compute-status:visible').first()).toContainText('Experiment synchronized');
+    await expect(page.locator('.js-plotly-plot')).toHaveCount(2);
+    for (const plot of await page.locator('.js-plotly-plot').all()) {
+      await expect(plot.locator('.scatterlayer .trace path').first()).toBeVisible();
+      expect(await plot.evaluate((node: any) => node.data.every((trace: any) => trace.type === 'scatter'))).toBe(true);
+    }
+    await expect(page.locator('.js-plotly-plot').getByText(/WebGL/i)).toHaveCount(0);
+  };
+  await assertDrawn();
+  for (const action of [() => controls.getByRole('checkbox').check(), () => controls.getByRole('button', { name: 'Reset parameters' }).click()]) {
+    const response = page.waitForResponse(r => r.url().endsWith('/run') && r.request().method() === 'POST');
+    await action();
+    expect((await response).ok()).toBe(true);
+    await assertDrawn();
+  }
+});
+
+test('existing WebGL lesson draws unchanged curves when WebGL is disabled', async ({ baseURL }) => {
+  const browser = await chromium.launch({ args: ['--disable-webgl'] });
+  try {
+    const page = await browser.newPage();
+    const response = page.waitForResponse(r => r.url().endsWith('/run') && r.request().method() === 'POST');
+    await page.goto(baseURL + '/courses/controls-gnc/modules/01-watch-a-mass-spring-damper-respond');
+    const result = await (await response).json();
+    await expect(page.locator('.js-plotly-plot')).toHaveCount(2);
+    for (const [index, plot] of (await page.locator('.js-plotly-plot').all()).entries()) {
+      await expect(plot.locator('.scatterlayer .trace path').first()).toBeVisible();
+      const drawn = await plot.evaluate((node: any) => node.data.map((trace: any) => ({ type: trace.type, x: trace.x, y: trace.y })));
+      const authored = Object.values(result.plots)[index] as any;
+      expect(authored.data.every((trace: any) => trace.type === 'scattergl')).toBe(true);
+      expect(drawn).toEqual(authored.data.map((trace: any) => ({ type: 'scatter', x: trace.x, y: trace.y })));
+      const legend = await plot.locator('.legend').boundingBox();
+      const axisTitle = await plot.locator('.xtitle').boundingBox();
+      expect(legend && axisTitle && axisTitle.y + axisTitle.height < legend.y).toBeTruthy();
+      if (index === 1) {
+        const topAxis = await plot.locator('.x2title').boundingBox();
+        const chartTitle = await plot.locator('.gtitle').boundingBox();
+        expect(topAxis && chartTitle && chartTitle.y + chartTitle.height < topAxis.y).toBeTruthy();
+      }
+    }
+    await expect(page.locator('.js-plotly-plot').getByText(/WebGL/i)).toHaveCount(0);
+  } finally { await browser.close(); }
+});
+
+test('chart initialization failure falls back even after a successful context probe', async ({ page }) => {
+  await page.addInitScript(() => {
+    const original = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = function (kind: any, options?: any): any {
+      // The capability probe has no options. Chart initialization requests
+      // options and fails: exercise real Plotly fallback, never mock run data.
+      if ((kind === 'webgl' || kind === 'experimental-webgl') && options) return null;
+      return original.call(this, kind, options);
+    } as typeof original;
+  });
+  await page.goto('/courses/controls-gnc/modules/01-watch-a-mass-spring-damper-respond');
+  await expect(page.locator('.js-plotly-plot')).toHaveCount(2);
+  for (const plot of await page.locator('.js-plotly-plot').all()) {
+    await expect(plot.locator('.scatterlayer .trace path').first()).toBeVisible();
+  }
+  await expect(page.locator('.no-webgl')).toHaveCount(0);
+  await expect(page.locator('.error-inline')).toHaveCount(0);
 });

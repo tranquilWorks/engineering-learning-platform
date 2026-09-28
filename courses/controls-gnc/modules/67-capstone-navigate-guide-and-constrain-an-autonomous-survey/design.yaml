@@ -7,9 +7,9 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- P_nav grows during GNSS dropout
-- chi_c=chi_path-atan(e_y/L)
-- '|chi_dot|<=chi_dot_max and monitor residuals'
+- position increment=v dt sinc(omega dt/2) [cos(psi+omega dt/2),sin(psi+omega dt/2)] m
+- omega=clip(1.5 wrap(heading_target-heading_estimate),-limit,limit) rad/s
+- GNSS age=t-last_fix; speed=0 when age>3 s; inertial gyro bias=0.3 deg/s
 signature:
 - field: maximum_cross_track_error
   unit: m
@@ -17,11 +17,11 @@ signature:
   unit: deg/s
 - field: monitor_alarm
   unit: bool
-teaching_invariant: The survey passes only when navigation uncertainty, cross-track error, turn-rate constraint,
-  and monitor response satisfy their separate requirements.
+teaching_invariant: Zero turn rate reduces exact arc propagation to straight motion. Zero dropout retains regular
+  GNSS corrections; a long hold may reduce error by sacrificing progress.
 limiting_cases:
-- At zero dropout navigation covariance does not accumulate outage growth.
-- Applied turn rate never exceeds its declared limit in the constrained case.
+- Zero turn rate reduces exact arc propagation to straight motion.
+- Zero dropout retains regular GNSS corrections; a long hold may reduce error by sacrificing progress.
 scenarios:
   baseline: &id001
     gnss_dropout_s: 4.0

@@ -59,9 +59,9 @@ but they are not independent correctness oracles.
 | Course | Native interactive lessons | Required follow-up |
 | --- | ---: | --- |
 | DSP/Radar | 84 | #441: aggregate competency mapping and cumulative assessment after completed item repairs |
-| Controls/GNC | 68 | 22 affected lessons: cumulative capstones plus unsupported prerequisite mechanisms |
-| Robotics/Autonomy | 69 | 27 affected lessons: replay/recovery plus unsupported geometry, dynamics and perception mechanisms |
-| Vehicle Dynamics | 67 | 23 affected lessons: P01–P16 mixed-unit charts and P61–P67 dimensional/performance/cumulative defects |
+| Controls/GNC | 68 | 19 remaining affected lessons; three capstones have scoped numerical/physical repairs |
+| Robotics/Autonomy | 69 | 25 remaining affected lessons; two capstones have scoped numerical/physical repairs |
+| Vehicle Dynamics | 67 | 16 remaining affected lessons: P01–P16 mixed-unit charts; P61–P67 have scoped numerical/physical repairs |
 
 All four aggregate numerical, curriculum and capstone statuses remain blocked
 pending the named reassessments. Prior maps, references and tests are retained;

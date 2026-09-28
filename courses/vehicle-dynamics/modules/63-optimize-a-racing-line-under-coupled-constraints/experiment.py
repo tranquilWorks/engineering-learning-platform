@@ -5,10 +5,10 @@ from typing import Any
 import numpy as np
 
 ITEM_NUMBER = 63
-DEFAULTS = {"maximum_offset_m": 3.0, "smoothness_weight": 0.50}
-RANGES = {"maximum_offset_m": (1.0, 5.0), "smoothness_weight": (0.0, 1.5)}
+DEFAULTS = {"maximum_offset_m": 3.0, "smoothness_weight": 0.02}
+RANGES = {"maximum_offset_m": (1.0, 5.0), "smoothness_weight": (0.0, 0.1)}
 BROKEN_TEXT = "Broken mode selects an offset beyond the track boundary and reports an infeasible line as the fastest candidate."
-RECOVERY_TEXT = "Bound lateral offset by track width, transform curvature consistently, enforce the coupled speed limit, and rank only feasible candidates."
+RECOVERY_TEXT = "Bound lateral offset by track width, transform curvature consistently, enforce the lateral speed limit, and rank only feasible candidates."
 
 
 def _parameters(s):
@@ -24,7 +24,7 @@ def _parameters(s):
 
 def _tr(n, x, y, xq, xu, yq, yu):
     return {
-        "type": "scattergl",
+        "type": "scatter",
         "mode": "lines+markers",
         "name": n,
         "x": np.asarray(x),
@@ -45,39 +45,38 @@ def _pl(t, xt, yt, d):
     }
 
 
+def _geometry(n=256, a=180.0, b=90.0):
+    theta = (np.arange(n) + 0.5) * 2 * np.pi / n
+    tangent_norm = np.hypot(a * np.sin(theta), b * np.cos(theta))
+    return tangent_norm * 2 * np.pi / n, a * b / tangent_norm**3
+
+
+def _line(offset, ds, curvature):
+    scale = 1 - offset * curvature
+    shifted_ds, shifted_k = ds * scale, curvature / scale
+    speed = np.sqrt(11.5 / shifted_k)
+    return shifted_ds, shifted_k, speed, float(np.sum(shifted_ds / speed))
+
+
 def _calc(bound, w, broken):
-    s = np.linspace(0, 1, 160)
-    base = 0.008 + 0.012 * (np.sin(2 * np.pi * s) ** 2)
+    ds, base = _geometry()
     candidates = np.linspace(-bound, bound, 41)
-    score = []
-    times = []
-    for o in candidates:
-        k = base / (1 - o * base)
-        length = 4200 * (1 + 0.0008 * o * o)
-        speed = np.sqrt(11.5 / np.maximum(k, 1e-6))
-        time = length / np.mean(speed)
-        times.append(time)
-        score.append(time + w * o * o)
-    idx = int(np.argmin(score))
-    offset = float(candidates[idx])
-    residual = 0.0
+    times = np.array([_line(o, ds, base)[3] for o in candidates])
+    offset = float(candidates[np.argmin(times + w * candidates**2)])
     if broken:
-        offset = 1.2 * bound
-        residual = offset - bound
-    k = base / (1 - offset * base)
-    length = 4200 * (1 + 0.0008 * offset * offset)
-    speed = np.sqrt(11.5 / k)
-    baseline = 4200 / np.mean(np.sqrt(11.5 / base))
-    sig = [
+        offset = 1.2 * bound  # explicitly injected infeasible candidate
+    distance, curvature, speed, time = _line(offset, ds, base)
+    baseline = _line(0, ds, base)[3]
+    signature = [
         offset,
-        length,
-        float(k.max()),
-        float(speed.min()),
-        float(baseline - length / np.mean(speed)),
+        float(sum(distance)),
+        float(max(curvature)),
+        float(min(speed)),
+        baseline - time,
         float(bound - abs(offset)),
-        float(max(0, residual)),
+        max(0.0, abs(offset) - bound),
     ]
-    return sig, candidates, np.asarray(times), s, k
+    return signature, candidates, times, np.cumsum(distance) / sum(distance), curvature
 
 
 def run(parameters: dict[str, Any]):
@@ -94,7 +93,7 @@ def run(parameters: dict[str, Any]):
                         "Line length",
                         "Peak curvature",
                         "Minimum speed",
-                        "Objective improvement",
+                        "Travel time improvement",
                         "Boundary margin",
                         "Feasibility residual",
                     ),
@@ -128,7 +127,7 @@ def run(parameters: dict[str, Any]):
             ),
         },
         "explanations": {
-            "observation": "A faster candidate matters only if its offset stays inside track width and its curvature respects the coupled speed envelope.",
+            "observation": "A faster candidate matters only if its offset stays inside track width and its curvature respects the lateral speed envelope.",
             "broken": BROKEN_TEXT,
             "recovery": RECOVERY_TEXT,
         },

@@ -24,7 +24,7 @@ def _parameters(s):
 
 def _tr(n, x, y, xq, xu, yq, yu):
     return {
-        "type": "scattergl",
+        "type": "scatter",
         "mode": "lines",
         "name": n,
         "x": np.asarray(x),
@@ -45,10 +45,10 @@ def _pl(t, xt, yt, d):
     }
 
 
-def _calc(a, n, broken):
+def _calc(a, n, broken, aspect_ratio=0.6):
     end = 1.8 * np.pi if broken else 2 * np.pi
     q = np.linspace(0, end, n)
-    b = 0.6 * a
+    b = aspect_ratio * a
     x = a * np.cos(q)
     y = b * np.sin(q)
     dx = -a * np.sin(q)
@@ -84,7 +84,7 @@ def run(parameters: dict[str, Any]):
                     (
                         "Track length",
                         "Peak curvature",
-                        "Mean curvature",
+                        "Parameter-sample mean curvature",
                         "Heading closure",
                         "Position closure",
                         "Curvature integral residual",

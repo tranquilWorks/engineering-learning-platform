@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { AlertTriangle, Box, RotateCcw } from "lucide-react";
 import type { PlotSpec } from "../types";
 import { normalizePlotTitles } from "../lib/plotTitles";
+import { markWebGLUnavailable, preparePlotData, supportsWebGL } from "../lib/plotRendering";
 
 interface Props {
   title?: string | null;
@@ -40,7 +41,7 @@ export function PlotPanel({ title, spec, compact = false, name }: Props) {
     const node = root.current;
     setError(null);
     void import("plotly.js-dist-min")
-      .then(({ default: Plotly }) => {
+      .then(async ({ default: Plotly }) => {
         if (!active) return;
         const layout: Record<string, unknown> = {
           autosize: true,
@@ -51,13 +52,43 @@ export function PlotPanel({ title, spec, compact = false, name }: Props) {
           margin: { l: 62, r: 28, t: 52, b: 58 },
           ...normalizePlotTitles(spec.layout),
         };
-        return Plotly.react(node, spec.data.map(normalizePlotTitles), layout, {
+        const legend = layout.legend as Record<string, unknown> | undefined;
+        if (legend?.orientation === "h" && legend.y === undefined) {
+          // Reserve a separate bottom band for automatic horizontal legends;
+          // the paper-relative default can collide with the x-axis title.
+          layout.legend = { ...legend, yref: "container", y: 0, yanchor: "bottom" };
+          const margin = layout.margin as Record<string, number>;
+          layout.margin = { ...margin, b: Math.max(margin.b ?? 0, 110) };
+        }
+        if (Object.entries(layout).some(([key, value]) => /^xaxis\d*$/.test(key)
+          && (value as Record<string, unknown>)?.side === "top")) {
+          const margin = layout.margin as Record<string, number>;
+          layout.margin = { ...margin, t: Math.max(margin.t ?? 0, 96) };
+          layout.title = { ...(layout.title as Record<string, unknown>), y: 0.98, yanchor: "top" };
+        }
+        const data = spec.data.map(normalizePlotTitles);
+        const config = {
           responsive: true,
           displaylogo: false,
           scrollZoom: true,
           modeBarButtonsToRemove: ["lasso2d", "select2d"],
           ...spec.config,
-        });
+        };
+        const hasGL = data.some(trace => trace.type === "scattergl");
+        let retrySVG = false;
+        try {
+          await Plotly.react(node, preparePlotData(data, supportsWebGL()), layout, config);
+        } catch (reason) {
+          if (!active || !hasGL) throw reason;
+          retrySVG = true;
+        }
+        // A browser may create a WebGL context yet lack the setup required by
+        // the plot backend. Plotly resolves its promise while drawing a notice.
+        if (active && hasGL && (retrySVG || node.querySelector(".no-webgl"))) {
+          markWebGLUnavailable();
+          Plotly.purge(node);
+          await Plotly.react(node, preparePlotData(data, false), layout, config);
+        }
       })
       .catch((reason: unknown) => {
         if (active) setError(reason instanceof Error ? reason.message : "Plot rendering failed");

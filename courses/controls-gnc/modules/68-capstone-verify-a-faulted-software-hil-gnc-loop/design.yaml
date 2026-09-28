@@ -7,21 +7,21 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- age=t_now-t_source
-- watchdog if age>deadline
-- pass=timing and tracking and fault-response requirements
+- arrival_tick=source_tick+ceil(latency_ms/20); dt=0.02 s
+- age=(tick-accepted_source_tick)dt; healthy applied command=0 if age>0.05 s
+- x_next=exp(-dt)x+(1-exp(-dt))*applied_command; u_source=clip(2(1-x),-3,3)
 signature:
 - field: deadline_miss_fraction
-  unit: '1'
+  unit: fraction
 - field: watchdog_activation_fraction
-  unit: '1'
+  unit: fraction
 - field: requirements_passed
   unit: bool
-teaching_invariant: A software-HIL pass requires every named timing and fault-response requirement to pass; physical
-  I/O and real-time scheduling remain an explicit evidence gap.
+teaching_invariant: Zero latency and zero drops have no transport age fault or injected late duplicate. Every healthy
+  nonzero actuator sample has an accepted source age at most 0.05 s.
 limiting_cases:
-- At zero latency and zero drops the software transport adds no age fault.
-- A dropped packet changes command age; it does not by itself define the safe actuator action.
+- Zero latency and zero drops have no transport age fault or injected late duplicate.
+- Every healthy nonzero actuator sample has an accepted source age at most 0.05 s.
 scenarios:
   baseline: &id001
     one_way_latency_ms: 12.0

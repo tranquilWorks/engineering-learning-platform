@@ -202,7 +202,8 @@ def test_vehicle_native_designs_are_schema_valid_and_semantically_distinct() -> 
 def test_vehicle_native_reference_has_no_production_execution_path() -> None:
     path = COURSE_ROOT / "expansion_reference_cases.py"
     tree = ast.parse(path.read_text())
-    allowed_imports = {"typing", "numpy", "__future__"}
+    # Shared raw fixture/provenance only; production imports remain forbidden.
+    allowed_imports = {"typing", "numpy", "__future__", "json", "pathlib", "hashlib"}
     forbidden_calls = {"eval", "exec", "compile", "__import__", "run", "import_module"}
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):

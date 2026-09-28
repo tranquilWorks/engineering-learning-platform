@@ -1,50 +1,22 @@
-# Handoff — revised-course quality completion
+# Authorized continuation
 
-The owner requested vetting the revised curricula, finishing quality/course
-iteration batches, embedding per-lesson quality in the browser/container, and
-reporting the exact position. Earlier merge/next-group authorization persists;
-no production deployment is authorized.
+The twelve-lesson semantic batch has completed its mandatory local verification;
+see CURRENT_STATE and the exact ELP-SEMANTIC-QUALITY-12 evidence. PR53 carries the
+isolated result from delivery PR52 baseline 4e8e39fb3fc05eef8b4ca5607bec4d0bc9320891.
+Control PR534 authorized the twelve models and PR537 authorized generic rendering
+repair. Retained owner authorization permits normal verified development merge.
+Verify the final head, baseline and review state, then use the actual merge commit
+and tree for the next control contract.
 
-Current target branch: `codex/course-browser-quality-20260928`, based on merged
-PR51 `b8d760e6721ae0b94aaa503f4ca1599592266442`. The active contract is
-`ELP-COURSE-DELIVERY-QUALITY-01`, from control PR531 and its narrow numeric-menu
-amendment PR532. The profile points to control merge
-`bd18c4dd65a710c3c09d42aa92d169e63034aea3`.
+Next activate ELP-DSP-AGGREGATE-QUALITY-01: 84 existing lesson checkpoints,
+ten cumulative portfolios and a competency/prerequisite graph. Preserve all DSP
+experiments, source lesson bytes, reference oracles, expected vectors and source
+pins. Referenced assessment files must participate in the actual module digest;
+reconcile only the conversion target identities and coverage target digests.
+The assessment drafts are preparation, not completed browser integration.
 
-Read [CURRENT_STATE](CURRENT_STATE.md), [COURSE_QUALITY](COURSE_QUALITY.md), and
-[delivery evidence](evidence/ELP-COURSE-DELIVERY-QUALITY-01-2026-09-28.md). Course
-payloads and source pins remain byte-identical to PR51 during this delivery
-batch. Backend contract/quick/full gates passed; all 290 container HTTP checks and all 580 desktop/mobile page checks passed.
-Ten focused browser regressions and nine frontend tests passed. Delivery
-PR52 is ready for exact-head review and eligible merge under retained owner
-authorization.
-
-## Authorized continuation
-
-1. Finish exact delivery evidence, review and eligible merge.
-2. Activate a fresh `ELP-SEMANTIC-QUALITY-12` control contract from that merge.
-   Repair Controls P66–68, Robotics P68–69, and Vehicle P61–67. The concrete
-   [semantic repair specification](course-quality/semantic-repair-plan.md)
-   records executed-model, independent-reference and teaching requirements.
-   It is a design, not implementation evidence. The draft control contract
-   must receive the actual target baseline/tree/predecessor before activation.
-3. Complete the separate DSP competency-map and cumulative-assessment review.
-   Do not promote whole-course maturity from module counts or passing delivery
-   tests. Do not convert the nine source-only repositories implicitly.
-
-All four aggregate numerical/curriculum/capstone statuses are blocked. Direct
-inspection found unexecuted capstone surrogates/fixed recovery verdicts and
-Vehicle dimensional/performance defects despite passing old tests. Preserve
-unaffected numerical evidence while adding checks that detect those defects.
-
-Local verification includes actual read-only nonroot containers and Chromium;
-manual screen-reader, representative learner, MATLAB, measured vehicle/track,
-physical HIL and production evidence remain unperformed. No workflow, secret or
-source test may be weakened to manufacture a green hosted result.
-
-The wider model review subsequently found 60 additional issues beyond the first
-twelve, for **72 affected lessons**. See
-[the additional register](course-quality/additional-semantic-findings.md). The
-first twelve-lesson repair contract does not cover those 60; they remain blocked
-pending separate scope and implementation. No aggregate acceptance follows from
-finishing only the initial group.
+Retain all 60 additional Controls/Robotics/Vehicle findings and blocked aggregate
+maturity. Do not convert numerical software evidence into learner effectiveness,
+manual assistive-technology, MATLAB, physical HIL or production acceptance.
+Hosted CI is nonmandatory under retained owner direction; all named local gates
+are mandatory, and actual hosted failures/pending results must remain explicit.
