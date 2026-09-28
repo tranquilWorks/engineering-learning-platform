@@ -1,169 +1,334 @@
 from __future__ import annotations
 
-from typing import Any
-
 import numpy as np
 
-SEED = 1077
-ITEM_NUMBER = 77
-PHASE = 9
-MAX_POINTS = 512
+
+def _controls(p, spec):
+    values = []
+    for key, default, choices in spec:
+        value = p.get(key, default)
+        if isinstance(value, bool) or value not in choices:
+            raise ValueError("Choose a retained physical control: " + key)
+        values.append(float(value))
+    broken = p.get("broken_mode", False)
+    if not isinstance(broken, bool):
+        raise TypeError("broken_mode must be boolean")
+    return (*values, broken)
 
 
-def _layout(title: str, x_label: str, y_label: str) -> dict[str, Any]:
+def _plot(title, xlabel, ylabel, traces):
+    data = []
+    for name, x, y in traces:
+        x, y = np.asarray(x), np.asarray(y)
+        if len(x) <= 512:
+            ix = np.arange(len(x))
+        else:
+            peaks = np.flatnonzero((y[1:-1] >= y[:-2]) & (y[1:-1] > y[2:])) + 1
+            selected = peaks[np.argsort(y[peaks])[-12:]]
+            keep = np.unique(
+                np.r_[
+                    0,
+                    len(x) - 1,
+                    np.argmin(abs(x)),
+                    np.argmin(y),
+                    np.argmax(y),
+                    selected,
+                ]
+            )
+            grid = np.linspace(0, len(x) - 1, 512 - len(keep)).astype(int)
+            ix = np.unique(np.r_[keep, grid])
+        data.append(
+            {
+                "type": "scatter",
+                "mode": "lines",
+                "name": name,
+                "x": x[ix].tolist(),
+                "y": y[ix].tolist(),
+            }
+        )
     return {
-        "title": {"text": title, "x": 0.02, "xanchor": "left"},
-        "margin": {"l": 68, "r": 22, "t": 58, "b": 58},
-        "xaxis": {"title": x_label, "showgrid": True},
-        "yaxis": {"title": y_label, "showgrid": True},
-        "legend": {"orientation": "h", "y": 1.14},
-        "hovermode": "closest",
-        "uirevision": "keep-view",
+        "data": data,
+        "layout": {
+            "title": {"text": title},
+            "xaxis": {"title": xlabel},
+            "yaxis": {"title": ylabel},
+            "legend": {"orientation": "h"},
+        },
+        "config": {"responsive": True, "displaylogo": False},
     }
 
 
-def run(parameters: dict[str, Any]) -> dict[str, Any]:
-    primary = float(parameters["primary_scale"])
-    secondary = float(parameters["secondary_scale"])
-    noise_db = float(parameters["noise_db"])
-    broken_mode = bool(parameters["broken_mode"])
-    count = 192 + 16 * (ITEM_NUMBER % 4)
-    if count > MAX_POINTS:
-        raise ValueError("experiment exceeds the retained point ceiling")
-    rng = np.random.default_rng(SEED)
-    x = np.linspace(0.0, 1.0, count, endpoint=False)
-    variant = 1.0 + (ITEM_NUMBER % 7) / 5.0
-    noise_scale = 10.0 ** (noise_db / 20.0)
+def _heat(title, xlabel, ylabel, x, y, z, unit):
+    x, y, z = np.asarray(x), np.asarray(y), np.asarray(z)
 
-    if PHASE == 1:
-        truth = np.cos(2.0 * np.pi * variant * primary * x + 0.4 * secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, count // 7) if broken_mode else measured
-    elif PHASE == 2:
-        tone = np.exp(1j * (2.0 * np.pi * (8.0 + variant * primary) * x + secondary))
-        measured = tone + noise_scale * (rng.standard_normal(count) + 1j * rng.standard_normal(count))
-        response_axis = np.fft.fftshift(np.fft.fftfreq(count, d=1.0 / count))
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / count
-        broken_response = np.abs(measured.real) if broken_mode else np.abs(measured)
-        truth = tone.real
-    elif PHASE == 3:
-        symbols = np.sign(np.sin(2.0 * np.pi * (4.0 + variant) * x))
-        carrier = np.cos(2.0 * np.pi * (18.0 + 2.0 * primary) * x + secondary)
-        truth = symbols * carrier
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(2 + 10 * secondary)) if broken_mode else measured
-    elif PHASE == 4:
-        bins = np.arange(count, dtype=float)
-        center = count * (0.25 + 0.25 * (primary - 0.5))
-        width = 2.0 + 4.0 * secondary
-        truth = np.exp(-0.5 * ((bins - center) / width) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = bins
-        response = np.abs(np.fft.fftshift(np.fft.fft(measured))) / np.sqrt(count)
-        broken_response = np.roll(measured, count // 3) if broken_mode else measured
-        x = bins
-    elif PHASE == 5:
-        cells = np.arange(count, dtype=float)
-        background = 0.2 + (0.45 * secondary) * (cells >= count // 2)
-        power = background + np.abs(noise_scale * rng.standard_normal(count))
-        target_bin = int(count * (0.3 + 0.25 * (primary - 0.5)))
-        power[target_bin] += 1.4
-        truth = power
-        measured = power
-        response_axis = cells
-        response = np.full(count, np.quantile(power, 0.82 + 0.1 * secondary))
-        if broken_mode:
-            response = np.full(count, np.mean(power) * (1.2 + primary))
-        broken_response = response
-        x = cells
-    elif PHASE == 6:
-        steps = np.arange(count, dtype=float)
-        truth = 0.04 * steps + 0.0002 * variant * secondary * steps**2
-        measured = truth + noise_scale * 8.0 * rng.standard_normal(count)
-        gain = np.clip(0.12 + 0.5 * primary, 0.05, 0.95)
-        response = np.empty(count)
-        response[0] = measured[0]
-        for index in range(1, count):
-            response[index] = response[index - 1] + gain * (measured[index] - response[index - 1])
-        response_axis = steps
-        broken_response = np.roll(response, 12) if broken_mode else response
-        x = steps
-    elif PHASE == 7:
-        angles = np.linspace(-90.0, 90.0, count)
-        u = np.sin(np.deg2rad(angles)) - np.sin(np.deg2rad(45.0 * (primary - 1.0)))
-        spacing = 0.45 + 0.45 * secondary
-        elements = 6 + ITEM_NUMBER % 7
-        denominator = np.sin(np.pi * spacing * u)
-        numerator = np.sin(elements * np.pi * spacing * u)
-        response = np.where(np.abs(denominator) < 1e-10, 1.0, np.abs(numerator / (elements * denominator)))
-        truth = response
-        measured = np.maximum(response + noise_scale * rng.standard_normal(count), 0.0)
-        response_axis = angles
-        broken_response = np.roll(response, 9) if broken_mode else response
-        x = angles
-    elif PHASE == 8:
-        bins = np.arange(count, dtype=float)
-        beat_bin = count * (0.15 + 0.35 * (primary - 0.5))
-        truth = np.cos(2.0 * np.pi * beat_bin * bins / count + secondary)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        response_axis = np.fft.rfftfreq(count, d=1.0 / count)
-        response = np.abs(np.fft.rfft(measured)) / count
-        broken_response = np.roll(measured, int(8 + 16 * secondary)) if broken_mode else measured
-        x = bins
-    else:
-        coordinate = np.linspace(-1.0, 1.0, count)
-        width = 0.05 + 0.16 / primary
-        truth = np.exp(-0.5 * ((coordinate + 0.25) / width) ** 2) + 0.65 * np.exp(-0.5 * ((coordinate - 0.3) / (1.4 * width)) ** 2)
-        measured = truth + noise_scale * rng.standard_normal(count)
-        kernel = np.ones(3 + 2 * int(secondary * 5))
-        kernel /= kernel.sum()
-        response = np.convolve(measured, kernel, mode="same")
-        response_axis = coordinate
-        broken_response = np.roll(response, 18) + 0.25 * np.roll(response, -13) if broken_mode else response
-        x = coordinate
+    def indices(axis, scores, limit):
+        peaks = np.flatnonzero(
+            (scores >= np.r_[-np.inf, scores[:-1]])
+            & (scores >= np.r_[scores[1:], -np.inf])
+        )
+        keep = list(peaks[np.argsort(scores[peaks])[-12:]]) + [
+            int(np.argmin(abs(axis))),
+            0,
+            len(axis) - 1,
+        ]
+        keep = np.unique(keep)
+        grid = np.linspace(
+            0, len(axis) - 1, min(len(axis), max(2, limit - len(keep)))
+        ).astype(int)
+        return np.unique(np.r_[keep, grid])
 
-    displayed = broken_response if broken_mode else measured
-    separation = float(np.max(response) - np.median(response))
-    rmse = float(np.sqrt(np.mean((np.asarray(displayed).real - np.asarray(truth).real) ** 2)))
-    signature = [float(count), primary, secondary, noise_db, float(np.mean(np.asarray(displayed).real)), float(np.std(np.asarray(displayed).real)), separation, rmse]
-    sweep_primary = [0.6, 1.0, 1.4]
-    sweep_secondary = [0.0, 0.5, 1.0]
-    sweep_response = [variant * value for value in sweep_primary]
-    stress_response = [separation / (1.0 + value) for value in sweep_secondary]
-    title = 'Focus SAR with Backprojection'
+    ix = indices(x, np.max(z, axis=0), 128)
+    iy = indices(y, np.max(z, axis=1), 64)
+    return {
+        "data": [
+            {
+                "type": "heatmap",
+                "x": x[ix].tolist(),
+                "y": y[iy].tolist(),
+                "z": z[np.ix_(iy, ix)].tolist(),
+                "colorbar": {"title": unit},
+            }
+        ],
+        "layout": {
+            "title": {"text": title},
+            "xaxis": {"title": xlabel},
+            "yaxis": {"title": ylabel},
+        },
+        "config": {"responsive": True, "displaylogo": False},
+    }
 
+
+def _finish(values, plots, observation, failure, recovery, seed, broken, **extra):
     return {
         "metrics": [
-            {"id": "primary", "label": 'Focus Range', "value": primary, "unit": "× baseline", "emphasis": "primary"},
-            {"id": "response_separation", "label": "Response separation", "value": separation, "unit": "normalized"},
-            {"id": "model_error", "label": "Model/display error", "value": rmse, "unit": "normalized"},
-            {"id": "points", "label": "Bounded points", "value": count, "unit": "points"},
+            {"id": k, "label": k.replace("_", " "), "value": float(v), "unit": u}
+            for k, (v, u) in values.items()
         ],
-        "plots": {
-            "model_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "physical/model truth", "x": x, "y": np.asarray(truth).real},
-                {"type": "scatter", "mode": "lines", "name": "measured/processed", "x": x, "y": np.asarray(displayed).real},
-            ], "layout": _layout(title + " — model view", 'range/cross-range coordinate', 'normalized intensity'), "config": {"responsive": True, "displaylogo": False}},
-            "response_view": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "response", "x": response_axis, "y": np.asarray(response).real},
-            ], "layout": _layout(title + " — response view", 'range/cross-range coordinate', 'normalized intensity'), "config": {"responsive": True, "displaylogo": False}},
-            "parameter_sweeps": {"data": [
-                {"type": "scatter", "mode": "lines+markers", "name": "primary scale", "x": sweep_primary, "y": sweep_response},
-                {"type": "scatter", "mode": "lines+markers", "name": "secondary stress", "x": sweep_secondary, "y": stress_response},
-            ], "layout": _layout("Two one-variable sweeps", "control value", "response statistic"), "config": {"responsive": True, "displaylogo": False}},
-            "broken_case": {"data": [
-                {"type": "scatter", "mode": "lines", "name": "recovered", "x": x, "y": np.asarray(measured).real},
-                {"type": "scatter", "mode": "lines", "name": "broken" if broken_mode else "enable broken mode", "x": x, "y": np.asarray(broken_response).real},
-            ], "layout": _layout("Intentional assumption failure", 'range/cross-range coordinate', 'normalized intensity'), "config": {"responsive": True, "displaylogo": False}},
-        },
+        "plots": plots,
         "explanations": {
-            "observation": f"The {title} model uses a bounded deterministic coherent imaging experiment. Primary scale={primary:.2f} and secondary stress={secondary:.2f} remain independently controllable.",
-            "broken": "Broken mode deliberately violates the lesson's central interpretation assumption so the displayed response becomes ambiguous, biased, contaminated, or defocused.",
-            "recovery": "Disable broken mode, restore both scales to 1.0 and 0.25, then connect the recovered shape to the pinned source equations before changing one control at a time.",
+            "observation": observation,
+            "broken": failure,
+            "recovery": recovery,
         },
-        "diagnostics": {"seed": SEED, "item_number": ITEM_NUMBER, "point_count": count, "signature": signature, "broken_active": broken_mode},
+        "diagnostics": dict(
+            signature=[float(v[0]) for v in values.values()],
+            signature_fields=list(values),
+            seed=seed,
+            broken_active=broken,
+            **extra,
+        ),
     }
+
+
+def _uniform(seed, count):
+    state = int(seed)
+    out = np.empty(count)
+    for i in range(count):
+        state = (16807 * state) % 2147483647
+        out[i] = state / 2147483647
+    return out
+
+
+def _noise(seed, rows, columns=1, interleaved=False):
+    count = rows * columns
+    u = _uniform(seed, 2 * count)
+    first, second = (u[::2], u[1::2]) if interleaved else (u[:count], u[count:])
+    return (np.sqrt(-np.log(first)) * np.exp(2j * np.pi * second)).reshape(
+        (rows, columns), order="F"
+    )
+
+
+def _db(power, floor=-80, relative=False):
+    x = np.asarray(power)
+    if relative:
+        x = x / np.max(x)
+    return 10 * np.log10(np.maximum(x, 10 ** (floor / 10)))
+
+
+def _amplitude_width(axis, magnitude):
+    peak = int(np.argmax(magnitude))
+    level = magnitude[peak] / np.sqrt(2)
+    left = right = peak
+    while left > 0 and magnitude[left] >= level:
+        left -= 1
+    while right < len(axis) - 1 and magnitude[right] >= level:
+        right += 1
+    if magnitude[left] >= level or magnitude[right] >= level:
+        return float(axis[-1] - axis[0])
+    lo = axis[left] + (level - magnitude[left]) * (axis[left + 1] - axis[left]) / (
+        magnitude[left + 1] - magnitude[left]
+    )
+    hi = axis[right - 1] + (level - magnitude[right - 1]) * (
+        axis[right] - axis[right - 1]
+    ) / (magnitude[right] - magnitude[right - 1])
+    return float(hi - lo)
+
+
+def _linear_row(row, axis, query):
+    f = (query - axis[0]) / (axis[1] - axis[0])
+    left = np.floor(f).astype(int)
+    valid = (left >= 0) & (left < len(axis) - 1)
+    j = np.clip(left, 0, len(axis) - 2)
+    w = f - left
+    return np.where(valid, (1 - w) * row[j] + w * row[j + 1], 0)
+
+
+CONTROLS = [
+    ("aperture_looks", 121, [21, 61, 121]),
+    ("path_error_m", 0, [0, 0.005, 0.01]),
+]
+
+
+def _history77():
+    pos = np.arange(-15, 15.125, 0.25)
+    axis = np.arange(990, 1035.25, 0.5)
+    ranges = np.hypot(pos[:, None] - [-6, 7], [1002, 1020])
+    phase = np.array([0, 0.7]) - 4 * np.pi * (ranges - 990) / 0.06
+    h = sum(
+        a
+        * np.sinc((axis[None, :] - ranges[:, k, None]) / 2.5)
+        * np.exp(1j * phase[:, k, None])
+        for k, a in enumerate([1, 0.75])
+    )
+    return pos, axis, h + 0.015 * _noise(7701, len(pos), len(axis), True), ranges, phase
+
+
+def _backproject77(history, pos, axis, x, y, indices, error):
+    xx, yy = np.meshgrid(x, y)
+    image = np.zeros(xx.shape, complex)
+    for i in indices:
+        r = np.hypot(pos[i] - xx, yy + error[i])
+        image += _linear_row(history[i], axis, r) * np.exp(
+            4j * np.pi * (r - 990) / 0.06
+        )
+    return image
+
+
+def run(parameters):
+    looks, error, broken = _controls(parameters, CONTROLS)
+    looks = int(looks)
+    pos, axis, h, ranges, phase = _history77()
+    start = (121 - looks) // 2
+    ix = np.arange(start, start + looks)
+    x = np.arange(-15, 15.125, 0.25)
+    y = np.arange(995, 1027.25, 0.5)
+    profile = np.sin(2 * np.pi * np.arange(121) / 120)
+    error = 0.01 if broken else error
+    clean = _backproject77(h, pos, axis, x, y, ix, np.zeros(121))
+    active = _backproject77(h, pos, axis, x, y, ix, error * profile) if error else clean
+    tx = int(np.argmin(abs(x + 6)))
+    ty = int(np.argmin(abs(y - 1002)))
+    terms = []
+    ridge = []
+    for i in ix:
+        r = np.hypot(pos[i] + 6, 1002 + error * profile[i])
+        terms.append(_linear_row(h[i], axis, r) * np.exp(4j * np.pi * (r - 990) / 0.06))
+        ridge.append(_linear_row(h[i], axis, ranges[i, 0]))
+    terms = np.array(terms)
+    ridge = np.array(ridge)
+    widths = []
+    gains = []
+    for count in [21, 61, 121]:
+        ids = np.arange((121 - count) // 2, (121 + count) // 2)
+        cut = _backproject77(h, pos, axis, x, [1002], ids, np.zeros(121))[0]
+        widths.append(_amplitude_width(x, abs(cut)))
+        gains.append(abs(cut[tx]))
+    path_gains = []
+    for e in [0, 0.005, 0.01]:
+        v = _backproject77(h, pos, axis, [-6], [1002], ix, e * profile)[0, 0]
+        path_gains.append(abs(v) / abs(clean[ty, tx]))
+    errors = []
+    for xt, yt in [(-6, 1002), (7, 1020)]:
+        mask = (abs(x[None, :] - xt) <= 3) & (abs(y[:, None] - yt) <= 4)
+        iy, iz = np.unravel_index(
+            np.argmax(np.where(mask, abs(active), -1)), active.shape
+        )
+        errors.append([abs(x[iz] - xt), abs(y[iy] - yt)])
+    values = {
+        "active_true_voltage": (abs(active[ty, tx]), "V"),
+        "clean_true_voltage": (abs(clean[ty, tx]), "V"),
+        "phase_coherence": (abs(sum(terms)) / sum(abs(terms)), "ratio"),
+        "cross_range_width": (_amplitude_width(x, abs(active[ty])), "m"),
+        "input_phase_coherence": (
+            abs(np.mean(ridge / abs(ridge) * np.exp(-1j * phase[ix, 0]))),
+            "ratio",
+        ),
+        "max_x_error": (np.max(np.array(errors)[:, 0]), "m"),
+        "max_y_error": (np.max(np.array(errors)[:, 1]), "m"),
+        "path_error": (error, "m"),
+        "aperture_looks": (looks, "count"),
+        "model_valid": (not broken, "boolean"),
+    }
+    plots = {
+        "history": _heat(
+            "Complex range-compressed input magnitude",
+            "Slant range (m)",
+            "Platform position (m)",
+            axis,
+            pos,
+            _db(abs(h) ** 2, relative=True),
+            "dB",
+        ),
+        "phase": _plot(
+            "Measured and expected target-1 ridge phase",
+            "Platform position (m)",
+            "Relative phase (rad)",
+            [
+                ("Measured", pos[ix], np.unwrap(np.angle(ridge)) - np.angle(ridge[0])),
+                ("Modeled", pos[ix], phase[ix, 0] - phase[ix[0], 0]),
+            ],
+        ),
+        "image": _heat(
+            "Backprojection with selected assumed path",
+            "Cross-range (m)",
+            "Ground range (m)",
+            x,
+            y,
+            _db(abs(active) ** 2 / np.max(abs(clean) ** 2)),
+            "dB relative to correct focus",
+        ),
+        "cuts": _plot(
+            "Target-1 cross-range cut on a common scale",
+            "Cross-range (m)",
+            "Magnitude (dB)",
+            [
+                (
+                    "Correct path",
+                    x,
+                    _db(abs(clean[ty]) ** 2 / np.max(abs(clean[ty]) ** 2)),
+                ),
+                (
+                    "Selected path",
+                    x,
+                    _db(abs(active[ty]) ** 2 / np.max(abs(clean[ty]) ** 2)),
+                ),
+            ],
+        ),
+        "looks": _plot(
+            "More centered looks narrow the point response",
+            "Aperture looks (count)",
+            "Half-power width (m)",
+            [("Measured width", [21, 61, 121], widths)],
+        ),
+        "path": _plot(
+            "Millimeter path error destroys coherent gain",
+            "Assumed path error (mm)",
+            "True-pixel voltage ratio (ratio)",
+            [("Same input", [0, 5, 10], path_gains)],
+        ),
+    }
+    return _finish(
+        values,
+        plots,
+        "For each image pixel, predict slant range, interpolate the complex range row, cancel its two-way phase, and sum aperture looks. More coherent looks narrow the cross-range response.",
+        "The named failure assumes a sinusoidal 10 mm ground-range path error. Misaligned phasors reduce the true-pixel gain despite unchanged measurements.",
+        "Disable the failure and restore path error to 0 m; refocus the retained complex input with correct geometry.",
+        7701,
+        broken,
+        partial_widths=widths,
+        partial_voltages=gains,
+        path_gain_ratios=path_gains,
+        localization_errors=errors,
+        computed_image_shape=list(active.shape),
+        pixel_look_count=int(active.size * looks),
+    )

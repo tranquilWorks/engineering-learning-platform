@@ -1,6 +1,4 @@
-# Form an ISAR Image from a Rotating Target
-
-> **Guiding question:** How does target rotation create synthetic aperture when the radar is stationary?
+# P81 lesson: The Target Moves the Aperture
 
 The guiding question is: **How does target rotation create synthetic aperture when the radar is stationary?**
 
@@ -247,33 +245,29 @@ angular sampling set the cross-range view; rate changes CPI and Doppler hertz
 when angle support is fixed; and translation must be removed in complex
 frequency history before range compression and angle focus.
 
-## Use the Python GUI experiment
+## Interactive lab: Form an ISAR Image from a Rotating Target
 
-The GUI keeps the pinned source's mental model and processing order visible. The **rotation rate** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** How does target rotation create synthetic aperture when the radar is stationary?
 
-### Prediction and sweep 1 — rotation rate
+Seed 8101; carrier 10 GHz, 129 frequencies across 600 MHz, 65 uniform aspect looks, ten fixed seeded scatterers, 6 degree aperture, 6 deg/s rotation and 2 m/s translation. Project each scatterer as x sin(theta) + y cos(theta), form the frequency history, remove the known centroid translation phase, then perform range IFFT and signed angle FFT. Cross-range uses the small-angle approximation. Angular span changes resolution; rate at fixed span changes CPI and Doppler in hertz, while the aligned angle-domain image is invariant. Truth masks are used only to score concentration.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict the effect of angular aperture and rotation rate separately. Why does translation change both envelope and phase, and why does the signed angle transform place scatterers on the correct cross-range axis?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Angular aperture deg** from 6 to 2 deg. Predict, run, and explain a measured value using the governing equation; then reset.
+2. Start at the baseline. Sweep only **Rotation rate deg s** from 6 to 12 deg/s. Predict, run, and explain a measured value using the governing equation; then reset.
+3. Enable the broken case. Omitting the known centroid translation correction spreads energy and shifts the apparent shape. A faster rotation alone cannot replace alignment.
+4. Recovery: Disable the failure and multiply the original frequency history by the opposite translational phase. The small-angle cross-range approximation and uniform aspect sampling remain explicit assumptions.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict the effect of angular aperture and rotation rate separately. Why does translation change both envelope and phase, and why does the signed angle transform place scatterers on the correct cross-range axis? Support the explanation with a measured value and units, and state the recovery assumption.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+Omitting the known centroid translation correction spreads energy and shifts the apparent shape. A faster rotation alone cannot replace alignment. Distinguish the selected-control scene from a named separate failure scene.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The pinned source lesson is preserved above. Private Park–Miller inputs preserve the source zero-offset uniforms except P79/P80, which retain half-offset uniforms. P77/P78 interleave Box–Muller inputs; P81 uses direct phase uniforms and P83/P84 split radius/phase blocks. Matrix inputs retain column-major ordering. Complex interpolation requires a complete adjacent pair, so the last unsupported endpoint is zero. Full calculations precede display decimation. Forty independent software comparisons cover five scenarios per lesson. No MATLAB execution, browser/accessibility, learner, hardware or production validation is claimed.

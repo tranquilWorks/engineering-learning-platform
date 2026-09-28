@@ -17,6 +17,7 @@ scope:
     - ELP-DSP-FIDELITY-P29-P40
     - ELP-DSP-FIDELITY-P41-P52
     - ELP-DSP-FIDELITY-P53-P64
+    - ELP-DSP-FIDELITY-P65-P76
     items:
     - P02
     - P03
@@ -81,9 +82,6 @@ scope:
     - P62
     - P63
     - P64
-  repaired_in_batch:
-    batch_id: ELP-DSP-FIDELITY-P65-P76
-    items:
     - P65
     - P66
     - P67
@@ -96,8 +94,8 @@ scope:
     - P74
     - P75
     - P76
-  pending:
-    status: generic_template_not_verified
+  repaired_in_batch:
+    batch_id: ELP-DSP-FIDELITY-P77-P84
     items:
     - P77
     - P78
@@ -107,18 +105,22 @@ scope:
     - P82
     - P83
     - P84
+  pending:
+    status: no_remaining_item_repairs
+    items: []
 derived_counts:
   rule: total_items = already_distinct + repaired_in_prior_batches + repaired_in_batch + pending
   total_items: 84
   already_distinct: 1
-  repaired_in_prior_batches: 63
-  repaired_in_batch: 12
-  pending: 8
+  repaired_in_prior_batches: 75
+  repaired_in_batch: 8
+  pending: 0
 claim_boundary:
   numerically_verified: blocked
   curriculum_covered: blocked
   capstone_integrated: blocked
-  reason: P77-P84 remain generic and P84 capstone fidelity remains pending.
+  reason: All 84 item repairs are accounted for. Whole-course maturity remains blocked pending aggregate caliber,
+    competency mapping and cumulative-assessment review; issue 441 remains open.
   explicitly_unperformed:
   - MATLAB runtime comparison
   - audio playback

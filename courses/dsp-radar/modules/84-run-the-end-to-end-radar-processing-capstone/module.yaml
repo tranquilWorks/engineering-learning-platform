@@ -3,13 +3,13 @@
   "id": "84-run-the-end-to-end-radar-processing-capstone",
   "number": 84,
   "title": "Run the End-to-End Radar Processing Capstone",
-  "summary": "Explore run the end-to-end radar processing capstone with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "Trace unit-energy LFM through echoes, receiver correction, conjugate matched filtering, coherent Doppler, complete-stencil CA-CFAR, connected reports and gated tracking. Controls affect the retained first scan; the explicitly labeled eight-scan baseline shows a real scan-4 fade and coast.",
   "guiding_question": "Can I trace a target from waveform generation through detection and tracking without treating any stage as a black box?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-9",
-    "target-SNR"
+    "radar-sensing",
+    "P84"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,51 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Target Snr",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "design_pfa",
+      "type": "select",
+      "label": "Design pfa",
+      "default": 0.001,
+      "unit": "ratio",
+      "options": [
+        {
+          "label": "0.0001 ratio",
+          "value": 0.0001
+        },
+        {
+          "label": "0.001 ratio",
+          "value": 0.001
+        },
+        {
+          "label": "0.01 ratio",
+          "value": 0.01
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "replica_taper",
+      "type": "select",
+      "label": "Replica taper",
+      "default": 0,
+      "unit": "ratio",
+      "options": [
+        {
+          "label": "0 ratio",
+          "value": 0
+        },
+        {
+          "label": "0.5 ratio",
+          "value": 0.5
+        },
+        {
+          "label": "1 ratio",
+          "value": 1
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +75,75 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing target snr, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict how replica taper and requested Pfa change compression, crossings and reports. Trace a target through every processing stage, and explain why the physically faded scan causes a coast rather than an invented measurement.",
+      "reveal": "Trace unit-energy LFM through echoes, receiver correction, conjugate matched filtering, coherent Doppler, complete-stencil CA-CFAR, connected reports and gated tracking. Controls affect the retained first scan; the explicitly labeled eight-scan baseline shows a real scan-4 fade and coast."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Unit-energy LFM transmit waveform",
+      "plot": "waveform"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Receiver calibration before matched filtering",
+      "plot": "receiver"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Selected replica: delay-corrected range compression",
+      "plot": "matched"
+    },
+    {
+      "type": "plot",
+      "title": "Selected coherent range-Doppler power",
+      "plot": "range_doppler"
+    },
+    {
+      "type": "plot",
+      "title": "Complete-stencil CA-CFAR threshold crossings",
+      "plot": "detections"
+    },
+    {
+      "type": "plot",
+      "title": "Adaptive threshold along moving-target Doppler bin",
+      "plot": "threshold"
+    },
+    {
+      "type": "plot",
+      "title": "Eight-connected excess-weighted reports",
+      "plot": "reports"
+    },
+    {
+      "type": "plot",
+      "title": "Reviewed baseline eight-scan track and physical fade",
+      "plot": "track"
+    },
+    {
+      "type": "plot",
+      "title": "Baseline update/coast decisions from detections",
+      "plot": "coast"
+    },
+    {
+      "type": "plot",
+      "title": "Threshold nesting on the same corrected power map",
+      "plot": "pfa"
+    },
+    {
+      "type": "plot",
+      "title": "Replica taper trades range width",
+      "plot": "taper_width"
+    },
+    {
+      "type": "plot",
+      "title": "Replica taper changes nearby weak-target visibility",
+      "plot": "taper_visibility"
     },
     {
       "type": "callout",
@@ -102,7 +154,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

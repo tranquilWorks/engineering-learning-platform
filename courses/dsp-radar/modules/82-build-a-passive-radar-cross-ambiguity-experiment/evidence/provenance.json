@@ -1,0 +1,87 @@
+{
+  "item": "P82",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p82",
+    "sha256": "0be27e26c602f1bfd08792095de0c7c43bf3e36e916605226057982d1a0bd0a9",
+    "byte_count": 215741,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/82-build-a-passive-radar-cross-ambiguity-experiment/experiment.py",
+    "sha256": "a526aa8fa4e4e104fde460dc5e4777bc06e638f7e2a561ffe20fa3370050af48",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "target_delay_samples": 24,
+      "reference_quality_db": 35,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "target_delay_samples": 48,
+      "reference_quality_db": 35,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "target_delay_samples": 24,
+      "reference_quality_db": 5,
+      "broken_mode": false
+    },
+    "broken": {
+      "target_delay_samples": 24,
+      "reference_quality_db": 35,
+      "broken_mode": true
+    },
+    "recovery": {
+      "target_delay_samples": 24,
+      "reference_quality_db": 35,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "peak_delay",
+      "unit": "samples"
+    },
+    {
+      "name": "peak_doppler",
+      "unit": "Hz"
+    },
+    {
+      "name": "peak_excess_path",
+      "unit": "km"
+    },
+    {
+      "name": "target_coherence",
+      "unit": "ratio"
+    },
+    {
+      "name": "target_contrast",
+      "unit": "dB"
+    },
+    {
+      "name": "origin_coherence",
+      "unit": "ratio"
+    },
+    {
+      "name": "cancellation_coefficient_magnitude",
+      "unit": "ratio"
+    },
+    {
+      "name": "residual_rms",
+      "unit": "V"
+    },
+    {
+      "name": "reference_quality",
+      "unit": "dB"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

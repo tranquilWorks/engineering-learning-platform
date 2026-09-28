@@ -3,13 +3,13 @@
   "id": "82-build-a-passive-radar-cross-ambiguity-experiment",
   "number": 82,
   "title": "Build a Passive Radar Cross-Ambiguity Experiment",
-  "summary": "Explore build a passive radar cross-ambiguity experiment with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "Cross-ambiguity multiplies surveillance by a conjugate delayed reference and a negative trial Doppler phasor before coherent summation. Least-squares direct-path cancellation reveals the delayed target.",
   "guiding_question": "How can a known broadcast-like reference reveal delayed Doppler-shifted echoes without transmitting?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-9",
-    "echo-delay"
+    "radar-sensing",
+    "P82"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,51 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Echo Delay",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "target_delay_samples",
+      "type": "select",
+      "label": "Target delay samples",
+      "default": 24,
+      "unit": "samples",
+      "options": [
+        {
+          "label": "12 samples",
+          "value": 12
+        },
+        {
+          "label": "24 samples",
+          "value": 24
+        },
+        {
+          "label": "48 samples",
+          "value": 48
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
+      "id": "reference_quality_db",
+      "type": "select",
+      "label": "Reference quality db",
+      "default": 35,
       "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "options": [
+        {
+          "label": "35 dB",
+          "value": 35
+        },
+        {
+          "label": "15 dB",
+          "value": 15
+        },
+        {
+          "label": "5 dB",
+          "value": 5
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +75,55 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing echo delay, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict the target peak after direct-path cancellation. Why is delay converted with c tau rather than c tau / 2, and why does a noisy reference limit cancellation and target contrast?",
+      "reveal": "Cross-ambiguity multiplies surveillance by a conjugate delayed reference and a negative trial Doppler phasor before coherent summation. Least-squares direct-path cancellation reveals the delayed target."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Reference and surveillance channels",
+      "plot": "channels"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Before direct-path cancellation",
+      "plot": "raw"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Selected cancellation before cross-ambiguity",
+      "plot": "active"
+    },
+    {
+      "type": "plot",
+      "title": "Full-cancellation comparison",
+      "plot": "recovery"
+    },
+    {
+      "type": "plot",
+      "title": "Delay sweep moves the path coordinate",
+      "plot": "delay"
+    },
+    {
+      "type": "plot",
+      "title": "Doppler sweep moves the frequency coordinate",
+      "plot": "doppler"
+    },
+    {
+      "type": "plot",
+      "title": "Longer coherent records improve contrast",
+      "plot": "integration"
+    },
+    {
+      "type": "plot",
+      "title": "Reference quality limits cancellation",
+      "plot": "quality"
     },
     {
       "type": "callout",
@@ -102,7 +134,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

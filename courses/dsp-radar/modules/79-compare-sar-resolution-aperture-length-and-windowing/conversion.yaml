@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "37836d2be1d95e6531333f8414d2e8519261a2cef818a5a23af0f8c70ce2baa9",
+    "content_digest": "75b5adb88920cfefa9e7c1aaa47497d9c6c3a4e4a8ddcccee254cde8c48d8168",
     "files": [
       {
         "path": "modules/79-compare-sar-resolution-aperture-length-and-windowing/experiment.py",
-        "sha256": "0b5f193a6cedf32a3afa447f292aca3addd60e6507d1d63bddde1feb373e7f03"
+        "sha256": "8e4b29160c802a2274b58b2519e9f8eeb79c28b462f9ec4579ed6cf1a9e49ea8"
       },
       {
         "path": "modules/79-compare-sar-resolution-aperture-length-and-windowing/lesson.md",
-        "sha256": "76bb4728bc0394895b35db78d0a6cb0d7791c38647b6220541a49e90391a1378"
+        "sha256": "0897ea95b77e0070e44ff8cf90bae9bdf6fda7aedae5aaf9300440a403e06ff3"
       },
       {
         "path": "modules/79-compare-sar-resolution-aperture-length-and-windowing/module.yaml",
-        "sha256": "d350b3016d9ef88abafd21c7a8807d454b597437800aae82f00214926d971df8"
+        "sha256": "f3725948d3d15b7f0754ce30c9dda451d066e6000ba3bf4ff7f223b1d7007b5b"
       }
     ]
   },
   "content": {
     "guiding_question": "What controls range and cross-range resolution and sidelobes?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "Frequency sums set range resolution; phase-coherent aperture sums set cross-range resolution. Hamming weighting lowers sidelobes at the cost of a wider mainlobe.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary aperture length while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Frequency sums set range resolution; phase-coherent aperture sums set cross-range resolution. Hamming weighting lowers sidelobes at the cost of a wider mainlobe.",
+      "The named 5 m platform spacing undersamples aperture phase, creating near-unity cross-range copies about 3 m apart. A narrow mainlobe alone does not establish unambiguous localization.",
+      "Disable the failure to recompute the same seeded scene with dense 0.25 m aperture sampling. This is reacquisition with a reviewed sampling grid, not recovery of missing information from the sparse image.",
+      "Explicit stage equations are retained in lesson.md. P77-P84 retain private source inputs and disclosed processing assumptions; P78 controls crop the full noise record and P84 tracking retains its explicitly labeled baseline. Plot/console presentation is adapted; no MATLAB runtime execution is claimed."
     ],
     "equations": [
       {
@@ -66,149 +66,222 @@
     ],
     "equation_order": "before_toolbox_shortcuts",
     "deterministic_data": {
-      "seed": 1079,
+      "seed": 7901,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
-        },
-        {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "7e80fc241ecd905ab86eb7bbe01a0be7874f8a093944b02a640fc0f720cd82c6",
-          "unit": "mixed numeric signature"
+          "sha256": "b6f381c8c0fa321159b26ecb1e7ef549307aa65a5bfeb646a95d28d0a46e714c",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "71548ef855f65b6f207283322da0e24da57ca98912ef75a8de9598ed83e26180",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "19d2498d492973f9c7dbf5b59a1599332d64cbe31d5132b04dc56e1580724b23",
-          "unit": "mixed numeric signature"
+          "sha256": "f71152c51849d666942ce9ce3204f83ec15932075fc607d4d9f4c65274460b29",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "795966d071ec0a72cfd82cd8e749103e4b56e12320b24e60291e139a87f24b1a",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "885b7de29b064da8fe12b6022bd2b680bb998efeeaed9c6fedb3a2d5f398f731",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "31843a0c0f90a29d4ff564c16196a0f9e44a83f3c10e47a01913652ea33d26b3",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "67ed29f6bd8b8aa690075af44def68a8ad220a07e191aece76ab74806ee2cb72",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "eac7129ce7c8d925d5f94b080c3b790c94a16fbe6aae24b7813945c2a33088bc",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "b6f381c8c0fa321159b26ecb1e7ef549307aa65a5bfeb646a95d28d0a46e714c",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "71548ef855f65b6f207283322da0e24da57ca98912ef75a8de9598ed83e26180",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P79 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P79 explicit processing and evidence stages",
+        "target_plot_key": "range",
+        "title": "Finite-bandwidth coherent point response",
         "axes": [
           {
             "role": "x",
-            "label": "range/cross-range coordinate",
-            "unit": "source units"
+            "label": "Range offset (m)",
+            "unit": "m"
           },
           {
             "role": "y",
-            "label": "normalized intensity",
-            "unit": "normalized"
+            "label": "Magnitude (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Compare SAR Resolution, Aperture Length, and Windowing guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Frequency sums set range resolution; phase-coherent aperture sums set cross-range resolution. Hamming weighting lowers sidelobes at the cost of a wider mainlobe."
       },
       {
-        "source_figure": "Pinned P79 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P79 explicit processing and evidence stages",
+        "target_plot_key": "cross",
+        "title": "Dense, tapered and selected aperture responses",
         "axes": [
           {
             "role": "x",
-            "label": "range/cross-range coordinate",
-            "unit": "source units"
+            "label": "Cross-range offset (m)",
+            "unit": "m"
           },
           {
             "role": "y",
-            "label": "normalized intensity",
-            "unit": "normalized"
+            "label": "Magnitude (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Compare SAR Resolution, Aperture Length, and Windowing guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Frequency sums set range resolution; phase-coherent aperture sums set cross-range resolution. Hamming weighting lowers sidelobes at the cost of a wider mainlobe."
       },
       {
-        "source_figure": "Pinned P79 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P79 explicit processing and evidence stages",
+        "target_plot_key": "bandwidth",
+        "title": "Bandwidth controls range width",
         "axes": [
           {
             "role": "x",
-            "label": "range/cross-range coordinate",
-            "unit": "source units"
+            "label": "Bandwidth (MHz)",
+            "unit": "MHz"
           },
           {
             "role": "y",
-            "label": "normalized intensity",
-            "unit": "normalized"
+            "label": "Half-power width (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Compare SAR Resolution, Aperture Length, and Windowing guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Frequency sums set range resolution; phase-coherent aperture sums set cross-range resolution. Hamming weighting lowers sidelobes at the cost of a wider mainlobe."
       },
       {
-        "source_figure": "Pinned P79 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P79 explicit processing and evidence stages",
+        "target_plot_key": "aperture",
+        "title": "Aperture controls cross-range width",
         "axes": [
           {
             "role": "x",
-            "label": "range/cross-range coordinate",
-            "unit": "source units"
+            "label": "Aperture length (m)",
+            "unit": "m"
           },
           {
             "role": "y",
-            "label": "normalized intensity",
-            "unit": "normalized"
+            "label": "Half-power width (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Compare SAR Resolution, Aperture Length, and Windowing guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Frequency sums set range resolution; phase-coherent aperture sums set cross-range resolution. Hamming weighting lowers sidelobes at the cost of a wider mainlobe."
+      },
+      {
+        "source_figure": "Pinned P79 explicit processing and evidence stages",
+        "target_plot_key": "sampling",
+        "title": "Sparse aperture creates false copies",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Platform spacing (m)",
+            "unit": "m"
+          },
+          {
+            "role": "y",
+            "label": "Far-region peak voltage (ratio)",
+            "unit": "ratio"
+          }
+        ],
+        "interpretation": "Frequency sums set range resolution; phase-coherent aperture sums set cross-range resolution. Hamming weighting lowers sidelobes at the cost of a wider mainlobe."
+      },
+      {
+        "source_figure": "Pinned P79 explicit processing and evidence stages",
+        "target_plot_key": "image",
+        "title": "Three-target separable narrow-scene image",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Cross-range (m)",
+            "unit": "m"
+          },
+          {
+            "role": "y",
+            "label": "Range offset (m)",
+            "unit": "m"
+          }
+        ],
+        "interpretation": "Frequency sums set range resolution; phase-coherent aperture sums set cross-range resolution. Hamming weighting lowers sidelobes at the cost of a wider mainlobe."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "bandwidth_mhz",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          100,
+          200,
+          400
         ],
-        "expected_observation": "Changing aperture length moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Bandwidth mhz; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "aperture_length_m",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          10,
+          20,
+          30
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Aperture length m; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "The named 5 m platform spacing undersamples aperture phase, creating near-unity cross-range copies about 3 m apart. A narrow mainlobe alone does not establish unambiguous localization.",
+      "recovery": "Disable the failure to recompute the same seeded scene with dense 0.25 m aperture sampling. This is reacquisition with a reviewed sampling grid, not recovery of missing information from the sparse image.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "The named 5 m platform spacing undersamples aperture phase, creating near-unity cross-range copies about 3 m apart. A narrow mainlobe alone does not establish unambiguous localization.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -216,63 +289,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 1000000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P79 python -m pytest -q apps/api/tests/test_dsp_course.py",
-    "seed": 1079,
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p77_p84.py",
+    "seed": 7901,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "bandwidth_mhz",
+        "value": 200,
+        "unit": "MHz"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "aperture_length_m",
+        "value": 30,
+        "unit": "m"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 7.941807211864216e-10,
+        "max_relative_error": 1.8637436407445142e-11,
+        "passed": true,
         "expected": {
           "path": "modules/79-compare-sar-resolution-aperture-length-and-windowing/evidence/expected-baseline.json",
-          "sha256": "7e80fc241ecd905ab86eb7bbe01a0be7874f8a093944b02a640fc0f720cd82c6"
+          "sha256": "b6f381c8c0fa321159b26ecb1e7ef549307aa65a5bfeb646a95d28d0a46e714c"
         },
         "actual": {
           "path": "modules/79-compare-sar-resolution-aperture-length-and-windowing/evidence/actual-baseline.json",
-          "sha256": "d447d408082acf1163cec5eda623acfce132678c3dfd1bdc21166fb6f1b6e670"
-        },
-        "max_absolute_error": 3.5128150388530344e-13,
-        "max_relative_error": 3.5128150388530344e-13,
-        "passed": true
+          "sha256": "71548ef855f65b6f207283322da0e24da57ca98912ef75a8de9598ed83e26180"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 7.941807211864216e-10,
+        "max_relative_error": 1.8637436407445142e-11,
+        "passed": true,
+        "expected": {
+          "path": "modules/79-compare-sar-resolution-aperture-length-and-windowing/evidence/expected-sweep-1.json",
+          "sha256": "f71152c51849d666942ce9ce3204f83ec15932075fc607d4d9f4c65274460b29"
+        },
+        "actual": {
+          "path": "modules/79-compare-sar-resolution-aperture-length-and-windowing/evidence/actual-sweep-1.json",
+          "sha256": "795966d071ec0a72cfd82cd8e749103e4b56e12320b24e60291e139a87f24b1a"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 2.914433139267203e-09,
+        "max_relative_error": 6.920142464392526e-11,
+        "passed": true,
+        "expected": {
+          "path": "modules/79-compare-sar-resolution-aperture-length-and-windowing/evidence/expected-sweep-2.json",
+          "sha256": "885b7de29b064da8fe12b6022bd2b680bb998efeeaed9c6fedb3a2d5f398f731"
+        },
+        "actual": {
+          "path": "modules/79-compare-sar-resolution-aperture-length-and-windowing/evidence/actual-sweep-2.json",
+          "sha256": "31843a0c0f90a29d4ff564c16196a0f9e44a83f3c10e47a01913652ea33d26b3"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 7.941807211864216e-10,
+        "max_relative_error": 1.8637436407445142e-11,
+        "passed": true,
         "expected": {
           "path": "modules/79-compare-sar-resolution-aperture-length-and-windowing/evidence/expected-broken.json",
-          "sha256": "19d2498d492973f9c7dbf5b59a1599332d64cbe31d5132b04dc56e1580724b23"
+          "sha256": "67ed29f6bd8b8aa690075af44def68a8ad220a07e191aece76ab74806ee2cb72"
         },
         "actual": {
           "path": "modules/79-compare-sar-resolution-aperture-length-and-windowing/evidence/actual-broken.json",
-          "sha256": "1eec0cd3fe6c352515346ceec0a911ae9211af3fc00f34968f87c9ebdcebec64"
+          "sha256": "eac7129ce7c8d925d5f94b080c3b790c94a16fbe6aae24b7813945c2a33088bc"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 3.039235529911366e-13,
-        "max_relative_error": 3.039235529911366e-13,
-        "passed": true
+        "max_absolute_error": 7.941807211864216e-10,
+        "max_relative_error": 1.8637436407445142e-11,
+        "passed": true,
+        "expected": {
+          "path": "modules/79-compare-sar-resolution-aperture-length-and-windowing/evidence/expected-recovery.json",
+          "sha256": "b6f381c8c0fa321159b26ecb1e7ef549307aa65a5bfeb646a95d28d0a46e714c"
+        },
+        "actual": {
+          "path": "modules/79-compare-sar-resolution-aperture-length-and-windowing/evidence/actual-recovery.json",
+          "sha256": "71548ef855f65b6f207283322da0e24da57ca98912ef75a8de9598ed83e26180"
+        }
       }
     ]
   },

@@ -3,13 +3,13 @@
   "id": "80-inject-sar-motion-error-and-apply-autofocus",
   "number": 80,
   "title": "Inject SAR Motion Error and Apply Autofocus",
-  "summary": "Explore inject sar motion error and apply autofocus with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "A few millimeters of nonlinear path error creates order-one two-way phase error. Deramp an isolated strong range gate, integrate adjacent phase differences, and remove the common phase screen before focusing.",
   "guiding_question": "How small a platform-position error is enough to blur a coherent image?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-9",
-    "motion-error"
+    "sar-isar",
+    "P80"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,67 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Motion Error",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "error_rms_wavelengths",
+      "type": "select",
+      "label": "Error rms wavelengths",
+      "default": 0.125,
+      "unit": "wavelengths",
+      "options": [
+        {
+          "label": "0 wavelengths",
+          "value": 0
+        },
+        {
+          "label": "0.03125 wavelengths",
+          "value": 0.03125
+        },
+        {
+          "label": "0.0625 wavelengths",
+          "value": 0.0625
+        },
+        {
+          "label": "0.125 wavelengths",
+          "value": 0.125
+        },
+        {
+          "label": "0.25 wavelengths",
+          "value": 0.25
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
+      "id": "random_fraction",
+      "type": "select",
+      "label": "Random fraction",
       "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "unit": "ratio",
+      "options": [
+        {
+          "label": "0 ratio",
+          "value": 0
+        },
+        {
+          "label": "0.25 ratio",
+          "value": 0.25
+        },
+        {
+          "label": "0.5 ratio",
+          "value": 0.5
+        },
+        {
+          "label": "0.75 ratio",
+          "value": 0.75
+        },
+        {
+          "label": "1 ratio",
+          "value": 1
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +91,40 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing motion error, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict how wavelength-normalized motion error changes coherent peak and entropy. Why does an isolated reference gate recover a common phase screen, and why does mixing a second scatterer bias that estimate?",
+      "reveal": "A few millimeters of nonlinear path error creates order-one two-way phase error. Deramp an isolated strong range gate, integrate adjacent phase differences, and remove the common phase screen before focusing."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Phase-gradient estimate after known-path deramping",
+      "plot": "screen"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Reference-gate focus on a common ideal scale",
+      "plot": "cut"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Autofocused isolated-gate scene",
+      "plot": "image"
+    },
+    {
+      "type": "plot",
+      "title": "RMS path error controls phase loss",
+      "plot": "error_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Error correlation changes the blur",
+      "plot": "mixture_sweep"
     },
     {
       "type": "callout",
@@ -102,7 +135,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {
