@@ -60,6 +60,8 @@ export const Markdown = memo(function Markdown({ children, courseId, moduleId }:
         remarkPlugins={[remarkGfm, remarkMath]}
         rehypePlugins={[rehypeKatex]}
         components={{
+          pre: ({ children }) => <pre tabIndex={0} role="group" aria-label="Code block">{children}</pre>,
+          table: ({ children }) => <div className="table-scroll" tabIndex={0} role="group" aria-label="Lesson table"><table>{children}</table></div>,
           li: ({ children, className }) => (
             <li className={className}>
               {className?.includes("task-list-item") ? <label>{children}</label> : children}

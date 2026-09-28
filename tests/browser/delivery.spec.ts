@@ -104,3 +104,21 @@ test('equation scrolling is keyboard reachable on a mobile lesson', async ({ pag
   await equations.first().press('ArrowRight');
   await expect.poll(() => equations.first().evaluate(node => node.scrollLeft)).toBeGreaterThan(0);
 });
+
+test('wide code blocks and lesson tables support keyboard scrolling', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/courses/dsp-radar/modules/58-implement-track-initiation-confirmation-coasting-and-deletion');
+  await expect(page.locator('.js-plotly-plot')).toHaveCount(5);
+  const code = page.getByRole('group', { name: 'Code block', exact: true }).filter({ hasText: 'inactive -> tentative' });
+  await expect(code).toHaveAttribute('tabindex', '0');
+  expect(await code.evaluate(node => node.scrollWidth > node.clientWidth)).toBe(true);
+  await code.focus();
+  await code.press('ArrowRight');
+  await expect.poll(() => code.evaluate(node => node.scrollLeft)).toBeGreaterThan(0);
+  const axe = await new AxeBuilder({ page }).analyze();
+  expect(axe.violations.filter(v => ['critical','serious'].includes(v.impact || ''))).toEqual([]);
+  await page.locator('.plot-values summary').first().click();
+  const ranges = page.locator('.plot-values .table-scroll').first();
+  await ranges.focus();
+  await expect(ranges).toBeFocused();
+});

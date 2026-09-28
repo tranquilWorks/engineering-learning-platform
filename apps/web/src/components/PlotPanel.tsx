@@ -95,7 +95,7 @@ export function PlotPanel({ title, spec, compact = false, name }: Props) {
       <details className="plot-values">
         <summary>Numeric ranges: {plotTitle}</summary>
         <p>Use the lesson interpretation and metrics to explain these ranges. Ranges summarize samples; they do not describe the full curve.</p>
-        <div className="table-scroll"><table>
+        <div className="table-scroll" tabIndex={0} role="group" aria-label={`${plotTitle} numeric ranges`}><table>
           <thead><tr><th>Series</th><th>{axis("xaxis") || "x"}</th><th>{axis("yaxis") || "y"}</th><th>z (if present)</th></tr></thead>
           <tbody>{spec.data.map((trace, index) => <tr key={index}><th>{plain(trace.name) || `Series ${index + 1}`}</th><td>{range(trace.x)}</td><td>{range(trace.y)}</td><td>{range(trace.z)}</td></tr>)}</tbody>
         </table></div>

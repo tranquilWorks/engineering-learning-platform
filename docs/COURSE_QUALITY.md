@@ -81,7 +81,7 @@ Those human studies have not run. MATLAB runtime, measured vehicle/track,
 hardware/HIL, production deployment and the nine source-only conversions are
 not claimed. The course inventory is not evidence of curriculum completeness.
 
-Run `./scripts/verify-course-delivery.sh` with a supported Node runtime and a
+Run `./scripts/verify-course-delivery.sh` with Node 22.12 or newer and a
 fresh container name/localhost port. It builds the actual image, waits for
 readiness, runs browser and HTTP checks, writes the reports and stops its own
 container. The report records the image identity; no production service is

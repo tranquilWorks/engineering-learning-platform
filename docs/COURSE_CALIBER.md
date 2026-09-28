@@ -60,7 +60,7 @@ but they are not independent correctness oracles.
 | --- | ---: | --- |
 | DSP/Radar | 84 | #441: aggregate competency mapping and cumulative assessment after completed item repairs |
 | Controls/GNC | 68 | 22 affected lessons: cumulative capstones plus unsupported prerequisite mechanisms |
-| Robotics/Autonomy | 69 | Reopen P68–P69 replay/recovery claims while retaining implemented planning, kinematics and contact models |
+| Robotics/Autonomy | 69 | 27 affected lessons: replay/recovery plus unsupported geometry, dynamics and perception mechanisms |
 | Vehicle Dynamics | 67 | Repair P61–P67 dimensional/performance/cumulative defects, including hardcoded P66/P67 verdicts |
 
 All four aggregate numerical, curriculum and capstone statuses remain blocked
