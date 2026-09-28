@@ -23,7 +23,7 @@ export function Controls({ controls, parameters, busy, onChange, onReset }: Prop
           <span className="eyebrow"><Sparkles size={13} /> experiment</span>
           <h2>Controls</h2>
         </div>
-        <button className="icon-button" type="button" onClick={onReset} title="Reset parameters">
+        <button className="icon-button" type="button" onClick={onReset} title="Reset parameters" aria-label="Reset parameters">
           <RotateCcw size={16} />
         </button>
       </header>
@@ -72,6 +72,7 @@ export function Controls({ controls, parameters, busy, onChange, onReset }: Prop
                       key={String(option.value)}
                       type="button"
                       className={String(value) === String(option.value) ? "active" : ""}
+                      aria-pressed={String(value) === String(option.value)}
                                             onClick={() => onChange(control.id, option.value)}
                     >
                       {option.label}

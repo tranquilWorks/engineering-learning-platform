@@ -109,9 +109,14 @@ class ExperimentRuntime:
             return value
         if control.type in {"select", "segmented"}:
             allowed = [option.value for option in control.options]
-            if not any(type(value) is type(item) and value == item for item in allowed):
-                raise RuntimeContractError(f"parameter {control.id!r} must be one of {allowed!r}")
-            return value
+            for item in allowed:
+                same_type = type(value) is type(item)
+                # JSON/JavaScript has one number type: 240.0 round-trips as 240.
+                # Preserve the declared runtime value, never coerce strings or bools.
+                both_numeric = type(value) in (int, float) and type(item) in (int, float)
+                if (same_type or both_numeric) and value == item:
+                    return item
+            raise RuntimeContractError(f"parameter {control.id!r} must be one of {allowed!r}")
         if control.type == "button":
             if value is not None and not isinstance(value, (str, int, float, bool)):
                 raise RuntimeContractError(

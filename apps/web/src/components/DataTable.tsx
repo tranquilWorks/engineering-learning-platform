@@ -13,7 +13,7 @@ export function DataTable({ title, table }: { title?: string | null; table?: Tab
   return (
     <section className="table-panel">
       {title ? <div className="panel-heading"><div><span className="eyebrow">Data frame</span><h2>{title}</h2></div></div> : null}
-      <div className="table-scroll">
+      <div className="table-scroll" tabIndex={0} role="group" aria-label={`${title || "Data"} table`}>
         <table>
           <thead>
             {instance.getHeaderGroups().map((group) => (

@@ -29,7 +29,7 @@ A module that has no useful controls can simply declare static plots and narrati
 Prerequisites: Node.js 22+, npm, Python 3.12+, and `uv`.
 
 ```bash
-npm install
+npm ci
 uv sync --project apps/api --extra dev
 npm run dev
 ```
@@ -120,3 +120,11 @@ npm run build
 This repository is designed for onboarding to `tranquilWorks/portfolio-control` with the `product-data` profile. Product-specific rules live in `AGENTS.md`; machine-readable requirements and the first bounded batch are in `contracts/`.
 
 The generated Portfolio Control overlay is delivered beside this repository in `engineering-learning-platform-portfolio-control/`.
+
+## Current lesson quality
+
+The [quality board](docs/COURSE_QUALITY.md) distinguishes native lesson delivery,
+retained numerical evidence, confirmed semantic defects and human validation.
+The browser shows known limitations on the affected lesson. Run
+`./scripts/verify-course-delivery.sh` for the actual container and all-page
+Chromium audit; use a fresh container name and localhost port as documented.

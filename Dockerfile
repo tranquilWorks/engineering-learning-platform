@@ -1,14 +1,17 @@
 FROM node:22-alpine AS web-build
 WORKDIR /src
-COPY package.json ./
+COPY package.json package-lock.json ./
 COPY apps/web/package.json apps/web/package.json
-RUN npm install
+RUN npm ci
 COPY apps/web apps/web
 RUN npm run build --workspace @elp/web
 
 FROM python:3.12-slim AS runtime
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
+    OPENBLAS_NUM_THREADS=1 \
+    OMP_NUM_THREADS=1 \
+    MKL_NUM_THREADS=1 \
     ELP_HOST=0.0.0.0 \
     ELP_PORT=8080 \
     ELP_COURSE_PATHS=/app/courses \

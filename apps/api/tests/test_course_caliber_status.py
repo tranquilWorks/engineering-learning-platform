@@ -141,13 +141,13 @@ def test_reviewed_course_dispositions_keep_inventory_separate_from_maturity() ->
         "curriculum_complete_requires": "curriculum_covered: passed",
     }
 
-    for course_id, review in reviews.items():
+    for review in reviews.values():
         assert list(review["maturity"]) == MATURITY_STATES
         assert list(review["rubric"]) == RUBRIC_DIMENSIONS
-        if course_id in {"controls-gnc", "robotics-autonomy", "vehicle-dynamics"}:
-            assert review["maturity"]["curriculum_covered"]["status"] == "passed"
-        else:
-            assert review["maturity"]["curriculum_covered"]["status"] != "passed"
+        for dimension in review["rubric"].values():
+            assert set(dimension) == {"status", "finding"}
+            assert dimension["finding"].strip()
+        assert review["maturity"]["curriculum_covered"]["status"] == "blocked"
         for stage in review["maturity"].values():
             assert set(stage) == {"status", "evidence", "limitation"}
             assert stage["evidence"].strip()
@@ -158,17 +158,17 @@ def test_follow_up_ownership_is_exact_and_remains_unimplemented_here() -> None:
     reviews = _review_by_id(_status())
     assert reviews["dsp-radar"]["disposition"] == "remediate"
     assert reviews["dsp-radar"]["follow_up_issues"] == [441]
-    assert reviews["controls-gnc"]["disposition"] == "maintain"
+    assert reviews["controls-gnc"]["disposition"] == "remediate"
     assert reviews["controls-gnc"]["follow_up_issues"] == []
-    assert reviews["controls-gnc"]["maturity"]["numerically_verified"]["status"] == ("passed")
-    assert reviews["controls-gnc"]["maturity"]["curriculum_covered"]["status"] == ("passed")
-    assert reviews["controls-gnc"]["maturity"]["capstone_integrated"]["status"] == ("passed")
+    assert reviews["controls-gnc"]["maturity"]["numerically_verified"]["status"] == ("blocked")
+    assert reviews["controls-gnc"]["maturity"]["curriculum_covered"]["status"] == ("blocked")
+    assert reviews["controls-gnc"]["maturity"]["capstone_integrated"]["status"] == ("blocked")
     assert reviews["controls-gnc"]["maturity"]["learner_validated"]["status"] == ("not_run")
-    assert reviews["robotics-autonomy"]["disposition"] == "maintain"
+    assert reviews["robotics-autonomy"]["disposition"] == "remediate"
     assert reviews["robotics-autonomy"]["follow_up_issues"] == []
-    assert reviews["robotics-autonomy"]["maturity"]["numerically_verified"]["status"] == ("passed")
-    assert reviews["robotics-autonomy"]["maturity"]["curriculum_covered"]["status"] == ("passed")
-    assert reviews["robotics-autonomy"]["maturity"]["capstone_integrated"]["status"] == ("passed")
+    assert reviews["robotics-autonomy"]["maturity"]["numerically_verified"]["status"] == ("blocked")
+    assert reviews["robotics-autonomy"]["maturity"]["curriculum_covered"]["status"] == ("blocked")
+    assert reviews["robotics-autonomy"]["maturity"]["capstone_integrated"]["status"] == ("blocked")
     assert reviews["robotics-autonomy"]["maturity"]["learner_validated"]["status"] == ("not_run")
 
 
@@ -176,8 +176,8 @@ def test_vehicle_dynamics_next_performance_batch_hold_is_explicit_and_complete()
     holds = _status()["holds"]
     assert holds == []
     review = _review_by_id(_status())["vehicle-dynamics"]
-    assert review["maturity"]["curriculum_covered"]["status"] == "passed"
-    assert review["maturity"]["capstone_integrated"]["status"] == "passed"
+    assert review["maturity"]["curriculum_covered"]["status"] == "blocked"
+    assert review["maturity"]["capstone_integrated"]["status"] == "blocked"
     assert review["maturity"]["learner_validated"]["status"] == "not_run"
 
 

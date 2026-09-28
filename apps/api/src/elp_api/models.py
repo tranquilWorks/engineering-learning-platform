@@ -54,6 +54,13 @@ class ControlOption(StrictModel):
     label: NonEmptyString
     value: str | int | float | bool
 
+    @field_validator("value")
+    @classmethod
+    def finite_numeric_option(cls, value: str | int | float | bool) -> str | int | float | bool:
+        if type(value) is float and not math.isfinite(value):
+            raise ValueError("numeric menu options must be finite")
+        return value
+
 
 class ControlBase(StrictModel):
     id: str = Field(pattern=r"^[a-z][a-z0-9_]*$")
@@ -101,6 +108,9 @@ class SelectControl(ControlBase):
 
     @model_validator(mode="after")
     def validate_default(self) -> SelectControl:
+        numeric = [option.value for option in self.options if type(option.value) in (int, float)]
+        if len(numeric) != len(set(numeric)):
+            raise ValueError("numeric menu options must be distinct in JSON clients")
         rendered = [(type(option.value).__name__, option.value) for option in self.options]
         if len(rendered) != len(set(rendered)):
             raise ValueError("select control option values must be unique")
@@ -121,6 +131,9 @@ class SegmentedControl(ControlBase):
 
     @model_validator(mode="after")
     def validate_default(self) -> SegmentedControl:
+        numeric = [option.value for option in self.options if type(option.value) in (int, float)]
+        if len(numeric) != len(set(numeric)):
+            raise ValueError("numeric menu options must be distinct in JSON clients")
         rendered = [(type(option.value).__name__, option.value) for option in self.options]
         if len(rendered) != len(set(rendered)):
             raise ValueError("segmented control option values must be unique")
