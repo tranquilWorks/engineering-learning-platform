@@ -45,6 +45,10 @@ KNOWN[("robotics-autonomy", 69)] = (
 )
 
 # Additional findings from the wider direct model review; separate repair scopes.
+for _number in range(1, 17):
+    KNOWN[("vehicle-dynamics", _number)] = (
+        "The main response chart joins signature quantities with different physical units on one generic SI axis; sweeps also lack a named response/unit. Replace these with physically meaningful curves or separately labeled quantities and specific limiting-case checks."
+    )
 KNOWN[("controls-gnc", 36)] = (
     "The displayed state-feedback control omits the velocity feedback term; recompute control from both propagated states and reconcile its units."
 )

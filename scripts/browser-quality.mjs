@@ -42,10 +42,27 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
         row.math_errors = await page.locator('.katex-error').count();
         row.plot_errors = await page.locator('.error-inline:visible').allTextContents();
         row.unsupported_webgl = await page.getByText('WebGL is not supported by your browser', { exact: false }).filter({ visible: true }).count();
+        row.title_errors = await page.locator('.js-plotly-plot').evaluateAll(nodes => nodes.flatMap((node, index) => {
+          const failures = [];
+          const check = (input, rendered, path) => {
+            if (!input || typeof input !== 'object' || Array.isArray(input) || input.visible === false || input.showscale === false) return;
+            for (const [key, value] of Object.entries(input)) {
+              if (key === 'title') {
+                const expected = typeof value === 'string' ? value : value?.text;
+                if (expected && rendered?.title?.text !== expected) failures.push(`${index}:${path}.title`);
+              } else if (value && typeof value === 'object' && !Array.isArray(value)) check(value, rendered?.[key], `${path}.${key}`);
+            }
+          };
+          check(node.layout, node._fullLayout, 'layout');
+          node.data?.forEach((trace, i) => {
+            if (trace.showscale !== false) check(trace.colorbar, node._fullData?.[i]?.colorbar, `trace${i}.colorbar`);
+          });
+          return failures;
+        }));
         row.horizontal_overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1);
         row.errors = errors;
         row.mobile_navigation_hidden = viewport !== 'mobile' || await page.locator('.sidebar').getAttribute('inert') !== null;
-        if (errors.length || row.plot_errors.length || row.unsupported_webgl || row.horizontal_overflow || row.math_errors || !row.mobile_navigation_hidden || row.violations.some(v => ['serious', 'critical'].includes(v.impact))) throw new Error('Delivery or automated accessibility assertion failed');
+        if (errors.length || row.plot_errors.length || row.unsupported_webgl || row.title_errors.length || row.horizontal_overflow || row.math_errors || !row.mobile_navigation_hidden || row.violations.some(v => ['serious', 'critical'].includes(v.impact))) throw new Error('Delivery or automated accessibility assertion failed');
         const source = Object.values(doc.markdown_sources).join('\n');
         if (/\\\[|\\\(|\$\$/.test(source) && !row.math_count) throw new Error('Authored equations were not rendered');
         if (doc.module.blocks.some(b => b.type === 'metrics') && !row.metric_count) throw new Error('Missing metrics');

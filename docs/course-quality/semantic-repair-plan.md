@@ -31,8 +31,8 @@ surrogate/fixed-flag failure rather than merely accepting new snapshots.
 Validation includes focused physical invariants and metamorphic changes,
 existing expansion/course/schema suites, all mandatory local gates, actual
 browser controls and plots for the twelve lessons on desktop/mobile, and an
-updated baked read-only container. Reassess maturity only to the extent the
-repaired evidence supports it. Human learning/accessibility, MATLAB, vehicle,
+updated baked read-only container. Reassess only the repaired lesson scope. The additional 60 findings, including
+Vehicle P01–P16 dimensional charts, keep all three course aggregates blocked. Human learning/accessibility, MATLAB, vehicle,
 physical HIL and production evidence remain unperformed.
 
 Primary method references for the implementation review:

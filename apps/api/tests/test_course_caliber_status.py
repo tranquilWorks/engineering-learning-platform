@@ -141,9 +141,12 @@ def test_reviewed_course_dispositions_keep_inventory_separate_from_maturity() ->
         "curriculum_complete_requires": "curriculum_covered: passed",
     }
 
-    for course_id, review in reviews.items():
+    for review in reviews.values():
         assert list(review["maturity"]) == MATURITY_STATES
         assert list(review["rubric"]) == RUBRIC_DIMENSIONS
+        for dimension in review["rubric"].values():
+            assert set(dimension) == {"status", "finding"}
+            assert dimension["finding"].strip()
         assert review["maturity"]["curriculum_covered"]["status"] == "blocked"
         for stage in review["maturity"].values():
             assert set(stage) == {"status", "evidence", "limitation"}

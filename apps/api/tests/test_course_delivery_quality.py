@@ -26,10 +26,11 @@ def test_lesson_ledger_matches_actual_payloads_and_does_not_certify_presence():
     blocked = {
         (r["course"], r["number"]) for r in actual["lessons"] if r["semantic_review"] == "blocked"
     }
-    assert len(blocked) == 56
+    assert len(blocked) == 72
     assert {("controls-gnc", n) for n in (36, 43, 49, 55, 56, 60, 61, 66, 67, 68)} <= blocked
     assert {("robotics-autonomy", n) for n in (*range(25, 49), 52, 68, 69)} <= blocked
     assert {("vehicle-dynamics", n) for n in range(61, 68)} <= blocked
+    assert {("vehicle-dynamics", n) for n in range(1, 17)} <= blocked
 
 
 def test_browser_projection_keeps_confirmed_limitations_attached_to_lesson():

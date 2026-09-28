@@ -29,9 +29,9 @@ representative learner, MATLAB, physical hardware and production validation
 remain unperformed. Hosted CI is separately reported and nonmandatory under the
 retained owner direction; required local gates remain mandatory.
 
-The wider model review subsequently found 44 additional issues beyond the first
-twelve, for **56 affected lessons**. See
+The wider model review subsequently found 60 additional issues beyond the first
+twelve, for **72 affected lessons**. See
 [the additional register](course-quality/additional-semantic-findings.md). The
-first twelve-lesson repair contract does not cover those 44; they remain blocked
+first twelve-lesson repair contract does not cover those 60; they remain blocked
 pending separate scope and implementation. No aggregate acceptance follows from
 finishing only the initial group.

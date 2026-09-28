@@ -9,7 +9,7 @@ nine remain source-only. Source presence is not native browser delivery.
 | DSP and Radar | 84 | P01–P84 item-level fidelity repairs retained; aggregate competency and cumulative-assessment review pending |
 | Controls and GNC | 68 | 22 lessons have recorded mechanism/evidence defects; aggregate maturity blocked |
 | Robotics and Autonomy | 69 | 27 lessons have recorded mechanism/evidence defects; aggregate maturity blocked |
-| Vehicle Dynamics | 67 | P66/P67 cumulative models fail direct semantic inspection; aggregate numerical, curriculum and capstone claims reopened |
+| Vehicle Dynamics | 67 | 23 lessons have dimensional/presentation or cumulative-model defects; aggregate maturity blocked |
 
 ## Confirmed content defects and next repair
 
@@ -46,9 +46,9 @@ mapping and assessment review. The repair scope adds no new lessons.
 
 ## Wider review: additional blocked lessons
 
-Further direct inspection found **44 additional issues**, making **56 affected
+Further direct inspection found **60 additional issues**, making **72 affected
 lessons** in the current register. Controls has 22 affected lessons, Robotics 27,
-and Vehicle seven. The initially selected twelve remain a separate repair group;
+and Vehicle 23. The initially selected twelve remain a separate repair group;
 they no longer represent the complete defect backlog. See the
 [additional finding register](course-quality/additional-semantic-findings.md)
 for each exact lesson and mechanism. These findings are also attached to the
@@ -68,7 +68,8 @@ affected browser lessons. No unlisted lesson is automatically certified.
   declared broken-mode recovery, response sizes and deep/static routes.
 
 The browser embeds the lesson-specific content review and known limitations.
-Equations render through KaTeX; code/currency remain literal. Revision hashes
+Equations render through KaTeX; code/currency remain literal. The renderer
+adapts legacy Plotly title strings so authored axis and colorbar units appear. Revision hashes
 are in a collapsed technical disclosure. Navigation supports keyboard focus,
 and plots expose numeric ranges in addition to the lesson's interpretation and
 metrics. Numeric ranges are not a complete nonvisual description of a curve.

@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { AlertTriangle, Box, RotateCcw } from "lucide-react";
 import type { PlotSpec } from "../types";
+import { normalizePlotTitles } from "../lib/plotTitles";
 
 interface Props {
   title?: string | null;
@@ -48,9 +49,9 @@ export function PlotPanel({ title, spec, compact = false, name }: Props) {
           font: { color: "#bdc7db", family: "Inter, ui-sans-serif, system-ui" },
           colorway: ["#67a9ff", "#b396ff", "#53d1a3", "#ffbd66", "#f47b9a"],
           margin: { l: 62, r: 28, t: 52, b: 58 },
-          ...spec.layout,
+          ...normalizePlotTitles(spec.layout),
         };
-        return Plotly.react(node, spec.data, layout, {
+        return Plotly.react(node, spec.data.map(normalizePlotTitles), layout, {
           responsive: true,
           displaylogo: false,
           scrollZoom: true,

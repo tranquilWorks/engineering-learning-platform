@@ -1,9 +1,14 @@
 # Additional direct-review findings
 
-These 44 additional lessons were found during the wider delivery audit, beyond
+These 60 additional lessons were found during the wider delivery audit, beyond
 the initially selected twelve-lesson semantic repair. They remain blocked and
 are not covered by that repair contract. This is a defect register, not a claim
 that all remaining lessons have passed a complete semantic review.
+
+The last sixteen findings were exposed when restored axis labels made the
+Vehicle P01–P16 mixed-unit signature charts visible during screenshot review.
+Their physical models are not all rejected; their dimensional presentation and
+lesson-specific checks require repair.
 
 | Course / lesson | Directly inspected gap |
 | --- | --- |
@@ -51,6 +56,22 @@ that all remaining lessons have passed a complete semantic review.
 | robotics-autonomy P47 | Occupancy and entropy metrics are formulas of beam count and probability rather than ray updates on an occupancy grid. |
 | robotics-autonomy P48 | ICP residual, transform error and iteration count are algebraic surrogates; no point correspondence or registration iteration is executed. |
 | robotics-autonomy P52 | Appearance and geometry gates execute, but map deformation is a fixed-factor residual formula rather than a recomputed graph solution. |
+| vehicle-dynamics P01 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
+| vehicle-dynamics P02 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
+| vehicle-dynamics P03 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
+| vehicle-dynamics P04 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
+| vehicle-dynamics P05 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
+| vehicle-dynamics P06 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
+| vehicle-dynamics P07 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
+| vehicle-dynamics P08 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
+| vehicle-dynamics P09 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
+| vehicle-dynamics P10 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
+| vehicle-dynamics P11 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
+| vehicle-dynamics P12 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
+| vehicle-dynamics P13 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
+| vehicle-dynamics P14 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
+| vehicle-dynamics P15 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
+| vehicle-dynamics P16 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
 
 Review source: each corresponding `courses/<course>/modules/<number>-*/experiment.py`
 against its `design.yaml`, lesson claims and retained references. Controls P34–65
@@ -61,7 +82,7 @@ targeted inspections do not certify every pedagogical claim in all 288 lessons.
 
 Candidate further groups, subject to the owner’s scope preference: Controls
 P36/P38/P42/P43/P45–51/P55 (12), Controls P56/P57/P60–62/P64–65 (7),
-Robotics P25–36 (12), Robotics P37–48 (12), and Robotics P52 (1). Cohesive
+Robotics P25–36 (12), Robotics P37–48 (12), and Robotics P52 (1), and Vehicle P01–P16 (split into coherent groups). Cohesive
 groups may combine the smaller tails. Preserve unrelated model outputs and
 require real numerical mechanisms, independent oracles and meaningful teaching
 checks in a fresh scoped contract before each repair.

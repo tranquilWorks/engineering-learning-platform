@@ -48,7 +48,7 @@ updated baked read-only container. Run all required local gates and retain exact
 counts, numerical limits, source/model preservation and image identity.
 
 Reassess the DSP numerical/curriculum/capstone states against that evidence,
-while keeping representative-learner validation unperformed. Controls/Robotics
+while keeping representative-learner validation unperformed. Controls/Robotics/Vehicle
 additional defects remain separately blocked; this DSP review cannot promote
 other curricula. MATLAB execution, hardware/field qualification, production and
 conversion of the nine source-only repositories remain outside this sequence.

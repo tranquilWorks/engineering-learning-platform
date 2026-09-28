@@ -137,3 +137,13 @@ test('long inline expressions and metric names wrap within mobile lessons', asyn
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
   }
 });
+
+test('authored axis and colorbar units appear in the rendered charts', async ({ page }) => {
+  await page.goto('/courses/dsp-radar/modules/11-make-fft-bins-concrete');
+  const bins = page.locator('.js-plotly-plot').first();
+  await expect(bins.locator('.xtitle')).toHaveText('Signed frequency (Hz)');
+  await expect(bins.locator('.ytitle')).toHaveText('Normalized magnitude (V)');
+  await expect(page.locator('.y2title')).toHaveText('Bin spacing (Hz)');
+  await page.goto('/courses/dsp-radar/modules/70-create-an-fmcw-range-doppler-map');
+  await expect(page.locator('.cbtitle').filter({ hasText: /^dB$/ }).first()).toBeVisible();
+});

@@ -61,7 +61,7 @@ but they are not independent correctness oracles.
 | DSP/Radar | 84 | #441: aggregate competency mapping and cumulative assessment after completed item repairs |
 | Controls/GNC | 68 | 22 affected lessons: cumulative capstones plus unsupported prerequisite mechanisms |
 | Robotics/Autonomy | 69 | 27 affected lessons: replay/recovery plus unsupported geometry, dynamics and perception mechanisms |
-| Vehicle Dynamics | 67 | Repair P61–P67 dimensional/performance/cumulative defects, including hardcoded P66/P67 verdicts |
+| Vehicle Dynamics | 67 | 23 affected lessons: P01–P16 mixed-unit charts and P61–P67 dimensional/performance/cumulative defects |
 
 All four aggregate numerical, curriculum and capstone statuses remain blocked
 pending the named reassessments. Prior maps, references and tests are retained;
@@ -74,6 +74,6 @@ semantic revision group, exact findings and delivery evidence. Nine other
 pinned repositories remain source-only. No MATLAB runtime, physical hardware,
 measured vehicle/track, representative learner or production claim is made.
 
-The wider direct review records 56 affected lessons, including 44 outside the
-initial twelve-lesson repair. Finishing that group alone cannot close Controls
-or Robotics aggregate maturity. See the per-lesson additional finding register.
+The wider direct review records 72 affected lessons, including 60 outside the
+initial twelve-lesson repair. Finishing that group alone cannot close Controls,
+Robotics or Vehicle aggregate maturity. See the per-lesson additional finding register.
