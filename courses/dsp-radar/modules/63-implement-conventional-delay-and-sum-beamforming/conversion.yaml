@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "07a17b7ec9237b8c891bf030242271eac5cc93a98c916b6e8d611860f2eb432d",
+    "content_digest": "078723006a13d24da278c18cb1595c602fb98477ac3bc4029cb31f86be38bf75",
     "files": [
       {
         "path": "modules/63-implement-conventional-delay-and-sum-beamforming/experiment.py",
-        "sha256": "a6a4b925e238308c68524697cf783d0c12b15eab24c3e377bca14b591fd06594"
+        "sha256": "ad5cf6bdfe1d565a366868e45178514abeb9f30c8e0340fa40e18fa2f3538855"
       },
       {
         "path": "modules/63-implement-conventional-delay-and-sum-beamforming/lesson.md",
-        "sha256": "c93047f6fe0d47a3f3f9eafcd37d84470c21c30dc8d45283e9ad2becb18d4ea5"
+        "sha256": "7106ac82e07a22b82a2bf93caa8155f88483ee0df0c29ca16184cf30e74e5409"
       },
       {
         "path": "modules/63-implement-conventional-delay-and-sum-beamforming/module.yaml",
-        "sha256": "afd9b0e5fd9474e3e6c833ee3be23607a88dc7745a41ceaa222034e1209c0bb8"
+        "sha256": "5d94d73a57326b8546ab43f3ae4cd937de173616b6de89d904bc8f1ced049aa9"
       }
     ]
   },
   "content": {
     "guiding_question": "How does steering align one direction and misalign others?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "The narrowband sensor matrix X=A S+N is matched by w=a(theta)/M. Hermitian steering aligns the chosen direction before mean squared output measures spatial response.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary steering angle while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "The narrowband sensor matrix X=A S+N is matched by w=a(theta)/M. Hermitian steering aligns the chosen direction before mean squared output measures spatial response.",
+      "Reversing the steering phase convention mirrors the named -20/+30 degree scene. The failure keeps sensor data fixed and changes only the steering sign.",
+      "Restore the conjugate steering convention on that same named scene. Disable the toggle to return exactly to the selected -20/+25 degree baseline. Fixed phase weights assume narrowband signals.",
+      "Explicit stage equations are retained in lesson.md. P53-P56 use private NumPy streams; P57-P64 retain source private input formulas. Plot/console presentation is adapted; no MATLAB runtime execution is claimed."
     ],
     "equations": [
       {
@@ -66,149 +66,274 @@
     ],
     "equation_order": "before_toolbox_shortcuts",
     "deterministic_data": {
-      "seed": 1063,
+      "seed": 6301,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
+          "name": "calculation_angle_samples",
+          "value": 1201,
+          "unit": "count"
         },
         {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
+          "name": "snapshots",
+          "value": 128,
+          "unit": "count"
         },
         {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "broken_scene_seed",
+          "value": 6315,
+          "unit": "count"
+        },
+        {
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "9452cda40634d4b12977164fd4953ee45c359a74b6e3f8869eb4e6acc5bc3bf8",
-          "unit": "mixed numeric signature"
+          "sha256": "2905ea3a142e9a1d5f8e6ab509cf1a134cd333f7ed6047aeeeae8014a8b62b12",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "0cfd9055d75abaaf49369bfad385e0cdd48c271daa12ba6cc581e81cf34a296e",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "818a1db2caa7deea8ef6a1041cde8a45636cb836a4df50774cb50344b452c81e",
-          "unit": "mixed numeric signature"
+          "sha256": "38a7c78de963aea2ee34b732eb4bf64086c9aee614e5c49b3fbf1a690b1c758b",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "2784534573acd699e1b7ee82b76ab412f3cdd2532ca90650e4c922a4b92d1850",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "88eb85f3627eaac238085eb972b1218d77326afa35c905b0c092a1c4126af6e7",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "dac80d245112f79e608d6073313b01e1da12afa4338b725348d54601828da317",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "25ffac7da1f8d211ac463b93bb1c7d229c15945382a539dad3b44eadd1ee60f2",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "4dd1cb57120646bad7d3431d17ff75683d1d18801c4cd977f7095b368aaf4c70",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "2905ea3a142e9a1d5f8e6ab509cf1a134cd333f7ed6047aeeeae8014a8b62b12",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "0cfd9055d75abaaf49369bfad385e0cdd48c271daa12ba6cc581e81cf34a296e",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P63 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P63 explicit processing and evidence stages",
+        "target_plot_key": "scan",
+        "title": "Hermitian steering and mean beam-output power",
         "axes": [
           {
             "role": "x",
-            "label": "look angle (deg)",
-            "unit": "source units"
+            "label": "Scan angle (deg)",
+            "unit": "deg"
           },
           {
             "role": "y",
-            "label": "normalized power",
-            "unit": "normalized"
+            "label": "Relative output power (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Implement Conventional Delay-and-Sum Beamforming guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "The narrowband sensor matrix X=A S+N is matched by w=a(theta)/M. Hermitian steering aligns the chosen direction before mean squared output measures spatial response."
       },
       {
-        "source_figure": "Pinned P63 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P63 explicit processing and evidence stages",
+        "target_plot_key": "alignment",
+        "title": "Element contributions after steering toward -20 degrees",
         "axes": [
           {
             "role": "x",
-            "label": "look angle (deg)",
-            "unit": "source units"
+            "label": "Element index (count)",
+            "unit": "count"
           },
           {
             "role": "y",
-            "label": "normalized power",
+            "label": "Snapshot voltage (normalized)",
             "unit": "normalized"
           }
         ],
-        "interpretation": "This view answers the Implement Conventional Delay-and-Sum Beamforming guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "The narrowband sensor matrix X=A S+N is matched by w=a(theta)/M. Hermitian steering aligns the chosen direction before mean squared output measures spatial response."
       },
       {
-        "source_figure": "Pinned P63 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P63 explicit processing and evidence stages",
+        "target_plot_key": "separation",
+        "title": "Same noise: change source separation",
         "axes": [
           {
             "role": "x",
-            "label": "look angle (deg)",
-            "unit": "source units"
+            "label": "Scan angle (deg)",
+            "unit": "deg"
           },
           {
             "role": "y",
-            "label": "normalized power",
-            "unit": "normalized"
+            "label": "Relative output power (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Implement Conventional Delay-and-Sum Beamforming guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "The narrowband sensor matrix X=A S+N is matched by w=a(theta)/M. Hermitian steering aligns the chosen direction before mean squared output measures spatial response."
       },
       {
-        "source_figure": "Pinned P63 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P63 explicit processing and evidence stages",
+        "target_plot_key": "aperture",
+        "title": "Same +/-8 degree sources: change aperture",
         "axes": [
           {
             "role": "x",
-            "label": "look angle (deg)",
-            "unit": "source units"
+            "label": "Scan angle (deg)",
+            "unit": "deg"
           },
           {
             "role": "y",
-            "label": "normalized power",
-            "unit": "normalized"
+            "label": "Relative output power (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Implement Conventional Delay-and-Sum Beamforming guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "The narrowband sensor matrix X=A S+N is matched by w=a(theta)/M. Hermitian steering aligns the chosen direction before mean squared output measures spatial response."
+      },
+      {
+        "source_figure": "Pinned P63 explicit processing and evidence stages",
+        "target_plot_key": "snr",
+        "title": "Per-source, per-sensor SNR changes scan floor",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Input SNR (dB)",
+            "unit": "dB"
+          },
+          {
+            "role": "y",
+            "label": "Median relative background (dB)",
+            "unit": "dB"
+          }
+        ],
+        "interpretation": "The narrowband sensor matrix X=A S+N is matched by w=a(theta)/M. Hermitian steering aligns the chosen direction before mean squared output measures spatial response."
+      },
+      {
+        "source_figure": "Pinned P63 explicit processing and evidence stages",
+        "target_plot_key": "snapshots",
+        "title": "More snapshots average random scan variation",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Snapshots (count)",
+            "unit": "count"
+          },
+          {
+            "role": "y",
+            "label": "Background ripple standard deviation (dB)",
+            "unit": "dB"
+          }
+        ],
+        "interpretation": "The narrowband sensor matrix X=A S+N is matched by w=a(theta)/M. Hermitian steering aligns the chosen direction before mean squared output measures spatial response."
+      },
+      {
+        "source_figure": "Pinned P63 explicit processing and evidence stages",
+        "target_plot_key": "failure",
+        "title": "Wrong phase sign mirrors the source directions",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Scan angle (deg)",
+            "unit": "deg"
+          },
+          {
+            "role": "y",
+            "label": "Relative output power (dB)",
+            "unit": "dB"
+          }
+        ],
+        "interpretation": "The narrowband sensor matrix X=A S+N is matched by w=a(theta)/M. Hermitian steering aligns the chosen direction before mean squared output measures spatial response."
+      },
+      {
+        "source_figure": "Pinned P63 explicit processing and evidence stages",
+        "target_plot_key": "sensor_data",
+        "title": "Received matrix before spatial matching: baseline I channel",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Snapshot (index)",
+            "unit": "index"
+          },
+          {
+            "role": "y",
+            "label": "Sensor (index)",
+            "unit": "index"
+          }
+        ],
+        "interpretation": "The narrowband sensor matrix X=A S+N is matched by w=a(theta)/M. Hermitian steering aligns the chosen direction before mean squared output measures spatial response."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "elements",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          4,
+          8,
+          16
         ],
-        "expected_observation": "Changing steering angle moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Elements; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "source_snr_db",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          -15,
+          0,
+          10,
+          15
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Source SNR db; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "Reversing the steering phase convention mirrors the named -20/+30 degree scene. The failure keeps sensor data fixed and changes only the steering sign.",
+      "recovery": "Restore the conjugate steering convention on that same named scene. Disable the toggle to return exactly to the selected -20/+25 degree baseline. Fixed phase weights assume narrowband signals.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Reversing the steering phase convention mirrors the named -20/+30 degree scene. The failure keeps sensor data fixed and changes only the steering sign.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -216,63 +341,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 500000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P63 python -m pytest -q apps/api/tests/test_dsp_course.py",
-    "seed": 1063,
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p53_p64.py",
+    "seed": 6301,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "elements",
+        "value": 8,
+        "unit": "elements"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "source_snr_db",
+        "value": 10,
+        "unit": "dB"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 7.105427357601002e-15,
+        "max_relative_error": 5.570615581664223e-16,
+        "passed": true,
         "expected": {
           "path": "modules/63-implement-conventional-delay-and-sum-beamforming/evidence/expected-baseline.json",
-          "sha256": "9452cda40634d4b12977164fd4953ee45c359a74b6e3f8869eb4e6acc5bc3bf8"
+          "sha256": "2905ea3a142e9a1d5f8e6ab509cf1a134cd333f7ed6047aeeeae8014a8b62b12"
         },
         "actual": {
           "path": "modules/63-implement-conventional-delay-and-sum-beamforming/evidence/actual-baseline.json",
-          "sha256": "5738e8627ddb42dd0b3860ef76186fa08a23e85a91a641363ebf85c6a3759c40"
-        },
-        "max_absolute_error": 3.772537837676282e-13,
-        "max_relative_error": 3.772537837676282e-13,
-        "passed": true
+          "sha256": "0cfd9055d75abaaf49369bfad385e0cdd48c271daa12ba6cc581e81cf34a296e"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 1.0658141036401503e-14,
+        "max_relative_error": 6.063969756004852e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/63-implement-conventional-delay-and-sum-beamforming/evidence/expected-sweep-1.json",
+          "sha256": "38a7c78de963aea2ee34b732eb4bf64086c9aee614e5c49b3fbf1a690b1c758b"
+        },
+        "actual": {
+          "path": "modules/63-implement-conventional-delay-and-sum-beamforming/evidence/actual-sweep-1.json",
+          "sha256": "2784534573acd699e1b7ee82b76ab412f3cdd2532ca90650e4c922a4b92d1850"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 1.7763568394002505e-15,
+        "max_relative_error": 2.1254171837944221e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/63-implement-conventional-delay-and-sum-beamforming/evidence/expected-sweep-2.json",
+          "sha256": "88eb85f3627eaac238085eb972b1218d77326afa35c905b0c092a1c4126af6e7"
+        },
+        "actual": {
+          "path": "modules/63-implement-conventional-delay-and-sum-beamforming/evidence/actual-sweep-2.json",
+          "sha256": "dac80d245112f79e608d6073313b01e1da12afa4338b725348d54601828da317"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 3.552713678800501e-15,
+        "max_relative_error": 4.4130940415097797e-16,
+        "passed": true,
         "expected": {
           "path": "modules/63-implement-conventional-delay-and-sum-beamforming/evidence/expected-broken.json",
-          "sha256": "818a1db2caa7deea8ef6a1041cde8a45636cb836a4df50774cb50344b452c81e"
+          "sha256": "25ffac7da1f8d211ac463b93bb1c7d229c15945382a539dad3b44eadd1ee60f2"
         },
         "actual": {
           "path": "modules/63-implement-conventional-delay-and-sum-beamforming/evidence/actual-broken.json",
-          "sha256": "fefe3dd170e19fb807ab2502fd988a6f3fa2199bd1da2e0a41239509f2820dec"
+          "sha256": "4dd1cb57120646bad7d3431d17ff75683d1d18801c4cd977f7095b368aaf4c70"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 3.6426417437951386e-13,
-        "max_relative_error": 3.6426417437951386e-13,
-        "passed": true
+        "max_absolute_error": 7.105427357601002e-15,
+        "max_relative_error": 5.570615581664223e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/63-implement-conventional-delay-and-sum-beamforming/evidence/expected-recovery.json",
+          "sha256": "2905ea3a142e9a1d5f8e6ab509cf1a134cd333f7ed6047aeeeae8014a8b62b12"
+        },
+        "actual": {
+          "path": "modules/63-implement-conventional-delay-and-sum-beamforming/evidence/actual-recovery.json",
+          "sha256": "0cfd9055d75abaaf49369bfad385e0cdd48c271daa12ba6cc581e81cf34a296e"
+        }
       }
     ]
   },

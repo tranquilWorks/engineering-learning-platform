@@ -1,6 +1,4 @@
-# Build an Amplitude-Comparison Monopulse Experiment
-
-> **Guiding question:** How can sum and difference beams estimate small angle error around boresight?
+# P64 lesson: A Signed Angle Error from One Pair of Beams
 
 Guiding question: How can sum and difference beams estimate small angle error around boresight?
 
@@ -142,33 +140,29 @@ mutual-coupling errors. Repository static checks and a Python numerical oracle
 do not validate MATLAB-rendered figures, antennas, hardware/HIL, real-time
 execution, field performance, or operational radar behavior.
 
-## Use the Python GUI experiment
+## Interactive lab: Build an Amplitude-Comparison Monopulse Experiment
 
-The GUI keeps the pinned source's mental model and processing order visible. The **angle error** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** How can sum and difference beams estimate small angle error around boresight?
 
-### Prediction and sweep 1 — angle error
+Twelve half-wavelength sensors and 256 snapshots observe a coherent 2-degree target of phase .4 rad, at 15 dB SNR. Beams squint +/-3 degrees and are phase-aligned at boresight before Sigma=(R+L)/2 and Delta=(R-L)/2. A full -10:.05:10-degree pattern supplies monotone calibration within +/-4 degrees. Snapshot estimates require |Sigma|>=.15; valid ratios interpolate and clip at calibration endpoints, with clipping counted explicitly. The coherent estimate uses Re(mean Delta/mean Sigma), not mean of snapshot ratios. Squint 1.5/3/5 degrees and SNR -5/5/15/25 dB reuse inputs. The named noiseless boresight failure changes right gain to 1.12 and recovers via measured inverse gain.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict the sign of Delta/Sigma for a right-of-boresight target. Why do squint, sum-channel strength, SNR, calibration bounds and gain mismatch all matter for the angle estimate?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Beam squint deg** from 3 to 5 deg. Predict the change, run, and explain a measured value using the equation; then reset.
+2. Start at the baseline. Sweep only **Receiver SNR db** from 15 to -5 dB. Predict the change, run, and explain a measured value using the equation; then reset.
+3. Enable the broken case. Unknown right-channel gain 1.12 gives a nonzero angle for a noiseless boresight target. This named mismatch scene is separate from the selected noisy 2-degree target.
+4. Recovery: Divide the right channel by the measured gain on unchanged boresight data. Disable the toggle for exact selected noisy-scene recovery. Calibration is local to +/-4 degrees; clipping is not evidence of accuracy outside that sector.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict the sign of Delta/Sigma for a right-of-boresight target. Why do squint, sum-channel strength, SNR, calibration bounds and gain mismatch all matter for the angle estimate? Support your answer with a measured value and units. Explain the recovery assumption and identify what this finite experiment cannot establish.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+Unknown right-channel gain 1.12 gives a nonzero angle for a noiseless boresight target. This named mismatch scene is separate from the selected noisy 2-degree target. Keep measured units, model assumptions and the named recovery boundary explicit.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The source lesson is preserved above. The source Park–Miller/Box–Muller input formulas and array ordering are retained, including P58’s zero uniform offset and the array complex-noise convention. This is algorithmic software evidence, not a MATLAB runtime execution claim. Source console/figure presentation becomes labeled native plots and metrics. Calculations use the full stated arrays; displayed line and heatmap coordinates may be decimated. Independent numerical comparisons retain five scenarios. No MATLAB execution, browser/accessibility review, representative learner, hardware or production validation is claimed.

@@ -3,13 +3,13 @@
   "id": "63-implement-conventional-delay-and-sum-beamforming",
   "number": 63,
   "title": "Implement Conventional Delay-and-Sum Beamforming",
-  "summary": "Explore implement conventional delay-and-sum beamforming with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "The narrowband sensor matrix X=A S+N is matched by w=a(theta)/M. Hermitian steering aligns the chosen direction before mean squared output measures spatial response.",
   "guiding_question": "How does steering align one direction and misalign others?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-7",
-    "steering-angle"
+    "array-processing",
+    "P63"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,55 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Steering Angle",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "elements",
+      "type": "segmented",
+      "label": "Elements",
+      "unit": "elements",
+      "default": 8,
+      "options": [
+        {
+          "label": "4",
+          "value": 4
+        },
+        {
+          "label": "8 baseline",
+          "value": 8
+        },
+        {
+          "label": "16",
+          "value": 16
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
+      "id": "source_snr_db",
+      "type": "segmented",
+      "label": "Source SNR db",
       "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "default": 10,
+      "options": [
+        {
+          "label": "-15",
+          "value": -15
+        },
+        {
+          "label": "0",
+          "value": 0
+        },
+        {
+          "label": "10 baseline",
+          "value": 10
+        },
+        {
+          "label": "15",
+          "value": 15
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +79,55 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing steering angle, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict when two sources merge as aperture shrinks. What does conjugate steering align, how do SNR and snapshot averaging differ, and why does a sign error mirror the scan?",
+      "reveal": "The narrowband sensor matrix X=A S+N is matched by w=a(theta)/M. Hermitian steering aligns the chosen direction before mean squared output measures spatial response."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Hermitian steering and mean beam-output power",
+      "plot": "scan"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Element contributions after steering toward -20 degrees",
+      "plot": "alignment"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Same noise: change source separation",
+      "plot": "separation"
+    },
+    {
+      "type": "plot",
+      "title": "Same +/-8 degree sources: change aperture",
+      "plot": "aperture"
+    },
+    {
+      "type": "plot",
+      "title": "Per-source, per-sensor SNR changes scan floor",
+      "plot": "snr"
+    },
+    {
+      "type": "plot",
+      "title": "More snapshots average random scan variation",
+      "plot": "snapshots"
+    },
+    {
+      "type": "plot",
+      "title": "Wrong phase sign mirrors the source directions",
+      "plot": "failure"
+    },
+    {
+      "type": "plot",
+      "title": "Received matrix before spatial matching: baseline I channel",
+      "plot": "sensor_data"
     },
     {
       "type": "callout",
@@ -102,7 +138,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

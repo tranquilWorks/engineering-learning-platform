@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "7b3e931328e2d6e5396a3ac7d6892d5598946e5cf6099d9a759983c27014f81f",
+    "content_digest": "45dcaef7dbc34432ede0c397de4e7d686322abe7e8c290ee6931e590aa20e7df",
     "files": [
       {
         "path": "modules/61-see-phase-steering-in-a-uniform-linear-array/experiment.py",
-        "sha256": "751c7f180a07f1a7e5642796d948a0386e06524059b91e71c0972ca1d60c9469"
+        "sha256": "004a069b65d48fecad3b1e742f045170fbbdf85c4347fecd583dbd43822d8f48"
       },
       {
         "path": "modules/61-see-phase-steering-in-a-uniform-linear-array/lesson.md",
-        "sha256": "081be32d87fda1536a7b6fe386c804ff701acf6b9c89f55bee26c9b2c70ee237"
+        "sha256": "af7ebaac55e336a165412fc44df7c45555896a82b4558420db9c53fd798c4e5e"
       },
       {
         "path": "modules/61-see-phase-steering-in-a-uniform-linear-array/module.yaml",
-        "sha256": "a8443527b8a7d787a87c6617d5a81543634b8d8f973468dcc0f5c8e86cb3cfa6"
+        "sha256": "e8b23175b0d19881257f19a1b21022354dd323af85d72df7edbb3b4b14c001e6"
       }
     ]
   },
   "content": {
     "guiding_question": "How does a direction of arrival become a phase slope across sensors?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "A positive broadside angle advances arrival time and creates positive spatial phase under exp(+j2pi f t). Unwrapped least-squares and adjacent-sensor phase estimates reveal the direction.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary arrival angle while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "A positive broadside angle advances arrival time and creates positive spatial phase under exp(+j2pi f t). Unwrapped least-squares and adjacent-sensor phase estimates reveal the direction.",
+      "At one wavelength, direction cosines .6 and -.4 produce identical sensor phasors. The wrapped step infers the wrong direction; more averaging cannot remove this ambiguity.",
+      "Use half-wavelength spacing for the same true angle, frequency, phase and sensor count. The named noiseless alias recovery is distinct from the selected noisy scene; disable the toggle to restore that scene.",
+      "Explicit stage equations are retained in lesson.md. P53-P56 use private NumPy streams; P57-P64 retain source private input formulas. Plot/console presentation is adapted; no MATLAB runtime execution is claimed."
     ],
     "equations": [
       {
@@ -66,149 +66,224 @@
     ],
     "equation_order": "before_toolbox_shortcuts",
     "deterministic_data": {
-      "seed": 1061,
+      "seed": 6101,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
-        },
-        {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "8d532654bbe79b43e45c452c150d69c0584dbf9ba41e483abc2c388d1c924219",
-          "unit": "mixed numeric signature"
+          "sha256": "07b4703b752bb8103f4b2c26c982da4876ad9ad9ff7e63076c0514644da39c55",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "1700c98e75c5ddd41933f9ea046b0f3f009e96390f9f6694c6e6e1faabea4b72",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "0a0b227e26d7b75dcd523573e1cd9ef0ae80df50e1b4c11961ab15dddd98224e",
-          "unit": "mixed numeric signature"
+          "sha256": "8d516cdd42cc484cb931cc3748831b36831199ea521305537e288b152cec174f",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "c6ecb8dd1f2b1e39967c2fdcb57e78a89e78c04d128138e22f30eea57e904249",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "112f070b5e3db30dec115f0247485f7b1a73159f3afedf920484c2b2c661523b",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "1e839749b82952ec7de405b6850236a6e79a3321b85929aba385ad1e5f68fa15",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "5f934b2ef52fc00d592cb5c518573ad4c7832799ae4044619589e228173342ec",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "f4aa866b5ee7612872497758f1648685ba5a059bf8348da142e57942f4b95553",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "07b4703b752bb8103f4b2c26c982da4876ad9ad9ff7e63076c0514644da39c55",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "1700c98e75c5ddd41933f9ea046b0f3f009e96390f9f6694c6e6e1faabea4b72",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P61 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P61 explicit processing and evidence stages",
+        "target_plot_key": "geometry",
+        "title": "Positive bearing creates a relative arrival advance",
         "axes": [
           {
             "role": "x",
-            "label": "look angle (deg)",
-            "unit": "source units"
+            "label": "Element position (m)",
+            "unit": "m"
           },
           {
             "role": "y",
-            "label": "normalized power",
-            "unit": "normalized"
+            "label": "Relative propagation delay (ps)",
+            "unit": "ps"
           }
         ],
-        "interpretation": "This view answers the See Phase Steering in a Uniform Linear Array guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "A positive broadside angle advances arrival time and creates positive spatial phase under exp(+j2pi f t). Unwrapped least-squares and adjacent-sensor phase estimates reveal the direction."
       },
       {
-        "source_figure": "Pinned P61 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P61 explicit processing and evidence stages",
+        "target_plot_key": "samples",
+        "title": "Simultaneous complex sensor voltages",
         "axes": [
           {
             "role": "x",
-            "label": "look angle (deg)",
-            "unit": "source units"
+            "label": "Element index (count)",
+            "unit": "count"
           },
           {
             "role": "y",
-            "label": "normalized power",
+            "label": "Voltage (normalized)",
             "unit": "normalized"
           }
         ],
-        "interpretation": "This view answers the See Phase Steering in a Uniform Linear Array guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "A positive broadside angle advances arrival time and creates positive spatial phase under exp(+j2pi f t). Unwrapped least-squares and adjacent-sensor phase estimates reveal the direction."
       },
       {
-        "source_figure": "Pinned P61 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P61 explicit processing and evidence stages",
+        "target_plot_key": "phase",
+        "title": "Wrapped and unwrapped spatial phase",
         "axes": [
           {
             "role": "x",
-            "label": "look angle (deg)",
-            "unit": "source units"
+            "label": "Element index (count)",
+            "unit": "count"
           },
           {
             "role": "y",
-            "label": "normalized power",
-            "unit": "normalized"
+            "label": "Phase (rad)",
+            "unit": "rad"
           }
         ],
-        "interpretation": "This view answers the See Phase Steering in a Uniform Linear Array guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "A positive broadside angle advances arrival time and creates positive spatial phase under exp(+j2pi f t). Unwrapped least-squares and adjacent-sensor phase estimates reveal the direction."
       },
       {
-        "source_figure": "Pinned P61 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P61 explicit processing and evidence stages",
+        "target_plot_key": "angle_sweep",
+        "title": "Arrival angle changes phase slope",
         "axes": [
           {
             "role": "x",
-            "label": "look angle (deg)",
-            "unit": "source units"
+            "label": "True angle (deg)",
+            "unit": "deg"
           },
           {
             "role": "y",
-            "label": "normalized power",
-            "unit": "normalized"
+            "label": "Estimated angle (deg)",
+            "unit": "deg"
           }
         ],
-        "interpretation": "This view answers the See Phase Steering in a Uniform Linear Array guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "A positive broadside angle advances arrival time and creates positive spatial phase under exp(+j2pi f t). Unwrapped least-squares and adjacent-sensor phase estimates reveal the direction."
+      },
+      {
+        "source_figure": "Pinned P61 explicit processing and evidence stages",
+        "target_plot_key": "electrical_spacing",
+        "title": "Spacing or carrier changes the same electrical aperture",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Spacing d/lambda (ratio)",
+            "unit": "ratio"
+          },
+          {
+            "role": "y",
+            "label": "Phase slope (rad/element)",
+            "unit": "rad/element"
+          }
+        ],
+        "interpretation": "A positive broadside angle advances arrival time and creates positive spatial phase under exp(+j2pi f t). Unwrapped least-squares and adjacent-sensor phase estimates reveal the direction."
+      },
+      {
+        "source_figure": "Pinned P61 explicit processing and evidence stages",
+        "target_plot_key": "alias",
+        "title": "Different directions produce identical aliased phases",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Element index (count)",
+            "unit": "count"
+          },
+          {
+            "role": "y",
+            "label": "Principal phase (rad)",
+            "unit": "rad"
+          }
+        ],
+        "interpretation": "A positive broadside angle advances arrival time and creates positive spatial phase under exp(+j2pi f t). Unwrapped least-squares and adjacent-sensor phase estimates reveal the direction."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "arrival_angle_deg",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          -60,
+          -30,
+          0,
+          30,
+          60
         ],
-        "expected_observation": "Changing arrival angle moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Arrival angle deg; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "spacing_wavelengths",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          0.25,
+          0.375,
+          0.5
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Spacing wavelengths; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "At one wavelength, direction cosines .6 and -.4 produce identical sensor phasors. The wrapped step infers the wrong direction; more averaging cannot remove this ambiguity.",
+      "recovery": "Use half-wavelength spacing for the same true angle, frequency, phase and sensor count. The named noiseless alias recovery is distinct from the selected noisy scene; disable the toggle to restore that scene.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "At one wavelength, direction cosines .6 and -.4 produce identical sensor phasors. The wrapped step infers the wrong direction; more averaging cannot remove this ambiguity.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -216,63 +291,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 5000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P61 python -m pytest -q apps/api/tests/test_dsp_course.py",
-    "seed": 1061,
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p53_p64.py",
+    "seed": 6101,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "arrival_angle_deg",
+        "value": 30,
+        "unit": "deg"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "spacing_wavelengths",
+        "value": 0.5,
+        "unit": "wavelengths"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 2.1316282072803006e-14,
+        "max_relative_error": 1.7763568394002505e-14,
+        "passed": true,
         "expected": {
           "path": "modules/61-see-phase-steering-in-a-uniform-linear-array/evidence/expected-baseline.json",
-          "sha256": "8d532654bbe79b43e45c452c150d69c0584dbf9ba41e483abc2c388d1c924219"
+          "sha256": "07b4703b752bb8103f4b2c26c982da4876ad9ad9ff7e63076c0514644da39c55"
         },
         "actual": {
           "path": "modules/61-see-phase-steering-in-a-uniform-linear-array/evidence/actual-baseline.json",
-          "sha256": "97cbfea9e29c427a3566e059d58432c919f543cabf3d6c505cca59bc3c6e2e78"
-        },
-        "max_absolute_error": 4.27158308724529e-13,
-        "max_relative_error": 4.27158308724529e-13,
-        "passed": true
+          "sha256": "1700c98e75c5ddd41933f9ea046b0f3f009e96390f9f6694c6e6e1faabea4b72"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 2.1316282072803006e-14,
+        "max_relative_error": 2.1316282072803006e-14,
+        "passed": true,
+        "expected": {
+          "path": "modules/61-see-phase-steering-in-a-uniform-linear-array/evidence/expected-sweep-1.json",
+          "sha256": "8d516cdd42cc484cb931cc3748831b36831199ea521305537e288b152cec174f"
+        },
+        "actual": {
+          "path": "modules/61-see-phase-steering-in-a-uniform-linear-array/evidence/actual-sweep-1.json",
+          "sha256": "c6ecb8dd1f2b1e39967c2fdcb57e78a89e78c04d128138e22f30eea57e904249"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 2.1316282072803006e-14,
+        "max_relative_error": 7.105427357601002e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/61-see-phase-steering-in-a-uniform-linear-array/evidence/expected-sweep-2.json",
+          "sha256": "112f070b5e3db30dec115f0247485f7b1a73159f3afedf920484c2b2c661523b"
+        },
+        "actual": {
+          "path": "modules/61-see-phase-steering-in-a-uniform-linear-array/evidence/actual-sweep-2.json",
+          "sha256": "1e839749b82952ec7de405b6850236a6e79a3321b85929aba385ad1e5f68fa15"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 2.2737367544323206e-13,
+        "max_relative_error": 4.188379954952734e-15,
+        "passed": true,
         "expected": {
           "path": "modules/61-see-phase-steering-in-a-uniform-linear-array/evidence/expected-broken.json",
-          "sha256": "0a0b227e26d7b75dcd523573e1cd9ef0ae80df50e1b4c11961ab15dddd98224e"
+          "sha256": "5f934b2ef52fc00d592cb5c518573ad4c7832799ae4044619589e228173342ec"
         },
         "actual": {
           "path": "modules/61-see-phase-steering-in-a-uniform-linear-array/evidence/actual-broken.json",
-          "sha256": "8e9af1891c8b90b20055fa6b3e12dc5498d0037048a888dec6e8866dc1543762"
+          "sha256": "f4aa866b5ee7612872497758f1648685ba5a059bf8348da142e57942f4b95553"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 3.4466873799487985e-13,
-        "max_relative_error": 3.4466873799487985e-13,
-        "passed": true
+        "max_absolute_error": 2.1316282072803006e-14,
+        "max_relative_error": 1.7763568394002505e-14,
+        "passed": true,
+        "expected": {
+          "path": "modules/61-see-phase-steering-in-a-uniform-linear-array/evidence/expected-recovery.json",
+          "sha256": "07b4703b752bb8103f4b2c26c982da4876ad9ad9ff7e63076c0514644da39c55"
+        },
+        "actual": {
+          "path": "modules/61-see-phase-steering-in-a-uniform-linear-array/evidence/actual-recovery.json",
+          "sha256": "1700c98e75c5ddd41933f9ea046b0f3f009e96390f9f6694c6e6e1faabea4b72"
+        }
       }
     ]
   },

@@ -3,13 +3,13 @@
   "id": "64-build-an-amplitude-comparison-monopulse-experiment",
   "number": 64,
   "title": "Build an Amplitude-Comparison Monopulse Experiment",
-  "summary": "Explore build an amplitude-comparison monopulse experiment with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "Phase-align squinted receive beams at boresight, form Sigma and Delta, and invert a monotone local ratio calibration. The sum guard, valid count and clipping count expose the estimator limits.",
   "guiding_question": "How can sum and difference beams estimate small angle error around boresight?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-7",
-    "angle-error"
+    "array-processing",
+    "P64"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,55 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Angle Error",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "beam_squint_deg",
+      "type": "segmented",
+      "label": "Beam squint deg",
+      "unit": "deg",
+      "default": 3,
+      "options": [
+        {
+          "label": "1.5",
+          "value": 1.5
+        },
+        {
+          "label": "3 baseline",
+          "value": 3
+        },
+        {
+          "label": "5",
+          "value": 5
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
+      "id": "receiver_snr_db",
+      "type": "segmented",
+      "label": "Receiver SNR db",
       "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "default": 15,
+      "options": [
+        {
+          "label": "-5",
+          "value": -5
+        },
+        {
+          "label": "5",
+          "value": 5
+        },
+        {
+          "label": "15 baseline",
+          "value": 15
+        },
+        {
+          "label": "25",
+          "value": 25
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +79,50 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing angle error, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict the sign of Delta/Sigma for a right-of-boresight target. Why do squint, sum-channel strength, SNR, calibration bounds and gain mismatch all matter for the angle estimate?",
+      "reveal": "Phase-align squinted receive beams at boresight, form Sigma and Delta, and invert a monotone local ratio calibration. The sum guard, valid count and clipping count expose the estimator limits."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Phase-aligned left/right beams and sum/difference",
+      "plot": "beams"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Signed comparator within the calibrated sector",
+      "plot": "calibration"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Guarded snapshots: estimates clip at calibration limits",
+      "plot": "estimates"
+    },
+    {
+      "type": "plot",
+      "title": "Snapshot validity depends on sum-channel magnitude",
+      "plot": "sum_guard"
+    },
+    {
+      "type": "plot",
+      "title": "Larger squint steepens the comparator",
+      "plot": "squint_slope"
+    },
+    {
+      "type": "plot",
+      "title": "Larger squint reduces boresight sum",
+      "plot": "squint_sum"
+    },
+    {
+      "type": "plot",
+      "title": "Same receiver-noise samples at each SNR",
+      "plot": "snr"
     },
     {
       "type": "callout",
@@ -102,7 +133,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

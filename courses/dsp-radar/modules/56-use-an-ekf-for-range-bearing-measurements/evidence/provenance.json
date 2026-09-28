@@ -1,0 +1,87 @@
+{
+  "item": "P56",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p56",
+    "sha256": "3e335831c25b63a7ef02dd6a6ced2e39b42deb2a57f2597252c02ffcd0ee5bb8",
+    "byte_count": 154384,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/56-use-an-ekf-for-range-bearing-measurements/experiment.py",
+    "sha256": "705ce3bacce58c186d038d837c753c1a59a76d37fc8373c2c07e6cc4653292a6",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "bearing_sigma_deg": 0.8,
+      "geometry_range_m": 1500,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "bearing_sigma_deg": 3.2,
+      "geometry_range_m": 1500,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "bearing_sigma_deg": 0.8,
+      "geometry_range_m": 3000,
+      "broken_mode": false
+    },
+    "broken": {
+      "bearing_sigma_deg": 0.8,
+      "geometry_range_m": 1500,
+      "broken_mode": true
+    },
+    "recovery": {
+      "bearing_sigma_deg": 0.8,
+      "geometry_range_m": 1500,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    },
+    {
+      "name": "position_rmse",
+      "unit": "m"
+    },
+    {
+      "name": "mean_nis",
+      "unit": "ratio"
+    },
+    {
+      "name": "maximum_bearing_innovation",
+      "unit": "deg"
+    },
+    {
+      "name": "final_x",
+      "unit": "m"
+    },
+    {
+      "name": "final_y",
+      "unit": "m"
+    },
+    {
+      "name": "final_position_sigma",
+      "unit": "m"
+    },
+    {
+      "name": "geometry_tangential_sigma",
+      "unit": "m"
+    },
+    {
+      "name": "geometry_major_sigma",
+      "unit": "m"
+    },
+    {
+      "name": "minimum_covariance_eigenvalue",
+      "unit": "mixed state units"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

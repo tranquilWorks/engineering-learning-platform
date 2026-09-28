@@ -1,6 +1,4 @@
-# Implement a Constant-Velocity Kalman Filter
-
-> **Guiding question:** How do process noise and measurement noise determine trust in prediction versus measurement?
+# Lesson: uncertainty chooses the correction
 
 ## Guiding question
 
@@ -180,33 +178,29 @@ bounds, and documentation. They do not prove MATLAB execution, rendered plots,
 timing, memory use, statistical calibration, teaching effectiveness,
 hardware/HIL, real-time behavior, operational radar tracking, or field results.
 
-## Use the Python GUI experiment
+## Interactive lab: Implement a Constant-Velocity Kalman Filter
 
-The GUI keeps the pinned source's mental model and processing order visible. The **process noise** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** How do process noise and measurement noise determine trust in prediction versus measurement?
 
-### Prediction and sweep 1 — process noise
+The 101-scan, one-second CV state is [position,velocity]. Actual interval acceleration sigma is 0.8 m/s² and report sigma is 25 m. F=[[1,1],[0,1]], G=[0.5,1], Q=σ_a²GGᵀ and R=σ_z²; initialization is [first report,0] with diag(25²,15²). All comparisons reuse the reports; assumed Q/R do not change actual noise. Joseph covariance and NIS are exposed; metrics exclude the first fifteen scans. The minimum eigenvalue is a numerical PSD diagnostic for a mixed-unit state, not a physical uncertainty magnitude.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict the gain change when assumed report noise increases. How does interval acceleration enter Q, and how do zero Q and underestimated R fail differently on the same measurements?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Acceleration sigma m/s²** from 0.8 to 3.2 m/s². Predict the change, run, and explain a measured value using the equation; then reset.
+2. Start at the baseline. Sweep only **Report sigma m** from 25 to 100 m. Predict the change, run, and explain a measured value using the equation; then reset.
+3. Enable the broken case. Zero process noise over-trusts the constant-velocity model. A separate sigma_z=.5 m comparison over-trusts noisy reports; neither mismatch changes the actual data.
+4. Recovery: Restore the selected Q and R assumptions on the identical seeded record; disable the toggle for exact recovery. A single NIS record does not establish ensemble consistency.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict the gain change when assumed report noise increases. How does interval acceleration enter Q, and how do zero Q and underestimated R fail differently on the same measurements? Support your answer with a measured value and units. Explain the recovery assumption and identify what this finite experiment cannot establish.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+Zero process noise over-trusts the constant-velocity model. A separate sigma_z=.5 m comparison over-trusts noisy reports; neither mismatch changes the actual data. Keep measured units, model assumptions and the named recovery boundary explicit.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The source lesson is preserved above. P53–P56 use private NumPy seeds and row-major draws; these do not reproduce MATLAB random streams. Source console/figure presentation becomes labeled native plots and metrics. Calculations use the full stated arrays; displayed line and heatmap coordinates may be decimated. Independent numerical comparisons retain five scenarios. No MATLAB execution, browser/accessibility review, representative learner, hardware or production validation is claimed.

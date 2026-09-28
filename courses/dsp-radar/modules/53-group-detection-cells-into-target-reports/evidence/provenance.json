@@ -1,0 +1,87 @@
+{
+  "item": "P53",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p53",
+    "sha256": "3e335831c25b63a7ef02dd6a6ced2e39b42deb2a57f2597252c02ffcd0ee5bb8",
+    "byte_count": 154384,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/53-group-detection-cells-into-target-reports/experiment.py",
+    "sha256": "a85a5b434ec889efcef2d66a1a154b60753905f70888bd8787cd3e90779f03cf",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "minimum_cells": 3,
+      "weight_exponent": 1,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "minimum_cells": 18,
+      "weight_exponent": 1,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "minimum_cells": 3,
+      "weight_exponent": 2,
+      "broken_mode": false
+    },
+    "broken": {
+      "minimum_cells": 3,
+      "weight_exponent": 1,
+      "broken_mode": true
+    },
+    "recovery": {
+      "minimum_cells": 3,
+      "weight_exponent": 1,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    },
+    {
+      "name": "threshold_cells",
+      "unit": "cells"
+    },
+    {
+      "name": "local_peaks",
+      "unit": "peaks"
+    },
+    {
+      "name": "components",
+      "unit": "components"
+    },
+    {
+      "name": "active_reports",
+      "unit": "reports"
+    },
+    {
+      "name": "retained_truth_components",
+      "unit": "targets"
+    },
+    {
+      "name": "target1_range",
+      "unit": "m"
+    },
+    {
+      "name": "target1_velocity",
+      "unit": "m/s"
+    },
+    {
+      "name": "target1_shape_proxy",
+      "unit": "m"
+    },
+    {
+      "name": "target1_effective_cells",
+      "unit": "cells"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

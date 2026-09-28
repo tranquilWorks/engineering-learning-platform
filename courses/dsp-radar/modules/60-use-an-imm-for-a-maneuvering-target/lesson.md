@@ -1,6 +1,4 @@
-# Use an IMM for a Maneuvering Target
-
-> **Guiding question:** How can a tracker adapt when the target alternates between straight motion and maneuvers?
+# Lesson: let motion explanations compete without discarding either one
 
 ## Guiding question
 
@@ -271,33 +269,29 @@ statistical calibration, educational effectiveness, hardware/HIL, field,
 real-time, RT1/RT2, operational radar, signing, deployment, staging, or
 production behavior.
 
-## Use the Python GUI experiment
+## Interactive lab: Use an IMM for a Maneuvering Target
 
-The GUI keeps the pinned source's mental model and processing order visible. The **mode transition rate** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** How can a tracker adapt when the target alternates between straight motion and maneuvers?
 
-### Prediction and sweep 1 — mode transition rate
+The source seed is 6007 and the record contains sixty one-second scans with 10 m position noise. Both modes use [east position,velocity,acceleration,north position,velocity,acceleration]. CV resets acceleration memory; CA retains it. Straight acceleration sigma is .35 m/s², maneuver jerk sigma .80 m/s³. Initial state is [0,20,0,0,5,0], covariance diag(100,100,16,100,100,16), and mode prior [.85,.15]. Acceleration acts north on scans 16–25 and negative east on 39–48. Mixing includes covariance plus between-mean spread, updates use Joseph form, and posterior weights are normalized in log space. Identity transitions and prior [1,0] are the named unreachable-mode failure.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict the maneuver-mode probability during acceleration bursts. Why must mixed covariance include model-mean spread, and why can a zero-support mode never recover merely from a good likelihood?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Maneuver acceleration m/s²** from 2 to 3.2 m/s². Predict the change, run, and explain a measured value using the equation; then reset.
+2. Start at the baseline. Sweep only **Mode stay probability** from 0.94 to 0.99 probability. Predict the change, run, and explain a measured value using the equation; then reset.
+3. Enable the broken case. Identity transition probabilities and initial [1,0] make the maneuver mode unreachable even when its likelihood would fit better.
+4. Recovery: Restore nonzero transition support and the [.85,.15] prior on the same measurements; disable the toggle to reproduce the selected IMM exactly.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict the maneuver-mode probability during acceleration bursts. Why must mixed covariance include model-mean spread, and why can a zero-support mode never recover merely from a good likelihood? Support your answer with a measured value and units. Explain the recovery assumption and identify what this finite experiment cannot establish.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+Identity transition probabilities and initial [1,0] make the maneuver mode unreachable even when its likelihood would fit better. Keep measured units, model assumptions and the named recovery boundary explicit.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The source lesson is preserved above. The source Park–Miller/Box–Muller input formulas and array ordering are retained, including P58’s zero uniform offset and the array complex-noise convention. This is algorithmic software evidence, not a MATLAB runtime execution claim. Source console/figure presentation becomes labeled native plots and metrics. Calculations use the full stated arrays; displayed line and heatmap coordinates may be decimated. Independent numerical comparisons retain five scenarios. No MATLAB execution, browser/accessibility review, representative learner, hardware or production validation is claimed.

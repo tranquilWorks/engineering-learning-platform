@@ -1,37 +1,37 @@
 # Handoff
 
-Owner requested the next batch after the merge-and-continue question for PR #47.
-PR #47 merged as `f78831b23e46ff1cb9518a716ac8ba5aeab5a3ee`, tree
-`ee7d2536b91b25b670dba34c222002e401fe6747`. Control PR #508 merged as
-`47b907458622f3381bc93e5c19908a487c98774c`; active contract is an exact copy.
+The owner approved merging PR #48 and the next twelve-lesson chunk on 2026-09-27.
+PR #48 merged as `255427e3b3c6a31a66b74ad7f9836dad09b164e5`, tree
+`3958e73ecf1914e4d2b5dee4a919c6b7275434f2`. Control PR #515 merged as
+`549fd5867f2cd3b759a2af76e2a0be0350b8ee3c`; the active contract is an exact copy.
 
-Branch: `codex/dsp-fidelity-p41-p52-20260927` in the isolated ELP worktree.
-Implementation: `359cbed4010227bc50d8c157cd4d03ab86f1e301`.
-Review: https://github.com/tranquilWorks/engineering-learning-platform/pull/48
-All twelve P41-P52 runtimes, lessons and sixty independent scenarios are
-implemented; numerical comparisons passed at 1e-8 absolute/scaled-relative
-limits, maximum absolute difference 9.094947017729282e-13. All mandatory local
-gates passed: 585 focused DSP, 72 contract, quick/full 965 API tests each,
-frontend typecheck/build, lint, deterministic catalog, scope and API/live HTTP
-smoke. PR #48 is ready for review, not yet merged. The final follow-up commit
-records evidence in three documentation files; implementation content is frozen.
-The full rerun and preview use `OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
-MKL_NUM_THREADS=1` after three initial catalog timeouts in unchanged robotics P58;
-all existing runtime limits and tests were preserved.
-Local preview: http://127.0.0.1:8765/courses/dsp-radar/modules/41-model-ground-clutter-and-swerling-targets
+Branch: `codex/dsp-fidelity-p53-p64-20260927` in the isolated ELP worktree.
+All twelve P53-P64 experiments, lessons and sixty independent comparisons are
+implemented. Numerical replay passed at 1e-8 absolute/scaled-relative tolerance,
+maximum absolute difference 2.0804691303055733e-11. All 240 control combinations
+execute finite bounded output. All mandatory local gates passed: 684 focused
+DSP tests, 72 contract tests, 1064 API tests in each quick/full run, frontend
+typecheck/build, lint, deterministic catalog, scope and API/live HTTP smoke.
+[PR #49](https://github.com/tranquilWorks/engineering-learning-platform/pull/49) is ready for review and has not merged.
+Implementation commit: `a70eaf9ec22d5229a8f2a26b071083d411b4ced6`. The follow-up commit changes
+only CURRENT_STATE, HANDOFF and the batch evidence.
+Local preview: http://127.0.0.1:8765/courses/dsp-radar/modules/53-group-detection-cells-into-target-reports
 
-Prior modules and reference bytes are preserved. DSP source stays read-only at
-`5d73667a486df4a7b6c581e4c9406e810ed4f0f6`. Ledger: one distinct, thirty-nine
-prior repairs, twelve current repairs, thirty-two pending. Catalog stays six
-courses / 290 modules / 290 interactive. Course numerical/curriculum/capstone
-maturity remains blocked for P53-P84, and issue 441 stays open.
-Next proposed group is P53-P64, after this batch's verification/merge and its
-own scoped contract. Prefer twelve lessons per group under owner direction.
+P53-P56 retain equations with private NumPy input streams; P57-P64 retain the
+source private generator formulas and ordering. This is not MATLAB execution.
+Prior modules and reference bytes are preserved; DSP source remains read-only at
+`5d73667a486df4a7b6c581e4c9406e810ed4f0f6`. Ledger: one distinct, fifty-one prior
+repairs, twelve current repairs, twenty pending. Whole-course maturity remains
+blocked for P65-P84 and issue 441 remains open. Next proposed group is P65-P76,
+after this batch's verification/merge and a new scoped contract.
 
-Protected target merge retains separate human authorization. Current approval
-covered PR #47. Hosted CI checkout prerequisites remain outside the DSP contract;
-all required local gates remain mandatory. PR #48 implementation run 36348112283
-had 931 passes and 34 missing-source/history failures; frontend passed and
-container was skipped. All 34 checks pass in the complete local checkout.
-This is not a hosted CI pass. No MATLAB runtime, browser/accessibility,
-learner, hardware, deployment or production validation is claimed.
+Protected target merge requires separate approval; current approval covered #48.
+Hosted source/history checkout prerequisites remain outside this contract and
+hosted CI is nonmandatory by owner direction. All local gates remain mandatory.
+Use `OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1` for serialized
+verification, preserving the existing three-second runtime limits. Do not claim
+browser/accessibility, learner, MATLAB runtime, hardware, deployment or production
+validation. The local preview was restarted with the verified build and passed
+health, catalog, HTML and twelve live document/baseline checks.
+
+Hosted [quality run 36361268320](https://github.com/tranquilWorks/engineering-learning-platform/actions/runs/36361268320) for implementation `a70eaf9ec22d5229a8f2a26b071083d411b4ced6` passed frontend, generated-schema and deterministic-catalog steps. Backend finished with **46 failed, 1018 passed, 3 warnings in 394.77 seconds**: 45 source-attestation checks lack the canonical DSP checkout, and one historical-contract check lacks Git object `4b613a79bfe3cbd997e64e8372a58956533dae2c`. Static Python checks and container were skipped. These checks pass in the complete local checkout; hosted CI is nonmandatory under retained owner direction, and its checkout prerequisites remain outside this batch. No hosted backend or container pass is claimed.

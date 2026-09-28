@@ -1,0 +1,79 @@
+{
+  "item": "P54",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p54",
+    "sha256": "3e335831c25b63a7ef02dd6a6ced2e39b42deb2a57f2597252c02ffcd0ee5bb8",
+    "byte_count": 154384,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/54-build-an-alpha-beta-tracker/experiment.py",
+    "sha256": "15f4a1d5f85b14264111a0d7c8630b8906e12f2a9669358c6bccf26ac0f3da4d",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "alpha_gain": 0.35,
+      "beta_gain": 0.08,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "alpha_gain": 0.85,
+      "beta_gain": 0.08,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "alpha_gain": 0.35,
+      "beta_gain": 0.3,
+      "broken_mode": false
+    },
+    "broken": {
+      "alpha_gain": 0.35,
+      "beta_gain": 0.08,
+      "broken_mode": true
+    },
+    "recovery": {
+      "alpha_gain": 0.35,
+      "beta_gain": 0.08,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    },
+    {
+      "name": "position_rmse",
+      "unit": "m"
+    },
+    {
+      "name": "velocity_rmse",
+      "unit": "m/s"
+    },
+    {
+      "name": "steady_position_rmse",
+      "unit": "m"
+    },
+    {
+      "name": "final_velocity",
+      "unit": "m/s"
+    },
+    {
+      "name": "coast_scans",
+      "unit": "scans"
+    },
+    {
+      "name": "final_position",
+      "unit": "m"
+    },
+    {
+      "name": "innovation_rms",
+      "unit": "m"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

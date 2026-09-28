@@ -1,6 +1,4 @@
-# Plot Array Factor, Beamwidth, and Grating Lobes
-
-> **Guiding question:** How do aperture size and element spacing shape a beam pattern?
+# P62 lesson: Aperture Is a Spatial Interference Experiment
 
 The guiding question is: **How do aperture size and element spacing shape a beam pattern?**
 
@@ -181,33 +179,29 @@ checks do not prove MATLAB parsing/execution, rendered figures, educational
 effectiveness, antenna behavior, hardware/HIL, real-time, field, deployment,
 or production performance.
 
-## Use the Python GUI experiment
+## Interactive lab: Plot Array Factor, Beamwidth, and Grating Lobes
 
-The GUI keeps the pinned source's mental model and processing order visible. The **element spacing** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** How do aperture size and element spacing shape a beam pattern?
 
-### Prediction and sweep 1 — element spacing
+Uniform broadside array factors use M=4/8/16, spacing .5/.75/1 wavelength, and the complete -90:.025:90-degree calculation grid. Half-power crossings are linearly interpolated in amplitude at 1/sqrt(2); first-null widths use sampled local minima and sidelobes use the region outside those minima. Display decimation does not change these metrics. Four source Park–Miller probes with seed 6201 retain off-grid checks; the first probe also exposes each element phasor. The explicitly labeled Hamming comparison keeps the reviewed M=8,q=.5 geometry fixed while selected controls affect the uniform-array and aperture/spacing comparisons. The named failure steers +30 degrees with q=1; its -30-degree alias is removed at q=.5.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict how doubling aperture changes beamwidth. Why does tapering trade width for sidelobes, and why can increased spacing create an equally strong second beam?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Elements** from 8 to 16 elements. Predict the change, run, and explain a measured value using the equation; then reset.
+2. Start at the baseline. Sweep only **Spacing wavelengths** from 0.5 to 1 wavelengths. Predict the change, run, and explain a measured value using the equation; then reset.
+3. Enable the broken case. One-wavelength spacing while steering to +30 degrees produces an equally strong -30-degree grating lobe. A narrow main lobe alone is not unambiguous.
+4. Recovery: Restore half-wavelength spacing on the same +30-degree steering case. The selected broadside scene returns exactly when the toggle is disabled.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict how doubling aperture changes beamwidth. Why does tapering trade width for sidelobes, and why can increased spacing create an equally strong second beam? Support your answer with a measured value and units. Explain the recovery assumption and identify what this finite experiment cannot establish.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+One-wavelength spacing while steering to +30 degrees produces an equally strong -30-degree grating lobe. A narrow main lobe alone is not unambiguous. Keep measured units, model assumptions and the named recovery boundary explicit.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The source lesson is preserved above. The source Park–Miller/Box–Muller input formulas and array ordering are retained, including P58’s zero uniform offset and the array complex-noise convention. This is algorithmic software evidence, not a MATLAB runtime execution claim. Source console/figure presentation becomes labeled native plots and metrics. Calculations use the full stated arrays; displayed line and heatmap coordinates may be decimated. Independent numerical comparisons retain five scenarios. No MATLAB execution, browser/accessibility review, representative learner, hardware or production validation is claimed.

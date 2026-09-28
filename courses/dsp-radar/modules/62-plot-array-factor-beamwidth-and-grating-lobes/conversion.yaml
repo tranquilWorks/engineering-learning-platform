@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "a383e808a644871f1333db45529ed61eac3162bcfe210ffae75cfe0c83e885a5",
+    "content_digest": "bc8b67fc89bf3131c8683ecca1bad0ec8c90815538dacf71aff11232610d7b09",
     "files": [
       {
         "path": "modules/62-plot-array-factor-beamwidth-and-grating-lobes/experiment.py",
-        "sha256": "64a1d9871d925824dca844f5ed218312e9818de8fa493634faff76c0d1661e01"
+        "sha256": "bfd6954dfc9b00dd739fcbc9c55e3a70dd4149ac2022197684e44e7767d5b104"
       },
       {
         "path": "modules/62-plot-array-factor-beamwidth-and-grating-lobes/lesson.md",
-        "sha256": "7220a50fb9197ec93e3fa16d8a1d74f0033b27b31a1ac2654a18015a00555f78"
+        "sha256": "df26efc2b6649420ebcd9fd1cd6ecc6cda28cba880c14dc8d47321d7ca38c783"
       },
       {
         "path": "modules/62-plot-array-factor-beamwidth-and-grating-lobes/module.yaml",
-        "sha256": "f09d2929f1113ea44f9f022ae4b6d4261d4029381d36099e9ecfda2f349f801f"
+        "sha256": "e418a68276f9cc637ce09dd18598473247f4679954b277091e958da2188e2a2e"
       }
     ]
   },
   "content": {
     "guiding_question": "How do aperture size and element spacing shape a beam pattern?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "Coherent element phasors sum to the normalized array factor. Full 0.025-degree calculations measure interpolated half-power width, first nulls and sidelobes; the separate reviewed eight-element Hamming comparison shows its width/sidelobe tradeoff.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary element spacing while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Coherent element phasors sum to the normalized array factor. Full 0.025-degree calculations measure interpolated half-power width, first nulls and sidelobes; the separate reviewed eight-element Hamming comparison shows its width/sidelobe tradeoff.",
+      "One-wavelength spacing while steering to +30 degrees produces an equally strong -30-degree grating lobe. A narrow main lobe alone is not unambiguous.",
+      "Restore half-wavelength spacing on the same +30-degree steering case. The selected broadside scene returns exactly when the toggle is disabled.",
+      "Explicit stage equations are retained in lesson.md. P53-P56 use private NumPy streams; P57-P64 retain source private input formulas. Plot/console presentation is adapted; no MATLAB runtime execution is claimed."
     ],
     "equations": [
       {
@@ -66,149 +66,273 @@
     ],
     "equation_order": "before_toolbox_shortcuts",
     "deterministic_data": {
-      "seed": 1062,
+      "seed": 6201,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
+          "name": "calculation_angle_samples",
+          "value": 7201,
+          "unit": "count"
         },
         {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
+          "name": "taper_comparison_elements",
+          "value": 8,
+          "unit": "count"
         },
         {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "taper_comparison_spacing",
+          "value": 0.5,
+          "unit": "count"
+        },
+        {
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "d6ea5c140b99a8aee3f145c73a2ee9bf594bf32e6722d79e03bad721118a6329",
-          "unit": "mixed numeric signature"
+          "sha256": "88e4c6efcc434a5d6cdb93b752c79848e65e267935f81cdf463cf61989f6d82c",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "9708767526f3dd5fd7f3a9169e55697743530486aa1726f0a3c6d2a9fea65c11",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "4d583e2ce5cc3222ec19c6f191ae9035a8fba04aae89225bbcfab9a87dac84b1",
-          "unit": "mixed numeric signature"
+          "sha256": "304e55b7e96d97c16e0e481f7515b9a2d05e8dbdbf878303a346ed83c4640cab",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "06810e4c825fc71fcc1366d3a9a0b2c55c9e6b14f791f49132ade77b6bb867a3",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "4cbf215d2836b66b426911a4d84ae8437fbd32f7b0f6f2c8ef0389c3c530618a",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "d1740c826e92a5c1f6d1a617e0578cb825dd39a31b166695c414685c4d7cbb86",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "e93bb597e3091ab4000dba7fad301700131e996bf3693e5c4646aaec15ac64f3",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "5f1cc5241a89691bf18617c1ead499ed7b1c506c2bd9e8b3209f83cbd76e611d",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "88e4c6efcc434a5d6cdb93b752c79848e65e267935f81cdf463cf61989f6d82c",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "9708767526f3dd5fd7f3a9169e55697743530486aa1726f0a3c6d2a9fea65c11",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P62 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P62 explicit processing and evidence stages",
+        "target_plot_key": "pattern",
+        "title": "Explicit coherent array factor",
         "axes": [
           {
             "role": "x",
-            "label": "look angle (deg)",
-            "unit": "source units"
+            "label": "Observation angle (deg)",
+            "unit": "deg"
           },
           {
             "role": "y",
-            "label": "normalized power",
-            "unit": "normalized"
+            "label": "Normalized response (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Plot Array Factor, Beamwidth, and Grating Lobes guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Coherent element phasors sum to the normalized array factor. Full 0.025-degree calculations measure interpolated half-power width, first nulls and sidelobes; the separate reviewed eight-element Hamming comparison shows its width/sidelobe tradeoff."
       },
       {
-        "source_figure": "Pinned P62 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P62 explicit processing and evidence stages",
+        "target_plot_key": "aperture_sweep",
+        "title": "More elements narrow the beam at fixed spacing",
         "axes": [
           {
             "role": "x",
-            "label": "look angle (deg)",
-            "unit": "source units"
+            "label": "Observation angle (deg)",
+            "unit": "deg"
           },
           {
             "role": "y",
-            "label": "normalized power",
-            "unit": "normalized"
+            "label": "Normalized response (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Plot Array Factor, Beamwidth, and Grating Lobes guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Coherent element phasors sum to the normalized array factor. Full 0.025-degree calculations measure interpolated half-power width, first nulls and sidelobes; the separate reviewed eight-element Hamming comparison shows its width/sidelobe tradeoff."
       },
       {
-        "source_figure": "Pinned P62 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P62 explicit processing and evidence stages",
+        "target_plot_key": "spacing_sweep",
+        "title": "Increasing spacing admits visible aliases",
         "axes": [
           {
             "role": "x",
-            "label": "look angle (deg)",
-            "unit": "source units"
+            "label": "Observation angle (deg)",
+            "unit": "deg"
           },
           {
             "role": "y",
-            "label": "normalized power",
-            "unit": "normalized"
+            "label": "Normalized response (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Plot Array Factor, Beamwidth, and Grating Lobes guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Coherent element phasors sum to the normalized array factor. Full 0.025-degree calculations measure interpolated half-power width, first nulls and sidelobes; the separate reviewed eight-element Hamming comparison shows its width/sidelobe tradeoff."
       },
       {
-        "source_figure": "Pinned P62 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P62 explicit processing and evidence stages",
+        "target_plot_key": "taper",
+        "title": "Reviewed M=8, d/lambda=.5: taper tradeoff",
         "axes": [
           {
             "role": "x",
-            "label": "look angle (deg)",
-            "unit": "source units"
+            "label": "Observation angle (deg)",
+            "unit": "deg"
           },
           {
             "role": "y",
-            "label": "normalized power",
-            "unit": "normalized"
+            "label": "Normalized response (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Plot Array Factor, Beamwidth, and Grating Lobes guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Coherent element phasors sum to the normalized array factor. Full 0.025-degree calculations measure interpolated half-power width, first nulls and sidelobes; the separate reviewed eight-element Hamming comparison shows its width/sidelobe tradeoff."
+      },
+      {
+        "source_figure": "Pinned P62 explicit processing and evidence stages",
+        "target_plot_key": "beamwidth",
+        "title": "Interpolated half-power width on the full angle grid",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Elements (count)",
+            "unit": "count"
+          },
+          {
+            "role": "y",
+            "label": "Half-power beamwidth (deg)",
+            "unit": "deg"
+          }
+        ],
+        "interpretation": "Coherent element phasors sum to the normalized array factor. Full 0.025-degree calculations measure interpolated half-power width, first nulls and sidelobes; the separate reviewed eight-element Hamming comparison shows its width/sidelobe tradeoff."
+      },
+      {
+        "source_figure": "Pinned P62 explicit processing and evidence stages",
+        "target_plot_key": "alias",
+        "title": "Steered +30 degree beam: grating-lobe failure and recovery",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Observation angle (deg)",
+            "unit": "deg"
+          },
+          {
+            "role": "y",
+            "label": "Normalized response (dB)",
+            "unit": "dB"
+          }
+        ],
+        "interpretation": "Coherent element phasors sum to the normalized array factor. Full 0.025-degree calculations measure interpolated half-power width, first nulls and sidelobes; the separate reviewed eight-element Hamming comparison shows its width/sidelobe tradeoff."
+      },
+      {
+        "source_figure": "Pinned P62 explicit processing and evidence stages",
+        "target_plot_key": "linear_pattern",
+        "title": "Linear array factor and seeded off-grid probes",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Observation angle (deg)",
+            "unit": "deg"
+          },
+          {
+            "role": "y",
+            "label": "Normalized array factor (ratio)",
+            "unit": "ratio"
+          }
+        ],
+        "interpretation": "Coherent element phasors sum to the normalized array factor. Full 0.025-degree calculations measure interpolated half-power width, first nulls and sidelobes; the separate reviewed eight-element Hamming comparison shows its width/sidelobe tradeoff."
+      },
+      {
+        "source_figure": "Pinned P62 explicit processing and evidence stages",
+        "target_plot_key": "contributions",
+        "title": "Element phasors at the first off-grid probe",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Element index (count)",
+            "unit": "count"
+          },
+          {
+            "role": "y",
+            "label": "Element contribution (normalized voltage)",
+            "unit": "normalized voltage"
+          }
+        ],
+        "interpretation": "Coherent element phasors sum to the normalized array factor. Full 0.025-degree calculations measure interpolated half-power width, first nulls and sidelobes; the separate reviewed eight-element Hamming comparison shows its width/sidelobe tradeoff."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "elements",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          4,
+          8,
+          16
         ],
-        "expected_observation": "Changing element spacing moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Elements; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "spacing_wavelengths",
         "values": [
-          0.0,
           0.5,
-          1.0
+          0.75,
+          1
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Spacing wavelengths; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "One-wavelength spacing while steering to +30 degrees produces an equally strong -30-degree grating lobe. A narrow main lobe alone is not unambiguous.",
+      "recovery": "Restore half-wavelength spacing on the same +30-degree steering case. The selected broadside scene returns exactly when the toggle is disabled.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "One-wavelength spacing while steering to +30 degrees produces an equally strong -30-degree grating lobe. A narrow main lobe alone is not unambiguous.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -216,63 +340,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 250000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P62 python -m pytest -q apps/api/tests/test_dsp_course.py",
-    "seed": 1062,
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p53_p64.py",
+    "seed": 6201,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "elements",
+        "value": 8,
+        "unit": "elements"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "spacing_wavelengths",
+        "value": 0.5,
+        "unit": "wavelengths"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 6.394884621840902e-14,
+        "max_relative_error": 1.902039620436551e-15,
+        "passed": true,
         "expected": {
           "path": "modules/62-plot-array-factor-beamwidth-and-grating-lobes/evidence/expected-baseline.json",
-          "sha256": "d6ea5c140b99a8aee3f145c73a2ee9bf594bf32e6722d79e03bad721118a6329"
+          "sha256": "88e4c6efcc434a5d6cdb93b752c79848e65e267935f81cdf463cf61989f6d82c"
         },
         "actual": {
           "path": "modules/62-plot-array-factor-beamwidth-and-grating-lobes/evidence/actual-baseline.json",
-          "sha256": "9b23b4853e18469001acb80ae3df5211662a3c208c0c587e79d72b5f996e3911"
-        },
-        "max_absolute_error": 4.0445424787094453e-13,
-        "max_relative_error": 4.0445424787094453e-13,
-        "passed": true
+          "sha256": "9708767526f3dd5fd7f3a9169e55697743530486aa1726f0a3c6d2a9fea65c11"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 6.394884621840902e-14,
+        "max_relative_error": 1.902039620436551e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/62-plot-array-factor-beamwidth-and-grating-lobes/evidence/expected-sweep-1.json",
+          "sha256": "304e55b7e96d97c16e0e481f7515b9a2d05e8dbdbf878303a346ed83c4640cab"
+        },
+        "actual": {
+          "path": "modules/62-plot-array-factor-beamwidth-and-grating-lobes/evidence/actual-sweep-1.json",
+          "sha256": "06810e4c825fc71fcc1366d3a9a0b2c55c9e6b14f791f49132ade77b6bb867a3"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 6.394884621840902e-14,
+        "max_relative_error": 1.902039620436551e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/62-plot-array-factor-beamwidth-and-grating-lobes/evidence/expected-sweep-2.json",
+          "sha256": "4cbf215d2836b66b426911a4d84ae8437fbd32f7b0f6f2c8ef0389c3c530618a"
+        },
+        "actual": {
+          "path": "modules/62-plot-array-factor-beamwidth-and-grating-lobes/evidence/actual-sweep-2.json",
+          "sha256": "d1740c826e92a5c1f6d1a617e0578cb825dd39a31b166695c414685c4d7cbb86"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 6.394884621840902e-14,
+        "max_relative_error": 1.902039620436551e-15,
+        "passed": true,
         "expected": {
           "path": "modules/62-plot-array-factor-beamwidth-and-grating-lobes/evidence/expected-broken.json",
-          "sha256": "4d583e2ce5cc3222ec19c6f191ae9035a8fba04aae89225bbcfab9a87dac84b1"
+          "sha256": "e93bb597e3091ab4000dba7fad301700131e996bf3693e5c4646aaec15ac64f3"
         },
         "actual": {
           "path": "modules/62-plot-array-factor-beamwidth-and-grating-lobes/evidence/actual-broken.json",
-          "sha256": "38f712f7d38032aaa18d49a96ec72e32f9218fdf5aff7e6de13e37d8ee56f461"
+          "sha256": "5f1cc5241a89691bf18617c1ead499ed7b1c506c2bd9e8b3209f83cbd76e611d"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 4.197753256107717e-13,
-        "max_relative_error": 4.197753256107717e-13,
-        "passed": true
+        "max_absolute_error": 6.394884621840902e-14,
+        "max_relative_error": 1.902039620436551e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/62-plot-array-factor-beamwidth-and-grating-lobes/evidence/expected-recovery.json",
+          "sha256": "88e4c6efcc434a5d6cdb93b752c79848e65e267935f81cdf463cf61989f6d82c"
+        },
+        "actual": {
+          "path": "modules/62-plot-array-factor-beamwidth-and-grating-lobes/evidence/actual-recovery.json",
+          "sha256": "9708767526f3dd5fd7f3a9169e55697743530486aa1726f0a3c6d2a9fea65c11"
+        }
       }
     ]
   },

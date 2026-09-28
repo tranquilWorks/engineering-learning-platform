@@ -3,13 +3,13 @@
   "id": "55-implement-a-constant-velocity-kalman-filter",
   "number": 55,
   "title": "Implement a Constant-Velocity Kalman Filter",
-  "summary": "Explore implement a constant-velocity kalman filter with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "Q=sigma_a\u00b2 G G\u1d40 admits interval acceleration; R=sigma_z\u00b2 describes report noise. The Kalman gain and Joseph covariance update expose evolving trust and single-record NIS.",
   "guiding_question": "How do process noise and measurement noise determine trust in prediction versus measurement?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-6",
-    "process-noise"
+    "tracking",
+    "P55"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,51 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Process Noise",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "acceleration_sigma_mps2",
+      "type": "segmented",
+      "label": "Acceleration sigma m/s\u00b2",
+      "unit": "m/s\u00b2",
+      "default": 0.8,
+      "options": [
+        {
+          "label": "0.1",
+          "value": 0.1
+        },
+        {
+          "label": "0.8 baseline",
+          "value": 0.8
+        },
+        {
+          "label": "3.2",
+          "value": 3.2
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "report_sigma_m",
+      "type": "segmented",
+      "label": "Report sigma m",
+      "unit": "m",
+      "default": 25,
+      "options": [
+        {
+          "label": "5",
+          "value": 5
+        },
+        {
+          "label": "25 baseline",
+          "value": 25
+        },
+        {
+          "label": "100",
+          "value": 100
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +75,50 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing process noise, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict the gain change when assumed report noise increases. How does interval acceleration enter Q, and how do zero Q and underestimated R fail differently on the same measurements?",
+      "reveal": "Q=sigma_a\u00b2 G G\u1d40 admits interval acceleration; R=sigma_z\u00b2 describes report noise. The Kalman gain and Joseph covariance update expose evolving trust and single-record NIS."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "CV prediction and covariance-weighted update",
+      "plot": "position"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Position error and posterior two-sigma bounds",
+      "plot": "error"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Trust evolves from covariance",
+      "plot": "gain"
+    },
+    {
+      "type": "plot",
+      "title": "Normalized innovation squared",
+      "plot": "nis"
+    },
+    {
+      "type": "plot",
+      "title": "Q assumption on identical reports",
+      "plot": "q_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "R assumption changes report trust",
+      "plot": "r_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Velocity state and its posterior uncertainty",
+      "plot": "velocity"
     },
     {
       "type": "callout",
@@ -102,7 +129,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

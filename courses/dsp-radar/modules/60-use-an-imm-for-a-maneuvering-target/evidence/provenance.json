@@ -1,0 +1,83 @@
+{
+  "item": "P60",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p60",
+    "sha256": "3e335831c25b63a7ef02dd6a6ced2e39b42deb2a57f2597252c02ffcd0ee5bb8",
+    "byte_count": 154384,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/60-use-an-imm-for-a-maneuvering-target/experiment.py",
+    "sha256": "075ef040d46af1dfcb7094af4cecc75293d04a1ccbb232351ac704f69bf0272b",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "maneuver_acceleration_mps2": 2,
+      "mode_stay_probability": 0.94,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "maneuver_acceleration_mps2": 3.2,
+      "mode_stay_probability": 0.94,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "maneuver_acceleration_mps2": 2,
+      "mode_stay_probability": 0.99,
+      "broken_mode": false
+    },
+    "broken": {
+      "maneuver_acceleration_mps2": 2,
+      "mode_stay_probability": 0.94,
+      "broken_mode": true
+    },
+    "recovery": {
+      "maneuver_acceleration_mps2": 2,
+      "mode_stay_probability": 0.94,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    },
+    {
+      "name": "position_rmse",
+      "unit": "m"
+    },
+    {
+      "name": "fixed_cv_rmse",
+      "unit": "m"
+    },
+    {
+      "name": "maneuver_probability_mean",
+      "unit": "probability"
+    },
+    {
+      "name": "maximum_maneuver_probability",
+      "unit": "probability"
+    },
+    {
+      "name": "final_x",
+      "unit": "m"
+    },
+    {
+      "name": "final_y",
+      "unit": "m"
+    },
+    {
+      "name": "probability_sum_error",
+      "unit": "ratio"
+    },
+    {
+      "name": "minimum_covariance_eigenvalue",
+      "unit": "mixed state units"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

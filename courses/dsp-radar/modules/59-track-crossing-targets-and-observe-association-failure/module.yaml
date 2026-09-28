@@ -3,13 +3,13 @@
   "id": "59-track-crossing-targets-and-observe-association-failure",
   "number": 59,
   "title": "Track Crossing Targets and Observe Association Failure",
-  "summary": "Explore track crossing targets and observe association failure with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "Two existing tracks cross with alternating report order. Position and idealized Cartesian velocity residuals are normalized by their own uncertainties; 200 paired records measure identity failures.",
   "guiding_question": "Why do simple nearest-neighbor trackers swap identities?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-6",
-    "crossing-separation"
+    "tracking",
+    "P59"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,51 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Crossing Separation",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "position_sigma_m",
+      "type": "segmented",
+      "label": "Position sigma m",
+      "unit": "m",
+      "default": 6,
+      "options": [
+        {
+          "label": "2",
+          "value": 2
+        },
+        {
+          "label": "6 baseline",
+          "value": 6
+        },
+        {
+          "label": "10",
+          "value": 10
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "scan_interval_s",
+      "type": "segmented",
+      "label": "Scan interval s",
+      "unit": "s",
+      "default": 1,
+      "options": [
+        {
+          "label": "0.5",
+          "value": 0.5
+        },
+        {
+          "label": "1 baseline",
+          "value": 1
+        },
+        {
+          "label": "2",
+          "value": 2
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +75,50 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing crossing separation, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict when position-only association can swap identities. Distinguish a wrong one-to-one link from two tracks reusing one report, then explain what extra velocity evidence can and cannot resolve.",
+      "reveal": "Two existing tracks cross with alternating report order. Position and idealized Cartesian velocity residuals are normalized by their own uncertainties; 200 paired records measure identity failures."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Crossing geometry and identity-sensitive estimates",
+      "plot": "trajectory"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Truth audit of selected report identities",
+      "plot": "identity"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Normalized position costs at crossing scan 13",
+      "plot": "position_cost"
+    },
+    {
+      "type": "plot",
+      "title": "Normalized auxiliary velocity costs at crossing",
+      "plot": "velocity_cost"
+    },
+    {
+      "type": "plot",
+      "title": "Position uncertainty: 200 paired trials",
+      "plot": "noise_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Update interval: 200 paired trials",
+      "plot": "interval_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Closest approach: 200 paired trials",
+      "plot": "separation_sweep"
     },
     {
       "type": "callout",
@@ -102,7 +129,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

@@ -1,0 +1,87 @@
+{
+  "item": "P61",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p61",
+    "sha256": "3e335831c25b63a7ef02dd6a6ced2e39b42deb2a57f2597252c02ffcd0ee5bb8",
+    "byte_count": 154384,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/61-see-phase-steering-in-a-uniform-linear-array/experiment.py",
+    "sha256": "004a069b65d48fecad3b1e742f045170fbbdf85c4347fecd583dbd43822d8f48",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "arrival_angle_deg": 30,
+      "spacing_wavelengths": 0.5,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "arrival_angle_deg": -30,
+      "spacing_wavelengths": 0.5,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "arrival_angle_deg": 30,
+      "spacing_wavelengths": 0.25,
+      "broken_mode": false
+    },
+    "broken": {
+      "arrival_angle_deg": 30,
+      "spacing_wavelengths": 0.5,
+      "broken_mode": true
+    },
+    "recovery": {
+      "arrival_angle_deg": 30,
+      "spacing_wavelengths": 0.5,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    },
+    {
+      "name": "theoretical_phase_slope",
+      "unit": "rad/element"
+    },
+    {
+      "name": "estimated_phase_slope",
+      "unit": "rad/element"
+    },
+    {
+      "name": "adjacent_phase_step",
+      "unit": "rad/element"
+    },
+    {
+      "name": "estimated_angle",
+      "unit": "deg"
+    },
+    {
+      "name": "angle_error",
+      "unit": "deg"
+    },
+    {
+      "name": "phase_fit_rmse",
+      "unit": "rad"
+    },
+    {
+      "name": "alias_snapshot_mismatch",
+      "unit": "voltage"
+    },
+    {
+      "name": "recovered_alias_angle",
+      "unit": "deg"
+    },
+    {
+      "name": "last_sensor_delay",
+      "unit": "ps"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

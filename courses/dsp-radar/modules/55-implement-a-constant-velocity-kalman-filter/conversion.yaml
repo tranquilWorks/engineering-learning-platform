@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "8cfd62cf66f1fed1dd1d7b65fc87350c1c301ca7ed1e031ed376bab0d39ec0bd",
+    "content_digest": "35ff92dbb3b0d21a686731db2a081aec8e4aa4c2ba654f852a911b31f0435767",
     "files": [
       {
         "path": "modules/55-implement-a-constant-velocity-kalman-filter/experiment.py",
-        "sha256": "459c1d0e9c465add7872a20838a4f528eeec6f134d05953796d95cb23615164b"
+        "sha256": "67d9eb118763b47d87c8011349baa5a29afb4fbf5592fad4f789fb38d10b877a"
       },
       {
         "path": "modules/55-implement-a-constant-velocity-kalman-filter/lesson.md",
-        "sha256": "02ccb0348d33655ff7b2d057b90695d4e94a53693f7713b58250b387a4cf2bd6"
+        "sha256": "844cb16696a904a2b344dc4dbbb987cf4c342c4523a52a5fea8c815339efb90e"
       },
       {
         "path": "modules/55-implement-a-constant-velocity-kalman-filter/module.yaml",
-        "sha256": "3e0cc05d1970e3ef4c3320cd776fc77e5ed475c0969dfb8714e22d49263a2f1a"
+        "sha256": "64f1fadaf70e01d13a290669cb14443ba1c7d13cfc88579d3d861916d81a3348"
       }
     ]
   },
   "content": {
     "guiding_question": "How do process noise and measurement noise determine trust in prediction versus measurement?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "Q=sigma_a\u00b2 G G\u1d40 admits interval acceleration; R=sigma_z\u00b2 describes report noise. The Kalman gain and Joseph covariance update expose evolving trust and single-record NIS.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary process noise while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Q=sigma_a\u00b2 G G\u1d40 admits interval acceleration; R=sigma_z\u00b2 describes report noise. The Kalman gain and Joseph covariance update expose evolving trust and single-record NIS.",
+      "Zero process noise over-trusts the constant-velocity model. A separate sigma_z=.5 m comparison over-trusts noisy reports; neither mismatch changes the actual data.",
+      "Restore the selected Q and R assumptions on the identical seeded record; disable the toggle for exact recovery. A single NIS record does not establish ensemble consistency.",
+      "Explicit stage equations are retained in lesson.md. P53-P56 use private NumPy streams; P57-P64 retain source private input formulas. Plot/console presentation is adapted; no MATLAB runtime execution is claimed."
     ],
     "equations": [
       {
@@ -69,146 +69,237 @@
       "seed": 5501,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
-        },
-        {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "fde43e98562068adf59ab8439559d05ffc6bb10c9aa5107217826dde2eb459ff",
-          "unit": "mixed numeric signature"
+          "sha256": "06438440f6f4175fecd140e73f67a2503d88957dbb65927f9f1c40f351d05085",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "49c3571ce5ba53bbcb415b7f36a78a12808a0f6d217efd6f767fc8ae6cb2b9bd",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "103f3b46aa4c4845087916b2a10c8c996afd7c22fb9bbfd4096b1648fbc9f5d8",
-          "unit": "mixed numeric signature"
+          "sha256": "e3ef9b7951876918ddcb3415985e39fc7b7a7f54c44a64603aa471d68ee3913b",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "47afaa460ccda5befe8b185531d9afbe8f57e066c85ed5f55261c602be7ffcce",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "2cac455217806cf2cd7ad04aa37eaefb04fa21dbf0ac760c0ac69f26b703a95c",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "811d44cd9c6d0145e5e8333fa2a727afb37d963a1f134e95bfe2c13694444801",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "745fe31967eeb75d9c1bed14cf8124dbd8ad30cfc51732bbcc46845fbf236e40",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "20e1fb703f883dacca377af7699c955df6b72afedf6b178f07963e59899da3a3",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "06438440f6f4175fecd140e73f67a2503d88957dbb65927f9f1c40f351d05085",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "49c3571ce5ba53bbcb415b7f36a78a12808a0f6d217efd6f767fc8ae6cb2b9bd",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P55 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P55 explicit processing and evidence stages",
+        "target_plot_key": "position",
+        "title": "CV prediction and covariance-weighted update",
         "axes": [
           {
             "role": "x",
-            "label": "time step",
-            "unit": "source units"
+            "label": "Time (s)",
+            "unit": "s"
           },
           {
             "role": "y",
-            "label": "position / innovation",
-            "unit": "normalized"
+            "label": "Position (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Implement a Constant-Velocity Kalman Filter guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Q=sigma_a\u00b2 G G\u1d40 admits interval acceleration; R=sigma_z\u00b2 describes report noise. The Kalman gain and Joseph covariance update expose evolving trust and single-record NIS."
       },
       {
-        "source_figure": "Pinned P55 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P55 explicit processing and evidence stages",
+        "target_plot_key": "error",
+        "title": "Position error and posterior two-sigma bounds",
         "axes": [
           {
             "role": "x",
-            "label": "time step",
-            "unit": "source units"
+            "label": "Time (s)",
+            "unit": "s"
           },
           {
             "role": "y",
-            "label": "position / innovation",
-            "unit": "normalized"
+            "label": "Position error (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Implement a Constant-Velocity Kalman Filter guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Q=sigma_a\u00b2 G G\u1d40 admits interval acceleration; R=sigma_z\u00b2 describes report noise. The Kalman gain and Joseph covariance update expose evolving trust and single-record NIS."
       },
       {
-        "source_figure": "Pinned P55 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P55 explicit processing and evidence stages",
+        "target_plot_key": "gain",
+        "title": "Trust evolves from covariance",
         "axes": [
           {
             "role": "x",
-            "label": "time step",
-            "unit": "source units"
+            "label": "Time (s)",
+            "unit": "s"
           },
           {
             "role": "y",
-            "label": "position / innovation",
-            "unit": "normalized"
+            "label": "Position gain (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Implement a Constant-Velocity Kalman Filter guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Q=sigma_a\u00b2 G G\u1d40 admits interval acceleration; R=sigma_z\u00b2 describes report noise. The Kalman gain and Joseph covariance update expose evolving trust and single-record NIS."
       },
       {
-        "source_figure": "Pinned P55 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P55 explicit processing and evidence stages",
+        "target_plot_key": "nis",
+        "title": "Normalized innovation squared",
         "axes": [
           {
             "role": "x",
-            "label": "time step",
-            "unit": "source units"
+            "label": "Time (s)",
+            "unit": "s"
           },
           {
             "role": "y",
-            "label": "position / innovation",
-            "unit": "normalized"
+            "label": "NIS (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Implement a Constant-Velocity Kalman Filter guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Q=sigma_a\u00b2 G G\u1d40 admits interval acceleration; R=sigma_z\u00b2 describes report noise. The Kalman gain and Joseph covariance update expose evolving trust and single-record NIS."
+      },
+      {
+        "source_figure": "Pinned P55 explicit processing and evidence stages",
+        "target_plot_key": "q_sweep",
+        "title": "Q assumption on identical reports",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Assumed acceleration sigma (m/s\u00b2)",
+            "unit": "m/s\u00b2"
+          },
+          {
+            "role": "y",
+            "label": "Position RMSE (m)",
+            "unit": "m"
+          }
+        ],
+        "interpretation": "Q=sigma_a\u00b2 G G\u1d40 admits interval acceleration; R=sigma_z\u00b2 describes report noise. The Kalman gain and Joseph covariance update expose evolving trust and single-record NIS."
+      },
+      {
+        "source_figure": "Pinned P55 explicit processing and evidence stages",
+        "target_plot_key": "r_sweep",
+        "title": "R assumption changes report trust",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Assumed report sigma (m)",
+            "unit": "m"
+          },
+          {
+            "role": "y",
+            "label": "Mean position gain (ratio)",
+            "unit": "ratio"
+          }
+        ],
+        "interpretation": "Q=sigma_a\u00b2 G G\u1d40 admits interval acceleration; R=sigma_z\u00b2 describes report noise. The Kalman gain and Joseph covariance update expose evolving trust and single-record NIS."
+      },
+      {
+        "source_figure": "Pinned P55 explicit processing and evidence stages",
+        "target_plot_key": "velocity",
+        "title": "Velocity state and its posterior uncertainty",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Time (s)",
+            "unit": "s"
+          },
+          {
+            "role": "y",
+            "label": "Velocity (m/s)",
+            "unit": "m/s"
+          }
+        ],
+        "interpretation": "Q=sigma_a\u00b2 G G\u1d40 admits interval acceleration; R=sigma_z\u00b2 describes report noise. The Kalman gain and Joseph covariance update expose evolving trust and single-record NIS."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "acceleration_sigma_mps2",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          0.1,
+          0.8,
+          3.2
         ],
-        "expected_observation": "Changing process noise moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Acceleration sigma m/s\u00b2; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "report_sigma_m",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          5,
+          25,
+          100
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Report sigma m; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "Zero process noise over-trusts the constant-velocity model. A separate sigma_z=.5 m comparison over-trusts noisy reports; neither mismatch changes the actual data.",
+      "recovery": "Restore the selected Q and R assumptions on the identical seeded record; disable the toggle for exact recovery. A single NIS record does not establish ensemble consistency.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Zero process noise over-trusts the constant-velocity model. A separate sigma_z=.5 m comparison over-trusts noisy reports; neither mismatch changes the actual data.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -216,63 +307,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 1200,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P55 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p53_p64.py",
     "seed": 5501,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "acceleration_sigma_mps2",
+        "value": 0.8,
+        "unit": "m/s\u00b2"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "report_sigma_m",
+        "value": 25,
+        "unit": "m"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 3.552713678800501e-14,
+        "max_relative_error": 5.826257834793017e-15,
+        "passed": true,
         "expected": {
           "path": "modules/55-implement-a-constant-velocity-kalman-filter/evidence/expected-baseline.json",
-          "sha256": "fde43e98562068adf59ab8439559d05ffc6bb10c9aa5107217826dde2eb459ff"
+          "sha256": "06438440f6f4175fecd140e73f67a2503d88957dbb65927f9f1c40f351d05085"
         },
         "actual": {
           "path": "modules/55-implement-a-constant-velocity-kalman-filter/evidence/actual-baseline.json",
-          "sha256": "ebc6cf91de9ac4be71df03642a585b829860729bf851bade7273de2467f252c6"
-        },
-        "max_absolute_error": 3.552713678800501e-13,
-        "max_relative_error": 1.7830181775480014e-13,
-        "passed": true
+          "sha256": "49c3571ce5ba53bbcb415b7f36a78a12808a0f6d217efd6f767fc8ae6cb2b9bd"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 3.197442310920451e-14,
+        "max_relative_error": 9.360062536536497e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/55-implement-a-constant-velocity-kalman-filter/evidence/expected-sweep-1.json",
+          "sha256": "e3ef9b7951876918ddcb3415985e39fc7b7a7f54c44a64603aa471d68ee3913b"
+        },
+        "actual": {
+          "path": "modules/55-implement-a-constant-velocity-kalman-filter/evidence/actual-sweep-1.json",
+          "sha256": "47afaa460ccda5befe8b185531d9afbe8f57e066c85ed5f55261c602be7ffcce"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 9.414691248821327e-14,
+        "max_relative_error": 7.274798452364987e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/55-implement-a-constant-velocity-kalman-filter/evidence/expected-sweep-2.json",
+          "sha256": "2cac455217806cf2cd7ad04aa37eaefb04fa21dbf0ac760c0ac69f26b703a95c"
+        },
+        "actual": {
+          "path": "modules/55-implement-a-constant-velocity-kalman-filter/evidence/actual-sweep-2.json",
+          "sha256": "811d44cd9c6d0145e5e8333fa2a727afb37d963a1f134e95bfe2c13694444801"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 6.608047442568932e-13,
+        "max_relative_error": 3.168875509256027e-14,
+        "passed": true,
         "expected": {
           "path": "modules/55-implement-a-constant-velocity-kalman-filter/evidence/expected-broken.json",
-          "sha256": "103f3b46aa4c4845087916b2a10c8c996afd7c22fb9bbfd4096b1648fbc9f5d8"
+          "sha256": "745fe31967eeb75d9c1bed14cf8124dbd8ad30cfc51732bbcc46845fbf236e40"
         },
         "actual": {
           "path": "modules/55-implement-a-constant-velocity-kalman-filter/evidence/actual-broken.json",
-          "sha256": "9ba1368a3143aa586bf7af271d221d8dbb8f0daa86e761bfcf5627d79f3c28f5"
+          "sha256": "20e1fb703f883dacca377af7699c955df6b72afedf6b178f07963e59899da3a3"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 3.552713678800501e-13,
-        "max_relative_error": 6.147267701793952e-14,
-        "passed": true
+        "max_absolute_error": 3.552713678800501e-14,
+        "max_relative_error": 5.826257834793017e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/55-implement-a-constant-velocity-kalman-filter/evidence/expected-recovery.json",
+          "sha256": "06438440f6f4175fecd140e73f67a2503d88957dbb65927f9f1c40f351d05085"
+        },
+        "actual": {
+          "path": "modules/55-implement-a-constant-velocity-kalman-filter/evidence/actual-recovery.json",
+          "sha256": "49c3571ce5ba53bbcb415b7f36a78a12808a0f6d217efd6f767fc8ae6cb2b9bd"
+        }
       }
     ]
   },

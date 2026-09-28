@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "88a676a1ffb73d25d31e5ec7fac0cd8500d9a7004d220ea90e92c96a27f5a825",
+    "content_digest": "cfd8b20db6e267646082fafdc2576bce19f1f9eafa78b0e1869889544507fea3",
     "files": [
       {
         "path": "modules/56-use-an-ekf-for-range-bearing-measurements/experiment.py",
-        "sha256": "5c5340a8abadc468e1848126a688461b3e6642c9f8cc2313b53b6d30c4e329ab"
+        "sha256": "705ce3bacce58c186d038d837c753c1a59a76d37fc8373c2c07e6cc4653292a6"
       },
       {
         "path": "modules/56-use-an-ekf-for-range-bearing-measurements/lesson.md",
-        "sha256": "b2bf6dd50ac19ae2610b742c55264ff8eabf36d86b7ed915f6af0114bf1c10b6"
+        "sha256": "3d5ab8b0704673fe5ff33b4c39aa754a2a9f0a7b0b6976027e74010f89a75e9c"
       },
       {
         "path": "modules/56-use-an-ekf-for-range-bearing-measurements/module.yaml",
-        "sha256": "83a88a59791fbe8473d033506ee53125de02ed692aebe64a2cd3497ffcc1992d"
+        "sha256": "ef895ca0e2ff8c547a73aff727602a40a8f9e7bf09a9d4b5f05254cbb9c1ef1f"
       }
     ]
   },
   "content": {
     "guiding_question": "How can nonlinear radar measurements update Cartesian target state?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "Cartesian CV prediction meets nonlinear range/bearing through an explicit Jacobian. Bearing innovations are wrapped, covariance uses Joseph form, and r sigma_theta exposes increasing tangential uncertainty.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary bearing noise while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Cartesian CV prediction meets nonlinear range/bearing through an explicit Jacobian. Bearing innovations are wrapped, covariance uses Joseph form, and r sigma_theta exposes increasing tangential uncertainty.",
+      "Subtracting angles across +/-180 degrees without wrapping creates a near-full-turn innovation and a spurious Cartesian correction.",
+      "Wrap only the angular innovation with atan2(sin(delta),cos(delta)); preserve the same polar data and restore the selected assumptions.",
+      "Explicit stage equations are retained in lesson.md. P53-P56 use private NumPy streams; P57-P64 retain source private input formulas. Plot/console presentation is adapted; no MATLAB runtime execution is claimed."
     ],
     "equations": [
       {
@@ -69,146 +69,219 @@
       "seed": 5601,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
-        },
-        {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "e15c7955da690328066b9fafabc2f991a337b7d30ea8bdfacff5bcc0693a0bed",
-          "unit": "mixed numeric signature"
+          "sha256": "e784556d020ceda7042111e81ec1ea328f9cc096815bbe2543dda7867bf6e05d",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "6cda2cd52a3f665cc0a66b45975566d96d92daab8b2486d3b590dd79956386fb",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "20a3f84be9356cc13ca2a544ebab1ce5284f46d0974769c08daf6f9fab875529",
-          "unit": "mixed numeric signature"
+          "sha256": "25822bbe7b31e332d30347efb13e04860f6a4ebe0a47248166065b286e54c2f0",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "e6a3657677da0ae0f06c3dea7aad5709c6c054e647ef2ad8c99c84f4a4de715c",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "0eea901f6e0966a35ad3c72d47cf83e6b6dda35971d41efca181bccf94c88e6a",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "135c87030ad44c57832051931aa8b2c7fa2163780c184a0b73001f7faa7e56ce",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "629b0624ed1c509ecc4b26317c72f8a4eeac5ab4958d7b1c1784487a44093f0d",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "b8e852f48b419f1ead3d597cfa91511da9939ad971873f785dc4e272e080804f",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "e784556d020ceda7042111e81ec1ea328f9cc096815bbe2543dda7867bf6e05d",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "6cda2cd52a3f665cc0a66b45975566d96d92daab8b2486d3b590dd79956386fb",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P56 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P56 explicit processing and evidence stages",
+        "target_plot_key": "trajectory",
+        "title": "Cartesian state and local covariance ellipses",
         "axes": [
           {
             "role": "x",
-            "label": "time step",
-            "unit": "source units"
+            "label": "Cartesian x (m)",
+            "unit": "m"
           },
           {
             "role": "y",
-            "label": "position / innovation",
-            "unit": "normalized"
+            "label": "Cartesian y (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Use an EKF for Range-Bearing Measurements guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Cartesian CV prediction meets nonlinear range/bearing through an explicit Jacobian. Bearing innovations are wrapped, covariance uses Joseph form, and r sigma_theta exposes increasing tangential uncertainty."
       },
       {
-        "source_figure": "Pinned P56 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P56 explicit processing and evidence stages",
+        "target_plot_key": "range_innovation",
+        "title": "Range innovation and its two-sigma scale",
         "axes": [
           {
             "role": "x",
-            "label": "time step",
-            "unit": "source units"
+            "label": "Time (s)",
+            "unit": "s"
           },
           {
             "role": "y",
-            "label": "position / innovation",
-            "unit": "normalized"
+            "label": "Range innovation (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Use an EKF for Range-Bearing Measurements guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Cartesian CV prediction meets nonlinear range/bearing through an explicit Jacobian. Bearing innovations are wrapped, covariance uses Joseph form, and r sigma_theta exposes increasing tangential uncertainty."
       },
       {
-        "source_figure": "Pinned P56 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P56 explicit processing and evidence stages",
+        "target_plot_key": "bearing_innovation",
+        "title": "Bearing branch cut: identical polar reports",
         "axes": [
           {
             "role": "x",
-            "label": "time step",
-            "unit": "source units"
+            "label": "Time (s)",
+            "unit": "s"
           },
           {
             "role": "y",
-            "label": "position / innovation",
-            "unit": "normalized"
+            "label": "Bearing innovation (deg)",
+            "unit": "deg"
           }
         ],
-        "interpretation": "This view answers the Use an EKF for Range-Bearing Measurements guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Cartesian CV prediction meets nonlinear range/bearing through an explicit Jacobian. Bearing innovations are wrapped, covariance uses Joseph form, and r sigma_theta exposes increasing tangential uncertainty."
       },
       {
-        "source_figure": "Pinned P56 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P56 explicit processing and evidence stages",
+        "target_plot_key": "bearing_sweep",
+        "title": "Assumed bearing accuracy on identical reports",
         "axes": [
           {
             "role": "x",
-            "label": "time step",
-            "unit": "source units"
+            "label": "Assumed bearing sigma (deg)",
+            "unit": "deg"
           },
           {
             "role": "y",
-            "label": "position / innovation",
-            "unit": "normalized"
+            "label": "Position RMSE (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Use an EKF for Range-Bearing Measurements guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Cartesian CV prediction meets nonlinear range/bearing through an explicit Jacobian. Bearing innovations are wrapped, covariance uses Joseph form, and r sigma_theta exposes increasing tangential uncertainty."
+      },
+      {
+        "source_figure": "Pinned P56 explicit processing and evidence stages",
+        "target_plot_key": "geometry_sweep",
+        "title": "The same angular error grows with range",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Range (m)",
+            "unit": "m"
+          },
+          {
+            "role": "y",
+            "label": "Local uncertainty sigma (m)",
+            "unit": "m"
+          }
+        ],
+        "interpretation": "Cartesian CV prediction meets nonlinear range/bearing through an explicit Jacobian. Bearing innovations are wrapped, covariance uses Joseph form, and r sigma_theta exposes increasing tangential uncertainty."
+      },
+      {
+        "source_figure": "Pinned P56 explicit processing and evidence stages",
+        "target_plot_key": "normalized_innovation",
+        "title": "Each innovation uses its own uncertainty scale",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Time (s)",
+            "unit": "s"
+          },
+          {
+            "role": "y",
+            "label": "Innovation / marginal sigma (ratio)",
+            "unit": "ratio"
+          }
+        ],
+        "interpretation": "Cartesian CV prediction meets nonlinear range/bearing through an explicit Jacobian. Bearing innovations are wrapped, covariance uses Joseph form, and r sigma_theta exposes increasing tangential uncertainty."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "bearing_sigma_deg",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          0.2,
+          0.8,
+          3.2
         ],
-        "expected_observation": "Changing bearing noise moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Bearing sigma deg; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "geometry_range_m",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          500,
+          1500,
+          3000
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Geometry range m; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "Subtracting angles across +/-180 degrees without wrapping creates a near-full-turn innovation and a spurious Cartesian correction.",
+      "recovery": "Wrap only the angular innovation with atan2(sin(delta),cos(delta)); preserve the same polar data and restore the selected assumptions.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Subtracting angles across +/-180 degrees without wrapping creates a near-full-turn innovation and a spurious Cartesian correction.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -216,63 +289,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 700,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P56 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p53_p64.py",
     "seed": 5601,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "bearing_sigma_deg",
+        "value": 0.8,
+        "unit": "deg"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "geometry_range_m",
+        "value": 1500,
+        "unit": "m"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 9.094947017729282e-13,
+        "max_relative_error": 2.0587707195040775e-15,
+        "passed": true,
         "expected": {
           "path": "modules/56-use-an-ekf-for-range-bearing-measurements/evidence/expected-baseline.json",
-          "sha256": "e15c7955da690328066b9fafabc2f991a337b7d30ea8bdfacff5bcc0693a0bed"
+          "sha256": "e784556d020ceda7042111e81ec1ea328f9cc096815bbe2543dda7867bf6e05d"
         },
         "actual": {
           "path": "modules/56-use-an-ekf-for-range-bearing-measurements/evidence/actual-baseline.json",
-          "sha256": "b30b091af0670ce9b6ee4579a63171eed336286e4cb1621e423c6ef1e6b4b622"
-        },
-        "max_absolute_error": 4.2721381987576024e-13,
-        "max_relative_error": 9.039492442915148e-14,
-        "passed": true
+          "sha256": "6cda2cd52a3f665cc0a66b45975566d96d92daab8b2486d3b590dd79956386fb"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 6.821210263296962e-13,
+        "max_relative_error": 4.2521541843143495e-14,
+        "passed": true,
+        "expected": {
+          "path": "modules/56-use-an-ekf-for-range-bearing-measurements/evidence/expected-sweep-1.json",
+          "sha256": "25822bbe7b31e332d30347efb13e04860f6a4ebe0a47248166065b286e54c2f0"
+        },
+        "actual": {
+          "path": "modules/56-use-an-ekf-for-range-bearing-measurements/evidence/actual-sweep-1.json",
+          "sha256": "e6a3657677da0ae0f06c3dea7aad5709c6c054e647ef2ad8c99c84f4a4de715c"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 9.094947017729282e-13,
+        "max_relative_error": 2.0587707195040775e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/56-use-an-ekf-for-range-bearing-measurements/evidence/expected-sweep-2.json",
+          "sha256": "0eea901f6e0966a35ad3c72d47cf83e6b6dda35971d41efca181bccf94c88e6a"
+        },
+        "actual": {
+          "path": "modules/56-use-an-ekf-for-range-bearing-measurements/evidence/actual-sweep-2.json",
+          "sha256": "135c87030ad44c57832051931aa8b2c7fa2163780c184a0b73001f7faa7e56ce"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 1.1368683772161603e-12,
+        "max_relative_error": 2.0539125955565396e-15,
+        "passed": true,
         "expected": {
           "path": "modules/56-use-an-ekf-for-range-bearing-measurements/evidence/expected-broken.json",
-          "sha256": "20a3f84be9356cc13ca2a544ebab1ce5284f46d0974769c08daf6f9fab875529"
+          "sha256": "629b0624ed1c509ecc4b26317c72f8a4eeac5ab4958d7b1c1784487a44093f0d"
         },
         "actual": {
           "path": "modules/56-use-an-ekf-for-range-bearing-measurements/evidence/actual-broken.json",
-          "sha256": "86d702e89f6ee142ffd8ad5d6e3ba48f664bd575186a9b87629ed843581ad930"
+          "sha256": "b8e852f48b419f1ead3d597cfa91511da9939ad971873f785dc4e272e080804f"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 4.2721381987576024e-13,
-        "max_relative_error": 1.4761068642480917e-13,
-        "passed": true
+        "max_absolute_error": 9.094947017729282e-13,
+        "max_relative_error": 2.0587707195040775e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/56-use-an-ekf-for-range-bearing-measurements/evidence/expected-recovery.json",
+          "sha256": "e784556d020ceda7042111e81ec1ea328f9cc096815bbe2543dda7867bf6e05d"
+        },
+        "actual": {
+          "path": "modules/56-use-an-ekf-for-range-bearing-measurements/evidence/actual-recovery.json",
+          "sha256": "6cda2cd52a3f665cc0a66b45975566d96d92daab8b2486d3b590dd79956386fb"
+        }
       }
     ]
   },

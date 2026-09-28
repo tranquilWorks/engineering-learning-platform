@@ -1,0 +1,83 @@
+{
+  "item": "P58",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p58",
+    "sha256": "3e335831c25b63a7ef02dd6a6ced2e39b42deb2a57f2597252c02ffcd0ee5bb8",
+    "byte_count": 154384,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/58-implement-track-initiation-confirmation-coasting-and-deletion/experiment.py",
+    "sha256": "aef28dbfdc11a5d020bd0fbfbd43e4082cd6cef29b6536e681f4a8f2041fb50a",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "confirmation_hits": 3,
+      "coast_limit_scans": 2,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "confirmation_hits": 4,
+      "coast_limit_scans": 2,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "confirmation_hits": 3,
+      "coast_limit_scans": 0,
+      "broken_mode": false
+    },
+    "broken": {
+      "confirmation_hits": 3,
+      "coast_limit_scans": 2,
+      "broken_mode": true
+    },
+    "recovery": {
+      "confirmation_hits": 3,
+      "coast_limit_scans": 2,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    },
+    {
+      "name": "allocated_tracks",
+      "unit": "tracks"
+    },
+    {
+      "name": "false_confirmed",
+      "unit": "tracks"
+    },
+    {
+      "name": "confirmed_target_tracks",
+      "unit": "tracks"
+    },
+    {
+      "name": "target_confirmation_scan",
+      "unit": "scan"
+    },
+    {
+      "name": "target_last_deletion_scan",
+      "unit": "scan"
+    },
+    {
+      "name": "short_gap_same_id_survived",
+      "unit": "boolean"
+    },
+    {
+      "name": "peak_active_tracks",
+      "unit": "tracks"
+    },
+    {
+      "name": "final_active_tracks",
+      "unit": "tracks"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

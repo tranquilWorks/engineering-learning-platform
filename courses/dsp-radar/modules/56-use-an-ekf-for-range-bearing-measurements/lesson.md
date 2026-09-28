@@ -1,6 +1,4 @@
-# Use an EKF for Range-Bearing Measurements
-
-> **Guiding question:** How can nonlinear radar measurements update Cartesian target state?
+# Lesson: make a local Cartesian correction from polar evidence
 
 ## Guiding question
 
@@ -220,33 +218,29 @@ execution, rendered plots, timing, memory use, statistical calibration,
 educational effectiveness, hardware/HIL, real-time behavior, operational radar
 tracking, or field results.
 
-## Use the Python GUI experiment
+## Interactive lab: Use an EKF for Range-Bearing Measurements
 
-The GUI keeps the pinned source's mental model and processing order visible. The **bearing noise** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** How can nonlinear radar measurements update Cartesian target state?
 
-### Prediction and sweep 1 — bearing noise
+The 101-scan Cartesian state [px,vx,py,vy] starts at [-1600,4,600,-12] in metres and metres/second. Actual acceleration sigma is .25 m/s²; range/bearing sigma is 18 m/.8 degrees. The first polar report initializes position and its Jacobian-mapped covariance; velocity sigma is 20 m/s. As in the source, changing assumed bearing noise keeps that reviewed initial covariance fixed. Subsequent nonlinear h=[hypot(px,py),atan2(py,px)] and Jacobian updates use the selected bearing R. A 25 m singularity guard is preserved. The range control changes the separate 35-degree-ray uncertainty demonstration, not target truth. Metrics exclude fifteen warmup scans.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict tangential uncertainty when range doubles at fixed angular accuracy. Why can raw bearing subtraction produce an almost full-turn residual, and which component must be wrapped?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Bearing sigma deg** from 0.8 to 3.2 deg. Predict the change, run, and explain a measured value using the equation; then reset.
+2. Start at the baseline. Sweep only **Geometry range m** from 1500 to 3000 m. Predict the change, run, and explain a measured value using the equation; then reset.
+3. Enable the broken case. Subtracting angles across +/-180 degrees without wrapping creates a near-full-turn innovation and a spurious Cartesian correction.
+4. Recovery: Wrap only the angular innovation with atan2(sin(delta),cos(delta)); preserve the same polar data and restore the selected assumptions.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict tangential uncertainty when range doubles at fixed angular accuracy. Why can raw bearing subtraction produce an almost full-turn residual, and which component must be wrapped? Support your answer with a measured value and units. Explain the recovery assumption and identify what this finite experiment cannot establish.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+Subtracting angles across +/-180 degrees without wrapping creates a near-full-turn innovation and a spurious Cartesian correction. Keep measured units, model assumptions and the named recovery boundary explicit.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The source lesson is preserved above. P53–P56 use private NumPy seeds and row-major draws; these do not reproduce MATLAB random streams. Source console/figure presentation becomes labeled native plots and metrics. Calculations use the full stated arrays; displayed line and heatmap coordinates may be decimated. Independent numerical comparisons retain five scenarios. No MATLAB execution, browser/accessibility review, representative learner, hardware or production validation is claimed.

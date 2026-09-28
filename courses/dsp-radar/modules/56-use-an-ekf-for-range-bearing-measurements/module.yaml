@@ -3,13 +3,13 @@
   "id": "56-use-an-ekf-for-range-bearing-measurements",
   "number": 56,
   "title": "Use an EKF for Range-Bearing Measurements",
-  "summary": "Explore use an ekf for range-bearing measurements with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "Cartesian CV prediction meets nonlinear range/bearing through an explicit Jacobian. Bearing innovations are wrapped, covariance uses Joseph form, and r sigma_theta exposes increasing tangential uncertainty.",
   "guiding_question": "How can nonlinear radar measurements update Cartesian target state?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-6",
-    "bearing-noise"
+    "tracking",
+    "P56"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,51 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Bearing Noise",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "bearing_sigma_deg",
+      "type": "segmented",
+      "label": "Bearing sigma deg",
+      "unit": "deg",
+      "default": 0.8,
+      "options": [
+        {
+          "label": "0.2",
+          "value": 0.2
+        },
+        {
+          "label": "0.8 baseline",
+          "value": 0.8
+        },
+        {
+          "label": "3.2",
+          "value": 3.2
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "geometry_range_m",
+      "type": "segmented",
+      "label": "Geometry range m",
+      "unit": "m",
+      "default": 1500,
+      "options": [
+        {
+          "label": "500",
+          "value": 500
+        },
+        {
+          "label": "1500 baseline",
+          "value": 1500
+        },
+        {
+          "label": "3000",
+          "value": 3000
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +75,45 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing bearing noise, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict tangential uncertainty when range doubles at fixed angular accuracy. Why can raw bearing subtraction produce an almost full-turn residual, and which component must be wrapped?",
+      "reveal": "Cartesian CV prediction meets nonlinear range/bearing through an explicit Jacobian. Bearing innovations are wrapped, covariance uses Joseph form, and r sigma_theta exposes increasing tangential uncertainty."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Cartesian state and local covariance ellipses",
+      "plot": "trajectory"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Range innovation and its two-sigma scale",
+      "plot": "range_innovation"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Bearing branch cut: identical polar reports",
+      "plot": "bearing_innovation"
+    },
+    {
+      "type": "plot",
+      "title": "Assumed bearing accuracy on identical reports",
+      "plot": "bearing_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "The same angular error grows with range",
+      "plot": "geometry_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Each innovation uses its own uncertainty scale",
+      "plot": "normalized_innovation"
     },
     {
       "type": "callout",
@@ -102,7 +124,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

@@ -378,3 +378,14 @@ range-Doppler processing, fixed thresholds, ROC and CFAR calibration/window/
 stress/Monte Carlo experiments. Preserve P01-P40 and P53-P84 and retain sixty
 independent scenarios. P53-P64 is the next proposed twelve-lesson group after
 this batch is verified, merged and separately contracted. Issue 441 stays open.
+
+
+## DSP/Radar twelve-item fidelity continuation P53-P64 — 2026-09-27
+
+Merged target PR #48 establishes baseline `255427e3b3c6a31a66b74ad7f9836dad09b164e5`.
+Control PR #515 authorizes `ELP-DSP-FIDELITY-P53-P64`: report grouping,
+alpha-beta/Kalman/EKF tracking, association/lifecycle/crossing/IMM, and ULA
+steering, array factor, DAS and amplitude-comparison monopulse. Preserve
+P01-P52 and P65-P84 and retain sixty independent scenarios. P65-P76 is the next
+proposed twelve-lesson group after this batch completes and merges under its
+own fresh contract. Whole-course maturity remains blocked; issue 441 stays open.

@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "ad402d1b5e31a9767dfc351078caca9929e5f7ee82da4cbe0fa145f5a601bc7e",
+    "content_digest": "99ae03a425a2c1d9f27d90b69a878dcd5f5cb40c08fa3be81638ca0aa5703210",
     "files": [
       {
         "path": "modules/60-use-an-imm-for-a-maneuvering-target/experiment.py",
-        "sha256": "d4dbb5a6803c780135f9daaf0b9e2f4b28862d9c13a57c52928e695133677f4b"
+        "sha256": "075ef040d46af1dfcb7094af4cecc75293d04a1ccbb232351ac704f69bf0272b"
       },
       {
         "path": "modules/60-use-an-imm-for-a-maneuvering-target/lesson.md",
-        "sha256": "fd511b2302695d7f18e0dabbf10b73eb64ed6443973e1325bd4f9252026efeb7"
+        "sha256": "a3d688245bf26f577cedda169ce88b371b8984cf65ba902f6679812f4a02d6bd"
       },
       {
         "path": "modules/60-use-an-imm-for-a-maneuvering-target/module.yaml",
-        "sha256": "dbc3cc1f99b1cd8cab0db9ae7716f75be7d7b03af9d2a7296eee57b0fb25db28"
+        "sha256": "7438e9102325e7d70580707b9236d991b38a78388fff81a3927d7735a76c2937"
       }
     ]
   },
   "content": {
     "guiding_question": "How can a tracker adapt when the target alternates between straight motion and maneuvers?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "A shared six-state CV/CA model bank mixes states and covariances, including between-mean spread, before prediction. Log likelihoods normalize posterior mode probabilities; the blended covariance includes model disagreement.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary mode transition rate while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "A shared six-state CV/CA model bank mixes states and covariances, including between-mean spread, before prediction. Log likelihoods normalize posterior mode probabilities; the blended covariance includes model disagreement.",
+      "Identity transition probabilities and initial [1,0] make the maneuver mode unreachable even when its likelihood would fit better.",
+      "Restore nonzero transition support and the [.85,.15] prior on the same measurements; disable the toggle to reproduce the selected IMM exactly.",
+      "Explicit stage equations are retained in lesson.md. P53-P56 use private NumPy streams; P57-P64 retain source private input formulas. Plot/console presentation is adapted; no MATLAB runtime execution is claimed."
     ],
     "equations": [
       {
@@ -66,149 +66,222 @@
     ],
     "equation_order": "before_toolbox_shortcuts",
     "deterministic_data": {
-      "seed": 1060,
+      "seed": 6007,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
-        },
-        {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "20f85812319304d8c37d0c64517f6ee0609bc10779574861732e0d1b3fac22e4",
-          "unit": "mixed numeric signature"
+          "sha256": "025ffa104d79d8dd64cb0fc8713594584a8e7caee9b7f843502aa4f1c5c4e113",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "05eb1824e2ded19dbb82490b4b03d44eba262b3565102e4c2aeacefb38ae9010",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "7f8812e8fdef9ceb9ebdb63beb88679c21714c068b72f7114bbef3ccff99b38b",
-          "unit": "mixed numeric signature"
+          "sha256": "b5a4445dc1ceab1901bb2b6e9679d5e4e43269387342cf9a53f487360418ad81",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "4a0fcba36465299f968e62f8574f0646d27527f1d31812c78fd868bef8197d3e",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "1138fb12d65e051c502d05c424e2a6fcdb862f127f46248407d5a1ff0aa85f1f",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "949bb5813bd5259910e3d0c840ffb6959e90c26fa9297c4f359d7338e0d10b6f",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "5366658532ece2ebaf2a7d04ae0b86092d278f482267ceef6021bcc4624b835f",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "7323ec45e54bceef6f3906ab3e191836fcc23c5df5fbc359769d99a6e8f0e60a",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "025ffa104d79d8dd64cb0fc8713594584a8e7caee9b7f843502aa4f1c5c4e113",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "05eb1824e2ded19dbb82490b4b03d44eba262b3565102e4c2aeacefb38ae9010",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P60 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P60 explicit processing and evidence stages",
+        "target_plot_key": "trajectory",
+        "title": "Fixed CV versus interacting motion models",
         "axes": [
           {
             "role": "x",
-            "label": "time step",
-            "unit": "source units"
+            "label": "East position (m)",
+            "unit": "m"
           },
           {
             "role": "y",
-            "label": "position / innovation",
-            "unit": "normalized"
+            "label": "North position (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Use an IMM for a Maneuvering Target guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "A shared six-state CV/CA model bank mixes states and covariances, including between-mean spread, before prediction. Log likelihoods normalize posterior mode probabilities; the blended covariance includes model disagreement."
       },
       {
-        "source_figure": "Pinned P60 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P60 explicit processing and evidence stages",
+        "target_plot_key": "probability",
+        "title": "Likelihood updates the two mode probabilities",
         "axes": [
           {
             "role": "x",
-            "label": "time step",
-            "unit": "source units"
+            "label": "Time (s)",
+            "unit": "s"
           },
           {
             "role": "y",
-            "label": "position / innovation",
-            "unit": "normalized"
+            "label": "Mode probability (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Use an IMM for a Maneuvering Target guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "A shared six-state CV/CA model bank mixes states and covariances, including between-mean spread, before prediction. Log likelihoods normalize posterior mode probabilities; the blended covariance includes model disagreement."
       },
       {
-        "source_figure": "Pinned P60 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P60 explicit processing and evidence stages",
+        "target_plot_key": "error",
+        "title": "Model support changes maneuver error",
         "axes": [
           {
             "role": "x",
-            "label": "time step",
-            "unit": "source units"
+            "label": "Time (s)",
+            "unit": "s"
           },
           {
             "role": "y",
-            "label": "position / innovation",
-            "unit": "normalized"
+            "label": "Position error (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Use an IMM for a Maneuvering Target guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "A shared six-state CV/CA model bank mixes states and covariances, including between-mean spread, before prediction. Log likelihoods normalize posterior mode probabilities; the blended covariance includes model disagreement."
       },
       {
-        "source_figure": "Pinned P60 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P60 explicit processing and evidence stages",
+        "target_plot_key": "models",
+        "title": "Inspect model-conditioned acceleration before mixing",
         "axes": [
           {
             "role": "x",
-            "label": "time step",
-            "unit": "source units"
+            "label": "Time (s)",
+            "unit": "s"
           },
           {
             "role": "y",
-            "label": "position / innovation",
-            "unit": "normalized"
+            "label": "North acceleration (m/s\u00b2)",
+            "unit": "m/s\u00b2"
           }
         ],
-        "interpretation": "This view answers the Use an IMM for a Maneuvering Target guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "A shared six-state CV/CA model bank mixes states and covariances, including between-mean spread, before prediction. Log likelihoods normalize posterior mode probabilities; the blended covariance includes model disagreement."
+      },
+      {
+        "source_figure": "Pinned P60 explicit processing and evidence stages",
+        "target_plot_key": "strength_sweep",
+        "title": "Maneuver strength on paired reports",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Acceleration magnitude (m/s\u00b2)",
+            "unit": "m/s\u00b2"
+          },
+          {
+            "role": "y",
+            "label": "Position RMSE (m)",
+            "unit": "m"
+          }
+        ],
+        "interpretation": "A shared six-state CV/CA model bank mixes states and covariances, including between-mean spread, before prediction. Log likelihoods normalize posterior mode probabilities; the blended covariance includes model disagreement."
+      },
+      {
+        "source_figure": "Pinned P60 explicit processing and evidence stages",
+        "target_plot_key": "persistence_sweep",
+        "title": "Transition persistence changes adaptation",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Mode stay probability (ratio)",
+            "unit": "ratio"
+          },
+          {
+            "role": "y",
+            "label": "Position RMSE (m)",
+            "unit": "m"
+          }
+        ],
+        "interpretation": "A shared six-state CV/CA model bank mixes states and covariances, including between-mean spread, before prediction. Log likelihoods normalize posterior mode probabilities; the blended covariance includes model disagreement."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "maneuver_acceleration_mps2",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          0.8,
+          2,
+          3.2
         ],
-        "expected_observation": "Changing mode transition rate moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Maneuver acceleration m/s\u00b2; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "mode_stay_probability",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          0.8,
+          0.94,
+          0.99
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Mode stay probability; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "Identity transition probabilities and initial [1,0] make the maneuver mode unreachable even when its likelihood would fit better.",
+      "recovery": "Restore nonzero transition support and the [.85,.15] prior on the same measurements; disable the toggle to reproduce the selected IMM exactly.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Identity transition probabilities and initial [1,0] make the maneuver mode unreachable even when its likelihood would fit better.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -216,63 +289,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 1500,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P60 python -m pytest -q apps/api/tests/test_dsp_course.py",
-    "seed": 1060,
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p53_p64.py",
+    "seed": 6007,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "maneuver_acceleration_mps2",
+        "value": 2,
+        "unit": "m/s\u00b2"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "mode_stay_probability",
+        "value": 0.94,
+        "unit": "probability"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 1.8417267710901797e-11,
+        "max_relative_error": 2.7622348852673895e-13,
+        "passed": true,
         "expected": {
           "path": "modules/60-use-an-imm-for-a-maneuvering-target/evidence/expected-baseline.json",
-          "sha256": "20f85812319304d8c37d0c64517f6ee0609bc10779574861732e0d1b3fac22e4"
+          "sha256": "025ffa104d79d8dd64cb0fc8713594584a8e7caee9b7f843502aa4f1c5c4e113"
         },
         "actual": {
           "path": "modules/60-use-an-imm-for-a-maneuvering-target/evidence/actual-baseline.json",
-          "sha256": "1ed2e3445db9f3ebddd3c19591b2cf98f9b856863c725ae6157f934dcab64ab4"
-        },
-        "max_absolute_error": 4.209410597866281e-13,
-        "max_relative_error": 4.209410597866281e-13,
-        "passed": true
+          "sha256": "05eb1824e2ded19dbb82490b4b03d44eba262b3565102e4c2aeacefb38ae9010"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 9.663381206337363e-12,
+        "max_relative_error": 2.7922749179073283e-13,
+        "passed": true,
+        "expected": {
+          "path": "modules/60-use-an-imm-for-a-maneuvering-target/evidence/expected-sweep-1.json",
+          "sha256": "b5a4445dc1ceab1901bb2b6e9679d5e4e43269387342cf9a53f487360418ad81"
+        },
+        "actual": {
+          "path": "modules/60-use-an-imm-for-a-maneuvering-target/evidence/actual-sweep-1.json",
+          "sha256": "4a0fcba36465299f968e62f8574f0646d27527f1d31812c78fd868bef8197d3e"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 1.48929757415317e-11,
+        "max_relative_error": 3.723688024592775e-13,
+        "passed": true,
+        "expected": {
+          "path": "modules/60-use-an-imm-for-a-maneuvering-target/evidence/expected-sweep-2.json",
+          "sha256": "1138fb12d65e051c502d05c424e2a6fcdb862f127f46248407d5a1ff0aa85f1f"
+        },
+        "actual": {
+          "path": "modules/60-use-an-imm-for-a-maneuvering-target/evidence/actual-sweep-2.json",
+          "sha256": "949bb5813bd5259910e3d0c840ffb6959e90c26fa9297c4f359d7338e0d10b6f"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 2.0804691303055733e-11,
+        "max_relative_error": 2.740145933550791e-13,
+        "passed": true,
         "expected": {
           "path": "modules/60-use-an-imm-for-a-maneuvering-target/evidence/expected-broken.json",
-          "sha256": "7f8812e8fdef9ceb9ebdb63beb88679c21714c068b72f7114bbef3ccff99b38b"
+          "sha256": "5366658532ece2ebaf2a7d04ae0b86092d278f482267ceef6021bcc4624b835f"
         },
         "actual": {
           "path": "modules/60-use-an-imm-for-a-maneuvering-target/evidence/actual-broken.json",
-          "sha256": "0e8beeba843955633f414ac85ce5ef02f596155fabb2c3154f37cfc9f0d600a8"
+          "sha256": "7323ec45e54bceef6f3906ab3e191836fcc23c5df5fbc359769d99a6e8f0e60a"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 3.241851231905457e-13,
-        "max_relative_error": 1.0113748530158967e-13,
-        "passed": true
+        "max_absolute_error": 1.8417267710901797e-11,
+        "max_relative_error": 2.7622348852673895e-13,
+        "passed": true,
+        "expected": {
+          "path": "modules/60-use-an-imm-for-a-maneuvering-target/evidence/expected-recovery.json",
+          "sha256": "025ffa104d79d8dd64cb0fc8713594584a8e7caee9b7f843502aa4f1c5c4e113"
+        },
+        "actual": {
+          "path": "modules/60-use-an-imm-for-a-maneuvering-target/evidence/actual-recovery.json",
+          "sha256": "05eb1824e2ded19dbb82490b4b03d44eba262b3565102e4c2aeacefb38ae9010"
+        }
       }
     ]
   },

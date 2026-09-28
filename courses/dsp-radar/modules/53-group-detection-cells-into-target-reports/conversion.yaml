@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "c17fa233cb9e21126b4b34b331823ef42a143c1cf5b766e27abd3da92a9c8ece",
+    "content_digest": "6996d6a520036322bd09a7c6cb61094113fe86d1b44a43fa01621ab001faa02f",
     "files": [
       {
         "path": "modules/53-group-detection-cells-into-target-reports/experiment.py",
-        "sha256": "2533b2352278358d5c316b62c8afcffe8e6c24587646707d2abe4bb93989ae61"
+        "sha256": "a85a5b434ec889efcef2d66a1a154b60753905f70888bd8787cd3e90779f03cf"
       },
       {
         "path": "modules/53-group-detection-cells-into-target-reports/lesson.md",
-        "sha256": "3cb4f01c943673c45539c1aa7f3ce8eca7cbca116003f0deb3f853811293cec8"
+        "sha256": "1d2d2b5d824662531037c774c389c250da6948813f2398e0cb56a2a895f759a2"
       },
       {
         "path": "modules/53-group-detection-cells-into-target-reports/module.yaml",
-        "sha256": "defdeec54dbda7c220492c2d5bbf4121eafb0afd4b3e90261498af4accc90bea"
+        "sha256": "3e2cd54b353953c1cdd407f94fa1110fc1ed78a96cd10ae92c2869c6b5a2a9ec"
       }
     ]
   },
   "content": {
     "guiding_question": "How do several threshold-crossing cells become one physical detection?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "Eight-connected detection groups retain excess-power weighted centroids, extent and effective cell count. Morphology uncertainty proxies are not calibrated tracker measurement covariance.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary grouping radius while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Eight-connected detection groups retain excess-power weighted centroids, extent and effective cell count. Morphology uncertainty proxies are not calibrated tracker measurement covariance.",
+      "Peak-only reporting promotes disconnected sidelobes and false cells and quantizes position to cell centers.",
+      "Restore grouping and minimum-size filtering on the identical score map; disable the toggle for exact selected-control recovery.",
+      "Explicit stage equations are retained in lesson.md. P53-P56 use private NumPy streams; P57-P64 retain source private input formulas. Plot/console presentation is adapted; no MATLAB runtime execution is claimed."
     ],
     "equations": [
       {
@@ -69,146 +69,219 @@
       "seed": 5301,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
-        },
-        {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "79ecdbd71dd139482cfc3df5ecf7c1916640504a47a5a640fb11d1f6af87a148",
-          "unit": "mixed numeric signature"
+          "sha256": "26753ea1864896052e088cbf607527f11665abcdf3aeb2b57a3289a1bb1eacd3",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "ca0eb3da2c55b193a73f936f36c244c2cef42567bf653752fe3d59882521b9fd",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "2a3686e9cc0fb38a5db12cf9b86d63f404b9f71e26460225a33e0e7536ecd104",
-          "unit": "mixed numeric signature"
+          "sha256": "f8047a081ff709c0da17b403c6280037ee4de965ac010b770db464d6bfaca563",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "329c1b3f440b4166cb4a3badc85593b327d55c6712553e9e10f3747eb602d85c",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "a8441401154d69d05f90a223b8dfe269108949f4e1696c5a3e99143dc150acab",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "edd5b3fd71becef85603f469cd508bd3763f11f7a0f57ee84016477392024732",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "4b52090de4740d9ad74f202a81213ca9025d493685533e6f12f44de9fefe307f",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "ee45438f5acc966062aefbe569870a1c67e8c6589dc2a08743e3aa2612d12db1",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "26753ea1864896052e088cbf607527f11665abcdf3aeb2b57a3289a1bb1eacd3",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "ca0eb3da2c55b193a73f936f36c244c2cef42567bf653752fe3d59882521b9fd",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P53 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P53 explicit processing and evidence stages",
+        "target_plot_key": "score",
+        "title": "Normalized detector score",
         "axes": [
           {
             "role": "x",
-            "label": "time step",
-            "unit": "source units"
+            "label": "Velocity (m/s; positive approaching)",
+            "unit": "m/s; positive approaching"
           },
           {
             "role": "y",
-            "label": "position / innovation",
-            "unit": "normalized"
+            "label": "Range (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Group Detection Cells into Target Reports guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Eight-connected detection groups retain excess-power weighted centroids, extent and effective cell count. Morphology uncertainty proxies are not calibrated tracker measurement covariance."
       },
       {
-        "source_figure": "Pinned P53 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P53 explicit processing and evidence stages",
+        "target_plot_key": "components",
+        "title": "Eight-connected component labels",
         "axes": [
           {
             "role": "x",
-            "label": "time step",
-            "unit": "source units"
+            "label": "Velocity (m/s)",
+            "unit": "m/s"
           },
           {
             "role": "y",
-            "label": "position / innovation",
-            "unit": "normalized"
+            "label": "Range (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Group Detection Cells into Target Reports guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Eight-connected detection groups retain excess-power weighted centroids, extent and effective cell count. Morphology uncertainty proxies are not calibrated tracker measurement covariance."
       },
       {
-        "source_figure": "Pinned P53 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P53 explicit processing and evidence stages",
+        "target_plot_key": "reports",
+        "title": "Selected report locations: peaks or grouped centroids",
         "axes": [
           {
             "role": "x",
-            "label": "time step",
-            "unit": "source units"
+            "label": "Velocity (m/s)",
+            "unit": "m/s"
           },
           {
             "role": "y",
-            "label": "position / innovation",
-            "unit": "normalized"
+            "label": "Range (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Group Detection Cells into Target Reports guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Eight-connected detection groups retain excess-power weighted centroids, extent and effective cell count. Morphology uncertainty proxies are not calibrated tracker measurement covariance."
       },
       {
-        "source_figure": "Pinned P53 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P53 explicit processing and evidence stages",
+        "target_plot_key": "size_sweep",
+        "title": "Minimum-size filtering",
         "axes": [
           {
             "role": "x",
-            "label": "time step",
-            "unit": "source units"
+            "label": "Minimum size (cells)",
+            "unit": "cells"
           },
           {
             "role": "y",
-            "label": "position / innovation",
-            "unit": "normalized"
+            "label": "Accepted reports (count)",
+            "unit": "count"
           }
         ],
-        "interpretation": "This view answers the Group Detection Cells into Target Reports guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Eight-connected detection groups retain excess-power weighted centroids, extent and effective cell count. Morphology uncertainty proxies are not calibrated tracker measurement covariance."
+      },
+      {
+        "source_figure": "Pinned P53 explicit processing and evidence stages",
+        "target_plot_key": "weight_sweep",
+        "title": "Asymmetric target centroid shift",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Weight exponent (ratio)",
+            "unit": "ratio"
+          },
+          {
+            "role": "y",
+            "label": "Target 1 range error (m)",
+            "unit": "m"
+          }
+        ],
+        "interpretation": "Eight-connected detection groups retain excess-power weighted centroids, extent and effective cell count. Morphology uncertainty proxies are not calibrated tracker measurement covariance."
+      },
+      {
+        "source_figure": "Pinned P53 explicit processing and evidence stages",
+        "target_plot_key": "weight_velocity",
+        "title": "Weighting also changes signed velocity",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Weight exponent (ratio)",
+            "unit": "ratio"
+          },
+          {
+            "role": "y",
+            "label": "Target 1 velocity error (m/s)",
+            "unit": "m/s"
+          }
+        ],
+        "interpretation": "Eight-connected detection groups retain excess-power weighted centroids, extent and effective cell count. Morphology uncertainty proxies are not calibrated tracker measurement covariance."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "minimum_cells",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          1,
+          3,
+          18
         ],
-        "expected_observation": "Changing grouping radius moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Minimum cells; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "weight_exponent",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          0,
+          1,
+          2
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Weight exponent; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "Peak-only reporting promotes disconnected sidelobes and false cells and quantizes position to cell centers.",
+      "recovery": "Restore grouping and minimum-size filtering on the identical score map; disable the toggle for exact selected-control recovery.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Peak-only reporting promotes disconnected sidelobes and false cells and quantizes position to cell centers.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -216,63 +289,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 20000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P53 python -m pytest -q apps/api/tests/test_dsp_course.py",
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p53_p64.py",
     "seed": 5301,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
+        "name": "minimum_cells",
+        "value": 3,
+        "unit": "cells"
+      },
+      {
+        "name": "weight_exponent",
+        "value": 1,
         "unit": "ratio"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 5.684341886080802e-14,
+        "max_relative_error": 4.181407426106786e-16,
+        "passed": true,
         "expected": {
           "path": "modules/53-group-detection-cells-into-target-reports/evidence/expected-baseline.json",
-          "sha256": "79ecdbd71dd139482cfc3df5ecf7c1916640504a47a5a640fb11d1f6af87a148"
+          "sha256": "26753ea1864896052e088cbf607527f11665abcdf3aeb2b57a3289a1bb1eacd3"
         },
         "actual": {
           "path": "modules/53-group-detection-cells-into-target-reports/evidence/actual-baseline.json",
-          "sha256": "0f6d7fdb93666d31e098457760c290d26389548def16331bbe7d8fe82d12fa03"
-        },
-        "max_absolute_error": 4.1389114358025836e-13,
-        "max_relative_error": 1.5193402091995267e-13,
-        "passed": true
+          "sha256": "ca0eb3da2c55b193a73f936f36c244c2cef42567bf653752fe3d59882521b9fd"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 5.684341886080802e-14,
+        "max_relative_error": 4.181407426106786e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/53-group-detection-cells-into-target-reports/evidence/expected-sweep-1.json",
+          "sha256": "f8047a081ff709c0da17b403c6280037ee4de965ac010b770db464d6bfaca563"
+        },
+        "actual": {
+          "path": "modules/53-group-detection-cells-into-target-reports/evidence/actual-sweep-1.json",
+          "sha256": "329c1b3f440b4166cb4a3badc85593b327d55c6712553e9e10f3747eb602d85c"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 1.1368683772161603e-13,
+        "max_relative_error": 3.082956918682897e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/53-group-detection-cells-into-target-reports/evidence/expected-sweep-2.json",
+          "sha256": "a8441401154d69d05f90a223b8dfe269108949f4e1696c5a3e99143dc150acab"
+        },
+        "actual": {
+          "path": "modules/53-group-detection-cells-into-target-reports/evidence/actual-sweep-2.json",
+          "sha256": "edd5b3fd71becef85603f469cd508bd3763f11f7a0f57ee84016477392024732"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 5.684341886080802e-14,
+        "max_relative_error": 4.181407426106786e-16,
+        "passed": true,
         "expected": {
           "path": "modules/53-group-detection-cells-into-target-reports/evidence/expected-broken.json",
-          "sha256": "2a3686e9cc0fb38a5db12cf9b86d63f404b9f71e26460225a33e0e7536ecd104"
+          "sha256": "4b52090de4740d9ad74f202a81213ca9025d493685533e6f12f44de9fefe307f"
         },
         "actual": {
           "path": "modules/53-group-detection-cells-into-target-reports/evidence/actual-broken.json",
-          "sha256": "37ebd51f0f734cc654ca379cefc4618711cbfc9a855c5a2e19d010563d4d6184"
+          "sha256": "ee45438f5acc966062aefbe569870a1c67e8c6589dc2a08743e3aa2612d12db1"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 4.1389114358025836e-13,
-        "max_relative_error": 1.3510457562420626e-13,
-        "passed": true
+        "max_absolute_error": 5.684341886080802e-14,
+        "max_relative_error": 4.181407426106786e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/53-group-detection-cells-into-target-reports/evidence/expected-recovery.json",
+          "sha256": "26753ea1864896052e088cbf607527f11665abcdf3aeb2b57a3289a1bb1eacd3"
+        },
+        "actual": {
+          "path": "modules/53-group-detection-cells-into-target-reports/evidence/actual-recovery.json",
+          "sha256": "ca0eb3da2c55b193a73f936f36c244c2cef42567bf653752fe3d59882521b9fd"
+        }
       }
     ]
   },

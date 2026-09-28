@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "8f787e02d20f8d580b8691016285a92174ba4cde6879356ba8b150dfe7a13256",
+    "content_digest": "a2b9423930278ccf3c594cc80d5d84f91088c50d6c7ac2586e2d31403df8b49b",
     "files": [
       {
         "path": "modules/58-implement-track-initiation-confirmation-coasting-and-deletion/experiment.py",
-        "sha256": "19450059908a89c1cecd75a3818c313db4a3926d1dbef01c568180880c8b5952"
+        "sha256": "aef28dbfdc11a5d020bd0fbfbd43e4082cd6cef29b6536e681f4a8f2041fb50a"
       },
       {
         "path": "modules/58-implement-track-initiation-confirmation-coasting-and-deletion/lesson.md",
-        "sha256": "8f7dfbf9477c5d054becd797cda5da84a1e649fe36100ab50ee286058f85124b"
+        "sha256": "64e89cb2554020204ebc3c23bed1d4e22d9b6476a2c048d077c8bd24a7ae3d5d"
       },
       {
         "path": "modules/58-implement-track-initiation-confirmation-coasting-and-deletion/module.yaml",
-        "sha256": "aca356ee4bdca6a496a0e5cfb183a74f67b35ba73adbdb0557f3641b97276ae8"
+        "sha256": "6fcdcb69b83570fc1ffdb8fa5749541a733227e13ae5447d786ba66d309715de"
       }
     ]
   },
   "content": {
     "guiding_question": "How does a radar avoid creating permanent tracks from single false alarms?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "Predict and associate reports before updating an explicit M-of-N lifecycle. Stable IDs record birth, tentative confirmation, coasting and deletion; truth labels enter only the final audit.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary confirmation hits while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Predict and associate reports before updating an explicit M-of-N lifecycle. Stable IDs record birth, tentative confirmation, coasting and deletion; truth labels enter only the final audit.",
+      "The 1-of-1 policy with a 30-scan coast allowance confirms eight isolated false tracks and keeps them active through this record.",
+      "Restore the selected M-of-4 and coast policy on identical reports; disabling the toggle reproduces the selected managed history exactly.",
+      "Explicit stage equations are retained in lesson.md. P53-P56 use private NumPy streams; P57-P64 retain source private input formulas. Plot/console presentation is adapted; no MATLAB runtime execution is claimed."
     ],
     "equations": [
       {
@@ -66,149 +66,209 @@
     ],
     "equation_order": "before_toolbox_shortcuts",
     "deterministic_data": {
-      "seed": 1058,
+      "seed": 5801,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
+          "name": "noise_seed",
+          "value": 5802,
+          "unit": "count"
         },
         {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "476b988908b0421b71f0fcfa93c52e3f00f72b53d9837a36549f2446675e06d4",
-          "unit": "mixed numeric signature"
+          "sha256": "7058045fe15efb32202b7e448a60af0483e7a24b07afa187dc27a7814bfed98f",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "7058045fe15efb32202b7e448a60af0483e7a24b07afa187dc27a7814bfed98f",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "4033f25806672f6fa51287563c5faaf3325f357417489a62aa42453bac7386b4",
-          "unit": "mixed numeric signature"
+          "sha256": "8dd6829cc428bf2b0a4d7818ef3b8f2981d4475c6717cfd004fc8f63640c6f99",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "8dd6829cc428bf2b0a4d7818ef3b8f2981d4475c6717cfd004fc8f63640c6f99",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "313ac33f965cffcb846a44df26adcb3255bd11deada26411bb258b9dd212ccc2",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "313ac33f965cffcb846a44df26adcb3255bd11deada26411bb258b9dd212ccc2",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "b9d4dc9ce97c1377ab6b897fde8153dbf208c9642f1b4cb1ae812de408fe27e1",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "b9d4dc9ce97c1377ab6b897fde8153dbf208c9642f1b4cb1ae812de408fe27e1",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "7058045fe15efb32202b7e448a60af0483e7a24b07afa187dc27a7814bfed98f",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "7058045fe15efb32202b7e448a60af0483e7a24b07afa187dc27a7814bfed98f",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P58 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P58 explicit processing and evidence stages",
+        "target_plot_key": "tracks",
+        "title": "Reports earn a persistent track identity",
         "axes": [
           {
             "role": "x",
-            "label": "time step",
-            "unit": "source units"
+            "label": "Scan (index)",
+            "unit": "index"
           },
           {
             "role": "y",
-            "label": "position / innovation",
-            "unit": "normalized"
+            "label": "Position (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Implement Track Initiation, Confirmation, Coasting, and Deletion guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Predict and associate reports before updating an explicit M-of-N lifecycle. Stable IDs record birth, tentative confirmation, coasting and deletion; truth labels enter only the final audit."
       },
       {
-        "source_figure": "Pinned P58 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P58 explicit processing and evidence stages",
+        "target_plot_key": "lifecycle",
+        "title": "Lifecycle: 0 absent, 1 tentative, 2 confirmed, 3 coast, 4 deleted",
         "axes": [
           {
             "role": "x",
-            "label": "time step",
-            "unit": "source units"
+            "label": "Scan (index)",
+            "unit": "index"
           },
           {
             "role": "y",
-            "label": "position / innovation",
-            "unit": "normalized"
+            "label": "Track ID (index)",
+            "unit": "index"
           }
         ],
-        "interpretation": "This view answers the Implement Track Initiation, Confirmation, Coasting, and Deletion guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Predict and associate reports before updating an explicit M-of-N lifecycle. Stable IDs record birth, tentative confirmation, coasting and deletion; truth labels enter only the final audit."
       },
       {
-        "source_figure": "Pinned P58 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P58 explicit processing and evidence stages",
+        "target_plot_key": "counts",
+        "title": "Managed versus bypassed persistence",
         "axes": [
           {
             "role": "x",
-            "label": "time step",
-            "unit": "source units"
+            "label": "Scan (index)",
+            "unit": "index"
           },
           {
             "role": "y",
-            "label": "position / innovation",
-            "unit": "normalized"
+            "label": "Active tracks (count)",
+            "unit": "count"
           }
         ],
-        "interpretation": "This view answers the Implement Track Initiation, Confirmation, Coasting, and Deletion guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Predict and associate reports before updating an explicit M-of-N lifecycle. Stable IDs record birth, tentative confirmation, coasting and deletion; truth labels enter only the final audit."
       },
       {
-        "source_figure": "Pinned P58 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P58 explicit processing and evidence stages",
+        "target_plot_key": "confirmation_sweep",
+        "title": "Confirmation evidence requirement",
         "axes": [
           {
             "role": "x",
-            "label": "time step",
-            "unit": "source units"
+            "label": "Required hits M of 4 (count)",
+            "unit": "count"
           },
           {
             "role": "y",
-            "label": "position / innovation",
-            "unit": "normalized"
+            "label": "Confirmed tracks (count)",
+            "unit": "count"
           }
         ],
-        "interpretation": "This view answers the Implement Track Initiation, Confirmation, Coasting, and Deletion guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Predict and associate reports before updating an explicit M-of-N lifecycle. Stable IDs record birth, tentative confirmation, coasting and deletion; truth labels enter only the final audit."
+      },
+      {
+        "source_figure": "Pinned P58 explicit processing and evidence stages",
+        "target_plot_key": "coast_sweep",
+        "title": "Missing-scan budget changes target deletion",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Allowed consecutive coasts (scans)",
+            "unit": "scans"
+          },
+          {
+            "role": "y",
+            "label": "Last target deletion (scan)",
+            "unit": "scan"
+          }
+        ],
+        "interpretation": "Predict and associate reports before updating an explicit M-of-N lifecycle. Stable IDs record birth, tentative confirmation, coasting and deletion; truth labels enter only the final audit."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "confirmation_hits",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          1,
+          3,
+          4
         ],
-        "expected_observation": "Changing confirmation hits moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Confirmation hits; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "coast_limit_scans",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          0,
+          2,
+          5
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Coast limit scans; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "The 1-of-1 policy with a 30-scan coast allowance confirms eight isolated false tracks and keeps them active through this record.",
+      "recovery": "Restore the selected M-of-4 and coast policy on identical reports; disabling the toggle reproduces the selected managed history exactly.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "The 1-of-1 policy with a 30-scan coast allowance confirms eight isolated false tracks and keeps them active through this record.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -216,63 +276,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 12000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P58 python -m pytest -q apps/api/tests/test_dsp_course.py",
-    "seed": 1058,
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p53_p64.py",
+    "seed": 5801,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "confirmation_hits",
+        "value": 3,
+        "unit": "hits"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "coast_limit_scans",
+        "value": 2,
+        "unit": "scans"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true,
         "expected": {
           "path": "modules/58-implement-track-initiation-confirmation-coasting-and-deletion/evidence/expected-baseline.json",
-          "sha256": "476b988908b0421b71f0fcfa93c52e3f00f72b53d9837a36549f2446675e06d4"
+          "sha256": "7058045fe15efb32202b7e448a60af0483e7a24b07afa187dc27a7814bfed98f"
         },
         "actual": {
           "path": "modules/58-implement-track-initiation-confirmation-coasting-and-deletion/evidence/actual-baseline.json",
-          "sha256": "75303b7a2c16e6667fe68a2726f2da62da73cd6c0530255ee2ed88d228304c55"
-        },
-        "max_absolute_error": 2.939315457695102e-13,
-        "max_relative_error": 2.939315457695102e-13,
-        "passed": true
+          "sha256": "7058045fe15efb32202b7e448a60af0483e7a24b07afa187dc27a7814bfed98f"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true,
+        "expected": {
+          "path": "modules/58-implement-track-initiation-confirmation-coasting-and-deletion/evidence/expected-sweep-1.json",
+          "sha256": "8dd6829cc428bf2b0a4d7818ef3b8f2981d4475c6717cfd004fc8f63640c6f99"
+        },
+        "actual": {
+          "path": "modules/58-implement-track-initiation-confirmation-coasting-and-deletion/evidence/actual-sweep-1.json",
+          "sha256": "8dd6829cc428bf2b0a4d7818ef3b8f2981d4475c6717cfd004fc8f63640c6f99"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true,
+        "expected": {
+          "path": "modules/58-implement-track-initiation-confirmation-coasting-and-deletion/evidence/expected-sweep-2.json",
+          "sha256": "313ac33f965cffcb846a44df26adcb3255bd11deada26411bb258b9dd212ccc2"
+        },
+        "actual": {
+          "path": "modules/58-implement-track-initiation-confirmation-coasting-and-deletion/evidence/actual-sweep-2.json",
+          "sha256": "313ac33f965cffcb846a44df26adcb3255bd11deada26411bb258b9dd212ccc2"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true,
         "expected": {
           "path": "modules/58-implement-track-initiation-confirmation-coasting-and-deletion/evidence/expected-broken.json",
-          "sha256": "4033f25806672f6fa51287563c5faaf3325f357417489a62aa42453bac7386b4"
+          "sha256": "b9d4dc9ce97c1377ab6b897fde8153dbf208c9642f1b4cb1ae812de408fe27e1"
         },
         "actual": {
           "path": "modules/58-implement-track-initiation-confirmation-coasting-and-deletion/evidence/actual-broken.json",
-          "sha256": "af71440fa408249a25da4464f11ec8d571109614c425509f732259813f9d88ae"
+          "sha256": "b9d4dc9ce97c1377ab6b897fde8153dbf208c9642f1b4cb1ae812de408fe27e1"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 4.765077221691172e-13,
-        "max_relative_error": 1.572712218687105e-13,
-        "passed": true
+        "max_absolute_error": 0.0,
+        "max_relative_error": 0.0,
+        "passed": true,
+        "expected": {
+          "path": "modules/58-implement-track-initiation-confirmation-coasting-and-deletion/evidence/expected-recovery.json",
+          "sha256": "7058045fe15efb32202b7e448a60af0483e7a24b07afa187dc27a7814bfed98f"
+        },
+        "actual": {
+          "path": "modules/58-implement-track-initiation-confirmation-coasting-and-deletion/evidence/actual-recovery.json",
+          "sha256": "7058045fe15efb32202b7e448a60af0483e7a24b07afa187dc27a7814bfed98f"
+        }
       }
     ]
   },
