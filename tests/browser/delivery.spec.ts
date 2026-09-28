@@ -291,7 +291,9 @@ test('trajectory feasibility fast path preserves real desktop and mobile fault r
       await expect(page.locator('.compute-status:visible').first()).toContainText('Experiment synchronized');
       await expect(page.locator('.js-plotly-plot')).toHaveCount(2);
       for (const plot of await page.locator('.js-plotly-plot').all()) {
-        await expect(plot.locator('.scatterlayer .trace path').first()).toBeVisible();
+        // A horizontal SVG line has zero-height geometry despite a visible stroke.
+        await expect(plot.locator('.scatterlayer .trace path.point').first()).toBeVisible();
+        await expect(plot.locator('.scatterlayer .trace path.js-line').first()).toHaveAttribute('d', /M.+L/);
       }
       await expect(page.locator('.runtime-error')).toHaveCount(0);
     };

@@ -15,7 +15,6 @@
     "execution_context": "Quick and full local suites overlapped; the browser sweep was also active.",
     "causality": "Concurrency is an observed condition, not a proven cause. The Robotics course and runtime are unchanged in this DSP revision."
   },
-  "recheck_policy": "Rerun the mandatory full gate after quick completes, with unchanged source, parameters, assertions and three-second timeout. Retain both outcomes; no concurrent-user capacity claim.",
   "second_full_attempt": {
     "exit_code": 2,
     "result": "1 failed, 169 passed, 3 warnings in 215.65s; interrupted after failure to retain traceback",
@@ -213,5 +212,25 @@
     "timing_boundary": "One measured before/after invocation per retained/corner case on this host; no concurrent-capacity or worst-case scheduling guarantee.",
     "before_sha256": "07401284a159b4d372be86aebe4ba8d32094042d5760e75dc4c1638e6784bb80",
     "after_sha256": "2823b7192da51d0c9f10ea7af78164702943af377d2c5bf28e32bc85f83748f6"
-  }
+  },
+  "browser_assertion_correction": {
+    "finding": "The real straight-line failure output has a stroked SVG path with zero-height geometric bounds. A generic toBeVisible check on that path rejected the drawn line.",
+    "observed": {
+      "path": "M16.05,79L229.95,79",
+      "bbox": {
+        "width": 213.89999389648438,
+        "height": 0
+      },
+      "stroke": "rgb(103, 169, 255)",
+      "strokeWidth": "2px",
+      "visibility": "visible"
+    },
+    "correction": "Require a nonempty line path and visible markers; retain real API, violated-segment and exact reset assertions in both viewports.",
+    "screenshot": {
+      "path": "docs/course-quality/r58-straight-fault-plot.png",
+      "sha256": "5ee2989de852a6396d4649ee6d265ce6cb42b86085d88a5a9c7a73394ffe35e9"
+    },
+    "image": "sha256:53892d096feb4f23c30a7aa9fa2c2f0b25d7ebf3924be7e5d41f971672a39b67"
+  },
+  "first_recheck_policy": "Rerun the mandatory full gate after quick completes, with unchanged source, parameters, assertions and three-second timeout. Retain both outcomes; no concurrent-user capacity claim."
 }
