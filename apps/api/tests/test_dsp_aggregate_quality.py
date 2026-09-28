@@ -130,6 +130,7 @@ def test_assessment_revision_preserves_models_source_pins_and_all_other_courses(
         "courses/dsp-radar/modules/*/module.yaml",
         "courses/dsp-radar/modules/*/conversion.yaml",
         "courses/dsp-radar/modules/*/assessment.md",
+        "courses/robotics-autonomy/modules/58-optimize-a-trajectory-through-obstacle-constraints/experiment.py",
     ]
     assert changed
     assert all(any(fnmatch.fnmatch(p, pattern) for pattern in allowed) for p in changed)

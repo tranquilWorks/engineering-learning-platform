@@ -55,10 +55,11 @@ scope:
   - docs/ROADMAP.md
   - docs/evidence/ELP-DSP-AGGREGATE-QUALITY-01-*
   - apps/web/src/components/AppShell.tsx
+  - courses/robotics-autonomy/modules/58-optimize-a-trajectory-through-obstacle-constraints/experiment.py
+  - apps/api/tests/test_robotics_runtime_margin.py
   forbidden_paths:
   - courses/*-learning/**
   - courses/controls-gnc/**
-  - courses/robotics-autonomy/**
   - courses/vehicle-dynamics/**
   - courses/demo-radar/**
   - courses/platform-showcase/**
@@ -74,6 +75,13 @@ scope:
   - packages/**
   - .github/**
   - products/**
+  - courses/robotics-autonomy/*.yaml
+  - courses/robotics-autonomy/*.json
+  - courses/robotics-autonomy/*reference*.py
+  - courses/robotics-autonomy/modules/*/module.yaml
+  - courses/robotics-autonomy/modules/*/design.yaml
+  - courses/robotics-autonomy/modules/*/lesson.md
+  - courses/robotics-autonomy/modules/*/evidence/**
 acceptance:
 - Activate only after verified PR53 merges, using its exact merge commit/tree and this merged control contract.
   Preserve its twelve model repairs, generic SVG fallback and documented rendering/concurrent-load/hosted-CI boundaries.
@@ -114,6 +122,16 @@ acceptance:
   route identity before resetting focus/scroll, preserving ordinary anchor navigation and real lesson changes. Verify
   checkpoint and existing section links, keyboard use, same-page history and actual next-lesson behavior on desktop/mobile;
   no runtime/schema/source changes.'
+- Two mandatory full attempts exposed the unchanged Robotics P58 three-second timeout, including a default catalog-validation
+  call. Permit only a conservative vectorized already-feasible segment precheck in its production experiment. Preserve
+  the ordered correction fallback, objective, gradient, all 1200 iterations, endpoints, controls, tolerances, references,
+  goldens and three-second runtime limit. All other Robotics payloads remain excluded by the exact allowlist.
+- Require exact whole-output preservation against the PR53 production baseline for all five retained scenarios and
+  representative control corners; check near-contact, infeasible and degenerate segment paths against the unchanged
+  sequential projection. Retain separately originated reference comparisons, measured before/after execution times,
+  both failed full attempts and any remaining performance boundary. Rerun mandatory contract, quick and full gates
+  sequentially and rebuild/recheck all 290 HTTP and 580 desktop/mobile pages on the final image. This optimization
+  does not consume any of the sixty separate content findings or certify concurrent capacity.
 validation:
   local:
   - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_aggregate_quality.py
@@ -142,7 +160,8 @@ risk:
   - Broad capstone claims that exceed the actual executed branches.
   - Adding referenced content without reconciling immutable target identities.
   stop_conditions:
-  - Need to modify source pins, existing model/source lesson bytes, production runtime or public schemas.
+  - Need to modify source pins, existing DSP model/source lesson bytes or Robotics model behavior beyond the exact
+    P58 semantics-preserving fast path, production runtime or public schemas.
   - Independent evidence or browser delivery cannot support the claimed scope.
   - Need learner personal data, physical hardware or production access.
 rollback:
@@ -156,3 +175,5 @@ evidence:
   - docs/COURSE_QUALITY.md
   claim_boundary: Reviewed authored curriculum and independently verified synthetic numerical/browser/container
     evidence only; no learner-effectiveness, manual assistive-technology, MATLAB, physical or production acceptance.
+    Robotics P58 has an exact-output runtime optimization only; its original numerical references and all other
+    course payloads remain unchanged.

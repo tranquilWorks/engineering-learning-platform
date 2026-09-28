@@ -275,3 +275,38 @@ test('authored checkpoint navigation exposes real cumulative evidence on desktop
     }
   }
 });
+
+
+test('trajectory feasibility fast path preserves real desktop and mobile fault recovery', async ({ page }) => {
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({width, height:1000});
+    const response = page.waitForResponse(r => r.url().endsWith('/run') && r.request().method() === 'POST');
+    await page.goto('/courses/robotics-autonomy/modules/58-optimize-a-trajectory-through-obstacle-constraints');
+    const initial = await response;
+    expect(initial.ok()).toBe(true);
+    const baseline = await initial.json();
+    expect(baseline.diagnostics.signature[2]).toBe(0);
+    const controls = page.locator('.control-panel:visible');
+    const drawn = async () => {
+      await expect(page.locator('.compute-status:visible').first()).toContainText('Experiment synchronized');
+      await expect(page.locator('.js-plotly-plot')).toHaveCount(2);
+      for (const plot of await page.locator('.js-plotly-plot').all()) {
+        await expect(plot.locator('.scatterlayer .trace path').first()).toBeVisible();
+      }
+      await expect(page.locator('.runtime-error')).toHaveCount(0);
+    };
+    await drawn();
+    const failedResponse = page.waitForResponse(r => r.url().endsWith('/run') && r.request().method() === 'POST');
+    await controls.getByRole('checkbox').check();
+    const failed = await failedResponse;
+    expect(failed.ok()).toBe(true);
+    expect((await failed.json()).diagnostics.signature[2]).toBeGreaterThan(0);
+    await drawn();
+    const recoveredResponse = page.waitForResponse(r => r.url().endsWith('/run') && r.request().method() === 'POST');
+    await controls.getByRole('button', {name:'Reset parameters'}).click();
+    const recovered = await recoveredResponse;
+    expect(recovered.ok()).toBe(true);
+    expect((await recovered.json()).diagnostics.signature).toEqual(baseline.diagnostics.signature);
+    await drawn();
+  }
+});

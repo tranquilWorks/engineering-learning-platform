@@ -1,0 +1,217 @@
+{
+  "status": "exact_output_optimization_verified_full_delivery_pending",
+  "initial_full_gate": {
+    "exit_code": 1,
+    "result": "1 failed, 1316 passed, 3 warnings in 1305.56s",
+    "test": "test_robotics_expansion.py::test_robotics_native_five_scenario_evidence_and_runtime",
+    "course": "robotics-autonomy",
+    "module": "58-optimize-a-trajectory-through-obstacle-constraints",
+    "parameters": {
+      "required_clearance_m": 0.35,
+      "smoothness_weight": 18.0,
+      "broken_mode": false
+    },
+    "failure": "RuntimeTimeout: experiment exceeded 3.00 seconds",
+    "execution_context": "Quick and full local suites overlapped; the browser sweep was also active.",
+    "causality": "Concurrency is an observed condition, not a proven cause. The Robotics course and runtime are unchanged in this DSP revision."
+  },
+  "recheck_policy": "Rerun the mandatory full gate after quick completes, with unchanged source, parameters, assertions and three-second timeout. Retain both outcomes; no concurrent-user capacity claim.",
+  "second_full_attempt": {
+    "exit_code": 2,
+    "result": "1 failed, 169 passed, 3 warnings in 215.65s; interrupted after failure to retain traceback",
+    "test": "test_dsp_aggregate_quality.py::test_p01_analytic_limits_use_phasor_identities_not_production_outputs[overrides1]",
+    "failure": "Catalog construction failed because Robotics P58 default runtime exceeded 3.00 seconds, before the DSP-specific assertion",
+    "execution_context": "Quick had completed; browser sweep remained active."
+  },
+  "draft_probe": [
+    {
+      "scenario": "baseline",
+      "before_seconds": 1.5858588989358395,
+      "candidate_seconds": 0.7287151609780267,
+      "maximum_absolute_output_difference": 0
+    },
+    {
+      "scenario": "sweep_1",
+      "before_seconds": 1.9911717979703099,
+      "candidate_seconds": 0.7831311889458448,
+      "maximum_absolute_output_difference": 0
+    },
+    {
+      "scenario": "sweep_2",
+      "before_seconds": 1.0915384300751612,
+      "candidate_seconds": 0.6403563469648361,
+      "maximum_absolute_output_difference": 0
+    },
+    {
+      "scenario": "broken",
+      "before_seconds": 0.6959847509860992,
+      "candidate_seconds": 0.6852890281006694,
+      "maximum_absolute_output_difference": 0
+    },
+    {
+      "scenario": "recovery",
+      "before_seconds": 1.8478165740380064,
+      "candidate_seconds": 0.7854404249228537,
+      "maximum_absolute_output_difference": 0
+    }
+  ],
+  "repair": {
+    "control_pr": 542,
+    "control_revision": "7b2e3c1e425b196b400856a714f699f2e225a83a",
+    "mechanism": "Conservative vectorized positive-margin precheck skips ordered scalar scans only for already-feasible paths; all near-contact or violating paths retain the original ordered correction.",
+    "original_iterations": 1200,
+    "current_iterations": 1200,
+    "timeout_seconds": 3,
+    "numerical_references_and_goldens": "unchanged",
+    "whole_output_cases": [
+      {
+        "scenario": "baseline",
+        "parameters": {
+          "required_clearance_m": 0.35,
+          "smoothness_weight": 18.0,
+          "broken_mode": false
+        },
+        "before_seconds": 1.5288914940319955,
+        "after_seconds": 0.6825149270007387,
+        "whole_output_exact": true
+      },
+      {
+        "scenario": "sweep_1",
+        "parameters": {
+          "required_clearance_m": 0.8,
+          "smoothness_weight": 18.0,
+          "broken_mode": false
+        },
+        "before_seconds": 1.527799803065136,
+        "after_seconds": 0.6827856319723651,
+        "whole_output_exact": true
+      },
+      {
+        "scenario": "sweep_2",
+        "parameters": {
+          "required_clearance_m": 0.35,
+          "smoothness_weight": 3.0,
+          "broken_mode": false
+        },
+        "before_seconds": 0.9169779230142012,
+        "after_seconds": 0.5656016620341688,
+        "whole_output_exact": true
+      },
+      {
+        "scenario": "broken",
+        "parameters": {
+          "required_clearance_m": 0.35,
+          "smoothness_weight": 18.0,
+          "broken_mode": true
+        },
+        "before_seconds": 0.6163265010109171,
+        "after_seconds": 0.6446092699188739,
+        "whole_output_exact": true
+      },
+      {
+        "scenario": "recovery",
+        "parameters": {
+          "required_clearance_m": 0.35,
+          "smoothness_weight": 18.0,
+          "broken_mode": false
+        },
+        "before_seconds": 1.6592015309724957,
+        "after_seconds": 0.6851503930520266,
+        "whole_output_exact": true
+      },
+      {
+        "scenario": "corner-0.05-2.0-False",
+        "parameters": {
+          "required_clearance_m": 0.05,
+          "smoothness_weight": 2.0,
+          "broken_mode": false
+        },
+        "before_seconds": 1.0105873449938372,
+        "after_seconds": 0.5605257969582453,
+        "whole_output_exact": true
+      },
+      {
+        "scenario": "corner-0.05-2.0-True",
+        "parameters": {
+          "required_clearance_m": 0.05,
+          "smoothness_weight": 2.0,
+          "broken_mode": true
+        },
+        "before_seconds": 0.5808680159971118,
+        "after_seconds": 0.551603417028673,
+        "whole_output_exact": true
+      },
+      {
+        "scenario": "corner-0.05-50.0-False",
+        "parameters": {
+          "required_clearance_m": 0.05,
+          "smoothness_weight": 50.0,
+          "broken_mode": false
+        },
+        "before_seconds": 2.221065349993296,
+        "after_seconds": 0.9222729499451816,
+        "whole_output_exact": true
+      },
+      {
+        "scenario": "corner-0.05-50.0-True",
+        "parameters": {
+          "required_clearance_m": 0.05,
+          "smoothness_weight": 50.0,
+          "broken_mode": true
+        },
+        "before_seconds": 0.6830775699345395,
+        "after_seconds": 0.6679521549958736,
+        "whole_output_exact": true
+      },
+      {
+        "scenario": "corner-1.0-2.0-False",
+        "parameters": {
+          "required_clearance_m": 1.0,
+          "smoothness_weight": 2.0,
+          "broken_mode": false
+        },
+        "before_seconds": 0.9153344160877168,
+        "after_seconds": 0.5613968590041623,
+        "whole_output_exact": true
+      },
+      {
+        "scenario": "corner-1.0-2.0-True",
+        "parameters": {
+          "required_clearance_m": 1.0,
+          "smoothness_weight": 2.0,
+          "broken_mode": true
+        },
+        "before_seconds": 0.5635990289738402,
+        "after_seconds": 0.5560634890571237,
+        "whole_output_exact": true
+      },
+      {
+        "scenario": "corner-1.0-50.0-False",
+        "parameters": {
+          "required_clearance_m": 1.0,
+          "smoothness_weight": 50.0,
+          "broken_mode": false
+        },
+        "before_seconds": 2.224505248013884,
+        "after_seconds": 0.8177452910458669,
+        "whole_output_exact": true
+      },
+      {
+        "scenario": "corner-1.0-50.0-True",
+        "parameters": {
+          "required_clearance_m": 1.0,
+          "smoothness_weight": 50.0,
+          "broken_mode": true
+        },
+        "before_seconds": 0.7059674629708752,
+        "after_seconds": 0.7468947409652174,
+        "whole_output_exact": true
+      }
+    ],
+    "projection_edge_cases": 72,
+    "focused_tests": "14 passed",
+    "timing_boundary": "One measured before/after invocation per retained/corner case on this host; no concurrent-capacity or worst-case scheduling guarantee.",
+    "before_sha256": "07401284a159b4d372be86aebe4ba8d32094042d5760e75dc4c1638e6784bb80",
+    "after_sha256": "2823b7192da51d0c9f10ea7af78164702943af377d2c5bf28e32bc85f83748f6"
+  }
+}
