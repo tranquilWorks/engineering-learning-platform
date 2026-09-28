@@ -7,8 +7,8 @@ nine remain source-only. Source presence is not native browser delivery.
 | Curriculum | Native lessons | Content position |
 | --- | ---: | --- |
 | DSP and Radar | 84 | P01–P84 item-level fidelity repairs retained; aggregate competency and cumulative-assessment review pending |
-| Controls and GNC | 68 | Prior artifacts retained; final capstone cumulative claims reopened |
-| Robotics and Autonomy | 69 | Prior artifacts retained; final capstone cumulative claims reopened |
+| Controls and GNC | 68 | 22 lessons have recorded mechanism/evidence defects; aggregate maturity blocked |
+| Robotics and Autonomy | 69 | 27 lessons have recorded mechanism/evidence defects; aggregate maturity blocked |
 | Vehicle Dynamics | 67 | P66/P67 cumulative models fail direct semantic inspection; aggregate numerical, curriculum and capstone claims reopened |
 
 ## Confirmed content defects and next repair

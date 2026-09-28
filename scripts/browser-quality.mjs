@@ -40,10 +40,12 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
         row.metric_count = await page.locator('.metric').count();
         row.math_count = await page.locator('.katex').count();
         row.math_errors = await page.locator('.katex-error').count();
+        row.plot_errors = await page.locator('.error-inline:visible').allTextContents();
+        row.unsupported_webgl = await page.getByText('WebGL is not supported by your browser', { exact: false }).filter({ visible: true }).count();
         row.horizontal_overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1);
         row.errors = errors;
         row.mobile_navigation_hidden = viewport !== 'mobile' || await page.locator('.sidebar').getAttribute('inert') !== null;
-        if (errors.length || row.horizontal_overflow || row.math_errors || !row.mobile_navigation_hidden || row.violations.some(v => ['serious', 'critical'].includes(v.impact))) throw new Error('Delivery or automated accessibility assertion failed');
+        if (errors.length || row.plot_errors.length || row.unsupported_webgl || row.horizontal_overflow || row.math_errors || !row.mobile_navigation_hidden || row.violations.some(v => ['serious', 'critical'].includes(v.impact))) throw new Error('Delivery or automated accessibility assertion failed');
         const source = Object.values(doc.markdown_sources).join('\n');
         if (/\\\[|\\\(|\$\$/.test(source) && !row.math_count) throw new Error('Authored equations were not rendered');
         if (doc.module.blocks.some(b => b.type === 'metrics') && !row.metric_count) throw new Error('Missing metrics');

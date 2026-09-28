@@ -122,3 +122,18 @@ test('wide code blocks and lesson tables support keyboard scrolling', async ({ p
   await ranges.focus();
   await expect(ranges).toBeFocused();
 });
+
+test('long inline expressions and metric names wrap within mobile lessons', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  for (const lesson of [
+    'controls-gnc/modules/07-see-stability-margin-in-time-and-frequency',
+    'controls-gnc/modules/21-generate-a-feasible-trajectory',
+    'vehicle-dynamics/modules/08-separate-understeer-from-oversteer',
+  ]) {
+    await page.goto('/courses/' + lesson);
+    await expect(page.locator('.js-plotly-plot').first()).toBeVisible();
+    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
+    await page.locator('.plot-values summary').first().click();
+    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
+  }
+});
