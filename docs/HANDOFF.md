@@ -10,7 +10,15 @@ Branch: `codex/dsp-fidelity-p77-p84-20260928` in the isolated ELP worktree.
 All eight P77-P84 experiments, native lessons and forty retained independent
 comparisons are implemented. Numerical replay passes 1e-8 absolute and
 scaled-relative limits, maximum absolute difference 2.914433139267203e-09.
-Mandatory regression, service and integration verification is in progress.
+All mandatory local gates passed: 851 focused DSP tests, 72 contract tests,
+1231 backend tests in each quick/full run, frontend typecheck/build, deterministic
+catalog execution, scoped lint, source/scope checks and API/live HTTP smoke.
+All 188 offered control combinations produce finite bounded output.
+[PR #51](https://github.com/tranquilWorks/engineering-learning-platform/pull/51) is ready for review and has not merged.
+Implementation commit: `83e53b1a1dcf49519782c596455128c7c25f23ae`.
+The final follow-up commit changes only CURRENT_STATE, HANDOFF and batch evidence.
+Local preview:
+http://127.0.0.1:8765/courses/dsp-radar/modules/77-focus-sar-with-backprojection
 
 The independent references use alternate interpolation/sum formulations,
 finite-frequency analytic response, unwrapped phase, direct DFT, chirp-Z,
@@ -39,3 +47,10 @@ Protected target merge requires separate owner approval. Hosted CI remains
 nonmandatory under retained owner direction; all local gates remain mandatory.
 Use bounded numerical-library threads and serialize heavy checks. Preserve
 all runtime limits and source/history evidence; do not waive gates for load.
+
+Hosted implementation run 36438555341 passed frontend; backend reported
+1165 passes and 66 classified source/history checkout failures. Container
+validation was skipped. This is documented hosted failure, not passing CI.
+The full local checkout passed both 1231-test backend runs. See the
+[batch evidence](evidence/ELP-DSP-FIDELITY-P77-P84-2026-09-28.md) for exact
+timings, log hashes, source-preservation proof and claim boundaries.
