@@ -1,6 +1,4 @@
-# Inject SAR Motion Error and Apply Autofocus
-
-> **Guiding question:** How small a platform-position error is enough to blur a coherent image?
+# P80 lesson: Millimetres of Motion Become Radians of Phase
 
 The guiding question is: **How small a platform-position error is enough to blur a coherent image?**
 
@@ -231,33 +229,29 @@ estimate can restore a shared phase screen when a strong range-isolated
 scatterer makes the error observable, but scene contamination and phase
 ambiguities limit what autofocus can recover.
 
-## Use the Python GUI experiment
+## Interactive lab: Inject SAR Motion Error and Apply Autofocus
 
-The GUI keeps the pinned source's mental model and processing order visible. The **motion error** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** How small a platform-position error is enough to blur a coherent image?
 
-### Prediction and sweep 1 — motion error
+Seeds 8001/8002/8003; carrier 10 GHz, 121 looks over 30 m, three isolated range gates at 990/1000/1009 m with cross-range -1/0.35/1.45 m and 35 dB noise. The common phase screen is -4 pi times wavelength-normalized path error; smooth and smoothed-random templates are each centered and RMS normalized before mixing. Deramp a known isolated reference path, integrate adjacent phase differences, and apply the opposite phase to every gate. The named failure mixes 0.95 of the second gate into that estimate. Phase RMSE removes its arbitrary constant gauge. Known geometry, isolated gates and a separable range display are teaching assumptions.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict how wavelength-normalized motion error changes coherent peak and entropy. Why does an isolated reference gate recover a common phase screen, and why does mixing a second scatterer bias that estimate?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Error rms wavelengths** from 0.125 to 0.25 wavelengths. Predict, run, and explain a measured value using the governing equation; then reset.
+2. Start at the baseline. Sweep only **Random fraction** from 0.25 to 0.75 ratio. Predict, run, and explain a measured value using the governing equation; then reset.
+3. Enable the broken case. The named failure mixes 0.95 of a second range gate into the reference. Its different geometric phase contaminates the estimated common error and lowers recovered focus.
+4. Recovery: Disable the mixed-reference failure and re-estimate from the unchanged isolated first gate. Absolute phase is unobservable here; compare centered phase and retain the known-geometry and isolated-gate assumptions.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict how wavelength-normalized motion error changes coherent peak and entropy. Why does an isolated reference gate recover a common phase screen, and why does mixing a second scatterer bias that estimate? Support the explanation with a measured value and units, and state the recovery assumption.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+The named failure mixes 0.95 of a second range gate into the reference. Its different geometric phase contaminates the estimated common error and lowers recovered focus. Distinguish the selected-control scene from a named separate failure scene.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The pinned source lesson is preserved above. Private Park–Miller inputs preserve the source zero-offset uniforms except P79/P80, which retain half-offset uniforms. P77/P78 interleave Box–Muller inputs; P81 uses direct phase uniforms and P83/P84 split radius/phase blocks. Matrix inputs retain column-major ordering. Complex interpolation requires a complete adjacent pair, so the last unsupported endpoint is zero. Full calculations precede display decimation. Forty independent software comparisons cover five scenarios per lesson. No MATLAB execution, browser/accessibility, learner, hardware or production validation is claimed.

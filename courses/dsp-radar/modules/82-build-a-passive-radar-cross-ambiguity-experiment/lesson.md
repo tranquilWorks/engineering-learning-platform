@@ -1,6 +1,4 @@
-# Build a Passive Radar Cross-Ambiguity Experiment
-
-> **Guiding question:** How can a known broadcast-like reference reveal delayed Doppler-shifted echoes without transmitting?
+# P82 lesson: Listen Twice, Then Match Delay and Doppler
 
 ## Guiding question
 
@@ -214,33 +212,29 @@ Static checks and an independent Python oracle can test contracts and the
 model equations. They are not MATLAB runtime, physical radar/HIL, bench,
 field, real-time, or operational validation.
 
-## Use the Python GUI experiment
+## Interactive lab: Build a Passive Radar Cross-Ambiguity Experiment
 
-The GUI keeps the pinned source's mental model and processing order visible. The **echo delay** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** How can a known broadcast-like reference reveal delayed Doppler-shifted echoes without transmitting?
 
-### Prediction and sweep 1 — echo delay
+Seeds 8201/8202/8203; sample rate 200 kHz, 4096 samples, QPSK with four samples per symbol and a normalized 25-tap sinc/cosine pulse. Separate reference and surveillance channels contain direct voltage 2.5, multipath 0.1 at 11 samples, target 0.18 at 24 samples and +500 Hz, and surveillance noise 0.08. Subtract the least-squares direct coefficient before summing delayed conjugate products over Doppler hypotheses. The grid spans 0:64 samples and -1000:50:1000 Hz. Coherence normalization accounts for both channel energies; all heatmaps share the raw matched-voltage scale. Twenty-percent cancellation leaves the origin dominant. Delay measures bistatic excess path, not monostatic range.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict the target peak after direct-path cancellation. Why is delay converted with c tau rather than c tau / 2, and why does a noisy reference limit cancellation and target contrast?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Target delay samples** from 24 to 48 samples. Predict, run, and explain a measured value using the governing equation; then reset.
+2. Start at the baseline. Sweep only **Reference quality db** from 35 to 5 dB. Predict, run, and explain a measured value using the governing equation; then reset.
+3. Enable the broken case. Cancelling only 20 percent of the estimated direct term leaves the origin dominant. Poor reference quality also limits cancellation and coherent matching.
+4. Recovery: Disable the failure to subtract the full estimated coefficient from the unchanged measured channels. Delay measures bistatic excess path c tau; geometry is still needed for target position.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict the target peak after direct-path cancellation. Why is delay converted with c tau rather than c tau / 2, and why does a noisy reference limit cancellation and target contrast? Support the explanation with a measured value and units, and state the recovery assumption.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+Cancelling only 20 percent of the estimated direct term leaves the origin dominant. Poor reference quality also limits cancellation and coherent matching. Distinguish the selected-control scene from a named separate failure scene.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The pinned source lesson is preserved above. Private Park–Miller inputs preserve the source zero-offset uniforms except P79/P80, which retain half-offset uniforms. P77/P78 interleave Box–Muller inputs; P81 uses direct phase uniforms and P83/P84 split radius/phase blocks. Matrix inputs retain column-major ordering. Complex interpolation requires a complete adjacent pair, so the last unsupported endpoint is zero. Full calculations precede display decimation. Forty independent software comparisons cover five scenarios per lesson. No MATLAB execution, browser/accessibility, learner, hardware or production validation is claimed.

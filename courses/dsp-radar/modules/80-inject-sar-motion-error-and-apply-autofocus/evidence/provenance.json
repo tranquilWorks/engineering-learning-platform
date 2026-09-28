@@ -1,0 +1,91 @@
+{
+  "item": "P80",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p80",
+    "sha256": "0be27e26c602f1bfd08792095de0c7c43bf3e36e916605226057982d1a0bd0a9",
+    "byte_count": 215741,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/80-inject-sar-motion-error-and-apply-autofocus/experiment.py",
+    "sha256": "2b119014b788c8c261e87e03234bb8f2c530cf90950627f3ec3b8311e893252d",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "error_rms_wavelengths": 0.125,
+      "random_fraction": 0.25,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "error_rms_wavelengths": 0.25,
+      "random_fraction": 0.25,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "error_rms_wavelengths": 0.125,
+      "random_fraction": 0.75,
+      "broken_mode": false
+    },
+    "broken": {
+      "error_rms_wavelengths": 0.125,
+      "random_fraction": 0.25,
+      "broken_mode": true
+    },
+    "recovery": {
+      "error_rms_wavelengths": 0.125,
+      "random_fraction": 0.25,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "path_error_rms",
+      "unit": "mm"
+    },
+    {
+      "name": "phase_error_rms",
+      "unit": "rad"
+    },
+    {
+      "name": "active_peak_retention",
+      "unit": "ratio"
+    },
+    {
+      "name": "blurred_peak_retention",
+      "unit": "ratio"
+    },
+    {
+      "name": "recovered_peak_retention",
+      "unit": "ratio"
+    },
+    {
+      "name": "active_entropy",
+      "unit": "nat"
+    },
+    {
+      "name": "blurred_entropy",
+      "unit": "nat"
+    },
+    {
+      "name": "centered_phase_rmse",
+      "unit": "rad"
+    },
+    {
+      "name": "mean_half_power_width",
+      "unit": "m"
+    },
+    {
+      "name": "random_fraction",
+      "unit": "ratio"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

@@ -394,3 +394,16 @@ own fresh contract. Whole-course maturity remains blocked; issue 441 stays open.
   PR #49. Repair adaptive arrays, FMCW, MIMO, micro-Doppler and initial SAR
   processing with independent five-scenario evidence. P77-P84 remain pending;
   course-level numerical/curriculum/capstone maturity and issue441 remain open.
+
+
+## DSP/Radar final fidelity group P77-P84 — 2026-09-28
+
+Merged PR #50 establishes baseline `f05403ef2c0a5e31d7045c0cb796b2e136ca50c9`.
+Control PR #523 authorizes `ELP-DSP-FIDELITY-P77-P84`: SAR backprojection,
+migration, resolution and autofocus, ISAR, passive cross-ambiguity, STAP and
+the end-to-end radar capstone. Forty independent scenarios complete the item
+repair inventory: one distinct, seventy-five prior repairs, eight current, zero
+pending. Preserve P01-P76 and source/platform identities. No further lesson
+batch follows automatically; aggregate caliber, competency mapping and cumulative
+assessment are the next separate review under issue 441. Whole-course numerical,
+curriculum and capstone maturity remains blocked pending that review.

@@ -3,13 +3,13 @@
   "id": "77-focus-sar-with-backprojection",
   "number": 77,
   "title": "Focus SAR with Backprojection",
-  "summary": "Explore focus sar with backprojection with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "For each image pixel, predict slant range, interpolate the complex range row, cancel its two-way phase, and sum aperture looks. More coherent looks narrow the cross-range response.",
   "guiding_question": "How does compensating the correct path length focus a point in an image?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-9",
-    "focus-range"
+    "sar-isar",
+    "P77"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,51 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Focus Range",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "aperture_looks",
+      "type": "select",
+      "label": "Aperture looks",
+      "default": 121,
+      "unit": "looks",
+      "options": [
+        {
+          "label": "21 looks",
+          "value": 21
+        },
+        {
+          "label": "61 looks",
+          "value": 61
+        },
+        {
+          "label": "121 looks",
+          "value": 121
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "path_error_m",
+      "type": "select",
+      "label": "Path error m",
+      "default": 0,
+      "unit": "m",
+      "options": [
+        {
+          "label": "0 m",
+          "value": 0
+        },
+        {
+          "label": "0.005 m",
+          "value": 0.005
+        },
+        {
+          "label": "0.01 m",
+          "value": 0.01
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +75,45 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing focus range, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict how aperture length changes cross-range width and coherent gain. Why can a 10 mm assumed-path error spoil a meter-scale image despite nearly unchanged range envelopes?",
+      "reveal": "For each image pixel, predict slant range, interpolate the complex range row, cancel its two-way phase, and sum aperture looks. More coherent looks narrow the cross-range response."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Complex range-compressed input magnitude",
+      "plot": "history"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Measured and expected target-1 ridge phase",
+      "plot": "phase"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Backprojection with selected assumed path",
+      "plot": "image"
+    },
+    {
+      "type": "plot",
+      "title": "Target-1 cross-range cut on a common scale",
+      "plot": "cuts"
+    },
+    {
+      "type": "plot",
+      "title": "More centered looks narrow the point response",
+      "plot": "looks"
+    },
+    {
+      "type": "plot",
+      "title": "Millimeter path error destroys coherent gain",
+      "plot": "path"
     },
     {
       "type": "callout",
@@ -102,7 +124,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "f37be30a9cb5f5fac1408d74edaed6016d4e65bbb4fd7e75f26e12c26b5c8cfd",
+    "content_digest": "4fda4a2581fe57e528e9fee9e8f820e1d10ca854a752ea83e5391947487d61d3",
     "files": [
       {
         "path": "modules/81-form-an-isar-image-from-a-rotating-target/experiment.py",
-        "sha256": "aee6e720dff629bd82d55f76432d24e33a31974616ba7e022211a0f7764bdfc8"
+        "sha256": "3bda2ae4ae0b9e987d7f862c5fa42617a9c353dd328150398816b7ce85f5d287"
       },
       {
         "path": "modules/81-form-an-isar-image-from-a-rotating-target/lesson.md",
-        "sha256": "6a3b5751229d7daf76d65b685173d6267e34d57483a142e6d3ee7d6f6a99e795"
+        "sha256": "58e06082f91847a27ebe0e09468519a01aac2c192d85808003322c81b3bf2706"
       },
       {
         "path": "modules/81-form-an-isar-image-from-a-rotating-target/module.yaml",
-        "sha256": "acad824a76fefd0274072171c6808c1d59e8b232071c3f20ac86c23498d1c44a"
+        "sha256": "26e7ea31e7d58eb7c9b10b8f838a5868e2cc5ec7ade328140236f2b67a0fa034"
       }
     ]
   },
   "content": {
     "guiding_question": "How does target rotation create synthetic aperture when the radar is stationary?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "Target rotation projects scatterers onto changing range directions. Range compression precedes the signed angle FFT; translation correction removes both envelope migration and carrier phase.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary rotation rate while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Target rotation projects scatterers onto changing range directions. Range compression precedes the signed angle FFT; translation correction removes both envelope migration and carrier phase.",
+      "Omitting the known centroid translation correction spreads energy and shifts the apparent shape. A faster rotation alone cannot replace alignment.",
+      "Disable the failure and multiply the original frequency history by the opposite translational phase. The small-angle cross-range approximation and uniform aspect sampling remain explicit assumptions.",
+      "Explicit stage equations are retained in lesson.md. P77-P84 retain private source inputs and disclosed processing assumptions; P78 controls crop the full noise record and P84 tracking retains its explicitly labeled baseline. Plot/console presentation is adapted; no MATLAB runtime execution is claimed."
     ],
     "equations": [
       {
@@ -66,149 +66,223 @@
     ],
     "equation_order": "before_toolbox_shortcuts",
     "deterministic_data": {
-      "seed": 1081,
+      "seed": 8101,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
-        },
-        {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "90b2f9c4d1b12cfdc0d510d76b4c7c93d59de258124de43ee8e74d1faac63562",
-          "unit": "mixed numeric signature"
+          "sha256": "e87cc896008436f78b37c38a3763ffe63182a6277bdba40ecebacec9c0e4e1f6",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "8cd472ef6c4d51b9d266b09f09d8adca9741f43282a8de30985e261c689d46f7",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "cb6797e1ee042ae05601f012a24e8ef63c9915cb0cee35633cdade808e3f6c2b",
-          "unit": "mixed numeric signature"
+          "sha256": "8f4d734a62fc42558ada04d261260d9440e31e0b1fc348db4edba16a93e3aa22",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "d8fca5a4b4f55e3d7db32562edb92197f65ff63c9fb0648c7ecb7d1f83f0f54a",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "0ff8863b8ca9f570d8da75a8bf53d4a8ea22d38f9186a6d9282b1a91d212ae6e",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "3d590607388f27d3b347c96771852a8f8aac51ad0181935eb8362f60572abf99",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "dc96b7de8806a1d4547aefcfb1efbc18be84c21a2e0b835e9248e12dd652d321",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "a0b53f82d8672b24a0ef033cd85c9d4e95ffb27a69fe6b305ccf9f82dac53b02",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "e87cc896008436f78b37c38a3763ffe63182a6277bdba40ecebacec9c0e4e1f6",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "8cd472ef6c4d51b9d266b09f09d8adca9741f43282a8de30985e261c689d46f7",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P81 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P81 explicit processing and evidence stages",
+        "target_plot_key": "geometry",
+        "title": "Seeded rigid-target scatterers",
         "axes": [
           {
             "role": "x",
-            "label": "range/cross-range coordinate",
-            "unit": "source units"
+            "label": "Cross-range (m)",
+            "unit": "m"
           },
           {
             "role": "y",
-            "label": "normalized intensity",
-            "unit": "normalized"
+            "label": "Down-range (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Form an ISAR Image from a Rotating Target guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Target rotation projects scatterers onto changing range directions. Range compression precedes the signed angle FFT; translation correction removes both envelope migration and carrier phase."
       },
       {
-        "source_figure": "Pinned P81 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P81 explicit processing and evidence stages",
+        "target_plot_key": "raw_profiles",
+        "title": "Range IFFT before translation alignment",
         "axes": [
           {
             "role": "x",
-            "label": "range/cross-range coordinate",
-            "unit": "source units"
+            "label": "Down-range (m)",
+            "unit": "m"
           },
           {
             "role": "y",
-            "label": "normalized intensity",
-            "unit": "normalized"
+            "label": "Aspect angle (deg)",
+            "unit": "deg"
           }
         ],
-        "interpretation": "This view answers the Form an ISAR Image from a Rotating Target guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Target rotation projects scatterers onto changing range directions. Range compression precedes the signed angle FFT; translation correction removes both envelope migration and carrier phase."
       },
       {
-        "source_figure": "Pinned P81 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P81 explicit processing and evidence stages",
+        "target_plot_key": "aligned_profiles",
+        "title": "Envelope and phase aligned together",
         "axes": [
           {
             "role": "x",
-            "label": "range/cross-range coordinate",
-            "unit": "source units"
+            "label": "Down-range (m)",
+            "unit": "m"
           },
           {
             "role": "y",
-            "label": "normalized intensity",
-            "unit": "normalized"
+            "label": "Aspect angle (deg)",
+            "unit": "deg"
           }
         ],
-        "interpretation": "This view answers the Form an ISAR Image from a Rotating Target guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Target rotation projects scatterers onto changing range directions. Range compression precedes the signed angle FFT; translation correction removes both envelope migration and carrier phase."
       },
       {
-        "source_figure": "Pinned P81 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P81 explicit processing and evidence stages",
+        "target_plot_key": "image",
+        "title": "Selected angle-domain ISAR image",
         "axes": [
           {
             "role": "x",
-            "label": "range/cross-range coordinate",
-            "unit": "source units"
+            "label": "Cross-range (m)",
+            "unit": "m"
           },
           {
             "role": "y",
-            "label": "normalized intensity",
-            "unit": "normalized"
+            "label": "Down-range (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Form an ISAR Image from a Rotating Target guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Target rotation projects scatterers onto changing range directions. Range compression precedes the signed angle FFT; translation correction removes both envelope migration and carrier phase."
+      },
+      {
+        "source_figure": "Pinned P81 explicit processing and evidence stages",
+        "target_plot_key": "aperture",
+        "title": "Angular span determines cross-range resolution",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Angular aperture (deg)",
+            "unit": "deg"
+          },
+          {
+            "role": "y",
+            "label": "Nominal cross-range resolution (m)",
+            "unit": "m"
+          }
+        ],
+        "interpretation": "Target rotation projects scatterers onto changing range directions. Range compression precedes the signed angle FFT; translation correction removes both envelope migration and carrier phase."
+      },
+      {
+        "source_figure": "Pinned P81 explicit processing and evidence stages",
+        "target_plot_key": "rate",
+        "title": "Rotation rate changes time support",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Rotation rate (deg/s)",
+            "unit": "deg/s"
+          },
+          {
+            "role": "y",
+            "label": "Coherent processing interval (s)",
+            "unit": "s"
+          }
+        ],
+        "interpretation": "Target rotation projects scatterers onto changing range directions. Range compression precedes the signed angle FFT; translation correction removes both envelope migration and carrier phase."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "angular_aperture_deg",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          2,
+          4,
+          6,
+          8
         ],
-        "expected_observation": "Changing rotation rate moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Angular aperture deg; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "rotation_rate_deg_s",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          3,
+          6,
+          12
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Rotation rate deg s; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "Omitting the known centroid translation correction spreads energy and shifts the apparent shape. A faster rotation alone cannot replace alignment.",
+      "recovery": "Disable the failure and multiply the original frequency history by the opposite translational phase. The small-angle cross-range approximation and uniform aspect sampling remain explicit assumptions.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Omitting the known centroid translation correction spreads energy and shifts the apparent shape. A faster rotation alone cannot replace alignment.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -216,63 +290,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 1000000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P81 python -m pytest -q apps/api/tests/test_dsp_course.py",
-    "seed": 1081,
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p77_p84.py",
+    "seed": 8101,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "angular_aperture_deg",
+        "value": 6,
+        "unit": "deg"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "rotation_rate_deg_s",
+        "value": 6,
+        "unit": "deg/s"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 1.3415046851150692e-11,
+        "max_relative_error": 2.139283676045938e-13,
+        "passed": true,
         "expected": {
           "path": "modules/81-form-an-isar-image-from-a-rotating-target/evidence/expected-baseline.json",
-          "sha256": "90b2f9c4d1b12cfdc0d510d76b4c7c93d59de258124de43ee8e74d1faac63562"
+          "sha256": "e87cc896008436f78b37c38a3763ffe63182a6277bdba40ecebacec9c0e4e1f6"
         },
         "actual": {
           "path": "modules/81-form-an-isar-image-from-a-rotating-target/evidence/actual-baseline.json",
-          "sha256": "727800bf5a59afe310a1a15a02251073b794f7e49e7222969c6523a554bf79f0"
-        },
-        "max_absolute_error": 4.318767565791859e-13,
-        "max_relative_error": 4.318767565791859e-13,
-        "passed": true
+          "sha256": "8cd472ef6c4d51b9d266b09f09d8adca9741f43282a8de30985e261c689d46f7"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 3.525713054841617e-11,
+        "max_relative_error": 4.674182769857621e-13,
+        "passed": true,
+        "expected": {
+          "path": "modules/81-form-an-isar-image-from-a-rotating-target/evidence/expected-sweep-1.json",
+          "sha256": "8f4d734a62fc42558ada04d261260d9440e31e0b1fc348db4edba16a93e3aa22"
+        },
+        "actual": {
+          "path": "modules/81-form-an-isar-image-from-a-rotating-target/evidence/actual-sweep-1.json",
+          "sha256": "d8fca5a4b4f55e3d7db32562edb92197f65ff63c9fb0648c7ecb7d1f83f0f54a"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 5.059064278611913e-12,
+        "max_relative_error": 8.067637591868419e-14,
+        "passed": true,
+        "expected": {
+          "path": "modules/81-form-an-isar-image-from-a-rotating-target/evidence/expected-sweep-2.json",
+          "sha256": "0ff8863b8ca9f570d8da75a8bf53d4a8ea22d38f9186a6d9282b1a91d212ae6e"
+        },
+        "actual": {
+          "path": "modules/81-form-an-isar-image-from-a-rotating-target/evidence/actual-sweep-2.json",
+          "sha256": "3d590607388f27d3b347c96771852a8f8aac51ad0181935eb8362f60572abf99"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 7.716494110354688e-12,
+        "max_relative_error": 1.6686679051293815e-13,
+        "passed": true,
         "expected": {
           "path": "modules/81-form-an-isar-image-from-a-rotating-target/evidence/expected-broken.json",
-          "sha256": "cb6797e1ee042ae05601f012a24e8ef63c9915cb0cee35633cdade808e3f6c2b"
+          "sha256": "dc96b7de8806a1d4547aefcfb1efbc18be84c21a2e0b835e9248e12dd652d321"
         },
         "actual": {
           "path": "modules/81-form-an-isar-image-from-a-rotating-target/evidence/actual-broken.json",
-          "sha256": "f5354b03ea09b1abad8cb2901280447bd4740d66ac4dcd9f3edd385fe4db32a3"
+          "sha256": "a0b53f82d8672b24a0ef033cd85c9d4e95ffb27a69fe6b305ccf9f82dac53b02"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 3.888001032237298e-13,
-        "max_relative_error": 3.888001032237298e-13,
-        "passed": true
+        "max_absolute_error": 1.3415046851150692e-11,
+        "max_relative_error": 2.139283676045938e-13,
+        "passed": true,
+        "expected": {
+          "path": "modules/81-form-an-isar-image-from-a-rotating-target/evidence/expected-recovery.json",
+          "sha256": "e87cc896008436f78b37c38a3763ffe63182a6277bdba40ecebacec9c0e4e1f6"
+        },
+        "actual": {
+          "path": "modules/81-form-an-isar-image-from-a-rotating-target/evidence/actual-recovery.json",
+          "sha256": "8cd472ef6c4d51b9d266b09f09d8adca9741f43282a8de30985e261c689d46f7"
+        }
       }
     ]
   },

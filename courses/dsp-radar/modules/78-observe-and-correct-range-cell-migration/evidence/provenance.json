@@ -1,0 +1,87 @@
+{
+  "item": "P78",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p78",
+    "sha256": "0be27e26c602f1bfd08792095de0c7c43bf3e36e916605226057982d1a0bd0a9",
+    "byte_count": 215741,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/78-observe-and-correct-range-cell-migration/experiment.py",
+    "sha256": "e523d98933c857d6c067f1c376dc137057129390fe4d36377cd0e4e9b7f8e7a3",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "aperture_length_m": 400,
+      "squint_offset_m": 60,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "aperture_length_m": 100,
+      "squint_offset_m": 60,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "aperture_length_m": 400,
+      "squint_offset_m": 80,
+      "broken_mode": false
+    },
+    "broken": {
+      "aperture_length_m": 400,
+      "squint_offset_m": 60,
+      "broken_mode": true
+    },
+    "recovery": {
+      "aperture_length_m": 400,
+      "squint_offset_m": 60,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "geometric_migration",
+      "unit": "m"
+    },
+    {
+      "name": "measured_migration",
+      "unit": "m"
+    },
+    {
+      "name": "active_ridge_span",
+      "unit": "m"
+    },
+    {
+      "name": "profile_peak_gain",
+      "unit": "ratio"
+    },
+    {
+      "name": "profile_concentration_gain",
+      "unit": "ratio"
+    },
+    {
+      "name": "fixed_true_pixel_ratio",
+      "unit": "ratio"
+    },
+    {
+      "name": "corrected_ridge_span",
+      "unit": "m"
+    },
+    {
+      "name": "aperture_length",
+      "unit": "m"
+    },
+    {
+      "name": "squint_offset",
+      "unit": "m"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "467015f8f1e742a22cc4693168fb4715ed64849743e5a7c70129a658be492997",
+    "content_digest": "ca880e8d85dde5ad603da00ff98eb7f2fc4779d8f41f33ed5ac453d2448e95be",
     "files": [
       {
         "path": "modules/77-focus-sar-with-backprojection/experiment.py",
-        "sha256": "1e3da1155c3fd0b83b93de173f4d743bb005d98ad1cd7614dde7a5d1c6b69d9b"
+        "sha256": "1ef87b63692ee6e108e110ce953ca25f58748afecf21d7c417e0f6acd1a3b9fa"
       },
       {
         "path": "modules/77-focus-sar-with-backprojection/lesson.md",
-        "sha256": "c8637bc7ab5344e1e7f7dfb63dd4097b7b3bc6f10ae6e498d3ad17525d381e74"
+        "sha256": "f57256a5af7c6f9a4210c5b792bff96cffddb41b0360b4c65a38eeca64324214"
       },
       {
         "path": "modules/77-focus-sar-with-backprojection/module.yaml",
-        "sha256": "7e73c946c21978803b341aaff59bf5b1f3572130111731f88876116a3cc4e6df"
+        "sha256": "b2c9ed120a1515e3a81d6f56a7645b4505d438247d2f3c043a53d4b28df8a74e"
       }
     ]
   },
   "content": {
     "guiding_question": "How does compensating the correct path length focus a point in an image?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "For each image pixel, predict slant range, interpolate the complex range row, cancel its two-way phase, and sum aperture looks. More coherent looks narrow the cross-range response.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary focus range while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "For each image pixel, predict slant range, interpolate the complex range row, cancel its two-way phase, and sum aperture looks. More coherent looks narrow the cross-range response.",
+      "The named failure assumes a sinusoidal 10 mm ground-range path error. Misaligned phasors reduce the true-pixel gain despite unchanged measurements.",
+      "Disable the failure and restore path error to 0 m; refocus the retained complex input with correct geometry.",
+      "Explicit stage equations are retained in lesson.md. P77-P84 retain private source inputs and disclosed processing assumptions; P78 controls crop the full noise record and P84 tracking retains its explicitly labeled baseline. Plot/console presentation is adapted; no MATLAB runtime execution is claimed."
     ],
     "equations": [
       {
@@ -66,149 +66,222 @@
     ],
     "equation_order": "before_toolbox_shortcuts",
     "deterministic_data": {
-      "seed": 1077,
+      "seed": 7701,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
-        },
-        {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "5eceb4477bbed525609a8b9eaf87452a7904d30d9966c038aacd8b4574c21685",
-          "unit": "mixed numeric signature"
+          "sha256": "c158590b8a80fdeedf5164c7666e297142706f39b922dd7cf944bfb9dbecd195",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "b3e08b5dbde4aca23ec630817b8c7fb98d48dac10bb009110a61c901d952aa82",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "16031b82be9c6cfaa1888e6fe1f9a0ac08e47294b4fc65828b00cc9e847c0a9d",
-          "unit": "mixed numeric signature"
+          "sha256": "6623220dbf392258f5b0efbde8de1a4d3c850f3da6eedfc52a57b7e734ed988f",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "8403beef78d77c9ba8317934c6281cbce7f657eed1b0f07ab38d4dcf49197fc5",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "38bd76a80a5221031af9d9b78d4505198641056d18c60a9b1e8fc377b890ebd9",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "1ded16d3be8f839e7883934bc16eb3150302ed374d38439d40f105ed6eece5a4",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "0e2b4a4bf456a89826fc43b15eb3121f12c1a7eb00a6076ea68bcc5dd583b79c",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "2a26fda26a2c62ea10f4909d85cb04cfc38f815116960d7159d6353dbf91058d",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "c158590b8a80fdeedf5164c7666e297142706f39b922dd7cf944bfb9dbecd195",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "b3e08b5dbde4aca23ec630817b8c7fb98d48dac10bb009110a61c901d952aa82",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P77 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P77 explicit processing and evidence stages",
+        "target_plot_key": "history",
+        "title": "Complex range-compressed input magnitude",
         "axes": [
           {
             "role": "x",
-            "label": "range/cross-range coordinate",
-            "unit": "source units"
+            "label": "Slant range (m)",
+            "unit": "m"
           },
           {
             "role": "y",
-            "label": "normalized intensity",
-            "unit": "normalized"
+            "label": "Platform position (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Focus SAR with Backprojection guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "For each image pixel, predict slant range, interpolate the complex range row, cancel its two-way phase, and sum aperture looks. More coherent looks narrow the cross-range response."
       },
       {
-        "source_figure": "Pinned P77 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P77 explicit processing and evidence stages",
+        "target_plot_key": "phase",
+        "title": "Measured and expected target-1 ridge phase",
         "axes": [
           {
             "role": "x",
-            "label": "range/cross-range coordinate",
-            "unit": "source units"
+            "label": "Platform position (m)",
+            "unit": "m"
           },
           {
             "role": "y",
-            "label": "normalized intensity",
-            "unit": "normalized"
+            "label": "Relative phase (rad)",
+            "unit": "rad"
           }
         ],
-        "interpretation": "This view answers the Focus SAR with Backprojection guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "For each image pixel, predict slant range, interpolate the complex range row, cancel its two-way phase, and sum aperture looks. More coherent looks narrow the cross-range response."
       },
       {
-        "source_figure": "Pinned P77 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P77 explicit processing and evidence stages",
+        "target_plot_key": "image",
+        "title": "Backprojection with selected assumed path",
         "axes": [
           {
             "role": "x",
-            "label": "range/cross-range coordinate",
-            "unit": "source units"
+            "label": "Cross-range (m)",
+            "unit": "m"
           },
           {
             "role": "y",
-            "label": "normalized intensity",
-            "unit": "normalized"
+            "label": "Ground range (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Focus SAR with Backprojection guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "For each image pixel, predict slant range, interpolate the complex range row, cancel its two-way phase, and sum aperture looks. More coherent looks narrow the cross-range response."
       },
       {
-        "source_figure": "Pinned P77 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P77 explicit processing and evidence stages",
+        "target_plot_key": "cuts",
+        "title": "Target-1 cross-range cut on a common scale",
         "axes": [
           {
             "role": "x",
-            "label": "range/cross-range coordinate",
-            "unit": "source units"
+            "label": "Cross-range (m)",
+            "unit": "m"
           },
           {
             "role": "y",
-            "label": "normalized intensity",
-            "unit": "normalized"
+            "label": "Magnitude (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Focus SAR with Backprojection guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "For each image pixel, predict slant range, interpolate the complex range row, cancel its two-way phase, and sum aperture looks. More coherent looks narrow the cross-range response."
+      },
+      {
+        "source_figure": "Pinned P77 explicit processing and evidence stages",
+        "target_plot_key": "looks",
+        "title": "More centered looks narrow the point response",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Aperture looks (count)",
+            "unit": "count"
+          },
+          {
+            "role": "y",
+            "label": "Half-power width (m)",
+            "unit": "m"
+          }
+        ],
+        "interpretation": "For each image pixel, predict slant range, interpolate the complex range row, cancel its two-way phase, and sum aperture looks. More coherent looks narrow the cross-range response."
+      },
+      {
+        "source_figure": "Pinned P77 explicit processing and evidence stages",
+        "target_plot_key": "path",
+        "title": "Millimeter path error destroys coherent gain",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Assumed path error (mm)",
+            "unit": "mm"
+          },
+          {
+            "role": "y",
+            "label": "True-pixel voltage ratio (ratio)",
+            "unit": "ratio"
+          }
+        ],
+        "interpretation": "For each image pixel, predict slant range, interpolate the complex range row, cancel its two-way phase, and sum aperture looks. More coherent looks narrow the cross-range response."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "aperture_looks",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          21,
+          61,
+          121
         ],
-        "expected_observation": "Changing focus range moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Aperture looks; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "path_error_m",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          0,
+          0.005,
+          0.01
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Path error m; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "The named failure assumes a sinusoidal 10 mm ground-range path error. Misaligned phasors reduce the true-pixel gain despite unchanged measurements.",
+      "recovery": "Disable the failure and restore path error to 0 m; refocus the retained complex input with correct geometry.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "The named failure assumes a sinusoidal 10 mm ground-range path error. Misaligned phasors reduce the true-pixel gain despite unchanged measurements.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -216,63 +289,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 1000000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P77 python -m pytest -q apps/api/tests/test_dsp_course.py",
-    "seed": 1077,
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p77_p84.py",
+    "seed": 7701,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "aperture_looks",
+        "value": 121,
+        "unit": "looks"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "path_error_m",
+        "value": 0,
+        "unit": "m"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 8.881784197001252e-16,
+        "max_relative_error": 8.881784197001252e-16,
+        "passed": true,
         "expected": {
           "path": "modules/77-focus-sar-with-backprojection/evidence/expected-baseline.json",
-          "sha256": "5eceb4477bbed525609a8b9eaf87452a7904d30d9966c038aacd8b4574c21685"
+          "sha256": "c158590b8a80fdeedf5164c7666e297142706f39b922dd7cf944bfb9dbecd195"
         },
         "actual": {
           "path": "modules/77-focus-sar-with-backprojection/evidence/actual-baseline.json",
-          "sha256": "5b65a89e15c3a9f3fca35895a58b70a3277039488125ba580af3e83df744d63c"
-        },
-        "max_absolute_error": 4.853895063661184e-13,
-        "max_relative_error": 4.853895063661184e-13,
-        "passed": true
+          "sha256": "b3e08b5dbde4aca23ec630817b8c7fb98d48dac10bb009110a61c901d952aa82"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 6.661338147750939e-16,
+        "max_relative_error": 6.661338147750939e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/77-focus-sar-with-backprojection/evidence/expected-sweep-1.json",
+          "sha256": "6623220dbf392258f5b0efbde8de1a4d3c850f3da6eedfc52a57b7e734ed988f"
+        },
+        "actual": {
+          "path": "modules/77-focus-sar-with-backprojection/evidence/actual-sweep-1.json",
+          "sha256": "8403beef78d77c9ba8317934c6281cbce7f657eed1b0f07ab38d4dcf49197fc5"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 2.454214609315386e-11,
+        "max_relative_error": 4.654054919228656e-13,
+        "passed": true,
+        "expected": {
+          "path": "modules/77-focus-sar-with-backprojection/evidence/expected-sweep-2.json",
+          "sha256": "38bd76a80a5221031af9d9b78d4505198641056d18c60a9b1e8fc377b890ebd9"
+        },
+        "actual": {
+          "path": "modules/77-focus-sar-with-backprojection/evidence/actual-sweep-2.json",
+          "sha256": "1ded16d3be8f839e7883934bc16eb3150302ed374d38439d40f105ed6eece5a4"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 8.386180638808582e-11,
+        "max_relative_error": 4.640232143273767e-12,
+        "passed": true,
         "expected": {
           "path": "modules/77-focus-sar-with-backprojection/evidence/expected-broken.json",
-          "sha256": "16031b82be9c6cfaa1888e6fe1f9a0ac08e47294b4fc65828b00cc9e847c0a9d"
+          "sha256": "0e2b4a4bf456a89826fc43b15eb3121f12c1a7eb00a6076ea68bcc5dd583b79c"
         },
         "actual": {
           "path": "modules/77-focus-sar-with-backprojection/evidence/actual-broken.json",
-          "sha256": "fc2ef81259ee0945a75c23f30d6aca1f46cfe4a8934d38669133178683fe9c33"
+          "sha256": "2a26fda26a2c62ea10f4909d85cb04cfc38f815116960d7159d6353dbf91058d"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 4.407030296249559e-13,
-        "max_relative_error": 4.407030296249559e-13,
-        "passed": true
+        "max_absolute_error": 8.881784197001252e-16,
+        "max_relative_error": 8.881784197001252e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/77-focus-sar-with-backprojection/evidence/expected-recovery.json",
+          "sha256": "c158590b8a80fdeedf5164c7666e297142706f39b922dd7cf944bfb9dbecd195"
+        },
+        "actual": {
+          "path": "modules/77-focus-sar-with-backprojection/evidence/actual-recovery.json",
+          "sha256": "b3e08b5dbde4aca23ec630817b8c7fb98d48dac10bb009110a61c901d952aa82"
+        }
       }
     ]
   },

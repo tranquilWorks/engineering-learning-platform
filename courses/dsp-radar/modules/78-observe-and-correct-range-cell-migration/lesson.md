@@ -1,6 +1,4 @@
-# Observe and Correct Range-Cell Migration
-
-> **Guiding question:** Why does a target move through range bins during a long synthetic aperture?
+# Lesson: the target stays put while its delay walks
 
 ## Guiding question
 
@@ -176,33 +174,29 @@ before claiming completion. These constraints make the synthetic lesson
 repeatable; they do not provide hardware, real-time, field, or operational
 radar validation.
 
-## Use the Python GUI experiment
+## Interactive lab: Observe and Correct Range-Cell Migration
 
-The GUI keeps the pinned source's mental model and processing order visible. The **migration span** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** Why does a target move through range bins during a long synthetic aperture?
 
-### Prediction and sweep 1 — migration span
+Seed 7801; carrier 1 GHz, 1601 looks over 400 m, range grid 955:0.5:1075 m, target at (60, 1000) m, 2 m sinc response and 0.02 noise. Delta R is measured relative to the center look; the corrected row samples r + Delta R and retains complex phase. Fixed-bin and path-following images both use the hypothesized phase. The 100/200/400 m controls crop one full noise record, preserving controlled comparisons rather than regenerating aperture-dependent noise.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict the range ridge excursion when aperture or squint increases. Why must migration interpolation sample r + Delta R, and why does alignment alone still require coherent phase compensation?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Aperture length m** from 400 to 100 m. Predict, run, and explain a measured value using the governing equation; then reset.
+2. Start at the baseline. Sweep only **Squint offset m** from 60 to 80 m. Predict, run, and explain a measured value using the governing equation; then reset.
+3. Enable the broken case. The wrong-sign shift samples r - DeltaR. At the reviewed baseline it nearly doubles ridge migration and spreads the coherent profile.
+4. Recovery: Disable the failure to repeat correct-sign interpolation from unchanged complex rows. Path-following image formation uses the same known geometry; it is not blind motion estimation.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict the range ridge excursion when aperture or squint increases. Why must migration interpolation sample r + Delta R, and why does alignment alone still require coherent phase compensation? Support the explanation with a measured value and units, and state the recovery assumption.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+The wrong-sign shift samples r - DeltaR. At the reviewed baseline it nearly doubles ridge migration and spreads the coherent profile. Distinguish the selected-control scene from a named separate failure scene.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The pinned source lesson is preserved above. Private Park–Miller inputs preserve the source zero-offset uniforms except P79/P80, which retain half-offset uniforms. P77/P78 interleave Box–Muller inputs; P81 uses direct phase uniforms and P83/P84 split radius/phase blocks. Matrix inputs retain column-major ordering. Complex interpolation requires a complete adjacent pair, so the last unsupported endpoint is zero. Full calculations precede display decimation. Forty independent software comparisons cover five scenarios per lesson. No MATLAB execution, browser/accessibility, learner, hardware or production validation is claimed.

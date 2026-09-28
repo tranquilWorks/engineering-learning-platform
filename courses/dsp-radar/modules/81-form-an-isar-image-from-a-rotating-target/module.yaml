@@ -3,13 +3,13 @@
   "id": "81-form-an-isar-image-from-a-rotating-target",
   "number": 81,
   "title": "Form an ISAR Image from a Rotating Target",
-  "summary": "Explore form an isar image from a rotating target with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "Target rotation projects scatterers onto changing range directions. Range compression precedes the signed angle FFT; translation correction removes both envelope migration and carrier phase.",
   "guiding_question": "How does target rotation create synthetic aperture when the radar is stationary?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-9",
-    "rotation-rate"
+    "sar-isar",
+    "P81"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,55 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Rotation Rate",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "angular_aperture_deg",
+      "type": "select",
+      "label": "Angular aperture deg",
+      "default": 6,
+      "unit": "deg",
+      "options": [
+        {
+          "label": "2 deg",
+          "value": 2
+        },
+        {
+          "label": "4 deg",
+          "value": 4
+        },
+        {
+          "label": "6 deg",
+          "value": 6
+        },
+        {
+          "label": "8 deg",
+          "value": 8
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "rotation_rate_deg_s",
+      "type": "select",
+      "label": "Rotation rate deg s",
+      "default": 6,
+      "unit": "deg/s",
+      "options": [
+        {
+          "label": "3 deg/s",
+          "value": 3
+        },
+        {
+          "label": "6 deg/s",
+          "value": 6
+        },
+        {
+          "label": "12 deg/s",
+          "value": 12
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +79,45 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing rotation rate, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict the effect of angular aperture and rotation rate separately. Why does translation change both envelope and phase, and why does the signed angle transform place scatterers on the correct cross-range axis?",
+      "reveal": "Target rotation projects scatterers onto changing range directions. Range compression precedes the signed angle FFT; translation correction removes both envelope migration and carrier phase."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Seeded rigid-target scatterers",
+      "plot": "geometry"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Range IFFT before translation alignment",
+      "plot": "raw_profiles"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Envelope and phase aligned together",
+      "plot": "aligned_profiles"
+    },
+    {
+      "type": "plot",
+      "title": "Selected angle-domain ISAR image",
+      "plot": "image"
+    },
+    {
+      "type": "plot",
+      "title": "Angular span determines cross-range resolution",
+      "plot": "aperture"
+    },
+    {
+      "type": "plot",
+      "title": "Rotation rate changes time support",
+      "plot": "rate"
     },
     {
       "type": "callout",
@@ -102,7 +128,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

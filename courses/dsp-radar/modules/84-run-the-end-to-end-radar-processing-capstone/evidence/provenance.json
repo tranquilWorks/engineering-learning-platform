@@ -1,0 +1,95 @@
+{
+  "item": "P84",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p84",
+    "sha256": "0be27e26c602f1bfd08792095de0c7c43bf3e36e916605226057982d1a0bd0a9",
+    "byte_count": 215741,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/84-run-the-end-to-end-radar-processing-capstone/experiment.py",
+    "sha256": "11c131b3b90caedc1eef7b69a644804e141ac9c4ef4214c11ef58b89909befe3",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "design_pfa": 0.001,
+      "replica_taper": 0,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "design_pfa": 0.01,
+      "replica_taper": 0,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "design_pfa": 0.001,
+      "replica_taper": 1,
+      "broken_mode": false
+    },
+    "broken": {
+      "design_pfa": 0.001,
+      "replica_taper": 0,
+      "broken_mode": true
+    },
+    "recovery": {
+      "design_pfa": 0.001,
+      "replica_taper": 0,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "active_peak_power",
+      "unit": "V^2"
+    },
+    {
+      "name": "compression_peak_ratio",
+      "unit": "ratio"
+    },
+    {
+      "name": "detected_cells",
+      "unit": "count"
+    },
+    {
+      "name": "clustered_reports",
+      "unit": "count"
+    },
+    {
+      "name": "matched_truth_reports",
+      "unit": "count"
+    },
+    {
+      "name": "false_reports",
+      "unit": "count"
+    },
+    {
+      "name": "empirical_false_cell_rate",
+      "unit": "ratio"
+    },
+    {
+      "name": "baseline_sequence_pd",
+      "unit": "ratio"
+    },
+    {
+      "name": "baseline_track_rmse",
+      "unit": "m"
+    },
+    {
+      "name": "scan_four_coast_count",
+      "unit": "count"
+    },
+    {
+      "name": "receiver_reconstruction_error",
+      "unit": "V"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

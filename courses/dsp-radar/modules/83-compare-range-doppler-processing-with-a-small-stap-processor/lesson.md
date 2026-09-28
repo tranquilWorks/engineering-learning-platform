@@ -1,6 +1,4 @@
-# Compare Range-Doppler Processing with a Small STAP Processor
-
-> **Guiding question:** When is Doppler filtering alone insufficient against clutter?
+# P83 lesson: Follow the Clutter Ridge in Space and Slow Time
 
 ## Guiding question
 
@@ -248,33 +246,29 @@ Static checks and an independent equation oracle may validate contracts and
 simulated behavior. They are not MATLAB runtime, physical radar/HIL, bench,
 field, real-time, RT1/RT2, Unreal, signing, deployment, or production evidence.
 
-## Use the Python GUI experiment
+## Interactive lab: Compare Range-Doppler Processing with a Small STAP Processor
 
-The GUI keeps the pinned source's mental model and processing order visible. The **clutter coupling** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** When is Doppler filtering alone insufficient against clutter?
 
-### Prediction and sweep 1 — clutter coupling
+Seeds 8301/8302/8303; four sensors by eight pulses, 48 range cells, target cell 25, 36 guarded training cells, wavelength 0.03 m, PRF 20 kHz and platform speed 90 m/s. Forty-one clutter patches have normalized Doppler 0.30 sin(theta) and 32 dB total power. The assumed 12 degree/0.12 steering differs from the actual 12.5 degree/0.125 target. Load covariance with 0.05 trace(R)/32; normalize the adaptive map as |s^H R_loaded^-1 x|^2/(s^H R_loaded^-1 s). Twenty-five-percent 30 dB target-like contamination raises interference output without nulling the assumed response. Known-component SCNR and map contrast are distinct from detection probability.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict the space-time covariance rank with fewer than 32 training cells. Why can contaminated training preserve the assumed unit response yet destroy actual SCNR through interference growth?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Training cells** from 36 to 8 cells. Predict, run, and explain a measured value using the governing equation; then reset.
+2. Start at the baseline. Sweep only **Contaminated fraction** from 0 to 0.5 ratio. Predict, run, and explain a measured value using the governing equation; then reset.
+3. Enable the broken case. At baseline, target-like training contamination preserves the assumed unit response but increases interference output by over 20 dB. This failure is interference growth, not the target-null mechanism from P68.
+4. Recovery: Disable the named failure and set contamination to zero to recompute from retained clean neighboring training cells and unchanged measurements. These normalized maps do not by themselves establish detection probability or false-alarm rate.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict the space-time covariance rank with fewer than 32 training cells. Why can contaminated training preserve the assumed unit response yet destroy actual SCNR through interference growth? Support the explanation with a measured value and units, and state the recovery assumption.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+At baseline, target-like training contamination preserves the assumed unit response but increases interference output by over 20 dB. This failure is interference growth, not the target-null mechanism from P68. Distinguish the selected-control scene from a named separate failure scene.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The pinned source lesson is preserved above. Private Park–Miller inputs preserve the source zero-offset uniforms except P79/P80, which retain half-offset uniforms. P77/P78 interleave Box–Muller inputs; P81 uses direct phase uniforms and P83/P84 split radius/phase blocks. Matrix inputs retain column-major ordering. Complex interpolation requires a complete adjacent pair, so the last unsupported endpoint is zero. Full calculations precede display decimation. Forty independent software comparisons cover five scenarios per lesson. No MATLAB execution, browser/accessibility, learner, hardware or production validation is claimed.

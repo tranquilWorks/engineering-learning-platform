@@ -1,6 +1,4 @@
-# Compare SAR Resolution, Aperture Length, and Windowing
-
-> **Guiding question:** What controls range and cross-range resolution and sidelobes?
+# P79 lesson: A SAR Point Has Two Widths and Many Sidelobes
 
 The guiding question is: **What controls range and cross-range resolution and sidelobes?**
 
@@ -208,33 +206,29 @@ prove MATLAB parsing, rendering, performance, educational effectiveness,
 hardware/HIL, bench, real-time, field, operational radar, deployment, or
 production behavior.
 
-## Use the Python GUI experiment
+## Interactive lab: Compare SAR Resolution, Aperture Length, and Windowing
 
-The GUI keeps the pinned source's mental model and processing order visible. The **aperture length** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** What controls range and cross-range resolution and sidelobes?
 
-### Prediction and sweep 1 — aperture length
+Seed 7901; carrier 10 GHz, scene range 1000 m, 257 frequencies, bandwidth 200 MHz, 30 m aperture and 0.25 m spacing. Range response sums the frequency phases; cross-range response sums exact slant-range phases. Hamming weights are 0.54 - 0.46 cos(2 pi n/(N-1)). Widths use interpolated 1/sqrt(2) amplitude crossings; sidelobes exclude the first local minima. A three-target separable point-spread image illustrates resolution. Sparse 5 m sampling creates near-unit grating responses. This separable teaching image is not a full raw-data SAR inversion.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict which resolution changes when bandwidth doubles and which changes when aperture shortens. Why does Hamming weighting widen the main lobe, and how can a sparse aperture produce a sharp but ambiguous image?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Bandwidth mhz** from 200 to 400 MHz. Predict, run, and explain a measured value using the governing equation; then reset.
+2. Start at the baseline. Sweep only **Aperture length m** from 30 to 10 m. Predict, run, and explain a measured value using the governing equation; then reset.
+3. Enable the broken case. The named 5 m platform spacing undersamples aperture phase, creating near-unity cross-range copies about 3 m apart. A narrow mainlobe alone does not establish unambiguous localization.
+4. Recovery: Disable the failure to recompute the same seeded scene with dense 0.25 m aperture sampling. This is reacquisition with a reviewed sampling grid, not recovery of missing information from the sparse image.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict which resolution changes when bandwidth doubles and which changes when aperture shortens. Why does Hamming weighting widen the main lobe, and how can a sparse aperture produce a sharp but ambiguous image? Support the explanation with a measured value and units, and state the recovery assumption.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+The named 5 m platform spacing undersamples aperture phase, creating near-unity cross-range copies about 3 m apart. A narrow mainlobe alone does not establish unambiguous localization. Distinguish the selected-control scene from a named separate failure scene.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The pinned source lesson is preserved above. Private Park–Miller inputs preserve the source zero-offset uniforms except P79/P80, which retain half-offset uniforms. P77/P78 interleave Box–Muller inputs; P81 uses direct phase uniforms and P83/P84 split radius/phase blocks. Matrix inputs retain column-major ordering. Complex interpolation requires a complete adjacent pair, so the last unsupported endpoint is zero. Full calculations precede display decimation. Forty independent software comparisons cover five scenarios per lesson. No MATLAB execution, browser/accessibility, learner, hardware or production validation is claimed.

@@ -3,13 +3,13 @@
   "id": "78-observe-and-correct-range-cell-migration",
   "number": 78,
   "title": "Observe and Correct Range-Cell Migration",
-  "summary": "Explore observe and correct range-cell migration with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "A target moves across fast-range cells as its slant range changes. Sampling each row at r + DeltaR aligns the envelope while preserving the phase needed for coherent focusing.",
   "guiding_question": "Why does a target move through range bins during a long synthetic aperture?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-9",
-    "migration-span"
+    "sar-isar",
+    "P78"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,51 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Migration Span",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "aperture_length_m",
+      "type": "select",
+      "label": "Aperture length m",
+      "default": 400,
+      "unit": "m",
+      "options": [
+        {
+          "label": "100 m",
+          "value": 100
+        },
+        {
+          "label": "200 m",
+          "value": 200
+        },
+        {
+          "label": "400 m",
+          "value": 400
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "squint_offset_m",
+      "type": "select",
+      "label": "Squint offset m",
+      "default": 60,
+      "unit": "m",
+      "options": [
+        {
+          "label": "0 m",
+          "value": 0
+        },
+        {
+          "label": "60 m",
+          "value": 60
+        },
+        {
+          "label": "80 m",
+          "value": 80
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +75,55 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing migration span, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict the range ridge excursion when aperture or squint increases. Why must migration interpolation sample r + Delta R, and why does alignment alone still require coherent phase compensation?",
+      "reveal": "A target moves across fast-range cells as its slant range changes. Sampling each row at r + DeltaR aligns the envelope while preserving the phase needed for coherent focusing."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Range-cell migration before correction",
+      "plot": "raw"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Selected interpolation sign",
+      "plot": "aligned"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Row-peak range tracks",
+      "plot": "ridge"
+    },
+    {
+      "type": "plot",
+      "title": "Phase-compensated range profiles",
+      "plot": "profiles"
+    },
+    {
+      "type": "plot",
+      "title": "Fixed-bin image loses migrating energy",
+      "plot": "fixed_image"
+    },
+    {
+      "type": "plot",
+      "title": "Path-following backprojection",
+      "plot": "image"
+    },
+    {
+      "type": "plot",
+      "title": "Migration grows with aperture",
+      "plot": "aperture"
+    },
+    {
+      "type": "plot",
+      "title": "Squint makes migration asymmetric",
+      "plot": "squint"
     },
     {
       "type": "callout",
@@ -102,7 +134,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

@@ -1,6 +1,4 @@
-# Focus SAR with Backprojection
-
-> **Guiding question:** How does compensating the correct path length focus a point in an image?
+# P77 Lesson: Focus SAR with Backprojection
 
 ## Guiding question
 
@@ -164,33 +162,29 @@ canceling the corresponding two-way carrier phase, and summing the aligned
 complex values; an aperture-varying path error leaves residual phase and
 defocuses the point.
 
-## Use the Python GUI experiment
+## Interactive lab: Focus SAR with Backprojection
 
-The GUI keeps the pinned source's mental model and processing order visible. The **focus range** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** How does compensating the correct path length focus a point in an image?
 
-### Prediction and sweep 1 — focus range
+Seed 7701; carrier 5 GHz, 121 looks spaced 0.25 m, range grid 990:0.5:1035 m and 2.5 m sinc response. Two targets at (-6, 1002) and (7, 1020) m have voltages 1 and 0.75. Backprojection linearly interpolates each complex row at hypothesized slant range and applies exp(+j 4 pi (R-990)/lambda) before summing. Centered 21/61/121-look and 0/5/10 mm sinusoidal path-error comparisons reuse identical measured histories. Truth neighborhoods score localization only.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict how aperture length changes cross-range width and coherent gain. Why can a 10 mm assumed-path error spoil a meter-scale image despite nearly unchanged range envelopes?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Aperture looks** from 121 to 21 looks. Predict, run, and explain a measured value using the governing equation; then reset.
+2. Start at the baseline. Sweep only **Path error m** from 0 to 0.005 m. Predict, run, and explain a measured value using the governing equation; then reset.
+3. Enable the broken case. The named failure assumes a sinusoidal 10 mm ground-range path error. Misaligned phasors reduce the true-pixel gain despite unchanged measurements.
+4. Recovery: Disable the failure and restore path error to 0 m; refocus the retained complex input with correct geometry.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict how aperture length changes cross-range width and coherent gain. Why can a 10 mm assumed-path error spoil a meter-scale image despite nearly unchanged range envelopes? Support the explanation with a measured value and units, and state the recovery assumption.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+The named failure assumes a sinusoidal 10 mm ground-range path error. Misaligned phasors reduce the true-pixel gain despite unchanged measurements. Distinguish the selected-control scene from a named separate failure scene.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The pinned source lesson is preserved above. Private Park–Miller inputs preserve the source zero-offset uniforms except P79/P80, which retain half-offset uniforms. P77/P78 interleave Box–Muller inputs; P81 uses direct phase uniforms and P83/P84 split radius/phase blocks. Matrix inputs retain column-major ordering. Complex interpolation requires a complete adjacent pair, so the last unsupported endpoint is zero. Full calculations precede display decimation. Forty independent software comparisons cover five scenarios per lesson. No MATLAB execution, browser/accessibility, learner, hardware or production validation is claimed.

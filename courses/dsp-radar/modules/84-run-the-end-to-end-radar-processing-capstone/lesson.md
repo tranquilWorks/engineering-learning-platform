@@ -1,6 +1,4 @@
-# Run the End-to-End Radar Processing Capstone
-
-> **Guiding question:** Can I trace a target from waveform generation through detection and tracking without treating any stage as a black box?
+# P84 lesson: the seams are the system
 
 ## Guiding question
 
@@ -148,33 +146,29 @@ The experiment is deterministic synthetic analysis, not an operational radar
 claim. Static repository checks cannot prove MATLAB execution, numerical
 fidelity, figure rendering, real-time behavior, or educational effectiveness.
 
-## Use the Python GUI experiment
+## Interactive lab: Run the End-to-End Radar Processing Capstone
 
-The GUI keeps the pinned source's mental model and processing order visible. The **target SNR** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** Can I trace a target from waveform generation through detection and tracking without treating any stage as a black box?
 
-### Prediction and sweep 1 — target SNR
+Seed family 8401: fixed clutter uses 8411 and scan noise uses 8501 + scan. The 10 GHz radar uses a unit-energy 32-sample LFM at 4 MHz, duration 8 us and bandwidth 2 MHz; each scan has 128 fast samples by 32 pulses. Four targets, a clutter edge and a receiver spur enter the retained cube. Invert the known DC/IQ image model, apply the conjugate time-reversed replica with exact 31-sample delay removal, then Hann Doppler processing. CA-CFAR uses a complete 13 by 9 stencil minus 5 by 3 guard/CUT cells, leaving 102 training cells; border cells are ineligible. Eight-connected excess-weighted reports feed gated alpha-beta tracking. Maximum one-to-one truth matching is offline scoring only. Controls and failure compare the retained first scan. As in the source, the explicitly labeled eight-scan tracking sequence always retains Pfa=0.001, taper=0 and the correct replica; scan 4 physically fades the moving target before reception. Requested Pfa is not the empirical false-cell rate in this correlated scene.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict how replica taper and requested Pfa change compression, crossings and reports. Trace a target through every processing stage, and explain why the physically faded scan causes a coast rather than an invented measurement.
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Design pfa** from 0.001 to 0.01 ratio. Predict, run, and explain a measured value using the governing equation; then reset.
+2. Start at the baseline. Sweep only **Replica taper** from 0 to 1 ratio. Predict, run, and explain a measured value using the governing equation; then reset.
+3. Enable the broken case. Removing conjugation from the matched replica loses coherent compression gain and changes downstream detections. A fixed threshold also overreacts to the clutter edge; a report near the injected receiver spur is a false report, not target truth.
+4. Recovery: Disable the failure to rerun the conjugate time-reversed replica on the identical calibrated cube. Reports drive tracking; truth is used only for offline scoring. Requested Pfa is not a guarantee for these correlated, nonhomogeneous cells.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict how replica taper and requested Pfa change compression, crossings and reports. Trace a target through every processing stage, and explain why the physically faded scan causes a coast rather than an invented measurement. Support the explanation with a measured value and units, and state the recovery assumption.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+Removing conjugation from the matched replica loses coherent compression gain and changes downstream detections. A fixed threshold also overreacts to the clutter edge; a report near the injected receiver spur is a false report, not target truth. Distinguish the selected-control scene from a named separate failure scene.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The pinned source lesson is preserved above. Private Park–Miller inputs preserve the source zero-offset uniforms except P79/P80, which retain half-offset uniforms. P77/P78 interleave Box–Muller inputs; P81 uses direct phase uniforms and P83/P84 split radius/phase blocks. Matrix inputs retain column-major ordering. Complex interpolation requires a complete adjacent pair, so the last unsupported endpoint is zero. Full calculations precede display decimation. Forty independent software comparisons cover five scenarios per lesson. No MATLAB execution, browser/accessibility, learner, hardware or production validation is claimed.

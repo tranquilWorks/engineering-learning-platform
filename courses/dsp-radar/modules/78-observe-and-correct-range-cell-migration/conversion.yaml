@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "8706e3670e53495fc1ed975e5379fffbe99157d8cbd5862be8ec06ada6ead570",
+    "content_digest": "e279649ae2ac03fbaafd404b89312672685239684194e60dd5133d18194e8a1f",
     "files": [
       {
         "path": "modules/78-observe-and-correct-range-cell-migration/experiment.py",
-        "sha256": "2a8209539071e5778ea4308bceb22488dbd1c720d77951b2f42b6447e0a7b9de"
+        "sha256": "e523d98933c857d6c067f1c376dc137057129390fe4d36377cd0e4e9b7f8e7a3"
       },
       {
         "path": "modules/78-observe-and-correct-range-cell-migration/lesson.md",
-        "sha256": "a4e99555deacd8635c2367d87a16bf3d3ba33abe93d8db4cad90497565930b2a"
+        "sha256": "0d8b0720dec313e17a29bf06a6f11b6eac0777e0438c96ea373fb673661a8271"
       },
       {
         "path": "modules/78-observe-and-correct-range-cell-migration/module.yaml",
-        "sha256": "969042a8c3cb2f6040a4c985ae31d0df86e80268acdd4fa7bd4f5cb46b2b2cff"
+        "sha256": "2f60ffcd21fbe69740d10c360c7373f5a6805dbf2896c64b755f01df2eae58a8"
       }
     ]
   },
   "content": {
     "guiding_question": "Why does a target move through range bins during a long synthetic aperture?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "A target moves across fast-range cells as its slant range changes. Sampling each row at r + DeltaR aligns the envelope while preserving the phase needed for coherent focusing.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary migration span while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "A target moves across fast-range cells as its slant range changes. Sampling each row at r + DeltaR aligns the envelope while preserving the phase needed for coherent focusing.",
+      "The wrong-sign shift samples r - DeltaR. At the reviewed baseline it nearly doubles ridge migration and spreads the coherent profile.",
+      "Disable the failure to repeat correct-sign interpolation from unchanged complex rows. Path-following image formation uses the same known geometry; it is not blind motion estimation.",
+      "Explicit stage equations are retained in lesson.md. P77-P84 retain private source inputs and disclosed processing assumptions; P78 controls crop the full noise record and P84 tracking retains its explicitly labeled baseline. Plot/console presentation is adapted; no MATLAB runtime execution is claimed."
     ],
     "equations": [
       {
@@ -66,149 +66,258 @@
     ],
     "equation_order": "before_toolbox_shortcuts",
     "deterministic_data": {
-      "seed": 1078,
+      "seed": 7801,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
-        },
-        {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "aaaadaf3fce11bd226771bb8ced2f55c5ebea6d460bba8e8774cec25dcda270d",
-          "unit": "mixed numeric signature"
+          "sha256": "b036a2059e9bb69ff77d4345dc05121498929c77e9c05efe0030de6aae28b9a3",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "847738b1c9038aed03e7ac029a7b8ddc0b88cf1048bd4e0cfc5577578277f173",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "bd5f7c5972d12816b4b403cbf2cf267477a09e2d605bdb11779118f6309d739e",
-          "unit": "mixed numeric signature"
+          "sha256": "553fb90ae2e6226932608869c50fe09466c1ded4cf706782ffa1faf96ee1c01e",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "200b8675debddbcf19cfdc1fcbfdc31ec25b93b931503435f7802cf850cd3d96",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "1dde666427c70dcf2f27cc0caafebd48aa76cfc4f641b508e6a92ed34eb0f14b",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "44e6933a8ebb19be38a495f999459f341be7958d1043ec09ebd282d9b89cd4d9",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "b1393494ad3cbe4c83aa5eb19a87c0546743c01aa975e775ff8f9dfb52aa010c",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "8dd67341ab5f09615aea0a6448834510bea538a2358a2a4e978f3d7118bad7c2",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "b036a2059e9bb69ff77d4345dc05121498929c77e9c05efe0030de6aae28b9a3",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "847738b1c9038aed03e7ac029a7b8ddc0b88cf1048bd4e0cfc5577578277f173",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P78 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P78 explicit processing and evidence stages",
+        "target_plot_key": "raw",
+        "title": "Range-cell migration before correction",
         "axes": [
           {
             "role": "x",
-            "label": "range/cross-range coordinate",
-            "unit": "source units"
+            "label": "Slant range (m)",
+            "unit": "m"
           },
           {
             "role": "y",
-            "label": "normalized intensity",
-            "unit": "normalized"
+            "label": "Platform position (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Observe and Correct Range-Cell Migration guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "A target moves across fast-range cells as its slant range changes. Sampling each row at r + DeltaR aligns the envelope while preserving the phase needed for coherent focusing."
       },
       {
-        "source_figure": "Pinned P78 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P78 explicit processing and evidence stages",
+        "target_plot_key": "aligned",
+        "title": "Selected interpolation sign",
         "axes": [
           {
             "role": "x",
-            "label": "range/cross-range coordinate",
-            "unit": "source units"
+            "label": "Aligned slant range (m)",
+            "unit": "m"
           },
           {
             "role": "y",
-            "label": "normalized intensity",
-            "unit": "normalized"
+            "label": "Platform position (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Observe and Correct Range-Cell Migration guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "A target moves across fast-range cells as its slant range changes. Sampling each row at r + DeltaR aligns the envelope while preserving the phase needed for coherent focusing."
       },
       {
-        "source_figure": "Pinned P78 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P78 explicit processing and evidence stages",
+        "target_plot_key": "ridge",
+        "title": "Row-peak range tracks",
         "axes": [
           {
             "role": "x",
-            "label": "range/cross-range coordinate",
-            "unit": "source units"
+            "label": "Platform position (m)",
+            "unit": "m"
           },
           {
             "role": "y",
-            "label": "normalized intensity",
-            "unit": "normalized"
+            "label": "Measured peak slant range (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Observe and Correct Range-Cell Migration guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "A target moves across fast-range cells as its slant range changes. Sampling each row at r + DeltaR aligns the envelope while preserving the phase needed for coherent focusing."
       },
       {
-        "source_figure": "Pinned P78 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P78 explicit processing and evidence stages",
+        "target_plot_key": "profiles",
+        "title": "Phase-compensated range profiles",
         "axes": [
           {
             "role": "x",
-            "label": "range/cross-range coordinate",
-            "unit": "source units"
+            "label": "Aligned slant range (m)",
+            "unit": "m"
           },
           {
             "role": "y",
-            "label": "normalized intensity",
-            "unit": "normalized"
+            "label": "Magnitude (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Observe and Correct Range-Cell Migration guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "A target moves across fast-range cells as its slant range changes. Sampling each row at r + DeltaR aligns the envelope while preserving the phase needed for coherent focusing."
+      },
+      {
+        "source_figure": "Pinned P78 explicit processing and evidence stages",
+        "target_plot_key": "fixed_image",
+        "title": "Fixed-bin image loses migrating energy",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Cross-range (m)",
+            "unit": "m"
+          },
+          {
+            "role": "y",
+            "label": "Ground range (m)",
+            "unit": "m"
+          }
+        ],
+        "interpretation": "A target moves across fast-range cells as its slant range changes. Sampling each row at r + DeltaR aligns the envelope while preserving the phase needed for coherent focusing."
+      },
+      {
+        "source_figure": "Pinned P78 explicit processing and evidence stages",
+        "target_plot_key": "image",
+        "title": "Path-following backprojection",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Cross-range (m)",
+            "unit": "m"
+          },
+          {
+            "role": "y",
+            "label": "Ground range (m)",
+            "unit": "m"
+          }
+        ],
+        "interpretation": "A target moves across fast-range cells as its slant range changes. Sampling each row at r + DeltaR aligns the envelope while preserving the phase needed for coherent focusing."
+      },
+      {
+        "source_figure": "Pinned P78 explicit processing and evidence stages",
+        "target_plot_key": "aperture",
+        "title": "Migration grows with aperture",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Aperture length (m)",
+            "unit": "m"
+          },
+          {
+            "role": "y",
+            "label": "Geometric range span (m)",
+            "unit": "m"
+          }
+        ],
+        "interpretation": "A target moves across fast-range cells as its slant range changes. Sampling each row at r + DeltaR aligns the envelope while preserving the phase needed for coherent focusing."
+      },
+      {
+        "source_figure": "Pinned P78 explicit processing and evidence stages",
+        "target_plot_key": "squint",
+        "title": "Squint makes migration asymmetric",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Target cross-range (m)",
+            "unit": "m"
+          },
+          {
+            "role": "y",
+            "label": "Geometric range span (m)",
+            "unit": "m"
+          }
+        ],
+        "interpretation": "A target moves across fast-range cells as its slant range changes. Sampling each row at r + DeltaR aligns the envelope while preserving the phase needed for coherent focusing."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "aperture_length_m",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          100,
+          200,
+          400
         ],
-        "expected_observation": "Changing migration span moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Aperture length m; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "squint_offset_m",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          0,
+          60,
+          80
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Squint offset m; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "The wrong-sign shift samples r - DeltaR. At the reviewed baseline it nearly doubles ridge migration and spreads the coherent profile.",
+      "recovery": "Disable the failure to repeat correct-sign interpolation from unchanged complex rows. Path-following image formation uses the same known geometry; it is not blind motion estimation.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "The wrong-sign shift samples r - DeltaR. At the reviewed baseline it nearly doubles ridge migration and spreads the coherent profile.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -216,63 +325,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 1000000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P78 python -m pytest -q apps/api/tests/test_dsp_course.py",
-    "seed": 1078,
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p77_p84.py",
+    "seed": 7801,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "aperture_length_m",
+        "value": 400,
+        "unit": "m"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "squint_offset_m",
+        "value": 60,
+        "unit": "m"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 2.6645352591003757e-15,
+        "max_relative_error": 7.511202904097787e-16,
+        "passed": true,
         "expected": {
           "path": "modules/78-observe-and-correct-range-cell-migration/evidence/expected-baseline.json",
-          "sha256": "aaaadaf3fce11bd226771bb8ced2f55c5ebea6d460bba8e8774cec25dcda270d"
+          "sha256": "b036a2059e9bb69ff77d4345dc05121498929c77e9c05efe0030de6aae28b9a3"
         },
         "actual": {
           "path": "modules/78-observe-and-correct-range-cell-migration/evidence/actual-baseline.json",
-          "sha256": "b81d9231cc469b61295b8cd9d960c6d02a150b01398788039bc90304edaee6b7"
-        },
-        "max_absolute_error": 4.815037257799304e-13,
-        "max_relative_error": 4.815037257799304e-13,
-        "passed": true
+          "sha256": "847738b1c9038aed03e7ac029a7b8ddc0b88cf1048bd4e0cfc5577578277f173"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 3.1086244689504383e-15,
+        "max_relative_error": 2.1803034528549765e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/78-observe-and-correct-range-cell-migration/evidence/expected-sweep-1.json",
+          "sha256": "553fb90ae2e6226932608869c50fe09466c1ded4cf706782ffa1faf96ee1c01e"
+        },
+        "actual": {
+          "path": "modules/78-observe-and-correct-range-cell-migration/evidence/actual-sweep-1.json",
+          "sha256": "200b8675debddbcf19cfdc1fcbfdc31ec25b93b931503435f7802cf850cd3d96"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 5.551115123125783e-15,
+        "max_relative_error": 3.540420020406772e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/78-observe-and-correct-range-cell-migration/evidence/expected-sweep-2.json",
+          "sha256": "1dde666427c70dcf2f27cc0caafebd48aa76cfc4f641b508e6a92ed34eb0f14b"
+        },
+        "actual": {
+          "path": "modules/78-observe-and-correct-range-cell-migration/evidence/actual-sweep-2.json",
+          "sha256": "44e6933a8ebb19be38a495f999459f341be7958d1043ec09ebd282d9b89cd4d9"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 9.992007221626409e-16,
+        "max_relative_error": 9.992007221626409e-16,
+        "passed": true,
         "expected": {
           "path": "modules/78-observe-and-correct-range-cell-migration/evidence/expected-broken.json",
-          "sha256": "bd5f7c5972d12816b4b403cbf2cf267477a09e2d605bdb11779118f6309d739e"
+          "sha256": "b1393494ad3cbe4c83aa5eb19a87c0546743c01aa975e775ff8f9dfb52aa010c"
         },
         "actual": {
           "path": "modules/78-observe-and-correct-range-cell-migration/evidence/actual-broken.json",
-          "sha256": "c842a0ab40509bc0aefe4e1e80d25d8a9ec1f780071e86575b8b38c6f2479db8"
+          "sha256": "8dd67341ab5f09615aea0a6448834510bea538a2358a2a4e978f3d7118bad7c2"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 4.815037257799304e-13,
-        "max_relative_error": 4.815037257799304e-13,
-        "passed": true
+        "max_absolute_error": 2.6645352591003757e-15,
+        "max_relative_error": 7.511202904097787e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/78-observe-and-correct-range-cell-migration/evidence/expected-recovery.json",
+          "sha256": "b036a2059e9bb69ff77d4345dc05121498929c77e9c05efe0030de6aae28b9a3"
+        },
+        "actual": {
+          "path": "modules/78-observe-and-correct-range-cell-migration/evidence/actual-recovery.json",
+          "sha256": "847738b1c9038aed03e7ac029a7b8ddc0b88cf1048bd4e0cfc5577578277f173"
+        }
       }
     ]
   },

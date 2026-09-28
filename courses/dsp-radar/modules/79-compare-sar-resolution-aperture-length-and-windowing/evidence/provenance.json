@@ -1,0 +1,91 @@
+{
+  "item": "P79",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p79",
+    "sha256": "0be27e26c602f1bfd08792095de0c7c43bf3e36e916605226057982d1a0bd0a9",
+    "byte_count": 215741,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/79-compare-sar-resolution-aperture-length-and-windowing/experiment.py",
+    "sha256": "8e4b29160c802a2274b58b2519e9f8eeb79c28b462f9ec4579ed6cf1a9e49ea8",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "bandwidth_mhz": 200,
+      "aperture_length_m": 30,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "bandwidth_mhz": 400,
+      "aperture_length_m": 30,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "bandwidth_mhz": 200,
+      "aperture_length_m": 10,
+      "broken_mode": false
+    },
+    "broken": {
+      "bandwidth_mhz": 200,
+      "aperture_length_m": 30,
+      "broken_mode": true
+    },
+    "recovery": {
+      "bandwidth_mhz": 200,
+      "aperture_length_m": 30,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "range_half_power_width",
+      "unit": "m"
+    },
+    {
+      "name": "cross_range_half_power_width",
+      "unit": "m"
+    },
+    {
+      "name": "range_peak_sidelobe",
+      "unit": "dB"
+    },
+    {
+      "name": "cross_range_peak_sidelobe",
+      "unit": "dB"
+    },
+    {
+      "name": "hamming_half_power_width",
+      "unit": "m"
+    },
+    {
+      "name": "hamming_peak_sidelobe",
+      "unit": "dB"
+    },
+    {
+      "name": "far_cross_range_peak",
+      "unit": "ratio"
+    },
+    {
+      "name": "aperture_samples",
+      "unit": "count"
+    },
+    {
+      "name": "nominal_range_resolution",
+      "unit": "m"
+    },
+    {
+      "name": "nominal_cross_range_resolution",
+      "unit": "m"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}
