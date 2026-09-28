@@ -3,13 +3,13 @@
   "id": "68-build-an-introductory-stap-clutter-ridge-experiment",
   "number": 68,
   "title": "Build an Introductory STAP Clutter-Ridge Experiment",
-  "summary": "Explore build an introductory stap clutter-ridge experiment with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "The 64-channel vector stacks all eight sensors inside each of eight pulses. Clutter obeys normalized Doppler=.35 sin(theta). Joint covariance keeps angle-Doppler coupling that separate covariance estimates discard. The cell under test uses independent seeds and never trains covariance.",
   "guiding_question": "How can space and slow time be processed together to suppress moving-platform clutter?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-7",
-    "clutter-ridge-slope"
+    "adaptive-arrays",
+    "P68"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,51 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Clutter Ridge Slope",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "training_cells",
+      "type": "select",
+      "label": "Training cells",
+      "default": 128,
+      "unit": "count",
+      "options": [
+        {
+          "label": "8 count",
+          "value": 8
+        },
+        {
+          "label": "32 count",
+          "value": 32
+        },
+        {
+          "label": "128 count",
+          "value": 128
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "contamination_fraction",
+      "type": "select",
+      "label": "Contamination fraction",
+      "default": 0,
+      "unit": "ratio",
+      "options": [
+        {
+          "label": "0 ratio",
+          "value": 0
+        },
+        {
+          "label": "0.1 ratio",
+          "value": 0.1
+        },
+        {
+          "label": "0.4 ratio",
+          "value": 0.4
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +75,55 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing clutter ridge slope, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict the angle-Doppler clutter ridge and explain why two separate filters discard its coupling. Why can contaminated training suppress an actual target despite a unit-response constraint at the assumed target?",
+      "reveal": "The 64-channel vector stacks all eight sensors inside each of eight pulses. Clutter obeys normalized Doppler=.35 sin(theta). Joint covariance keeps angle-Doppler coupling that separate covariance estimates discard. The cell under test uses independent seeds and never trains covariance."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Measured angle-Doppler clutter ridge",
+      "plot": "ridge"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Joint sensor/pulse sample covariance",
+      "plot": "covariance"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Fixed response",
+      "plot": "fixed"
+    },
+    {
+      "type": "plot",
+      "title": "Separate spatial and temporal response",
+      "plot": "separate"
+    },
+    {
+      "type": "plot",
+      "title": "Selected joint response",
+      "plot": "joint"
+    },
+    {
+      "type": "plot",
+      "title": "Clean training prefixes",
+      "plot": "support"
+    },
+    {
+      "type": "plot",
+      "title": "Target-like training contaminates adaptation",
+      "plot": "contamination"
+    },
+    {
+      "type": "plot",
+      "title": "Target and interference output accounting",
+      "plot": "components"
     },
     {
       "type": "callout",
@@ -102,7 +134,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

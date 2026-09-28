@@ -1,0 +1,91 @@
+{
+  "item": "P71",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p71",
+    "sha256": "41ad296232898f8d5b353261df02064ed52ad6d9c1d757e93703868455c6b9fd",
+    "byte_count": 185460,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/71-expose-fmcw-range-doppler-coupling/experiment.py",
+    "sha256": "383858cb09778ece5f3503ad325d0b52a77fb76c98a80eb63e8eab46fa010b75",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "velocity_mps": 20,
+      "bandwidth_mhz": 20,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "velocity_mps": -30,
+      "bandwidth_mhz": 20,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "velocity_mps": 20,
+      "bandwidth_mhz": 30,
+      "broken_mode": false
+    },
+    "broken": {
+      "velocity_mps": 20,
+      "bandwidth_mhz": 20,
+      "broken_mode": true
+    },
+    "recovery": {
+      "velocity_mps": 20,
+      "bandwidth_mhz": 20,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "signed_beat",
+      "unit": "kHz"
+    },
+    {
+      "name": "doppler",
+      "unit": "kHz"
+    },
+    {
+      "name": "stationary_range",
+      "unit": "m"
+    },
+    {
+      "name": "stationary_bias",
+      "unit": "m"
+    },
+    {
+      "name": "ideal_bias",
+      "unit": "m"
+    },
+    {
+      "name": "active_range",
+      "unit": "m"
+    },
+    {
+      "name": "active_error",
+      "unit": "m"
+    },
+    {
+      "name": "corrected_range",
+      "unit": "m"
+    },
+    {
+      "name": "velocity_sweep_last_bias",
+      "unit": "m"
+    },
+    {
+      "name": "slope_sweep_last_bias",
+      "unit": "m"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

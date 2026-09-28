@@ -3,13 +3,13 @@
   "id": "76-perform-sar-range-compression",
   "number": 76,
   "title": "Perform SAR Range Compression",
-  "summary": "Explore perform sar range compression with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "A 240-sample LFM echo is inserted at each quantized delay without wrapping. Independent per-row linear matched filtering divides by 240 and subtracts 239 filter-delay samples from the axis. Three targets retain complex aperture phase. Bandwidth controls the waveform; pair spacing affects a separate noiseless equal-target demonstration.",
   "guiding_question": "What information is created before azimuth focusing begins?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-9",
-    "range-bandwidth"
+    "radar-sensing",
+    "P76"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,51 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Range Bandwidth",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "bandwidth_mhz",
+      "type": "select",
+      "label": "Bandwidth mhz",
+      "default": 20,
+      "unit": "MHz",
+      "options": [
+        {
+          "label": "10 MHz",
+          "value": 10
+        },
+        {
+          "label": "20 MHz",
+          "value": 20
+        },
+        {
+          "label": "40 MHz",
+          "value": 40
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "pair_spacing_m",
+      "type": "select",
+      "label": "Pair spacing m",
+      "default": 10,
+      "unit": "m",
+      "options": [
+        {
+          "label": "3.75 m",
+          "value": 3.75
+        },
+        {
+          "label": "10 m",
+          "value": 10
+        },
+        {
+          "label": "15 m",
+          "value": 15
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +75,55 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing range bandwidth, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict which dimension range compression transforms and why the filter delay must be removed from the range axis. Why does narrowing a range response leave azimuth unfocused, and why must complex phase survive?",
+      "reveal": "A 240-sample LFM echo is inserted at each quantized delay without wrapping. Independent per-row linear matched filtering divides by 240 and subtracts 239 filter-delay samples from the axis. Three targets retain complex aperture phase. Bandwidth controls the waveform; pair spacing affects a separate noiseless equal-target demonstration."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Selected noiseless pair spacing",
+      "plot": "selected_pair"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Energy-normalized matched filter uses the complex chirp",
+      "plot": "waveform"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Raw unfocused aperture/fast-time record",
+      "plot": "raw"
+    },
+    {
+      "type": "plot",
+      "title": "Linear range compression preserves aperture rows",
+      "plot": "compressed"
+    },
+    {
+      "type": "plot",
+      "title": "Center look before and after compression",
+      "plot": "center"
+    },
+    {
+      "type": "plot",
+      "title": "Isolated noiseless response at fixed pulse duration",
+      "plot": "bandwidth"
+    },
+    {
+      "type": "plot",
+      "title": "Equal coherent targets: spacing changes only the pair scene",
+      "plot": "spacing"
+    },
+    {
+      "type": "plot",
+      "title": "Third target ridge keeps path phase",
+      "plot": "phase"
     },
     {
       "type": "callout",
@@ -102,7 +134,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

@@ -1,8 +1,8 @@
 schema_version: 1
 batch:
-  id: ELP-DSP-FIDELITY-P53-P64
-  title: DSP/Radar target reports, tracking, and array processing fidelity
-  goal: Repair twelve consecutive existing lessons P53-P64 with source-specific physical processing, controls,
+  id: ELP-DSP-FIDELITY-P65-P76
+  title: DSP/Radar adaptive arrays, FMCW, MIMO, micro-Doppler and SAR fidelity
+  goal: Repair twelve consecutive existing lessons P65-P76 with source-specific physical processing, controls,
     intermediate evidence, independent numerical comparisons and failure/recovery.
 sources:
   product: products/engineering-learning-platform/product.yaml
@@ -10,11 +10,11 @@ sources:
   - products/engineering-learning-platform/COURSE_CALIBER.md
   - products/engineering-learning-platform/course-caliber.yaml
   - tranquilWorks/portfolio-control#441
-  baseline_commit: 255427e3b3c6a31a66b74ad7f9836dad09b164e5
-  baseline_tree: 3958e73ecf1914e4d2b5dee4a919c6b7275434f2
+  baseline_commit: e28b041aff3f4e66cec2190e04a5d689be23f260
+  baseline_tree: 4b3ee5c371db2835920c4c3d8b04cd29dab2954b
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_baseline: 360bbc308989efe30bb2a6f51a455e7cf99aeeef
-  control_plane_path: products/engineering-learning-platform/batches/ELP-DSP-FIDELITY-P53-P64.yaml
+  control_plane_baseline: 53f048adf2102e01d94ca36cabb14afc7af2147a
+  control_plane_path: products/engineering-learning-platform/batches/ELP-DSP-FIDELITY-P65-P76.yaml
   target_repository: tranquilWorks/engineering-learning-platform
   source_repository: tranquilWorks/dsp-radar_learning
   source_pin: 5d73667a486df4a7b6c581e4c9406e810ed4f0f6
@@ -23,10 +23,10 @@ sources:
   source_file_set_sha256: c2511015b195a48bd847bd1f1cdeed92384a10eddf0b23e755590af4fb66ddca
   source_map_sha256: 5b2751769cf70d7c4faad148fecd2db16e7995982122777fa012bfbda7850bf5
   conversion_manifest_sha256: 1244c6dea11ea11b880e0f26d54ce81dea42ea1ab4981d4d5180c440eb7890a4
-  coverage_sha256: 780f80a3d3adcc2f6c49357e8846fb984bffcb2e1ea875e5d486d8cef80076b8
+  coverage_sha256: 81477dfa703200fdaf8886574ba42392b873fdb0d17f3f3f35a348b6e7538b2e
   milestone: products/engineering-learning-platform/roadmap.yaml#authorized-dsp-item-conversion-lane
 dependencies:
-- ELP-DSP-FIDELITY-P41-P52
+- ELP-DSP-FIDELITY-P53-P64
 scope:
   allowed_paths:
   - courses/dsp-radar/remediation-map.yaml
@@ -49,19 +49,20 @@ scope:
   - apps/api/tests/test_dsp_fidelity_remediation_p41_p52.py
   - apps/api/tests/test_dsp_fidelity_remediation_p29_p40.py
   - apps/api/tests/test_dsp_fidelity_remediation_p53_p64.py
-  - docs/evidence/ELP-DSP-FIDELITY-P53-P64-*.md
-  - courses/dsp-radar/modules/53-*/**
-  - courses/dsp-radar/modules/54-*/**
-  - courses/dsp-radar/modules/55-*/**
-  - courses/dsp-radar/modules/56-*/**
-  - courses/dsp-radar/modules/57-*/**
-  - courses/dsp-radar/modules/58-*/**
-  - courses/dsp-radar/modules/59-*/**
-  - courses/dsp-radar/modules/60-*/**
-  - courses/dsp-radar/modules/61-*/**
-  - courses/dsp-radar/modules/62-*/**
-  - courses/dsp-radar/modules/63-*/**
-  - courses/dsp-radar/modules/64-*/**
+  - apps/api/tests/test_dsp_fidelity_remediation_p65_p76.py
+  - docs/evidence/ELP-DSP-FIDELITY-P65-P76-*.md
+  - courses/dsp-radar/modules/65-*/**
+  - courses/dsp-radar/modules/66-*/**
+  - courses/dsp-radar/modules/67-*/**
+  - courses/dsp-radar/modules/68-*/**
+  - courses/dsp-radar/modules/69-*/**
+  - courses/dsp-radar/modules/70-*/**
+  - courses/dsp-radar/modules/71-*/**
+  - courses/dsp-radar/modules/72-*/**
+  - courses/dsp-radar/modules/73-*/**
+  - courses/dsp-radar/modules/74-*/**
+  - courses/dsp-radar/modules/75-*/**
+  - courses/dsp-radar/modules/76-*/**
   forbidden_paths:
   - courses/dsp-radar-learning
   - courses/dsp-radar-learning/**
@@ -84,66 +85,58 @@ scope:
   - package.json
   - package-lock.json
   - courses/dsp-radar/modules/0[1-9]-*/**
-  - courses/dsp-radar/modules/[1-4][0-9]-*/**
-  - courses/dsp-radar/modules/5[0-2]-*/**
-  - courses/dsp-radar/modules/6[5-9]-*/**
-  - courses/dsp-radar/modules/7[0-9]-*/**
+  - courses/dsp-radar/modules/[1-5][0-9]-*/**
+  - courses/dsp-radar/modules/6[0-4]-*/**
+  - courses/dsp-radar/modules/7[7-9]-*/**
   - courses/dsp-radar/modules/8[0-4]-*/**
 acceptance:
-- Start only after this exact control contract merges, from clean merged target PR 48 baseline 255427e3b3c6a31a66b74ad7f9836dad09b164e5,
-  tree 3958e73ecf1914e4d2b5dee4a919c6b7275434f2. Owner explicitly approved merge 48 and next twelve-lesson
-  chunk on 2026-09-27.
-- Repair exactly existing P53-P64 as one twelve-item batch. Preserve P01-P52 and P65-P84 module bytes, canonical
-  source/pin, every other course, platform, identities, source map and conversion manifest. Only twelve coverage
+- Start only after this exact control contract merges, from clean merged target PR49 baseline e28b041aff3f4e66cec2190e04a5d689be23f260,
+  tree 4b3ee5c371db2835920c4c3d8b04cd29dab2954b. Owner explicitly approved merge49 and next grouping on2026-09-28.
+- Repair exactly existing P65-P76 as one twelve-item batch. Preserve P01-P64 and P77-P84 module bytes,canonical
+  source/pin,every other course,platform,identities,source map and conversion manifest. Only twelve coverage
   target_content_digest values may change.
-- 'P53: seed5301, 72x65 normalized detector-score scene, 15m/.5m/s axes, two extended targets plus shoulder
-  and disconnected nuisance cells; deterministic local maxima, explicit 8-connected grouping, size filtering
-  and excess-power weighted centroids/shape proxies. Minimum size 1/3/18 and exponent0/1/2 sweeps; peak-only
-  over-reporting failure and grouped recovery. Shape proxies are not calibrated tracker covariance.'
-- 'P54: seed5401,81scans at1s,1000m/20m/s start with32m/s velocity from source scan41,30m report noise and
-  missing scans18-20/66-68. Explicit alpha-beta prediction/innovation/correction and coasting; alpha .1/.35/.85,
-  beta .01/.08/.30 sweeps. Beta-zero velocity-learning failure and positive-beta recovery.'
-- 'P55: seed5501,101scans at1s, interval acceleration sigma .8m/s2 and report sigma25m; explicit two-state
-  CV prediction, gain, Joseph covariance and NIS. Q and R sweeps isolate assumptions on fixed reports; zero-Q
-  and severely underestimated-R failures with calibrated recovery, finite positive covariance and disclosed
-  single-record consistency limits.'
-- 'P56: seed5601,101scans,Cartesian state[-1600,4,600,-12],polar range/bearing noise18m/.8deg,acceleration
-  .25m/s2. Nonlinear predicted measurement/Jacobian, wrapped bearing innovation, Joseph update, covariances
-  and normalized residuals. Bearing assumption and range geometry sweeps; branch-cut subtraction failure and
-  wrapped recovery.'
-- 'P57: seed5701 private deterministic Gaussian generator,three predicted CV tracks and six position reports;
-  track-specific innovation covariances, Mahalanobis distances, gate5.991 and deterministic global greedy one-to-one
-  assignment. Gate .5/5.991/13.816 and covariance .25/1/4 sweeps. Ungated Euclidean association failure, covariance-aware
-  recovery; labels used only for scoring.'
-- 'P58: deterministic30-scan target/noise/false-report record with seeds5801/5802, M-of-N3of4 confirmation
-  and coast limit2; predict,one-to-one association,birth,confirmation,coasting,deletion with retained stable
-  identities and reason logs. M1/3/4 and coast0/2/5 sweeps; immediately-confirmed immortal-report failure and
-  managed recovery.'
-- 'P59: private seed 5908, 25-scan two-target crossing, 6 m position and 3 m/s auxiliary velocity uncertainty,
-  200 paired trials. Compare position-only greedy identity swaps with normalized position-plus-velocity evidence;
-  preserve noise/update-interval/closest-approach sweeps and identity/error statistics. The named broken case
-  permits independent row minima to reuse a report; recovery restores one-to-one assignment and velocity evidence
-  on identical reports. Preserve alternating report order, truth-free association and idealized Cartesian velocity-feature
-  limitation.'
-- 'P60: seed6007,60scans,10m reports,shared six-state CV/CA IMM; explicit transition/mixing probabilities,
-  state and covariance mixing including mean spread, model predictions/Joseph updates, log likelihoods and
-  posterior blending. Acceleration .8/2/3.2 and mode persistence .80/.94/.99 sweeps; unreachable zero-support
-  maneuver mode failure and nonzero-support recovery; compare fixed steady filter.'
-- 'P61: seed6101,8element3GHzULA,half-wavelength spacing,30deg arrival,20deg initial phase,35dBSNR. Geometry/time
-  advance,steering phasors,wrapped/unwrapped phase and adjacent-sensor angle inference; angle/spacing/frequency
-  sweeps. One-wavelength .6/- .4 direction-cosine alias failure and half-wavelength recovery; explicit sign
-  conventions.'
-- 'P62: seed6201,uniform8elementULA,half-wavelength broadside,full -90:.025:90deg calculation; element-count4/8/16
-  and spacing .5/.75/1 sweeps,explicit Hamming taper,interpolated half-power beamwidth and sidelobe/null metrics.
-  One-wavelength steering30deg creates equal -30deg grating lobe; restore half-wavelength geometry.'
-- 'P63: seed6301,8sensors,128snapshots,two sources -20/25deg at10dB per-source sensorSNR. Form source steering/snapshots/noise,
-  conjugate-normalized DAS and output power over -60:.1:60deg. Preserve source separation/aperture and SNR/snapshot
-  sweeps with coupled deterministic inputs. Wrong steering-sign failure on source named broken scene and correct-sign
-  recovery; narrowband limitation.'
-- 'P64: seed6401,12sensors/256snapshots,half-wavelength spacing,phase-aligned beams squinted +/-3deg,2deg target,15dBSNR.
-  Explicit sum/difference ratio,monotone calibration within+/-4deg,sum guard .15,interpolated/clipped estimates
-  and validity counts. Squint1.5/3/5 andSNR -5/5/15/25 sweeps;1.12right-channel gain creates boresight bias,measured-gain
-  correction recovers.'
+- 'P65: seed6501,8-element half-wavelength array,desired3deg/-3dB and interference30deg/25dB,128 of256 snapshots.
+  Explicit covariance, trace-scaled loading, distortionless MVDR and conventional component SINR, snapshot/loading
+  sweeps. Refuse singular four-snapshot unregularized solve; mismatched-look self-nulling failure and loaded
+  recovery on fixed data.'
+- 'P66: seed6601,10-element half-wavelength array,two sources -3/+3deg,10dB,512 snapshots. Covariance eigensplit,
+  Bartlett and MUSIC projection, separated local-peak selection; separation/SNR/snapshot/assumed-count sweeps.
+  Coherent-source rank failure and seven-element spatial-smoothing recovery.'
+- 'P67: seed6701,10 channels,sources -15/10deg,25/10dB,512 snapshots. Fixed gain/phase/position patterns and
+  nearest/next-neighbor coupling; noisy256-snapshot30dB known-source calibration at10deg. Explicit composite
+  channel estimate, Bartlett/Capon/MUSIC and output SINR; error-scale/coupling sweeps. Failing to remove calibration
+  steering absorbs physical phase; corrected division recovers with direction-dependent residual limits.'
+- 'P68: seed6801,8 sensors x8 pulses,lambda.03m,PRF20kHz,platform105m/s,61clutter patches -60:2:60deg and30dB
+  total clutter. Joint space-time steering,128target-free training cells,trace loading. Fixed,separate and
+  joint processing with component accounting; training-support and target-like contamination sweeps. Mismatched
+  target10.7deg/.208 versus assumed10deg/.2 exposes self-nulling from contaminated training; clean-training
+  recovery.'
+- 'P69: seed6901,80MHz sampling,40us20MHz chirp,45m target,.7echo voltage,.01noise,65536FFT. Explicit delayed
+  echo/valid overlap and Tx*conj(Rx) dechirp,Hann FFT/interpolated peak. Range and slope sweeps; missing round-trip
+  factor gives doubled range,corrected conversion recovers.'
+- 'P70: seed7001,77GHz,512 fast-time samples x64 chirps,12.8MHz sampling,40us150MHz chirp,50usPRI; targets20/20/23m
+  and Doppler bins-3/+3/+3. Explicit separable fast-time range and coherent slow-time Doppler transforms. Fast-sample/chirp-count
+  prefix sweeps and resolution metrics; magnitude-before-Doppler failure and complex-data recovery.'
+- 'P71: seed7101,77GHz,80MHz sampling,40us20MHz upchirp,45m20m/s,.002noise. Explicit delayed moving echo and
+  signed frequency estimation under Tx*conj(Rx); range-Doppler coupling,velocity/bandwidth sweeps. Wrong Doppler
+  correction sign doubles bias; correct sign recovers on same beat.'
+- 'P72: seed7201,same carrier/sampling/chirp scale,45m20m/s,.002noise. Explicit signed up/down chirps,beat
+  estimates and two-equation range/velocity solve; range/velocity/noise sweeps. Two-target30/65m,15/-10m/s
+  wrong beat pairing produces ghosts; correctly paired evidence recovers with association limitation disclosed.'
+- 'P73: seed7301,77GHz,4RX positions0:.5:1.5lambda,2TX at0/2lambda,64TDMcycles,40us slot,18deg target,20dB.
+  TX+RX virtual positions,physical-versus-virtual patterns and separation sweep; signed-velocity sweep. Moving10m/s
+  target creates slot phase/angle bias; same-TX Doppler estimate and per-slot compensation recover unchanged
+  data.'
+- 'P74: seed7401,24GHz,4800Hz slow sampling,4s,1.2m/s bulk,2m/s sinusoidal limb speed at1.5Hz,three scatterers,25dB.
+  Integrate velocities into phase,explicit Hann STFT,512window/384overlap/2048FFT baseline; speed/carrier/window
+  sweeps. Magnitude-only processing destroys signed Doppler; unchanged complex-IQ recovery.'
+- 'P75: seed7501,5GHz,1000m closest range,80m aperture/.2m spacing,995:.05:1005m fast range,Gaussian .6m envelope,30dB.
+  Explicit slant range,two-way delay/carrier phase,raw history and candidate-path coherent sums. Cross-range
+  -20/0/20m and aperture20/40/80m sweeps; magnitude-only phase loss and complex-history recovery.'
+- 'P76: seed7601,5GHz,120MHz sampling,2us20MHz LFM,950:1.25:1400m gate,80m/.2m aperture,three targets. Zero-extended
+  integer-delay insertion,linear per-row matched filter,energy normalization and filter-delay-corrected range
+  axis preserving aperture phase. Bandwidth10/20/40MHz and target-spacing3.75/10/15m sweeps; magnitude-only
+  compressed-history phase loss and original-complex recovery.'
 - Every item preserves pinned source text and guiding question, physical labeled controls, source equations
   and units, intermediate processing, prediction/two one-variable sweeps/named failure/recovery/focused checks/teach-back.
   Retain source essential operations and bounded resource use; explicitly disclose porting choices. No generic
@@ -152,11 +145,11 @@ acceptance:
   production output. Retain sixty baseline/two-sweep/broken/recovery comparisons with units, inputs, provenance
   hashes, tolerances and measured errors. Preserve exact prior reference prefix and fixtures; no MATLAB execution
   claim.
-- Regress P02-P52 without rewriting their module bytes. Extend append-only independent references and normalized-AST
-  anti-template regression through P64. Historical contracts/provenance tests permit the new batch while retaining
+- Regress P02-P64 without rewriting their module bytes. Extend append-only independent references and normalized-AST
+  anti-template regression through P76. Historical contracts/provenance tests permit the new batch while retaining
   their immutable facts.
-- 'Remediation ledger: one already-distinct,fifty-one prior repairs,twelve current repairs,twenty pending,total84.
-  P65-P84 and whole-course numerical/curriculum/capstone maturity remain blocked; issue441 stays open. Catalog
+- 'Remediation ledger: one already-distinct,sixty-three prior repairs,twelve current repairs,eight pending,total84.
+  P77-P84 and whole-course numerical/curriculum/capstone maturity remain blocked; issue441 stays open. Catalog
   stays6courses/290modules/290interactive.'
 - All required local focused DSP,backend,contract,quick/full,deterministic catalog,lint,frontend typecheck/build,service
   smoke and scope/source checks pass. Bounded numerical-library thread environment is permitted; do not relax
@@ -171,7 +164,8 @@ validation:
     -B -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py
     apps/api/tests/test_dsp_fidelity_remediation_p21_p28.py apps/api/tests/test_dsp_fidelity_remediation_p29_p40.py
     apps/api/tests/test_dsp_fidelity_remediation_p41_p52.py apps/api/tests/test_dsp_fidelity_remediation_p53_p64.py
-    apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py apps/api/tests/test_course_caliber_status.py
+    apps/api/tests/test_dsp_fidelity_remediation_p65_p76.py apps/api/tests/test_dsp_conversion_framework.py
+    apps/api/tests/test_dsp_course.py apps/api/tests/test_course_caliber_status.py
   - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests
   - ./scripts/agent-verify.sh contract
   - ./scripts/agent-verify.sh quick
@@ -182,17 +176,18 @@ validation:
   - npm run build
   - git diff --check
   - .venv/bin/ruff check apps/api/tests/test_dsp_fidelity_remediation*.py courses/dsp-radar/remediation_reference_cases.py
-    courses/dsp-radar/modules/5[3-9]-* courses/dsp-radar/modules/6[0-4]-*
+    courses/dsp-radar/modules/6[5-9]-* courses/dsp-radar/modules/7[0-6]-*
   - git diff --check
-  - git diff --name-only 255427e3b3c6a31a66b74ad7f9836dad09b164e5
+  - git diff --name-only e28b041aff3f4e66cec2190e04a5d689be23f260
   focused_tests_to_add:
   - Verify all twelve identities,physical stages,finite deterministic bounded output,all offered control boundaries,axes/units
     and numeric invariants.
   - Replay sixty independent numerical signatures with source/production/reference hashes and immutable prior
     prefix.
-  - Assert component topology,tracker recursion/covariance/gating/lifecycle/IMM normalization and truth isolation,phase
-    sign/alias,beamwidth/normalization/monopulse validity and exact recoveries.
-  - Regress prior repairs,normalized algorithm uniqueness throughP64 and blocked whole-course maturity.
+  - Assert covariance/loading/distortionless constraints,subspace/peak behavior,calibration residuals,space-time
+    ordering,chirp mixing signs/axes,phase preservation,TDM compensation,STFT timing,range compression and
+    exact recoveries.
+  - Regress prior repairs,normalized algorithm uniqueness throughP76 and blocked whole-course maturity.
   required_ci:
   - Hosted CI is not required by retained owner direction; exact local contract, quick, full, source, scope,
     lint and frontend gates remain mandatory.
@@ -200,19 +195,19 @@ risk:
   class: high
   hazards:
   - Generic template renamed as a physical algorithm.
-  - Wrong indexing,angle wrap,noise/state covariance,association truth leakage,mode support,steering conjugate,normalization
-    or calibration validity.
+  - Wrong covariance/subspace ordering,calibration steering,training contamination,chirp signs/axes,slot compensation,STFT
+    normalization,range insertion or matched-filter delay.
   - Circular reference evidence,mutation of prior repairs,or false course-completion claims.
   stop_conditions:
   - Source or immutable module drift.
   - Need to change generic UI/runtime/dependencies or unrelated courses.
   - Independent evidence or a mandatory gate cannot be made credible.
 rollback:
-  strategy: Revert this isolated batch to merged PR48 baseline, preserving source pins and other courses.
+  strategy: Revert this isolated batch to merged PR49 baseline, preserving source pins and other courses.
 evidence:
   output:
-  - docs/evidence/ELP-DSP-FIDELITY-P53-P64-2026-09-27.md
+  - docs/evidence/ELP-DSP-FIDELITY-P65-P76-2026-09-28.md
   - Per-item source mapping and five independent expected/actual cases.
   - Exact verification results,source/scope preservation,remaining limits and next batch.
-  claim_boundary: Twelve deterministic software source-fidelity repairs only. P65-P84,learner validation,MATLAB
+  claim_boundary: Twelve deterministic software source-fidelity repairs only. P77-P84,learner validation,MATLAB
     runtime,hardware and production claims remain pending.

@@ -1,0 +1,95 @@
+{
+  "item": "P66",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p66",
+    "sha256": "41ad296232898f8d5b353261df02064ed52ad6d9c1d757e93703868455c6b9fd",
+    "byte_count": 185460,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/66-estimate-doa-with-music/experiment.py",
+    "sha256": "05f3094705780bbd6d3c44352904ad8e833f05c4c3543f18deb5716c241866f6",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "source_separation_deg": 6,
+      "source_snr_db": 10,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "source_separation_deg": 2,
+      "source_snr_db": 10,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "source_separation_deg": 6,
+      "source_snr_db": -10,
+      "broken_mode": false
+    },
+    "broken": {
+      "source_separation_deg": 6,
+      "source_snr_db": 10,
+      "broken_mode": true
+    },
+    "recovery": {
+      "source_separation_deg": 6,
+      "source_snr_db": 10,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "angle_rmse",
+      "unit": "deg"
+    },
+    {
+      "name": "detected_peaks",
+      "unit": "count"
+    },
+    {
+      "name": "first_peak",
+      "unit": "deg"
+    },
+    {
+      "name": "second_peak",
+      "unit": "deg"
+    },
+    {
+      "name": "music_contrast",
+      "unit": "dB"
+    },
+    {
+      "name": "bartlett_contrast",
+      "unit": "dB"
+    },
+    {
+      "name": "coherent_gap",
+      "unit": "dB"
+    },
+    {
+      "name": "smoothed_gap",
+      "unit": "dB"
+    },
+    {
+      "name": "smoothed_rmse",
+      "unit": "deg"
+    },
+    {
+      "name": "low_snr_rmse",
+      "unit": "deg"
+    },
+    {
+      "name": "short_record_rmse",
+      "unit": "deg"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

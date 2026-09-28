@@ -360,12 +360,12 @@ def test_active_contract_ledger_and_prior_source_prefix():
     )
     assert raw[118814:].lstrip().startswith(b"# P53-P64 independent references.")
     contract = yaml.safe_load((ROOT / "contracts/active-batch.yaml").read_text())
-    assert contract["batch"]["id"] == "ELP-DSP-FIDELITY-P53-P64"
-    assert contract["sources"]["baseline_commit"] == "255427e3b3c6a31a66b74ad7f9836dad09b164e5"
+    assert contract["batch"]["id"] == "ELP-DSP-FIDELITY-P65-P76"
+    assert "ELP-DSP-FIDELITY-P53-P64" in contract["dependencies"]
     ledger = yaml.safe_load((COURSE / "remediation-map.yaml").read_text())
-    assert ledger["derived_counts"]["repaired_in_prior_batches"] == 51
-    assert ledger["derived_counts"]["repaired_in_batch"] == 12
-    assert ledger["derived_counts"]["pending"] == 20
+    prior = ledger["scope"]["repaired_in_prior_batches"]
+    assert "ELP-DSP-FIDELITY-P53-P64" in prior["batch_ids"]
+    assert prior["items"][-12:] == [f"P{n}" for n in range(53, 65)]
     assert ledger["claim_boundary"]["numerically_verified"] == "blocked"
 
 

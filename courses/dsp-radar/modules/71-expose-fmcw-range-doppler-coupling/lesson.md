@@ -1,6 +1,4 @@
-# Expose FMCW Range-Doppler Coupling
-
-> **Guiding question:** Why can target motion bias the range estimated from one chirp?
+# P71 lesson: One Beat, Two Causes
 
 ## Guiding question
 
@@ -185,33 +183,29 @@ the deterministic model contract and expected metrics. They do not execute
 MATLAB, inspect rendered figures, or establish RF, bench, hardware/HIL,
 real-time, field, or operational performance.
 
-## Use the Python GUI experiment
+## Interactive lab: Expose FMCW Range-Doppler Coupling
 
-The GUI keeps the pinned source's mental model and processing order visible. The **chirp slope** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** Why can target motion bias the range estimated from one chirp?
 
-### Prediction and sweep 1 — chirp slope
+Seed 7101; carrier 77 GHz, fs 80 MHz, T 40 us, B 20 MHz, R 45 m, v 20 m/s, phase.35 rad, noise RMS.002. Frozen delay and positive approaching Doppler enter the echo; Tx conj(Rx) gives S tau-fd. Lag-one phase measures the signed beat. Stationary bias=-fc v/S. Velocity-30..30 m/s and bandwidth 10..30 MHz sweeps reuse noise; recovery uses independently supplied signed velocity.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict the stationary range bias for approaching and receding targets. Why does the same signed beat admit multiple range/velocity pairs, and what independent information makes correction possible?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Velocity m/s** from 20 to -30 m/s. Predict, run, and explain a measured value using the governing equation; then reset.
+2. Start at the baseline. Sweep only **Bandwidth mhz** from 20 to 30 MHz. Predict, run, and explain a measured value using the governing equation; then reset.
+3. Enable the broken case. Subtracting fd again gives the wrong-sign correction and doubles the ideal stationary range bias.
+4. Recovery: Add the independently known signed fd to the unchanged beat before converting delay to range.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict the stationary range bias for approaching and receding targets. Why does the same signed beat admit multiple range/velocity pairs, and what independent information makes correction possible? Support the explanation with a measured value and units, and state the recovery assumption.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+Subtracting fd again gives the wrong-sign correction and doubles the ideal stationary range bias. Distinguish the selected-control scene from a named separate failure scene.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The pinned source lesson is preserved above. Private Park–Miller uniforms retain zero offset; P65–P72 split radius/phase uniform blocks and P73–P76 interleave them. Matrix inputs retain column-major ordering. P75 shorter apertures crop the full baseline noise record to isolate aperture changes. MUSIC missing-peak penalties and truth-defined audit neighborhoods are disclosed; neither manufactures successful detections. Source figures become labeled native plots; full arrays drive calculations before display decimation. Sixty independent software comparisons cover five scenarios per lesson. No MATLAB execution, browser/accessibility, learner, hardware or production validation is claimed.

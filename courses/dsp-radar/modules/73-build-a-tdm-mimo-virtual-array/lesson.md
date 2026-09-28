@@ -1,6 +1,4 @@
-# Build a TDM-MIMO Virtual Array
-
-> **Guiding question:** How do multiple transmit and receive channels create more spatial samples?
+# P73 lesson: Timing Can Masquerade as Geometry
 
 ## Guiding question
 
@@ -214,33 +212,29 @@ Static validation and an independent Python oracle do not prove MATLAB parsing
 or execution, rendered plots, RF behavior, hardware/HIL, real-time operation,
 field performance, or operational radar performance.
 
-## Use the Python GUI experiment
+## Interactive lab: Build a TDM-MIMO Virtual Array
 
-The GUI keeps the pinned source's mental model and processing order visible. The **virtual element count** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** How do multiple transmit and receive channels create more spatial samples?
 
-### Prediction and sweep 1 — virtual element count
+Seed 7301; carrier 77 GHz, TX 0/2 wavelengths, RX 0:.5:1.5, 64 cycles and 40 us TX slot. Negative spatial/dechirped Doppler phase observes an 18 deg target at 20 dB. Physical/virtual aperture and 8/16/28 deg incoherent-pair comparisons are separate from the selected noisy scene. The velocity sweep and named 10 m/s failure use seed 7401. Same-TX 80 us lag-one phase estimates Doppler before per-slot compensation.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict the virtual positions from TX+RX geometry and the motion phase between TX slots. Why must Doppler be estimated across same-TX cycles before compensating inter-TX timing?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Velocity m/s** from 0 to 10 m/s. Predict, run, and explain a measured value using the governing equation; then reset.
+2. Start at the baseline. Sweep only **Source separation deg** from 16 to 8 deg. Predict, run, and explain a measured value using the governing equation; then reset.
+3. Enable the broken case. Treating the named 10 m/s TDM record as simultaneous lets motion phase masquerade as angle.
+4. Recovery: Multiply each virtual channel by exp(+j2pi fd slot_time) using the same-TX estimate. Recovery reuses the noisy record and assumes one unaliased target Doppler; the reviewed speed range lies below same-TX Nyquist.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict the virtual positions from TX+RX geometry and the motion phase between TX slots. Why must Doppler be estimated across same-TX cycles before compensating inter-TX timing? Support the explanation with a measured value and units, and state the recovery assumption.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+Treating the named 10 m/s TDM record as simultaneous lets motion phase masquerade as angle. Distinguish the selected-control scene from a named separate failure scene.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The pinned source lesson is preserved above. Private Park–Miller uniforms retain zero offset; P65–P72 split radius/phase uniform blocks and P73–P76 interleave them. Matrix inputs retain column-major ordering. P75 shorter apertures crop the full baseline noise record to isolate aperture changes. MUSIC missing-peak penalties and truth-defined audit neighborhoods are disclosed; neither manufactures successful detections. Source figures become labeled native plots; full arrays drive calculations before display decimation. Sixty independent software comparisons cover five scenarios per lesson. No MATLAB execution, browser/accessibility, learner, hardware or production validation is claimed.

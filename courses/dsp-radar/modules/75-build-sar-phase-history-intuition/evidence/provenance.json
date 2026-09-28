@@ -1,0 +1,91 @@
+{
+  "item": "P75",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p75",
+    "sha256": "41ad296232898f8d5b353261df02064ed52ad6d9c1d757e93703868455c6b9fd",
+    "byte_count": 185460,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/75-build-sar-phase-history-intuition/experiment.py",
+    "sha256": "acfe4ff7c34ca9c2b0927333847afc9a31ef6e2e296e1d72ba1d05e5051fe149",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "target_cross_range_m": 0,
+      "aperture_length_m": 80,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "target_cross_range_m": 20,
+      "aperture_length_m": 80,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "target_cross_range_m": 0,
+      "aperture_length_m": 20,
+      "broken_mode": false
+    },
+    "broken": {
+      "target_cross_range_m": 0,
+      "aperture_length_m": 80,
+      "broken_mode": true
+    },
+    "recovery": {
+      "target_cross_range_m": 0,
+      "aperture_length_m": 80,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "range_excursion",
+      "unit": "m"
+    },
+    {
+      "name": "delay_excursion",
+      "unit": "ns"
+    },
+    {
+      "name": "phase_span",
+      "unit": "turns"
+    },
+    {
+      "name": "maximum_phase_step",
+      "unit": "rad"
+    },
+    {
+      "name": "aperture_samples",
+      "unit": "count"
+    },
+    {
+      "name": "active_focus_peak",
+      "unit": "ratio"
+    },
+    {
+      "name": "active_focus_coordinate",
+      "unit": "m"
+    },
+    {
+      "name": "recovered_focus_peak",
+      "unit": "ratio"
+    },
+    {
+      "name": "recovered_coordinate",
+      "unit": "m"
+    },
+    {
+      "name": "selected_noise_power",
+      "unit": "voltage\u00b2"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

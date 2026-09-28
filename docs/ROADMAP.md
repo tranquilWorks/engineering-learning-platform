@@ -389,3 +389,8 @@ steering, array factor, DAS and amplitude-comparison monopulse. Preserve
 P01-P52 and P65-P84 and retain sixty independent scenarios. P65-P76 is the next
 proposed twelve-lesson group after this batch completes and merges under its
 own fresh contract. Whole-course maturity remains blocked; issue 441 stays open.
+
+- `ELP-DSP-FIDELITY-P65-P76`: owner-requested twelve-lesson continuation after
+  PR #49. Repair adaptive arrays, FMCW, MIMO, micro-Doppler and initial SAR
+  processing with independent five-scenario evidence. P77-P84 remain pending;
+  course-level numerical/curriculum/capstone maturity and issue441 remain open.

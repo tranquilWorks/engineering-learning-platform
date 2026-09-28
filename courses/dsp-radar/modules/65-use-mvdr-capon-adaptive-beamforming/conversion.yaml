@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "405172176a8da83a0cffb5b8ffdfd252ee968f7f5889a3d4c1874614f7f94614",
+    "content_digest": "02b81c687d0484f62388f1ed9e44b3a0499517f68cc82e8960c938b6fef224b7",
     "files": [
       {
         "path": "modules/65-use-mvdr-capon-adaptive-beamforming/experiment.py",
-        "sha256": "ef809e5ff6cdcbf59de863e3e3ca25742a0fab7a69e4c9d978317bf6af9dc76c"
+        "sha256": "5935a29b028195001040a5a26ba12ed1ecd81937fe7ee3d1e332b92921789779"
       },
       {
         "path": "modules/65-use-mvdr-capon-adaptive-beamforming/lesson.md",
-        "sha256": "5ce1f0c9058a9e92e5cbcfff6a5047701cbc1f46c37120120056ed8b0b53649c"
+        "sha256": "f1cecd7882439086f539b9a641701eb7c51eff0799d1945d15a54ba4d91d177d"
       },
       {
         "path": "modules/65-use-mvdr-capon-adaptive-beamforming/module.yaml",
-        "sha256": "8d36ba08f80db965fb1a76c87ea15322ba703ece738c9f0432bd13998bfe332f"
+        "sha256": "f2b86230ccaf67c71d510c925b9ccd257d162d66b6fa61aac5417ed24e861ac3"
       }
     ]
   },
   "content": {
     "guiding_question": "How can a beamformer place data-dependent nulls on interference?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "Eight half-wavelength sensors observe a weak 3-degree source and a 25 dB interferer at 30 degrees. R=X X^H/N; loading is alpha trace(R)/8; w=solve(R+delta I,a)/(a^H solve). Components use the true manifold only for performance accounting.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary interference angle while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Eight half-wavelength sensors observe a weak 3-degree source and a 25 dB interferer at 30 degrees. R=X X^H/N; loading is alpha trace(R)/8; w=solve(R+delta I,a)/(a^H solve). Components use the true manifold only for performance accounting.",
+      "The named four-snapshot covariance is singular without loading. A barely loaded 6-degree look can suppress the true 3-degree source.",
+      "On the unchanged four snapshots, alpha=.1 stabilizes the solve; correcting the look restores unit true response. Disable the toggle to restore the selected baseline.",
+      "Explicit stage equations are retained in lesson.md. P65-P76 retain private source input formulas, with a fixed full-aperture noise crop for P75 controls. Plot/console presentation is adapted; no MATLAB runtime execution is claimed."
     ],
     "equations": [
       {
@@ -66,149 +66,229 @@
     ],
     "equation_order": "before_toolbox_shortcuts",
     "deterministic_data": {
-      "seed": 1065,
+      "seed": 6501,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
+          "name": "raw_rcond",
+          "value": 6.042500481947661e-18,
+          "unit": "count"
         },
         {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "6308dc34e8235355b63d3cd20fbb6745e01eacb25df0b405d94755f88bf4a947",
-          "unit": "mixed numeric signature"
+          "sha256": "2e4079b322fc1856db6bc02d327b62ef830c89b181c7ee12d9b092511d075fe3",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "2ab37672a91debde95bae1204382441b0e965b0869d0f263551a97e45bca7003",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "71835ad2acce38f695e12f7d9040019a9fca1cf03f49908d291195104a52d7c5",
-          "unit": "mixed numeric signature"
+          "sha256": "dfc2a98d230d3ba7bddd50d11b8c8b8d8870ec9847f6fba2d9f1842606120330",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "0e97c1b8df8055092dafa1e8ad83e30d7e7d0b8dcca89d1f4d953b7c2c450bbd",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "ecc8eb2131097b1e6c71ffc8541f732491a5fbe5db3c6458e7f4cd7764f82c6a",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "e53bdfcbb4e2b84a5d164948b61e56169fc888fdaa0f36a3f343b03afa70c927",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "fb9c25ff34712cf040d71941920b8550a93f3b4484abb59574d0c47e2fb3468d",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "36a8559fd8c523e9557fb00506a102ec4226d445517d3ffc0c94fe483115a206",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "2e4079b322fc1856db6bc02d327b62ef830c89b181c7ee12d9b092511d075fe3",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "2ab37672a91debde95bae1204382441b0e965b0869d0f263551a97e45bca7003",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P65 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P65 explicit processing and evidence stages",
+        "target_plot_key": "covariance",
+        "title": "Measured covariance before adaptation",
         "axes": [
           {
             "role": "x",
-            "label": "look angle (deg)",
-            "unit": "source units"
+            "label": "Sensor (index)",
+            "unit": "index"
           },
           {
             "role": "y",
-            "label": "normalized power",
-            "unit": "normalized"
+            "label": "Sensor (index)",
+            "unit": "index"
           }
         ],
-        "interpretation": "This view answers the Use MVDR/Capon Adaptive Beamforming guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Eight half-wavelength sensors observe a weak 3-degree source and a 25 dB interferer at 30 degrees. R=X X^H/N; loading is alpha trace(R)/8; w=solve(R+delta I,a)/(a^H solve). Components use the true manifold only for performance accounting."
       },
       {
-        "source_figure": "Pinned P65 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P65 explicit processing and evidence stages",
+        "target_plot_key": "eigenvalues",
+        "title": "Covariance eigenvalues",
         "axes": [
           {
             "role": "x",
-            "label": "look angle (deg)",
-            "unit": "source units"
+            "label": "Descending mode (index)",
+            "unit": "index"
           },
           {
             "role": "y",
-            "label": "normalized power",
-            "unit": "normalized"
+            "label": "Noise-relative eigenvalue (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Use MVDR/Capon Adaptive Beamforming guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Eight half-wavelength sensors observe a weak 3-degree source and a 25 dB interferer at 30 degrees. R=X X^H/N; loading is alpha trace(R)/8; w=solve(R+delta I,a)/(a^H solve). Components use the true manifold only for performance accounting."
       },
       {
-        "source_figure": "Pinned P65 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P65 explicit processing and evidence stages",
+        "target_plot_key": "pattern",
+        "title": "Constrained response and adaptive interference null",
         "axes": [
           {
             "role": "x",
-            "label": "look angle (deg)",
-            "unit": "source units"
+            "label": "Angle (deg)",
+            "unit": "deg"
           },
           {
             "role": "y",
-            "label": "normalized power",
-            "unit": "normalized"
+            "label": "Voltage response (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Use MVDR/Capon Adaptive Beamforming guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Eight half-wavelength sensors observe a weak 3-degree source and a 25 dB interferer at 30 degrees. R=X X^H/N; loading is alpha trace(R)/8; w=solve(R+delta I,a)/(a^H solve). Components use the true manifold only for performance accounting."
       },
       {
-        "source_figure": "Pinned P65 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P65 explicit processing and evidence stages",
+        "target_plot_key": "components",
+        "title": "Output component accounting",
         "axes": [
           {
             "role": "x",
-            "label": "look angle (deg)",
-            "unit": "source units"
+            "label": "Component: desired/interference/noise (index)",
+            "unit": "index"
           },
           {
             "role": "y",
-            "label": "normalized power",
-            "unit": "normalized"
+            "label": "Output power (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Use MVDR/Capon Adaptive Beamforming guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Eight half-wavelength sensors observe a weak 3-degree source and a 25 dB interferer at 30 degrees. R=X X^H/N; loading is alpha trace(R)/8; w=solve(R+delta I,a)/(a^H solve). Components use the true manifold only for performance accounting."
+      },
+      {
+        "source_figure": "Pinned P65 explicit processing and evidence stages",
+        "target_plot_key": "support",
+        "title": "Nested snapshot prefixes",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Snapshots (count)",
+            "unit": "count"
+          },
+          {
+            "role": "y",
+            "label": "Output SINR (dB)",
+            "unit": "dB"
+          }
+        ],
+        "interpretation": "Eight half-wavelength sensors observe a weak 3-degree source and a 25 dB interferer at 30 degrees. R=X X^H/N; loading is alpha trace(R)/8; w=solve(R+delta I,a)/(a^H solve). Components use the true manifold only for performance accounting."
+      },
+      {
+        "source_figure": "Pinned P65 explicit processing and evidence stages",
+        "target_plot_key": "loading",
+        "title": "Eight-snapshot mismatched look at 6 degrees",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Log10 loading alpha (ratio)",
+            "unit": "ratio"
+          },
+          {
+            "role": "y",
+            "label": "Output SINR (dB)",
+            "unit": "dB"
+          }
+        ],
+        "interpretation": "Eight half-wavelength sensors observe a weak 3-degree source and a 25 dB interferer at 30 degrees. R=X X^H/N; loading is alpha trace(R)/8; w=solve(R+delta I,a)/(a^H solve). Components use the true manifold only for performance accounting."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "snapshots",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          4,
+          16,
+          128,
+          256
         ],
-        "expected_observation": "Changing interference angle moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Snapshots; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "loading_alpha",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          1e-06,
+          0.01,
+          0.1,
+          1
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Loading alpha; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "The named four-snapshot covariance is singular without loading. A barely loaded 6-degree look can suppress the true 3-degree source.",
+      "recovery": "On the unchanged four snapshots, alpha=.1 stabilizes the solve; correcting the look restores unit true response. Disable the toggle to restore the selected baseline.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "The named four-snapshot covariance is singular without loading. A barely loaded 6-degree look can suppress the true 3-degree source.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -216,63 +296,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 1000000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P65 python -m pytest -q apps/api/tests/test_dsp_course.py",
-    "seed": 1065,
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p65_p76.py",
+    "seed": 6501,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
+        "name": "snapshots",
+        "value": 128,
+        "unit": "count"
+      },
+      {
+        "name": "loading_alpha",
+        "value": 0.01,
         "unit": "ratio"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 4.447109347438527e-12,
+        "max_relative_error": 7.984199878276603e-13,
+        "passed": true,
         "expected": {
           "path": "modules/65-use-mvdr-capon-adaptive-beamforming/evidence/expected-baseline.json",
-          "sha256": "6308dc34e8235355b63d3cd20fbb6745e01eacb25df0b405d94755f88bf4a947"
+          "sha256": "2e4079b322fc1856db6bc02d327b62ef830c89b181c7ee12d9b092511d075fe3"
         },
         "actual": {
           "path": "modules/65-use-mvdr-capon-adaptive-beamforming/evidence/actual-baseline.json",
-          "sha256": "00aa031e0e72f8932ad6cfee78f5dc9b82c23eeacd1e40d131374c98e8f791ab"
-        },
-        "max_absolute_error": 2.0516921495072893e-13,
-        "max_relative_error": 2.0516921495072893e-13,
-        "passed": true
+          "sha256": "2ab37672a91debde95bae1204382441b0e965b0869d0f263551a97e45bca7003"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 4.447109347438527e-12,
+        "max_relative_error": 7.984199878276603e-13,
+        "passed": true,
+        "expected": {
+          "path": "modules/65-use-mvdr-capon-adaptive-beamforming/evidence/expected-sweep-1.json",
+          "sha256": "dfc2a98d230d3ba7bddd50d11b8c8b8d8870ec9847f6fba2d9f1842606120330"
+        },
+        "actual": {
+          "path": "modules/65-use-mvdr-capon-adaptive-beamforming/evidence/actual-sweep-1.json",
+          "sha256": "0e97c1b8df8055092dafa1e8ad83e30d7e7d0b8dcca89d1f4d953b7c2c450bbd"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 4.447109347438527e-12,
+        "max_relative_error": 7.984199878276603e-13,
+        "passed": true,
+        "expected": {
+          "path": "modules/65-use-mvdr-capon-adaptive-beamforming/evidence/expected-sweep-2.json",
+          "sha256": "ecc8eb2131097b1e6c71ffc8541f732491a5fbe5db3c6458e7f4cd7764f82c6a"
+        },
+        "actual": {
+          "path": "modules/65-use-mvdr-capon-adaptive-beamforming/evidence/actual-sweep-2.json",
+          "sha256": "e53bdfcbb4e2b84a5d164948b61e56169fc888fdaa0f36a3f343b03afa70c927"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 1.223725121235475e-09,
+        "max_relative_error": 2.609740418324223e-10,
+        "passed": true,
         "expected": {
           "path": "modules/65-use-mvdr-capon-adaptive-beamforming/evidence/expected-broken.json",
-          "sha256": "71835ad2acce38f695e12f7d9040019a9fca1cf03f49908d291195104a52d7c5"
+          "sha256": "fb9c25ff34712cf040d71941920b8550a93f3b4484abb59574d0c47e2fb3468d"
         },
         "actual": {
           "path": "modules/65-use-mvdr-capon-adaptive-beamforming/evidence/actual-broken.json",
-          "sha256": "3a21cdf3e59435e6f3d1655e40c2fca79f9b8c8978828be9f3ac3245d102dcb6"
+          "sha256": "36a8559fd8c523e9557fb00506a102ec4226d445517d3ffc0c94fe483115a206"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 4.577727086285677e-13,
-        "max_relative_error": 4.577727086285677e-13,
-        "passed": true
+        "max_absolute_error": 4.447109347438527e-12,
+        "max_relative_error": 7.984199878276603e-13,
+        "passed": true,
+        "expected": {
+          "path": "modules/65-use-mvdr-capon-adaptive-beamforming/evidence/expected-recovery.json",
+          "sha256": "2e4079b322fc1856db6bc02d327b62ef830c89b181c7ee12d9b092511d075fe3"
+        },
+        "actual": {
+          "path": "modules/65-use-mvdr-capon-adaptive-beamforming/evidence/actual-recovery.json",
+          "sha256": "2ab37672a91debde95bae1204382441b0e965b0869d0f263551a97e45bca7003"
+        }
       }
     ]
   },

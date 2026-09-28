@@ -1,6 +1,4 @@
-# Build SAR Phase-History Intuition
-
-> **Guiding question:** Why does moving one antenna create a large synthetic aperture?
+# P75 Lesson: Build SAR Phase-History Intuition
 
 ## Guiding question
 
@@ -142,33 +140,29 @@ different cross-range coordinates create different aperture-phase histories
 because each target's path-length minimum—and therefore its phase-curvature
 vertex—occurs at a different platform position.
 
-## Use the Python GUI experiment
+## Interactive lab: Build SAR Phase-History Intuition
 
-The GUI keeps the pinned source's mental model and processing order visible. The **aperture length** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** Why does moving one antenna create a large synthetic aperture?
 
-### Prediction and sweep 1 — aperture length
+Seed 7501; carrier 5 GHz, 1000 m closest range, 80 m aperture sampled every.2 m, 995:.05:1005 m fast range, Gaussian envelope sigma.6 m, 30 dB. Relative phase=-4 pi(R-1000)/.06; baseline excursion.7996802557 m and 26.65600852 turns. Cross-range-20/0/20 m and aperture 20/40/80 m controls reuse a full 401 x 201 noise record cropped at shorter apertures. Coherent scores scan-26:.25:26 m along the sampled delay ridge.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict how cross-range position moves the slant-range vertex and how aperture length changes phase span. Why does a magnitude ridge fail to focus under the correct path-phase hypothesis?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Target cross range m** from 0 to 20 m. Predict, run, and explain a measured value using the governing equation; then reset.
+2. Start at the baseline. Sweep only **Aperture length m** from 80 to 20 m. Predict, run, and explain a measured value using the governing equation; then reset.
+3. Enable the broken case. Taking magnitude preserves the delay ridge but erases aperture phase, so correct path compensation cannot align the data.
+4. Recovery: Return to the unchanged complex ridge samples. Controls crop a fixed401x201 noise record when aperture changes, preserving nested measurements rather than regenerating noise.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict how cross-range position moves the slant-range vertex and how aperture length changes phase span. Why does a magnitude ridge fail to focus under the correct path-phase hypothesis? Support the explanation with a measured value and units, and state the recovery assumption.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+Taking magnitude preserves the delay ridge but erases aperture phase, so correct path compensation cannot align the data. Distinguish the selected-control scene from a named separate failure scene.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The pinned source lesson is preserved above. Private Park–Miller uniforms retain zero offset; P65–P72 split radius/phase uniform blocks and P73–P76 interleave them. Matrix inputs retain column-major ordering. P75 shorter apertures crop the full baseline noise record to isolate aperture changes. MUSIC missing-peak penalties and truth-defined audit neighborhoods are disclosed; neither manufactures successful detections. Source figures become labeled native plots; full arrays drive calculations before display decimation. Sixty independent software comparisons cover five scenarios per lesson. No MATLAB execution, browser/accessibility, learner, hardware or production validation is claimed.

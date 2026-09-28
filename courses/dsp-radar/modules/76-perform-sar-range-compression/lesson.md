@@ -1,6 +1,4 @@
-# Perform SAR Range Compression
-
-> **Guiding question:** What information is created before azimuth focusing begins?
+# Lesson: the product before azimuth focusing
 
 ## Guiding question
 
@@ -130,33 +128,29 @@ provides SAR phase-history intuition. The experiment targets base MATLAB
 R2016b or newer with no optional toolbox. Static checks and independent Python
 oracles are not MATLAB runtime or rendered-figure evidence.
 
-## Use the Python GUI experiment
+## Interactive lab: Perform SAR Range Compression
 
-The GUI keeps the pinned source's mental model and processing order visible. The **range bandwidth** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** What information is created before azimuth focusing begins?
 
-### Prediction and sweep 1 — range bandwidth
+Seed 7601; carrier 5 GHz, fs 120 MHz, 2 us pulse, 20 MHz baseline bandwidth. A 361-sample 950:1.25:1400 m gate spans 401 aperture positions. Targets cross-range-15/0/18 m and perpendicular 1000/1025/1070 m use voltages 1/.8/.6 and phases 0/.6/-.9, noise RMS.2. Round-to-nearest delays insert 240 sample chirps; zero-padded 1024 FFT linear convolution returns 600 samples normalized by 240. The range axis subtracts 239 samples. Separate noiseless isolated bandwidth 10/20/40 MHz and equal-target spacing 3.75/10/15 m examples show resolution.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict which dimension range compression transforms and why the filter delay must be removed from the range axis. Why does narrowing a range response leave azimuth unfocused, and why must complex phase survive?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Bandwidth mhz** from 20 to 40 MHz. Predict, run, and explain a measured value using the governing equation; then reset.
+2. Start at the baseline. Sweep only **Pair spacing m** from 10 to 15 m. Predict, run, and explain a measured value using the governing equation; then reset.
+3. Enable the broken case. Magnitude-only range history retains identical range ridges but replaces each aperture phase by zero, destroying later coherent azimuth processing.
+4. Recovery: Recover the retained original complex range-compressed record; lost phase cannot be reconstructed from magnitude. This lesson performs range compression only, not azimuth focusing.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict which dimension range compression transforms and why the filter delay must be removed from the range axis. Why does narrowing a range response leave azimuth unfocused, and why must complex phase survive? Support the explanation with a measured value and units, and state the recovery assumption.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+Magnitude-only range history retains identical range ridges but replaces each aperture phase by zero, destroying later coherent azimuth processing. Distinguish the selected-control scene from a named separate failure scene.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The pinned source lesson is preserved above. Private Park–Miller uniforms retain zero offset; P65–P72 split radius/phase uniform blocks and P73–P76 interleave them. Matrix inputs retain column-major ordering. P75 shorter apertures crop the full baseline noise record to isolate aperture changes. MUSIC missing-peak penalties and truth-defined audit neighborhoods are disclosed; neither manufactures successful detections. Source figures become labeled native plots; full arrays drive calculations before display decimation. Sixty independent software comparisons cover five scenarios per lesson. No MATLAB execution, browser/accessibility, learner, hardware or production validation is claimed.

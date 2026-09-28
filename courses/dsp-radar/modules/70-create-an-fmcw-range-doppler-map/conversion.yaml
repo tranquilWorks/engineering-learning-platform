@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "9ac5ee028b8262bdd127eacdcbc85ade0c64f3b9295abcfd2ad716033e431c8e",
+    "content_digest": "35adda236da51731bea3d648c8c5f9466b84f19679cb0039329deb0fa5a04974",
     "files": [
       {
         "path": "modules/70-create-an-fmcw-range-doppler-map/experiment.py",
-        "sha256": "2c89410bc9cd647d19ddea846aeeac31d7523bf0cb4618311463f8bf05fff417"
+        "sha256": "57be66196b6bb99c8f64486054ceb7c5541a3d0d017acf3902ecbc228655bca4"
       },
       {
         "path": "modules/70-create-an-fmcw-range-doppler-map/lesson.md",
-        "sha256": "4b4725e0dc199088027c6222622091df3d544f1d0098654a16d824f01b98d82b"
+        "sha256": "29bf7a27538e24430bd518316828594a2fa56427e1230b2a7971a5ac2fb994dc"
       },
       {
         "path": "modules/70-create-an-fmcw-range-doppler-map/module.yaml",
-        "sha256": "5ab0d3783e11b630c580f9dcd91708b0e5b224b791496afed38724e26d8fd4c2"
+        "sha256": "ee502157bed60dddf07d2e14f5d781b42acf319a1797e3ea37d8da29274def51"
       }
     ]
   },
   "content": {
     "guiding_question": "How do fast-time beat frequency and chirp-to-chirp phase separate range and velocity?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "The 512x64 stop-and-hop scene separates two 20 m targets by signed velocity and a third at 23 m. Hann FFTs transform fast-time rows then coherent chirp columns. Tx conj(Rx) gives slow frequency -2v/lambda; the plotted velocity axis reverses that sign. Within-chirp Doppler coupling belongs to P71.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary target velocity while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "The 512x64 stop-and-hop scene separates two 20 m targets by signed velocity and a third at 23 m. Hann FFTs transform fast-time rows then coherent chirp columns. Tx conj(Rx) gives slow frequency -2v/lambda; the plotted velocity axis reverses that sign. Within-chirp Doppler coupling belongs to P71.",
+      "Taking absolute value of range data before its slow-time FFT erases signed phase and collapses the isolated moving target near zero velocity.",
+      "Retain the unchanged complex range data and transform the chirp dimension. Toggle off reproduces the selected coherent map exactly.",
+      "Explicit stage equations are retained in lesson.md. P65-P76 retain private source input formulas, with a fixed full-aperture noise crop for P75 controls. Plot/console presentation is adapted; no MATLAB runtime execution is claimed."
     ],
     "equations": [
       {
@@ -66,149 +66,240 @@
     ],
     "equation_order": "before_toolbox_shortcuts",
     "deterministic_data": {
-      "seed": 1070,
+      "seed": 7001,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
-        },
-        {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "d5044db04826a0c688001aa66cd034fb63de25adba29aad39bf2ed78e0236d4d",
-          "unit": "mixed numeric signature"
+          "sha256": "e5d118e26690b1d47b99088c66e880c2c7e1d842a0a3912413d3d47b4e8b7616",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "28222e7f652b6692e5e3302fb40bbe0c7113c193bb749229a64af2efc8b6ddc5",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "927be1133a5a51b7b17b142ac991cdd5476c4f33fba455bc50b4fdd6a36a07c7",
-          "unit": "mixed numeric signature"
+          "sha256": "ef39e0431e521fa19252e98d9cc0fc394db2f8bbec91378f6dab4b8fb7090008",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "563dd12ced19f0f0713201a66430e3b3fa3f50e44c6676c5b5fb80f5becffcf3",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "f74c4b5f4a8e2386022e8fb5598e83b6c7defcdd7dd03b3e3a9a0fb39072cd6e",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "b8e84311e5d863c5a9dfeb1aedd901a6fd5b5fae20c6b4b0b3a425bb5760aa5b",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "4c57b9f28e4ab60ea4d8a1cc3642be8af9c7585162665081595f30ff2335f1fc",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "412c4961b86cf1b580511245e5e9154f87e28c580a8fe614d94e94cdd623b2cb",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "e5d118e26690b1d47b99088c66e880c2c7e1d842a0a3912413d3d47b4e8b7616",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "28222e7f652b6692e5e3302fb40bbe0c7113c193bb749229a64af2efc8b6ddc5",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P70 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P70 explicit processing and evidence stages",
+        "target_plot_key": "raw",
+        "title": "Two acquisition clocks before transforms",
         "axes": [
           {
             "role": "x",
-            "label": "range or time bin",
-            "unit": "source units"
+            "label": "Chirp (index)",
+            "unit": "index"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Fast time (us)",
+            "unit": "us"
           }
         ],
-        "interpretation": "This view answers the Create an FMCW Range-Doppler Map guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "The 512x64 stop-and-hop scene separates two 20 m targets by signed velocity and a third at 23 m. Hann FFTs transform fast-time rows then coherent chirp columns. Tx conj(Rx) gives slow frequency -2v/lambda; the plotted velocity axis reverses that sign. Within-chirp Doppler coupling belongs to P71."
       },
       {
-        "source_figure": "Pinned P70 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P70 explicit processing and evidence stages",
+        "target_plot_key": "range",
+        "title": "Range FFT retains complex slow-time columns",
         "axes": [
           {
             "role": "x",
-            "label": "range or time bin",
-            "unit": "source units"
+            "label": "Chirp (index)",
+            "unit": "index"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Range (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Create an FMCW Range-Doppler Map guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "The 512x64 stop-and-hop scene separates two 20 m targets by signed velocity and a third at 23 m. Hann FFTs transform fast-time rows then coherent chirp columns. Tx conj(Rx) gives slow frequency -2v/lambda; the plotted velocity axis reverses that sign. Within-chirp Doppler coupling belongs to P71."
       },
       {
-        "source_figure": "Pinned P70 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P70 explicit processing and evidence stages",
+        "target_plot_key": "map",
+        "title": "Selected signed range-Doppler map",
         "axes": [
           {
             "role": "x",
-            "label": "range or time bin",
-            "unit": "source units"
+            "label": "Approaching velocity (m/s)",
+            "unit": "m/s"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Range (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Create an FMCW Range-Doppler Map guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "The 512x64 stop-and-hop scene separates two 20 m targets by signed velocity and a third at 23 m. Hann FFTs transform fast-time rows then coherent chirp columns. Tx conj(Rx) gives slow frequency -2v/lambda; the plotted velocity axis reverses that sign. Within-chirp Doppler coupling belongs to P71."
       },
       {
-        "source_figure": "Pinned P70 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P70 explicit processing and evidence stages",
+        "target_plot_key": "phase",
+        "title": "Isolated range-bin slow-time phase",
         "axes": [
           {
             "role": "x",
-            "label": "range or time bin",
-            "unit": "source units"
+            "label": "Chirp time (ms)",
+            "unit": "ms"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Unwrapped phase (rad)",
+            "unit": "rad"
           }
         ],
-        "interpretation": "This view answers the Create an FMCW Range-Doppler Map guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "The 512x64 stop-and-hop scene separates two 20 m targets by signed velocity and a third at 23 m. Hann FFTs transform fast-time rows then coherent chirp columns. Tx conj(Rx) gives slow frequency -2v/lambda; the plotted velocity axis reverses that sign. Within-chirp Doppler coupling belongs to P71."
+      },
+      {
+        "source_figure": "Pinned P70 explicit processing and evidence stages",
+        "target_plot_key": "velocity_sweep",
+        "title": "Coherent dwell controls velocity spacing",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Chirps (count)",
+            "unit": "count"
+          },
+          {
+            "role": "y",
+            "label": "Velocity bin spacing (m/s)",
+            "unit": "m/s"
+          }
+        ],
+        "interpretation": "The 512x64 stop-and-hop scene separates two 20 m targets by signed velocity and a third at 23 m. Hann FFTs transform fast-time rows then coherent chirp columns. Tx conj(Rx) gives slow frequency -2v/lambda; the plotted velocity axis reverses that sign. Within-chirp Doppler coupling belongs to P71."
+      },
+      {
+        "source_figure": "Pinned P70 explicit processing and evidence stages",
+        "target_plot_key": "range_sweep",
+        "title": "Retained fast-time aperture controls range spacing",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Fast samples (count)",
+            "unit": "count"
+          },
+          {
+            "role": "y",
+            "label": "Range bin spacing (m)",
+            "unit": "m"
+          }
+        ],
+        "interpretation": "The 512x64 stop-and-hop scene separates two 20 m targets by signed velocity and a third at 23 m. Hann FFTs transform fast-time rows then coherent chirp columns. Tx conj(Rx) gives slow frequency -2v/lambda; the plotted velocity axis reverses that sign. Within-chirp Doppler coupling belongs to P71."
+      },
+      {
+        "source_figure": "Pinned P70 explicit processing and evidence stages",
+        "target_plot_key": "recovery",
+        "title": "Preserve complex phase before slow FFT",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Approaching velocity (m/s)",
+            "unit": "m/s"
+          },
+          {
+            "role": "y",
+            "label": "Isolated-bin voltage (ratio)",
+            "unit": "ratio"
+          }
+        ],
+        "interpretation": "The 512x64 stop-and-hop scene separates two 20 m targets by signed velocity and a third at 23 m. Hann FFTs transform fast-time rows then coherent chirp columns. Tx conj(Rx) gives slow frequency -2v/lambda; the plotted velocity axis reverses that sign. Within-chirp Doppler coupling belongs to P71."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "fast_samples",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          128,
+          256,
+          512
         ],
-        "expected_observation": "Changing target velocity moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Fast samples; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "chirps",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          16,
+          32,
+          64
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Chirps; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "Taking absolute value of range data before its slow-time FFT erases signed phase and collapses the isolated moving target near zero velocity.",
+      "recovery": "Retain the unchanged complex range data and transform the chirp dimension. Toggle off reproduces the selected coherent map exactly.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Taking absolute value of range data before its slow-time FFT erases signed phase and collapses the isolated moving target near zero velocity.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -216,63 +307,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 1000000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P70 python -m pytest -q apps/api/tests/test_dsp_course.py",
-    "seed": 1070,
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p65_p76.py",
+    "seed": 7001,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "fast_samples",
+        "value": 512,
+        "unit": "samples"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "chirps",
+        "value": 64,
+        "unit": "chirps"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 1.4432899320127035e-15,
+        "max_relative_error": 1.4432899320127035e-15,
+        "passed": true,
         "expected": {
           "path": "modules/70-create-an-fmcw-range-doppler-map/evidence/expected-baseline.json",
-          "sha256": "d5044db04826a0c688001aa66cd034fb63de25adba29aad39bf2ed78e0236d4d"
+          "sha256": "e5d118e26690b1d47b99088c66e880c2c7e1d842a0a3912413d3d47b4e8b7616"
         },
         "actual": {
           "path": "modules/70-create-an-fmcw-range-doppler-map/evidence/actual-baseline.json",
-          "sha256": "3575fc62eb3da76ce89a935afa945dbc4d9b8035fe528e0c9d55612919ec5894"
-        },
-        "max_absolute_error": 3.659295089164516e-13,
-        "max_relative_error": 3.659295089164516e-13,
-        "passed": true
+          "sha256": "28222e7f652b6692e5e3302fb40bbe0c7113c193bb749229a64af2efc8b6ddc5"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 1.4432899320127035e-15,
+        "max_relative_error": 1.4432899320127035e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/70-create-an-fmcw-range-doppler-map/evidence/expected-sweep-1.json",
+          "sha256": "ef39e0431e521fa19252e98d9cc0fc394db2f8bbec91378f6dab4b8fb7090008"
+        },
+        "actual": {
+          "path": "modules/70-create-an-fmcw-range-doppler-map/evidence/actual-sweep-1.json",
+          "sha256": "563dd12ced19f0f0713201a66430e3b3fa3f50e44c6676c5b5fb80f5becffcf3"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 2.220446049250313e-15,
+        "max_relative_error": 9.118631775587952e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/70-create-an-fmcw-range-doppler-map/evidence/expected-sweep-2.json",
+          "sha256": "f74c4b5f4a8e2386022e8fb5598e83b6c7defcdd7dd03b3e3a9a0fb39072cd6e"
+        },
+        "actual": {
+          "path": "modules/70-create-an-fmcw-range-doppler-map/evidence/actual-sweep-2.json",
+          "sha256": "b8e84311e5d863c5a9dfeb1aedd901a6fd5b5fae20c6b4b0b3a425bb5760aa5b"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 1.4432899320127035e-15,
+        "max_relative_error": 1.4432899320127035e-15,
+        "passed": true,
         "expected": {
           "path": "modules/70-create-an-fmcw-range-doppler-map/evidence/expected-broken.json",
-          "sha256": "927be1133a5a51b7b17b142ac991cdd5476c4f33fba455bc50b4fdd6a36a07c7"
+          "sha256": "4c57b9f28e4ab60ea4d8a1cc3642be8af9c7585162665081595f30ff2335f1fc"
         },
         "actual": {
           "path": "modules/70-create-an-fmcw-range-doppler-map/evidence/actual-broken.json",
-          "sha256": "b8d4366bc6a1569653349e47a81798baac28d363d4744c206d28934b328016de"
+          "sha256": "412c4961b86cf1b580511245e5e9154f87e28c580a8fe614d94e94cdd623b2cb"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 3.658184866139891e-13,
-        "max_relative_error": 3.658184866139891e-13,
-        "passed": true
+        "max_absolute_error": 1.4432899320127035e-15,
+        "max_relative_error": 1.4432899320127035e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/70-create-an-fmcw-range-doppler-map/evidence/expected-recovery.json",
+          "sha256": "e5d118e26690b1d47b99088c66e880c2c7e1d842a0a3912413d3d47b4e8b7616"
+        },
+        "actual": {
+          "path": "modules/70-create-an-fmcw-range-doppler-map/evidence/actual-recovery.json",
+          "sha256": "28222e7f652b6692e5e3302fb40bbe0c7113c193bb749229a64af2efc8b6ddc5"
+        }
       }
     ]
   },

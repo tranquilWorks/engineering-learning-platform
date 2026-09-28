@@ -1,6 +1,4 @@
-# Inject Array Calibration and Mutual-Coupling Errors
-
-> **Guiding question:** How sensitive are beamforming and DOA results to imperfect channels?
+# P67 lesson: The Beamformer Protects a Vector, Not an Angle
 
 Guiding question: How sensitive are beamforming and DOA results to imperfect channels?
 
@@ -193,33 +191,29 @@ electromagnetic validation. Static checks and a Python simulated oracle do not
 validate MATLAB rendering, physical antennas, hardware/HIL, real-time systems,
 field behavior, or an operational radar.
 
-## Use the Python GUI experiment
+## Interactive lab: Inject Array Calibration and Mutual-Coupling Errors
 
-The GUI keeps the pinned source's mental model and processing order visible. The **calibration error** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** How sensitive are beamforming and DOA results to imperfect channels?
 
-### Prediction and sweep 1 — calibration error
+Seed 6701; ten sensors, sources-15/+10 deg at 25/10 dB, 512 snapshots. Fixed normalized gain, phase, position patterns use RMS .18, 20 deg, .05 wavelength. Symmetric nearest coupling is .18 exp(j 25 deg), next-neighbor .3 times its square. A 30 dB known 10 deg source supplies 256 calibration snapshots. Receiver noise is added after the impaired manifold; equalization colors it. Bartlett, Capon and noise-whitened MUSIC retain ideal/impaired/calibrated comparisons.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict what happens if calibration divides out the known source steering itself. Why must noise covariance also be transformed, and why does one-angle calibration leave direction-dependent residuals?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Error scale** from 1 to 1.5 ratio. Predict, run, and explain a measured value using the governing equation; then reset.
+2. Start at the baseline. Sweep only **Coupling magnitude** from 0.18 to 0.3 ratio. Predict, run, and explain a measured value using the governing equation; then reset.
+3. Enable the broken case. Dividing by the raw calibration response without removing its known steering phase makes the calibration source appear at boresight.
+4. Recovery: Divide the measured response by nominal 10-degree steering before equalization. This repairs the known direction on unchanged data; it does not identify a global coupling inverse.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict what happens if calibration divides out the known source steering itself. Why must noise covariance also be transformed, and why does one-angle calibration leave direction-dependent residuals? Support the explanation with a measured value and units, and state the recovery assumption.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+Dividing by the raw calibration response without removing its known steering phase makes the calibration source appear at boresight. Distinguish the selected-control scene from a named separate failure scene.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The pinned source lesson is preserved above. Private Park–Miller uniforms retain zero offset; P65–P72 split radius/phase uniform blocks and P73–P76 interleave them. Matrix inputs retain column-major ordering. P75 shorter apertures crop the full baseline noise record to isolate aperture changes. MUSIC missing-peak penalties and truth-defined audit neighborhoods are disclosed; neither manufactures successful detections. Source figures become labeled native plots; full arrays drive calculations before display decimation. Sixty independent software comparisons cover five scenarios per lesson. No MATLAB execution, browser/accessibility, learner, hardware or production validation is claimed.

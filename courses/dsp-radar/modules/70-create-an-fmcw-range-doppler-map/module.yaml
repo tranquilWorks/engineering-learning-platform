@@ -3,13 +3,13 @@
   "id": "70-create-an-fmcw-range-doppler-map",
   "number": 70,
   "title": "Create an FMCW Range-Doppler Map",
-  "summary": "Explore create an fmcw range-doppler map with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "The 512x64 stop-and-hop scene separates two 20 m targets by signed velocity and a third at 23 m. Hann FFTs transform fast-time rows then coherent chirp columns. Tx conj(Rx) gives slow frequency -2v/lambda; the plotted velocity axis reverses that sign. Within-chirp Doppler coupling belongs to P71.",
   "guiding_question": "How do fast-time beat frequency and chirp-to-chirp phase separate range and velocity?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-8",
-    "target-velocity"
+    "fmcw",
+    "P70"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,51 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Target Velocity",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "fast_samples",
+      "type": "select",
+      "label": "Fast samples",
+      "default": 512,
+      "unit": "samples",
+      "options": [
+        {
+          "label": "128 samples",
+          "value": 128
+        },
+        {
+          "label": "256 samples",
+          "value": 256
+        },
+        {
+          "label": "512 samples",
+          "value": 512
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "chirps",
+      "type": "select",
+      "label": "Chirps",
+      "default": 64,
+      "unit": "chirps",
+      "options": [
+        {
+          "label": "16 chirps",
+          "value": 16
+        },
+        {
+          "label": "32 chirps",
+          "value": 32
+        },
+        {
+          "label": "64 chirps",
+          "value": 64
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +75,50 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing target velocity, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict which matrix dimension contains range and which contains velocity. Why do longer fast-time support and longer coherent dwell improve different bin spacings, and why does magnitude destroy velocity sign?",
+      "reveal": "The 512x64 stop-and-hop scene separates two 20 m targets by signed velocity and a third at 23 m. Hann FFTs transform fast-time rows then coherent chirp columns. Tx conj(Rx) gives slow frequency -2v/lambda; the plotted velocity axis reverses that sign. Within-chirp Doppler coupling belongs to P71."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Two acquisition clocks before transforms",
+      "plot": "raw"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Range FFT retains complex slow-time columns",
+      "plot": "range"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Selected signed range-Doppler map",
+      "plot": "map"
+    },
+    {
+      "type": "plot",
+      "title": "Isolated range-bin slow-time phase",
+      "plot": "phase"
+    },
+    {
+      "type": "plot",
+      "title": "Coherent dwell controls velocity spacing",
+      "plot": "velocity_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Retained fast-time aperture controls range spacing",
+      "plot": "range_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Preserve complex phase before slow FFT",
+      "plot": "recovery"
     },
     {
       "type": "callout",
@@ -102,7 +129,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

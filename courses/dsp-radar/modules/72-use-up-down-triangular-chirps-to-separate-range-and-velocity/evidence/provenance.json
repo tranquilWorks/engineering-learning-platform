@@ -1,0 +1,99 @@
+{
+  "item": "P72",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p72",
+    "sha256": "41ad296232898f8d5b353261df02064ed52ad6d9c1d757e93703868455c6b9fd",
+    "byte_count": 185460,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity/experiment.py",
+    "sha256": "d7d282fcebf9d16212395ff173d0be0929a0dfc233cd4b1f744fa4c8e7cfa046",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "target_range_m": 45,
+      "velocity_mps": 20,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "target_range_m": 75,
+      "velocity_mps": 20,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "target_range_m": 45,
+      "velocity_mps": -30,
+      "broken_mode": false
+    },
+    "broken": {
+      "target_range_m": 45,
+      "velocity_mps": 20,
+      "broken_mode": true
+    },
+    "recovery": {
+      "target_range_m": 45,
+      "velocity_mps": 20,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "up_beat",
+      "unit": "kHz"
+    },
+    {
+      "name": "down_beat",
+      "unit": "kHz"
+    },
+    {
+      "name": "active_range",
+      "unit": "m"
+    },
+    {
+      "name": "active_velocity",
+      "unit": "m/s"
+    },
+    {
+      "name": "selected_range_error",
+      "unit": "m"
+    },
+    {
+      "name": "selected_velocity_error",
+      "unit": "m/s"
+    },
+    {
+      "name": "first_ghost_range",
+      "unit": "m"
+    },
+    {
+      "name": "first_ghost_velocity",
+      "unit": "m/s"
+    },
+    {
+      "name": "first_recovered_range",
+      "unit": "m"
+    },
+    {
+      "name": "first_recovered_velocity",
+      "unit": "m/s"
+    },
+    {
+      "name": "noise_high_range_error",
+      "unit": "m"
+    },
+    {
+      "name": "noise_high_velocity_error",
+      "unit": "m/s"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

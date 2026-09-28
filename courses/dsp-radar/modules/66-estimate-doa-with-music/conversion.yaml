@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "a52c4ca59d005a7df55fabb7f1e335de59e8cd3a1bd239dac4a5631b0b3103e5",
+    "content_digest": "49b584e913aa088cbf2d470fd0c694b2f512b8a5f05f060e89a45fbeafdad1bd",
     "files": [
       {
         "path": "modules/66-estimate-doa-with-music/experiment.py",
-        "sha256": "54a4b44dc6158b0503850d2985f702643565ecb5f165d25ac6c22a70b3f1b188"
+        "sha256": "05f3094705780bbd6d3c44352904ad8e833f05c4c3543f18deb5716c241866f6"
       },
       {
         "path": "modules/66-estimate-doa-with-music/lesson.md",
-        "sha256": "d773bb6b88bfca16f3a54b0ecad7758ddce4de376556992568ae04ed2c61d0c8"
+        "sha256": "b72176e82e000f4350e18c16464fe37b2705c1a004825165b84c3986ae27e55a"
       },
       {
         "path": "modules/66-estimate-doa-with-music/module.yaml",
-        "sha256": "b9c20465f8690ac909226eaa6e55deb7fdcb33a3bb231adfb1af559c34ae5ab2"
+        "sha256": "697ef8e5485c3b0124edb123eeeca6d3305b79b1f85e36607070ba7ef2a320a7"
       }
     ]
   },
   "content": {
     "guiding_question": "How can subspace methods resolve sources more finely than a conventional beam?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "Ten sensors estimate R, split its Hermitian eigenspaces, and scan 1/||E_n^H a||\u00b2. The independent sources share fixed private waveforms/noise across sweeps; two separated local peaks are selected without truth.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary source separation while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Ten sensors estimate R, split its Hermitian eigenspaces, and scan 1/||E_n^H a||\u00b2. The independent sources share fixed private waveforms/noise across sweeps; two separated local peaks are selected without truth.",
+      "Coherent sources collapse the second signal eigenvalue; assuming two independent sources can create false MUSIC directions.",
+      "Average four overlapping seven-element subarray covariances on unchanged coherent data. This restores rank at the cost of aperture. Missing peak sets use an explicit 80-degree penalty; counts expose incompleteness. Toggle off restores selected independent-source data.",
+      "Explicit stage equations are retained in lesson.md. P65-P76 retain private source input formulas, with a fixed full-aperture noise crop for P75 controls. Plot/console presentation is adapted; no MATLAB runtime execution is claimed."
     ],
     "equations": [
       {
@@ -66,149 +66,227 @@
     ],
     "equation_order": "before_toolbox_shortcuts",
     "deterministic_data": {
-      "seed": 1066,
+      "seed": 6601,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
+          "name": "missing_peak_penalty_deg",
+          "value": 80,
+          "unit": "count"
         },
         {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "91540d45bc0c24c1d30661760bb3e49b9ff87e017d18097693b11f2d7ac1f6e1",
-          "unit": "mixed numeric signature"
+          "sha256": "e03d9f3e405ae91b4e74d50dbb609615769e8922437605787b1d8cb1e935b913",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "65439098a4112afe186cdac64192fce54cc8ffd22cd0d5ec3ff00a88e2289767",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "8b7ee6af0d1955ba34a3c589c2ecd348c4e0868e975f766e0ac8782e9ead3b9e",
-          "unit": "mixed numeric signature"
+          "sha256": "8655587be19ee115b6d3a632cf63a42e121abbfda2425ed1407b542eaea09e8b",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "ca93c5033923eb07dce00f1f13ea86edf61df0b32f112e25b1a0f750ba4f6819",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "8c9963c1fee16adebcc047d66711c3a7f225a3568374690c5bbb3ce32b5b8f79",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "acb267209ba61b02757d27320b231f301f8dd344d0fc5f6812299f40489d3264",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "d52c1af35b99ff6a55b1f56be01b3a8f32d04106ab94554b668dd6623855af58",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "409f743825c301e17857131167171eec91046d5efa0545f4b0ffdac54fad93dd",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "e03d9f3e405ae91b4e74d50dbb609615769e8922437605787b1d8cb1e935b913",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "65439098a4112afe186cdac64192fce54cc8ffd22cd0d5ec3ff00a88e2289767",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P66 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P66 explicit processing and evidence stages",
+        "target_plot_key": "eigenvalues",
+        "title": "Signal/noise eigenvalue split",
         "axes": [
           {
             "role": "x",
-            "label": "look angle (deg)",
-            "unit": "source units"
+            "label": "Descending mode (index)",
+            "unit": "index"
           },
           {
             "role": "y",
-            "label": "normalized power",
-            "unit": "normalized"
+            "label": "Eigenvalue (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Estimate DOA with MUSIC guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Ten sensors estimate R, split its Hermitian eigenspaces, and scan 1/||E_n^H a||\u00b2. The independent sources share fixed private waveforms/noise across sweeps; two separated local peaks are selected without truth."
       },
       {
-        "source_figure": "Pinned P66 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P66 explicit processing and evidence stages",
+        "target_plot_key": "spectrum",
+        "title": "Conventional beam versus MUSIC",
         "axes": [
           {
             "role": "x",
-            "label": "look angle (deg)",
-            "unit": "source units"
+            "label": "Angle (deg)",
+            "unit": "deg"
           },
           {
             "role": "y",
-            "label": "normalized power",
-            "unit": "normalized"
+            "label": "Normalized power (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Estimate DOA with MUSIC guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Ten sensors estimate R, split its Hermitian eigenspaces, and scan 1/||E_n^H a||\u00b2. The independent sources share fixed private waveforms/noise across sweeps; two separated local peaks are selected without truth."
       },
       {
-        "source_figure": "Pinned P66 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P66 explicit processing and evidence stages",
+        "target_plot_key": "separation",
+        "title": "Two-source contrast at fixed noise",
         "axes": [
           {
             "role": "x",
-            "label": "look angle (deg)",
-            "unit": "source units"
+            "label": "Source separation (deg)",
+            "unit": "deg"
           },
           {
             "role": "y",
-            "label": "normalized power",
-            "unit": "normalized"
+            "label": "Truth-to-midpoint contrast (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Estimate DOA with MUSIC guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Ten sensors estimate R, split its Hermitian eigenspaces, and scan 1/||E_n^H a||\u00b2. The independent sources share fixed private waveforms/noise across sweeps; two separated local peaks are selected without truth."
       },
       {
-        "source_figure": "Pinned P66 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P66 explicit processing and evidence stages",
+        "target_plot_key": "snr",
+        "title": "Fixed scene SNR sweep",
         "axes": [
           {
             "role": "x",
-            "label": "look angle (deg)",
-            "unit": "source units"
+            "label": "SNR (dB)",
+            "unit": "dB"
           },
           {
             "role": "y",
-            "label": "normalized power",
-            "unit": "normalized"
+            "label": "Matched angle RMSE (deg)",
+            "unit": "deg"
           }
         ],
-        "interpretation": "This view answers the Estimate DOA with MUSIC guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Ten sensors estimate R, split its Hermitian eigenspaces, and scan 1/||E_n^H a||\u00b2. The independent sources share fixed private waveforms/noise across sweeps; two separated local peaks are selected without truth."
+      },
+      {
+        "source_figure": "Pinned P66 explicit processing and evidence stages",
+        "target_plot_key": "snapshots",
+        "title": "Nested prefixes of a 0 dB record",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Snapshots (count)",
+            "unit": "count"
+          },
+          {
+            "role": "y",
+            "label": "Matched angle RMSE (deg)",
+            "unit": "deg"
+          }
+        ],
+        "interpretation": "Ten sensors estimate R, split its Hermitian eigenspaces, and scan 1/||E_n^H a||\u00b2. The independent sources share fixed private waveforms/noise across sweeps; two separated local peaks are selected without truth."
+      },
+      {
+        "source_figure": "Pinned P66 explicit processing and evidence stages",
+        "target_plot_key": "count",
+        "title": "Assumed source count changes the noise subspace",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Angle (deg)",
+            "unit": "deg"
+          },
+          {
+            "role": "y",
+            "label": "Normalized MUSIC power (dB)",
+            "unit": "dB"
+          }
+        ],
+        "interpretation": "Ten sensors estimate R, split its Hermitian eigenspaces, and scan 1/||E_n^H a||\u00b2. The independent sources share fixed private waveforms/noise across sweeps; two separated local peaks are selected without truth."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "source_separation_deg",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          2,
+          6,
+          12
         ],
-        "expected_observation": "Changing source separation moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Source separation deg; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "source_snr_db",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          -10,
+          0,
+          10
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Source SNR db; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "Coherent sources collapse the second signal eigenvalue; assuming two independent sources can create false MUSIC directions.",
+      "recovery": "Average four overlapping seven-element subarray covariances on unchanged coherent data. This restores rank at the cost of aperture. Missing peak sets use an explicit 80-degree penalty; counts expose incompleteness. Toggle off restores selected independent-source data.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Coherent sources collapse the second signal eigenvalue; assuming two independent sources can create false MUSIC directions.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -216,63 +294,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 1000000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P66 python -m pytest -q apps/api/tests/test_dsp_course.py",
-    "seed": 1066,
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p65_p76.py",
+    "seed": 6601,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "source_separation_deg",
+        "value": 6,
+        "unit": "deg"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "source_snr_db",
+        "value": 10,
+        "unit": "dB"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 6.039613253960852e-14,
+        "max_relative_error": 1.0241807402167069e-14,
+        "passed": true,
         "expected": {
           "path": "modules/66-estimate-doa-with-music/evidence/expected-baseline.json",
-          "sha256": "91540d45bc0c24c1d30661760bb3e49b9ff87e017d18097693b11f2d7ac1f6e1"
+          "sha256": "e03d9f3e405ae91b4e74d50dbb609615769e8922437605787b1d8cb1e935b913"
         },
         "actual": {
           "path": "modules/66-estimate-doa-with-music/evidence/actual-baseline.json",
-          "sha256": "0708f68593c0cecaf9aea7d613e94a7531cf4191b6af496e8172790c384c26d4"
-        },
-        "max_absolute_error": 3.7059244561987725e-13,
-        "max_relative_error": 3.7059244561987725e-13,
-        "passed": true
+          "sha256": "65439098a4112afe186cdac64192fce54cc8ffd22cd0d5ec3ff00a88e2289767"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 9.370282327836321e-14,
+        "max_relative_error": 9.370282327836321e-14,
+        "passed": true,
+        "expected": {
+          "path": "modules/66-estimate-doa-with-music/evidence/expected-sweep-1.json",
+          "sha256": "8655587be19ee115b6d3a632cf63a42e121abbfda2425ed1407b542eaea09e8b"
+        },
+        "actual": {
+          "path": "modules/66-estimate-doa-with-music/evidence/actual-sweep-1.json",
+          "sha256": "ca93c5033923eb07dce00f1f13ea86edf61df0b32f112e25b1a0f750ba4f6819"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 1.4765966227514582e-14,
+        "max_relative_error": 1.4765966227514582e-14,
+        "passed": true,
+        "expected": {
+          "path": "modules/66-estimate-doa-with-music/evidence/expected-sweep-2.json",
+          "sha256": "8c9963c1fee16adebcc047d66711c3a7f225a3568374690c5bbb3ce32b5b8f79"
+        },
+        "actual": {
+          "path": "modules/66-estimate-doa-with-music/evidence/actual-sweep-2.json",
+          "sha256": "acb267209ba61b02757d27320b231f301f8dd344d0fc5f6812299f40489d3264"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 6.039613253960852e-14,
+        "max_relative_error": 1.0241807402167069e-14,
+        "passed": true,
         "expected": {
           "path": "modules/66-estimate-doa-with-music/evidence/expected-broken.json",
-          "sha256": "8b7ee6af0d1955ba34a3c589c2ecd348c4e0868e975f766e0ac8782e9ead3b9e"
+          "sha256": "d52c1af35b99ff6a55b1f56be01b3a8f32d04106ab94554b668dd6623855af58"
         },
         "actual": {
           "path": "modules/66-estimate-doa-with-music/evidence/actual-broken.json",
-          "sha256": "74828bcf20f9f18d5e721dc4dc7ff6d9a4eea660e14a6b084925b8540edcedbe"
+          "sha256": "409f743825c301e17857131167171eec91046d5efa0545f4b0ffdac54fad93dd"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 3.6062819397386647e-13,
-        "max_relative_error": 3.6062819397386647e-13,
-        "passed": true
+        "max_absolute_error": 6.039613253960852e-14,
+        "max_relative_error": 1.0241807402167069e-14,
+        "passed": true,
+        "expected": {
+          "path": "modules/66-estimate-doa-with-music/evidence/expected-recovery.json",
+          "sha256": "e03d9f3e405ae91b4e74d50dbb609615769e8922437605787b1d8cb1e935b913"
+        },
+        "actual": {
+          "path": "modules/66-estimate-doa-with-music/evidence/actual-recovery.json",
+          "sha256": "65439098a4112afe186cdac64192fce54cc8ffd22cd0d5ec3ff00a88e2289767"
+        }
       }
     ]
   },

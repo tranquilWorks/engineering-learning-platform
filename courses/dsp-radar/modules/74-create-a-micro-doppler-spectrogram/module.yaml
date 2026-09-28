@@ -3,13 +3,13 @@
   "id": "74-create-a-micro-doppler-spectrogram",
   "number": 74,
   "title": "Create a Micro-Doppler Spectrogram",
-  "summary": "Explore create a micro-doppler spectrogram with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "Three scatterers integrate torso and opposite sinusoidal limb velocities into -4pi displacement/lambda phase. Explicit Hann windows use 75% overlap and a 2048-point FFT. The negative raw frequency axis is reversed so positive means approaching. Longer windows narrow frequency response but blur motion timing.",
   "guiding_question": "How do rotating or swinging target parts produce time-varying Doppler around bulk motion?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-8",
-    "micro-motion-rate"
+    "radar-sensing",
+    "P74"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,51 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Micro Motion Rate",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "swing_speed_mps",
+      "type": "select",
+      "label": "Swing speed m/s",
+      "default": 2,
+      "unit": "m/s",
+      "options": [
+        {
+          "label": "1 m/s",
+          "value": 1
+        },
+        {
+          "label": "2 m/s",
+          "value": 2
+        },
+        {
+          "label": "3 m/s",
+          "value": 3
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "window_samples",
+      "type": "select",
+      "label": "Window samples",
+      "default": 512,
+      "unit": "samples",
+      "options": [
+        {
+          "label": "192 samples",
+          "value": 192
+        },
+        {
+          "label": "512 samples",
+          "value": 512
+        },
+        {
+          "label": "1536 samples",
+          "value": 1536
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +75,50 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing micro motion rate, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict the torso Doppler and limb extrema from physical velocity. Why do carrier frequency and STFT window length change different aspects of the spectrogram, and why is magnitude-only motion evidence incomplete?",
+      "reveal": "Three scatterers integrate torso and opposite sinusoidal limb velocities into -4pi displacement/lambda phase. Explicit Hann windows use 75% overlap and a 2048-point FFT. The negative raw frequency axis is reversed so positive means approaching. Longer windows narrow frequency response but blur motion timing."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Three physical scatterer velocities",
+      "plot": "velocity"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Selected coherent slow-time spectrogram",
+      "plot": "spectrogram"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Original complex-IQ spectrogram",
+      "plot": "recovery"
+    },
+    {
+      "type": "plot",
+      "title": "Swing speed changes sideband extent",
+      "plot": "speed"
+    },
+    {
+      "type": "plot",
+      "title": "Same physical speeds at different carriers",
+      "plot": "carrier"
+    },
+    {
+      "type": "plot",
+      "title": "Same record and different Hann durations",
+      "plot": "window"
+    },
+    {
+      "type": "plot",
+      "title": "Window duration versus native frequency scale",
+      "plot": "tradeoff"
     },
     {
       "type": "callout",
@@ -102,7 +129,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

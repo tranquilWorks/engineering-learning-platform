@@ -1,6 +1,4 @@
-# Use MVDR/Capon Adaptive Beamforming
-
-> **Guiding question:** How can a beamformer place data-dependent nulls on interference?
+# P65 lesson: Preserve One Direction, Spend Freedom on Nulls
 
 Guiding question: How can a beamformer place data-dependent nulls on interference?
 
@@ -153,33 +151,29 @@ repository checks and a Python oracle do not validate MATLAB rendering,
 antennas, hardware/HIL, real-time execution, field behavior, or an operational
 radar.
 
-## Use the Python GUI experiment
+## Interactive lab: Use MVDR/Capon Adaptive Beamforming
 
-The GUI keeps the pinned source's mental model and processing order visible. The **interference angle** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** How can a beamformer place data-dependent nulls on interference?
 
-### Prediction and sweep 1 — interference angle
+Seed 6501; eight half-wavelength sensors, desired 3 deg at-3 dB, interferer 30 deg at 25 dB, 128 of 256 snapshots. R=X X^H/N; delta=alpha trace(R)/8. Snapshot prefixes 4/8/16/32/64/128/256 and mismatched-look loading 1 e-6 through 1 expose finite-sample sensitivity. The named four-snapshot failure first refuses zero loading, then compares tiny loading, .1 loading and corrected look on identical data.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict how fewer snapshots change covariance rank and why a distortionless constraint protects only the assumed direction. What does trace-scaled loading trade between interference rejection and robustness?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Snapshots** from 128 to 4 count. Predict, run, and explain a measured value using the governing equation; then reset.
+2. Start at the baseline. Sweep only **Loading alpha** from 0.01 to 0.1 ratio. Predict, run, and explain a measured value using the governing equation; then reset.
+3. Enable the broken case. The named four-snapshot covariance is singular without loading. A barely loaded 6-degree look can suppress the true 3-degree source.
+4. Recovery: On the unchanged four snapshots, alpha=.1 stabilizes the solve; correcting the look restores unit true response. Disable the toggle to restore the selected baseline.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict how fewer snapshots change covariance rank and why a distortionless constraint protects only the assumed direction. What does trace-scaled loading trade between interference rejection and robustness? Support the explanation with a measured value and units, and state the recovery assumption.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+The named four-snapshot covariance is singular without loading. A barely loaded 6-degree look can suppress the true 3-degree source. Distinguish the selected-control scene from a named separate failure scene.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The pinned source lesson is preserved above. Private Park–Miller uniforms retain zero offset; P65–P72 split radius/phase uniform blocks and P73–P76 interleave them. Matrix inputs retain column-major ordering. P75 shorter apertures crop the full baseline noise record to isolate aperture changes. MUSIC missing-peak penalties and truth-defined audit neighborhoods are disclosed; neither manufactures successful detections. Source figures become labeled native plots; full arrays drive calculations before display decimation. Sixty independent software comparisons cover five scenarios per lesson. No MATLAB execution, browser/accessibility, learner, hardware or production validation is claimed.

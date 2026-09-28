@@ -3,13 +3,13 @@
   "id": "75-build-sar-phase-history-intuition",
   "number": 75,
   "title": "Build SAR Phase-History Intuition",
-  "summary": "Explore build sar phase-history intuition with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "A 5 GHz antenna visits positions at.2m spacing. R=sqrt(1000\u00b2+(x-xt)\u00b2), delay=2R/c and phase=-4pi(R-1000)/lambda. A .6 m Gaussian envelope supplies the raw fast-time ridge. Candidate-path phase compensation coherently sums ridge samples; this is a single known-range illustration, not an image former.",
   "guiding_question": "Why does moving one antenna create a large synthetic aperture?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-9",
-    "aperture-length"
+    "radar-sensing",
+    "P75"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,51 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Aperture Length",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "target_cross_range_m",
+      "type": "select",
+      "label": "Target cross range m",
+      "default": 0,
+      "unit": "m",
+      "options": [
+        {
+          "label": "-20 m",
+          "value": -20
+        },
+        {
+          "label": "0 m",
+          "value": 0
+        },
+        {
+          "label": "20 m",
+          "value": 20
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "aperture_length_m",
+      "type": "select",
+      "label": "Aperture length m",
+      "default": 80,
+      "unit": "m",
+      "options": [
+        {
+          "label": "20 m",
+          "value": 20
+        },
+        {
+          "label": "40 m",
+          "value": 40
+        },
+        {
+          "label": "80 m",
+          "value": 80
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +75,50 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing aperture length, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict how cross-range position moves the slant-range vertex and how aperture length changes phase span. Why does a magnitude ridge fail to focus under the correct path-phase hypothesis?",
+      "reveal": "A 5 GHz antenna visits positions at.2m spacing. R=sqrt(1000\u00b2+(x-xt)\u00b2), delay=2R/c and phase=-4pi(R-1000)/lambda. A .6 m Gaussian envelope supplies the raw fast-time ridge. Candidate-path phase compensation coherently sums ridge samples; this is a single known-range illustration, not an image former."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Slant range across the selected aperture",
+      "plot": "geometry"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Range-referenced round-trip phase",
+      "plot": "phase"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Raw echo delay ridge",
+      "plot": "magnitude"
+    },
+    {
+      "type": "plot",
+      "title": "Carrier phase along the aperture",
+      "plot": "iq"
+    },
+    {
+      "type": "plot",
+      "title": "Target cross-range moves the path vertex",
+      "plot": "cross_range"
+    },
+    {
+      "type": "plot",
+      "title": "Longer apertures observe more phase history",
+      "plot": "aperture"
+    },
+    {
+      "type": "plot",
+      "title": "Candidate-path coherent sums on the same ridge",
+      "plot": "focus"
     },
     {
       "type": "callout",
@@ -102,7 +129,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

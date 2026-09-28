@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "fc6f43665fb5c249151cc8cba62313e70f4ed9876cd553b4de63ec813e272fb8",
+    "content_digest": "b09814fd2782e565622e0df0edaa2d88b85e09c43bf3512690a02ad9928b6ba6",
     "files": [
       {
         "path": "modules/67-inject-array-calibration-and-mutual-coupling-errors/experiment.py",
-        "sha256": "4e33eed74d41a804e9a0118b8cf737f9b4ce9b1f384ba31ee8613522dd6305cf"
+        "sha256": "b87d294c3c89aadb0fe4ab0b0cd48c28ddccaabb2e11328078f9c5e8e2d4d27d"
       },
       {
         "path": "modules/67-inject-array-calibration-and-mutual-coupling-errors/lesson.md",
-        "sha256": "26bd03b65d76713d17d354775bda8021dc41950295b0984a7a2cc1cc41816e8f"
+        "sha256": "7330a7a5bbead0ba72d096c555a717b2586a2681c21cbf5a440ffd28bc3e1ee1"
       },
       {
         "path": "modules/67-inject-array-calibration-and-mutual-coupling-errors/module.yaml",
-        "sha256": "ddfe10a20d70513cb90bb6ce7b3747e8ed1ccabbb1d65bcb5776ef9399825f59"
+        "sha256": "8b6669d71005debfe7e40c942c30f6764a9f8ff5ef36804ace72807cc894a752"
       }
     ]
   },
   "content": {
     "guiding_question": "How sensitive are beamforming and DOA results to imperfect channels?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "A known 10-degree calibration source estimates each composite response after removing nominal steering. Equalization also colors receiver noise; MUSIC whitens with diag(|equalizer|\u00b2). Coupling and position errors make the residual direction-dependent.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary calibration error while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "A known 10-degree calibration source estimates each composite response after removing nominal steering. Equalization also colors receiver noise; MUSIC whitens with diag(|equalizer|\u00b2). Coupling and position errors make the residual direction-dependent.",
+      "Dividing by the raw calibration response without removing its known steering phase makes the calibration source appear at boresight.",
+      "Divide the measured response by nominal 10-degree steering before equalization. This repairs the known direction on unchanged data; it does not identify a global coupling inverse.",
+      "Explicit stage equations are retained in lesson.md. P65-P76 retain private source input formulas, with a fixed full-aperture noise crop for P75 controls. Plot/console presentation is adapted; no MATLAB runtime execution is claimed."
     ],
     "equations": [
       {
@@ -66,149 +66,241 @@
     ],
     "equation_order": "before_toolbox_shortcuts",
     "deterministic_data": {
-      "seed": 1067,
+      "seed": 6701,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
-        },
-        {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "3bb1cc9a3ec35dca649581ed4957ea67110e48861d76c0dd116cda60f077adb8",
-          "unit": "mixed numeric signature"
+          "sha256": "1a05ecf787ac0eff751d564d759025b190ec2f39adb0fea1add46db2557a4a7b",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "03a5cf71bc14603360fba7d477e2e3da5c3711b0f7ff4c5df0fc9ac2d2989d13",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "39e01f647ce437b6b36bc91fab5194d927e5687905414833319cb4c7a3ea9e8c",
-          "unit": "mixed numeric signature"
+          "sha256": "2b1580358a3e0013a260676e093cc58d79227f97ef18188289aa59e6cf69af63",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "cff0026d94217ce3fa86c2a72be63b4c97bdfbd0f15123d6dd4c9990f6b266c3",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "750536936097ec5d66a2801e585ca58804b778ec45c4c92a87ebb709778a0443",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "2b5f6227db24010f41a04f3dd8196ee15a0a1ba46c608b29b6051e01d9eb3e7d",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "cf0732e03722480f9f8dab00b96b52f4c572cfd350ac7a11f11fafe21a996bf8",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "92c2e5528ee0b4594695f80333ef3bd7c96c2d6ddd5dbcb6b4fce7abf0a85769",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "1a05ecf787ac0eff751d564d759025b190ec2f39adb0fea1add46db2557a4a7b",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "03a5cf71bc14603360fba7d477e2e3da5c3711b0f7ff4c5df0fc9ac2d2989d13",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P67 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P67 explicit processing and evidence stages",
+        "target_plot_key": "channels",
+        "title": "Fixed channel gain and estimated equalizer",
         "axes": [
           {
             "role": "x",
-            "label": "look angle (deg)",
-            "unit": "source units"
+            "label": "Sensor (index)",
+            "unit": "index"
           },
           {
             "role": "y",
-            "label": "normalized power",
-            "unit": "normalized"
+            "label": "Voltage magnitude (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Inject Array Calibration and Mutual-Coupling Errors guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "A known 10-degree calibration source estimates each composite response after removing nominal steering. Equalization also colors receiver noise; MUSIC whitens with diag(|equalizer|\u00b2). Coupling and position errors make the residual direction-dependent."
       },
       {
-        "source_figure": "Pinned P67 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P67 explicit processing and evidence stages",
+        "target_plot_key": "phase",
+        "title": "Position and channel phase errors",
         "axes": [
           {
             "role": "x",
-            "label": "look angle (deg)",
-            "unit": "source units"
+            "label": "Sensor (index)",
+            "unit": "index"
           },
           {
             "role": "y",
-            "label": "normalized power",
-            "unit": "normalized"
+            "label": "Channel phase (deg)",
+            "unit": "deg"
           }
         ],
-        "interpretation": "This view answers the Inject Array Calibration and Mutual-Coupling Errors guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "A known 10-degree calibration source estimates each composite response after removing nominal steering. Equalization also colors receiver noise; MUSIC whitens with diag(|equalizer|\u00b2). Coupling and position errors make the residual direction-dependent."
       },
       {
-        "source_figure": "Pinned P67 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P67 explicit processing and evidence stages",
+        "target_plot_key": "bartlett",
+        "title": "Conventional beam with channel errors",
         "axes": [
           {
             "role": "x",
-            "label": "look angle (deg)",
-            "unit": "source units"
+            "label": "Angle (deg)",
+            "unit": "deg"
           },
           {
             "role": "y",
-            "label": "normalized power",
-            "unit": "normalized"
+            "label": "Normalized power (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Inject Array Calibration and Mutual-Coupling Errors guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "A known 10-degree calibration source estimates each composite response after removing nominal steering. Equalization also colors receiver noise; MUSIC whitens with diag(|equalizer|\u00b2). Coupling and position errors make the residual direction-dependent."
       },
       {
-        "source_figure": "Pinned P67 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P67 explicit processing and evidence stages",
+        "target_plot_key": "capon",
+        "title": "Loaded Capon spatial spectrum",
         "axes": [
           {
             "role": "x",
-            "label": "look angle (deg)",
-            "unit": "source units"
+            "label": "Angle (deg)",
+            "unit": "deg"
           },
           {
             "role": "y",
-            "label": "normalized power",
-            "unit": "normalized"
+            "label": "Normalized power (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Inject Array Calibration and Mutual-Coupling Errors guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "A known 10-degree calibration source estimates each composite response after removing nominal steering. Equalization also colors receiver noise; MUSIC whitens with diag(|equalizer|\u00b2). Coupling and position errors make the residual direction-dependent."
+      },
+      {
+        "source_figure": "Pinned P67 explicit processing and evidence stages",
+        "target_plot_key": "music",
+        "title": "Noise-whitened MUSIC",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Angle (deg)",
+            "unit": "deg"
+          },
+          {
+            "role": "y",
+            "label": "Normalized spectrum (dB)",
+            "unit": "dB"
+          }
+        ],
+        "interpretation": "A known 10-degree calibration source estimates each composite response after removing nominal steering. Equalization also colors receiver noise; MUSIC whitens with diag(|equalizer|\u00b2). Coupling and position errors make the residual direction-dependent."
+      },
+      {
+        "source_figure": "Pinned P67 explicit processing and evidence stages",
+        "target_plot_key": "error_sweep",
+        "title": "Fixed gain/phase/position patterns scaled together",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Error scale (ratio)",
+            "unit": "ratio"
+          },
+          {
+            "role": "y",
+            "label": "Output SINR (dB)",
+            "unit": "dB"
+          }
+        ],
+        "interpretation": "A known 10-degree calibration source estimates each composite response after removing nominal steering. Equalization also colors receiver noise; MUSIC whitens with diag(|equalizer|\u00b2). Coupling and position errors make the residual direction-dependent."
+      },
+      {
+        "source_figure": "Pinned P67 explicit processing and evidence stages",
+        "target_plot_key": "coupling",
+        "title": "Nearest-neighbor coupling sweep",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Coupling magnitude (ratio)",
+            "unit": "ratio"
+          },
+          {
+            "role": "y",
+            "label": "Output SINR (dB)",
+            "unit": "dB"
+          }
+        ],
+        "interpretation": "A known 10-degree calibration source estimates each composite response after removing nominal steering. Equalization also colors receiver noise; MUSIC whitens with diag(|equalizer|\u00b2). Coupling and position errors make the residual direction-dependent."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "error_scale",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          0,
+          0.5,
+          1,
+          1.5
         ],
-        "expected_observation": "Changing calibration error moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Error scale; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "coupling_magnitude",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          0,
+          0.18,
+          0.3
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Coupling magnitude; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "Dividing by the raw calibration response without removing its known steering phase makes the calibration source appear at boresight.",
+      "recovery": "Divide the measured response by nominal 10-degree steering before equalization. This repairs the known direction on unchanged data; it does not identify a global coupling inverse.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Dividing by the raw calibration response without removing its known steering phase makes the calibration source appear at boresight.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -216,63 +308,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 1000000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P67 python -m pytest -q apps/api/tests/test_dsp_course.py",
-    "seed": 1067,
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p65_p76.py",
+    "seed": 6701,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
+        "name": "error_scale",
+        "value": 1,
         "unit": "ratio"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "coupling_magnitude",
+        "value": 0.18,
+        "unit": "ratio"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 5.3290705182007514e-14,
+        "max_relative_error": 8.611744705882579e-15,
+        "passed": true,
         "expected": {
           "path": "modules/67-inject-array-calibration-and-mutual-coupling-errors/evidence/expected-baseline.json",
-          "sha256": "3bb1cc9a3ec35dca649581ed4957ea67110e48861d76c0dd116cda60f077adb8"
+          "sha256": "1a05ecf787ac0eff751d564d759025b190ec2f39adb0fea1add46db2557a4a7b"
         },
         "actual": {
           "path": "modules/67-inject-array-calibration-and-mutual-coupling-errors/evidence/actual-baseline.json",
-          "sha256": "6abbc9bd3d617eca73bece395f4195db938c3806e348540584f73e1aaf8597ee"
-        },
-        "max_absolute_error": 4.801714581503802e-13,
-        "max_relative_error": 4.801714581503802e-13,
-        "passed": true
+          "sha256": "03a5cf71bc14603360fba7d477e2e3da5c3711b0f7ff4c5df0fc9ac2d2989d13"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 8.659739592076221e-14,
+        "max_relative_error": 5.0648580723960164e-14,
+        "passed": true,
+        "expected": {
+          "path": "modules/67-inject-array-calibration-and-mutual-coupling-errors/evidence/expected-sweep-1.json",
+          "sha256": "2b1580358a3e0013a260676e093cc58d79227f97ef18188289aa59e6cf69af63"
+        },
+        "actual": {
+          "path": "modules/67-inject-array-calibration-and-mutual-coupling-errors/evidence/actual-sweep-1.json",
+          "sha256": "cff0026d94217ce3fa86c2a72be63b4c97bdfbd0f15123d6dd4c9990f6b266c3"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 3.0375701953744283e-13,
+        "max_relative_error": 4.814405617345987e-14,
+        "passed": true,
+        "expected": {
+          "path": "modules/67-inject-array-calibration-and-mutual-coupling-errors/evidence/expected-sweep-2.json",
+          "sha256": "750536936097ec5d66a2801e585ca58804b778ec45c4c92a87ebb709778a0443"
+        },
+        "actual": {
+          "path": "modules/67-inject-array-calibration-and-mutual-coupling-errors/evidence/actual-sweep-2.json",
+          "sha256": "2b5f6227db24010f41a04f3dd8196ee15a0a1ba46c608b29b6051e01d9eb3e7d"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 2.6290081223123707e-13,
+        "max_relative_error": 1.4750000942788062e-14,
+        "passed": true,
         "expected": {
           "path": "modules/67-inject-array-calibration-and-mutual-coupling-errors/evidence/expected-broken.json",
-          "sha256": "39e01f647ce437b6b36bc91fab5194d927e5687905414833319cb4c7a3ea9e8c"
+          "sha256": "cf0732e03722480f9f8dab00b96b52f4c572cfd350ac7a11f11fafe21a996bf8"
         },
         "actual": {
           "path": "modules/67-inject-array-calibration-and-mutual-coupling-errors/evidence/actual-broken.json",
-          "sha256": "92ae70a2bb53ac7cee5c71a54f93115b8b52e45b7733c2aeace4b34cec9ede48"
+          "sha256": "92c2e5528ee0b4594695f80333ef3bd7c96c2d6ddd5dbcb6b4fce7abf0a85769"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 4.066191827689636e-13,
-        "max_relative_error": 4.066191827689636e-13,
-        "passed": true
+        "max_absolute_error": 5.3290705182007514e-14,
+        "max_relative_error": 8.611744705882579e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/67-inject-array-calibration-and-mutual-coupling-errors/evidence/expected-recovery.json",
+          "sha256": "1a05ecf787ac0eff751d564d759025b190ec2f39adb0fea1add46db2557a4a7b"
+        },
+        "actual": {
+          "path": "modules/67-inject-array-calibration-and-mutual-coupling-errors/evidence/actual-recovery.json",
+          "sha256": "03a5cf71bc14603360fba7d477e2e3da5c3711b0f7ff4c5df0fc9ac2d2989d13"
+        }
       }
     ]
   },

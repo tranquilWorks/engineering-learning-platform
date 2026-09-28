@@ -1,6 +1,4 @@
-# Build an Introductory STAP Clutter-Ridge Experiment
-
-> **Guiding question:** How can space and slow time be processed together to suppress moving-platform clutter?
+# P68 lesson: Follow the Ridge, Not Either Axis Alone
 
 ## Guiding question
 
@@ -197,33 +195,29 @@ bench, hardware/HIL, real-time, field, or operational performance.
 - Using `20 log10` for SCNR doubles the dB value incorrectly.
 - Reading normalized Doppler as hertz forgets multiplication by `PRF`.
 
-## Use the Python GUI experiment
+## Interactive lab: Build an Introductory STAP Clutter-Ridge Experiment
 
-The GUI keeps the pinned source's mental model and processing order visible. The **clutter ridge slope** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** How can space and slow time be processed together to suppress moving-platform clutter?
 
-### Prediction and sweep 1 — clutter ridge slope
+Seed 6801; eight sensors by eight pulses, lambda.03 m, PRF 20 kHz, platform 105 m/s. Sixty-one clutter patches at-60:2:60 deg have cos² weights totaling 30 dB; fd/PRF=.35 sin(theta). 128 clean cells train covariance; loading .03 trace(R)/64. Actual target 10.7 deg/.208 differs from assumed 10 deg/.2. Training-support and 0/.05/.1/.2/.4 contamination sweeps retain fixed inputs; the cell under test uses separate seeds.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict the angle-Doppler clutter ridge and explain why two separate filters discard its coupling. Why can contaminated training suppress an actual target despite a unit-response constraint at the assumed target?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Training cells** from 128 to 8 count. Predict, run, and explain a measured value using the governing equation; then reset.
+2. Start at the baseline. Sweep only **Contamination fraction** from 0 to 0.4 ratio. Predict, run, and explain a measured value using the governing equation; then reset.
+3. Enable the broken case. The named failure contaminates 40% of training cells with the actual slightly mismatched target. Unit response at the assumed steering does not prevent self-nulling at the actual steering.
+4. Recovery: Restore unchanged clean training cells. This recovers the clean joint weight; removing a target component requires justified training selection, not knowledge available from every operational scene. Toggle off restores the selected contamination control.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict the angle-Doppler clutter ridge and explain why two separate filters discard its coupling. Why can contaminated training suppress an actual target despite a unit-response constraint at the assumed target? Support the explanation with a measured value and units, and state the recovery assumption.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+The named failure contaminates 40% of training cells with the actual slightly mismatched target. Unit response at the assumed steering does not prevent self-nulling at the actual steering. Distinguish the selected-control scene from a named separate failure scene.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The pinned source lesson is preserved above. Private Park–Miller uniforms retain zero offset; P65–P72 split radius/phase uniform blocks and P73–P76 interleave them. Matrix inputs retain column-major ordering. P75 shorter apertures crop the full baseline noise record to isolate aperture changes. MUSIC missing-peak penalties and truth-defined audit neighborhoods are disclosed; neither manufactures successful detections. Source figures become labeled native plots; full arrays drive calculations before display decimation. Sixty independent software comparisons cover five scenarios per lesson. No MATLAB execution, browser/accessibility, learner, hardware or production validation is claimed.

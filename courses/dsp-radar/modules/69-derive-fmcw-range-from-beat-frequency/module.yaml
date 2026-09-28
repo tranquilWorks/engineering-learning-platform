@@ -3,13 +3,13 @@
   "id": "69-derive-fmcw-range-from-beat-frequency",
   "number": 69,
   "title": "Derive FMCW Range from Beat Frequency",
-  "summary": "Explore derive fmcw range from beat frequency with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "An 80 MHz sampled,40 us centered chirp returns after tau=2R/c. Only valid overlap is mixed as Tx conj(Rx), giving positive beat S tau. A Hann window and 65536-point FFT interpolate the beat; zero-padding does not improve the physical c/(2B) resolution.",
   "guiding_question": "Why does a delayed chirp produce a nearly constant beat frequency?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-8",
-    "target-range"
+    "fmcw",
+    "P69"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,51 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Target Range",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "target_range_m",
+      "type": "select",
+      "label": "Target range m",
+      "default": 45,
+      "unit": "m",
+      "options": [
+        {
+          "label": "15 m",
+          "value": 15
+        },
+        {
+          "label": "45 m",
+          "value": 45
+        },
+        {
+          "label": "75 m",
+          "value": 75
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "bandwidth_mhz",
+      "type": "select",
+      "label": "Bandwidth mhz",
+      "default": 20,
+      "unit": "MHz",
+      "options": [
+        {
+          "label": "10 MHz",
+          "value": 10
+        },
+        {
+          "label": "20 MHz",
+          "value": 20
+        },
+        {
+          "label": "30 MHz",
+          "value": 30
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +75,50 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing target range, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict the beat change when range or chirp slope doubles. Explain the mixer sign, valid overlap, round-trip factor and the difference between FFT spacing and physical range resolution.",
+      "reveal": "An 80 MHz sampled,40 us centered chirp returns after tau=2R/c. Only valid overlap is mixed as Tx conj(Rx), giving positive beat S tau. A Hann window and 65536-point FFT interpolate the beat; zero-padding does not improve the physical c/(2B) resolution."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Transmit and delayed noisy receive IQ",
+      "plot": "raw_iq"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Transmit and physically delayed echo",
+      "plot": "chirp"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Tx times conjugate Rx",
+      "plot": "mixer"
+    },
+    {
+      "type": "plot",
+      "title": "Hann-windowed beat with log-power peak interpolation",
+      "plot": "spectrum"
+    },
+    {
+      "type": "plot",
+      "title": "Fixed-slope range sweep",
+      "plot": "range_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Fixed-range slope sweep",
+      "plot": "slope_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Same beat, round-trip conversion",
+      "plot": "conversion"
     },
     {
       "type": "callout",
@@ -102,7 +129,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {
