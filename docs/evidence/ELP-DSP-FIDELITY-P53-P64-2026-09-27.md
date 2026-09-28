@@ -9,7 +9,7 @@ PR #48 merged as `255427e3b3c6a31a66b74ad7f9836dad09b164e5`, tree
 to the merged control artifact and repo-profile binds that revision.
 
 Branch: `codex/dsp-fidelity-p53-p64-20260927`. The batch began September 27;
-verification continues September 28 UTC. It repairs twelve existing lessons,
+verification completed September 28 UTC. It repairs twelve existing lessons,
 without increasing inventory. P01-P52, P65-P84, other courses, platform/UI,
 schemas, dependencies, workflows, course identity, source-map and conversion
 manifest remain unchanged. Source pin remains
@@ -45,7 +45,7 @@ extend through P64.
 Each lesson retains baseline, two sweeps, broken and recovery signatures: sixty
 expected/actual comparisons with field units, parameters, source/production/
 reference hashes, error extrema and 1e-8 absolute/scaled-relative limits.
-The initial replay passed all sixty; maximum absolute difference was
+The final replay passed all sixty; maximum absolute difference was
 `2.0804691303055733e-11`. Expected values are never production imports, output
 copies or perturbed production values. Exact equality is valid where independently
 formulated computations agree.
@@ -130,14 +130,51 @@ slowest pre-polish run was approximately .21 seconds. Scoped lint passed.
 Final presentation review added P53 velocity-centroid evidence, P55 velocity
 uncertainty, P56 normalized innovations, P62 source probes/element phasors and
 P63 sensor data. The preliminary combined run was deliberately interrupted for
-these additions. References, fixtures and complete required verification are
-being rerun; this document does not yet assert final gates pass.
+these additions. Final references, fixtures and mandatory local gates passed for implementation
+`a70eaf9ec22d5229a8f2a26b071083d411b4ced6`:
+
+- focused: **684 passed in 324.13s (0:05:24)**.
+- contract: **72 passed in 72.57s (0:01:12)**.
+- quick: **1064 passed, 3 warnings in 899.08s (0:14:59)**.
+- full: **1064 passed, 3 warnings in 810.89s (0:13:30)**.
+- Frontend typecheck/build and scoped lint passed. Existing Starlette/httpx and
+  FastAPI ORJSON deprecations and the large Plotly chunk warning remain.
+- Deterministic catalog passed: six courses / 290 modules / 290 interactive.
+- API smoke passed twelve documents, 36 baseline/failure/recovery runs, twelve
+  exact recoveries and twelve stale-revision rejections (422).
+- Live TCP smoke passed health, catalog, HTML and twelve document/baseline runs.
+- Scope audit passed 196 allowed paths, exactly twelve coverage digests, prior
+  reference prefix, clean source pin and exact merged control contract.
+
+[PR #49](https://github.com/tranquilWorks/engineering-learning-platform/pull/49) is ready for review.
+The final follow-up commit changes only this evidence, CURRENT_STATE and HANDOFF.
+Heavy suites are not repeated for those documentation-only changes.
+Local preview: http://127.0.0.1:8765/courses/dsp-radar/modules/53-group-detection-cells-into-target-reports
+
+Hosted [quality run 36361268320](https://github.com/tranquilWorks/engineering-learning-platform/actions/runs/36361268320) for implementation `a70eaf9ec22d5229a8f2a26b071083d411b4ced6` passed frontend, generated-schema and deterministic-catalog steps. Backend finished with **46 failed, 1018 passed, 3 warnings in 394.77 seconds**: 45 source-attestation checks lack the canonical DSP checkout, and one historical-contract check lacks Git object `4b613a79bfe3cbd997e64e8372a58956533dae2c`. Static Python checks and container were skipped. These checks pass in the complete local checkout; hosted CI is nonmandatory under retained owner direction, and its checkout prerequisites remain outside this batch. No hosted backend or container pass is claimed.
 
 Verification runs serially with `OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
 MKL_NUM_THREADS=1`, using the existing local toolchain and preserving all tests,
 numerical tolerances and three-second runtime limits. Hosted CI is nonmandatory
 under retained owner direction. Missing hosted source/history prerequisites are
 outside this DSP contract and will be reported separately from local evidence.
+
+Local run artifacts are retained in ignored `.state/`; SHA-256 binds the
+recorded evidence without adding raw logs outside the approved Markdown path.
+
+| Artifact | SHA-256 |
+| --- | --- |
+| `p53-focused.txt` | `2dc016132e5f592e2a30520595f7201b1ecad1e03dfd95698f4adfa1d2d9481f` |
+| `p53-contract.txt` | `dd6bb89add63d284d6fc403f3bbd06a023d6d949eab67d271d6062602825c477` |
+| `p53-quick.txt` | `e165dfcc62ec8eca3cd5b91aa53c891c10323abce3fae825406e9eca353e0c70` |
+| `p53-full.txt` | `d1ac7b0e7f3f3dd052514b0bfe048032dfaaeefb348e17e9f3aae37507d8a58b` |
+| `p53-lint.txt` | `82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18` |
+| `p53-catalog.json` | `e0ec19a3f9adf17cab941b6e63ba2fd0a89f5a0ca177b6997a4b612d0462e484` |
+| `p53-scope.json` | `3d1852ae6da6727ee6b333476391834e13c3b82ef5aa64be203e9b63e7747220` |
+| `p53-http-smoke.json` | `59d24960a780c94226bbd3646955857f378279dd493ccbe52b9c869ddaff66ab` |
+| `p53-live-preview.json` | `ee66e8865ae77d76dbe6545e375dd2cd650a444ad2ffede03a52f38e66d85015` |
+| `p53-reference-summary.json` | `dfe21251821a2fbd919ee563e7bceff4058ca32170a539f5c65ea3ece3b0b510` |
+| `p53-hosted-failures.txt` | `4ff0934d4fe91eac130b3bd58dfd85f87e30ad291f0239c81598c1f11f1437dc` |
 
 ## Continuation and rollback
 
