@@ -281,13 +281,13 @@ def test_active_contract_ledger_and_prior_source_prefix():
     )
     assert raw[154384:].lstrip().startswith(b"# P65-P76 independent references.")
     contract = yaml.safe_load((ROOT / "contracts/active-batch.yaml").read_text())
-    assert contract["batch"]["id"] == "ELP-SEMANTIC-QUALITY-12"
-    assert contract["sources"]["baseline_commit"] == "4e8e39fb3fc05eef8b4ca5607bec4d0bc9320891"
+    assert contract["batch"]["id"] == "ELP-DSP-AGGREGATE-QUALITY-01"
+    assert contract["sources"]["baseline_commit"] == "b107ac198543e8dfb563c6aae4175cc87da6210d"
     ledger = yaml.safe_load((COURSE / "remediation-map.yaml").read_text())
     assert ledger["derived_counts"]["repaired_in_prior_batches"] == 75
     assert ledger["derived_counts"]["repaired_in_batch"] == 8
     assert ledger["derived_counts"]["pending"] == 0
-    assert ledger["claim_boundary"]["numerically_verified"] == "blocked"
+    assert ledger["claim_boundary"]["numerically_verified"] == "passed"
 
 
 @pytest.mark.parametrize("number", range(65, 77))

@@ -17,10 +17,13 @@ The browser retains **60 additional blocked findings**: Controls 19, Robotics 25
 Vehicle 16. These are separate repair scopes; the twelve fixes do not promote
 those course aggregates. The initial audit found 72 affected lessons.
 
-Next is the separately contracted DSP aggregate review: embed all 84 authored
-checkpoints, ten cumulative assessments and their competency/prerequisite map,
-replay the 417 retained independent comparisons, and verify actual browser access.
-These drafts are not yet embedded or accepted. Start from the actual PR53 merge.
+Active DSP aggregate revision: control PR539 merged as
+`3eb977ec9015b8415426a9c5f3c5bcd639bdec64` from semantic PR53 merge
+`b107ac198543e8dfb563c6aae4175cc87da6210d`. All 84 checkpoints, ten cumulative
+portfolios, competency links and named browser navigation are implemented.
+The first 417 independent comparisons and 14 focused checks passed. Final content
+identity replay, complete local gates and new container/browser acceptance are
+in progress; the DSP revision is not yet merged.
 
 Representative learner, manual screen-reader, MATLAB, measured vehicle/hardware
 and production validation remain not_run. Concurrent-user capacity is not

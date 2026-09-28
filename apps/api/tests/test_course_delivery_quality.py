@@ -38,8 +38,19 @@ def test_browser_projection_keeps_confirmed_limitations_attached_to_lesson():
     audit = _audit()
     projection = json.loads((ROOT / "apps/web/src/lesson-quality.json").read_text())
     assert len(projection) == 288
-    assert [r["scoped_review"] for r in projection] == [r["scoped_review"] for r in audit["lessons"]]
+    assert [r["scoped_review"] for r in projection] == [
+        r["scoped_review"] for r in audit["lessons"]
+    ]
     assert sum(bool(r["scoped_review"]) for r in projection) == 12
+    assert sum(bool(r["assessment_review"]) for r in projection) == 84
+    assert [r["assessment_review"] for r in projection] == [
+        r["assessment_review"] for r in audit["lessons"]
+    ]
+    assert all(
+        r["assessment_review"]["learner_result"] == "not_recorded"
+        for r in projection
+        if r["assessment_review"]
+    )
     assert [(r["course"], r["module"], r["known_issue"]) for r in projection] == [
         (r["course"], r["module"], r["known_issue"]) for r in audit["lessons"]
     ]

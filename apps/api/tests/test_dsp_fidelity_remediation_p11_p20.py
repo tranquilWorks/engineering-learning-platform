@@ -138,9 +138,9 @@ def test_remediation_ledger_distinguishes_prior_current_and_pending() -> None:
         "repaired_in_batch": 8,
         "pending": 0,
     }
-    assert ledger["claim_boundary"]["numerically_verified"] == "blocked"
-    assert ledger["claim_boundary"]["curriculum_covered"] == "blocked"
-    assert ledger["claim_boundary"]["capstone_integrated"] == "blocked"
+    assert ledger["claim_boundary"]["numerically_verified"] == "passed"
+    assert ledger["claim_boundary"]["curriculum_covered"] == "passed"
+    assert ledger["claim_boundary"]["capstone_integrated"] == "passed"
 
 
 def test_repaired_controls_and_normalized_program_shapes_are_distinct() -> None:
@@ -289,6 +289,6 @@ def test_six_course_290_module_catalog_and_claim_blocks_remain_exact() -> None:
     assert len(modules) == 290
     assert sum(module.interactive for module in modules) == 290
     ledger = _load_yaml(COURSE_ROOT / "remediation-map.yaml")
-    assert ledger["claim_boundary"]["numerically_verified"] == "blocked"
-    assert ledger["claim_boundary"]["curriculum_covered"] == "blocked"
-    assert ledger["claim_boundary"]["capstone_integrated"] == "blocked"
+    assert ledger["claim_boundary"]["numerically_verified"] == "passed"
+    assert ledger["claim_boundary"]["curriculum_covered"] == "passed"
+    assert ledger["claim_boundary"]["capstone_integrated"] == "passed"

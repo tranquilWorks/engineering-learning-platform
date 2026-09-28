@@ -147,16 +147,18 @@ def test_reviewed_course_dispositions_keep_inventory_separate_from_maturity() ->
         for dimension in review["rubric"].values():
             assert set(dimension) == {"status", "finding"}
             assert dimension["finding"].strip()
-        assert review["maturity"]["curriculum_covered"]["status"] == "blocked"
+        assert review["maturity"]["curriculum_covered"]["status"] == (
+            "passed" if review["course_id"] == "dsp-radar" else "blocked"
+        )
         for stage in review["maturity"].values():
             assert set(stage) == {"status", "evidence", "limitation"}
             assert stage["evidence"].strip()
             assert stage["limitation"].strip()
 
 
-def test_follow_up_ownership_is_exact_and_remains_unimplemented_here() -> None:
+def test_follow_up_ownership_and_current_maturity_are_exact() -> None:
     reviews = _review_by_id(_status())
-    assert reviews["dsp-radar"]["disposition"] == "remediate"
+    assert reviews["dsp-radar"]["disposition"] == "maintain"
     assert reviews["dsp-radar"]["follow_up_issues"] == [441]
     assert reviews["controls-gnc"]["disposition"] == "remediate"
     assert reviews["controls-gnc"]["follow_up_issues"] == []

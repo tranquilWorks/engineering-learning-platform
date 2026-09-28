@@ -99,9 +99,9 @@ def test_remediation_ledger_preserves_prior_batch_membership() -> None:
     assert counts["repaired_in_batch"] == len(current) == 8
     assert counts["pending"] == len(pending) == 0
     assert counts["total_items"] == len(already) + len(repaired) + len(current) + len(pending) == 84
-    assert ledger["claim_boundary"]["numerically_verified"] == "blocked"
-    assert ledger["claim_boundary"]["curriculum_covered"] == "blocked"
-    assert ledger["claim_boundary"]["capstone_integrated"] == "blocked"
+    assert ledger["claim_boundary"]["numerically_verified"] == "passed"
+    assert ledger["claim_boundary"]["curriculum_covered"] == "passed"
+    assert ledger["claim_boundary"]["capstone_integrated"] == "passed"
 
 
 def test_repaired_controls_and_normalized_program_shapes_are_distinct() -> None:
@@ -209,6 +209,6 @@ def test_catalog_count_and_course_status_remain_bounded(catalog: CourseCatalog) 
     assert len(course.modules) == 84
     assert all(module.manifest.runtime.kind == "python" for module in course.modules)
     ledger = _load_yaml(COURSE_ROOT / "remediation-map.yaml")
-    assert ledger["claim_boundary"]["numerically_verified"] == "blocked"
-    assert ledger["claim_boundary"]["curriculum_covered"] == "blocked"
-    assert ledger["claim_boundary"]["capstone_integrated"] == "blocked"
+    assert ledger["claim_boundary"]["numerically_verified"] == "passed"
+    assert ledger["claim_boundary"]["curriculum_covered"] == "passed"
+    assert ledger["claim_boundary"]["capstone_integrated"] == "passed"

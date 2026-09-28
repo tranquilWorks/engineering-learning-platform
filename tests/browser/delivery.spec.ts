@@ -230,3 +230,48 @@ test('chart initialization failure falls back even after a successful context pr
   await expect(page.locator('.no-webgl')).toHaveCount(0);
   await expect(page.locator('.error-inline')).toHaveCount(0);
 });
+
+
+test('authored checkpoint navigation exposes real cumulative evidence on desktop and mobile', async ({ page }) => {
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({width, height:1000});
+    for (const module of ['20-estimate-tone-frequency-and-phase-from-noisy-samples', '84-run-the-end-to-end-radar-processing-capstone']) {
+      const response = page.waitForResponse(r => r.url().endsWith('/run') && r.request().method() === 'POST');
+      await page.goto('/courses/dsp-radar/modules/' + module);
+      expect((await response).ok()).toBe(true);
+      await page.locator('.compute-status:visible').first().filter({hasText:'Experiment synchronized'}).waitFor();
+      const nav = page.getByRole('navigation', {name:'Lesson sections'});
+      const checkpointLink = nav.getByRole('link', {name:'Course checkpoint', exact:true});
+      await checkpointLink.focus();
+      await page.keyboard.press('Enter');
+      const heading = page.getByRole('heading', {name:'Course checkpoint', exact:true});
+      await expect(heading).toBeInViewport();
+      const section = heading.locator('..');
+      await expect(section.getByRole('heading', {name:/Cumulative assessment DSP-A/})).toBeVisible();
+      await expect(section).toContainText('No learner score or completion is stored.');
+      if (module.startsWith('84')) await expect(section).toContainText('fixed baseline');
+      await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
+      const checkpointHash = await page.evaluate(() => location.hash);
+      const conceptLink = nav.getByRole('link', {name:'Concept', exact:true});
+      const conceptId = await conceptLink.getAttribute('href');
+      await conceptLink.focus();
+      await page.keyboard.press('Enter');
+      await expect(page.locator(conceptId!)).toBeInViewport();
+      await page.goBack();
+      await expect.poll(() => page.evaluate(() => location.hash)).toBe(checkpointHash);
+      await expect(heading).toBeInViewport();
+      await page.goForward();
+      await expect(page.locator(conceptId!)).toBeInViewport();
+      await checkpointLink.click();
+      await expect(heading).toBeInViewport();
+      if (module.startsWith('20')) {
+        const nextResponse = page.waitForResponse(r => r.url().endsWith('/run') && r.request().method() === 'POST');
+        await page.getByRole('button', {name:'Next module'}).click();
+        await expect(page).toHaveURL(/modules\/21-/);
+        await expect(page.locator('#lesson-main')).toBeFocused();
+        await expect.poll(() => page.evaluate(() => scrollY)).toBe(0);
+        expect((await nextResponse).ok()).toBe(true);
+      }
+    }
+  }
+});
