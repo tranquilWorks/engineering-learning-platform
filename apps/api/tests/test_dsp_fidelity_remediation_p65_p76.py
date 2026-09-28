@@ -58,6 +58,10 @@ def test_source_bound_identity_content_and_stage_wiring(number, references):
     folder = _folder(number)
     manifest = yaml.safe_load((folder / "module.yaml").read_text())
     record = json.loads((folder / "conversion.yaml").read_text())
+    assert (
+        yaml.safe_load((folder / "conversion.yaml").read_text())["content"]["sweeps"]
+        == record["content"]["sweeps"]
+    )
     source_folder = SOURCE / "modules" / folder.name
     assert (
         (folder / "lesson.md")

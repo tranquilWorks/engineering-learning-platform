@@ -109,7 +109,10 @@ boolean. The first new suite had 97 passes and two failures: YAML treated
 1e-6 as text, fixed with explicit 1.0e-6 serialization; a new STAP assertion
 incorrectly required 10 dB target attenuation, replaced by a half-power-loss check
 alongside the retained source-required 10 dB SCNR loss. Scoped lint also identified
-unused bindings, now corrected. Final fixtures and all required gates are being
+unused bindings, now corrected. The initial combined regression had782 passes and one failure: the same1e-6
+serialization remained in the conversion sweep list. That record and its generator
+are corrected; source-bound tests now verify JSON/YAML sweep-value agreement.
+Final fixtures and all required gates are being
 rerun; no passing gate is inferred from these initial checks.
 
 Verification runs serially with `OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
