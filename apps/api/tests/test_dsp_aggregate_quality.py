@@ -78,6 +78,7 @@ def test_reviewed_map_has_exact_identity_binding_and_no_orphaned_assessments():
             row["task"] in text and row["expected_reasoning"] in text and row["claim_limit"] in text
         )
         assert len(row["task"].split()) >= 12 and len(row["expected_reasoning"].split()) >= 20
+        assert "The pinned source develops this physical relationship" not in text
         assert "**Browser recovery.**" in text and "**Reset parameters**" in text
         assert next(c["label"] for c in manifest["controls"] if c["type"] == "toggle") in text
 

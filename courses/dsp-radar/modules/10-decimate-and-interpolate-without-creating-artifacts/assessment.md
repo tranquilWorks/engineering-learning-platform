@@ -1,6 +1,6 @@
 ### DSP-F10 · Sample, identify and reconstruct
 
-**Competency DSP-C10:** The pinned source develops this physical relationship from deterministic measurements.
+**Competency DSP-C10:** Explain folded and image components during rate changes, and identify the filtering required before decimation and after interpolation.
 
 **Builds on:** [P03 — Make Aliasing Visually Obvious](/courses/dsp-radar/modules/03-make-aliasing-visually-obvious); [P09 — Compare FIR and IIR Filters by Behavior](/courses/dsp-radar/modules/09-compare-fir-and-iir-filters-by-behavior).
 

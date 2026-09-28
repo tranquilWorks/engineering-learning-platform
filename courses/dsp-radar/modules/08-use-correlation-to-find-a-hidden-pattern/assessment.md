@@ -1,6 +1,6 @@
 ### DSP-F08 · Sample, identify and reconstruct
 
-**Competency DSP-C08:** The pinned source develops this physical relationship from deterministic measurements.
+**Competency DSP-C08:** Use correlation to locate a known pattern and distinguish weak evidence from unresolved nearby peaks.
 
 **Builds on:** [P05 — Explore White, Colored, and Impulsive Noise](/courses/dsp-radar/modules/05-explore-white-colored-and-impulsive-noise); [P06 — Use an Impulse to Reveal a System](/courses/dsp-radar/modules/06-use-an-impulse-to-reveal-a-system).
 

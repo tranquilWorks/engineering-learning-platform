@@ -1,6 +1,6 @@
 ### DSP-F09 · Sample, identify and reconstruct
 
-**Competency DSP-C09:** The pinned source develops this physical relationship from deterministic measurements.
+**Competency DSP-C09:** Compare FIR and IIR frequency responses with their memory, phase and transient behavior.
 
 **Builds on:** [P06 — Use an Impulse to Reveal a System](/courses/dsp-radar/modules/06-use-an-impulse-to-reveal-a-system); [P07 — Understand Convolution as Echo Addition](/courses/dsp-radar/modules/07-understand-convolution-as-echo-addition); [P08 — Use Correlation to Find a Hidden Pattern](/courses/dsp-radar/modules/08-use-correlation-to-find-a-hidden-pattern).
 

@@ -1,6 +1,6 @@
 ### DSP-F05 · Sample, identify and reconstruct
 
-**Competency DSP-C05:** The pinned source develops this physical relationship from deterministic measurements.
+**Competency DSP-C05:** Distinguish equal-RMS noise processes by spectrum and correlation, and separate random noise from coherent interference.
 
 **Builds on:** [P01 — Build a Sinusoid and a Complex Phasor](/courses/dsp-radar/modules/01-build-a-sinusoid-and-a-complex-phasor).
 

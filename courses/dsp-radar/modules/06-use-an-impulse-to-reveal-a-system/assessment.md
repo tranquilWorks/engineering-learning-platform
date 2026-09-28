@@ -1,6 +1,6 @@
 ### DSP-F06 · Sample, identify and reconstruct
 
-**Competency DSP-C06:** The pinned source develops this physical relationship from deterministic measurements.
+**Competency DSP-C06:** Predict an LTI response from its impulse response, including echo delay, resonator memory and initial-condition limits.
 
 **Builds on:** [P01 — Build a Sinusoid and a Complex Phasor](/courses/dsp-radar/modules/01-build-a-sinusoid-and-a-complex-phasor); [P02 — See Sampling as Taking Measurements](/courses/dsp-radar/modules/02-see-sampling-as-taking-measurements).
 

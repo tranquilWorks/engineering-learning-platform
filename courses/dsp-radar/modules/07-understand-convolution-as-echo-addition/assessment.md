@@ -1,6 +1,6 @@
 ### DSP-F07 · Sample, identify and reconstruct
 
-**Competency DSP-C07:** The pinned source develops this physical relationship from deterministic measurements.
+**Competency DSP-C07:** Construct a received waveform by summing delayed, signed echo paths and explain overlap-dependent cancellation.
 
 **Builds on:** [P06 — Use an Impulse to Reveal a System](/courses/dsp-radar/modules/06-use-an-impulse-to-reveal-a-system).
 

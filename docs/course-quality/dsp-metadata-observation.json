@@ -1,0 +1,18 @@
+{
+  "status": "reproduced_and_fixed",
+  "finding": "JSON serialization emitted integer-mantissa scientific literals that the existing YAML 1.1 loader interpreted as strings. The unmodified conversion framework gate rejected numeric metadata.",
+  "initial_failure_log": "/tmp/elp-dsp-aggregate-framework-failure.log",
+  "repair": "Emit a decimal mantissa for scientific literals while preserving JSON numeric values; reconcile actual module and conversion identities.",
+  "preservation": "No tolerances, expected numeric values, reference evidence, source lessons or experiments changed. Both format-aware semantic comparison and actual CourseCatalog loader comparison pass.",
+  "verification": {
+    "compatibility_and_assessment_tests": {
+      "count": 12,
+      "status": "passed",
+      "seconds": 107.9
+    },
+    "fresh_independent_comparisons": 417,
+    "checkpoint_bindings": 84,
+    "cumulative_probes": 10
+  },
+  "regression_test": "apps/api/tests/test_dsp_aggregate_quality.py::test_append_only_blocks_and_target_identity_reconciliation_preserve_provenance"
+}
