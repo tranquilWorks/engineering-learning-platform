@@ -199,6 +199,14 @@ test('existing WebGL lesson draws unchanged curves when WebGL is disabled', asyn
       const authored = Object.values(result.plots)[index] as any;
       expect(authored.data.every((trace: any) => trace.type === 'scattergl')).toBe(true);
       expect(drawn).toEqual(authored.data.map((trace: any) => ({ type: 'scatter', x: trace.x, y: trace.y })));
+      const legend = await plot.locator('.legend').boundingBox();
+      const axisTitle = await plot.locator('.xtitle').boundingBox();
+      expect(legend && axisTitle && axisTitle.y + axisTitle.height < legend.y).toBeTruthy();
+      if (index === 1) {
+        const topAxis = await plot.locator('.x2title').boundingBox();
+        const chartTitle = await plot.locator('.gtitle').boundingBox();
+        expect(topAxis && chartTitle && chartTitle.y + chartTitle.height < topAxis.y).toBeTruthy();
+      }
     }
     await expect(page.locator('.js-plotly-plot').getByText(/WebGL/i)).toHaveCount(0);
   } finally { await browser.close(); }

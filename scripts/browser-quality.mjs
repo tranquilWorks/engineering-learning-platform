@@ -10,11 +10,12 @@ const catalog = await (await fetch(`${base}/api/v1/catalog`)).json();
 const browser = await chromium.launch({ headless: true });
 const rows = [], interactions = [], screenshots = [];
 const saveReport = () => {
-  const file = `${out}/browser-report.json`;
+  const file = process.env.ELP_BROWSER_REPORT || `${out}/browser-report.json`;
   fs.writeFileSync(`${file}.tmp`, JSON.stringify({ validation_level: 'automated_chromium', browser_version: browser.version(), base, experiment_request_concurrency: 1, concurrent_capacity_claimed: false, rows, interactions, screenshots, manual_screen_reader: 'not_run', representative_learners: 'not_run' }, null, 2) + '\n');
   fs.renameSync(`${file}.tmp`, file);
 };
 const selected = process.env.ELP_BROWSER_COURSE;
+const selectedModule = process.env.ELP_BROWSER_MODULE;
 const semanticSelection = { 'controls-gnc': [66, 67, 68], 'robotics-autonomy': [68, 69], 'vehicle-dynamics': [61, 62, 63, 64, 65, 66, 67] };
 const isRevised = (course, module) => semanticSelection[course.id]?.includes(module.number) ?? false;
 for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 1000 }, mobile: { width: 390, height: 844 } })) {
@@ -37,7 +38,7 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
     page.setDefaultTimeout(30000);
     let errors = [];
     page.on('pageerror', e => errors.push(e.message));
-    for (const module of course.modules) {
+    for (const module of course.modules.filter(m => !selectedModule || m.id === selectedModule)) {
       errors = [];
       const row = { course: course.id, module: module.id, viewport, status: 'failed' };
       try {

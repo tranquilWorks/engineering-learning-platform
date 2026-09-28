@@ -1,13 +1,17 @@
 {
   "status": "reproduced_before_fix",
   "image": "sha256:7c8291cc6f7efb1c45c7794e8d033810d6cbe44275639954daaf1c0aaa5bab79",
-  "finding": "WebGL unsupported notices replace 2D scattergl curves. Plot container, axes and serialized results did not establish drawn evidence. The old text detector missed line-broken notices.",
+  "finding": "WebGL unsupported notices replace 2D scattergl curves. Plot container, axes and serialized results did not establish drawn evidence. The old phrase/visibility check before interaction missed notices visible in screenshots.",
   "reproduction": "Selected Controls P66 screenshot after interaction; separate single-page Controls P01 on delivery image21e887 reproduced notices in both scattergl plots without simultaneous tabs.",
   "screenshot": {
     "path": "docs/course-quality/semantic-webgl-failure-controls66.png",
     "sha256": "67a1aa9dee0e1f0da9961fe665bdaa9d47aa19252484606dda6b862e9453f5df"
   },
   "required_repair": "Generic 2D SVG fallback when WebGL is unavailable, actual SVG curve assertions, and post-interaction checks.",
-  "closure": "pending new container sweep and visual review",
+  "closure": {
+    "status": "passed",
+    "image": "sha256:a36d1113b784f73f9b3c9f957f97d7403ec3cfebdab368022b9957f5e5356b1b",
+    "evidence": "semantic-visual-review.json and browser-report.json: SVG curves, strict unsupported-notice detection, and post-interaction drawn-trace assertions."
+  },
   "initial_probe_limitation": "A generic WebGL context could be created even while Plotly chart initialization drew .no-webgl notices. The capability-only image4ede732a8f05 was rejected by the stricter sweep. The renderer now also checks the completed chart and retries 2D traces in SVG on an initialization notice or exception."
 }

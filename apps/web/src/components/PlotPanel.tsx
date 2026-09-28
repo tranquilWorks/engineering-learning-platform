@@ -52,6 +52,20 @@ export function PlotPanel({ title, spec, compact = false, name }: Props) {
           margin: { l: 62, r: 28, t: 52, b: 58 },
           ...normalizePlotTitles(spec.layout),
         };
+        const legend = layout.legend as Record<string, unknown> | undefined;
+        if (legend?.orientation === "h" && legend.y === undefined) {
+          // Reserve a separate bottom band for automatic horizontal legends;
+          // the paper-relative default can collide with the x-axis title.
+          layout.legend = { ...legend, yref: "container", y: 0, yanchor: "bottom" };
+          const margin = layout.margin as Record<string, number>;
+          layout.margin = { ...margin, b: Math.max(margin.b ?? 0, 110) };
+        }
+        if (Object.entries(layout).some(([key, value]) => /^xaxis\d*$/.test(key)
+          && (value as Record<string, unknown>)?.side === "top")) {
+          const margin = layout.margin as Record<string, number>;
+          layout.margin = { ...margin, t: Math.max(margin.t ?? 0, 96) };
+          layout.title = { ...(layout.title as Record<string, unknown>), y: 0.98, yanchor: "top" };
+        }
         const data = spec.data.map(normalizePlotTitles);
         const config = {
           responsive: true,

@@ -1,8 +1,8 @@
 # Revised-course quality position — 2026-09-28
 
-All288 native engineering lessons and two examples are embedded in Engineering
+All 288 native engineering lessons and two examples are embedded in Engineering
 Learning. Nine of the thirteen pinned source repositories remain source-only.
-Delivery PR52 is merged: all290 container HTTP and580 desktop/mobile page checks
+Delivery PR52 is merged: all 290 container HTTP and 580 desktop/mobile page checks
 passed. Its historical evidence retains the exact image and screenshot hashes.
 
 | Curriculum | Native lessons | Current content position |
@@ -14,7 +14,7 @@ passed. Its historical evidence retains the exact image and screenshot hashes.
 
 ## Twelve-lesson model revision
 
-The initial audit found72 affected lessons. The current scoped revision replaces
+The initial audit found 72 affected lessons. The current scoped revision replaces
 Controls' algebraic capstone surrogates with executed identification/control/filter,
 navigation/guidance and timestamped watchdog loops. Robotics now measures
 perception/replanning, fresh-data resume and timed contact recovery, including
@@ -25,14 +25,16 @@ laps, unused-point factorial validation, and executed telemetry/vehicle capstone
 Each revised lesson contains its own equations, worked example, concrete
 prediction, two sweeps, limits, failure/recovery and checks with rationale.
 Capstone requirement tables expose quantities, units, thresholds and verdicts.
-Sixty independently generated numerical scenarios and40 physical/preservation
-checks passed. Full course and new browser/container gates are in progress;
-this semantic batch is not yet merged. See
+Sixty independently generated numerical scenarios and 40 physical/preservation
+checks passed. Mandatory local gates and the new container sweep passed: 290 HTTP
+modules, 580 desktop/mobile pages and 36 real interactions. The generic renderer
+now falls back to SVG after WebGL initialization failure; the twelve repaired
+lessons have post-interaction drawn-curve assertions. PR53 records integration. See
 [semantic revision](course-quality/semantic-revision.json).
 
 The browser's expanded lesson review identifies exactly what was checked.
 This is scoped synthetic-model evidence, not whole-course or learner acceptance.
-The remaining60 findings are individually embedded and retained in the
+The remaining 60 findings are individually embedded and retained in the
 [additional finding register](course-quality/additional-semantic-findings.md).
 No unlisted lesson is automatically certified. All four aggregate numerical,
 curriculum and capstone stages remain blocked pending their required reviews.
@@ -103,4 +105,17 @@ The baked image passed all 290 default HTTP/repeat/recovery checks and all
 accessibility findings. Twelve representative interaction/reset checks passed.
 Ten focused browser regressions and nine frontend tests passed. See
 [the exact batch evidence](evidence/ELP-COURSE-DELIVERY-QUALITY-01-2026-09-28.md)
-for the image identity, all retained artifacts and hosted-CI limitations. Those results did not close the historical72 semantic findings; the later scoped model revision is recorded above.
+for the image identity, all retained artifacts and hosted-CI limitations. Those results did not close the historical 72 semantic findings; the later scoped model revision is recorded above.
+
+The older delivery sweep checked its named DOM assertions; later screenshot review
+found unsupported WebGL notices. The semantic revision retains that negative
+evidence and the actual rendering correction, including separate legend/axis
+spacing and coordinate-preserving fallback. Historical page counts alone did not
+establish that every curve was drawn.
+
+Browser recheck boundary: the final all-page invocation exited 1 after one
+Robotics P58 mobile request exceeded its unchanged three-second deadline. It
+retained 579 initial passes. Three isolated desktop/mobile repetitions on the
+same image passed all six checks; the reconciled 580 identities retain the
+original failed row and links to every recheck. This is not an initial clean
+sweep or concurrent-capacity certification; the timeout cause is not proven.
