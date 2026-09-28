@@ -1,0 +1,99 @@
+{
+  "item": "P65",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p65",
+    "sha256": "41ad296232898f8d5b353261df02064ed52ad6d9c1d757e93703868455c6b9fd",
+    "byte_count": 185460,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/65-use-mvdr-capon-adaptive-beamforming/experiment.py",
+    "sha256": "5935a29b028195001040a5a26ba12ed1ecd81937fe7ee3d1e332b92921789779",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "snapshots": 128,
+      "loading_alpha": 0.01,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "snapshots": 4,
+      "loading_alpha": 0.01,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "snapshots": 128,
+      "loading_alpha": 0.1,
+      "broken_mode": false
+    },
+    "broken": {
+      "snapshots": 128,
+      "loading_alpha": 0.01,
+      "broken_mode": true
+    },
+    "recovery": {
+      "snapshots": 128,
+      "loading_alpha": 0.01,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "output_sinr",
+      "unit": "dB"
+    },
+    {
+      "name": "fixed_sinr",
+      "unit": "dB"
+    },
+    {
+      "name": "true_response",
+      "unit": "ratio"
+    },
+    {
+      "name": "interferer_response",
+      "unit": "ratio"
+    },
+    {
+      "name": "noise_power",
+      "unit": "power"
+    },
+    {
+      "name": "loading_power",
+      "unit": "power"
+    },
+    {
+      "name": "distortionless_error",
+      "unit": "ratio"
+    },
+    {
+      "name": "raw_solve_refused",
+      "unit": "boolean"
+    },
+    {
+      "name": "loaded_recovery_sinr",
+      "unit": "dB"
+    },
+    {
+      "name": "corrected_recovery_sinr",
+      "unit": "dB"
+    },
+    {
+      "name": "snapshot4_sinr",
+      "unit": "dB"
+    },
+    {
+      "name": "loading_small_sinr",
+      "unit": "dB"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

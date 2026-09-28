@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "8127a4806e39ddc359c8bb74e1331b7213669f6d47ca7422ad6bd305f21c39c6",
+    "content_digest": "13bb7875036227fe5066f2c4e2e209e1b19521df4946800f1241a49cc2ebc05d",
     "files": [
       {
         "path": "modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity/experiment.py",
-        "sha256": "ab8e5ef761d767a4445d7dd5776167c7d554fcb75c4515fbfd3d68e6c0f7a789"
+        "sha256": "d7d282fcebf9d16212395ff173d0be0929a0dfc233cd4b1f744fa4c8e7cfa046"
       },
       {
         "path": "modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity/lesson.md",
-        "sha256": "0edc83618607fa4dbc8c8eed96c486f3c45a66fb4bccdaf5932877ff033b7315"
+        "sha256": "8390c306911cdb1674ba7984974087e37f1f446b3228b7c4accb731f0232f15c"
       },
       {
         "path": "modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity/module.yaml",
-        "sha256": "213356993b8350671cce310bc5a13c3e2c37f9fe5192a300e9888d54f38fd0cd"
+        "sha256": "d4b11858c256e84212ab236a5f254d24f38f429f0b1b071c4dcf0c332f9794cb"
       }
     ]
   },
   "content": {
     "guiding_question": "How can opposite chirp slopes disentangle delay and Doppler?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "Signed legs satisfy fup=S tau-fd and fdown=-S tau-fd. Their difference isolates delay and negative sum isolates Doppler. Single-target estimates use lag-one phase; the separate two-target scene uses separated interpolated FFT peaks.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary triangular slope while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Signed legs satisfy fup=S tau-fd and fdown=-S tau-fd. Their difference isolates delay and negative sum isolates Doppler. Single-target estimates use lag-one phase; the separate two-target scene uses separated interpolated FFT peaks.",
+      "Sorting signed up/down peak lists in the same order cross-pairs the two targets and creates plausible ghost reports.",
+      "Reverse the down list for this reviewed association and solve using unchanged detections. This requires correct association evidence and is not a general multi-target matching algorithm. Disable the toggle for the selected single-target result.",
+      "Explicit stage equations are retained in lesson.md. P65-P76 retain private source input formulas, with a fixed full-aperture noise crop for P75 controls. Plot/console presentation is adapted; no MATLAB runtime execution is claimed."
     ],
     "equations": [
       {
@@ -66,149 +66,259 @@
     ],
     "equation_order": "before_toolbox_shortcuts",
     "deterministic_data": {
-      "seed": 1072,
+      "seed": 7201,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
-        },
-        {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "a69db3e7eb3ad29ef190f9217219a64553349f6caca302228bbacf970f3b3b91",
-          "unit": "mixed numeric signature"
+          "sha256": "db3a7451f16926ba483db883917eb88aaace018e4f336d4642af41b009e8c691",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "bc46fdf6d82eba3e54baf8f52b1515aea945ff3b1f0c1afa8e4592a9f57b565d",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "e1f0fd5e35beeb06f95d2e0aeade074a34d945e68bdd76b853fba244c4bde1be",
-          "unit": "mixed numeric signature"
+          "sha256": "9583e281b7f0f48141277a89f74448019dac30b8dbdb47fe463eb2569779cff8",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "634ecaf598b90ecf6dc9cdd52538843cb6a08890e1d0133b3d3dfb1b750cfe5f",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "95c5ae4cecb5c84915b78f6a1162a41c874e72a9aeee5ae48f23e90720d0e209",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "3a86cdf12c9f4d29616c03183ccabb3c616b9ac5ce1e3a307dd93193f39787f6",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "184b9f1faf03ab8680e78a2fd59f985d79fed54a38ddf0048ba54431176116cf",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "ad4d04456a3cc2d55fa41c9d51715d0c4ce46cd097d0783d8cd464469ddad60b",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "db3a7451f16926ba483db883917eb88aaace018e4f336d4642af41b009e8c691",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "bc46fdf6d82eba3e54baf8f52b1515aea945ff3b1f0c1afa8e4592a9f57b565d",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P72 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P72 explicit processing and evidence stages",
+        "target_plot_key": "chirp_frequency",
+        "title": "Opposite chirp slopes with delayed moving echoes",
         "axes": [
           {
             "role": "x",
-            "label": "range or time bin",
-            "unit": "source units"
+            "label": "Overlap time (us)",
+            "unit": "us"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Instantaneous frequency (MHz)",
+            "unit": "MHz"
           }
         ],
-        "interpretation": "This view answers the Use Up/Down Triangular Chirps to Separate Range and Velocity guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Signed legs satisfy fup=S tau-fd and fdown=-S tau-fd. Their difference isolates delay and negative sum isolates Doppler. Single-target estimates use lag-one phase; the separate two-target scene uses separated interpolated FFT peaks."
       },
       {
-        "source_figure": "Pinned P72 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P72 explicit processing and evidence stages",
+        "target_plot_key": "beats",
+        "title": "Opposite signed chirp legs",
         "axes": [
           {
             "role": "x",
-            "label": "range or time bin",
-            "unit": "source units"
+            "label": "Overlap time (us)",
+            "unit": "us"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Mixer I voltage (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Use Up/Down Triangular Chirps to Separate Range and Velocity guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Signed legs satisfy fup=S tau-fd and fdown=-S tau-fd. Their difference isolates delay and negative sum isolates Doppler. Single-target estimates use lag-one phase; the separate two-target scene uses separated interpolated FFT peaks."
       },
       {
-        "source_figure": "Pinned P72 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P72 explicit processing and evidence stages",
+        "target_plot_key": "range",
+        "title": "Difference isolates delay",
         "axes": [
           {
             "role": "x",
-            "label": "range or time bin",
-            "unit": "source units"
+            "label": "True range (m)",
+            "unit": "m"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Estimated range (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Use Up/Down Triangular Chirps to Separate Range and Velocity guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Signed legs satisfy fup=S tau-fd and fdown=-S tau-fd. Their difference isolates delay and negative sum isolates Doppler. Single-target estimates use lag-one phase; the separate two-target scene uses separated interpolated FFT peaks."
       },
       {
-        "source_figure": "Pinned P72 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P72 explicit processing and evidence stages",
+        "target_plot_key": "velocity",
+        "title": "Sum isolates signed Doppler",
         "axes": [
           {
             "role": "x",
-            "label": "range or time bin",
-            "unit": "source units"
+            "label": "True velocity (m/s)",
+            "unit": "m/s"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Estimated velocity (m/s)",
+            "unit": "m/s"
           }
         ],
-        "interpretation": "This view answers the Use Up/Down Triangular Chirps to Separate Range and Velocity guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Signed legs satisfy fup=S tau-fd and fdown=-S tau-fd. Their difference isolates delay and negative sum isolates Doppler. Single-target estimates use lag-one phase; the separate two-target scene uses separated interpolated FFT peaks."
+      },
+      {
+        "source_figure": "Pinned P72 explicit processing and evidence stages",
+        "target_plot_key": "noise",
+        "title": "Fixed waveforms with scaled receiver noise",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Noise RMS (voltage)",
+            "unit": "voltage"
+          },
+          {
+            "role": "y",
+            "label": "Range error (m)",
+            "unit": "m"
+          }
+        ],
+        "interpretation": "Signed legs satisfy fup=S tau-fd and fdown=-S tau-fd. Their difference isolates delay and negative sum isolates Doppler. Single-target estimates use lag-one phase; the separate two-target scene uses separated interpolated FFT peaks."
+      },
+      {
+        "source_figure": "Pinned P72 explicit processing and evidence stages",
+        "target_plot_key": "multi_spectrum",
+        "title": "Two targets yield two peaks per leg",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Signed beat frequency (kHz)",
+            "unit": "kHz"
+          },
+          {
+            "role": "y",
+            "label": "Normalized magnitude (dB)",
+            "unit": "dB"
+          }
+        ],
+        "interpretation": "Signed legs satisfy fup=S tau-fd and fdown=-S tau-fd. Their difference isolates delay and negative sum isolates Doppler. Single-target estimates use lag-one phase; the separate two-target scene uses separated interpolated FFT peaks."
+      },
+      {
+        "source_figure": "Pinned P72 explicit processing and evidence stages",
+        "target_plot_key": "pairing_range",
+        "title": "Same peak lists, different associations",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Paired report (index)",
+            "unit": "index"
+          },
+          {
+            "role": "y",
+            "label": "Range (m)",
+            "unit": "m"
+          }
+        ],
+        "interpretation": "Signed legs satisfy fup=S tau-fd and fdown=-S tau-fd. Their difference isolates delay and negative sum isolates Doppler. Single-target estimates use lag-one phase; the separate two-target scene uses separated interpolated FFT peaks."
+      },
+      {
+        "source_figure": "Pinned P72 explicit processing and evidence stages",
+        "target_plot_key": "pairing_velocity",
+        "title": "Ghost velocity from wrong pairing",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Paired report (index)",
+            "unit": "index"
+          },
+          {
+            "role": "y",
+            "label": "Approaching velocity (m/s)",
+            "unit": "m/s"
+          }
+        ],
+        "interpretation": "Signed legs satisfy fup=S tau-fd and fdown=-S tau-fd. Their difference isolates delay and negative sum isolates Doppler. Single-target estimates use lag-one phase; the separate two-target scene uses separated interpolated FFT peaks."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "target_range_m",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          15,
+          45,
+          75
         ],
-        "expected_observation": "Changing triangular slope moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Target range m; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "velocity_mps",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          -30,
+          0,
+          20,
+          30
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Velocity m/s; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "Sorting signed up/down peak lists in the same order cross-pairs the two targets and creates plausible ghost reports.",
+      "recovery": "Reverse the down list for this reviewed association and solve using unchanged detections. This requires correct association evidence and is not a general multi-target matching algorithm. Disable the toggle for the selected single-target result.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Sorting signed up/down peak lists in the same order cross-pairs the two targets and creates plausible ghost reports.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -216,63 +326,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 1000000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P72 python -m pytest -q apps/api/tests/test_dsp_course.py",
-    "seed": 1072,
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p65_p76.py",
+    "seed": 7201,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "target_range_m",
+        "value": 45,
+        "unit": "m"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "velocity_mps",
+        "value": 20,
+        "unit": "m/s"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 2.5647750589996576e-10,
+        "max_relative_error": 2.2050527658043343e-12,
+        "passed": true,
         "expected": {
           "path": "modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity/evidence/expected-baseline.json",
-          "sha256": "a69db3e7eb3ad29ef190f9217219a64553349f6caca302228bbacf970f3b3b91"
+          "sha256": "db3a7451f16926ba483db883917eb88aaace018e4f336d4642af41b009e8c691"
         },
         "actual": {
           "path": "modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity/evidence/actual-baseline.json",
-          "sha256": "30aad8b04be2fda0ad3a7f304fda5f289db488f57a60ad1874295b2edb4669e7"
-        },
-        "max_absolute_error": 3.297362383136715e-13,
-        "max_relative_error": 3.297362383136715e-13,
-        "passed": true
+          "sha256": "bc46fdf6d82eba3e54baf8f52b1515aea945ff3b1f0c1afa8e4592a9f57b565d"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 2.5647750589996576e-10,
+        "max_relative_error": 2.2050527658043343e-12,
+        "passed": true,
+        "expected": {
+          "path": "modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity/evidence/expected-sweep-1.json",
+          "sha256": "9583e281b7f0f48141277a89f74448019dac30b8dbdb47fe463eb2569779cff8"
+        },
+        "actual": {
+          "path": "modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity/evidence/actual-sweep-1.json",
+          "sha256": "634ecaf598b90ecf6dc9cdd52538843cb6a08890e1d0133b3d3dfb1b750cfe5f"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 2.5647750589996576e-10,
+        "max_relative_error": 2.2050527658043343e-12,
+        "passed": true,
+        "expected": {
+          "path": "modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity/evidence/expected-sweep-2.json",
+          "sha256": "95c5ae4cecb5c84915b78f6a1162a41c874e72a9aeee5ae48f23e90720d0e209"
+        },
+        "actual": {
+          "path": "modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity/evidence/actual-sweep-2.json",
+          "sha256": "3a86cdf12c9f4d29616c03183ccabb3c616b9ac5ce1e3a307dd93193f39787f6"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 2.5647750589996576e-10,
+        "max_relative_error": 2.2050527658043343e-12,
+        "passed": true,
         "expected": {
           "path": "modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity/evidence/expected-broken.json",
-          "sha256": "e1f0fd5e35beeb06f95d2e0aeade074a34d945e68bdd76b853fba244c4bde1be"
+          "sha256": "184b9f1faf03ab8680e78a2fd59f985d79fed54a38ddf0048ba54431176116cf"
         },
         "actual": {
           "path": "modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity/evidence/actual-broken.json",
-          "sha256": "294f7592939142e34747155db44da2576a96611b57e5e0ffdd87883c1737e2b5"
+          "sha256": "ad4d04456a3cc2d55fa41c9d51715d0c4ce46cd097d0783d8cd464469ddad60b"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 3.297362383136715e-13,
-        "max_relative_error": 3.297362383136715e-13,
-        "passed": true
+        "max_absolute_error": 2.5647750589996576e-10,
+        "max_relative_error": 2.2050527658043343e-12,
+        "passed": true,
+        "expected": {
+          "path": "modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity/evidence/expected-recovery.json",
+          "sha256": "db3a7451f16926ba483db883917eb88aaace018e4f336d4642af41b009e8c691"
+        },
+        "actual": {
+          "path": "modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity/evidence/actual-recovery.json",
+          "sha256": "bc46fdf6d82eba3e54baf8f52b1515aea945ff3b1f0c1afa8e4592a9f57b565d"
+        }
       }
     ]
   },

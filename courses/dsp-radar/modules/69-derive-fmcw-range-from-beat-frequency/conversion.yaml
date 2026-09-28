@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "eab49fadf739b1ed5a2c6d4a15176375eacdcdaa8f8411d6315e9d7547be56de",
+    "content_digest": "2477951e439b881728fd8a5449f895a3d73c6d7a350f2161f5a386fe71e7a9ac",
     "files": [
       {
         "path": "modules/69-derive-fmcw-range-from-beat-frequency/experiment.py",
-        "sha256": "12915f539b790ea93a2a763654dbc63361c5dd9e180ada525993f26a3093df63"
+        "sha256": "bdfa6ecfb85c24bf95c8fba1d07f21b58f8cefedcc6a6d65fefcfaa6b7133e33"
       },
       {
         "path": "modules/69-derive-fmcw-range-from-beat-frequency/lesson.md",
-        "sha256": "136d92dde6d7d815be664688602ecf422325ab6df7239137d70c06b3e29a4284"
+        "sha256": "7b2018ba6eb3850f9f8b54bb6ecf68105d68a1bdbbecb7824872473c36f66651"
       },
       {
         "path": "modules/69-derive-fmcw-range-from-beat-frequency/module.yaml",
-        "sha256": "3a918be072110344c2ca4e1521f2f3d48abc340db898a06a9b9cd9732941bc3d"
+        "sha256": "11a70e5cb6fd3f9a5d0fb6c4369d741073d1d9167fe4a2e27ce104f15f4e74d6"
       }
     ]
   },
   "content": {
     "guiding_question": "Why does a delayed chirp produce a nearly constant beat frequency?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "An 80 MHz sampled,40 us centered chirp returns after tau=2R/c. Only valid overlap is mixed as Tx conj(Rx), giving positive beat S tau. A Hann window and 65536-point FFT interpolate the beat; zero-padding does not improve the physical c/(2B) resolution.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary target range while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "An 80 MHz sampled,40 us centered chirp returns after tau=2R/c. Only valid overlap is mixed as Tx conj(Rx), giving positive beat S tau. A Hann window and 65536-point FFT interpolate the beat; zero-padding does not improve the physical c/(2B) resolution.",
+      "Using R=c fbeat/S omits round-trip propagation and doubles the same estimate.",
+      "Restore R=c fbeat/(2S) without changing the observed beat.",
+      "Explicit stage equations are retained in lesson.md. P65-P76 retain private source input formulas, with a fixed full-aperture noise crop for P75 controls. Plot/console presentation is adapted; no MATLAB runtime execution is claimed."
     ],
     "equations": [
       {
@@ -66,149 +66,250 @@
     ],
     "equation_order": "before_toolbox_shortcuts",
     "deterministic_data": {
-      "seed": 1069,
+      "seed": 6901,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
+          "name": "sample_rate_hz",
+          "value": 80000000.0,
+          "unit": "count"
         },
         {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
+          "name": "fft_length",
+          "value": 65536,
+          "unit": "count"
         },
         {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "e9eabcc8cfe89b2fdc3b6fc96bc18ad08e4fcfe3bd267d9e99767bfc5672a13d",
-          "unit": "mixed numeric signature"
+          "sha256": "f6dda1a68c30787dc3b3aa8d23e81edcddce19bb378b36ece519acb0042b2213",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "c410ea2c8e1feb8942b8af82b5c84c2c3cf846c7a83ee0589ecc8ea68f53d80e",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "36313f9470245442ce048347c53495376de95e6be73a4c899e25c1880a354d1a",
-          "unit": "mixed numeric signature"
+          "sha256": "4dc349e2c8378efe98280c78096cab426fe63084df02a46887945c403dc50fdf",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "edeb7d47e8a37d31c3548826323b06cf800ffd27f7a1f1034337983c8d8d0785",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "f34643830f7c1e4048b5efa36cea26d7f67e269d575c90b71940d98f3ecbf372",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "8c9f5b33beb71af9d7e34401ec85ad65ec26f91f98b45e5084aec3ee4cc9d083",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "ea868ba3fef16a6fd881d11e31d8a5903da83348f9e6f5dd1ed0a20d09b7f03e",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "c166be31a910e10d821bb4c41c413a789b1e3b907666d0fbbde82dc6016a3bce",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "f6dda1a68c30787dc3b3aa8d23e81edcddce19bb378b36ece519acb0042b2213",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "c410ea2c8e1feb8942b8af82b5c84c2c3cf846c7a83ee0589ecc8ea68f53d80e",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P69 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P69 explicit processing and evidence stages",
+        "target_plot_key": "raw_iq",
+        "title": "Transmit and delayed noisy receive IQ",
         "axes": [
           {
             "role": "x",
-            "label": "range or time bin",
-            "unit": "source units"
+            "label": "Time (us)",
+            "unit": "us"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "I voltage (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Derive FMCW Range from Beat Frequency guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "An 80 MHz sampled,40 us centered chirp returns after tau=2R/c. Only valid overlap is mixed as Tx conj(Rx), giving positive beat S tau. A Hann window and 65536-point FFT interpolate the beat; zero-padding does not improve the physical c/(2B) resolution."
       },
       {
-        "source_figure": "Pinned P69 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P69 explicit processing and evidence stages",
+        "target_plot_key": "chirp",
+        "title": "Transmit and physically delayed echo",
         "axes": [
           {
             "role": "x",
-            "label": "range or time bin",
-            "unit": "source units"
+            "label": "Time (us)",
+            "unit": "us"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Instantaneous frequency (MHz)",
+            "unit": "MHz"
           }
         ],
-        "interpretation": "This view answers the Derive FMCW Range from Beat Frequency guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "An 80 MHz sampled,40 us centered chirp returns after tau=2R/c. Only valid overlap is mixed as Tx conj(Rx), giving positive beat S tau. A Hann window and 65536-point FFT interpolate the beat; zero-padding does not improve the physical c/(2B) resolution."
       },
       {
-        "source_figure": "Pinned P69 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P69 explicit processing and evidence stages",
+        "target_plot_key": "mixer",
+        "title": "Tx times conjugate Rx",
         "axes": [
           {
             "role": "x",
-            "label": "range or time bin",
-            "unit": "source units"
+            "label": "Valid time (us)",
+            "unit": "us"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Voltage (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Derive FMCW Range from Beat Frequency guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "An 80 MHz sampled,40 us centered chirp returns after tau=2R/c. Only valid overlap is mixed as Tx conj(Rx), giving positive beat S tau. A Hann window and 65536-point FFT interpolate the beat; zero-padding does not improve the physical c/(2B) resolution."
       },
       {
-        "source_figure": "Pinned P69 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P69 explicit processing and evidence stages",
+        "target_plot_key": "spectrum",
+        "title": "Hann-windowed beat with log-power peak interpolation",
         "axes": [
           {
             "role": "x",
-            "label": "range or time bin",
-            "unit": "source units"
+            "label": "Beat frequency (kHz)",
+            "unit": "kHz"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Normalized power (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Derive FMCW Range from Beat Frequency guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "An 80 MHz sampled,40 us centered chirp returns after tau=2R/c. Only valid overlap is mixed as Tx conj(Rx), giving positive beat S tau. A Hann window and 65536-point FFT interpolate the beat; zero-padding does not improve the physical c/(2B) resolution."
+      },
+      {
+        "source_figure": "Pinned P69 explicit processing and evidence stages",
+        "target_plot_key": "range_sweep",
+        "title": "Fixed-slope range sweep",
+        "axes": [
+          {
+            "role": "x",
+            "label": "True range (m)",
+            "unit": "m"
+          },
+          {
+            "role": "y",
+            "label": "Beat frequency (kHz)",
+            "unit": "kHz"
+          }
+        ],
+        "interpretation": "An 80 MHz sampled,40 us centered chirp returns after tau=2R/c. Only valid overlap is mixed as Tx conj(Rx), giving positive beat S tau. A Hann window and 65536-point FFT interpolate the beat; zero-padding does not improve the physical c/(2B) resolution."
+      },
+      {
+        "source_figure": "Pinned P69 explicit processing and evidence stages",
+        "target_plot_key": "slope_sweep",
+        "title": "Fixed-range slope sweep",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Bandwidth (MHz)",
+            "unit": "MHz"
+          },
+          {
+            "role": "y",
+            "label": "Beat frequency (kHz)",
+            "unit": "kHz"
+          }
+        ],
+        "interpretation": "An 80 MHz sampled,40 us centered chirp returns after tau=2R/c. Only valid overlap is mixed as Tx conj(Rx), giving positive beat S tau. A Hann window and 65536-point FFT interpolate the beat; zero-padding does not improve the physical c/(2B) resolution."
+      },
+      {
+        "source_figure": "Pinned P69 explicit processing and evidence stages",
+        "target_plot_key": "conversion",
+        "title": "Same beat, round-trip conversion",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Truth/wrong/recovered/selected (index)",
+            "unit": "index"
+          },
+          {
+            "role": "y",
+            "label": "Estimated range (m)",
+            "unit": "m"
+          }
+        ],
+        "interpretation": "An 80 MHz sampled,40 us centered chirp returns after tau=2R/c. Only valid overlap is mixed as Tx conj(Rx), giving positive beat S tau. A Hann window and 65536-point FFT interpolate the beat; zero-padding does not improve the physical c/(2B) resolution."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "target_range_m",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          15,
+          45,
+          75
         ],
-        "expected_observation": "Changing target range moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Target range m; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "bandwidth_mhz",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          10,
+          20,
+          30
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Bandwidth mhz; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "Using R=c fbeat/S omits round-trip propagation and doubles the same estimate.",
+      "recovery": "Restore R=c fbeat/(2S) without changing the observed beat.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Using R=c fbeat/S omits round-trip propagation and doubles the same estimate.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -216,63 +317,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 1000000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P69 python -m pytest -q apps/api/tests/test_dsp_course.py",
-    "seed": 1069,
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p65_p76.py",
+    "seed": 6901,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "target_range_m",
+        "value": 45,
+        "unit": "m"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "bandwidth_mhz",
+        "value": 20,
+        "unit": "MHz"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 7.673861546209082e-13,
+        "max_relative_error": 1.1368683772161603e-13,
+        "passed": true,
         "expected": {
           "path": "modules/69-derive-fmcw-range-from-beat-frequency/evidence/expected-baseline.json",
-          "sha256": "e9eabcc8cfe89b2fdc3b6fc96bc18ad08e4fcfe3bd267d9e99767bfc5672a13d"
+          "sha256": "f6dda1a68c30787dc3b3aa8d23e81edcddce19bb378b36ece519acb0042b2213"
         },
         "actual": {
           "path": "modules/69-derive-fmcw-range-from-beat-frequency/evidence/actual-baseline.json",
-          "sha256": "9d7d32cf859ae88cbd681675a63fd07be6cf8697b43a0ef9d2d13009708e866d"
-        },
-        "max_absolute_error": 4.978795153931515e-13,
-        "max_relative_error": 4.978795153931515e-13,
-        "passed": true
+          "sha256": "c410ea2c8e1feb8942b8af82b5c84c2c3cf846c7a83ee0589ecc8ea68f53d80e"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 8.810729923425242e-13,
+        "max_relative_error": 1.8474111129762605e-13,
+        "passed": true,
+        "expected": {
+          "path": "modules/69-derive-fmcw-range-from-beat-frequency/evidence/expected-sweep-1.json",
+          "sha256": "4dc349e2c8378efe98280c78096cab426fe63084df02a46887945c403dc50fdf"
+        },
+        "actual": {
+          "path": "modules/69-derive-fmcw-range-from-beat-frequency/evidence/actual-sweep-1.json",
+          "sha256": "edeb7d47e8a37d31c3548826323b06cf800ffd27f7a1f1034337983c8d8d0785"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 7.673861546209082e-13,
+        "max_relative_error": 1.5631940186722204e-13,
+        "passed": true,
+        "expected": {
+          "path": "modules/69-derive-fmcw-range-from-beat-frequency/evidence/expected-sweep-2.json",
+          "sha256": "f34643830f7c1e4048b5efa36cea26d7f67e269d575c90b71940d98f3ecbf372"
+        },
+        "actual": {
+          "path": "modules/69-derive-fmcw-range-from-beat-frequency/evidence/actual-sweep-2.json",
+          "sha256": "8c9f5b33beb71af9d7e34401ec85ad65ec26f91f98b45e5084aec3ee4cc9d083"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 7.673861546209082e-13,
+        "max_relative_error": 5.0523884754651245e-15,
+        "passed": true,
         "expected": {
           "path": "modules/69-derive-fmcw-range-from-beat-frequency/evidence/expected-broken.json",
-          "sha256": "36313f9470245442ce048347c53495376de95e6be73a4c899e25c1880a354d1a"
+          "sha256": "ea868ba3fef16a6fd881d11e31d8a5903da83348f9e6f5dd1ed0a20d09b7f03e"
         },
         "actual": {
           "path": "modules/69-derive-fmcw-range-from-beat-frequency/evidence/actual-broken.json",
-          "sha256": "310cdaa11a224f980ac5e2afcc942bfb66f7415ccd1dc67c203599edbc3b5c84"
+          "sha256": "c166be31a910e10d821bb4c41c413a789b1e3b907666d0fbbde82dc6016a3bce"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 4.978795153931515e-13,
-        "max_relative_error": 4.978795153931515e-13,
-        "passed": true
+        "max_absolute_error": 7.673861546209082e-13,
+        "max_relative_error": 1.1368683772161603e-13,
+        "passed": true,
+        "expected": {
+          "path": "modules/69-derive-fmcw-range-from-beat-frequency/evidence/expected-recovery.json",
+          "sha256": "f6dda1a68c30787dc3b3aa8d23e81edcddce19bb378b36ece519acb0042b2213"
+        },
+        "actual": {
+          "path": "modules/69-derive-fmcw-range-from-beat-frequency/evidence/actual-recovery.json",
+          "sha256": "c410ea2c8e1feb8942b8af82b5c84c2c3cf846c7a83ee0589ecc8ea68f53d80e"
+        }
       }
     ]
   },

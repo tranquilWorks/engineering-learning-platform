@@ -16,14 +16,14 @@ commands:
   - npm run build
   lint:
   - .venv/bin/ruff check apps/api/tests/test_dsp_fidelity_remediation*.py courses/dsp-radar/remediation_reference_cases.py
-    courses/dsp-radar/modules/5[3-9]-* courses/dsp-radar/modules/6[0-4]-*
+    courses/dsp-radar/modules/6[5-9]-* courses/dsp-radar/modules/7[0-6]-*
   scope:
   - git diff --check
-  - git diff --name-only 255427e3b3c6a31a66b74ad7f9836dad09b164e5
-  dsp-fidelity-p53-p64:
+  - git diff --name-only e28b041aff3f4e66cec2190e04a5d689be23f260
+  dsp-fidelity-p65-p76:
   - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3
     -B -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py
-    apps/api/tests/test_dsp_fidelity_remediation_p21_p28.py apps/api/tests/test_dsp_fidelity_remediation_p29_p40.py apps/api/tests/test_dsp_fidelity_remediation_p41_p52.py apps/api/tests/test_dsp_fidelity_remediation_p53_p64.py
+    apps/api/tests/test_dsp_fidelity_remediation_p21_p28.py apps/api/tests/test_dsp_fidelity_remediation_p29_p40.py apps/api/tests/test_dsp_fidelity_remediation_p41_p52.py apps/api/tests/test_dsp_fidelity_remediation_p53_p64.py apps/api/tests/test_dsp_fidelity_remediation_p65_p76.py
     apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py apps/api/tests/test_course_caliber_status.py
-evidence_boundary: Twelve deterministic software source-fidelity repairs only. P65-P84, learner validation,
+evidence_boundary: Twelve deterministic software source-fidelity repairs only. P77-P84, learner validation,
   MATLAB runtime, hardware and production claims remain pending.

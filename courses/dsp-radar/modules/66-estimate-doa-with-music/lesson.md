@@ -1,6 +1,4 @@
-# Estimate DOA with MUSIC
-
-> **Guiding question:** How can subspace methods resolve sources more finely than a conventional beam?
+# P66 lesson: Noise-Subspace Nulls Become Direction Peaks
 
 Guiding question: How can subspace methods resolve sources more finely than a conventional beam?
 
@@ -183,33 +181,29 @@ tests can establish its equations, bounds, and an independent numerical model;
 they do not validate MATLAB rendering, array hardware, calibration, HIL,
 real-time execution, field behavior, or an operational radar.
 
-## Use the Python GUI experiment
+## Interactive lab: Estimate DOA with MUSIC
 
-The GUI keeps the pinned source's mental model and processing order visible. The **source separation** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** How can subspace methods resolve sources more finely than a conventional beam?
 
-### Prediction and sweep 1 — source separation
+Seed 6601; ten sensors, two independent sources at +/-3 deg, 10 dB, 512 snapshots. The -40:.1:40 deg grid compares Bartlett and inverse noise-subspace projection. Two local peaks must be at least 1 deg apart. Separate source-separation, SNR, 0 dB snapshot-prefix and assumed-count sweeps preserve the source experiments. Coherent phase offset .7 rad collapses rank; four overlapping seven-element subarrays recover. Missing peaks have an explicit 80 deg finite penalty and a reported count.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict the covariance signal rank for independent versus coherent sources. Why does MUSIC need a source count, and why does spatial smoothing recover rank while reducing aperture?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Source separation deg** from 6 to 2 deg. Predict, run, and explain a measured value using the governing equation; then reset.
+2. Start at the baseline. Sweep only **Source SNR db** from 10 to -10 dB. Predict, run, and explain a measured value using the governing equation; then reset.
+3. Enable the broken case. Coherent sources collapse the second signal eigenvalue; assuming two independent sources can create false MUSIC directions.
+4. Recovery: Average four overlapping seven-element subarray covariances on unchanged coherent data. This restores rank at the cost of aperture. Missing peak sets use an explicit 80-degree penalty; counts expose incompleteness. Toggle off restores selected independent-source data.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict the covariance signal rank for independent versus coherent sources. Why does MUSIC need a source count, and why does spatial smoothing recover rank while reducing aperture? Support the explanation with a measured value and units, and state the recovery assumption.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+Coherent sources collapse the second signal eigenvalue; assuming two independent sources can create false MUSIC directions. Distinguish the selected-control scene from a named separate failure scene.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The pinned source lesson is preserved above. Private Park–Miller uniforms retain zero offset; P65–P72 split radius/phase uniform blocks and P73–P76 interleave them. Matrix inputs retain column-major ordering. P75 shorter apertures crop the full baseline noise record to isolate aperture changes. MUSIC missing-peak penalties and truth-defined audit neighborhoods are disclosed; neither manufactures successful detections. Source figures become labeled native plots; full arrays drive calculations before display decimation. Sixty independent software comparisons cover five scenarios per lesson. No MATLAB execution, browser/accessibility, learner, hardware or production validation is claimed.

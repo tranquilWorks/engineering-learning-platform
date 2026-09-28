@@ -1,6 +1,4 @@
-# Derive FMCW Range from Beat Frequency
-
-> **Guiding question:** Why does a delayed chirp produce a nearly constant beat frequency?
+# P69 lesson: A Delay Becomes a Tone
 
 ## Guiding question
 
@@ -190,33 +188,29 @@ operational performance.
 - Calling a simulated complex-baseband tone a validated RF radar measurement
   exceeds the evidence.
 
-## Use the Python GUI experiment
+## Interactive lab: Derive FMCW Range from Beat Frequency
 
-The GUI keeps the pinned source's mental model and processing order visible. The **target range** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** Why does a delayed chirp produce a nearly constant beat frequency?
 
-### Prediction and sweep 1 — target range
+Seed 6901; fs 80 MHz, T 40 us, B 20 MHz, R 45 m, echo voltage.7, receiver-noise RMS.01. Generate the centered transmit chirp and zero-before-delay receive echo. Use only t>=tau for Tx conj(Rx), a Hann window and 65536 FFT with log-power parabolic interpolation. Lag-one phase checks the mixer sign. Range 15..75 m and bandwidth 10..30 MHz sweeps reuse receiver noise.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict the beat change when range or chirp slope doubles. Explain the mixer sign, valid overlap, round-trip factor and the difference between FFT spacing and physical range resolution.
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Target range m** from 45 to 75 m. Predict, run, and explain a measured value using the governing equation; then reset.
+2. Start at the baseline. Sweep only **Bandwidth mhz** from 20 to 30 MHz. Predict, run, and explain a measured value using the governing equation; then reset.
+3. Enable the broken case. Using R=c fbeat/S omits round-trip propagation and doubles the same estimate.
+4. Recovery: Restore R=c fbeat/(2S) without changing the observed beat.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict the beat change when range or chirp slope doubles. Explain the mixer sign, valid overlap, round-trip factor and the difference between FFT spacing and physical range resolution. Support the explanation with a measured value and units, and state the recovery assumption.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+Using R=c fbeat/S omits round-trip propagation and doubles the same estimate. Distinguish the selected-control scene from a named separate failure scene.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The pinned source lesson is preserved above. Private Park–Miller uniforms retain zero offset; P65–P72 split radius/phase uniform blocks and P73–P76 interleave them. Matrix inputs retain column-major ordering. P75 shorter apertures crop the full baseline noise record to isolate aperture changes. MUSIC missing-peak penalties and truth-defined audit neighborhoods are disclosed; neither manufactures successful detections. Source figures become labeled native plots; full arrays drive calculations before display decimation. Sixty independent software comparisons cover five scenarios per lesson. No MATLAB execution, browser/accessibility, learner, hardware or production validation is claimed.

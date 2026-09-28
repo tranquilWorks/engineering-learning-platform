@@ -121,12 +121,12 @@ def test_remediation_ledger_distinguishes_prior_current_and_pending() -> None:
     scope = ledger["scope"]
     assert scope["already_distinct"] == ["P01"]
     assert scope["repaired_in_prior_batches"]["items"] == [
-        f"P{number:02d}" for number in range(2, 53)
+        f"P{number:02d}" for number in range(2, 65)
     ]
-    assert scope["repaired_in_batch"]["batch_id"] == "ELP-DSP-FIDELITY-P53-P64"
+    assert scope["repaired_in_batch"]["batch_id"] == "ELP-DSP-FIDELITY-P65-P76"
     assert scope["repaired_in_prior_batches"]["items"][9:19] == ITEM_IDS
-    assert scope["repaired_in_batch"]["items"] == [f"P{n}" for n in range(53, 65)]
-    assert scope["pending"]["items"] == [f"P{number:02d}" for number in range(65, 85)]
+    assert scope["repaired_in_batch"]["items"] == [f"P{n}" for n in range(65, 77)]
+    assert scope["pending"]["items"] == [f"P{number:02d}" for number in range(77, 85)]
     assert ledger["derived_counts"] == {
         "rule": (
             "total_items = already_distinct + repaired_in_prior_batches + "
@@ -134,9 +134,9 @@ def test_remediation_ledger_distinguishes_prior_current_and_pending() -> None:
         ),
         "total_items": 84,
         "already_distinct": 1,
-        "repaired_in_prior_batches": 51,
+        "repaired_in_prior_batches": 63,
         "repaired_in_batch": 12,
-        "pending": 20,
+        "pending": 8,
     }
     assert ledger["claim_boundary"]["numerically_verified"] == "blocked"
     assert ledger["claim_boundary"]["curriculum_covered"] == "blocked"
@@ -157,7 +157,7 @@ def test_repaired_controls_and_normalized_program_shapes_are_distinct() -> None:
             value: object = "text" if isinstance(node.value, str) else 0
             return ast.copy_location(ast.Constant(value=value), node)
 
-    for number in range(2, 65):
+    for number in range(2, 77):
         module_root = _module_root(number)
         module = json.loads((module_root / "module.yaml").read_text(encoding="utf-8"))
         controls = {control["id"] for control in module["controls"]}

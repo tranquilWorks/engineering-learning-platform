@@ -3,13 +3,13 @@
   "id": "65-use-mvdr-capon-adaptive-beamforming",
   "number": 65,
   "title": "Use MVDR/Capon Adaptive Beamforming",
-  "summary": "Explore use mvdr/capon adaptive beamforming with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "Eight half-wavelength sensors observe a weak 3-degree source and a 25 dB interferer at 30 degrees. R=X X^H/N; loading is alpha trace(R)/8; w=solve(R+delta I,a)/(a^H solve). Components use the true manifold only for performance accounting.",
   "guiding_question": "How can a beamformer place data-dependent nulls on interference?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-7",
-    "interference-angle"
+    "adaptive-arrays",
+    "P65"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,59 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Interference Angle",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "snapshots",
+      "type": "select",
+      "label": "Snapshots",
+      "default": 128,
+      "unit": "count",
+      "options": [
+        {
+          "label": "4 count",
+          "value": 4
+        },
+        {
+          "label": "16 count",
+          "value": 16
+        },
+        {
+          "label": "128 count",
+          "value": 128
+        },
+        {
+          "label": "256 count",
+          "value": 256
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "loading_alpha",
+      "type": "select",
+      "label": "Loading alpha",
+      "default": 0.01,
+      "unit": "ratio",
+      "options": [
+        {
+          "label": "1.0e-06 ratio",
+          "value": 1.0e-06
+        },
+        {
+          "label": "0.01 ratio",
+          "value": 0.01
+        },
+        {
+          "label": "0.1 ratio",
+          "value": 0.1
+        },
+        {
+          "label": "1 ratio",
+          "value": 1
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +83,45 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing interference angle, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict how fewer snapshots change covariance rank and why a distortionless constraint protects only the assumed direction. What does trace-scaled loading trade between interference rejection and robustness?",
+      "reveal": "Eight half-wavelength sensors observe a weak 3-degree source and a 25 dB interferer at 30 degrees. R=X X^H/N; loading is alpha trace(R)/8; w=solve(R+delta I,a)/(a^H solve). Components use the true manifold only for performance accounting."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Measured covariance before adaptation",
+      "plot": "covariance"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Covariance eigenvalues",
+      "plot": "eigenvalues"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Constrained response and adaptive interference null",
+      "plot": "pattern"
+    },
+    {
+      "type": "plot",
+      "title": "Output component accounting",
+      "plot": "components"
+    },
+    {
+      "type": "plot",
+      "title": "Nested snapshot prefixes",
+      "plot": "support"
+    },
+    {
+      "type": "plot",
+      "title": "Eight-snapshot mismatched look at 6 degrees",
+      "plot": "loading"
     },
     {
       "type": "callout",
@@ -102,7 +132,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "440f5676f5626c40a443f6dae37aaff9aa27ddb2d62ef37b16cbf3c32e0b16fe",
+    "content_digest": "35c6a1dbe20f642198714f4541cd76c381b120c14e607929996dc8f54998a64c",
     "files": [
       {
         "path": "modules/71-expose-fmcw-range-doppler-coupling/experiment.py",
-        "sha256": "01fa4869fb78b06f4282bf3532c9b4ec2f41cc7a1b27829d92689194ed831342"
+        "sha256": "383858cb09778ece5f3503ad325d0b52a77fb76c98a80eb63e8eab46fa010b75"
       },
       {
         "path": "modules/71-expose-fmcw-range-doppler-coupling/lesson.md",
-        "sha256": "49f64a95eb41df636cd18b7a91e7698c749f330c0b3536eb4f1634c6a5aa6b1f"
+        "sha256": "8b569644b064f98834b24129f87327561a278f50128e1d5431a5a75a24254a9e"
       },
       {
         "path": "modules/71-expose-fmcw-range-doppler-coupling/module.yaml",
-        "sha256": "ac3fb1bc2c22fc146a0ce769893bf0a7b72659b18e1b2ae3ebfd33dd157e0b44"
+        "sha256": "9195d7c9c316f7a0e7aecc8551ea03e0c406275d15a19d333c7a7c2151ea8bf4"
       }
     ]
   },
   "content": {
     "guiding_question": "Why can target motion bias the range estimated from one chirp?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "With approaching-positive velocity, Rx has +fd but Tx conj(Rx) yields fbeat=S tau-fd. The frozen-delay 45 m model measures lag-one signed frequency. A single chirp cannot identify both range and velocity; correction uses independently supplied velocity.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary chirp slope while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "With approaching-positive velocity, Rx has +fd but Tx conj(Rx) yields fbeat=S tau-fd. The frozen-delay 45 m model measures lag-one signed frequency. A single chirp cannot identify both range and velocity; correction uses independently supplied velocity.",
+      "Subtracting fd again gives the wrong-sign correction and doubles the ideal stationary range bias.",
+      "Add the independently known signed fd to the unchanged beat before converting delay to range.",
+      "Explicit stage equations are retained in lesson.md. P65-P76 retain private source input formulas, with a fixed full-aperture noise crop for P75 controls. Plot/console presentation is adapted; no MATLAB runtime execution is claimed."
     ],
     "equations": [
       {
@@ -66,149 +66,223 @@
     ],
     "equation_order": "before_toolbox_shortcuts",
     "deterministic_data": {
-      "seed": 1071,
+      "seed": 7101,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
-        },
-        {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "debc5b1d5f8de1e1e3d7404ad2301ddcd9cacb211d096a55a13df5864d4afdec",
-          "unit": "mixed numeric signature"
+          "sha256": "3e688ea24faae754958ce593dbf819598df7b6fe1901e00c8de857991e00ceb0",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "1ca002844ac6fbed21289a81b9c13364909b0938de05b0ee7fc0d61bd0a35975",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "eca6166b9ee3a42a789300a305c2a607713ece21ee6dc78f7248e098ca94ab4f",
-          "unit": "mixed numeric signature"
+          "sha256": "3448a725175c9a8a1c0259f925a0bfc91c6daf5b56e96970d037d66dd2a446ad",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "b095514231fe08315750eb4aed335af025d8fc120c3a575bb2955a158be465f8",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "1905237a6dca545c41a7e3ff4e1297c298c862ec7adbb0ad463019c14b1072ff",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "e2d1b8491afa428b9f4f8e7a500e7f85765e01ead99ad02cb1b83f458c7c2609",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "be29089790c9cdccf8555e9534bcd98923a846daf31c669902eb6ae7d54be082",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "8e769f88373bfa3cda7474222908eaa893747c0820ddc769a3b505d51f6f3d72",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "3e688ea24faae754958ce593dbf819598df7b6fe1901e00c8de857991e00ceb0",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "1ca002844ac6fbed21289a81b9c13364909b0938de05b0ee7fc0d61bd0a35975",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P71 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P71 explicit processing and evidence stages",
+        "target_plot_key": "chirp_frequency",
+        "title": "Delay and Doppler in the transmitted and received chirps",
         "axes": [
           {
             "role": "x",
-            "label": "range or time bin",
-            "unit": "source units"
+            "label": "Overlap time (us)",
+            "unit": "us"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Instantaneous frequency (MHz)",
+            "unit": "MHz"
           }
         ],
-        "interpretation": "This view answers the Expose FMCW Range-Doppler Coupling guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "With approaching-positive velocity, Rx has +fd but Tx conj(Rx) yields fbeat=S tau-fd. The frozen-delay 45 m model measures lag-one signed frequency. A single chirp cannot identify both range and velocity; correction uses independently supplied velocity."
       },
       {
-        "source_figure": "Pinned P71 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P71 explicit processing and evidence stages",
+        "target_plot_key": "mixer",
+        "title": "Signed beat from delayed moving echo",
         "axes": [
           {
             "role": "x",
-            "label": "range or time bin",
-            "unit": "source units"
+            "label": "Overlap time (us)",
+            "unit": "us"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Voltage (ratio)",
+            "unit": "ratio"
           }
         ],
-        "interpretation": "This view answers the Expose FMCW Range-Doppler Coupling guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "With approaching-positive velocity, Rx has +fd but Tx conj(Rx) yields fbeat=S tau-fd. The frozen-delay 45 m model measures lag-one signed frequency. A single chirp cannot identify both range and velocity; correction uses independently supplied velocity."
       },
       {
-        "source_figure": "Pinned P71 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P71 explicit processing and evidence stages",
+        "target_plot_key": "spectrum",
+        "title": "Retain the sign of the beat",
         "axes": [
           {
             "role": "x",
-            "label": "range or time bin",
-            "unit": "source units"
+            "label": "Signed mixer frequency (kHz)",
+            "unit": "kHz"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Normalized power (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Expose FMCW Range-Doppler Coupling guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "With approaching-positive velocity, Rx has +fd but Tx conj(Rx) yields fbeat=S tau-fd. The frozen-delay 45 m model measures lag-one signed frequency. A single chirp cannot identify both range and velocity; correction uses independently supplied velocity."
       },
       {
-        "source_figure": "Pinned P71 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P71 explicit processing and evidence stages",
+        "target_plot_key": "ranges",
+        "title": "Independent velocity corrects a single coupled beat",
         "axes": [
           {
             "role": "x",
-            "label": "range or time bin",
-            "unit": "source units"
+            "label": "Truth/stationary/wrong/corrected/selected (index)",
+            "unit": "index"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Range (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Expose FMCW Range-Doppler Coupling guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "With approaching-positive velocity, Rx has +fd but Tx conj(Rx) yields fbeat=S tau-fd. The frozen-delay 45 m model measures lag-one signed frequency. A single chirp cannot identify both range and velocity; correction uses independently supplied velocity."
+      },
+      {
+        "source_figure": "Pinned P71 explicit processing and evidence stages",
+        "target_plot_key": "velocity",
+        "title": "Change only radial velocity",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Approaching velocity (m/s)",
+            "unit": "m/s"
+          },
+          {
+            "role": "y",
+            "label": "Stationary range bias (m)",
+            "unit": "m"
+          }
+        ],
+        "interpretation": "With approaching-positive velocity, Rx has +fd but Tx conj(Rx) yields fbeat=S tau-fd. The frozen-delay 45 m model measures lag-one signed frequency. A single chirp cannot identify both range and velocity; correction uses independently supplied velocity."
+      },
+      {
+        "source_figure": "Pinned P71 explicit processing and evidence stages",
+        "target_plot_key": "slope",
+        "title": "Change only chirp slope",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Bandwidth (MHz)",
+            "unit": "MHz"
+          },
+          {
+            "role": "y",
+            "label": "Stationary range bias (m)",
+            "unit": "m"
+          }
+        ],
+        "interpretation": "With approaching-positive velocity, Rx has +fd but Tx conj(Rx) yields fbeat=S tau-fd. The frozen-delay 45 m model measures lag-one signed frequency. A single chirp cannot identify both range and velocity; correction uses independently supplied velocity."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "velocity_mps",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          -30,
+          0,
+          20,
+          30
         ],
-        "expected_observation": "Changing chirp slope moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Velocity m/s; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "bandwidth_mhz",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          10,
+          20,
+          30
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Bandwidth mhz; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "Subtracting fd again gives the wrong-sign correction and doubles the ideal stationary range bias.",
+      "recovery": "Add the independently known signed fd to the unchanged beat before converting delay to range.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Subtracting fd again gives the wrong-sign correction and doubles the ideal stationary range bias.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -216,63 +290,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 1000000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P71 python -m pytest -q apps/api/tests/test_dsp_course.py",
-    "seed": 1071,
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p65_p76.py",
+    "seed": 7101,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "velocity_mps",
+        "value": 20,
+        "unit": "m/s"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "bandwidth_mhz",
+        "value": 20,
+        "unit": "MHz"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 5.968558980384842e-13,
+        "max_relative_error": 1.7763568394002505e-13,
+        "passed": true,
         "expected": {
           "path": "modules/71-expose-fmcw-range-doppler-coupling/evidence/expected-baseline.json",
-          "sha256": "debc5b1d5f8de1e1e3d7404ad2301ddcd9cacb211d096a55a13df5864d4afdec"
+          "sha256": "3e688ea24faae754958ce593dbf819598df7b6fe1901e00c8de857991e00ceb0"
         },
         "actual": {
           "path": "modules/71-expose-fmcw-range-doppler-coupling/evidence/actual-baseline.json",
-          "sha256": "fe3e7670d5098c0c7ae5c8a67da31f6c51aff5e787d59f5627d670d88e4fff81"
-        },
-        "max_absolute_error": 4.579669976578771e-13,
-        "max_relative_error": 4.579669976578771e-13,
-        "passed": true
+          "sha256": "1ca002844ac6fbed21289a81b9c13364909b0938de05b0ee7fc0d61bd0a35975"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 8.526512829121202e-13,
+        "max_relative_error": 2.5579538487363607e-13,
+        "passed": true,
+        "expected": {
+          "path": "modules/71-expose-fmcw-range-doppler-coupling/evidence/expected-sweep-1.json",
+          "sha256": "3448a725175c9a8a1c0259f925a0bfc91c6daf5b56e96970d037d66dd2a446ad"
+        },
+        "actual": {
+          "path": "modules/71-expose-fmcw-range-doppler-coupling/evidence/actual-sweep-1.json",
+          "sha256": "b095514231fe08315750eb4aed335af025d8fc120c3a575bb2955a158be465f8"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 1.2789769243681803e-12,
+        "max_relative_error": 2.5579538487363607e-13,
+        "passed": true,
+        "expected": {
+          "path": "modules/71-expose-fmcw-range-doppler-coupling/evidence/expected-sweep-2.json",
+          "sha256": "1905237a6dca545c41a7e3ff4e1297c298c862ec7adbb0ad463019c14b1072ff"
+        },
+        "actual": {
+          "path": "modules/71-expose-fmcw-range-doppler-coupling/evidence/actual-sweep-2.json",
+          "sha256": "e2d1b8491afa428b9f4f8e7a500e7f85765e01ead99ad02cb1b83f458c7c2609"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 5.968558980384842e-13,
+        "max_relative_error": 1.2453848780385516e-13,
+        "passed": true,
         "expected": {
           "path": "modules/71-expose-fmcw-range-doppler-coupling/evidence/expected-broken.json",
-          "sha256": "eca6166b9ee3a42a789300a305c2a607713ece21ee6dc78f7248e098ca94ab4f"
+          "sha256": "be29089790c9cdccf8555e9534bcd98923a846daf31c669902eb6ae7d54be082"
         },
         "actual": {
           "path": "modules/71-expose-fmcw-range-doppler-coupling/evidence/actual-broken.json",
-          "sha256": "8dfb2db0753188bde45742b52535f9faeb7faef1e3c10233ab8145ca605d0bec"
+          "sha256": "8e769f88373bfa3cda7474222908eaa893747c0820ddc769a3b505d51f6f3d72"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 4.579669976578771e-13,
-        "max_relative_error": 4.579669976578771e-13,
-        "passed": true
+        "max_absolute_error": 5.968558980384842e-13,
+        "max_relative_error": 1.7763568394002505e-13,
+        "passed": true,
+        "expected": {
+          "path": "modules/71-expose-fmcw-range-doppler-coupling/evidence/expected-recovery.json",
+          "sha256": "3e688ea24faae754958ce593dbf819598df7b6fe1901e00c8de857991e00ceb0"
+        },
+        "actual": {
+          "path": "modules/71-expose-fmcw-range-doppler-coupling/evidence/actual-recovery.json",
+          "sha256": "1ca002844ac6fbed21289a81b9c13364909b0938de05b0ee7fc0d61bd0a35975"
+        }
       }
     ]
   },

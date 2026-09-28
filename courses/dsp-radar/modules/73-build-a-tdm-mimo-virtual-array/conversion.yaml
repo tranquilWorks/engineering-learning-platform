@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "f487da472f026df33159088b0e7659670fbc70f158cdd218dc866efd69d4f7f9",
+    "content_digest": "a4b4e4f0299ccf546b2e9e67cf6b8c776f1c4c0c6551603b35ce0a527014b010",
     "files": [
       {
         "path": "modules/73-build-a-tdm-mimo-virtual-array/experiment.py",
-        "sha256": "74c3f269bc332af8456b47c847c55f4854e2cd3b3b49b6d612b8a4460e821b66"
+        "sha256": "b002367a7affa595f27a72e1c5d1434d73b77c02100a8589556cfe73e1fcb6af"
       },
       {
         "path": "modules/73-build-a-tdm-mimo-virtual-array/lesson.md",
-        "sha256": "5378bfe23af499e7c5ce567e5f48dab39ebfdc1885ff12a3ce4577b398c4b2bf"
+        "sha256": "857d55f12690dc3c10fe41fe421355758a19e7626bacd2c26d90eaecd1c1ce7e"
       },
       {
         "path": "modules/73-build-a-tdm-mimo-virtual-array/module.yaml",
-        "sha256": "1a565dd17d8f452c676621bf08483d11714b97eb878c9ba2c438c65c34d299ca"
+        "sha256": "2751ba28cc98fd08e62cdbcd6497ee927d0447f04aa689b3f8cf9313cf8e297f"
       }
     ]
   },
   "content": {
     "guiding_question": "How do multiple transmit and receive channels create more spatial samples?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "Two TX at 0/2 wavelengths and four RX at 0:.5:1.5 create eight TX+RX positions. Tx-conjugate processing has negative spatial and Doppler phase. A lag-one estimate across 80 us same-TX cycles measures Doppler; correcting the 40 us slot offset restores virtual-array coherence.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary virtual element count while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "Two TX at 0/2 wavelengths and four RX at 0:.5:1.5 create eight TX+RX positions. Tx-conjugate processing has negative spatial and Doppler phase. A lag-one estimate across 80 us same-TX cycles measures Doppler; correcting the 40 us slot offset restores virtual-array coherence.",
+      "Treating the named 10 m/s TDM record as simultaneous lets motion phase masquerade as angle.",
+      "Multiply each virtual channel by exp(+j2pi fd slot_time) using the same-TX estimate. Recovery reuses the noisy record and assumes one unaliased target Doppler; the reviewed speed range lies below same-TX Nyquist.",
+      "Explicit stage equations are retained in lesson.md. P65-P76 retain private source input formulas, with a fixed full-aperture noise crop for P75 controls. Plot/console presentation is adapted; no MATLAB runtime execution is claimed."
     ],
     "equations": [
       {
@@ -66,149 +66,222 @@
     ],
     "equation_order": "before_toolbox_shortcuts",
     "deterministic_data": {
-      "seed": 1073,
+      "seed": 7301,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
-        },
-        {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "27d42aabffc68ebc061eeb839413a4a4eb138f250ec016d182913c79c529eee8",
-          "unit": "mixed numeric signature"
+          "sha256": "2bd689176b0b1a1c4007430ad0ebb78b9264793bb8f462a4342e29aeb42ad468",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "bfdc8336417fbff581c525adb427fdc839e3c5323991d9d0c53e4c49ebe6bde2",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "ce671691ff8570236328c14b822fad2ab4404bcea0fc9945187a5b95d5f6f1f3",
-          "unit": "mixed numeric signature"
+          "sha256": "7e2bbe80f6b662416536ce83f631ffd59d96f63bd4099ab0d1805f2029705d8a",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "132d639790166984cc2c3010faed4e1a2ed456aaee00b6935deb1c9ca7ab9dcf",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "5e74c2faa6fbcc336c28884305f79592ea33a1ac130319f26677889d9f8328ef",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "15ada5d651776f3513375012fb8f64e3ac5b63c3f47e5f32e02d815dd574e836",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "43a3031cb5ae7125f7fe114306f0a252bee2e6a2647becfb44ec3b2a5bbcf4ba",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "7b7a235e20bf3af7435bbd2d2a16a129c0a46b134baa576d5eafd82e3b1a1483",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "2bd689176b0b1a1c4007430ad0ebb78b9264793bb8f462a4342e29aeb42ad468",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "bfdc8336417fbff581c525adb427fdc839e3c5323991d9d0c53e4c49ebe6bde2",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P73 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P73 explicit processing and evidence stages",
+        "target_plot_key": "geometry",
+        "title": "TX plus RX positions give eight distinct virtual channels",
         "axes": [
           {
             "role": "x",
-            "label": "range or time bin",
-            "unit": "source units"
+            "label": "Channel (index)",
+            "unit": "index"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Position (wavelengths)",
+            "unit": "wavelengths"
           }
         ],
-        "interpretation": "This view answers the Build a TDM-MIMO Virtual Array guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Two TX at 0/2 wavelengths and four RX at 0:.5:1.5 create eight TX+RX positions. Tx-conjugate processing has negative spatial and Doppler phase. A lag-one estimate across 80 us same-TX cycles measures Doppler; correcting the 40 us slot offset restores virtual-array coherence."
       },
       {
-        "source_figure": "Pinned P73 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P73 explicit processing and evidence stages",
+        "target_plot_key": "patterns",
+        "title": "Physical and virtual apertures",
         "axes": [
           {
             "role": "x",
-            "label": "range or time bin",
-            "unit": "source units"
+            "label": "Angle (deg)",
+            "unit": "deg"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Normalized response (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Build a TDM-MIMO Virtual Array guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Two TX at 0/2 wavelengths and four RX at 0:.5:1.5 create eight TX+RX positions. Tx-conjugate processing has negative spatial and Doppler phase. A lag-one estimate across 80 us same-TX cycles measures Doppler; correcting the 40 us slot offset restores virtual-array coherence."
       },
       {
-        "source_figure": "Pinned P73 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P73 explicit processing and evidence stages",
+        "target_plot_key": "separation",
+        "title": "Equal incoherent pair: physical versus virtual",
         "axes": [
           {
             "role": "x",
-            "label": "range or time bin",
-            "unit": "source units"
+            "label": "Angle (deg)",
+            "unit": "deg"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Normalized pair power (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Build a TDM-MIMO Virtual Array guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Two TX at 0/2 wavelengths and four RX at 0:.5:1.5 create eight TX+RX positions. Tx-conjugate processing has negative spatial and Doppler phase. A lag-one estimate across 80 us same-TX cycles measures Doppler; correcting the 40 us slot offset restores virtual-array coherence."
       },
       {
-        "source_figure": "Pinned P73 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P73 explicit processing and evidence stages",
+        "target_plot_key": "resolution",
+        "title": "Separation and the valley between peaks",
         "axes": [
           {
             "role": "x",
-            "label": "range or time bin",
-            "unit": "source units"
+            "label": "Pair separation (deg)",
+            "unit": "deg"
           },
           {
             "role": "y",
-            "label": "normalized response",
-            "unit": "normalized"
+            "label": "Midpoint dip (dB)",
+            "unit": "dB"
           }
         ],
-        "interpretation": "This view answers the Build a TDM-MIMO Virtual Array guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "Two TX at 0/2 wavelengths and four RX at 0:.5:1.5 create eight TX+RX positions. Tx-conjugate processing has negative spatial and Doppler phase. A lag-one estimate across 80 us same-TX cycles measures Doppler; correcting the 40 us slot offset restores virtual-array coherence."
+      },
+      {
+        "source_figure": "Pinned P73 explicit processing and evidence stages",
+        "target_plot_key": "motion",
+        "title": "TDM motion bias and same-TX Doppler correction",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Approaching velocity (m/s)",
+            "unit": "m/s"
+          },
+          {
+            "role": "y",
+            "label": "Estimated angle (deg)",
+            "unit": "deg"
+          }
+        ],
+        "interpretation": "Two TX at 0/2 wavelengths and four RX at 0:.5:1.5 create eight TX+RX positions. Tx-conjugate processing has negative spatial and Doppler phase. A lag-one estimate across 80 us same-TX cycles measures Doppler; correcting the 40 us slot offset restores virtual-array coherence."
+      },
+      {
+        "source_figure": "Pinned P73 explicit processing and evidence stages",
+        "target_plot_key": "recovery",
+        "title": "Same 10 m/s record before and after slot compensation",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Angle (deg)",
+            "unit": "deg"
+          },
+          {
+            "role": "y",
+            "label": "Normalized power (dB)",
+            "unit": "dB"
+          }
+        ],
+        "interpretation": "Two TX at 0/2 wavelengths and four RX at 0:.5:1.5 create eight TX+RX positions. Tx-conjugate processing has negative spatial and Doppler phase. A lag-one estimate across 80 us same-TX cycles measures Doppler; correcting the 40 us slot offset restores virtual-array coherence."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "velocity_mps",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          -10,
+          0,
+          10
         ],
-        "expected_observation": "Changing virtual element count moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Velocity m/s; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "source_separation_deg",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          8,
+          16,
+          28
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Source separation deg; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "Treating the named 10 m/s TDM record as simultaneous lets motion phase masquerade as angle.",
+      "recovery": "Multiply each virtual channel by exp(+j2pi fd slot_time) using the same-TX estimate. Recovery reuses the noisy record and assumes one unaliased target Doppler; the reviewed speed range lies below same-TX Nyquist.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Treating the named 10 m/s TDM record as simultaneous lets motion phase masquerade as angle.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -216,63 +289,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 1000000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P73 python -m pytest -q apps/api/tests/test_dsp_course.py",
-    "seed": 1073,
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p65_p76.py",
+    "seed": 7301,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "velocity_mps",
+        "value": 0,
+        "unit": "m/s"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "source_separation_deg",
+        "value": 16,
+        "unit": "deg"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 4.218847493575595e-15,
+        "max_relative_error": 2.1420262764422627e-15,
+        "passed": true,
         "expected": {
           "path": "modules/73-build-a-tdm-mimo-virtual-array/evidence/expected-baseline.json",
-          "sha256": "27d42aabffc68ebc061eeb839413a4a4eb138f250ec016d182913c79c529eee8"
+          "sha256": "2bd689176b0b1a1c4007430ad0ebb78b9264793bb8f462a4342e29aeb42ad468"
         },
         "actual": {
           "path": "modules/73-build-a-tdm-mimo-virtual-array/evidence/actual-baseline.json",
-          "sha256": "cae014156f20dd38de450b5dcda13330b229ffc9b4c15fdb2a06782609744fa1"
-        },
-        "max_absolute_error": 2.737809978725636e-13,
-        "max_relative_error": 2.737809978725636e-13,
-        "passed": true
+          "sha256": "bfdc8336417fbff581c525adb427fdc839e3c5323991d9d0c53e4c49ebe6bde2"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 4.218847493575595e-15,
+        "max_relative_error": 2.1420262764422627e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/73-build-a-tdm-mimo-virtual-array/evidence/expected-sweep-1.json",
+          "sha256": "7e2bbe80f6b662416536ce83f631ffd59d96f63bd4099ab0d1805f2029705d8a"
+        },
+        "actual": {
+          "path": "modules/73-build-a-tdm-mimo-virtual-array/evidence/actual-sweep-1.json",
+          "sha256": "132d639790166984cc2c3010faed4e1a2ed456aaee00b6935deb1c9ca7ab9dcf"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 1.7763568394002505e-15,
+        "max_relative_error": 1.31832368633518e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/73-build-a-tdm-mimo-virtual-array/evidence/expected-sweep-2.json",
+          "sha256": "5e74c2faa6fbcc336c28884305f79592ea33a1ac130319f26677889d9f8328ef"
+        },
+        "actual": {
+          "path": "modules/73-build-a-tdm-mimo-virtual-array/evidence/actual-sweep-2.json",
+          "sha256": "15ada5d651776f3513375012fb8f64e3ac5b63c3f47e5f32e02d815dd574e836"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 4.218847493575595e-15,
+        "max_relative_error": 2.1420262764422627e-15,
+        "passed": true,
         "expected": {
           "path": "modules/73-build-a-tdm-mimo-virtual-array/evidence/expected-broken.json",
-          "sha256": "ce671691ff8570236328c14b822fad2ab4404bcea0fc9945187a5b95d5f6f1f3"
+          "sha256": "43a3031cb5ae7125f7fe114306f0a252bee2e6a2647becfb44ec3b2a5bbcf4ba"
         },
         "actual": {
           "path": "modules/73-build-a-tdm-mimo-virtual-array/evidence/actual-broken.json",
-          "sha256": "7f57bc494757248205493e168b66d14a828ec1bb9cd1b719239c72aae04b5a1a"
+          "sha256": "7b7a235e20bf3af7435bbd2d2a16a129c0a46b134baa576d5eafd82e3b1a1483"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 2.737809978725636e-13,
-        "max_relative_error": 2.737809978725636e-13,
-        "passed": true
+        "max_absolute_error": 4.218847493575595e-15,
+        "max_relative_error": 2.1420262764422627e-15,
+        "passed": true,
+        "expected": {
+          "path": "modules/73-build-a-tdm-mimo-virtual-array/evidence/expected-recovery.json",
+          "sha256": "2bd689176b0b1a1c4007430ad0ebb78b9264793bb8f462a4342e29aeb42ad468"
+        },
+        "actual": {
+          "path": "modules/73-build-a-tdm-mimo-virtual-array/evidence/actual-recovery.json",
+          "sha256": "bfdc8336417fbff581c525adb427fdc839e3c5323991d9d0c53e4c49ebe6bde2"
+        }
       }
     ]
   },

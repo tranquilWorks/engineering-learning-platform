@@ -1,0 +1,95 @@
+{
+  "item": "P67",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p67",
+    "sha256": "41ad296232898f8d5b353261df02064ed52ad6d9c1d757e93703868455c6b9fd",
+    "byte_count": 185460,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/67-inject-array-calibration-and-mutual-coupling-errors/experiment.py",
+    "sha256": "b87d294c3c89aadb0fe4ab0b0cd48c28ddccaabb2e11328078f9c5e8e2d4d27d",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "error_scale": 1,
+      "coupling_magnitude": 0.18,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "error_scale": 1.5,
+      "coupling_magnitude": 0.18,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "error_scale": 1,
+      "coupling_magnitude": 0.3,
+      "broken_mode": false
+    },
+    "broken": {
+      "error_scale": 1,
+      "coupling_magnitude": 0.18,
+      "broken_mode": true
+    },
+    "recovery": {
+      "error_scale": 1,
+      "coupling_magnitude": 0.18,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "active_sinr",
+      "unit": "dB"
+    },
+    {
+      "name": "impaired_sinr",
+      "unit": "dB"
+    },
+    {
+      "name": "ideal_sinr",
+      "unit": "dB"
+    },
+    {
+      "name": "recovered_sinr",
+      "unit": "dB"
+    },
+    {
+      "name": "active_known_response",
+      "unit": "dB"
+    },
+    {
+      "name": "manifold_error_before",
+      "unit": "ratio"
+    },
+    {
+      "name": "manifold_error_active",
+      "unit": "ratio"
+    },
+    {
+      "name": "manifold_error_recovered",
+      "unit": "ratio"
+    },
+    {
+      "name": "music_rmse",
+      "unit": "deg"
+    },
+    {
+      "name": "first_music_peak",
+      "unit": "deg"
+    },
+    {
+      "name": "other_direction_residual",
+      "unit": "ratio"
+    },
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

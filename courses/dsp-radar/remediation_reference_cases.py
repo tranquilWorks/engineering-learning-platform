@@ -3990,3 +3990,796 @@ _REFERENCES.update({f"P{n}": globals()[f"_p{n}"] for n in range(53, 65)})
 
 # Scenario declarations for P53-P64.
 SCENARIOS.update({'P53': {'baseline': {'minimum_cells': 3, 'weight_exponent': 1, 'broken_mode': False}, 'sweep_1': {'minimum_cells': 18, 'weight_exponent': 1, 'broken_mode': False}, 'sweep_2': {'minimum_cells': 3, 'weight_exponent': 2, 'broken_mode': False}, 'broken': {'minimum_cells': 3, 'weight_exponent': 1, 'broken_mode': True}, 'recovery': {'minimum_cells': 3, 'weight_exponent': 1, 'broken_mode': False}}, 'P54': {'baseline': {'alpha_gain': 0.35, 'beta_gain': 0.08, 'broken_mode': False}, 'sweep_1': {'alpha_gain': 0.85, 'beta_gain': 0.08, 'broken_mode': False}, 'sweep_2': {'alpha_gain': 0.35, 'beta_gain': 0.3, 'broken_mode': False}, 'broken': {'alpha_gain': 0.35, 'beta_gain': 0.08, 'broken_mode': True}, 'recovery': {'alpha_gain': 0.35, 'beta_gain': 0.08, 'broken_mode': False}}, 'P55': {'baseline': {'acceleration_sigma_mps2': 0.8, 'report_sigma_m': 25, 'broken_mode': False}, 'sweep_1': {'acceleration_sigma_mps2': 3.2, 'report_sigma_m': 25, 'broken_mode': False}, 'sweep_2': {'acceleration_sigma_mps2': 0.8, 'report_sigma_m': 100, 'broken_mode': False}, 'broken': {'acceleration_sigma_mps2': 0.8, 'report_sigma_m': 25, 'broken_mode': True}, 'recovery': {'acceleration_sigma_mps2': 0.8, 'report_sigma_m': 25, 'broken_mode': False}}, 'P56': {'baseline': {'bearing_sigma_deg': 0.8, 'geometry_range_m': 1500, 'broken_mode': False}, 'sweep_1': {'bearing_sigma_deg': 3.2, 'geometry_range_m': 1500, 'broken_mode': False}, 'sweep_2': {'bearing_sigma_deg': 0.8, 'geometry_range_m': 3000, 'broken_mode': False}, 'broken': {'bearing_sigma_deg': 0.8, 'geometry_range_m': 1500, 'broken_mode': True}, 'recovery': {'bearing_sigma_deg': 0.8, 'geometry_range_m': 1500, 'broken_mode': False}}, 'P57': {'baseline': {'gate_d2': 5.991, 'covariance_scale': 1, 'broken_mode': False}, 'sweep_1': {'gate_d2': 0.5, 'covariance_scale': 1, 'broken_mode': False}, 'sweep_2': {'gate_d2': 5.991, 'covariance_scale': 4, 'broken_mode': False}, 'broken': {'gate_d2': 5.991, 'covariance_scale': 1, 'broken_mode': True}, 'recovery': {'gate_d2': 5.991, 'covariance_scale': 1, 'broken_mode': False}}, 'P58': {'baseline': {'confirmation_hits': 3, 'coast_limit_scans': 2, 'broken_mode': False}, 'sweep_1': {'confirmation_hits': 4, 'coast_limit_scans': 2, 'broken_mode': False}, 'sweep_2': {'confirmation_hits': 3, 'coast_limit_scans': 0, 'broken_mode': False}, 'broken': {'confirmation_hits': 3, 'coast_limit_scans': 2, 'broken_mode': True}, 'recovery': {'confirmation_hits': 3, 'coast_limit_scans': 2, 'broken_mode': False}}, 'P59': {'baseline': {'position_sigma_m': 6, 'scan_interval_s': 1, 'broken_mode': False}, 'sweep_1': {'position_sigma_m': 10, 'scan_interval_s': 1, 'broken_mode': False}, 'sweep_2': {'position_sigma_m': 6, 'scan_interval_s': 2, 'broken_mode': False}, 'broken': {'position_sigma_m': 6, 'scan_interval_s': 1, 'broken_mode': True}, 'recovery': {'position_sigma_m': 6, 'scan_interval_s': 1, 'broken_mode': False}}, 'P60': {'baseline': {'maneuver_acceleration_mps2': 2, 'mode_stay_probability': 0.94, 'broken_mode': False}, 'sweep_1': {'maneuver_acceleration_mps2': 3.2, 'mode_stay_probability': 0.94, 'broken_mode': False}, 'sweep_2': {'maneuver_acceleration_mps2': 2, 'mode_stay_probability': 0.99, 'broken_mode': False}, 'broken': {'maneuver_acceleration_mps2': 2, 'mode_stay_probability': 0.94, 'broken_mode': True}, 'recovery': {'maneuver_acceleration_mps2': 2, 'mode_stay_probability': 0.94, 'broken_mode': False}}, 'P61': {'baseline': {'arrival_angle_deg': 30, 'spacing_wavelengths': 0.5, 'broken_mode': False}, 'sweep_1': {'arrival_angle_deg': -30, 'spacing_wavelengths': 0.5, 'broken_mode': False}, 'sweep_2': {'arrival_angle_deg': 30, 'spacing_wavelengths': 0.25, 'broken_mode': False}, 'broken': {'arrival_angle_deg': 30, 'spacing_wavelengths': 0.5, 'broken_mode': True}, 'recovery': {'arrival_angle_deg': 30, 'spacing_wavelengths': 0.5, 'broken_mode': False}}, 'P62': {'baseline': {'elements': 8, 'spacing_wavelengths': 0.5, 'broken_mode': False}, 'sweep_1': {'elements': 16, 'spacing_wavelengths': 0.5, 'broken_mode': False}, 'sweep_2': {'elements': 8, 'spacing_wavelengths': 1, 'broken_mode': False}, 'broken': {'elements': 8, 'spacing_wavelengths': 0.5, 'broken_mode': True}, 'recovery': {'elements': 8, 'spacing_wavelengths': 0.5, 'broken_mode': False}}, 'P63': {'baseline': {'elements': 8, 'source_snr_db': 10, 'broken_mode': False}, 'sweep_1': {'elements': 16, 'source_snr_db': 10, 'broken_mode': False}, 'sweep_2': {'elements': 8, 'source_snr_db': -15, 'broken_mode': False}, 'broken': {'elements': 8, 'source_snr_db': 10, 'broken_mode': True}, 'recovery': {'elements': 8, 'source_snr_db': 10, 'broken_mode': False}}, 'P64': {'baseline': {'beam_squint_deg': 3, 'receiver_snr_db': 15, 'broken_mode': False}, 'sweep_1': {'beam_squint_deg': 5, 'receiver_snr_db': 15, 'broken_mode': False}, 'sweep_2': {'beam_squint_deg': 3, 'receiver_snr_db': -5, 'broken_mode': False}, 'broken': {'beam_squint_deg': 3, 'receiver_snr_db': 15, 'broken_mode': True}, 'recovery': {'beam_squint_deg': 3, 'receiver_snr_db': 15, 'broken_mode': False}}})
+
+# P65-P76 independent references. Inputs follow the source specification;
+# solvers, projections, transforms and accounting are formulated separately.
+from functools import lru_cache
+
+
+@lru_cache(maxsize=48)
+def _r65_uniform(seed, count):
+    modulus = 2147483647
+    return (
+        np.array(
+            [(seed * pow(16807, k, modulus)) % modulus for k in range(1, count + 1)],
+            float,
+        )
+        / modulus
+    )
+
+
+def _r65_noise(seed, rows, cols=1, interleaved=False):
+    u = _r65_uniform(seed, 2 * rows * cols)
+    a, b = (u[::2], u[1::2]) if interleaved else (u[: rows * cols], u[rows * cols :])
+    radius = np.sqrt(-np.log(a))
+    theta = 2 * np.pi * b
+    return (radius * np.cos(theta) + 1j * radius * np.sin(theta)).reshape(cols, rows).T
+
+
+def _r65_a(angles, n, sign=1, positions=None):
+    positions = np.arange(n) / 2 if positions is None else np.asarray(positions)
+    phase = (
+        sign
+        * 2
+        * np.pi
+        * np.outer(positions, np.sin(np.deg2rad(np.atleast_1d(angles))))
+    )
+    return np.cos(phase) + 1j * np.sin(phase)
+
+
+def _r65_cov(x):
+    return np.einsum("it,jt->ij", x, x.conj()) / x.shape[1]
+
+
+def _r65_weight(r, a, alpha):
+    from scipy.linalg import cho_factor, cho_solve
+
+    loaded = (r + r.conj().T) / 2 + np.eye(len(r)) * alpha * np.trace(r).real / len(r)
+    u = cho_solve(cho_factor(loaded, lower=True), a)
+    return u / np.dot(a.conj(), u)
+
+
+def _r65_account(w, a):
+    response = np.sum(w.conj()[:, None] * a, axis=0)
+    desired = 10 ** (-0.3) * abs(response[0]) ** 2
+    interference = 10**2.5 * abs(response[1]) ** 2
+    noise = sum(abs(w) ** 2)
+    return (
+        10 * np.log10(desired / (interference + noise)),
+        abs(response[0]),
+        abs(response[1]),
+        noise,
+    )
+
+
+def _p65(p):
+    n = int(p["snapshots"])
+    alpha = p["loading_alpha"]
+    a = _r65_a([3, 30], 8)
+    x = sum(
+        amp * a[:, i, None] * np.exp(2j * np.pi * _r65_uniform(seed, 256))[None, :]
+        for i, amp, seed in [(0, 10 ** (-0.15), 6501), (1, 10**1.25, 6502)]
+    ) + _r65_noise(6503, 8, 256)
+    r = _r65_cov(x[:, :n])
+    starved = _r65_cov(x[:, :4])
+    wrong = _r65_a(6, 8)[:, 0]
+    good = _r65_weight(r, a[:, 0], alpha)
+    active = _r65_weight(starved, wrong, 1e-6) if p["broken_mode"] else good
+    sinr, true, inter, noise = _r65_account(active, a)
+    return [
+        sinr,
+        _r65_account(a[:, 0] / 8, a)[0],
+        true,
+        inter,
+        noise,
+        alpha * np.trace(r).real / 8,
+        abs(np.vdot(good, a[:, 0]) - 1),
+        float(np.linalg.matrix_rank(starved) < 8),
+        _r65_account(_r65_weight(starved, wrong, 0.1), a)[0],
+        _r65_account(_r65_weight(starved, a[:, 0], 0.1), a)[0],
+        _r65_account(_r65_weight(starved, a[:, 0], alpha), a)[0],
+        _r65_account(_r65_weight(_r65_cov(x[:, :8]), wrong, 1e-6), a)[0],
+        not p["broken_mode"],
+    ]
+
+
+def _r66_scan(x, angles):
+    # Left singular vectors span covariance eigenspaces without forming R.
+    u, s, _ = np.linalg.svd(x, full_matrices=False)
+    a = _r65_a(angles, len(x))
+    projection = u[:, 2:].conj().T @ a
+    music = 1 / np.maximum(
+        np.einsum("ij,ij->j", projection.conj(), projection).real, 1e-30
+    )
+    bart = np.mean(abs(a.conj().T @ x / len(x)) ** 2, axis=1)
+    return (
+        10 * np.log10(np.maximum(bart / max(bart), 1e-6)),
+        10 * np.log10(np.maximum(music / max(music), 1e-6)),
+        s * s / x.shape[1],
+    )
+
+
+def _r66_peaks(curve, axis, separation=1):
+    from scipy.signal import find_peaks
+
+    candidates = find_peaks(curve)[0]
+    selected = []
+    for i in sorted(candidates, key=lambda i: (-curve[i], i)):
+        if not selected or min(abs(axis[i] - axis[selected])) >= separation:
+            selected.append(i)
+            if len(selected) == 2:
+                break
+    return np.sort(axis[selected])
+
+
+def _r66_error(peaks, truth):
+    return np.linalg.norm(peaks - truth) / np.sqrt(2) if len(peaks) == 2 else 80.0
+
+
+def _p66(p):
+    d = p["source_separation_deg"]
+    snr = p["source_snr_db"]
+    truth = np.array([-d / 2, d / 2])
+    grid = np.linspace(-40, 40, 801)
+    a = _r65_a(truth, 10)
+    waves = np.exp(
+        2j * np.pi * np.array([_r65_uniform(6601, 512), _r65_uniform(6602, 512)])
+    )
+    noise = _r65_noise(6603, 10, 512)
+    x = 10 ** (snr / 20) * (a @ waves) + noise
+    bart, music, _ = _r66_scan(x, grid)
+    coherent = (
+        10 ** (snr / 20) * np.outer(a[:, 0] + np.exp(0.7j) * a[:, 1], waves[0]) + noise
+    )
+    _, cm, ce = _r66_scan(coherent, grid)
+    # Smoothing via a Hankel-like sample matrix with subarray views.
+    stacked = (
+        np.lib.stride_tricks.sliding_window_view(coherent, 7, axis=0)
+        .transpose(2, 0, 1)
+        .reshape(7, -1)
+    )
+    _, sm, se = _r66_scan(stacked, grid)
+    peaks = _r66_peaks(cm if p["broken_mode"] else music, grid)
+    indices = [np.argmin(abs(grid - v)) for v in truth]
+    mid = 400
+    low = _r66_peaks(_r66_scan(10 ** (-10 / 20) * a @ waves + noise, grid)[1], grid)
+    short = _r66_peaks(_r66_scan((a @ waves + noise)[:, :16], grid)[1], grid)
+    return [
+        _r66_error(peaks, truth),
+        len(peaks),
+        peaks[0] if len(peaks) else 0,
+        peaks[-1] if len(peaks) else 0,
+        min(music[indices]) - music[mid],
+        min(bart[indices]) - bart[mid],
+        10 * np.log10(ce[1] / ce[2]),
+        10 * np.log10(se[1] / se[2]),
+        _r66_error(_r66_peaks(sm, grid), truth),
+        _r66_error(low, truth),
+        _r66_error(short, truth),
+        not p["broken_mode"],
+    ]
+
+
+def _p67(p):
+    from scipy.linalg import eigh
+
+    scale = p["error_scale"]
+    coupling = p["coupling_magnitude"]
+    nominal = _r65_a([-15, 10], 10)
+    patterns = []
+    for chunk in np.split(_r65_uniform(6701, 30), 3):
+        z = chunk - sum(chunk) / 10
+        patterns.append(z / np.linalg.norm(z) * np.sqrt(10))
+    positions = np.arange(10) / 2 + 0.05 * scale * patterns[2]
+    gain = (1 + 0.18 * scale * patterns[0]) * np.exp(
+        1j * np.deg2rad(20 * scale * patterns[1])
+    )
+    near = coupling * np.exp(1j * np.deg2rad(25))
+    c = np.array(
+        [
+            [
+                1
+                if i == j
+                else near
+                if abs(i - j) == 1
+                else 0.3 * near * near
+                if abs(i - j) == 2
+                else 0
+                for j in range(10)
+            ]
+            for i in range(10)
+        ]
+    )
+    actual = gain[:, None] * (c @ _r65_a([-15, 10], 10, positions=positions))
+    wave = np.array(
+        [
+            np.sqrt(power) * np.exp(2j * np.pi * _r65_uniform(seed, 512))
+            for power, seed in [(10**2.5, 6702), (10, 6703)]
+        ]
+    )
+    noise = _r65_noise(6704, 10, 512)
+    ideal = nominal @ wave + noise
+    impaired = actual @ wave + noise
+    ca = gain * (c @ _r65_a(10, 10, positions=positions)[:, 0])
+    cw = np.exp(2j * np.pi * _r65_uniform(6705, 256))
+    cn = _r65_noise(6706, 10, 256)
+    measured = ca + np.einsum("it,t->i", cn, cw.conj()) / (256 * np.sqrt(1000))
+    eq = nominal[:, 1] / measured
+    activeeq = 1 / measured if p["broken_mode"] else eq
+
+    def account(x, manifold, n):
+        w = _r65_weight(_r65_cov(x), nominal[:, 1], 0.02)
+        response = abs(w.conj() @ manifold) ** 2
+        return 10 * np.log10(
+            10 * response[1] / (10**2.5 * response[0] + sum(abs(w) ** 2 * n))
+        ), 10 * np.log10(response[1])
+
+    active = activeeq[:, None] * impaired
+    stats = account(active, activeeq[:, None] * actual, abs(activeeq) ** 2)
+    # Generalized Hermitian eigenvectors directly account for colored noise.
+    _, vectors = eigh(_r65_cov(active), np.diag(abs(activeeq) ** 2))
+    grid = np.linspace(-40, 40, 801)
+    proj = vectors[:, :8].conj().T @ _r65_a(grid, 10)
+    music = 1 / np.sum(abs(proj) ** 2, axis=0)
+    peaks = _r66_peaks(music, grid, 2)
+    err = lambda z: np.linalg.norm(z * ca - nominal[:, 1]) / np.sqrt(10)
+    return [
+        stats[0],
+        account(impaired, actual, np.ones(10))[0],
+        account(ideal, nominal, np.ones(10))[0],
+        account(eq[:, None] * impaired, eq[:, None] * actual, abs(eq) ** 2)[0],
+        stats[1],
+        err(np.ones(10)),
+        err(activeeq),
+        err(eq),
+        _r66_error(peaks, np.array([-15, 10])),
+        peaks[0] if len(peaks) else 0,
+        np.linalg.norm(eq * actual[:, 0] - nominal[:, 0]) / np.sqrt(10),
+        not p["broken_mode"],
+    ]
+
+
+def _p68(p):
+    n = int(p["training_cells"])
+    frac = 0.4 if p["broken_mode"] else p["contamination_fraction"]
+
+    # Reference channel order is pulse-within-sensor, a permutation of runtime.
+    def steer(angle, fd):
+        return np.kron(_r65_a(angle, 8)[:, 0], np.exp(2j * np.pi * np.arange(8) * fd))
+
+    angles = np.arange(-60, 61, 2)
+    powers = np.cos(np.deg2rad(angles)) ** 2
+    powers *= 1000 / sum(powers)
+    a = np.column_stack(
+        [
+            steer(t, 0.35 * np.sin(np.deg2rad(t))) * np.sqrt(power)
+            for t, power in zip(angles, powers)
+        ]
+    )
+    perm = np.arange(64).reshape(8, 8).T.ravel()
+    noise = _r65_noise(6802, 64, 128)[perm]
+    full = a @ _r65_noise(6801, 61, 128) + noise
+    x = full[:, :n]
+    r = _r65_cov(x)
+    population = a @ a.conj().T + np.eye(64)
+    assumed = steer(10, 0.2)
+    actual = steer(10.7, 0.208)
+    clean = _r65_weight(r, assumed, 0.03)
+    space = np.zeros((8, 8), complex)
+    time = np.zeros((8, 8), complex)
+    for k in range(n):
+        cell = x[:, k].reshape(8, 8)
+        space += cell @ cell.conj().T / (8 * n)
+        time += cell.T @ cell.conj() / (8 * n)
+    separate = np.kron(
+        _r65_weight(space, _r65_a(10, 8)[:, 0], 0.03),
+        _r65_weight(time, np.exp(2j * np.pi * np.arange(8) * 0.2), 0.03),
+    )
+    waveform = _r65_noise(6803, 1, 128)[0]
+
+    def contaminated(frac):
+        contaminated = x.copy()
+        k = int(np.floor(frac * n + 0.5))
+        contaminated[:, :k] += 10 * np.outer(actual, waveform[:k])
+        return _r65_weight(_r65_cov(contaminated), assumed, 0.03)
+
+    def stats(w):
+        signal = abs(sum(w.conj() * actual)) ** 2
+        inter = np.real(sum(w.conj() * (population @ w)))
+        return [
+            10 * np.log10(signal / inter),
+            10 * np.log10(signal),
+            10 * np.log10(inter),
+        ]
+
+    w = contaminated(frac)
+    s = stats(w)
+    cut = a @ _r65_noise(6804, 61)[:, 0] + _r65_noise(6805, 64)[:, 0][perm] + actual
+    return [
+        s[0],
+        stats(assumed / 64)[0],
+        stats(separate)[0],
+        stats(clean)[0],
+        s[1],
+        s[2],
+        abs(sum(w.conj() * assumed) - 1),
+        stats(_r65_weight(_r65_cov(full[:, :8]), assumed, 0.03))[0],
+        stats(contaminated(0.4))[0],
+        abs(sum(w.conj() * cut)),
+        np.floor(frac * n + 0.5),
+        not p["broken_mode"],
+    ]
+
+
+def _r69_est(range_m, bandwidth):
+    fs = 80e6
+    s = bandwidth * 1e6 / 40e-6
+    t = np.arange(3200) / fs
+    tau = 2 * range_m / 3e8
+    mask = t >= tau
+    phase = 2 * np.pi * s * tau * (t[mask] - 20e-6) - np.pi * s * tau * tau
+    tx = np.exp(1j * np.pi * s * (t[mask] - 20e-6) ** 2)
+    beat = (
+        0.7 * (np.cos(phase) + 1j * np.sin(phase))
+        + 0.01 * tx * _r65_noise(6901, 3200)[:, 0][mask].conj()
+    )
+    count = len(beat)
+    window = 0.5 - 0.5 * np.cos(2 * np.pi * np.arange(count) / (count - 1))
+    # Evaluate just five DFT bins around the specified tone, independently of FFT.
+    center = int(np.floor(s * tau / fs * 65536 + 0.5))
+    bins = np.arange(center - 2, center + 3)
+    spectrum = np.exp(-2j * np.pi * np.outer(bins, np.arange(count)) / 65536) @ (
+        window * beat
+    )
+    power = abs(spectrum) ** 2
+    k = np.argmax(power)
+    coef = np.polyfit([-1, 0, 1], np.log(power[k - 1 : k + 2]), 2)
+    offset = np.clip(-coef[1] / (2 * coef[0]), -0.5, 0.5)
+    frequency = (bins[k] + offset) * fs / 65536
+    product = beat[1:] * beat[:-1].conj()
+    lag = np.arctan2(sum(product.imag), sum(product.real)) * fs / (2 * np.pi)
+    return frequency, lag, count
+
+
+def _p69(p):
+    r = p["target_range_m"]
+    b = p["bandwidth_mhz"]
+    s = b * 1e6 / 40e-6
+    f, lag, n = _r69_est(r, b)
+    estimate = 3e8 * f / (2 * s)
+    active = estimate * (2 if p["broken_mode"] else 1)
+    return [
+        active,
+        f / 1000,
+        2 * s * r / 3e8 / 1000,
+        lag / 1000,
+        estimate,
+        active - r,
+        n,
+        _r69_est(75, b)[0] / 1000,
+        _r69_est(r, 30)[0] / 1000,
+        150 / b,
+        not p["broken_mode"],
+    ]
+
+
+def _p70(p):
+    n = int(p["fast_samples"])
+    m = int(p["chirps"])
+    lam = 3e8 / 77e9
+    truthr = [20, 20, 23]
+    truthv = np.array([-3, 3, 3]) * lam / (2 * 64 * 50e-6)
+    x = np.zeros((n, m), complex)
+    for r, v, amp, phase in zip(truthr, truthv, [1, 0.82, 0.68], [0.1, 0.75, -0.55]):
+        fast = np.exp(2j * np.pi * (2 * 3.75e12 * r / 3e8) * np.arange(n) / 12.8e6)
+        slow = np.exp(-2j * np.pi * (2 * v / lam) * np.arange(m) * 50e-6 + 1j * phase)
+        x += amp * np.outer(fast, slow)
+    x += 0.01 * _r65_noise(7001, 512, 64)[:n, :m]
+    ra = np.arange(n // 2 + 1) * (512 / n)
+    va = -np.arange(-m // 2, m // 2) / (m * 50e-6) * lam / 2
+    rows = {int(np.argmin(abs(ra - 23)))}
+    for r in truthr:
+        k = int(np.argmin(abs(ra - r)))
+        rows.update(range(max(0, k - 1), min(len(ra), k + 2)))
+    rows = np.array(sorted(rows))
+    wr = np.hanning(n)
+    wd = np.hanning(m)
+    fast = (
+        np.exp(-2j * np.pi * np.outer(rows, np.arange(n)) / n)
+        @ (x * wr[:, None])
+        / sum(wr)
+    )
+    slow = np.exp(-2j * np.pi * np.outer(np.arange(-m // 2, m // 2), np.arange(m)) / m)
+    good = (fast * wd) @ slow.T / sum(wd)
+    active = ((abs(fast) if p["broken_mode"] else fast) * wd) @ slow.T / sum(wd)
+    isolated = np.where(rows == np.argmin(abs(ra - 23)))[0][0]
+    k = np.argmax(abs(active[isolated]))
+    kr = np.argmax(abs(good[isolated]))
+    audit = []
+    for r, v in zip(truthr, truthv):
+        ri = np.argmin(abs(ra - r))
+        vi = np.argmin(abs(va - v))
+        rr = np.arange(max(0, ri - 1), min(len(ra), ri + 2))
+        vv = np.arange(max(0, vi - 1), min(m, vi + 2))
+        local = abs(good[np.ix_([int(np.where(rows == q)[0][0]) for q in rr], vv)])
+        j, i = np.unravel_index(np.argmax(local.T), local.T.shape)
+        audit.append((ra[rr[i]], va[vv[j]], local[i, j]))
+    return [
+        512 / n,
+        lam / (2 * m * 50e-6),
+        va[k],
+        va[kr],
+        truthv[2],
+        abs(active[isolated, k]),
+        audit[0][0],
+        audit[0][1],
+        audit[2][0],
+        audit[2][2],
+        not p["broken_mode"],
+    ]
+
+
+def _r71_frequency(range_m, velocity, bandwidth, seed, sign=1, noise=0.002):
+    t = np.arange(3200) / 80e6
+    tau = 2 * range_m / 3e8
+    t = t[t >= tau]
+    s = bandwidth * 1e6 / 40e-6
+    fd = 2 * velocity / (3e8 / 77e9)
+    phase = (
+        sign * (2 * np.pi * s * tau * (t - 20e-6) - np.pi * s * tau * tau)
+        - 2 * np.pi * fd * t
+        - 0.35
+    )
+    z = (
+        np.cos(phase)
+        + 1j * np.sin(phase)
+        + noise * _r65_noise(seed, 3200)[:, 0][-len(t) :]
+    )
+    cross = z[:-1].real * z[1:].imag - z[:-1].imag * z[1:].real
+    dot = z[:-1].real * z[1:].real + z[:-1].imag * z[1:].imag
+    return np.arctan2(sum(cross), sum(dot)) * 80e6 / (2 * np.pi)
+
+
+def _p71(p):
+    v = p["velocity_mps"]
+    b = p["bandwidth_mhz"]
+    s = b * 1e6 / 40e-6
+    fd = 2 * v / (3e8 / 77e9)
+    f = _r71_frequency(45, v, b, 7101)
+    stationary = 3e8 * f / (2 * s)
+    corrected = stationary + 3e8 * fd / (2 * s)
+    active = stationary + (-1 if p["broken_mode"] else 1) * 3e8 * fd / (2 * s)
+    return [
+        f / 1000,
+        fd / 1000,
+        stationary,
+        stationary - 45,
+        -77e9 * v / s,
+        active,
+        active - 45,
+        corrected,
+        3e8 * _r71_frequency(45, 30, b, 7101) / (2 * s) - 45,
+        3e8 * _r71_frequency(45, v, 30, 7101) / (2 * 30e6 / 40e-6) - 45,
+        not p["broken_mode"],
+    ]
+
+
+def _r72_solve(up, down):
+    # Linear system inversion in physical range/velocity coordinates.
+    matrix = np.array(
+        [[2 * 5e11 / 3e8, -2 / (3e8 / 77e9)], [-2 * 5e11 / 3e8, -2 / (3e8 / 77e9)]]
+    )
+    return np.linalg.solve(matrix, np.array([up, down]))
+
+
+def _r72_multipeaks(sign, seed):
+    from scipy.signal import czt
+
+    t = np.arange(3200) / 80e6
+    t = t[t >= 130 / 3e8]
+    beat = np.zeros(len(t), complex)
+    for r, v, amp, phi in zip([30, 65], [15, -10], [1, 0.8], [0.2, -0.6]):
+        tau = 2 * r / 3e8
+        phase = (
+            sign * (2 * np.pi * 5e11 * tau * (t - 20e-6) - np.pi * 5e11 * tau * tau)
+            - 2 * np.pi * 2 * v / (3e8 / 77e9) * t
+            - phi
+        )
+        beat += amp * np.exp(1j * phase)
+    beat += 0.002 * _r65_noise(seed, 3200)[:, 0][-len(t) :]
+    # Chirp-z evaluates the same signed Fourier grid with Bluestein convolution.
+    magnitude = abs(
+        czt(beat * np.hanning(len(t)), 32768, w=np.exp(-2j * np.pi / 32768), a=-1)
+    )
+    search = magnitude.copy()
+    df = 80e6 / 32768
+    out = []
+    blank = int(np.ceil(60000 / df))
+    for _ in range(2):
+        k = np.argmax(search)
+        coef = np.polyfit([-1, 0, 1], magnitude[k - 1 : k + 2], 2)
+        delta = np.clip(-coef[1] / (2 * coef[0]), -0.5, 0.5)
+        out.append((-16384 + k + delta) * df)
+        search[max(0, k - blank) : k + blank + 1] = 0
+    return np.sort(out)
+
+
+def _p72(p):
+    r = p["target_range_m"]
+    v = p["velocity_mps"]
+    up = _r71_frequency(r, v, 20, 7201)
+    down = _r71_frequency(r, v, 20, 7202, -1)
+    estimate = _r72_solve(up, down)
+    ups = _r72_multipeaks(1, 7701)
+    downs = _r72_multipeaks(-1, 7702)
+    ghost = _r72_solve(ups, downs)
+    rec = _r72_solve(ups, downs[::-1])
+    high = _r72_solve(
+        _r71_frequency(r, v, 20, 7201, noise=0.08),
+        _r71_frequency(r, v, 20, 7202, -1, 0.08),
+    )
+    active = ghost[:, 0] if p["broken_mode"] else estimate
+    return [
+        up / 1000,
+        down / 1000,
+        active[0],
+        active[1],
+        estimate[0] - r,
+        estimate[1] - v,
+        ghost[0, 0],
+        ghost[1, 0],
+        rec[0, 0],
+        rec[1, 0],
+        high[0] - r,
+        high[1] - v,
+        not p["broken_mode"],
+    ]
+
+
+def _r73_data(v, seed):
+    lam = 3e8 / 77e9
+    slots = np.repeat([0, 1], 4)
+    spatial = _r65_a(18, 8, -1)[:, 0]
+    slow = np.exp(-2j * np.pi * 2 * v / lam * np.arange(64) * 80e-6)
+    slot = np.exp(-2j * np.pi * 2 * v / lam * slots * 40e-6)
+    x = np.outer(spatial * slot, slow) + 0.1 * _r65_noise(seed, 8, 64, True)
+    correlation = np.vdot(x[:, :-1], x[:, 1:])
+    fd = -np.arctan2(correlation.imag, correlation.real) / (2 * np.pi * 80e-6)
+    y = (
+        np.cos(2 * np.pi * fd * slots * 40e-6)
+        + 1j * np.sin(2 * np.pi * fd * slots * 40e-6)
+    )[:, None] * x
+    return x, y, fd
+
+
+def _r73_power(n, grid, source):
+    # Squared finite geometric series, including its removable singularity.
+    delta = (np.sin(np.deg2rad(source)) - np.sin(np.deg2rad(grid))) / 2
+    return (np.sinc(n * delta) / np.sinc(delta)) ** 2
+
+
+def _r73_width(axis, power):
+
+    k = int(np.argmax(power))  # Use the actual half-maximum level, not prominence.
+    lo = np.flatnonzero(power[:k] < power[k] / 2)[-1]
+    hi = k + np.flatnonzero(power[k:] < power[k] / 2)[0]
+    return np.interp(
+        power[k] / 2, power[hi - 1 : hi + 1][::-1], axis[hi - 1 : hi + 1][::-1]
+    ) - np.interp(power[k] / 2, power[lo : lo + 2], axis[lo : lo + 2])
+
+
+def _p73(p):
+    v = p["velocity_mps"]
+    sep = p["source_separation_deg"]
+    grid = np.linspace(-60, 60, 1201)
+    a = _r65_a(grid, 8, -1)
+    x, y, fd = _r73_data(v, 7301)
+    bad, rec, badfd = _r73_data(10, 7401)
+
+    def scan(data):
+        r = _r65_cov(data)
+        return np.real(np.einsum("ik,ij,jk->k", a.conj(), r, a)) / 64
+
+    def peak(data):
+        return grid[np.argmax(scan(data))]
+
+    def dip(n):
+        power = _r73_power(n, grid, -sep / 2) + _r73_power(n, grid, sep / 2)
+        mid = 600
+        return max(
+            0, 10 * np.log10(min(max(power[: mid + 1]), max(power[mid:])) / power[mid])
+        )
+
+    angle = peak(bad if p["broken_mode"] else y)
+    return [
+        angle,
+        angle - 18,
+        peak(x),
+        fd * (3e8 / 77e9) / 2,
+        _r73_width(grid, _r73_power(4, grid, 18)),
+        _r73_width(grid, _r73_power(8, grid, 18)),
+        dip(4),
+        dip(8),
+        peak(bad),
+        peak(rec),
+        badfd * (3e8 / 77e9) / 2,
+        not p["broken_mode"],
+    ]
+
+
+def _p74(p):
+    from scipy.signal import stft
+
+    speed = p["swing_speed_mps"]
+    window = int(p["window_samples"])
+    time = np.arange(19200) / 4800
+    # Sum analytic phase-modulated torso/limb returns directly.
+    common = -4 * np.pi * 1.2 * time / 0.0125
+    modulation = 4 * np.pi * speed / (3 * np.pi * 0.0125) * np.sin(3 * np.pi * time)
+    clean = (
+        np.exp(1j * common)
+        + 0.35 * np.exp(1j * (common - modulation + 0.7))
+        + 0.28 * np.exp(1j * (common + modulation - 0.9))
+    )
+    x = (
+        clean
+        + np.sqrt(1 + 0.35**2 + 0.28**2)
+        * 10 ** (-25 / 20)
+        * _r65_noise(7401, 1, 19200, True)[0]
+    )
+
+    def dominant(record):
+        f, _, z = stft(
+            record,
+            fs=4800,
+            window=np.hanning(window),
+            nperseg=window,
+            noverlap=3 * window // 4,
+            nfft=2048,
+            return_onesided=False,
+            boundary=None,
+            padded=False,
+        )
+        return -f[np.argmax(np.sum(abs(z) ** 2, axis=1))]
+
+    selected = abs(x) if p["broken_mode"] else x
+    w = np.hanning(window)
+    # Parseval independently verifies the sum of spectral power in frame zero.
+    energy = 2048 * np.sum(abs(selected[:window] * w) ** 2) / sum(w) ** 2
+    return [
+        192,
+        2 * (1.2 - speed) / 0.0125,
+        2 * (1.2 + speed) / 0.0125,
+        dominant(selected),
+        dominant(x),
+        dominant(abs(x)),
+        1 + (19200 - window) // (window // 4),
+        window / 4.8,
+        4800 / window,
+        (window - 1) / (2 * 4800),
+        energy,
+        not p["broken_mode"],
+    ]
+
+
+def _p75(p):
+    target = p["target_cross_range_m"]
+    length = p["aperture_length_m"]
+    fullpos = np.linspace(-40, 40, 401)
+    keep = abs(fullpos) <= length / 2 + 1e-12
+    pos = fullpos[keep]
+    slant = np.hypot(1000, pos - target)
+    phase = -4 * np.pi * (slant - 1000) / 0.06
+    axis = np.linspace(995, 1005, 201)
+    noise = 10 ** (-30 / 20) * _r65_noise(7501, 401, 201, True)[keep]
+    indices = np.argmin(abs(axis[None, :] - slant[:, None]), axis=1)
+    measurement = (
+        np.exp(-0.5 * ((axis[indices] - slant) / 0.6) ** 2 + 1j * phase)
+        + noise[np.arange(len(pos)), indices]
+    )
+    candidates = np.linspace(-26, 26, 209)
+
+    def score(z):
+        return np.array(
+            [
+                abs(
+                    np.vdot(
+                        np.exp(-4j * np.pi * (np.hypot(1000, pos - q) - 1000) / 0.06), z
+                    )
+                )
+                / np.linalg.norm(z, 1)
+                for q in candidates
+            ]
+        )
+
+    good = score(measurement)
+    active = score(abs(measurement)) if p["broken_mode"] else good
+    excursion = max(slant) - min(slant)
+    return [
+        excursion,
+        2 * excursion / 3e8 * 1e9,
+        (max(phase) - min(phase)) / (2 * np.pi),
+        max(abs(np.diff(phase))),
+        len(pos),
+        max(active),
+        candidates[np.argmax(active)],
+        max(good),
+        candidates[np.argmax(good)],
+        np.mean(noise.real**2 + noise.imag**2),
+        not p["broken_mode"],
+    ]
+
+
+def _r76_chirp(b):
+    time = (np.arange(240) - 119.5) / 120e6
+    phase = np.pi * b * 1e6 / 2e-6 * time * time
+    return np.cos(phase) + 1j * np.sin(phase)
+
+
+def _r76_pair(b, spacing):
+    c = _r76_chirp(b)
+    auto = np.correlate(c, c, "full") / 240
+    profile = np.zeros(600, complex)
+    starts = np.floor((np.array([1000, 1000 + spacing]) - 950) / 1.25 + 0.5).astype(int)
+    for start in starts:
+        profile[start : start + 479] += auto
+    centers = starts + 239
+    half = max(1, int(np.floor(0.25 * (150 / b) / 1.25 + 0.5)))
+    level = min(max(abs(profile[k - half : k + half + 1])) for k in centers)
+    return min(abs(profile[centers[0] : centers[1] + 1])) / level
+
+
+def _p76(p):
+    b = p["bandwidth_mhz"]
+    spacing = p["pair_spacing_m"]
+    c = _r76_chirp(b)
+    pos = np.linspace(-40, 40, 401)
+    ranges = np.array([1000, 1025, 1070])
+    slant = np.hypot(pos[:, None] - [-15, 0, 18], ranges)
+    delays = np.floor((slant - 950) / 1.25 + 0.5).astype(int)
+    phase = np.array([0, 0.6, -0.9]) - 4 * np.pi * (slant - ranges) / 0.06
+    # Compute only matched-filter samples needed for the signature using inner
+    # products of zero-extended shifted pulses, rather than an FFT convolution.
+    noise = 0.2 * _r65_noise(7601, 401, 361, True)
+    ridge = np.zeros(401, complex)
+    for row in range(401):
+        raw = noise[row].copy()
+        for q, amp in enumerate([1, 0.8, 0.6]):
+            indices = delays[row, q] + np.arange(240)
+            raw[indices] += amp * np.exp(1j * phase[row, q]) * c
+        ridge[row] = np.vdot(c, raw[delays[row, 2] : delays[row, 2] + 240]) / 240
+        if row == 200:
+            center = np.array(
+                [
+                    np.sum(raw * np.conj(np.pad(c, (k, 361 - 240 - k)))) / 240
+                    for k in range(delays[row, 2] - 2, delays[row, 2] + 3)
+                ]
+            )
+    expected = np.exp(1j * phase[:, 2])
+    unit = ridge / abs(ridge)
+    good = abs(np.mean(unit * expected.conj()))
+    bad = abs(np.mean(expected.conj()))
+    auto = np.correlate(c, c, "full") / 240
+    axis = np.arange(-239, 240) * 1.25
+    hpbw = _r73_width(axis, abs(auto) ** 2)
+    k = np.argmax(abs(center))
+    center_range = 950 + (delays[200, 2] - 2 + k) * 1.25
+    return [
+        150 / b,
+        1.25,
+        240,
+        bad if p["broken_mode"] else good,
+        good,
+        bad,
+        np.max(abs(slant - (950 + delays * 1.25))),
+        hpbw,
+        _r76_pair(b, spacing),
+        center_range,
+        abs(ridge[200]),
+        not p["broken_mode"],
+    ]
+
+
+_REFERENCES.update({f"P{n}": globals()[f"_p{n}"] for n in range(65, 77)})
+
+SCENARIOS.update({'P65': {'baseline': {'snapshots': 128, 'loading_alpha': 0.01, 'broken_mode': False}, 'sweep_1': {'snapshots': 4, 'loading_alpha': 0.01, 'broken_mode': False}, 'sweep_2': {'snapshots': 128, 'loading_alpha': 0.1, 'broken_mode': False}, 'broken': {'snapshots': 128, 'loading_alpha': 0.01, 'broken_mode': True}, 'recovery': {'snapshots': 128, 'loading_alpha': 0.01, 'broken_mode': False}}, 'P66': {'baseline': {'source_separation_deg': 6, 'source_snr_db': 10, 'broken_mode': False}, 'sweep_1': {'source_separation_deg': 2, 'source_snr_db': 10, 'broken_mode': False}, 'sweep_2': {'source_separation_deg': 6, 'source_snr_db': -10, 'broken_mode': False}, 'broken': {'source_separation_deg': 6, 'source_snr_db': 10, 'broken_mode': True}, 'recovery': {'source_separation_deg': 6, 'source_snr_db': 10, 'broken_mode': False}}, 'P67': {'baseline': {'error_scale': 1, 'coupling_magnitude': 0.18, 'broken_mode': False}, 'sweep_1': {'error_scale': 1.5, 'coupling_magnitude': 0.18, 'broken_mode': False}, 'sweep_2': {'error_scale': 1, 'coupling_magnitude': 0.3, 'broken_mode': False}, 'broken': {'error_scale': 1, 'coupling_magnitude': 0.18, 'broken_mode': True}, 'recovery': {'error_scale': 1, 'coupling_magnitude': 0.18, 'broken_mode': False}}, 'P68': {'baseline': {'training_cells': 128, 'contamination_fraction': 0, 'broken_mode': False}, 'sweep_1': {'training_cells': 8, 'contamination_fraction': 0, 'broken_mode': False}, 'sweep_2': {'training_cells': 128, 'contamination_fraction': 0.4, 'broken_mode': False}, 'broken': {'training_cells': 128, 'contamination_fraction': 0, 'broken_mode': True}, 'recovery': {'training_cells': 128, 'contamination_fraction': 0, 'broken_mode': False}}, 'P69': {'baseline': {'target_range_m': 45, 'bandwidth_mhz': 20, 'broken_mode': False}, 'sweep_1': {'target_range_m': 75, 'bandwidth_mhz': 20, 'broken_mode': False}, 'sweep_2': {'target_range_m': 45, 'bandwidth_mhz': 30, 'broken_mode': False}, 'broken': {'target_range_m': 45, 'bandwidth_mhz': 20, 'broken_mode': True}, 'recovery': {'target_range_m': 45, 'bandwidth_mhz': 20, 'broken_mode': False}}, 'P70': {'baseline': {'fast_samples': 512, 'chirps': 64, 'broken_mode': False}, 'sweep_1': {'fast_samples': 128, 'chirps': 64, 'broken_mode': False}, 'sweep_2': {'fast_samples': 512, 'chirps': 16, 'broken_mode': False}, 'broken': {'fast_samples': 512, 'chirps': 64, 'broken_mode': True}, 'recovery': {'fast_samples': 512, 'chirps': 64, 'broken_mode': False}}, 'P71': {'baseline': {'velocity_mps': 20, 'bandwidth_mhz': 20, 'broken_mode': False}, 'sweep_1': {'velocity_mps': -30, 'bandwidth_mhz': 20, 'broken_mode': False}, 'sweep_2': {'velocity_mps': 20, 'bandwidth_mhz': 30, 'broken_mode': False}, 'broken': {'velocity_mps': 20, 'bandwidth_mhz': 20, 'broken_mode': True}, 'recovery': {'velocity_mps': 20, 'bandwidth_mhz': 20, 'broken_mode': False}}, 'P72': {'baseline': {'target_range_m': 45, 'velocity_mps': 20, 'broken_mode': False}, 'sweep_1': {'target_range_m': 75, 'velocity_mps': 20, 'broken_mode': False}, 'sweep_2': {'target_range_m': 45, 'velocity_mps': -30, 'broken_mode': False}, 'broken': {'target_range_m': 45, 'velocity_mps': 20, 'broken_mode': True}, 'recovery': {'target_range_m': 45, 'velocity_mps': 20, 'broken_mode': False}}, 'P73': {'baseline': {'velocity_mps': 0, 'source_separation_deg': 16, 'broken_mode': False}, 'sweep_1': {'velocity_mps': 10, 'source_separation_deg': 16, 'broken_mode': False}, 'sweep_2': {'velocity_mps': 0, 'source_separation_deg': 8, 'broken_mode': False}, 'broken': {'velocity_mps': 0, 'source_separation_deg': 16, 'broken_mode': True}, 'recovery': {'velocity_mps': 0, 'source_separation_deg': 16, 'broken_mode': False}}, 'P74': {'baseline': {'swing_speed_mps': 2, 'window_samples': 512, 'broken_mode': False}, 'sweep_1': {'swing_speed_mps': 3, 'window_samples': 512, 'broken_mode': False}, 'sweep_2': {'swing_speed_mps': 2, 'window_samples': 1536, 'broken_mode': False}, 'broken': {'swing_speed_mps': 2, 'window_samples': 512, 'broken_mode': True}, 'recovery': {'swing_speed_mps': 2, 'window_samples': 512, 'broken_mode': False}}, 'P75': {'baseline': {'target_cross_range_m': 0, 'aperture_length_m': 80, 'broken_mode': False}, 'sweep_1': {'target_cross_range_m': 20, 'aperture_length_m': 80, 'broken_mode': False}, 'sweep_2': {'target_cross_range_m': 0, 'aperture_length_m': 20, 'broken_mode': False}, 'broken': {'target_cross_range_m': 0, 'aperture_length_m': 80, 'broken_mode': True}, 'recovery': {'target_cross_range_m': 0, 'aperture_length_m': 80, 'broken_mode': False}}, 'P76': {'baseline': {'bandwidth_mhz': 20, 'pair_spacing_m': 10, 'broken_mode': False}, 'sweep_1': {'bandwidth_mhz': 40, 'pair_spacing_m': 10, 'broken_mode': False}, 'sweep_2': {'bandwidth_mhz': 20, 'pair_spacing_m': 15, 'broken_mode': False}, 'broken': {'bandwidth_mhz': 20, 'pair_spacing_m': 10, 'broken_mode': True}, 'recovery': {'bandwidth_mhz': 20, 'pair_spacing_m': 10, 'broken_mode': False}}})

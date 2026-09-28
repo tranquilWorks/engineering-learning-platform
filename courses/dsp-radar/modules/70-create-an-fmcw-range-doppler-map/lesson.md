@@ -1,6 +1,4 @@
-# Create an FMCW Range-Doppler Map
-
-> **Guiding question:** How do fast-time beat frequency and chirp-to-chirp phase separate range and velocity?
+# P70 lesson: Two Clocks Make a Range-Doppler Map
 
 ## Guiding question
 
@@ -212,33 +210,29 @@ hardware/HIL, real-time, field, or operational performance.
 - Calling bright map cells detections exceeds this lesson; no threshold or
   false-alarm control is applied.
 
-## Use the Python GUI experiment
+## Interactive lab: Create an FMCW Range-Doppler Map
 
-The GUI keeps the pinned source's mental model and processing order visible. The **target velocity** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** How do fast-time beat frequency and chirp-to-chirp phase separate range and velocity?
 
-### Prediction and sweep 1 — target velocity
+Seed 7001; carrier 77 GHz, fs 12.8 MHz, T 40 us, B 150 MHz, PRI 50 us, 512 x 64 matrix. Targets 20/20/23 m have voltage 1/.82/.68, phase.1/.75/-.55 and velocity offsets-3/+3/+3 of the 64-chirp bin. Fixed full-record noise supports sample 128/256/512 and chirp 16/32/64 prefixes. Fast-time Hann FFT precedes coherent slow-time Hann FFT. True positions define audit neighborhoods only; they never form the transforms.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict which matrix dimension contains range and which contains velocity. Why do longer fast-time support and longer coherent dwell improve different bin spacings, and why does magnitude destroy velocity sign?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Fast samples** from 512 to 128 samples. Predict, run, and explain a measured value using the governing equation; then reset.
+2. Start at the baseline. Sweep only **Chirps** from 64 to 16 chirps. Predict, run, and explain a measured value using the governing equation; then reset.
+3. Enable the broken case. Taking absolute value of range data before its slow-time FFT erases signed phase and collapses the isolated moving target near zero velocity.
+4. Recovery: Retain the unchanged complex range data and transform the chirp dimension. Toggle off reproduces the selected coherent map exactly.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict which matrix dimension contains range and which contains velocity. Why do longer fast-time support and longer coherent dwell improve different bin spacings, and why does magnitude destroy velocity sign? Support the explanation with a measured value and units, and state the recovery assumption.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+Taking absolute value of range data before its slow-time FFT erases signed phase and collapses the isolated moving target near zero velocity. Distinguish the selected-control scene from a named separate failure scene.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The pinned source lesson is preserved above. Private Park–Miller uniforms retain zero offset; P65–P72 split radius/phase uniform blocks and P73–P76 interleave them. Matrix inputs retain column-major ordering. P75 shorter apertures crop the full baseline noise record to isolate aperture changes. MUSIC missing-peak penalties and truth-defined audit neighborhoods are disclosed; neither manufactures successful detections. Source figures become labeled native plots; full arrays drive calculations before display decimation. Sixty independent software comparisons cover five scenarios per lesson. No MATLAB execution, browser/accessibility, learner, hardware or production validation is claimed.

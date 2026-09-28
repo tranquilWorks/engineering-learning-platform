@@ -33,30 +33,30 @@
     ]
   },
   "target": {
-    "content_digest": "4f9070e639f6068c51674a724b08444ca6a9bbccc16fd710c1db5545c9b9c75b",
+    "content_digest": "a03792f41b8730dc3a720f3265cce09813094cd6b90131f42121eddc8818d39e",
     "files": [
       {
         "path": "modules/75-build-sar-phase-history-intuition/experiment.py",
-        "sha256": "a343bf342ed4ba6a9d2016dba6674a5c8cf4d4d6d0cd01ad0b257f65375f3551"
+        "sha256": "acfe4ff7c34ca9c2b0927333847afc9a31ef6e2e296e1d72ba1d05e5051fe149"
       },
       {
         "path": "modules/75-build-sar-phase-history-intuition/lesson.md",
-        "sha256": "7b1382f1e85b06a0672c578faa34b6e03fe7f119cfa9dbf21c8c63428ee88302"
+        "sha256": "3ebcbdf565c41b6bbf44c250011e08592797caa1e813979073ce48a67bb6d0f4"
       },
       {
         "path": "modules/75-build-sar-phase-history-intuition/module.yaml",
-        "sha256": "fa6b49153147c6d863e76c9e0915f57c0daada600f5168e9675971663bfcbb14"
+        "sha256": "dc665db679c019caf38d6e365c12d9951190815e42e7b2e0105e56e359e59c40"
       }
     ]
   },
   "content": {
     "guiding_question": "Why does moving one antenna create a large synthetic aperture?",
-    "physical_model": "The pinned source develops this physical relationship from deterministic measurements.",
+    "physical_model": "A 5 GHz antenna visits positions at.2m spacing. R=sqrt(1000\u00b2+(x-xt)\u00b2), delay=2R/c and phase=-4pi(R-1000)/lambda. A .6 m Gaussian envelope supplies the raw fast-time ridge. Candidate-path phase compensation coherently sums ridge samples; this is a single known-range illustration, not an image former.",
     "signal_flow": [
-      "Start from the pinned source baseline and governing equations.",
-      "Vary aperture length while holding secondary stress fixed.",
-      "Process the bounded deterministic measurement into the response view.",
-      "Violate one central assumption, interpret the failure, and restore the baseline."
+      "A 5 GHz antenna visits positions at.2m spacing. R=sqrt(1000\u00b2+(x-xt)\u00b2), delay=2R/c and phase=-4pi(R-1000)/lambda. A .6 m Gaussian envelope supplies the raw fast-time ridge. Candidate-path phase compensation coherently sums ridge samples; this is a single known-range illustration, not an image former.",
+      "Taking magnitude preserves the delay ridge but erases aperture phase, so correct path compensation cannot align the data.",
+      "Return to the unchanged complex ridge samples. Controls crop a fixed401x201 noise record when aperture changes, preserving nested measurements rather than regenerating noise.",
+      "Explicit stage equations are retained in lesson.md. P65-P76 retain private source input formulas, with a fixed full-aperture noise crop for P75 controls. Plot/console presentation is adapted; no MATLAB runtime execution is claimed."
     ],
     "equations": [
       {
@@ -66,149 +66,240 @@
     ],
     "equation_order": "before_toolbox_shortcuts",
     "deterministic_data": {
-      "seed": 1075,
+      "seed": 7501,
       "constants": [
         {
-          "name": "primary_baseline_scale",
-          "value": 1.0,
-          "unit": "ratio"
-        },
-        {
-          "name": "secondary_baseline_stress",
-          "value": 0.25,
-          "unit": "normalized"
-        },
-        {
-          "name": "point_ceiling",
-          "value": 512,
-          "unit": "points"
+          "name": "absolute_signature_tolerance",
+          "value": 1.0e-08,
+          "unit": "per-field units"
         }
       ],
       "datasets": [
         {
-          "name": "independent baseline signature",
+          "name": "baseline expected signature",
           "provenance": "retained_fixture",
-          "sha256": "2dfee8ad251746beeb47270a576ae403e5698ed3c693e4b3f30e2e4f04a4b8a7",
-          "unit": "mixed numeric signature"
+          "sha256": "080eab6d0e2ed2a24f97722b9ab514714f4c7c1e314b9c9dd6d8f303ab2a6db8",
+          "unit": "per-field units in provenance.json"
         },
         {
-          "name": "independent broken-case signature",
+          "name": "baseline actual signature",
+          "provenance": "generated",
+          "sha256": "b687a4859d0d1d6d0123239b8021a38a24a8d7a5fee9f792f0a67244410e789e",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 expected signature",
           "provenance": "retained_fixture",
-          "sha256": "90d1b3b111f882893a2b47e812c27b432f12ec922371e27132d55304236747d7",
-          "unit": "mixed numeric signature"
+          "sha256": "a386dde32d75f0b01e4e32a35832ba9cdcde01438d17b879a1f7b430075c64ac",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_1 actual signature",
+          "provenance": "generated",
+          "sha256": "2157f44c1a0e9499a8f42a46e63ae688f37d7d5318359eddf5a273b327bb891c",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "15b49c6000a497baafd795c7c08aefc86553aff6afaeed5d18b87dab99dc4827",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "sweep_2 actual signature",
+          "provenance": "generated",
+          "sha256": "a5be3f791bd1dd0a1c1b35eb108b3c00395945614fd6a2e9b2b8f8bbe0c66b5a",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "5ef458f92e19c6a59bab4474420a5bf367685027797d054d9a1370cfa71651cf",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "broken actual signature",
+          "provenance": "generated",
+          "sha256": "5ba9d27cdec483344847180159f0a599e79e1d4dd6b589b333fc4813cd0c6ff1",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery expected signature",
+          "provenance": "retained_fixture",
+          "sha256": "080eab6d0e2ed2a24f97722b9ab514714f4c7c1e314b9c9dd6d8f303ab2a6db8",
+          "unit": "per-field units in provenance.json"
+        },
+        {
+          "name": "recovery actual signature",
+          "provenance": "generated",
+          "sha256": "b687a4859d0d1d6d0123239b8021a38a24a8d7a5fee9f792f0a67244410e789e",
+          "unit": "per-field units in provenance.json"
         }
       ]
     },
     "plot_sequence": [
       {
-        "source_figure": "Pinned P75 source processing/plot sequence",
-        "target_plot_key": "model_view",
-        "title": "Physical model and measurements",
+        "source_figure": "Pinned P75 explicit processing and evidence stages",
+        "target_plot_key": "geometry",
+        "title": "Slant range across the selected aperture",
         "axes": [
           {
             "role": "x",
-            "label": "range/cross-range coordinate",
-            "unit": "source units"
+            "label": "Platform cross-range (m)",
+            "unit": "m"
           },
           {
             "role": "y",
-            "label": "normalized intensity",
-            "unit": "normalized"
+            "label": "Slant range (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Build SAR Phase-History Intuition guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "A 5 GHz antenna visits positions at.2m spacing. R=sqrt(1000\u00b2+(x-xt)\u00b2), delay=2R/c and phase=-4pi(R-1000)/lambda. A .6 m Gaussian envelope supplies the raw fast-time ridge. Candidate-path phase compensation coherently sums ridge samples; this is a single known-range illustration, not an image former."
       },
       {
-        "source_figure": "Pinned P75 source processing/plot sequence",
-        "target_plot_key": "response_view",
-        "title": "Processed response",
+        "source_figure": "Pinned P75 explicit processing and evidence stages",
+        "target_plot_key": "phase",
+        "title": "Range-referenced round-trip phase",
         "axes": [
           {
             "role": "x",
-            "label": "range/cross-range coordinate",
-            "unit": "source units"
+            "label": "Platform cross-range (m)",
+            "unit": "m"
           },
           {
             "role": "y",
-            "label": "normalized intensity",
-            "unit": "normalized"
+            "label": "Phase (rad)",
+            "unit": "rad"
           }
         ],
-        "interpretation": "This view answers the Build SAR Phase-History Intuition guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "A 5 GHz antenna visits positions at.2m spacing. R=sqrt(1000\u00b2+(x-xt)\u00b2), delay=2R/c and phase=-4pi(R-1000)/lambda. A .6 m Gaussian envelope supplies the raw fast-time ridge. Candidate-path phase compensation coherently sums ridge samples; this is a single known-range illustration, not an image former."
       },
       {
-        "source_figure": "Pinned P75 source processing/plot sequence",
-        "target_plot_key": "parameter_sweeps",
-        "title": "One-variable sweeps",
+        "source_figure": "Pinned P75 explicit processing and evidence stages",
+        "target_plot_key": "magnitude",
+        "title": "Raw echo delay ridge",
         "axes": [
           {
             "role": "x",
-            "label": "range/cross-range coordinate",
-            "unit": "source units"
+            "label": "Fast-time apparent range (m)",
+            "unit": "m"
           },
           {
             "role": "y",
-            "label": "normalized intensity",
-            "unit": "normalized"
+            "label": "Platform cross-range (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Build SAR Phase-History Intuition guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "A 5 GHz antenna visits positions at.2m spacing. R=sqrt(1000\u00b2+(x-xt)\u00b2), delay=2R/c and phase=-4pi(R-1000)/lambda. A .6 m Gaussian envelope supplies the raw fast-time ridge. Candidate-path phase compensation coherently sums ridge samples; this is a single known-range illustration, not an image former."
       },
       {
-        "source_figure": "Pinned P75 source processing/plot sequence",
-        "target_plot_key": "broken_case",
-        "title": "Broken assumption and recovery",
+        "source_figure": "Pinned P75 explicit processing and evidence stages",
+        "target_plot_key": "iq",
+        "title": "Carrier phase along the aperture",
         "axes": [
           {
             "role": "x",
-            "label": "range/cross-range coordinate",
-            "unit": "source units"
+            "label": "Fast-time apparent range (m)",
+            "unit": "m"
           },
           {
             "role": "y",
-            "label": "normalized intensity",
-            "unit": "normalized"
+            "label": "Platform cross-range (m)",
+            "unit": "m"
           }
         ],
-        "interpretation": "This view answers the Build SAR Phase-History Intuition guiding question while preserving the source sign, normalization, and finite-record interpretation."
+        "interpretation": "A 5 GHz antenna visits positions at.2m spacing. R=sqrt(1000\u00b2+(x-xt)\u00b2), delay=2R/c and phase=-4pi(R-1000)/lambda. A .6 m Gaussian envelope supplies the raw fast-time ridge. Candidate-path phase compensation coherently sums ridge samples; this is a single known-range illustration, not an image former."
+      },
+      {
+        "source_figure": "Pinned P75 explicit processing and evidence stages",
+        "target_plot_key": "cross_range",
+        "title": "Target cross-range moves the path vertex",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Platform cross-range (m)",
+            "unit": "m"
+          },
+          {
+            "role": "y",
+            "label": "Range excess (m)",
+            "unit": "m"
+          }
+        ],
+        "interpretation": "A 5 GHz antenna visits positions at.2m spacing. R=sqrt(1000\u00b2+(x-xt)\u00b2), delay=2R/c and phase=-4pi(R-1000)/lambda. A .6 m Gaussian envelope supplies the raw fast-time ridge. Candidate-path phase compensation coherently sums ridge samples; this is a single known-range illustration, not an image former."
+      },
+      {
+        "source_figure": "Pinned P75 explicit processing and evidence stages",
+        "target_plot_key": "aperture",
+        "title": "Longer apertures observe more phase history",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Platform cross-range (m)",
+            "unit": "m"
+          },
+          {
+            "role": "y",
+            "label": "Round-trip phase (turns)",
+            "unit": "turns"
+          }
+        ],
+        "interpretation": "A 5 GHz antenna visits positions at.2m spacing. R=sqrt(1000\u00b2+(x-xt)\u00b2), delay=2R/c and phase=-4pi(R-1000)/lambda. A .6 m Gaussian envelope supplies the raw fast-time ridge. Candidate-path phase compensation coherently sums ridge samples; this is a single known-range illustration, not an image former."
+      },
+      {
+        "source_figure": "Pinned P75 explicit processing and evidence stages",
+        "target_plot_key": "focus",
+        "title": "Candidate-path coherent sums on the same ridge",
+        "axes": [
+          {
+            "role": "x",
+            "label": "Candidate cross-range (m)",
+            "unit": "m"
+          },
+          {
+            "role": "y",
+            "label": "Normalized coherent score (ratio)",
+            "unit": "ratio"
+          }
+        ],
+        "interpretation": "A 5 GHz antenna visits positions at.2m spacing. R=sqrt(1000\u00b2+(x-xt)\u00b2), delay=2R/c and phase=-4pi(R-1000)/lambda. A .6 m Gaussian envelope supplies the raw fast-time ridge. Candidate-path phase compensation coherently sums ridge samples; this is a single known-range illustration, not an image former."
       }
     ],
     "sweeps": [
       {
-        "control": "primary_scale",
+        "control": "target_cross_range_m",
         "values": [
-          0.6,
-          1.0,
-          1.4
+          -20,
+          0,
+          20
         ],
-        "expected_observation": "Changing aperture length moves the source-specific response while secondary stress remains fixed."
+        "expected_observation": "Change only Target cross range m; inspect the corresponding source-specific sweep and explain the governing equation."
       },
       {
-        "control": "secondary_scale",
+        "control": "aperture_length_m",
         "values": [
-          0.0,
-          0.5,
-          1.0
+          20,
+          40,
+          80
         ],
-        "expected_observation": "Increasing secondary stress changes response separation or error without silently changing the primary control."
+        "expected_observation": "Change only Aperture length m; inspect the corresponding source-specific sweep and explain the governing equation."
       }
     ],
     "broken_case": {
-      "trigger": "Enable the central-assumption failure toggle.",
-      "failure": "A deterministic ambiguity, contamination, association error, or coherent-processing error invalidates the baseline interpretation.",
-      "recovery": "Disable broken mode and restore primary scale 1.0, secondary stress 0.25, and the retained noise level.",
-      "expected_observation": "The baseline response and its named invariant return exactly under the retained seed."
+      "trigger": "Enable broken_mode at baseline controls.",
+      "failure": "Taking magnitude preserves the delay ridge but erases aperture phase, so correct path compensation cannot align the data.",
+      "recovery": "Return to the unchanged complex ridge samples. Controls crop a fixed401x201 noise record when aperture changes, preserving nested measurements rather than regenerating noise.",
+      "expected_observation": "The named failure is visible and the same selected baseline is restored when the toggle is disabled."
     },
     "common_mistakes": [
-      "Changing two controls at once.",
-      "Ignoring sign, units, normalization, or finite-record effects.",
-      "Treating a plotted connection or processing artifact as an additional measurement."
+      "Taking magnitude preserves the delay ridge but erases aperture phase, so correct path compensation cannot align the data.",
+      "Confusing finite seeded software evidence with MATLAB execution or physical validation."
     ],
     "completion_checklist": [
-      "Answer the exact guiding question.",
-      "Explain a governing equation in plain language.",
-      "Predict and verify both one-variable sweeps.",
-      "Name the broken assumption and demonstrate recovery."
+      "Predict and explain both one-variable sweeps using the source equations.",
+      "Demonstrate the named failure and recovery; state the recovery assumption.",
+      "Use units and a measured value to answer the guiding question.",
+      "Teach back model limits and finite-sample uncertainty."
     ]
   },
   "runtime": {
@@ -216,63 +307,125 @@
     "entrypoint": "experiment.py:run",
     "trust": "local-trusted",
     "timeout_seconds": 3.0,
-    "max_samples": 512,
+    "max_samples": 1000000,
     "max_output_bytes": 1000000
   },
   "python_source_equivalence": {
     "status": "passed",
-    "command": "ELP_DSP_ITEM=P75 python -m pytest -q apps/api/tests/test_dsp_course.py",
-    "seed": 1075,
+    "command": "ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_fidelity_remediation_p65_p76.py",
+    "seed": 7501,
     "inputs": [
       {
-        "name": "primary_scale",
-        "value": 1.0,
-        "unit": "ratio"
+        "name": "target_cross_range_m",
+        "value": 0,
+        "unit": "m"
       },
       {
-        "name": "secondary_scale",
-        "value": 0.25,
-        "unit": "normalized"
+        "name": "aperture_length_m",
+        "value": 80,
+        "unit": "m"
+      },
+      {
+        "name": "broken_mode",
+        "value": false,
+        "unit": "boolean"
       }
     ],
     "cases": [
       {
-        "name": "baseline-source-signature",
-        "units": "mixed numeric signature",
+        "name": "baseline",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 4.440892098500626e-16,
+        "max_relative_error": 4.440892098500626e-16,
+        "passed": true,
         "expected": {
           "path": "modules/75-build-sar-phase-history-intuition/evidence/expected-baseline.json",
-          "sha256": "2dfee8ad251746beeb47270a576ae403e5698ed3c693e4b3f30e2e4f04a4b8a7"
+          "sha256": "080eab6d0e2ed2a24f97722b9ab514714f4c7c1e314b9c9dd6d8f303ab2a6db8"
         },
         "actual": {
           "path": "modules/75-build-sar-phase-history-intuition/evidence/actual-baseline.json",
-          "sha256": "79945c5299a50667cf1d5cba10b6e7e69f4161bc55f62c254b963777d9556b63"
-        },
-        "max_absolute_error": 4.897748873133878e-13,
-        "max_relative_error": 4.897748873133878e-13,
-        "passed": true
+          "sha256": "b687a4859d0d1d6d0123239b8021a38a24a8d7a5fee9f792f0a67244410e789e"
+        }
       },
       {
-        "name": "broken-source-signature",
-        "units": "mixed numeric signature",
+        "name": "sweep_1",
+        "units": "ordered per-field units in evidence/provenance.json",
         "tolerance": {
-          "absolute": 1.1e-09,
-          "relative": 1.1e-09
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
+        "max_absolute_error": 2.220446049250313e-16,
+        "max_relative_error": 2.220446049250313e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/75-build-sar-phase-history-intuition/evidence/expected-sweep-1.json",
+          "sha256": "a386dde32d75f0b01e4e32a35832ba9cdcde01438d17b879a1f7b430075c64ac"
+        },
+        "actual": {
+          "path": "modules/75-build-sar-phase-history-intuition/evidence/actual-sweep-1.json",
+          "sha256": "2157f44c1a0e9499a8f42a46e63ae688f37d7d5318359eddf5a273b327bb891c"
+        }
+      },
+      {
+        "name": "sweep_2",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 3.3306690738754696e-16,
+        "max_relative_error": 3.3306690738754696e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/75-build-sar-phase-history-intuition/evidence/expected-sweep-2.json",
+          "sha256": "15b49c6000a497baafd795c7c08aefc86553aff6afaeed5d18b87dab99dc4827"
+        },
+        "actual": {
+          "path": "modules/75-build-sar-phase-history-intuition/evidence/actual-sweep-2.json",
+          "sha256": "a5be3f791bd1dd0a1c1b35eb108b3c00395945614fd6a2e9b2b8f8bbe0c66b5a"
+        }
+      },
+      {
+        "name": "broken",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
+        },
+        "max_absolute_error": 3.781419621873283e-13,
+        "max_relative_error": 3.781419621873283e-13,
+        "passed": true,
         "expected": {
           "path": "modules/75-build-sar-phase-history-intuition/evidence/expected-broken.json",
-          "sha256": "90d1b3b111f882893a2b47e812c27b432f12ec922371e27132d55304236747d7"
+          "sha256": "5ef458f92e19c6a59bab4474420a5bf367685027797d054d9a1370cfa71651cf"
         },
         "actual": {
           "path": "modules/75-build-sar-phase-history-intuition/evidence/actual-broken.json",
-          "sha256": "768827ab3800f76205baec4fb9dfc71e4776aa1b57e73e732c0e46c563529268"
+          "sha256": "5ba9d27cdec483344847180159f0a599e79e1d4dd6b589b333fc4813cd0c6ff1"
+        }
+      },
+      {
+        "name": "recovery",
+        "units": "ordered per-field units in evidence/provenance.json",
+        "tolerance": {
+          "absolute": 1.0e-08,
+          "relative": 1.0e-08
         },
-        "max_absolute_error": 4.732880753977042e-13,
-        "max_relative_error": 4.732880753977042e-13,
-        "passed": true
+        "max_absolute_error": 4.440892098500626e-16,
+        "max_relative_error": 4.440892098500626e-16,
+        "passed": true,
+        "expected": {
+          "path": "modules/75-build-sar-phase-history-intuition/evidence/expected-recovery.json",
+          "sha256": "080eab6d0e2ed2a24f97722b9ab514714f4c7c1e314b9c9dd6d8f303ab2a6db8"
+        },
+        "actual": {
+          "path": "modules/75-build-sar-phase-history-intuition/evidence/actual-recovery.json",
+          "sha256": "b687a4859d0d1d6d0123239b8021a38a24a8d7a5fee9f792f0a67244410e789e"
+        }
       }
     ]
   },

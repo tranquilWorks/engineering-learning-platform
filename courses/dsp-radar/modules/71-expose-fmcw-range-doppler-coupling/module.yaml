@@ -3,13 +3,13 @@
   "id": "71-expose-fmcw-range-doppler-coupling",
   "number": 71,
   "title": "Expose FMCW Range-Doppler Coupling",
-  "summary": "Explore expose fmcw range-doppler coupling with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "With approaching-positive velocity, Rx has +fd but Tx conj(Rx) yields fbeat=S tau-fd. The frozen-delay 45 m model measures lag-one signed frequency. A single chirp cannot identify both range and velocity; correction uses independently supplied velocity.",
   "guiding_question": "Why can target motion bias the range estimated from one chirp?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-8",
-    "chirp-slope"
+    "fmcw",
+    "P71"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,55 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Chirp Slope",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "velocity_mps",
+      "type": "select",
+      "label": "Velocity m/s",
+      "default": 20,
+      "unit": "m/s",
+      "options": [
+        {
+          "label": "-30 m/s",
+          "value": -30
+        },
+        {
+          "label": "0 m/s",
+          "value": 0
+        },
+        {
+          "label": "20 m/s",
+          "value": 20
+        },
+        {
+          "label": "30 m/s",
+          "value": 30
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "bandwidth_mhz",
+      "type": "select",
+      "label": "Bandwidth mhz",
+      "default": 20,
+      "unit": "MHz",
+      "options": [
+        {
+          "label": "10 MHz",
+          "value": 10
+        },
+        {
+          "label": "20 MHz",
+          "value": 20
+        },
+        {
+          "label": "30 MHz",
+          "value": 30
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +79,45 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing chirp slope, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict the stationary range bias for approaching and receding targets. Why does the same signed beat admit multiple range/velocity pairs, and what independent information makes correction possible?",
+      "reveal": "With approaching-positive velocity, Rx has +fd but Tx conj(Rx) yields fbeat=S tau-fd. The frozen-delay 45 m model measures lag-one signed frequency. A single chirp cannot identify both range and velocity; correction uses independently supplied velocity."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Delay and Doppler in the transmitted and received chirps",
+      "plot": "chirp_frequency"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Signed beat from delayed moving echo",
+      "plot": "mixer"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Retain the sign of the beat",
+      "plot": "spectrum"
+    },
+    {
+      "type": "plot",
+      "title": "Independent velocity corrects a single coupled beat",
+      "plot": "ranges"
+    },
+    {
+      "type": "plot",
+      "title": "Change only radial velocity",
+      "plot": "velocity"
+    },
+    {
+      "type": "plot",
+      "title": "Change only chirp slope",
+      "plot": "slope"
     },
     {
       "type": "callout",
@@ -102,7 +128,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

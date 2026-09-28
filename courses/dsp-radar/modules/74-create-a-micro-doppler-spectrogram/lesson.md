@@ -1,6 +1,4 @@
-# Create a Micro-Doppler Spectrogram
-
-> **Guiding question:** How do rotating or swinging target parts produce time-varying Doppler around bulk motion?
+# Lesson: motion inside the target
 
 ## Guiding question
 
@@ -191,33 +189,29 @@ runtime, plot legibility, educational effectiveness, RF behavior, hardware/HIL,
 bench, real-time RT1/RT2, field, Unreal, signing, deployment, staging,
 production, or operational-radar performance.
 
-## Use the Python GUI experiment
+## Interactive lab: Create a Micro-Doppler Spectrogram
 
-The GUI keeps the pinned source's mental model and processing order visible. The **micro motion rate** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** How do rotating or swinging target parts produce time-varying Doppler around bulk motion?
 
-### Prediction and sweep 1 — micro motion rate
+Seed 7401; carrier 24 GHz, fs 4800 Hz, 4 s. Torso 1.2 m/s and opposite limbs with 2 m/s peak swing at 1.5 Hz have voltages 1/.35/.28 and phases 0/.7/-.9. Analytic integration supplies phase=-4 pi advance/lambda. A 512 sample Hann, 384 overlap and 2048 FFT baseline retains 147 frames. Speed 1/2/3 m/s uses seed 7501; carrier 10/24/77 GHz uses 7601; window 192/512/1536 reuses baseline data. Full spectra are computed before display reduction.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict the torso Doppler and limb extrema from physical velocity. Why do carrier frequency and STFT window length change different aspects of the spectrogram, and why is magnitude-only motion evidence incomplete?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Swing speed m/s** from 2 to 3 m/s. Predict, run, and explain a measured value using the governing equation; then reset.
+2. Start at the baseline. Sweep only **Window samples** from 512 to 1536 samples. Predict, run, and explain a measured value using the governing equation; then reset.
+3. Enable the broken case. Absolute value of the slow-time IQ record removes carrier phase and signed bulk Doppler; magnitude fluctuations cannot reconstruct the original motion phase.
+4. Recovery: Use the retained unchanged complex IQ record. The plots use full STFT calculations; display coordinates are decimated and zero-padding is not independent frequency resolution.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict the torso Doppler and limb extrema from physical velocity. Why do carrier frequency and STFT window length change different aspects of the spectrogram, and why is magnitude-only motion evidence incomplete? Support the explanation with a measured value and units, and state the recovery assumption.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+Absolute value of the slow-time IQ record removes carrier phase and signed bulk Doppler; magnitude fluctuations cannot reconstruct the original motion phase. Distinguish the selected-control scene from a named separate failure scene.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The pinned source lesson is preserved above. Private Park–Miller uniforms retain zero offset; P65–P72 split radius/phase uniform blocks and P73–P76 interleave them. Matrix inputs retain column-major ordering. P75 shorter apertures crop the full baseline noise record to isolate aperture changes. MUSIC missing-peak penalties and truth-defined audit neighborhoods are disclosed; neither manufactures successful detections. Source figures become labeled native plots; full arrays drive calculations before display decimation. Sixty independent software comparisons cover five scenarios per lesson. No MATLAB execution, browser/accessibility, learner, hardware or production validation is claimed.
