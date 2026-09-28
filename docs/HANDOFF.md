@@ -14,8 +14,10 @@ amendment PR532. The profile points to control merge
 Read [CURRENT_STATE](CURRENT_STATE.md), [COURSE_QUALITY](COURSE_QUALITY.md), and
 [delivery evidence](evidence/ELP-COURSE-DELIVERY-QUALITY-01-2026-09-28.md). Course
 payloads and source pins remain byte-identical to PR51 during this delivery
-batch. Backend contract/quick/full gates passed; the final browser/container
-report is the remaining delivery gate.
+batch. Backend contract/quick/full gates passed; all 290 container HTTP checks and all 580 desktop/mobile page checks passed.
+Ten focused browser regressions and nine frontend tests passed. Delivery
+PR52 is ready for exact-head review and eligible merge under retained owner
+authorization.
 
 ## Authorized continuation
 

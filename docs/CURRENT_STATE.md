@@ -12,8 +12,7 @@ not close aggregate competency or cumulative-assessment acceptance.
 The active delivery batch fixes actual math, mobile keyboard/navigation,
 revision isolation and numeric browser-control defects, embeds lesson review
 notes, and retains per-lesson browser/container checks. Backend contract,
-quick/full verification, catalog and focused browser checks passed. The final
-all-page desktop/mobile sweep is in progress; see
+quick/full verification, catalog and focused browser checks passed. All 290 container HTTP checks and all 580 desktop/mobile page checks passed; see
 [delivery evidence](evidence/ELP-COURSE-DELIVERY-QUALITY-01-2026-09-28.md).
 
 Direct semantic inspection reopened twelve lessons: **Controls P66–68,

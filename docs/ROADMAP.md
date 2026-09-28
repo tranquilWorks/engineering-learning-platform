@@ -3,8 +3,10 @@
 Owner requested a complete quality/iteration audit and embedded browser/container
 lessons. See [COURSE_QUALITY.md](COURSE_QUALITY.md) for the current board; older
 passed course-caliber claims below are historical where superseded by this audit.
-Delivery fixes and all-lesson verification are in progress under
-ELP-COURSE-DELIVERY-QUALITY-01. The next authorized group repairs twelve existing
+Delivery fixes and all-lesson verification passed under
+ELP-COURSE-DELIVERY-QUALITY-01: 290 container HTTP checks and 580 desktop/mobile
+page checks. The wider audit records 72 affected lessons; 60 remain outside the
+initial repair group. The next authorized group repairs twelve existing
 lessons (Controls P66–68, Robotics P68–69, Vehicle P61–67), followed by DSP aggregate
 competency/cumulative assessment. Four revised courses contain 288 lessons plus
 two examples. Nine pinned sources remain source-only. No learner study or

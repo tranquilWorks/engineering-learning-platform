@@ -112,3 +112,13 @@ records that failure. The final delivery driver paces actual experiment requests
 one at a time while inspecting pages in parallel; it changes neither request
 parameters nor server responses or runtime deadlines. Concurrent-user capacity
 is not certified by the delivery sweep.
+
+## Verified delivery result
+
+The baked image passed all 290 default HTTP/repeat/recovery checks and all
+580 Chromium desktop/mobile page checks, with no serious or critical automatic
+accessibility findings. Twelve representative interaction/reset checks passed.
+Ten focused browser regressions and nine frontend tests passed. See
+[the exact batch evidence](evidence/ELP-COURSE-DELIVERY-QUALITY-01-2026-09-28.md)
+for the image identity, all retained artifacts and hosted-CI limitations. These
+results do not close the 72 semantic findings.
