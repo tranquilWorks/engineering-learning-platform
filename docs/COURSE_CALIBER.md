@@ -54,32 +54,26 @@ import the production entrypoint, derive values from production output, or
 perturb production output. Those artifacts may be useful regression fixtures,
 but they are not independent correctness oracles.
 
-## Baseline disposition
+## Current disposition (2026-09-28)
 
-| Course | Inventory | Highest unblocked stage | Required follow-up |
-| --- | ---: | --- | --- |
-| DSP/Radar | 84 source / 84 platform / 84 interactive | `platform_converted`; P02-P84 fidelity repaired | #441: aggregate caliber, competency mapping and cumulative-assessment review |
-| Controls/GNC | 24 / 24 / 24 | `numerically_verified` | #439: expand against the reviewed competency map and add cumulative integration |
-| Robotics and Autonomy | 24 source / 69 platform / 69 interactive | `capstone_integrated` | Maintain the reviewed map; learner/accessibility validation remains not run |
-| Vehicle Dynamics | 24 source / 67 platform / 67 interactive | P01-P67 numerically verified; curriculum and capstones passed | Maintain; learner validation remains not run |
+| Course | Native interactive lessons | Required follow-up |
+| --- | ---: | --- |
+| DSP/Radar | 84 | #441: aggregate competency mapping and cumulative assessment after completed item repairs |
+| Controls/GNC | 68 | 22 affected lessons: cumulative capstones plus unsupported prerequisite mechanisms |
+| Robotics/Autonomy | 69 | Reopen P68–P69 replay/recovery claims while retaining implemented planning, kinematics and contact models |
+| Vehicle Dynamics | 67 | Repair P61–P67 dimensional/performance/cumulative defects, including hardcoded P66/P67 verdicts |
 
-Controls/GNC and Robotics/Autonomy are now marked `curriculum_covered: passed`
-and `capstone_integrated: passed` from their reviewed maps and requirements-traced
-software capstones. Those outcomes do not imply `learner_validated`, which remains
-`not_run`. DSP/Radar P02-P84 now have distinct source-faithful runtimes and
-five-scenario independent evidence; the item repair inventory has zero pending items. Aggregate numerical, curriculum and capstone maturity remains blocked, and issue #441 remains open.
+All four aggregate numerical, curriculum and capstone statuses remain blocked
+pending the named reassessments. Prior maps, references and tests are retained;
+the newly demonstrated defects override earlier passed labels. Learner
+validation is `not_run` for every course. Browser/container acceptance is a
+separate delivery check and cannot promote educational maturity.
 
-Vehicle Dynamics preparation, the three source-bound arcs, and the first four
-competency-derived tire, chassis, propulsion, and telemetry-depth arcs are complete.
-The reviewed 67-module map, exact source ledger, and deterministic synthetic
-GR86 CAN/BLE fixtures are installed. P01-P24 are deterministic software-only
-lessons with independent scalar references; P25-P33 add independently evidenced
-advanced tire models, while P34-P43 add dynamic handling, nonlinear stability,
-load-transfer, ride-mode, damper, suspension, and anti-geometry models. P44-P52
-add traction, launch, differential, gearing, braking, aero, and stint models. P53-P60 add replay, alignment, calibration, reconstruction, estimation, identification, uncertainty, and recovery. P20 does
-not use a real drive and P24 is not physical GR86 validation. P61-P67 complete
-separately gated.
+See [the per-lesson quality board](COURSE_QUALITY.md) for the initial twelve-lesson
+semantic revision group, exact findings and delivery evidence. Nine other
+pinned repositories remain source-only. No MATLAB runtime, physical hardware,
+measured vehicle/track, representative learner or production claim is made.
 
-This projection does not claim MATLAB runtime comparison, browser or
-accessibility acceptance, learner effectiveness, physical hardware/HIL,
-bench, field, release, deployment, credentials/settings, or production use.
+The wider direct review records 56 affected lessons, including 44 outside the
+initial twelve-lesson repair. Finishing that group alone cannot close Controls
+or Robotics aggregate maturity. See the per-lesson additional finding register.

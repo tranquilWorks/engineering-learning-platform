@@ -380,3 +380,26 @@ def test_duplicate_control_ids_and_parameter_map_contract_are_rejected() -> None
                 ],
             )
         )
+
+
+@pytest.mark.parametrize("kind", ["select", "segmented"])
+def test_menu_options_cannot_alias_in_a_json_client(kind):
+    from elp_api.models import SegmentedControl, SelectControl
+
+    cls = SelectControl if kind == "select" else SegmentedControl
+    with pytest.raises(ValidationError, match="distinct in JSON"):
+        cls(
+            id="choice",
+            type=kind,
+            label="Choice",
+            default=1,
+            options=[{"label": "Integer", "value": 1}, {"label": "Float", "value": 1.0}],
+        )
+
+
+@pytest.mark.parametrize("value", [float("nan"), float("inf"), -float("inf")])
+def test_menu_options_must_be_finite(value):
+    from elp_api.models import ControlOption
+
+    with pytest.raises(ValidationError, match="must be finite"):
+        ControlOption(label="Invalid", value=value)

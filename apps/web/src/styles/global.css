@@ -112,7 +112,7 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
 .module-title-row p { max-width: 820px; color: var(--text-2); font-size: 1.08rem; line-height: 1.6; margin: 0; }
 .runtime-badge { flex: 0 0 auto; display: flex; align-items: center; gap: 7px; padding: 8px 11px; border-radius: 99px; border: 1px solid var(--line); color: var(--muted); font-size: .72rem; }
 .runtime-badge.python { color: var(--green); border-color: rgba(86, 215, 164, .28); background: rgba(86, 215, 164, .07); }
-.runtime-error { max-width: 1120px; margin: 0 auto 16px; padding: 11px 14px; border: 1px solid rgba(255,129,149,.35); background: rgba(255,129,149,.08); color: #ffb3bf; border-radius: 10px; display: flex; gap: 9px; }
+.runtime-error, .lesson-content-note { max-width: 1120px; margin: 0 auto 16px; padding: 11px 14px; border: 1px solid rgba(255,129,149,.35); background: rgba(255,129,149,.08); color: #ffb3bf; border-radius: 10px; display: flex; gap: 9px; }
 .revision-diagnostics { max-width: 1120px; margin: 0 auto 16px; padding: 11px 14px; border: 1px solid var(--line-soft); border-radius: 10px; background: rgba(12, 18, 29, .72); color: var(--muted); font-size: .7rem; }
 .revision-summary { display: flex; flex-wrap: wrap; gap: 8px 18px; }
 .revision-diagnostics code { color: var(--text-2); overflow-wrap: anywhere; }
@@ -235,8 +235,8 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
 
 @media (max-width: 900px) {
   :root { --sidebar: 282px; }
-  .sidebar { transform: translateX(-101%); transition: transform .2s ease; box-shadow: var(--shadow); }
-  .sidebar-open { transform: translateX(0); }
+  .sidebar { visibility: hidden; transform: translateX(-101%); transition: transform .2s ease; box-shadow: var(--shadow); }
+  .sidebar-open { visibility: visible; transform: translateX(0); }
   .sidebar-close { display: grid; place-items: center; }
   .main-column { margin-left: 0; }
   .mobile-header { position: sticky; top: 0; z-index: 20; height: 55px; padding: 0 16px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--line-soft); background: rgba(8,11,18,.9); backdrop-filter: blur(16px); font-size: .83rem; }
@@ -282,3 +282,28 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
 .widget-values { display: flex; flex-wrap: wrap; gap: 10px 22px; padding: 2px 7px 0; color: var(--muted); font-size: .75rem; }
 .widget-values strong { color: var(--text); font-variant-numeric: tabular-nums; }
 .unsupported-widget { min-height: 130px; display: flex; align-items: center; justify-content: center; gap: 9px; color: var(--muted); }
+
+.skip-link { position: fixed; top: 8px; left: 8px; z-index: 100; padding: 12px; background: #13223a; color: white; transform: translateY(-160%); }
+.skip-link:focus { transform: none; }
+.plot-values { padding: 12px 16px; font-size: .85rem; }
+.plot-values summary { cursor: pointer; }
+.plot-values p { color: var(--muted); }
+.table-scroll { max-width: 100%; overflow-x: auto; }
+.plot-values th, .plot-values td { text-align: left; padding: 6px; }
+.lesson-jumps { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 16px; }
+.lesson-jumps a { color: #a7caff; }
+[id^="lesson-block-"] { scroll-margin-top: 24px; }
+
+.lesson-quality { margin: 0 0 16px; color: var(--muted); font-size: .85rem; }
+.lesson-quality summary { cursor: pointer; }
+.lesson-jump-mobile { display: none; }
+@media (max-width: 900px) {
+  .lesson-jump-desktop { display: none; }
+  .lesson-jump-mobile { display: inline; }
+  [id^="lesson-block-"] { scroll-margin-top: 70px; }
+}
+/* Long authored inline equations scroll inside the lesson, not the whole page. */
+.prose .katex { display: inline-block; max-width: 100%; overflow: visible; vertical-align: middle; }
+.prose .katex.math-scroll { overflow-x: auto; overflow-y: hidden; padding-block: 6px; }
+.prose .katex-display { overflow: visible; }
+.prose .katex-display > .katex { display: block; }

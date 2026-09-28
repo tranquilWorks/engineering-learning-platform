@@ -5,6 +5,7 @@ import { navigate, parseRoute, type Route } from "./lib/routing";
 import type { CourseSummary, ModuleDocument, RunResult } from "./types";
 import { AppShell } from "./components/AppShell";
 import { BlockRenderer } from "./components/BlockRenderer";
+import { LessonQuality } from "./components/LessonQuality";
 import { Controls } from "./components/Controls";
 import { RevisionDiagnostics } from "./components/RevisionDiagnostics";
 
@@ -35,7 +36,7 @@ function HomePage({ catalog }: { catalog: CourseSummary[] }) {
       <section className="hero">
         <span className="hero-kicker"><FlaskConical size={15} /> executable engineering curriculum</span>
         <h1>Build intuition by changing the system.</h1>
-        <p>Short explanations, explicit predictions, live controls, MATLAB-class visualizations, and immediate numerical feedback—all in one professional learning surface.</p>
+        <p>Short explanations, explicit predictions, live controls, interactive plots, and immediate numerical feedback.</p>
         <div className="hero-stats">
           <div><strong>{catalog.length}</strong><span>courses discovered</span></div>
           <div><strong>{moduleCount}</strong><span>modules available</span></div>
@@ -118,7 +119,7 @@ function ModulePage({ courseId, moduleId }: { courseId: string; moduleId: string
         controller.signal,
       )
         .then((value) => {
-          if (sequence !== runSequence.current) return;
+          if (controller.signal.aborted || sequence !== runSequence.current) return;
           if (value.module_revision.content_digest !== document.module_revision.content_digest) {
             setError("The experiment returned a stale content revision. Reload this module.");
             return;
@@ -144,7 +145,7 @@ function ModulePage({ courseId, moduleId }: { courseId: string; moduleId: string
         <div className="module-breadcrumb">{document.course.title}<span>/</span>{document.module.number ? `Module ${document.module.number}` : "Module"}</div>
         <div className="module-title-row">
           <div><span className="eyebrow">Guiding question</span><h1>{document.module.title}</h1><p>{document.module.guiding_question || document.module.summary}</p></div>
-          <span className={`runtime-badge ${document.module.runtime.kind}`}><Play size={14} />{document.module.runtime.kind === "python" ? "Live Python" : "Static lesson"}</span>
+          <span className={`runtime-badge ${document.module.runtime.kind}`}><Play size={14} />{document.module.runtime.kind === "python" ? "Interactive" : "Static lesson"}</span>
         </div>
         <div className="tag-row">{document.module.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
       </header>
@@ -153,10 +154,11 @@ function ModulePage({ courseId, moduleId }: { courseId: string; moduleId: string
         content={result?.module_revision ?? document.module_revision}
         platform={result?.platform_revision ?? document.platform_revision}
       />
+      <LessonQuality course={courseId} module={moduleId} />
       {error ? <div className="runtime-error"><AlertTriangle size={17} /><span>{error}</span></div> : null}
       <div className="module-layout">
         {document.module.controls.length ? (
-          <aside className="desktop-controls">
+          <aside id="experiment-settings" className="desktop-controls" aria-label="Experiment settings" tabIndex={-1}>
             <Controls controls={document.module.controls} parameters={parameters} busy={busy} onChange={(id, value) => setParameters((current) => ({ ...current, [id]: value }))} onReset={reset} />
           </aside>
         ) : null}
@@ -199,7 +201,7 @@ export default function App() {
     const course = catalog.find((item) => item.id === route.courseId);
     if (!course) return <ErrorPanel message={`Course ${route.courseId} was not found.`} />;
     if (route.kind === "course") return <CoursePage course={course} />;
-    return <ModulePage courseId={route.courseId} moduleId={route.moduleId} />;
+    return <ModulePage key={`${route.courseId}/${route.moduleId}`} courseId={route.courseId} moduleId={route.moduleId} />;
   }, [catalog, error, loading, route]);
   return <AppShell catalog={catalog} route={route}>{content}</AppShell>;
 }

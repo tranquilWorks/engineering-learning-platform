@@ -10,6 +10,12 @@
     "dev:web": "npm run dev --workspace @elp/web",
     "build": "npm run build --workspace @elp/web",
     "typecheck": "npm run typecheck --workspace @elp/web",
-    "verify": "bash scripts/verify.sh"
+    "verify": "bash scripts/verify.sh",
+    "test:web": "node --experimental-strip-types --test apps/web/tests/*.test.mjs",
+    "test:browser": "playwright test"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
+    "@playwright/test": "1.63.0"
   }
 }

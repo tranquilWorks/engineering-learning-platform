@@ -197,3 +197,52 @@ def test_result_references_are_revalidated_for_each_parameter_state(
     assert "main" in runtime.run("sample-course", "sample-module", {}).plots
     with pytest.raises(RuntimeContractError, match="missing plot"):
         runtime.run("sample-course", "sample-module", {"show": False})
+
+
+@pytest.mark.parametrize("kind", ["select", "segmented"])
+@pytest.mark.parametrize(
+    ("declared", "supplied"), [(240.0, 240), (240, 240.0), (0.0, 0), (0, -0.0)]
+)
+def test_menu_json_numbers_resolve_to_declared_value_and_type(kind, declared, supplied):
+    from elp_api.models import SegmentedControl, SelectControl
+
+    cls = SelectControl if kind == "select" else SegmentedControl
+    control = cls(
+        id="choice",
+        type=kind,
+        label="Choice",
+        default=declared,
+        options=[{"label": "Declared", "value": declared}],
+    )
+    value = ExperimentRuntime._validate_control_value(control, supplied)
+    assert value == declared and type(value) is type(declared)
+
+
+@pytest.mark.parametrize("kind", ["select", "segmented"])
+@pytest.mark.parametrize(
+    ("declared", "supplied"),
+    [
+        (1, True),
+        (0.0, False),
+        (True, 1),
+        (False, 0),
+        (240.0, "240"),
+        ("240", 240),
+        (240.0, 241),
+        (240.0, float("nan")),
+        (240.0, float("inf")),
+    ],
+)
+def test_menu_numeric_normalization_does_not_coerce_other_scalars(kind, declared, supplied):
+    from elp_api.models import SegmentedControl, SelectControl
+
+    cls = SelectControl if kind == "select" else SegmentedControl
+    control = cls(
+        id="choice",
+        type=kind,
+        label="Choice",
+        default=declared,
+        options=[{"label": "Declared", "value": declared}],
+    )
+    with pytest.raises(RuntimeContractError, match="must be one of"):
+        ExperimentRuntime._validate_control_value(control, supplied)

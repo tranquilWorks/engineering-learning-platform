@@ -1,203 +1,151 @@
 schema_version: 1
 batch:
-  id: ELP-DSP-FIDELITY-P77-P84
-  title: DSP/Radar final SAR, ISAR, passive radar, STAP and capstone fidelity
-  goal: Repair the final eight existing lessons P77-P84 with source-specific processing, independent numerical
-    evidence, and complete learner failure/recovery loops.
+  id: ELP-COURSE-DELIVERY-QUALITY-01
+  title: 'Revised engineering courses: browser and container quality closure'
+  goal: Audit every native lesson, repair demonstrated browser delivery defects, and verify the four revised courses
+    in one local read-only container with an honest per-lesson quality ledger.
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
   - products/engineering-learning-platform/COURSE_CALIBER.md
-  - products/engineering-learning-platform/course-caliber.yaml
-  - tranquilWorks/portfolio-control#441
-  baseline_commit: f05403ef2c0a5e31d7045c0cb796b2e136ca50c9
-  baseline_tree: f30d2a4a74d1fb76b94c6446095698615847cbbb
+  - products/engineering-learning-platform/decisions/DR-003.md
+  - 'Owner 2026-09-28: vet all revision work, finish corresponding quality/course-iteration batches, embed lessons
+    in browser/container, and report current state.'
+  milestone: products/engineering-learning-platform/roadmap.yaml#ELP-M3
+  baseline_commit: b8d760e6721ae0b94aaa503f4ca1599592266442
+  baseline_tree: 83ace6b519c971b6fc295223c67b1e1f1c541779
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_baseline: b71a360ed7f94173d89980c5ca96655d25eadc33
-  control_plane_path: products/engineering-learning-platform/batches/ELP-DSP-FIDELITY-P77-P84.yaml
+  control_plane_baseline: 8ea55b8d9ecfd5bf15cf359c745eed1d1fa0f424
+  control_plane_path: products/engineering-learning-platform/batches/ELP-COURSE-DELIVERY-QUALITY-01.yaml
   target_repository: tranquilWorks/engineering-learning-platform
-  source_repository: tranquilWorks/dsp-radar_learning
-  source_pin: 5d73667a486df4a7b6c581e4c9406e810ed4f0f6
-  source_tree: 7a3a0f9adce607e10097724c13745eace212f4e1
-  source_curriculum_sha256: 0b92e76efc1f72930fab730145326315219ab3813b8cbf17d32a33f507a4974f
-  source_file_set_sha256: c2511015b195a48bd847bd1f1cdeed92384a10eddf0b23e755590af4fb66ddca
-  source_map_sha256: 5b2751769cf70d7c4faad148fecd2db16e7995982122777fa012bfbda7850bf5
-  conversion_manifest_sha256: 1244c6dea11ea11b880e0f26d54ce81dea42ea1ab4981d4d5180c440eb7890a4
-  coverage_sha256: 2f6dbf10aa8ed6afb3b5a0c9b3dc21bc5d9fc7bd5d837a0a37377c4db53e255c
-  milestone: products/engineering-learning-platform/roadmap.yaml#authorized-dsp-item-conversion-lane
+  predecessor_pr: 51
 dependencies:
-- ELP-DSP-FIDELITY-P65-P76
+- ELP-DSP-FIDELITY-P77-P84
 scope:
   allowed_paths:
-  - courses/dsp-radar/remediation-map.yaml
-  - courses/dsp-radar/remediation_reference_cases.py
-  - courses/dsp-radar/coverage.yaml
-  - apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py
-  - apps/api/tests/test_dsp_fidelity_remediation.py
-  - apps/api/tests/test_dsp_conversion_framework.py
-  - apps/api/tests/test_dsp_course.py
+  - apps/web/src/**
+  - apps/web/tests/**
+  - apps/web/package.json
+  - package.json
+  - package-lock.json
+  - playwright.config.ts
+  - tests/browser/**
+  - scripts/audit_course_quality.py
+  - scripts/verify-course-delivery.sh
+  - scripts/browser-quality.mjs
+  - scripts/container-quality.py
+  - apps/api/tests/test_course_delivery_quality.py
   - apps/api/tests/test_course_caliber_status.py
+  - apps/api/tests/test_dsp_fidelity_remediation*.py
+  - Dockerfile
+  - .dockerignore
+  - compose.yaml
   - contracts/active-batch.yaml
   - contracts/repo-profile.yaml
   - contracts/verification.yaml
   - docs/COURSE_CALIBER.md
   - docs/course-caliber-status.yaml
+  - docs/COURSE_QUALITY.md
+  - docs/course-quality/**
   - docs/CURRENT_STATE.md
   - docs/HANDOFF.md
   - docs/ROADMAP.md
-  - apps/api/tests/test_dsp_fidelity_remediation_p21_p28.py
-  - apps/api/tests/test_dsp_fidelity_remediation_p41_p52.py
-  - apps/api/tests/test_dsp_fidelity_remediation_p29_p40.py
-  - apps/api/tests/test_dsp_fidelity_remediation_p53_p64.py
-  - apps/api/tests/test_dsp_fidelity_remediation_p65_p76.py
-  - apps/api/tests/test_dsp_fidelity_remediation_p77_p84.py
-  - docs/evidence/ELP-DSP-FIDELITY-P77-P84-*.md
-  - courses/dsp-radar/modules/77-*/**
-  - courses/dsp-radar/modules/78-*/**
-  - courses/dsp-radar/modules/79-*/**
-  - courses/dsp-radar/modules/80-*/**
-  - courses/dsp-radar/modules/81-*/**
-  - courses/dsp-radar/modules/82-*/**
-  - courses/dsp-radar/modules/83-*/**
-  - courses/dsp-radar/modules/84-*/**
+  - docs/evidence/ELP-COURSE-DELIVERY-QUALITY-01-*
+  - README.md
+  - apps/api/src/elp_api/runtime.py
+  - apps/api/src/elp_api/models.py
+  - apps/api/tests/test_runtime.py
+  - apps/api/tests/test_contract.py
   forbidden_paths:
-  - courses/dsp-radar-learning
-  - courses/dsp-radar-learning/**
-  - courses/dsp-radar/source-map.yaml
-  - courses/dsp-radar/conversion-manifest.yaml
-  - courses/dsp-radar/conversion.schema.json
-  - courses/dsp-radar/course.yaml
-  - courses/dsp-radar/AUTHORING.md
-  - courses/controls-gnc/**
-  - courses/robotics-autonomy/**
-  - courses/vehicle-dynamics/**
-  - courses/demo-radar/**
-  - courses/platform-showcase/**
-  - apps/api/src/**
-  - apps/web/**
-  - packages/**
-  - scripts/**
-  - .github/**
+  - courses/**
   - .gitmodules
-  - package.json
-  - package-lock.json
-  - courses/dsp-radar/modules/0[1-9]-*/**
-  - courses/dsp-radar/modules/[1-6][0-9]-*/**
-  - courses/dsp-radar/modules/7[0-6]-*/**
+  - packages/**
+  - .github/**
+  - products/**
+  - apps/api/src/elp_api/catalog.py
+  - apps/api/src/elp_api/main.py
+  - apps/api/src/elp_api/serialization.py
+  - apps/api/src/elp_api/revision.py
 acceptance:
-- Start after this exact control contract merges from merged PR50 baseline f05403ef2c0a5e31d7045c0cb796b2e136ca50c9,tree
-  f30d2a4a74d1fb76b94c6446095698615847cbbb. Owner approved the final group on2026-09-28 after the explicit
-  merge/continuation handoff.
-- Repair exactly eight existing P77-P84. Preserve P01-P76 bytes,canonical source pin,all other courses,platform,dependencies,workflows,identities,source-map
-  and conversion manifest. Only eight coverage target_content_digest values may change.
-- 'P77: seed7701,5GHz,121 aperture looks at.25m over30m,990:.5:1035m range with2.5m sinc response,two targets(-6,1002)/(7,1020)m
-  and.015noise. Explicit complex row interpolation, hypothesized slant range,positive two-way phase compensation
-  and pixel sums on source image grid. Centered21/61/121looks and0/5/10mm sinusoidal assumed-path sweeps;10mm
-  wrong path failure and exact same-data recovery.'
-- 'P78: seed7801,1GHz,1601looks over400m at.25m,955:.5:1075m range,2m sinc response,target(60,1000)m,.02noise.
-  Migration path relative to center look; correct interpolation samples r+DeltaR while retaining phase. Aperture100/200/400m
-  and squint0/60/80m sweeps; fixed-bin versus path-following images. Wrong-sign interpolation increases migration;
-  exact unchanged-input recovery. Shorter apertures crop fixed full noise record, disclosed.'
-- 'P79: seed7901,10GHz,1000m scene,257 frequencies across200MHz,30m aperture/.25m spacing. Explicit coherent
-  frequency/range sums and exact slant-range aperture PSF; bandwidth100/200/400MHz,aperture10/20/30m,Hamming
-  versus uniform sidelobes and width. Three-target separable image. Sparse5m sampling aliases cross-range;
-  dense retained-scene recovery. Preserve half-offset private uniforms.'
-- 'P80: seed8001,10GHz,121looks/30m,three isolated range gates at offsets-10/0/9m,cross-range-1/.35/1.45m,35dBnoise.
-  Common phase screen from lambda/8 RMS and .25 smooth/random mixture,source-seeded templates. Deramp strong
-  gate,integrate adjacent phase differences,correct unchanged histories; error-RMS and random-mixture sweeps.
-  Contaminated reference gate adds.95 of gate2,defocuses; isolated-gate recovery. Disclose known geometry/isolated-gate
-  assumptions and centered phase gauge.'
-- 'P81: seed8101,10GHz,600MHz/129frequencies,65uniform aspect looks,ten seeded scatterers,6deg aperture,6deg/s
-  rotation,2m/s translation. Project rotating scatterers,form frequency histories,align translation,range IFFT
-  then signed angle FFT with physical axes. Aperture2/4/6/8deg and rate3/6/12deg/s sweeps. Omitted translation
-  alignment loses shape; same-history alignment restores exactly. Disclose small-angle cross-range approximation.'
-- 'P82: seed8201,200kHz,4096samples,QPSK four samples/symbol with25tap sinc/cosine shaping. Separate measured
-  reference35dB and surveillance containing direct2.5,multipath.1 at11samples,target.18 at24samples/500Hz,noise.08.
-  Least-squares direct cancellation and explicit delay-product/Doppler cross-ambiguity on0:64samples and-1000:50:1000Hz.
-  Delay,Doppler,integration and reference-quality sweeps. Twenty-percent cancellation leaves origin dominant;
-  full same-data cancellation recovers. Excess path is c*tau,not monostatic range.'
-- 'P83: seed8301,4sensors x8pulses,48range cells,CUT25,36guarded training cells,lambda.03m,PRF20kHz,platform90m/s,41clutter
-  patches/32dB. Assumed12deg/.12 versus actual12.5deg/.125,18dB target,trace loading. Fixed-beam Doppler and
-  adaptive normalized maps from identical record; clean support and ridge-offset sweeps. Twenty-five-percent30dB
-  training contamination preserves assumed response and loses SCNR through interference growth,not target null;
-  clean-record exact recovery.'
-- 'P84: seed8401,10GHz,4MHz sampling,8us2MHz unit-energy LFM,128fast samples x32pulses,eight scans. Four targets,range-dependent
-  clutter,receiver spur,noise and explicit DC/IQ image impairment/inverse. Conjugate matched filtering with
-  delay correction,Hann Doppler,2D CA-CFAR,8-connected excess-weighted reports,maximum one-to-one offline truth
-  matching,and gated alpha-beta track. Scan4 target fade must cause physical coast. Taper0/.5/1 and Pfa1e-4/1e-3/1e-2
-  sweeps. Wrong nonconjugated replica reduces compression; recovery reuses calibrated cube. Truth never drives
-  detection/association; distinguish requested Pfa from empirical correlated-cell false rate.'
-- Every item preserves pinned source text and guiding question, physical labeled controls, equations/units,
-  intermediate evidence, prediction,two one-variable manipulations,named failure/recovery,focused checks and
-  teach-back. Distinct physical algorithms,not generic renamed templates. Bound full computation and decimate
-  only display.
-- Retain forty baseline/two-sweep/broken/recovery independent comparisons with per-field units,hashes,provenance
-  and1e-8 absolute/scaled-relative tolerances. References use alternate algorithms or formulas,never production
-  imports or outputs. Preserve byte-identical prior reference prefix and earlier fixtures. No MATLAB runtime
-  claim.
-- Regress P02-P76 unchanged and extend normalized-AST anti-template coverage throughP84. P01 remains the already-distinct
-  conversion. Preserve historical provenance assertions while permitting active-contract rotation.
-- Ledger exit:one distinct,seventy-five prior repairs,eight current repairs,zero pending,total84. This completes
-  the item repair inventory; whole-course numerical/curriculum/capstone maturity remains blocked pending aggregate
-  caliber/competency and cumulative-assessment review. Issue441 remains open. Catalog remains6courses/290modules/290interactive;
-  no arbitrary inventory expansion.
-- All mandatory local focused DSP,backend,contract,quick/full,deterministic catalog,lint,frontend typecheck/build,service
-  smoke and scope/source gates pass. Bounded numerical-library threads and CPU affinity are permitted; never
-  relax runtime limits or tests. Hosted CI remains nonmandatory under retained owner direction; document checkout
-  limitations.
-- No MATLAB runtime,browser/accessibility,representative learner,hardware/HIL,certification,deployment or production
-  claims without actual evidence. Protected target merge retains separate owner approval. No further lesson
-  batch is implied; final aggregate caliber review is a separate outcome.
+- Begin after this control contract merges, from exact merged PR51 baseline. Owner continuation authorizes this
+  delivery-quality batch followed by a separately scoped aggregate DSP/competency review; no automatic import of
+  nine source-only courses or production deployment.
+- 'Inventory remains 6 courses/290 interactive modules: DSP84, Controls68, Robotics69, Vehicle67 and two examples.
+  Enumerate all13 pinned sources and distinguish nine source-only repositories from four native engineering curricula.
+  Do not use inventory as curriculum-completeness proof.'
+- Preserve every course payload byte, source gitlink/file identity, numerical algorithm, independent reference and
+  fixture. Audit all288 engineering lessons for concepts, source/competency alignment, equations/units, prediction,
+  controls, plots, interpretation, checks, failures/recoveries and independent provenance. Report incomplete criteria
+  honestly with paths, not blanket pass labels.
+- Correct demonstrated raw TeX rendering while preserving inline/fenced code and currency text; render source display
+  and inline delimiters through existing KaTeX. Fix demonstrated accessibility/responsive/navigation/focus issues
+  using generic components; preserve stale-result/revision protection and live controls.
+- 'Repair the demonstrated browser JSON numeric-choice boundary: finite integer/float spellings of the same declared
+  numeric option must resolve to the declared option value/type, while strings, booleans and undeclared values remain
+  rejected. Reject numerically duplicate int/float menu options that a JavaScript client cannot distinguish. Preserve
+  all valid native manifests, public schema shape, numerical course payloads and revision/trust boundaries. Add
+  actual browser regressions for affected DSP lessons and parameterized runtime/manifest tests.'
+- Keep browser implementation details out of the normal learning flow. Technical revision information may remain
+  in an accessible collapsed disclosure. Provide accessible plot names and usable text/numerical evidence without
+  claiming a chart is fully accessible solely because it has an aria-label.
+- Implement deterministic pinned Playwright/axe browser checks. Render all290 native pages on desktop and mobile,
+  assert plots/metrics, math where present, no page/runtime errors, no page-level horizontal overflow, labeled keyboard
+  controls and no unapproved serious/critical automated accessibility violations. Exercise real control/failure/recovery/reset
+  and navigation on at least one representative per course, plus delayed-response cancellation and stale-revision
+  rejection regressions.
+- Build actual Docker image using lockfile-based frontend installation; run nonroot, readonly root/course filesystem,
+  bounded temporary storage and numerical-library threads, one localhost port. Verify baked course inventory, every
+  default through real HTTP, deterministic repeat, static assets/deep routes, bounded outputs, recovery and stale
+  digests. Never claim hostile-code isolation or production deployment.
+- Retain per-lesson JSON audit/browser/container results and representative desktop/mobile screenshots with hashes
+  and named validation level. Automated accessibility and agent visual inspection are separate from manual screen-reader
+  and representative-learner validation, which remain not_run.
+- Run focused frontend/browser tests, scoped Python tests, complete repository full verification, deterministic
+  catalog, image/container checks and source/scope audits. Hosted CI remains nonmandatory per retained owner direction;
+  do not weaken source tests or alter workflow/secrets to manufacture green status.
+- Publish updated quality board and reviewable PR. Aggregate DSP competency/cumulative assessment review remains
+  the next authorized scoped batch; no false whole-course promotion based on browser checks. Protected target merge
+  and deployment retain owner authority.
 validation:
   local:
-  - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3
-    -B -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py
-    apps/api/tests/test_dsp_fidelity_remediation_p21_p28.py apps/api/tests/test_dsp_fidelity_remediation_p29_p40.py
-    apps/api/tests/test_dsp_fidelity_remediation_p41_p52.py apps/api/tests/test_dsp_fidelity_remediation_p53_p64.py
-    apps/api/tests/test_dsp_fidelity_remediation_p65_p76.py apps/api/tests/test_dsp_fidelity_remediation_p77_p84.py
-    apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py apps/api/tests/test_course_caliber_status.py
-  - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest -q apps/api/tests
+  - npm run typecheck
+  - npm run build
+  - npm run test:web
+  - npm run test:browser
+  - PYTHONPATH=apps/api/src .venv/bin/python scripts/audit_course_quality.py
+  - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_course_delivery_quality.py apps/api/tests/test_course_caliber_status.py
   - ./scripts/agent-verify.sh contract
   - ./scripts/agent-verify.sh quick
   - ./scripts/agent-verify.sh full
-  - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic
-    --json
-  - npm run typecheck
-  - npm run build
+  - ./scripts/verify-course-delivery.sh
   - git diff --check
-  - .venv/bin/ruff check apps/api/tests/test_dsp_fidelity_remediation*.py courses/dsp-radar/remediation_reference_cases.py
-    courses/dsp-radar/modules/7[7-9]-* courses/dsp-radar/modules/8[0-4]-*
-  - git diff --check
-  - git diff --name-only f05403ef2c0a5e31d7045c0cb796b2e136ca50c9
   focused_tests_to_add:
-  - All eight source identities,physical stages,finite bounded deterministic outputs,all offered control combinations,units
-    and exact recovery.
-  - Forty independent source-bound signatures; append-only prior references and fixtures.
-  - Interpolation signs/coherence,PSF width/sidelobes/aliasing,phase-gradient autofocus,ISAR axis/sign/rate
-    invariance,cancellation and CAF,STAP normalization/training contamination,capstone calibration/filter/CFAR/report/track/coast
-    invariants.
-  - Prior repairs,algorithm uniqueness throughP84,zero remaining item repairs and honest aggregate-maturity
-    boundaries.
+  - Source math delimiter/code preservation and rendered equation regressions.
+  - All-page browser/automatic accessibility/mobile, representative real controls/recovery/navigation and stale-response
+    checks.
+  - Course immutability, quality-ledger count and truthful native/source-only/maturity states.
+  - Nonroot readonly one-port container with complete real HTTP course inventory and deterministic defaults.
   required_ci:
-  - Hosted CI is not required by retained owner direction; exact local contract, quick, full, source, scope,
-    lint and frontend gates remain mandatory.
+  - Hosted CI nonmandatory under retained owner direction; every named local gate remains mandatory.
 risk:
   class: high
   hazards:
-  - Incorrect interpolation or phase signs,aliasing,autofocus gauge/assumptions,ISAR axes,cancellation leakage,STAP
-    normalization or contamination mechanism,capstone filter delay/CFAR/clustering/tracking.
-  - Circular numerical references,prior module/source mutation,unbounded work or false whole-course maturity
-    claims.
+  - Generic rendering regressions across mathematical lessons.
+  - Automated checks mistaken for educational or manual accessibility acceptance.
+  - Source/module mutation, revision-race regressions, unbounded browser or runtime work.
   stop_conditions:
-  - Source or immutable module drift.
-  - Need to change generic UI/runtime/dependencies or unrelated courses.
-  - Independent evidence or a mandatory gate cannot be made credible.
+  - Need to change numerical course payloads, source identities or other backend components; record defect and use
+    a fresh scoped repair batch.
+  - Cannot produce credible browser/container evidence.
+  - Need production access, secrets, learner personal data or untrusted execution.
 rollback:
-  strategy: Revert this isolated batch to merged PR50 baseline, preserving source pins and other courses.
+  strategy: Revert isolated delivery-quality change to merged PR51; no content/schema/data migration.
 evidence:
   output:
-  - docs/evidence/ELP-DSP-FIDELITY-P77-P84-2026-09-28.md
-  - Per-item source mapping and five independent expected/actual cases.
-  - Exact validation,scope/source preservation,zero pending item repairs and aggregate-review limits.
-  claim_boundary: Eight deterministic software source-fidelity repairs only. Aggregate caliber review,learner
-    validation,MATLAB runtime,hardware and production remain separate.
+  - docs/evidence/ELP-COURSE-DELIVERY-QUALITY-01-2026-09-28.md
+  - docs/course-quality/lesson-audit.json
+  - docs/course-quality/browser-report.json
+  - docs/course-quality/container-report.json
+  - docs/COURSE_QUALITY.md
+  claim_boundary: Automated software/browser/container evidence and named agent visual inspection only. Manual assistive-technology,
+    learner-effectiveness, MATLAB, hardware and production remain unperformed.

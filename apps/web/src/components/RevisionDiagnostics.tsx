@@ -9,13 +9,11 @@ interface Props {
 export function RevisionDiagnostics({ label, content, platform }: Props) {
   return (
     <aside className="revision-diagnostics" aria-label={`${label} revision diagnostics`}>
-      <div className="revision-summary">
-        <span>Contract v{content.schema_version}</span>
-        <span>Content <code>{content.content_digest}</code></span>
-      </div>
       <details>
-        <summary>Exact revision details</summary>
+        <summary>Technical revision details</summary>
         <dl>
+          <dt>Contract version</dt>
+          <dd>{content.schema_version}</dd>
           <dt>Content SHA-256</dt>
           <dd><code>{content.content_digest}</code></dd>
           <dt>Source Git commit</dt>

@@ -6,12 +6,32 @@ interface Props {
   title?: string | null;
   spec?: PlotSpec;
   compact?: boolean;
+  name?: string;
 }
 
-export function PlotPanel({ title, spec, compact = false }: Props) {
+export function PlotPanel({ title, spec, compact = false, name }: Props) {
   const root = useRef<HTMLDivElement>(null);
   const id = useId();
   const [error, setError] = useState<string | null>(null);
+  const plain = (value: unknown): string => {
+    if (typeof value === "string") return value.replace(/<[^>]*>/g, "");
+    if (value && typeof value === "object" && "text" in value) return plain(value.text);
+    return "";
+  };
+  const plotTitle = [title || plain(spec?.layout.title), name?.replace(/_/g, " ")]
+    .filter(Boolean).join(": ") || "Numerical evidence";
+  const axis = (name: string) => {
+    const value = spec?.layout[name];
+    return value && typeof value === "object" && "title" in value ? plain(value.title) : "";
+  };
+  const range = (value: unknown): string => {
+    if (!Array.isArray(value)) return "—";
+    const values = value.flat().filter((item): item is number => typeof item === "number" && Number.isFinite(item));
+    if (!values.length) return `${value.length} categories`;
+    let min = Infinity, max = -Infinity;
+    for (const item of values) { min = Math.min(min, item); max = Math.max(max, item); }
+    return `${values.length} values; ${min.toPrecision(5)} to ${max.toPrecision(5)}`;
+  };
 
   useEffect(() => {
     if (!root.current || !spec) return;
@@ -57,7 +77,7 @@ export function PlotPanel({ title, spec, compact = false }: Props) {
   }
 
   return (
-    <section className={`plot-panel ${compact ? "plot-panel-compact" : ""}`}>
+    <section aria-label={plotTitle} className={`plot-panel ${compact ? "plot-panel-compact" : ""}`}>
       {title ? (
         <header className="panel-heading">
           <div>
@@ -70,8 +90,16 @@ export function PlotPanel({ title, spec, compact = false }: Props) {
       {error ? (
         <div className="error-inline"><AlertTriangle size={17} /> {error}</div>
       ) : (
-        <div ref={root} aria-label={title ?? "Interactive numerical plot"} className="plot-canvas" />
+        <div ref={root} role="group" aria-label={`${plotTitle}. Numeric ranges follow the plot.`} className="plot-canvas" />
       )}
+      <details className="plot-values">
+        <summary>Numeric ranges: {plotTitle}</summary>
+        <p>Use the lesson interpretation and metrics to explain these ranges. Ranges summarize samples; they do not describe the full curve.</p>
+        <div className="table-scroll"><table>
+          <thead><tr><th>Series</th><th>{axis("xaxis") || "x"}</th><th>{axis("yaxis") || "y"}</th><th>z (if present)</th></tr></thead>
+          <tbody>{spec.data.map((trace, index) => <tr key={index}><th>{plain(trace.name) || `Series ${index + 1}`}</th><td>{range(trace.x)}</td><td>{range(trace.y)}</td><td>{range(trace.z)}</td></tr>)}</tbody>
+        </table></div>
+      </details>
     </section>
   );
 }

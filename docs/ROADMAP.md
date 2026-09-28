@@ -1,3 +1,17 @@
+# Active quality continuation — 2026-09-28
+
+Owner requested a complete quality/iteration audit and embedded browser/container
+lessons. See [COURSE_QUALITY.md](COURSE_QUALITY.md) for the current board; older
+passed course-caliber claims below are historical where superseded by this audit.
+Delivery fixes and all-lesson verification are in progress under
+ELP-COURSE-DELIVERY-QUALITY-01. The next authorized group repairs twelve existing
+lessons (Controls P66–68, Robotics P68–69, Vehicle P61–67), followed by DSP aggregate
+competency/cumulative assessment. Four revised courses contain 288 lessons plus
+two examples. Nine pinned sources remain source-only. No learner study or
+production deployment is claimed.
+
+---
+
 # Delivery Roadmap
 
 The roadmap is a dependency-ordered set of bounded batches suitable for Portfolio Control. Each batch must produce acceptance evidence and must not claim unperformed browser, MATLAB, security, or production validation.

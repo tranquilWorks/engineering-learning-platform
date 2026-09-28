@@ -9,20 +9,25 @@ commands:
   full:
   - ./scripts/agent-verify.sh full
   deterministic-catalog:
-  - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic
-    --json
+  - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B scripts/validate_courses.py --execute --deterministic --json
   frontend:
   - npm run typecheck
   - npm run build
   lint:
-  - .venv/bin/ruff check apps/api/tests/test_dsp_fidelity_remediation*.py courses/dsp-radar/remediation_reference_cases.py
-    courses/dsp-radar/modules/7[7-9]-* courses/dsp-radar/modules/8[0-4]-*
+  - .venv/bin/ruff check scripts/audit_course_quality.py scripts/container-quality.py apps/api/tests/test_course_delivery_quality.py
   scope:
   - git diff --check
-  - git diff --name-only f05403ef2c0a5e31d7045c0cb796b2e136ca50c9
+  - git diff --name-only b8d760e6721ae0b94aaa503f4ca1599592266442
   dsp-fidelity-p77-p84:
-  - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3
-    -B -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py
-    apps/api/tests/test_dsp_fidelity_remediation_p21_p28.py apps/api/tests/test_dsp_fidelity_remediation_p29_p40.py apps/api/tests/test_dsp_fidelity_remediation_p41_p52.py apps/api/tests/test_dsp_fidelity_remediation_p53_p64.py apps/api/tests/test_dsp_fidelity_remediation_p65_p76.py apps/api/tests/test_dsp_fidelity_remediation_p77_p84.py
-    apps/api/tests/test_dsp_conversion_framework.py apps/api/tests/test_dsp_course.py apps/api/tests/test_course_caliber_status.py
-evidence_boundary: Eight deterministic software source-fidelity repairs; aggregate course caliber review, learner validation, MATLAB runtime, hardware and production remain separate.
+  - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B -m pytest
+    -q apps/api/tests/test_dsp_fidelity_remediation.py apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py apps/api/tests/test_dsp_fidelity_remediation_p21_p28.py
+    apps/api/tests/test_dsp_fidelity_remediation_p29_p40.py apps/api/tests/test_dsp_fidelity_remediation_p41_p52.py apps/api/tests/test_dsp_fidelity_remediation_p53_p64.py
+    apps/api/tests/test_dsp_fidelity_remediation_p65_p76.py apps/api/tests/test_dsp_fidelity_remediation_p77_p84.py apps/api/tests/test_dsp_conversion_framework.py
+    apps/api/tests/test_dsp_course.py apps/api/tests/test_course_caliber_status.py
+  course-delivery:
+  - npm run test:web
+  - npm run test:browser
+  - PYTHONPATH=apps/api/src .venv/bin/python scripts/audit_course_quality.py
+  - ./scripts/verify-course-delivery.sh
+evidence_boundary: Automated structural/browser/container evidence only; named semantic defects remain blocked; manual screen-reader,
+  learner, MATLAB, hardware and production validation not run.
