@@ -2,7 +2,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { AlertTriangle, Box, RotateCcw } from "lucide-react";
 import type { PlotSpec } from "../types";
 import { normalizePlotTitles } from "../lib/plotTitles";
-import { preparePlotData, supportsWebGL } from "../lib/plotRendering";
+import { markWebGLUnavailable, preparePlotData, supportsWebGL } from "../lib/plotRendering";
 
 interface Props {
   title?: string | null;
@@ -41,7 +41,7 @@ export function PlotPanel({ title, spec, compact = false, name }: Props) {
     const node = root.current;
     setError(null);
     void import("plotly.js-dist-min")
-      .then(({ default: Plotly }) => {
+      .then(async ({ default: Plotly }) => {
         if (!active) return;
         const layout: Record<string, unknown> = {
           autosize: true,
@@ -52,13 +52,29 @@ export function PlotPanel({ title, spec, compact = false, name }: Props) {
           margin: { l: 62, r: 28, t: 52, b: 58 },
           ...normalizePlotTitles(spec.layout),
         };
-        return Plotly.react(node, preparePlotData(spec.data.map(normalizePlotTitles), supportsWebGL()), layout, {
+        const data = spec.data.map(normalizePlotTitles);
+        const config = {
           responsive: true,
           displaylogo: false,
           scrollZoom: true,
           modeBarButtonsToRemove: ["lasso2d", "select2d"],
           ...spec.config,
-        });
+        };
+        const hasGL = data.some(trace => trace.type === "scattergl");
+        let retrySVG = false;
+        try {
+          await Plotly.react(node, preparePlotData(data, supportsWebGL()), layout, config);
+        } catch (reason) {
+          if (!active || !hasGL) throw reason;
+          retrySVG = true;
+        }
+        // A browser may create a WebGL context yet lack the setup required by
+        // the plot backend. Plotly resolves its promise while drawing a notice.
+        if (active && hasGL && (retrySVG || node.querySelector(".no-webgl"))) {
+          markWebGLUnavailable();
+          Plotly.purge(node);
+          await Plotly.react(node, preparePlotData(data, false), layout, config);
+        }
       })
       .catch((reason: unknown) => {
         if (active) setError(reason instanceof Error ? reason.message : "Plot rendering failed");

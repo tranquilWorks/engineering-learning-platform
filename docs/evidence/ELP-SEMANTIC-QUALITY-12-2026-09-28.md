@@ -51,7 +51,9 @@ The negative screenshot and observation are retained in
 
 The twelve bounded revised line plots use SVG. The generic renderer also
 preserves coordinates/styles and selects SVG for existing 2D `scattergl` traces
-when WebGL is unavailable. It does not project 3D data or modify course
+when WebGL is unavailable. A successful context probe is insufficient: the
+renderer also detects Plotly initialization notices or exceptions and retries
+in SVG. It does not project 3D data or modify course
 calculations. A disabled-WebGL browser test compares rendered coordinates with
 the actual API response. The all-page driver now detects any WebGL notice and
 requires actual revised curves after failure/recovery/reset.

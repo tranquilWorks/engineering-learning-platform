@@ -6,13 +6,18 @@ export function supportsWebGL(): boolean {
   if (typeof document === "undefined") return false;
   const canvas = document.createElement("canvas");
   try {
-    const context = canvas.getContext("webgl2") ?? canvas.getContext("webgl");
+    const context = canvas.getContext("webgl");
     webglAvailable = context !== null;
     context?.getExtension("WEBGL_lose_context")?.loseContext();
   } catch {
     webglAvailable = false;
   }
   return webglAvailable;
+}
+
+/** Context creation alone can succeed while the chart's required setup fails. */
+export function markWebGLUnavailable(): void {
+  webglAvailable = false;
 }
 
 /** Preserve coordinates and trace attributes; only the 2D rendering backend changes. */

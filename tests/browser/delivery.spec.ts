@@ -203,3 +203,22 @@ test('existing WebGL lesson draws unchanged curves when WebGL is disabled', asyn
     await expect(page.locator('.js-plotly-plot').getByText(/WebGL/i)).toHaveCount(0);
   } finally { await browser.close(); }
 });
+
+test('chart initialization failure falls back even after a successful context probe', async ({ page }) => {
+  await page.addInitScript(() => {
+    const original = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = function (kind: any, options?: any): any {
+      // The capability probe has no options. Chart initialization requests
+      // options and fails: exercise real Plotly fallback, never mock run data.
+      if ((kind === 'webgl' || kind === 'experimental-webgl') && options) return null;
+      return original.call(this, kind, options);
+    } as typeof original;
+  });
+  await page.goto('/courses/controls-gnc/modules/01-watch-a-mass-spring-damper-respond');
+  await expect(page.locator('.js-plotly-plot')).toHaveCount(2);
+  for (const plot of await page.locator('.js-plotly-plot').all()) {
+    await expect(plot.locator('.scatterlayer .trace path').first()).toBeVisible();
+  }
+  await expect(page.locator('.no-webgl')).toHaveCount(0);
+  await expect(page.locator('.error-inline')).toHaveCount(0);
+});
