@@ -993,100 +993,174 @@ def _p67(p: dict[str, Any]) -> list[float]:
 
 
 def _p68(p: dict[str, Any]) -> list[float]:
-    def grid_path(occupied: set[tuple[int, int]]) -> list[tuple[int, int]]:
-        start, goal = (0, 0), (8, 0)
-        queue: list[tuple[int, int, tuple[int, int], list[tuple[int, int]]]] = [(8, 0, start, [start])]
-        best = {start: 0}
-        for _ in range(200):
-            if not queue:
-                break
-            entry = min(queue, key=lambda item: (item[0], item[1], item[2]))
-            queue.remove(entry)
-            _, cost, state, path = entry
-            if state == goal:
-                return path
-            for dx, dy in ((1, 0), (0, 1), (0, -1), (-1, 0)):
-                candidate = (state[0] + dx, state[1] + dy)
-                if not (0 <= candidate[0] <= 8 and 0 <= candidate[1] <= 2):
-                    continue
-                if candidate in occupied:
-                    continue
-                next_cost = cost + 1
-                if next_cost >= best.get(candidate, 10**9):
-                    continue
-                best[candidate] = next_cost
-                heuristic = abs(candidate[0] - goal[0]) + abs(candidate[1] - goal[1])
-                queue.append((next_cost + heuristic, next_cost, candidate, path + [candidate]))
-        raise RuntimeError("independent capstone grid has no path")
+    # Reverse BFS distance labels + greedy lexicographic extraction, unlike A*.
+    def route(start, blocked):
+        goal = (8, 0)
+        distance = {goal: 0}
+        frontier = [goal]
 
-    broken = bool(p["broken_mode"])
-    discovered = (4, 0)
-    path = grid_path(set() if broken else {discovered})
-    collision = int(discovered in path)
-    crossing = float(next(i for i, point in enumerate(path) if point == (6, 0)))
+        def neighbors(cell):
+            return sorted(
+                (x, y)
+                for x, y in [
+                    (cell[0] - 1, cell[1]),
+                    (cell[0] + 1, cell[1]),
+                    (cell[0], cell[1] - 1),
+                    (cell[0], cell[1] + 1),
+                ]
+                if 0 <= x <= 8 and 0 <= y <= 2 and (x, y) not in blocked
+            )
+
+        for cell in frontier:
+            for neighbor in neighbors(cell):
+                if neighbor not in distance:
+                    distance[neighbor] = distance[cell] + 1
+                    frontier.append(neighbor)
+        path = [start]
+        while path[-1] != goal:
+            path.append(
+                next(
+                    cell
+                    for cell in neighbors(path[-1])
+                    if distance.get(cell, 999) == distance[path[-1]] - 1
+                )
+            )
+        return path
+
+    def separation(a, b, t, v):
+        # Relative complex line projected onto its direction over [0,1].
+        r = complex(a[0] - 6, a[1] + 2 - v * t)
+        slope = complex(b[0] - a[0], b[1] - a[1] - v)
+        fraction = max(
+            0, min(1, -(r.conjugate() * slope).real / max(abs(slope) ** 2, 1e-15))
+        )
+        return abs(r + fraction * slope)
+
+    broken = p["broken_mode"]
     speed = float(p["dynamic_obstacle_speed_m_s"])
-    if not broken:
-        while abs(-2.0 + speed * crossing) < 0.85:
-            crossing += 1.0
-    separation = abs(-2.0 + speed * crossing)
-    dropout = float(p["range_dropout_percent"])
-    margins = np.array([1.0 if collision == 0 else -1.0,
-                        (separation - 0.85) / 0.85,
-                        (50.0 - dropout) / 50.0,
-                        1.0 if not broken else -1.0,
-                        1.0 if (dropout == 0.0 or not broken) else -1.0])
-    violations = int(np.sum(margins < -1.0e-12))
-    return [float(violations == 0), separation, float(violations)]
+    drop_count = round(125 * float(p["range_dropout_percent"]) / 100)
+    end_drop = 7 + drop_count
+    current = (0, 0)
+    end = current
+    blocked = set()
+    latest = -1
+    stored = None
+    held = False
+    recovered = False
+    inversion = stale = contact = 0
+    closest = float("inf")
+    for interval in range(25):
+        current = end
+        for phase in range(5):
+            tick = 5 * interval + phase
+            # Interval decision precedes intermediate observations; the sensor
+            # follows the executed continuous segment thereafter.
+            position = (
+                current[0] + phase / 5 * (end[0] - current[0]),
+                current[1] + phase / 5 * (end[1] - current[1]),
+            )
+            detection = (position[0] - 4) ** 2 + position[1] ** 2 <= 2.5**2
+            if tick == 3:
+                stored = (tick, detection)
+            arrivals = [] if 7 <= tick < end_drop else [(tick, detection)]
+            if tick == 35:
+                arrivals.append(stored)
+            for stamp, occupied in arrivals:
+                if broken or stamp > latest:
+                    inversion += int(stamp <= latest)
+                    latest = stamp
+                    if occupied and not broken:
+                        blocked.add((4, 0))
+            if phase:
+                continue
+            path = route(current, set() if broken else blocked)
+            candidate = path[min(1, len(path) - 1)]
+            expired = (tick - latest) / 5 > 0.6 + 1e-12
+            if expired and not broken:
+                candidate = current
+                held = True
+            if not broken and separation(current, candidate, interval, speed) < 0.85:
+                candidate = current
+            moving = candidate != current
+            stale += int(moving and expired)
+            if held and moving and latest >= end_drop:
+                recovered = True
+            contact += int(moving and ((4, 0) == current or (4, 0) == candidate))
+            closest = min(closest, separation(current, candidate, interval, speed))
+            end = candidate
+    failures = [
+        contact > 0,
+        end != (8, 0),
+        closest < 0.85 - 1e-10,
+        stale + int(drop_count > 0 and not recovered) > 0,
+        inversion > 0,
+    ]
+    return [float(not any(failures)), float(closest), float(sum(failures))]
 
 
 def _p69(p: dict[str, Any]) -> list[float]:
-    def rotation(angle: float) -> np.ndarray:
-        return np.array([[np.cos(angle), -np.sin(angle)],
-                         [np.sin(angle), np.cos(angle)]])
-
-    broken = bool(p["broken_mode"])
-    noise = 0.01 * float(p["vision_noise_cm"])
-    friction = float(p["contact_friction_coefficient"])
-    camera = np.array([0.72, 0.18])
-    true_point = np.array([0.28, 0.12]) + rotation(np.deg2rad(25.0)) @ camera
-    measured = camera + noise * np.array([0.5, -0.25])
-    estimate = measured if broken else np.array([0.28, 0.12]) + rotation(np.deg2rad(25.0)) @ measured
-    first, second = 0.75, 0.55
-    cosine = (float(estimate @ estimate) - first**2 - second**2) / (2.0 * first * second)
-    reachable = abs(cosine) <= 1.0
-    elbow = -float(np.arccos(np.clip(cosine, -1.0, 1.0)))
-    shoulder = float(np.arctan2(estimate[1], estimate[0])
-                     - np.arctan2(second * np.sin(elbow), first + second * np.cos(elbow)))
-    endpoint = np.array([first * np.cos(shoulder) + second * np.cos(shoulder + elbow),
-                         first * np.sin(shoulder) + second * np.sin(shoulder + elbow)])
-    pickup_error = float(np.linalg.norm(endpoint - true_point))
-    closure = -friction if broken else friction - 0.22
-    penetration, tank = 0.0, 0.18
-    minimum_tank = tank
-    delay = [0.0] * (7 if broken else 3)
-    final_force = 0.0
-    for _ in range(200):
-        force = 600.0 * penetration
-        if broken:
-            command = float(np.clip(0.08 * (10.0 + force), -0.15, 0.15))
-        else:
-            command = float(np.clip(0.012 * (10.0 - force), -0.025, 0.025))
-        delay.append(command)
-        velocity = delay.pop(0)
-        work = max(force * velocity, 0.0) * 0.01
-        if not broken and work > tank and force > 1.0e-12:
-            velocity = tank / (force * 0.01)
-            work = tank
-        tank -= work
-        penetration = float(np.clip(penetration + velocity * 0.01, 0.0, 0.05))
-        minimum_tank = min(minimum_tank, tank)
-        final_force = 600.0 * penetration
-    reach = first + second - float(np.linalg.norm(estimate))
-    margins = np.array([(0.055 - pickup_error) / 0.055, reach / 0.20,
-                        closure / 0.20, (3.0 - abs(final_force - 10.0)) / 3.0,
-                        minimum_tank / 0.10, 1.0 if not broken else -1.0])
-    violations = int(np.sum(margins < -1.0e-12)) + int(not reachable)
-    return [float(violations == 0), pickup_error, minimum_tank]
+    broken = p["broken_mode"]
+    noise = float(p["vision_noise_cm"]) / 100
+    mu = float(p["contact_friction_coefficient"])
+    rotation = np.exp(1j * 25 * np.pi / 180)
+    truth = 0.28 + 0.12j + rotation * (0.72 + 0.18j)
+    estimate = 0.72 + 0.18j + noise * (0.5 - 0.25j)
+    if not broken:
+        estimate = 0.28 + 0.12j + rotation * estimate
+    cosine = (abs(estimate) ** 2 - 0.75**2 - 0.55**2) / (2 * 0.75 * 0.55)
+    elbow = -float(np.arccos(np.clip(cosine, -1, 1)))
+    shoulder = float(np.angle(estimate) - np.angle(0.75 + 0.55 * np.exp(1j * elbow)))
+    endpoint = np.exp(1j * shoulder) * (0.75 + 0.55 * np.exp(1j * elbow))
+    pickup = abs(endpoint - truth)
+    displacement = 0.0
+    energy = 0.18
+    minimum = energy
+    commands = {}
+    accepted = -1
+    velocity = 0.0
+    unsafe = old = 0
+    for step in range(200):
+        old_force = 600 * displacement
+        commands[step] = (
+            max(-0.15, min(0.15, 0.08 * (10 + old_force)))
+            if broken
+            else max(-0.025, min(0.025, 0.012 * (10 - old_force)))
+        )
+        regular = step - 3
+        delivered = [regular] if regular >= 0 and not 80 <= regular <= 95 else []
+        if step == 120:
+            delivered += [50]
+        for source in delivered:
+            if broken or source > accepted:
+                old += int(source <= accepted)
+                accepted = source
+                velocity = commands[source]
+        age = 0.01 * (step - accepted) if accepted >= 0 else 0.01 * (step + 1)
+        if not broken and (accepted < 0 or age > 0.04 + 1e-12):
+            velocity = 0.0
+        unsafe += int(age > 0.04 + 1e-12 and abs(velocity) > 1e-12)
+        next_position = max(0.0, min(0.05, displacement + 0.01 * velocity))
+        if not broken:
+            # Solve trapezoidal spring-force work <= remaining energy.
+            allowed = (-old_force + (old_force**2 + 1200 * max(energy, 0)) ** 0.5) / 600
+            next_position = min(next_position, displacement + allowed)
+        new_force = 600 * next_position
+        energy -= max(
+            0.0, 0.5 * (old_force + new_force) * (next_position - displacement)
+        )
+        minimum = min(minimum, energy)
+        displacement = next_position
+    force_error = abs(600 * displacement - 10)
+    valid = (
+        pickup <= 0.055 + 1e-10
+        and abs(cosine) <= 1 + 1e-10
+        and 20 * mu - 4.4 >= -1e-10
+        and force_error <= 3 + 1e-10
+        and minimum >= -1e-10
+        and unsafe + old == 0
+        and accepted >= 96
+    )
+    return [float(valid), float(pickup), float(minimum)]
 
 
 _DISPATCH = {66: _p66, 67: _p67, 68: _p68, 69: _p69, 61: _p61, 62: _p62, 63: _p63, 64: _p64, 65: _p65, 58: _p58, 59: _p59, 60: _p60, 54: _p54, 55: _p55, 56: _p56, 57: _p57, 49: _p49, 50: _p50, 51: _p51, 52: _p52, 53: _p53, 41: _p41, 42: _p42, 43: _p43, 44: _p44, 45: _p45, 46: _p46, 47: _p47, 48: _p48, 34: _p34, 35: _p35, 36: _p36, 37: _p37, 38: _p38, 39: _p39, 40: _p40, 25: _p25, 26: _p26, 27: _p27, 28: _p28, 29: _p29, 30: _p30, 31: _p31, 32: _p32, 33: _p33, }

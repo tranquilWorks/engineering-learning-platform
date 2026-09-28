@@ -170,23 +170,196 @@ def _p65(p: dict[str, Any]) -> list[float]:
 _NATIVE_FIXTURES.update({63: {'{"broken_mode":false,"lookahead_distance_m":15.0,"vehicle_speed_m_s":8.0}': [0.5333333333333333, 0.016615572731739338, 33.690067525979785], '{"broken_mode":false,"lookahead_distance_m":60.0,"vehicle_speed_m_s":8.0}': [0.13333333333333333, 2.018965179946554, 9.462322208025617], '{"broken_mode":false,"lookahead_distance_m":15.0,"vehicle_speed_m_s":25.0}': [1.6666666666666667, 2.061153622438558e-08, 33.690067525979785], '{"broken_mode":true,"lookahead_distance_m":15.0,"vehicle_speed_m_s":8.0}': [-0.5333333333333333, 6018.450378720822, 33.690067525979785]}, 64: {'{"broken_mode":false,"navigation_constant":3.5,"target_turn_rate_deg_s":4.0}': [94.43460952792061, 44.9688616799622, 1.0], '{"broken_mode":false,"navigation_constant":6.0,"target_turn_rate_deg_s":4.0}': [161.8879020478639, 16.863323129985826, 1.0], '{"broken_mode":false,"navigation_constant":3.5,"target_turn_rate_deg_s":15.0}': [161.6297857297023, 76.96656463319157, 1.0], '{"broken_mode":true,"navigation_constant":3.5,"target_turn_rate_deg_s":4.0}': [-143.30382858376186, 68.23991837321994, -1.0]}, 65: {'{"acceleration_limit_m_s2":20.0,"broken_mode":false,"terminal_weight":8.0}': [20.0, 0.0, 0.0], '{"acceleration_limit_m_s2":50.0,"broken_mode":false,"terminal_weight":8.0}': [20.0, 0.0, 0.0], '{"acceleration_limit_m_s2":20.0,"broken_mode":false,"terminal_weight":20.0}': [50.0, 30.0, 12.0], '{"acceleration_limit_m_s2":20.0,"broken_mode":true,"terminal_weight":8.0}': [50.0, 42.0, 0.0]}})
 
 def _p66(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[66][_key(p)])
+    # Independent 2x2 normal-equation identification and scalar information update.
+    broken = bool(p["broken_mode"])
+    delta = float(p["plant_uncertainty"])
+    sigma = float(p["measurement_noise"])
+    A = float(np.exp(-0.02))
+    B = 1 - A
+    x = 1.0 if broken else 0.0
+    xx = xu = uu = xy = uy = 0.0
+    for j in range(400):
+        u = 1.0 if broken else float(np.sin(0.17 * j) + 0.6 * np.cos(0.071 * j))
+        y = A * x + B * u
+        xx += x * x
+        xu += x * u
+        uu += u * u
+        xy += x * y
+        uy += u * y
+        x = y
+    determinant = xx * uu - xu * xu
+    rank = 1 if abs(determinant) < 1e-10 else 2
+    if rank == 1:
+        ah = float(np.exp(-0.008))
+        bh = (1 - ah) * 0.5
+    else:
+        ah = (xy * uu - uy * xu) / determinant
+        bh = (uy * xx - xy * xu) / determinant
+    k_feedback = (ah - float(np.exp(-0.04))) / bh
+    command_bias = (1 - ah) / bh + k_feedback
+    errors = []
+    consistencies = []
+    efforts = []
+    for perturbation in [-delta, 0.0, delta]:
+        a = float(np.exp(-0.02 * (1 + perturbation)))
+        b = (1 - perturbation / 2) / (1 + perturbation) * (1 - a)
+        truth = mean = 0.0
+        variance = 0.1
+        squared_error = squared_normalized = 0.0
+        maximum = 0.0
+        for j in range(600):
+            u = max(-3.0, min(3.0, command_bias - k_feedback * mean))
+            maximum = max(maximum, abs(u))
+            truth = a * truth + b * u
+            predicted = ah * mean + bh * u
+            prior_variance = ah**2 * variance + (
+                1e-7 if broken else 1e-5 + (0.1 * delta) ** 2
+            )
+            obs_variance = max(sigma**2 * (0.01 if broken else 1), 1e-12)
+            z = truth + sigma * float(np.sin(0.73 * j) + np.cos(1.17 * j))
+            variance = 1 / (1 / prior_variance + 1 / obs_variance)
+            mean = variance * (predicted / prior_variance + z / obs_variance)
+            if j >= 300:
+                squared_error += (truth - 1) ** 2
+                squared_normalized += (truth - mean) ** 2 / max(variance, 1e-15)
+        errors.append((squared_error / 300) ** 0.5)
+        consistencies.append(squared_normalized / 300)
+        efforts.append(maximum)
+    error, nees = max(errors), max(consistencies)
+    accepted = (
+        rank == 2
+        and error <= 0.35 + 1e-10
+        and nees <= 6 + 1e-10
+        and max(efforts) <= 3 + 1e-10
+    )
+    return [error, nees, float(accepted)]
 
 def _p67(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[67][_key(p)])
+    # Complex-plane exact arcs and scalar projection, independently replayed.
+    limit = float(p["turn_rate_limit_deg_s"])
+    dropout = float(p["gnss_dropout_s"])
+    broken = p["broken_mode"]
+    nodes = [0j, 30 + 0j, 30 + 20j, 20j]
+    position = 1j
+    estimate = 1j
+    heading = estimated_heading = 0.0
+    segment = 0
+    fix_time = 0.0
+    cross_max = turn_max = alarm_max = 0.0
+    for index in range(600):
+        time = 0.05 * index
+        if index % 10 == 0 and not 5 <= time < 5 + dropout:
+            estimate = position + 0.05 * np.sin(time) + 1j * 0.05 * np.cos(time)
+            estimated_heading = heading + 0.002 * np.sin(2 * time)
+            fix_time = time
+        start, end = nodes[segment : segment + 2]
+        unit = (end - start) / abs(end - start)
+        distance = ((estimate - start) / unit).real
+        if distance >= abs(end - start) - 1 and segment < 2:
+            segment += 1
+            start, end = nodes[segment : segment + 2]
+            unit = (end - start) / abs(end - start)
+            distance = ((estimate - start) / unit).real
+        target = start + max(0, min(abs(end - start), distance + 4)) * unit
+        desired = float(np.angle(target - estimate)) - estimated_heading
+        desired = float(np.angle(np.exp(1j * desired))) * 1.5
+        omega = (
+            desired
+            if broken
+            else max(-limit * np.pi / 180, min(limit * np.pi / 180, desired))
+        )
+        alarm = time - fix_time > 3 and not broken
+        alarm_max = max(alarm_max, float(alarm))
+        speed = 0.0 if alarm or (segment == 2 and abs(position - end) < 1) else 2.0
+        # Exponential difference quotient is the exact constant-turn arc.
+        for which in (0, 1):
+            angular = omega + (np.pi / 600 if which else 0)
+            theta = estimated_heading if which else heading
+            increment = (
+                speed
+                * np.exp(1j * theta)
+                * (
+                    np.expm1(1j * angular * 0.05) / (1j * angular)
+                    if abs(angular) > 1e-12
+                    else 0.05
+                )
+            )
+            if which:
+                estimate += increment
+                estimated_heading += angular * 0.05
+            else:
+                position += increment
+                heading += angular * 0.05
+        cross_max = max(cross_max, abs(((position - start) / unit).imag))
+        turn_max = max(turn_max, abs(omega * 180 / np.pi))
+    return [float(cross_max), max(0.0, turn_max - limit), alarm_max]
 
 def _p68(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[68][_key(p)])
+    # Reconstruct arrival indices directly; no production queue or result import.
+    delay = int(np.ceil(float(p["one_way_latency_ms"]) / 20 - 1e-12))
+    frac = float(p["packet_drop_fraction"])
+    broken = p["broken_mode"]
+    removed = set(range(150, min(500, 150 + round(500 * frac))))
+    generated = []
+    x = 0.0
+    actuator = 0.0
+    last = -1
+    late = delivered = watch = unsafe = 0
+    squared = 0.0
+    decay = float(np.exp(-0.02))
+    for tick in range(500):
+        generated.append(max(-3, min(3, 2 * (1 - x))))
+        sources = []
+        regular = tick - delay
+        if regular >= 0 and regular not in removed:
+            sources.append(regular)
+        if frac > 0 and tick == 100 + delay:
+            sources.append(50)
+        for source in sources:
+            delivered += 1
+            late += int((tick - source) * 0.02 > 0.03)
+            if broken or source > last:
+                last = source
+                actuator = generated[source]
+        age = (tick - last) * 0.02 if last >= 0 else (tick + 1) * 0.02
+        expired = last < 0 or age > 0.05 + 1e-12
+        if expired and not broken:
+            watch += 1
+            actuator = 0.0
+        unsafe += int(expired and abs(actuator) > 1e-12)
+        x = decay * x + (1 - decay) * actuator
+        if tick >= 250:
+            squared += (x - 2 / 3) ** 2
+    late_fraction = late / delivered if delivered else 1.0
+    passed = (
+        late_fraction <= 0.01 + 1e-10
+        and len(removed) / 500 <= 0.2 + 1e-10
+        and unsafe == 0
+        and (squared / 250) ** 0.5 <= 0.4 + 1e-10
+    )
+    return [late_fraction, watch / 500, float(passed)]
 
-_NATIVE_FIXTURES.update({66: {'{"broken_mode":false,"measurement_noise":0.1,"plant_uncertainty":0.2}': [0.18000000000000005, 3.0, 1.0], '{"broken_mode":false,"measurement_noise":0.1,"plant_uncertainty":0.8}': [0.4200000000000001, 9.0, 0.0], '{"broken_mode":false,"measurement_noise":0.5,"plant_uncertainty":0.2}': [0.26, 1.4, 1.0], '{"broken_mode":true,"measurement_noise":0.1,"plant_uncertainty":0.2}': [1.0000000000000002, 5.2, 0.0]}, 67: {'{"broken_mode":false,"gnss_dropout_s":4.0,"turn_rate_limit_deg_s":12.0}': [3.0666666666666664, 0.0, 1.0], '{"broken_mode":false,"gnss_dropout_s":20.0,"turn_rate_limit_deg_s":12.0}': [8.666666666666666, 0.0, 1.0], '{"broken_mode":false,"gnss_dropout_s":4.0,"turn_rate_limit_deg_s":30.0}': [2.6666666666666665, 0.0, 1.0], '{"broken_mode":true,"gnss_dropout_s":4.0,"turn_rate_limit_deg_s":12.0}': [8.0, 20.0, 0.0]}, 68: {'{"broken_mode":false,"one_way_latency_ms":12.0,"packet_drop_fraction":0.05}': [0.0, 0.05, 1.0], '{"broken_mode":false,"one_way_latency_ms":80.0,"packet_drop_fraction":0.05}': [1.0, 1.0, 0.0], '{"broken_mode":false,"one_way_latency_ms":12.0,"packet_drop_fraction":0.5}': [0.0, 0.5, 0.0], '{"broken_mode":true,"one_way_latency_ms":12.0,"packet_drop_fraction":0.05}': [1.0, 0.0, 0.0]}})
 
 _DISPATCH = {66: _p66, 67: _p67, 68: _p68, 63: _p63, 64: _p64, 65: _p65, 57: _p57, 58: _p58, 59: _p59, 60: _p60, 61: _p61, 62: _p62, 52: _p52, 53: _p53, 54: _p54, 55: _p55, 56: _p56, 43: _p43, 44: _p44, 45: _p45, 46: _p46, 47: _p47, 48: _p48, 49: _p49, 50: _p50, 51: _p51, 34: _p34, 35: _p35, 36: _p36, 37: _p37, 38: _p38, 39: _p39, 40: _p40, 41: _p41, 42: _p42, 25: _p25, 26: _p26, 27: _p27, 28: _p28, 29: _p29, 30: _p30, 31: _p31, 32: _p32, 33: _p33}
 
 def origin(number: int) -> dict[str, Any]:
-    kind = "independent-reviewed-fixture" if number >= 34 else "independent-analytic-python"
-    return {"kind": kind, "item_id": f"P{number:02d}", "independent": True,
-            "imports_production_entrypoint": False, "derived_from_production_output": False,
-            "perturbs_production_output": False}
+    kind = (
+        "independent-scalar-replay"
+        if number >= 66
+        else (
+            "independent-reviewed-fixture"
+            if number >= 34
+            else "independent-analytic-python"
+        )
+    )
+    return {
+        "kind": kind,
+        "item_id": f"P{number:02d}",
+        "independent": True,
+        "imports_production_entrypoint": False,
+        "derived_from_production_output": False,
+        "perturbs_production_output": False,
+    }
 
 def reference_signature(number: int, parameters: dict[str, Any]) -> list[float]:
     return [float(v) for v in _DISPATCH[number](dict(parameters))]

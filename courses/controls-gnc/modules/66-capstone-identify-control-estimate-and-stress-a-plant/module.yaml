@@ -2,8 +2,7 @@ schema_version: 1
 id: 66-capstone-identify-control-estimate-and-stress-a-plant
 number: 66
 title: 'Capstone: Identify, Control, Estimate, and Stress a Plant'
-summary: Reuse identification information, loop design, and covariance consistency to produce a requirements-traced
-  software-only capstone verdict.
+summary: Will uncertainty 0.8 fail tracking even when rank, command and estimator checks pass?
 guiding_question: Can one evidence chain carry an identified model through controller, estimator, and uncertainty
   stress tests?
 status: implemented
@@ -42,9 +41,8 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: The capstone passes only when identification conditioning, tracking error, estimator consistency, and actuator
-    authority all pass their named requirements.
-  reveal: Re-identify, redesign, and rerun the exact stress family; do not waive a failed upstream requirement.
+  text: Will uncertainty 0.8 fail tracking even when rank, command and estimator checks pass?
+  reveal: Compare the executed quantities with their physical units and the worked explanation in the lesson.
 - type: controls
   title: Design controls
 - type: metrics
@@ -53,6 +51,9 @@ blocks:
   plots:
   - response
   - mechanism
+- type: table
+  title: Computed requirements
+  table: requirements
 - type: callout
   tone: info
   title: Current interpretation

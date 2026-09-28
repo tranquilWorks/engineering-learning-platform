@@ -1,5 +1,16 @@
 # Active quality continuation — 2026-09-28
 
+Delivery PR52 is merged with290 container and580 desktop/mobile checks passed.
+The next twelve-lesson semantic repair is implemented and under full verification;
+60 independent scenario comparisons and40 physical/preservation checks passed.
+DSP aggregate competency/cumulative assessment follows in a fresh exact-baseline
+contract. Sixty additional named lesson defects remain blocked; no inventory or
+whole-course quality promotion is implied. See CURRENT_STATE and COURSE_QUALITY.
+
+## Earlier roadmap and historical dispositions
+
+# Active quality continuation — 2026-09-28
+
 Owner requested a complete quality/iteration audit and embedded browser/container
 lessons. See [COURSE_QUALITY.md](COURSE_QUALITY.md) for the current board; older
 passed course-caliber claims below are historical where superseded by this audit.

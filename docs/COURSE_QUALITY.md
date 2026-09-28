@@ -1,58 +1,41 @@
-# Revised-course quality audit — 2026-09-28
+# Revised-course quality position — 2026-09-28
 
-The four revised engineering curricula are embedded as 288 native interactive
-lessons, alongside two example lessons. Thirteen source repositories are pinned;
-nine remain source-only. Source presence is not native browser delivery.
+All288 native engineering lessons and two examples are embedded in Engineering
+Learning. Nine of the thirteen pinned source repositories remain source-only.
+Delivery PR52 is merged: all290 container HTTP and580 desktop/mobile page checks
+passed. Its historical evidence retains the exact image and screenshot hashes.
 
-| Curriculum | Native lessons | Content position |
+| Curriculum | Native lessons | Current content position |
 | --- | ---: | --- |
-| DSP and Radar | 84 | P01–P84 item-level fidelity repairs retained; aggregate competency and cumulative-assessment review pending |
-| Controls and GNC | 68 | 22 lessons have recorded mechanism/evidence defects; aggregate maturity blocked |
-| Robotics and Autonomy | 69 | 27 lessons have recorded mechanism/evidence defects; aggregate maturity blocked |
-| Vehicle Dynamics | 67 | 23 lessons have dimensional/presentation or cumulative-model defects; aggregate maturity blocked |
+| DSP/Radar | 84 | Item fidelity repairs retained; aggregate competency/assessment batch follows |
+| Controls/GNC | 68 | P66–P68 repaired within declared models; 19 additional findings remain blocked |
+| Robotics/Autonomy | 69 | P68–P69 repaired within declared models; 25 additional findings remain blocked |
+| Vehicle Dynamics | 67 | P61–P67 repaired within declared models; P01–P16 presentation findings remain blocked |
 
-## Confirmed content defects and next repair
+## Twelve-lesson model revision
 
-Vehicle **P66** sets nine subsystem flags to one and flips fixed entries in broken
-mode. Its held-out residual is an algebraic surrogate; it does not execute the
-provenance, alignment, calibration, reconstruction and identification chain named
-in `requirements-trace.yaml`.
+The initial audit found72 affected lessons. The current scoped revision replaces
+Controls' algebraic capstone surrogates with executed identification/control/filter,
+navigation/guidance and timestamped watchdog loops. Robotics now measures
+perception/replanning, fresh-data resume and timed contact recovery, including
+exact first-contact spring work. Vehicle now has dimensional signatures, physical
+force/power envelopes, local travel-time integration, cyclic energy-constrained
+laps, unused-point factorial validation, and executed telemetry/vehicle capstones.
 
-Vehicle **P67** computes `lap = 92 - 20 * setup_delta` and sets eleven subsystem
-flags directly. It does not integrate the tire, chassis, propulsion, brakes,
-aero, track, line and uncertainty models claimed in its requirements trace.
-Its design signature also declares dimensionless units for time-valued metrics.
-Independent code that reproduces a surrogate does not establish the missing
-integration. Passing existing tests did not detect this error.
+Each revised lesson contains its own equations, worked example, concrete
+prediction, two sweeps, limits, failure/recovery and checks with rationale.
+Capstone requirement tables expose quantities, units, thresholds and verdicts.
+Sixty independently generated numerical scenarios and40 physical/preservation
+checks passed. Full course and new browser/container gates are in progress;
+this semantic batch is not yet merged. See
+[semantic revision](course-quality/semantic-revision.json).
 
-Both defects are displayed with the affected lesson in the browser. A separate
-scoped content batch must replace these surrogates with executed cumulative
-models, independently assess their physical invariants and failure/recovery,
-and review the neighboring performance prerequisites. No course payload is
-changed in the delivery batch.
-
-The next coherent revision group contains exactly twelve existing lessons:
-Controls P66–P68, Robotics P68–P69, and Vehicle P61–P67. Controls uses algebraic
-tracking/NEES, survey error and latency/drop surrogates in place of the claimed
-closed-loop capstones. Robotics executes planning/kinematics/contact models but
-sets some replay/recovery verdicts from the failure switch. Vehicle P61–P65
-also need dimensional signature corrections and specific limiting cases; P64
-caps reported energy without coupling the budget into the speed solution and
-adds an artificial offset to its braking violation metric.
-
-These findings reopen the aggregate numerical, curriculum and capstone statuses
-of all three courses. DSP remains blocked on its already planned aggregate
-mapping and assessment review. The repair scope adds no new lessons.
-
-## Wider review: additional blocked lessons
-
-Further direct inspection found **60 additional issues**, making **72 affected
-lessons** in the current register. Controls has 22 affected lessons, Robotics 27,
-and Vehicle 23. The initially selected twelve remain a separate repair group;
-they no longer represent the complete defect backlog. See the
-[additional finding register](course-quality/additional-semantic-findings.md)
-for each exact lesson and mechanism. These findings are also attached to the
-affected browser lessons. No unlisted lesson is automatically certified.
+The browser's expanded lesson review identifies exactly what was checked.
+This is scoped synthetic-model evidence, not whole-course or learner acceptance.
+The remaining60 findings are individually embedded and retained in the
+[additional finding register](course-quality/additional-semantic-findings.md).
+No unlisted lesson is automatically certified. All four aggregate numerical,
+curriculum and capstone stages remain blocked pending their required reviews.
 
 ## Per-lesson evidence
 
@@ -120,5 +103,4 @@ The baked image passed all 290 default HTTP/repeat/recovery checks and all
 accessibility findings. Twelve representative interaction/reset checks passed.
 Ten focused browser regressions and nine frontend tests passed. See
 [the exact batch evidence](evidence/ELP-COURSE-DELIVERY-QUALITY-01-2026-09-28.md)
-for the image identity, all retained artifacts and hosted-CI limitations. These
-results do not close the 72 semantic findings.
+for the image identity, all retained artifacts and hosted-CI limitations. Those results did not close the historical72 semantic findings; the later scoped model revision is recorded above.

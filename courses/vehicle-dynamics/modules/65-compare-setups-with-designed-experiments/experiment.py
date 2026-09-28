@@ -24,7 +24,7 @@ def _parameters(s):
 
 def _tr(n, x, y, xq, xu, yq, yu):
     return {
-        "type": "scattergl",
+        "type": "scatter",
         "mode": "lines+markers",
         "name": n,
         "x": np.asarray(x),
@@ -62,6 +62,20 @@ def _calc(a, t, broken):
         interaction = float(coef[3])
         rank = float(np.linalg.matrix_rank(X))
     res = float(np.sqrt(np.mean((pred - y) ** 2)))
+    held = np.array([[-0.5, 0.25], [0.25, -0.5], [0.5, 0.5]])
+    truth = (
+        90
+        - 2 * a * held[:, 0]
+        - 3 * t * held[:, 1]
+        - 1.2 * a * t * held[:, 0] * held[:, 1]
+    )
+    forecast = (
+        coef[0]
+        + coef[1] * held[:, 0]
+        + coef[2] * held[:, 1]
+        + interaction * held[:, 0] * held[:, 1]
+    )
+    held_error = float(np.sqrt(np.mean((forecast - truth) ** 2)))
     sig = [
         round(float(v), 12)
         for v in (
@@ -71,7 +85,7 @@ def _calc(a, t, broken):
             res,
             y.min(),
             rank,
-            abs(pred[-1] - y[-1]),
+            held_error,
         )
     ]
     return sig, np.arange(4), y, pred
@@ -82,15 +96,15 @@ def run(parameters: dict[str, Any]):
     broken = bool(parameters.get("broken_mode", False))
     sig, i, y, pred = _calc(p["aero_scale"], p["tire_scale"], broken)
     labels = (
-        "Aero main effect",
-        "Tire main effect",
-        "Interaction effect",
+        "Aero time reduction",
+        "Tire time reduction",
+        "Interaction reduction contrast",
         "Residual RMS",
-        "Best lap",
+        "Best synthetic corner time",
         "Design rank",
-        "Held-out error",
+        "Unused-point RMS error",
     )
-    units = ("s", "s", "s", "s", "s", "1", "s")
+    units = ("s", "s", "s", "s", "s", "count", "s")
     return {
         "metrics": [
             {"id": f"m{j}", "label": l, "value": float(v), "unit": u}
@@ -102,7 +116,7 @@ def run(parameters: dict[str, Any]):
                 "Design corner (1)",
                 "Lap time (s)",
                 [
-                    _tr("Observed", i, y, "Design corner", "1", "Lap time", "s"),
+                    _tr("Synthetic truth", i, y, "Design corner", "1", "Lap time", "s"),
                     _tr("Model", i, pred, "Design corner", "1", "Lap time", "s"),
                 ],
             ),
@@ -122,5 +136,7 @@ def run(parameters: dict[str, Any]):
             "item_number": ITEM_NUMBER,
             "broken_active": broken,
             "signature": sig,
+            "held_out_points": [[-0.5, 0.25], [0.25, -0.5], [0.5, 0.5]],
+            "synthetic_response_surface": True,
         },
     }

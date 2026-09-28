@@ -7,7 +7,7 @@ import numpy as np
 ITEM_NUMBER = 62
 DEFAULTS = {"speed_m_s": 45.0, "friction_coefficient": 1.20}
 RANGES = {"speed_m_s": (20.0, 75.0), "friction_coefficient": (0.8, 1.5)}
-BROKEN_TEXT = "Broken mode commands ninety percent of independent longitudinal and lateral limits simultaneously, exceeding the coupled friction boundary."
+BROKEN_TEXT = "Broken mode commands ninety percent of independent TIRE longitudinal and lateral capacities, ignoring the power limit too simultaneously, exceeding the coupled friction boundary."
 RECOVERY_TEXT = "Build speed-dependent axle load, power, drag, braking, and lateral limits, then enforce one normalized coupled acceleration boundary."
 
 
@@ -24,7 +24,7 @@ def _parameters(s):
 
 def _tr(n, x, y, xq, xu, yq, yu):
     return {
-        "type": "scattergl",
+        "type": "scatter",
         "mode": "lines",
         "name": n,
         "x": np.asarray(x),
@@ -45,18 +45,26 @@ def _pl(t, xt, yt, d):
     }
 
 
+def _forces(v, mu, broken):
+    down = 1.53125 * v * v
+    drag = 0.441 * v * v
+    capacity = mu * (1450 * 9.81 + down)
+    power_force = capacity if v == 0 else 210000 / v
+    fx = 0.9 * capacity if broken else min(0.6 * capacity, power_force)
+    fy = (0.9 if broken else 0.6) * capacity
+    return capacity, down, drag, power_force, fx, fy
+
+
 def _state(v, mu, broken):
-    m = 1450.0
-    g = 9.81
-    down = 0.5 * 1.225 * 2.0 * 1.25 * v * v
-    drag = 0.5 * 1.225 * 2.0 * 0.36 * v * v
-    cap = mu * (m * g + down)
-    accel = max(0.0, min(cap, 210000.0 / v) - drag) / m
-    brake = (cap + drag) / m
-    lat = cap / m
-    util = np.hypot(0.9, 0.9) if broken else 1.0
-    residual = max(0.0, util - 1.0)
-    return [accel, brake, lat, down, drag, residual]
+    capacity, down, drag, power_force, fx, fy = _forces(v, mu, broken)
+    return [
+        (min(capacity, power_force) - drag) / 1450,
+        (capacity + drag) / 1450,
+        capacity / 1450,
+        down,
+        drag,
+        max(0.0, float(np.hypot(fx, fy) / capacity) - 1),
+    ]
 
 
 def run(parameters: dict[str, Any]):
@@ -66,8 +74,21 @@ def run(parameters: dict[str, Any]):
     speeds = np.linspace(20, 75, 80)
     vals = np.array([_state(v, p["friction_coefficient"], broken) for v in speeds])
     ang = np.linspace(0, 2 * np.pi, 121)
-    ax = 0.9 * sig[0] * np.cos(ang)
-    ay = 0.9 * sig[2] * np.sin(ang)
+    capacity, _down, drag, power_force, fx, fy = _forces(
+        p["speed_m_s"], p["friction_coefficient"], broken
+    )
+    ax = (np.minimum(capacity * np.cos(ang), power_force) - drag) / 1450
+    ay = capacity * np.sin(ang) / 1450
+    demand = _tr(
+        "Actual demand",
+        [(fx - drag) / 1450],
+        [fy / 1450],
+        "Longitudinal acceleration",
+        "m/s^2",
+        "Lateral acceleration",
+        "m/s^2",
+    )
+    demand["mode"] = "markers"
     return {
         "metrics": [
             {"id": f"m{i}", "label": l, "value": float(v), "unit": u}
@@ -118,14 +139,15 @@ def run(parameters: dict[str, Any]):
                 "Lateral acceleration (m/s^2)",
                 [
                     _tr(
-                        "Boundary",
+                        "Force and power boundary",
                         ax,
                         ay,
                         "Longitudinal acceleration",
                         "m/s^2",
                         "Lateral acceleration",
                         "m/s^2",
-                    )
+                    ),
+                    demand,
                 ],
             ),
         },
@@ -138,5 +160,8 @@ def run(parameters: dict[str, Any]):
             "item_number": ITEM_NUMBER,
             "broken_active": broken,
             "signature": sig,
+            "demand_force_n": [fx, fy],
+            "tire_capacity_n": capacity,
+            "power_excess_w": max(0.0, fx * p["speed_m_s"] - 210000),
         },
     }

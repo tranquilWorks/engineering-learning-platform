@@ -11,38 +11,58 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 COURSES = ("dsp-radar", "controls-gnc", "robotics-autonomy", "vehicle-dynamics")
-KNOWN = {
+# Scoped numerical/physical review; this is not whole-course certification.
+REPAIRED = {
+    (
+        "controls-gnc",
+        66,
+    ): "Executed calibration identification, feedback and scalar estimation across three stressed plants; independent normal-equation/information-form replay and plant/rank checks.",
+    (
+        "controls-gnc",
+        67,
+    ): "Executed exact planar motion, GNSS/inertial updates, waypoint guidance and freshness holds; independent complex-arc replay and timing/turn checks.",
+    (
+        "controls-gnc",
+        68,
+    ): "Executed timestamped command delivery, drop burst, old-packet rejection, plant feedback and fail-zero watchdog; independent arrival reconstruction and zero-fault checks.",
+    (
+        "robotics-autonomy",
+        68,
+    ): "Executed range observations, occupancy, graph replanning, timed hold/resume and continuous segment separation; independent breadth-first replay and geometric checks.",
+    (
+        "robotics-autonomy",
+        69,
+    ): "Executed calibrated reach, static support and timed contact control with exact spring work; independent kinematic/work replay and zero-tank checks.",
+    (
+        "vehicle-dynamics",
+        61,
+    ): "Corrected dimensional signatures and sample-mean interpretation; independent ellipse geometry plus circle, scaling and sampling checks.",
+    (
+        "vehicle-dynamics",
+        62,
+    ): "Corrected signature order and units; executed drag-shifted, power-clipped force envelope and actual demand; independent force-balance and zero-speed checks.",
+    (
+        "vehicle-dynamics",
+        63,
+    ): "Executed closed-ellipse offset geometry and local distance/speed integration with a dimensional penalty; independent quadrature and circle/corridor checks.",
+    (
+        "vehicle-dynamics",
+        64,
+    ): "Executed cyclic force reachability and an energy budget that changes speed, with brake-work temperature; independent Jacobi/piecewise-energy solution and seam/refinement checks.",
+    (
+        "vehicle-dynamics",
+        65,
+    ): "Corrected dimensions and unused-point validation in an explicitly synthetic factorial; independent contrast solution and rank/disjointness checks.",
     (
         "vehicle-dynamics",
         66,
-    ): "The telemetry capstone reports hardcoded subsystem pass flags and a residual formula without executing the claimed telemetry calibration and validation chain. Cumulative assessment requires repair.",
+    ): "Executed synthetic CAN/BLE provenance, timing, calibration, reconstruction, chronological fitting and fault recovery; independent raw-byte/scalar reference and split/covariance checks.",
     (
         "vehicle-dynamics",
         67,
-    ): "The claimed integrated digital twin uses a linear lap-time surrogate and hardcoded subsystem verdicts. Coupled subsystem execution, independent capstone assessment and signature units require repair.",
+    ): "Executed an explicitly illustrative tire/load/gear/brake/aero/track/line/lap chain and friction scenarios; independent scalar solver and load/force/refinement checks.",
 }
-for _number in range(61, 66):
-    KNOWN[("vehicle-dynamics", _number)] = (
-        "The design signature labels dimensional quantities as dimensionless; units and lesson-specific limiting cases require review in the performance revision batch."
-    )
-KNOWN[("vehicle-dynamics", 64)] += (
-    " Energy is capped only in the reported metric rather than constraining the speed solution; the failure residual also includes an artificial offset."
-)
-KNOWN[("controls-gnc", 66)] = (
-    "The claimed identify-control-estimate capstone uses algebraic tracking and NEES surrogates rather than running identification, feedback and an estimator together."
-)
-KNOWN[("controls-gnc", 67)] = (
-    "The survey capstone uses algebraic error and alarm surrogates rather than executing navigation, guidance and constrained vehicle motion."
-)
-KNOWN[("controls-gnc", 68)] = (
-    "The software-HIL capstone uses latency/drop fractions and synthetic traces rather than replaying timestamped events through a closed loop and watchdog."
-)
-KNOWN[("robotics-autonomy", 68)] = (
-    "Route planning executes, but replay and dropout-recovery margins are fixed from broken_mode rather than measured from an executed perception/recovery chain."
-)
-KNOWN[("robotics-autonomy", 69)] = (
-    "Kinematics and contact feedback execute, but the claimed timed-interface recovery verdict is set directly from broken_mode rather than measured."
-)
+KNOWN = {}
 
 # Additional findings from the wider direct model review; separate repair scopes.
 for _number in range(1, 17):
@@ -297,7 +317,12 @@ def audit():
                     "checks": findings,
                     "semantic_review": "blocked"
                     if issue
-                    else "not_recertified_by_structural_audit",
+                    else (
+                        "scoped_model_reviewed"
+                        if (course, number) in REPAIRED
+                        else "not_recertified_by_structural_audit"
+                    ),
+                    "scoped_review": REPAIRED.get((course, number)),
                     "known_issue": issue,
                     "manual_learner_validation": "not_run",
                 }
@@ -341,6 +366,7 @@ if __name__ == "__main__":
             "course": r["course"],
             "module": r["module"],
             "known_issue": r["known_issue"],
+            "scoped_review": r["scoped_review"],
             "evidence_count": len(r["checks"]["independent_evidence"]["paths"]),
         }
         for r in value["lessons"]

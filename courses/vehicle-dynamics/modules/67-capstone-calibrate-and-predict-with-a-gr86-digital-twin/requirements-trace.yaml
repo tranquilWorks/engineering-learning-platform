@@ -1,14 +1,93 @@
 schema_version: 1
 capstone: CAP-GR86-DIGITAL-TWIN
 requirements:
-- {id: DT-01, behavior: calibrated tire model, dependencies: [P33]}
-- {id: DT-02, behavior: limit handling, dependencies: [P37]}
-- {id: DT-03, behavior: chassis response, dependencies: [P43]}
-- {id: DT-04, behavior: propulsion envelope, dependencies: [P47]}
-- {id: DT-05, behavior: brake behavior, dependencies: [P50]}
-- {id: DT-06, behavior: aerodynamic behavior, dependencies: [P51]}
-- {id: DT-07, behavior: closed track model, dependencies: [P61]}
-- {id: DT-08, behavior: feasible racing line, dependencies: [P63]}
-- {id: DT-09, behavior: reachable lap prediction, dependencies: [P64]}
-- {id: DT-10, behavior: uncertainty bound, dependencies: [P59, P66]}
-- {id: DT-11, behavior: setup comparison and exact recovery, dependencies: [P65, P66]}
+- id: DT-01
+  behavior: calibrated tire model
+  dependencies:
+  - P33
+  quantity: Unused tire calibration force error
+  unit: N
+  operator: <=
+  threshold: 1.0e-08
+- id: DT-02
+  behavior: limit handling
+  dependencies:
+  - P37
+  quantity: Maximum physical combined-grip utilization
+  unit: '1'
+  operator: <=
+  threshold: 1.000001
+- id: DT-03
+  behavior: chassis response
+  dependencies:
+  - P43
+  quantity: Minimum physical wheel normal load
+  unit: N
+  operator: '>='
+  threshold: 200
+- id: DT-04
+  behavior: propulsion envelope
+  dependencies:
+  - P47
+  quantity: Selected-gear propulsion force excess
+  unit: N
+  operator: <=
+  threshold: 1.0e-05
+- id: DT-05
+  behavior: brake behavior
+  dependencies:
+  - P50
+  quantity: One-lap adiabatic brake temperature
+  unit: degC
+  operator: <=
+  threshold: 450
+- id: DT-06
+  behavior: aerodynamic behavior
+  dependencies:
+  - P51
+  quantity: Used/physical normal-load ledger residual
+  unit: fraction
+  operator: <=
+  threshold: 1.0e-10
+- id: DT-07
+  behavior: closed track model
+  dependencies:
+  - P61
+  quantity: Closed-track total-curvature residual
+  unit: rad
+  operator: <=
+  threshold: 1.0e-06
+- id: DT-08
+  behavior: feasible racing line
+  dependencies:
+  - P63
+  quantity: Selected line offset magnitude
+  unit: m
+  operator: <=
+  threshold: 1.5
+- id: DT-09
+  behavior: reachable lap prediction
+  dependencies:
+  - P64
+  quantity: Cyclic segment reachability excess
+  unit: N
+  operator: <=
+  threshold: 1.0e-05
+- id: DT-10
+  behavior: uncertainty bound
+  dependencies:
+  - P59
+  - P66
+  quantity: Nominal time outside friction endpoint envelope
+  unit: s
+  operator: <=
+  threshold: 1.0e-08
+- id: DT-11
+  behavior: setup comparison and exact recovery
+  dependencies:
+  - P65
+  - P66
+  quantity: Internal clean replay discrepancy
+  unit: s
+  operator: <=
+  threshold: 1.0e-10

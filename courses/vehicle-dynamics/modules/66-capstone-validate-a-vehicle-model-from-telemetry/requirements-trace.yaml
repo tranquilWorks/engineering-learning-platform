@@ -1,12 +1,82 @@
 schema_version: 1
 capstone: CAP-TELEMETRY-VALIDATION
 requirements:
-- {id: TV-01, behavior: provenance replay, dependencies: [P53]}
-- {id: TV-02, behavior: clock alignment, dependencies: [P54]}
-- {id: TV-03, behavior: sensor calibration, dependencies: [P55]}
-- {id: TV-04, behavior: trajectory reconstruction, dependencies: [P56]}
-- {id: TV-05, behavior: state reconstruction, dependencies: [P57]}
-- {id: TV-06, behavior: chronological identification and validation, dependencies: [P58]}
-- {id: TV-07, behavior: identifiability and uncertainty, dependencies: [P59]}
-- {id: TV-08, behavior: corrupt-data diagnosis, dependencies: [P60]}
-- {id: TV-09, behavior: exact recovery, dependencies: [P53, P54, P55, P56, P57, P58, P59, P60]}
+- id: TV-01
+  behavior: provenance replay
+  dependencies:
+  - P53
+  quantity: Raw hashes, provenance and CAN/BLE parity failures
+  unit: count
+  operator: <=
+  threshold: 0
+- id: TV-02
+  behavior: clock alignment
+  dependencies:
+  - P54
+  quantity: Clock sync residual
+  unit: s
+  operator: <=
+  threshold: 1.0e-09
+- id: TV-03
+  behavior: sensor calibration
+  dependencies:
+  - P55
+  quantity: Unused calibration speed error
+  unit: m/s
+  operator: <=
+  threshold: 1.0e-09
+- id: TV-04
+  behavior: trajectory reconstruction
+  dependencies:
+  - P56
+  quantity: Reconstructed trajectory endpoint error
+  unit: m
+  operator: <=
+  threshold: 0.05
+- id: TV-05
+  behavior: state reconstruction
+  dependencies:
+  - P57
+  quantity: Reconstructed speed RMS error
+  unit: m/s
+  operator: <=
+  threshold: 0.01
+- id: TV-06
+  behavior: chronological identification and validation
+  dependencies:
+  - P58
+  quantity: Chronological held-out force RMS
+  unit: N
+  operator: <=
+  threshold: 20
+- id: TV-07
+  behavior: identifiability and uncertainty
+  dependencies:
+  - P59
+  quantity: Smallest normalized information eigenvalue
+  unit: '1'
+  operator: '>='
+  threshold: 0.001
+- id: TV-08
+  behavior: corrupt-data diagnosis
+  dependencies:
+  - P60
+  quantity: Unresolved corrupt/duplicate packets
+  unit: count
+  operator: <=
+  threshold: 0
+- id: TV-09
+  behavior: exact recovery
+  dependencies:
+  - P53
+  - P54
+  - P55
+  - P56
+  - P57
+  - P58
+  - P59
+  - P60
+  quantity: Recovered speed maximum error
+  unit: m/s
+  operator: <=
+  threshold: 0.01

@@ -1,36 +1,26 @@
-# Current state — course quality continuation
+# Current engineering-learning position — 2026-09-28
 
-The native browser/container catalog contains four revised engineering curricula:
-DSP/Radar **84**, Controls/GNC **68**, Robotics/Autonomy **69**, and Vehicle Dynamics
-**67** lessons, plus two examples (**6 courses, 290 interactive modules**). Thirteen
-source repositories are pinned; nine remain source-only.
+Delivery PR52 merged as `4e8e39fb3fc05eef8b4ca5607bec4d0bc9320891` after all
+mandatory local gates, 290 container HTTP checks and 580 desktop/mobile page
+checks passed. It preserves all course payloads and source pins. The verified
+image and concurrent-load/hosted-CI limitations are retained in the delivery evidence.
 
-DSP fidelity P01–P84 is implemented and merged through [PR51](https://github.com/tranquilWorks/engineering-learning-platform/pull/51),
-merge `b8d760e6721ae0b94aaa503f4ca1599592266442`. Item-level repair completion does
-not close aggregate competency or cumulative-assessment acceptance.
+Active batch `ELP-SEMANTIC-QUALITY-12` repairs Controls P66–P68, Robotics
+P68–P69 and Vehicle P61–P67. Control PR534 merged as
+`fa69a9ab4f64af4f993bb8aa90b4c818cae16ca9`. All twelve models and lesson revisions
+are implemented; 60 independent numerical scenarios and 40 physical/preservation
+checks passed. Existing expansion, complete local and fresh browser/container
+verification are in progress. This batch is not yet merged.
 
-The active delivery batch fixes actual math, mobile keyboard/navigation,
-revision isolation and numeric browser-control defects, embeds lesson review
-notes, and retains per-lesson browser/container checks. Backend contract,
-quick/full verification, catalog and focused browser checks passed. All 290 container HTTP checks and all 580 desktop/mobile page checks passed; see
-[delivery evidence](evidence/ELP-COURSE-DELIVERY-QUALITY-01-2026-09-28.md).
+The browser projection records the scoped model reviews and retains **60**
+additional blocked findings: Controls19, Robotics25, Vehicle16. No whole-course
+maturity is promoted. The historical audit found72 affected lessons before these
+initial twelve repairs. See [COURSE_QUALITY](COURSE_QUALITY.md).
 
-Direct semantic inspection reopened twelve lessons: **Controls P66–68,
-Robotics P68–69, Vehicle P61–67**. Their specific limitations are visible in the
-browser and recorded in [the quality board](COURSE_QUALITY.md). All four courses'
-aggregate numerical/curriculum/capstone maturity remains blocked pending the
-corresponding reviews. Existing item-level evidence remains available.
+The next authorized batch is DSP aggregate competency mapping and cumulative
+assessment across all84 existing lessons. The four revised curricula contain288
+native engineering lessons; two examples make6courses/290interactive modules.
+Nine other pinned source repositories remain source-only.
 
-The authorized sequence is delivery-quality closure, a separate twelve-lesson
-semantic repair, then DSP aggregate competency/cumulative assessment. No new
-lesson inventory or source-only conversion is included. Manual screen-reader,
-representative learner, MATLAB, physical hardware and production validation
-remain unperformed. Hosted CI is separately reported and nonmandatory under the
-retained owner direction; required local gates remain mandatory.
-
-The wider model review subsequently found 60 additional issues beyond the first
-twelve, for **72 affected lessons**. See
-[the additional register](course-quality/additional-semantic-findings.md). The
-first twelve-lesson repair contract does not cover those 60; they remain blocked
-pending separate scope and implementation. No aggregate acceptance follows from
-finishing only the initial group.
+Representative learner, manual screen-reader, MATLAB, measured vehicle/hardware
+and production validation remain not_run. No production deployment occurred.

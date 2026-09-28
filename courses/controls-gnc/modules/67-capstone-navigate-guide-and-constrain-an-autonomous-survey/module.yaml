@@ -2,8 +2,7 @@ schema_version: 1
 id: 67-capstone-navigate-guide-and-constrain-an-autonomous-survey
 number: 67
 title: 'Capstone: Navigate, Guide, and Constrain an Autonomous Survey'
-summary: Combine dropout-driven navigation uncertainty, LOS cross-track behavior, turn-rate constraint, and a monitor
-  alarm into an integrated survey verdict.
+summary: Will a 20 s GNSS outage reduce progress, and can holding also reduce maximum path error?
 guiding_question: Can navigation, path guidance, plant limits, and monitoring close an autonomous survey requirement
   set?
 status: implemented
@@ -42,10 +41,8 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: The survey passes only when navigation uncertainty, cross-track error, turn-rate constraint, and monitor
-    response satisfy their separate requirements.
-  reveal: Restore uncertainty-aware guidance, enforce the turn-rate limit, and require the monitor to alarm on the
-    injected dropout fault.
+  text: Will a 20 s GNSS outage reduce progress, and can holding also reduce maximum path error?
+  reveal: Compare the executed quantities with their physical units and the worked explanation in the lesson.
 - type: controls
   title: Design controls
 - type: metrics
@@ -54,6 +51,9 @@ blocks:
   plots:
   - response
   - mechanism
+- type: table
+  title: Computed requirements
+  table: requirements
 - type: callout
   tone: info
   title: Current interpretation
