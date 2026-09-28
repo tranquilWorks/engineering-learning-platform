@@ -1,0 +1,83 @@
+{
+  "item": "P55",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p55",
+    "sha256": "3e335831c25b63a7ef02dd6a6ced2e39b42deb2a57f2597252c02ffcd0ee5bb8",
+    "byte_count": 154384,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/55-implement-a-constant-velocity-kalman-filter/experiment.py",
+    "sha256": "67d9eb118763b47d87c8011349baa5a29afb4fbf5592fad4f789fb38d10b877a",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "acceleration_sigma_mps2": 0.8,
+      "report_sigma_m": 25,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "acceleration_sigma_mps2": 3.2,
+      "report_sigma_m": 25,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "acceleration_sigma_mps2": 0.8,
+      "report_sigma_m": 100,
+      "broken_mode": false
+    },
+    "broken": {
+      "acceleration_sigma_mps2": 0.8,
+      "report_sigma_m": 25,
+      "broken_mode": true
+    },
+    "recovery": {
+      "acceleration_sigma_mps2": 0.8,
+      "report_sigma_m": 25,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    },
+    {
+      "name": "position_rmse",
+      "unit": "m"
+    },
+    {
+      "name": "velocity_rmse",
+      "unit": "m/s"
+    },
+    {
+      "name": "mean_nis",
+      "unit": "ratio"
+    },
+    {
+      "name": "final_position_sigma",
+      "unit": "m"
+    },
+    {
+      "name": "final_velocity_sigma",
+      "unit": "m/s"
+    },
+    {
+      "name": "mean_position_gain",
+      "unit": "ratio"
+    },
+    {
+      "name": "low_r_position_rmse",
+      "unit": "m"
+    },
+    {
+      "name": "minimum_covariance_eigenvalue",
+      "unit": "mixed state units"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

@@ -1,0 +1,83 @@
+{
+  "item": "P59",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p59",
+    "sha256": "3e335831c25b63a7ef02dd6a6ced2e39b42deb2a57f2597252c02ffcd0ee5bb8",
+    "byte_count": 154384,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/59-track-crossing-targets-and-observe-association-failure/experiment.py",
+    "sha256": "d064ef5813ca97bb78ae628a192262515370a5b742c41c2fbd7ba2845e33df19",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "position_sigma_m": 6,
+      "scan_interval_s": 1,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "position_sigma_m": 10,
+      "scan_interval_s": 1,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "position_sigma_m": 6,
+      "scan_interval_s": 2,
+      "broken_mode": false
+    },
+    "broken": {
+      "position_sigma_m": 6,
+      "scan_interval_s": 1,
+      "broken_mode": true
+    },
+    "recovery": {
+      "position_sigma_m": 6,
+      "scan_interval_s": 1,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    },
+    {
+      "name": "active_wrong_links",
+      "unit": "links"
+    },
+    {
+      "name": "position_only_wrong_links",
+      "unit": "links"
+    },
+    {
+      "name": "active_identity_transitions",
+      "unit": "transitions"
+    },
+    {
+      "name": "duplicate_report_scans",
+      "unit": "scans"
+    },
+    {
+      "name": "position_rmse",
+      "unit": "m"
+    },
+    {
+      "name": "noise_sweep_high_position_failure",
+      "unit": "probability"
+    },
+    {
+      "name": "noise_sweep_high_velocity_failure",
+      "unit": "probability"
+    },
+    {
+      "name": "wide_separation_position_failure",
+      "unit": "probability"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

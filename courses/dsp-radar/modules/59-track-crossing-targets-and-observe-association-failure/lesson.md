@@ -1,6 +1,4 @@
-# Track Crossing Targets and Observe Association Failure
-
-> **Guiding question:** Why do simple nearest-neighbor trackers swap identities?
+# Lesson: identity is history, not a label carried by a detection
 
 ## Guiding question
 
@@ -206,33 +204,29 @@ Static checks cannot prove MATLAB parsing or execution, rendered figures,
 statistical calibration, educational effectiveness, hardware/HIL behavior,
 real-time performance, operational radar performance, or field results.
 
-## Use the Python GUI experiment
+## Interactive lab: Track Crossing Targets and Observe Association Failure
 
-The GUI keeps the pinned source's mental model and processing order visible. The **crossing separation** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** Why do simple nearest-neighbor trackers swap identities?
 
-### Prediction and sweep 1 — crossing separation
+Twenty-five scans center on a crossing. Target velocities are (20,5) and (20,-5) m/s, and report order alternates every scan. Position/auxiliary Cartesian velocity sigma is 6 m/3 m/s; alpha/beta are .60/.25. Already-confirmed tracks start from separated known pre-crossing states, as in the source. Position and velocity costs divide squared residuals by their respective variances; the velocity term affects association, while the update remains position-based. The source baseline seed is 5908; each sweep uses 200 paired seeds 5901–6100. Noise, interval and closest-approach sweeps keep other controls fixed. Cartesian velocity reports are an idealized extra feature, not universally available radar measurements. Monte Carlo frequency is not a field guarantee.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict when position-only association can swap identities. Distinguish a wrong one-to-one link from two tracks reusing one report, then explain what extra velocity evidence can and cannot resolve.
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Position sigma m** from 6 to 10 m. Predict the change, run, and explain a measured value using the equation; then reset.
+2. Start at the baseline. Sweep only **Scan interval s** from 1 to 2 s. Predict the change, run, and explain a measured value using the equation; then reset.
+3. Enable the broken case. Independent row minima allow both tracks to consume the same report. Even valid one-to-one position-only assignment can swap identities near a crossing.
+4. Recovery: Restore row-and-column removal plus normalized velocity evidence on unchanged reports. Truth identities are used only for audit; auxiliary Cartesian velocity is an idealized feature.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict when position-only association can swap identities. Distinguish a wrong one-to-one link from two tracks reusing one report, then explain what extra velocity evidence can and cannot resolve. Support your answer with a measured value and units. Explain the recovery assumption and identify what this finite experiment cannot establish.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+Independent row minima allow both tracks to consume the same report. Even valid one-to-one position-only assignment can swap identities near a crossing. Keep measured units, model assumptions and the named recovery boundary explicit.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The source lesson is preserved above. The source Park–Miller/Box–Muller input formulas and array ordering are retained, including P58’s zero uniform offset and the array complex-noise convention. This is algorithmic software evidence, not a MATLAB runtime execution claim. Source console/figure presentation becomes labeled native plots and metrics. Calculations use the full stated arrays; displayed line and heatmap coordinates may be decimated. Independent numerical comparisons retain five scenarios. No MATLAB execution, browser/accessibility review, representative learner, hardware or production validation is claimed.

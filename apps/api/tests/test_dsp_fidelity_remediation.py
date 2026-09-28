@@ -88,16 +88,16 @@ def test_remediation_ledger_preserves_prior_batch_membership() -> None:
     current = ledger["scope"]["repaired_in_batch"]["items"]
     pending = ledger["scope"]["pending"]["items"]
     already = ledger["scope"]["already_distinct"]
-    assert repaired == [f"P{number:02d}" for number in range(2, 41)]
+    assert repaired == [f"P{number:02d}" for number in range(2, 53)]
     assert repaired[:9] == ITEM_IDS
-    assert current == [f"P{number:02d}" for number in range(41, 53)]
-    assert pending == [f"P{number:02d}" for number in range(53, 85)]
+    assert current == [f"P{number:02d}" for number in range(53, 65)]
+    assert pending == [f"P{number:02d}" for number in range(65, 85)]
     assert already == ["P01"]
     counts = ledger["derived_counts"]
     assert counts["already_distinct"] == len(already) == 1
-    assert counts["repaired_in_prior_batches"] == len(repaired) == 39
+    assert counts["repaired_in_prior_batches"] == len(repaired) == 51
     assert counts["repaired_in_batch"] == len(current) == 12
-    assert counts["pending"] == len(pending) == 32
+    assert counts["pending"] == len(pending) == 20
     assert counts["total_items"] == len(already) + len(repaired) + len(current) + len(pending) == 84
     assert ledger["claim_boundary"]["numerically_verified"] == "blocked"
     assert ledger["claim_boundary"]["curriculum_covered"] == "blocked"

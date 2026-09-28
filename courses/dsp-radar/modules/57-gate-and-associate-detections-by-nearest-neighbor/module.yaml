@@ -3,13 +3,13 @@
   "id": "57-gate-and-associate-detections-by-nearest-neighbor",
   "number": 57,
   "title": "Gate and Associate Detections by Nearest Neighbor",
-  "summary": "Explore gate and associate detections by nearest neighbor with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "Predict each track and form S=H P^- H\u1d40+R. Gate squared Mahalanobis distances, then greedily select the nearest remaining valid pair with row-and-column removal.",
   "guiding_question": "Which measurement should update which track?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-6",
-    "gate-size"
+    "tracking",
+    "P57"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,51 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Gate Size",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "gate_d2",
+      "type": "segmented",
+      "label": "Gate d2",
+      "unit": "ratio",
+      "default": 5.991,
+      "options": [
+        {
+          "label": "0.5",
+          "value": 0.5
+        },
+        {
+          "label": "5.991 baseline",
+          "value": 5.991
+        },
+        {
+          "label": "13.816",
+          "value": 13.816
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "covariance_scale",
+      "type": "segmented",
+      "label": "Covariance scale",
+      "unit": "ratio",
+      "default": 1,
+      "options": [
+        {
+          "label": "0.25",
+          "value": 0.25
+        },
+        {
+          "label": "1 baseline",
+          "value": 1
+        },
+        {
+          "label": "4",
+          "value": 4
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +75,40 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing gate size, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict which report is closest in metres and which is closest in uncertainty units. What changes when the covariance scale increases, and how is one-to-one assignment enforced?",
+      "reveal": "Predict each track and form S=H P^- H\u1d40+R. Gate squared Mahalanobis distances, then greedily select the nearest remaining valid pair with row-and-column removal."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Prediction, covariance gates and selected links",
+      "plot": "association"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Squared Mahalanobis pair distances",
+      "plot": "distance"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Admissible pairs before assignment",
+      "plot": "valid"
+    },
+    {
+      "type": "plot",
+      "title": "Gate threshold admits candidates",
+      "plot": "gate_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Prediction uncertainty changes physical gate area",
+      "plot": "covariance_sweep"
     },
     {
       "type": "callout",
@@ -102,7 +119,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

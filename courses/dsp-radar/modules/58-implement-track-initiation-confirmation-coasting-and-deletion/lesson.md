@@ -1,6 +1,4 @@
-# Implement Track Initiation, Confirmation, Coasting, and Deletion
-
-> **Guiding question:** How does a radar avoid creating permanent tracks from single false alarms?
+# Lesson: evidence earns persistence, and misses spend it
 
 ## Guiding question
 
@@ -243,33 +241,29 @@ and documentation. They do not prove MATLAB execution, rendered figures,
 timing, memory, educational effectiveness, hardware/HIL, real-time behavior,
 operational radar performance, or field performance.
 
-## Use the Python GUI experiment
+## Interactive lab: Implement Track Initiation, Confirmation, Coasting, and Deletion
 
-The GUI keeps the pinned source's mental model and processing order visible. The **confirmation hits** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** How does a radar avoid creating permanent tracks from single false alarms?
 
-### Prediction and sweep 1 — confirmation hits
+Thirty one-second scans contain a target from scan 4 through 24, at 1000 m and 12 m/s, with 3 m report noise and misses at 6/12/13. Eight isolated false reports occur at 2/5/8/11/15/18/22/26. Gating is 40 m; alpha/beta are .70/.20. Birth counts as one hit. Tentative tracks that fail M-of-4 by age four are deleted; confirmed tracks delete only when consecutive misses exceed the coast limit. The named broken policy is 1-of-1 with a 30-scan coast allowance. Stable IDs are never reused; allocation is capped at twenty. Truth labels enter only the completed-history audit.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict when the target earns 3-of-4 confirmation and when three consecutive misses delete it with coast limit two. How do stricter confirmation and longer coasting change false tracks and persistence?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Confirmation hits** from 3 to 4 hits. Predict the change, run, and explain a measured value using the equation; then reset.
+2. Start at the baseline. Sweep only **Coast limit scans** from 2 to 0 scans. Predict the change, run, and explain a measured value using the equation; then reset.
+3. Enable the broken case. The 1-of-1 policy with a 30-scan coast allowance confirms eight isolated false tracks and keeps them active through this record.
+4. Recovery: Restore the selected M-of-4 and coast policy on identical reports; disabling the toggle reproduces the selected managed history exactly.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict when the target earns 3-of-4 confirmation and when three consecutive misses delete it with coast limit two. How do stricter confirmation and longer coasting change false tracks and persistence? Support your answer with a measured value and units. Explain the recovery assumption and identify what this finite experiment cannot establish.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+The 1-of-1 policy with a 30-scan coast allowance confirms eight isolated false tracks and keeps them active through this record. Keep measured units, model assumptions and the named recovery boundary explicit.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The source lesson is preserved above. The source Park–Miller/Box–Muller input formulas and array ordering are retained, including P58’s zero uniform offset and the array complex-noise convention. This is algorithmic software evidence, not a MATLAB runtime execution claim. Source console/figure presentation becomes labeled native plots and metrics. Calculations use the full stated arrays; displayed line and heatmap coordinates may be decimated. Independent numerical comparisons retain five scenarios. No MATLAB execution, browser/accessibility review, representative learner, hardware or production validation is claimed.

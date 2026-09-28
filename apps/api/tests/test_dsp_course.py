@@ -187,7 +187,7 @@ def test_dsp_item_retained_numeric_equivalence(item: dict[str, Any]) -> None:
         expected_path = COURSE_ROOT / case["expected"]["path"]
         actual_path = COURSE_ROOT / case["actual"]["path"]
         assert expected_path != actual_path
-        if 29 <= item["number"] <= 52:
+        if 29 <= item["number"] <= 64:
             # Exact agreement is valid. Independence comes from a separately
             # formulated, hash-bound reference and fresh replay, not byte inequality.
             provenance = json.loads(

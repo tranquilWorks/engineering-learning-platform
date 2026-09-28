@@ -1,6 +1,4 @@
-# Build an Alpha-Beta Tracker
-
-> **Guiding question:** How can a simple predictor smooth noisy position while following constant velocity?
+# Lesson: fixed-gain prediction and correction
 
 ## Guiding question
 
@@ -186,33 +184,29 @@ documentation. They do not prove MATLAB execution, rendered figures, timing,
 memory, learning effectiveness, hardware/HIL, real-time behavior, operational radar
 tracking, or field performance.
 
-## Use the Python GUI experiment
+## Interactive lab: Build an Alpha-Beta Tracker
 
-The GUI keeps the pinned source's mental model and processing order visible. The **alpha gain** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** How can a simple predictor smooth noisy position while following constant velocity?
 
-### Prediction and sweep 1 — alpha gain
+There are 81 one-second scans. Truth starts at 1000 m and 20 m/s; velocity becomes 32 m/s at source scan 41, affecting the following position interval. Position reports have 30 m RMS noise; scans 18–20 and 66–68 are unavailable. Initialization uses the first report and zero velocity. The first ten scans are excluded from reported overall RMSE. No report is invented during a dropout: prediction becomes the posterior. Fixed gains obey the reviewed stability region.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict how alpha changes position smoothing and beta changes velocity learning. During missing scans, what state is propagated? Why can beta zero never learn the initially unknown speed?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Alpha gain** from 0.35 to 0.85 ratio. Predict the change, run, and explain a measured value using the equation; then reset.
+2. Start at the baseline. Sweep only **Beta gain** from 0.08 to 0.3 ratio. Predict the change, run, and explain a measured value using the equation; then reset.
+3. Enable the broken case. Setting beta to zero leaves the initially zero velocity unlearned, causing persistent position lag.
+4. Recovery: Restore positive beta on the same measurements; reset the controls and disable the failure for exact recovery.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict how alpha changes position smoothing and beta changes velocity learning. During missing scans, what state is propagated? Why can beta zero never learn the initially unknown speed? Support your answer with a measured value and units. Explain the recovery assumption and identify what this finite experiment cannot establish.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+Setting beta to zero leaves the initially zero velocity unlearned, causing persistent position lag. Keep measured units, model assumptions and the named recovery boundary explicit.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The source lesson is preserved above. P53–P56 use private NumPy seeds and row-major draws; these do not reproduce MATLAB random streams. Source console/figure presentation becomes labeled native plots and metrics. Calculations use the full stated arrays; displayed line and heatmap coordinates may be decimated. Independent numerical comparisons retain five scenarios. No MATLAB execution, browser/accessibility review, representative learner, hardware or production validation is claimed.

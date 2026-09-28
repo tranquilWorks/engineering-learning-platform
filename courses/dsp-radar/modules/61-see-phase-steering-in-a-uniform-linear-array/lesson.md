@@ -1,6 +1,4 @@
-# See Phase Steering in a Uniform Linear Array
-
-> **Guiding question:** How does a direction of arrival become a phase slope across sensors?
+# P61 lesson: Direction Becomes a Spatial Phase Slope
 
 ## Guiding question
 
@@ -148,33 +146,29 @@ generator that does not alter MATLAB's global random stream. It writes no files,
 uses no network, timer, worker, or persistent state, and makes no MATLAB runtime,
 hardware/HIL, real-time, field, or operational-radar claim by itself.
 
-## Use the Python GUI experiment
+## Interactive lab: See Phase Steering in a Uniform Linear Array
 
-The GUI keeps the pinned source's mental model and processing order visible. The **arrival angle** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** How does a direction of arrival become a phase slope across sensors?
 
-### Prediction and sweep 1 — arrival angle
+Eight elements at 3 GHz use c=299792458 m/s, half-wavelength baseline spacing, 30-degree arrival, 20-degree initial phase and 35 dB SNR. Positive angle toward +x advances arrival, tau_m=-md sin(theta)/c, giving positive phase under exp(+j2πft). Both least-squares unwrapped phase slope and the angle of summed adjacent products are visible. The selected spacing sweep spans .25/.375/.5 wavelengths; an ideal frequency comparison at fixed physical spacing gives the same electrical ratios at 1.5/2.25/3 GHz. The named noiseless alias uses q=1 and direction cosines .6/-.4, then recovers q=.5 without changing angle.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict the sign of arrival delay and phase slope for positive bearing. Why do changing spacing and carrier alter the same electrical spacing, and how can two directions produce identical sensor phasors?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Arrival angle deg** from 30 to -30 deg. Predict the change, run, and explain a measured value using the equation; then reset.
+2. Start at the baseline. Sweep only **Spacing wavelengths** from 0.5 to 0.25 wavelengths. Predict the change, run, and explain a measured value using the equation; then reset.
+3. Enable the broken case. At one wavelength, direction cosines .6 and -.4 produce identical sensor phasors. The wrapped step infers the wrong direction; more averaging cannot remove this ambiguity.
+4. Recovery: Use half-wavelength spacing for the same true angle, frequency, phase and sensor count. The named noiseless alias recovery is distinct from the selected noisy scene; disable the toggle to restore that scene.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict the sign of arrival delay and phase slope for positive bearing. Why do changing spacing and carrier alter the same electrical spacing, and how can two directions produce identical sensor phasors? Support your answer with a measured value and units. Explain the recovery assumption and identify what this finite experiment cannot establish.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+At one wavelength, direction cosines .6 and -.4 produce identical sensor phasors. The wrapped step infers the wrong direction; more averaging cannot remove this ambiguity. Keep measured units, model assumptions and the named recovery boundary explicit.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The source lesson is preserved above. The source Park–Miller/Box–Muller input formulas and array ordering are retained, including P58’s zero uniform offset and the array complex-noise convention. This is algorithmic software evidence, not a MATLAB runtime execution claim. Source console/figure presentation becomes labeled native plots and metrics. Calculations use the full stated arrays; displayed line and heatmap coordinates may be decimated. Independent numerical comparisons retain five scenarios. No MATLAB execution, browser/accessibility review, representative learner, hardware or production validation is claimed.

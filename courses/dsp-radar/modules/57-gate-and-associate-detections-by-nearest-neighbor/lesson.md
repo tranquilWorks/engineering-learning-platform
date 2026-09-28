@@ -1,6 +1,4 @@
-# Gate and Associate Detections by Nearest Neighbor
-
-> **Guiding question:** Which measurement should update which track?
+# Lesson: let uncertainty define what “near” means
 
 ## Guiding question
 
@@ -228,33 +226,29 @@ statistical calibration, multi-scan tracking quality, educational effectiveness,
 hardware/HIL, real-time behavior, operational radar performance, or field
 results.
 
-## Use the Python GUI experiment
+## Interactive lab: Gate and Associate Detections by Nearest Neighbor
 
-The GUI keeps the pinned source's mental model and processing order visible. The **gate size** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** Which measurement should update which track?
 
-### Prediction and sweep 1 — gate size
+Three CV states predict to (0,0),(200,50),(400,-100) m. The first track has much wider x than y uncertainty. Reports contain three noisy target positions and three clutter positions in deliberately shuffled order; sigma_z=6 m. Squared Mahalanobis distance uses S_i=H P_i^- Hᵀ+36I. Covariance scaling changes only predicted covariance, not R. Gate thresholds .5/5.991/13.816 and scales .25/1/4 reuse reports. Greedy global selection removes both row and column; column-major tie order matches the source. This is not optimal global assignment.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict which report is closest in metres and which is closest in uncertainty units. What changes when the covariance scale increases, and how is one-to-one assignment enforced?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Gate d2** from 5.991 to 0.5 ratio. Predict the change, run, and explain a measured value using the equation; then reset.
+2. Start at the baseline. Sweep only **Covariance scale** from 1 to 4 ratio. Predict the change, run, and explain a measured value using the equation; then reset.
+3. Enable the broken case. Ungated Euclidean matching favors a cross-ellipse clutter report over a plausible residual along the high-uncertainty direction.
+4. Recovery: Restore track-specific covariance distances and the gate on unchanged reports. Truth IDs audit correctness only and never enter association.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict which report is closest in metres and which is closest in uncertainty units. What changes when the covariance scale increases, and how is one-to-one assignment enforced? Support your answer with a measured value and units. Explain the recovery assumption and identify what this finite experiment cannot establish.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+Ungated Euclidean matching favors a cross-ellipse clutter report over a plausible residual along the high-uncertainty direction. Keep measured units, model assumptions and the named recovery boundary explicit.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The source lesson is preserved above. The source Park–Miller/Box–Muller input formulas and array ordering are retained, including P58’s zero uniform offset and the array complex-noise convention. This is algorithmic software evidence, not a MATLAB runtime execution claim. Source console/figure presentation becomes labeled native plots and metrics. Calculations use the full stated arrays; displayed line and heatmap coordinates may be decimated. Independent numerical comparisons retain five scenarios. No MATLAB execution, browser/accessibility review, representative learner, hardware or production validation is claimed.

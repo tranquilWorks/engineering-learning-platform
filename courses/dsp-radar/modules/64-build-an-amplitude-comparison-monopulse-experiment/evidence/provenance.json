@@ -1,0 +1,91 @@
+{
+  "item": "P64",
+  "reference": {
+    "path": "remediation_reference_cases.py",
+    "function": "_p64",
+    "sha256": "3e335831c25b63a7ef02dd6a6ced2e39b42deb2a57f2597252c02ffcd0ee5bb8",
+    "byte_count": 154384,
+    "independent": true,
+    "imports_production": false
+  },
+  "production": {
+    "path": "modules/64-build-an-amplitude-comparison-monopulse-experiment/experiment.py",
+    "sha256": "4785525c134dc1318a6db332e93a00fd4c56c62af8bd16b3eb13b23e5b10fff9",
+    "independent": false
+  },
+  "source_commit": "5d73667a486df4a7b6c581e4c9406e810ed4f0f6",
+  "scenarios": {
+    "baseline": {
+      "beam_squint_deg": 3,
+      "receiver_snr_db": 15,
+      "broken_mode": false
+    },
+    "sweep_1": {
+      "beam_squint_deg": 5,
+      "receiver_snr_db": 15,
+      "broken_mode": false
+    },
+    "sweep_2": {
+      "beam_squint_deg": 3,
+      "receiver_snr_db": -5,
+      "broken_mode": false
+    },
+    "broken": {
+      "beam_squint_deg": 3,
+      "receiver_snr_db": 15,
+      "broken_mode": true
+    },
+    "recovery": {
+      "beam_squint_deg": 3,
+      "receiver_snr_db": 15,
+      "broken_mode": false
+    }
+  },
+  "signature_fields": [
+    {
+      "name": "model_valid",
+      "unit": "boolean"
+    },
+    {
+      "name": "active_angle_estimate",
+      "unit": "deg"
+    },
+    {
+      "name": "active_angle_error",
+      "unit": "deg"
+    },
+    {
+      "name": "snapshot_rmse",
+      "unit": "deg"
+    },
+    {
+      "name": "valid_snapshots",
+      "unit": "snapshots"
+    },
+    {
+      "name": "clipped_valid_snapshots",
+      "unit": "snapshots"
+    },
+    {
+      "name": "coherent_ratio",
+      "unit": "ratio"
+    },
+    {
+      "name": "gain_mismatch_boresight_bias",
+      "unit": "deg"
+    },
+    {
+      "name": "calibrated_boresight_error",
+      "unit": "deg"
+    },
+    {
+      "name": "local_comparator_slope",
+      "unit": "1/deg"
+    },
+    {
+      "name": "boresight_sum",
+      "unit": "voltage"
+    }
+  ],
+  "matlab_runtime_parity": "not_run"
+}

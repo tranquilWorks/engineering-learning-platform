@@ -3,13 +3,13 @@
   "id": "58-implement-track-initiation-confirmation-coasting-and-deletion",
   "number": 58,
   "title": "Implement Track Initiation, Confirmation, Coasting, and Deletion",
-  "summary": "Explore implement track initiation, confirmation, coasting, and deletion with a bounded deterministic Python model, two sweeps, and an intentional failure/recovery comparison.",
+  "summary": "Predict and associate reports before updating an explicit M-of-N lifecycle. Stable IDs record birth, tentative confirmation, coasting and deletion; truth labels enter only the final audit.",
   "guiding_question": "How does a radar avoid creating permanent tracks from single false alarms?",
   "status": "implemented",
   "tags": [
     "dsp-radar",
-    "phase-6",
-    "confirmation-hits"
+    "tracking",
+    "P58"
   ],
   "runtime": {
     "kind": "python",
@@ -19,41 +19,51 @@
   },
   "controls": [
     {
-      "id": "primary_scale",
-      "type": "slider",
-      "label": "Confirmation Hits",
-      "default": 1.0,
-      "unit": "\u00d7 baseline",
-      "minimum": 0.5,
-      "maximum": 1.5,
-      "step": 0.1,
-      "description": "Scales the lesson's primary source parameter while keeping the other controls fixed."
+      "id": "confirmation_hits",
+      "type": "segmented",
+      "label": "Confirmation hits",
+      "unit": "hits",
+      "default": 3,
+      "options": [
+        {
+          "label": "1",
+          "value": 1
+        },
+        {
+          "label": "3 baseline",
+          "value": 3
+        },
+        {
+          "label": "4",
+          "value": 4
+        }
+      ]
     },
     {
-      "id": "secondary_scale",
-      "type": "slider",
-      "label": "Secondary stress",
-      "default": 0.25,
-      "unit": "normalized",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "step": 0.05,
-      "description": "Introduces the secondary effect identified in the pinned source lesson."
-    },
-    {
-      "id": "noise_db",
-      "type": "slider",
-      "label": "Deterministic noise level",
-      "default": -28.0,
-      "unit": "dB",
-      "minimum": -40.0,
-      "maximum": 10.0,
-      "step": 1.0
+      "id": "coast_limit_scans",
+      "type": "segmented",
+      "label": "Coast limit scans",
+      "unit": "scans",
+      "default": 2,
+      "options": [
+        {
+          "label": "0",
+          "value": 0
+        },
+        {
+          "label": "2 baseline",
+          "value": 2
+        },
+        {
+          "label": "5",
+          "value": 5
+        }
+      ]
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Violate the central model assumption",
+      "label": "Enable the named failure",
       "default": false
     }
   ],
@@ -65,33 +75,40 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Before changing confirmation hits, predict which feature moves and which feature should remain invariant.",
-      "reveal": "Use the governing equation in the lesson, then verify by changing only one control."
+      "text": "Predict when the target earns 3-of-4 confirmation and when three consecutive misses delete it with coast limit two. How do stricter confirmation and longer coasting change false tracks and persistence?",
+      "reveal": "Predict and associate reports before updating an explicit M-of-N lifecycle. Stable IDs record birth, tentative confirmation, coasting and deletion; truth labels enter only the final audit."
     },
     {
       "type": "controls",
-      "title": "Source-bound experiment controls"
+      "title": "Experiment controls"
     },
     {
       "type": "metrics"
     },
     {
-      "type": "plot_grid",
-      "title": "Model and response",
-      "plots": [
-        "model_view",
-        "response_view"
-      ]
+      "type": "plot",
+      "title": "Reports earn a persistent track identity",
+      "plot": "tracks"
     },
     {
       "type": "plot",
-      "title": "One-variable sweeps",
-      "plot": "parameter_sweeps"
+      "title": "Lifecycle: 0 absent, 1 tentative, 2 confirmed, 3 coast, 4 deleted",
+      "plot": "lifecycle"
     },
     {
       "type": "plot",
-      "title": "Broken case and recovery",
-      "plot": "broken_case"
+      "title": "Managed versus bypassed persistence",
+      "plot": "counts"
+    },
+    {
+      "type": "plot",
+      "title": "Confirmation evidence requirement",
+      "plot": "confirmation_sweep"
+    },
+    {
+      "type": "plot",
+      "title": "Missing-scan budget changes target deletion",
+      "plot": "coast_sweep"
     },
     {
       "type": "callout",
@@ -102,7 +119,7 @@
     {
       "type": "callout",
       "tone": "warning",
-      "title": "Broken interpretation",
+      "title": "Broken",
       "source": "broken"
     },
     {

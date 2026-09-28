@@ -1,6 +1,4 @@
-# Implement Conventional Delay-and-Sum Beamforming
-
-> **Guiding question:** How does steering align one direction and misalign others?
+# P63 lesson: Steering Is a Spatial Matched Filter
 
 The guiding question is: **How does steering align one direction and misalign others?**
 
@@ -202,33 +200,29 @@ Python simulation do not prove MATLAB parsing/execution, rendered plots,
 educational effectiveness, antenna performance, hardware/HIL, real-time,
 field, deployment, or production behavior.
 
-## Use the Python GUI experiment
+## Interactive lab: Implement Conventional Delay-and-Sum Beamforming
 
-The GUI keeps the pinned source's mental model and processing order visible. The **steering angle** control scales the primary source variable around its documented baseline; **secondary stress** isolates the next important effect; the noise control uses a fixed retained seed so reruns are comparable.
+**Guiding question:** How does steering align one direction and misalign others?
 
-### Prediction and sweep 1 — steering angle
+Two unit-magnitude independent phase sequences illuminate M=8 sensors at half-wavelength spacing from -20/+25 degrees. There are 128 snapshots, a -60:.1:60-degree scan, and nominal 10 dB per-source per-sensor SNR. The 16-row noise bank is generated before selecting the aperture, preserving paired source inputs. P=wᴴXXᴴw/L equals mean|wᴴx|² with w=a/M. Separate seeded comparisons vary separation 6/12/24 degrees, aperture 4/8/16 at +/-8 degrees, SNR -15/0/15 dB, and prefixes 1/8/128 snapshots at 0 dB. Background excludes +/-10 degrees around each source; ripple uses sample standard deviation. The named sign failure uses seed 6315 and sources -20/+30 degrees.
 
-Hold secondary stress at 0.25 and predict the response at 0.6×, 1.0×, and 1.4× baseline. State which axis feature should move, which metric should change monotonically, and which quantity should remain invariant. Run those three cases and explain any departure using the governing equations above.
+### Predict, sweep, explain
 
-### Sweep 2 — secondary stress
+Predict when two sources merge as aperture shrinks. What does conjugate steering align, how do SNR and snapshot averaging differ, and why does a sign error mirror the scan?
 
-Restore the primary scale to 1.0. Sweep secondary stress through 0.0, 0.5, and 1.0. Separate a genuine model change from a display-scale change, and connect the response to the source lesson's limiting cases.
+1. Start at the baseline. Sweep only **Elements** from 8 to 16 elements. Predict the change, run, and explain a measured value using the equation; then reset.
+2. Start at the baseline. Sweep only **Source SNR db** from 10 to -15 dB. Predict the change, run, and explain a measured value using the equation; then reset.
+3. Enable the broken case. Reversing the steering phase convention mirrors the named -20/+30 degree scene. The failure keeps sensor data fixed and changes only the steering sign.
+4. Recovery: Restore the conjugate steering convention on that same named scene. Disable the toggle to return exactly to the selected -20/+25 degree baseline. Fixed phase weights assume narrowband signals.
 
-### Intentionally broken case and recovery
+### Focused check and teach-back
 
-Enable **Violate the central model assumption**. The experiment applies a deterministic ambiguity, contamination, association error, or coherent-processing error appropriate to this curriculum phase. Name the violated assumption before looking at the warning callout. Recover by disabling broken mode, returning primary scale to 1.0 and secondary stress to 0.25, and verifying that the original invariant returns.
+Predict when two sources merge as aperture shrinks. What does conjugate steering align, how do SNR and snapshot averaging differ, and why does a sign error mirror the scan? Support your answer with a measured value and units. Explain the recovery assumption and identify what this finite experiment cannot establish.
 
-## Common mistakes to avoid in the GUI
+### Common mistakes
 
-- Changing two controls at once and attributing the result to only one.
-- Reading a smooth plotted line as information that was never measured or modeled.
-- Ignoring axis units, normalization, sign, or the finite record/resource ceiling.
-- Treating the broken response as random software behavior instead of a named assumption failure.
+Reversing the steering phase convention mirrors the named -20/+30 degree scene. The failure keeps sensor data fixed and changes only the steering sign. Keep measured units, model assumptions and the named recovery boundary explicit.
 
-## Teach-back checklist
+### Scope of this lab
 
-- [ ] Answer the guiding question in two or three sentences.
-- [ ] Explain every symbol in at least one governing equation before invoking a processing shortcut.
-- [ ] Predict and verify both one-variable sweeps.
-- [ ] Identify the broken assumption from the plot and metric changes.
-- [ ] Demonstrate the recovery and state what remains unproved by this software-only experiment.
+The source lesson is preserved above. The source Park–Miller/Box–Muller input formulas and array ordering are retained, including P58’s zero uniform offset and the array complex-noise convention. This is algorithmic software evidence, not a MATLAB runtime execution claim. Source console/figure presentation becomes labeled native plots and metrics. Calculations use the full stated arrays; displayed line and heatmap coordinates may be decimated. Independent numerical comparisons retain five scenarios. No MATLAB execution, browser/accessibility review, representative learner, hardware or production validation is claimed.

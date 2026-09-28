@@ -3126,3 +3126,867 @@ _REFERENCES.update({f"P{n}": globals()[f"_p{n}"] for n in range(41, 53)})
 
 # Scenario declarations for P41-P52.
 SCENARIOS.update({'P41': {'baseline': {'range_correlation': 0.85, 'target_snr_db': -3, 'broken_mode': False}, 'sweep_1': {'range_correlation': 0.5, 'target_snr_db': -3, 'broken_mode': False}, 'sweep_2': {'range_correlation': 0.85, 'target_snr_db': 0, 'broken_mode': False}, 'broken': {'range_correlation': 0.85, 'target_snr_db': -3, 'broken_mode': True}, 'recovery': {'range_correlation': 0.85, 'target_snr_db': -3, 'broken_mode': False}}, 'P42': {'baseline': {'pulse_count': 64, 'hann_weight': 1, 'broken_mode': False}, 'sweep_1': {'pulse_count': 32, 'hann_weight': 1, 'broken_mode': False}, 'sweep_2': {'pulse_count': 64, 'hann_weight': 0, 'broken_mode': False}, 'broken': {'pulse_count': 64, 'hann_weight': 1, 'broken_mode': True}, 'recovery': {'pulse_count': 64, 'hann_weight': 1, 'broken_mode': False}}, 'P43': {'baseline': {'noise_rms': 1, 'clutter_pedestal': 0, 'broken_mode': False}, 'sweep_1': {'noise_rms': 2, 'clutter_pedestal': 0, 'broken_mode': False}, 'sweep_2': {'noise_rms': 1, 'clutter_pedestal': 1, 'broken_mode': False}, 'broken': {'noise_rms': 1, 'clutter_pedestal': 0, 'broken_mode': True}, 'recovery': {'noise_rms': 1, 'clutter_pedestal': 0, 'broken_mode': False}}, 'P44': {'baseline': {'matched_snr_db': 6, 'threshold_sigma': 3.090232306, 'broken_mode': False}, 'sweep_1': {'matched_snr_db': 12, 'threshold_sigma': 3.090232306, 'broken_mode': False}, 'sweep_2': {'matched_snr_db': 6, 'threshold_sigma': 2, 'broken_mode': False}, 'broken': {'matched_snr_db': 6, 'threshold_sigma': 3.090232306, 'broken_mode': True}, 'recovery': {'matched_snr_db': 6, 'threshold_sigma': 3.090232306, 'broken_mode': False}}, 'P45': {'baseline': {'design_pfa': 0.001, 'scene_power_scale': 1, 'broken_mode': False}, 'sweep_1': {'design_pfa': 0.01, 'scene_power_scale': 1, 'broken_mode': False}, 'sweep_2': {'design_pfa': 0.001, 'scene_power_scale': 2, 'broken_mode': False}, 'broken': {'design_pfa': 0.001, 'scene_power_scale': 1, 'broken_mode': True}, 'recovery': {'design_pfa': 0.001, 'scene_power_scale': 1, 'broken_mode': False}}, 'P46': {'baseline': {'guard_cells': 4, 'training_cells': 12, 'broken_mode': False}, 'sweep_1': {'guard_cells': 0, 'training_cells': 12, 'broken_mode': False}, 'sweep_2': {'guard_cells': 4, 'training_cells': 36, 'broken_mode': False}, 'broken': {'guard_cells': 4, 'training_cells': 12, 'broken_mode': True}, 'recovery': {'guard_cells': 4, 'training_cells': 12, 'broken_mode': False}}, 'P47': {'baseline': {'training_count': 16, 'design_pfa': 0.001, 'broken_mode': False}, 'sweep_1': {'training_count': 64, 'design_pfa': 0.001, 'broken_mode': False}, 'sweep_2': {'training_count': 16, 'design_pfa': 0.01, 'broken_mode': False}, 'broken': {'training_count': 16, 'design_pfa': 0.001, 'broken_mode': True}, 'recovery': {'training_count': 16, 'design_pfa': 0.001, 'broken_mode': False}}, 'P48': {'baseline': {'clutter_step_db': 12, 'interferer_power_db': 20, 'broken_mode': False}, 'sweep_1': {'clutter_step_db': 18, 'interferer_power_db': 20, 'broken_mode': False}, 'sweep_2': {'clutter_step_db': 12, 'interferer_power_db': 10, 'broken_mode': False}, 'broken': {'clutter_step_db': 12, 'interferer_power_db': 20, 'broken_mode': True}, 'recovery': {'clutter_step_db': 12, 'interferer_power_db': 20, 'broken_mode': False}}, 'P49': {'baseline': {'os_rank': 18, 'interferer_power_db': 20, 'broken_mode': False}, 'sweep_1': {'os_rank': 22, 'interferer_power_db': 20, 'broken_mode': False}, 'sweep_2': {'os_rank': 18, 'interferer_power_db': 30, 'broken_mode': False}, 'broken': {'os_rank': 18, 'interferer_power_db': 20, 'broken_mode': True}, 'recovery': {'os_rank': 18, 'interferer_power_db': 20, 'broken_mode': False}}, 'P50': {'baseline': {'range_training_half_width': 6, 'doppler_training_half_width': 4, 'broken_mode': False}, 'sweep_1': {'range_training_half_width': 12, 'doppler_training_half_width': 4, 'broken_mode': False}, 'sweep_2': {'range_training_half_width': 6, 'doppler_training_half_width': 8, 'broken_mode': False}, 'broken': {'range_training_half_width': 6, 'doppler_training_half_width': 4, 'broken_mode': True}, 'recovery': {'range_training_half_width': 6, 'doppler_training_half_width': 4, 'broken_mode': False}}, 'P51': {'baseline': {'clutter_contrast_db': 12, 'os_rank': 18, 'broken_mode': False}, 'sweep_1': {'clutter_contrast_db': 18, 'os_rank': 18, 'broken_mode': False}, 'sweep_2': {'clutter_contrast_db': 12, 'os_rank': 22, 'broken_mode': False}, 'broken': {'clutter_contrast_db': 12, 'os_rank': 18, 'broken_mode': True}, 'recovery': {'clutter_contrast_db': 12, 'os_rank': 18, 'broken_mode': False}}, 'P52': {'baseline': {'training_count': 24, 'design_pfa': 0.001, 'broken_mode': False}, 'sweep_1': {'training_count': 8, 'design_pfa': 0.001, 'broken_mode': False}, 'sweep_2': {'training_count': 24, 'design_pfa': 0.003, 'broken_mode': False}, 'broken': {'training_count': 24, 'design_pfa': 0.001, 'broken_mode': True}, 'recovery': {'training_count': 24, 'design_pfa': 0.001, 'broken_mode': False}}})
+
+# P53-P64 independent references. The preceding reference prefix is immutable.
+# Seeded input definitions are shared by specification, not by executable imports.
+# References use labeling/moments, sparse batch recursion, covariance subtraction,
+# whitened distances, event records, scalar assignment, second-moment IMM mixing,
+# analytic array sums and covariance-domain beam power.
+
+
+def _r53_uniform(seed, count, offset=0.5):
+    modulus = 2147483647
+    return np.array(
+        [
+            (seed * pow(16807, k + 1, modulus) % modulus + offset) / modulus
+            for k in range(count)
+        ]
+    )
+
+
+def _r53_normal(seed, count, offset=0.5):
+    import math
+
+    uniforms = _r53_uniform(seed, 2 * ((count + 1) // 2), offset)
+    values = []
+    for first, second in zip(uniforms[::2], uniforms[1::2]):
+        radius = math.sqrt(-2 * math.log(first))
+        values.extend(
+            [
+                radius * math.cos(2 * math.pi * second),
+                radius * math.sin(2 * math.pi * second),
+            ]
+        )
+    return np.array(values[:count])
+
+
+def _p53(p):
+    from scipy import ndimage
+
+    r, v = np.arange(72) * 15.0, (np.arange(65) - 32) * 0.5
+    noise = abs(np.random.default_rng(5301).standard_normal((72, 65)))
+    score = 0.25 + 0.20 * noise / noise.max()
+    for rt, vt, amplitude, wr, wv in [
+        (365.25, 4.2, 5, 20.25, 0.55),
+        (742.5, -6.25, 3.6, 15.75, 0.65),
+        (392.25, 4.6, 1.8, 10.5, 0.325),
+    ]:
+        score += amplitude * np.outer(
+            np.exp(-0.5 * ((r - rt) / wr) ** 2), np.exp(-0.5 * ((v - vt) / wv) ** 2)
+        )
+    for a, b, value in [
+        (22, 17, 1.42),
+        (22, 18, 1.24),
+        (55, 52, 1.38),
+        (56, 52, 1.20),
+        (10, 55, 1.31),
+        (35, 9, 1.27),
+        (64, 31, 1.34),
+    ]:
+        score[a - 1, b - 1] = value
+    detected = score > 1
+    labels, count = ndimage.label(detected, np.ones((3, 3)))
+    sizes = np.bincount(labels.ravel())
+    accepted = np.flatnonzero(sizes[1:] >= p["minimum_cells"]) + 1
+    peaks = np.count_nonzero(
+        detected & (score == ndimage.maximum_filter(score, size=3))
+    )
+    target_ids = [labels[24, 40], labels[50, 20]]
+    cells = labels == target_ids[0]
+    weights = np.where(cells, np.maximum(score - 1, 0) ** p["weight_exponent"], 0.0)
+    center = ndimage.center_of_mass(weights)
+    mr, mv = center[0] * 15, (center[1] - 32) * 0.5
+    neff = weights.sum() ** 2 / np.sum(weights**2)
+    variance = np.sum(weights * (r[:, None] - mr) ** 2) / weights.sum()
+    return [
+        not p["broken_mode"],
+        detected.sum(),
+        peaks,
+        count,
+        peaks if p["broken_mode"] else len(accepted),
+        sum(t in accepted for t in target_ids),
+        mr,
+        mv,
+        np.sqrt(variance / neff + 225 / 12),
+        neff,
+    ]
+
+
+def _p54(p):
+    from scipy.sparse import lil_matrix
+    from scipy.sparse.linalg import spsolve
+
+    velocity = np.r_[np.full(40, 20.0), np.full(41, 32.0)]
+    position = 1000 + np.r_[0.0, np.cumsum(velocity[:-1])]
+    reports = position + 30 * np.random.default_rng(5401).standard_normal(81)
+    available = ~np.isin(np.arange(1, 82), [18, 19, 20, 66, 67, 68])
+    # Solve all state-recursion constraints together as a block triangular system.
+    matrix = lil_matrix((162, 162))
+    rhs = np.zeros(162)
+    matrix[:2, :2] = np.eye(2)
+    rhs[:2] = [reports[0], 0]
+    f = np.array([[1.0, 1.0], [0.0, 1.0]])
+    for k in range(1, 81):
+        gain = (
+            np.array([p["alpha_gain"], 0 if p["broken_mode"] else p["beta_gain"]])
+            if available[k]
+            else np.zeros(2)
+        )
+        matrix[2 * k : 2 * k + 2, 2 * k : 2 * k + 2] = np.eye(2)
+        matrix[2 * k : 2 * k + 2, 2 * k - 2 : 2 * k] = (
+            -(np.eye(2) - np.outer(gain, [1.0, 0.0])) @ f
+        )
+        rhs[2 * k : 2 * k + 2] = gain * reports[k]
+    state = spsolve(matrix.tocsr(), rhs).reshape(81, 2)
+    prediction = np.r_[state[:1, 0], state[:-1, 0] + state[:-1, 1]]
+    mask = available & (np.arange(81) >= 10)
+    rms = lambda a: np.sqrt(np.mean(a * a))
+    return [
+        not p["broken_mode"],
+        rms(state[10:, 0] - position[10:]),
+        rms(state[10:, 1] - velocity[10:]),
+        rms(state[10:40, 0] - position[10:40]),
+        state[-1, 1],
+        6,
+        state[-1, 0],
+        rms((reports - prediction)[mask]),
+    ]
+
+
+def _r55_filter(z, sigma_a, sigma_z):
+    # Covariance subtraction P+ = P- - C S^-1 C^T, independently of Joseph form.
+    f = np.array([[1.0, 1.0], [0.0, 1.0]])
+    q = sigma_a**2 * np.array([[0.25, 0.5], [0.5, 1.0]])
+    x = np.array([z[0], 0.0])
+    cov = np.diag([625.0, 225.0])
+    states = [x.copy()]
+    covs = [cov.copy()]
+    gains = [0.0]
+    nis = [0.0]
+    for sample in z[1:]:
+        x = f @ x
+        cov = f @ cov @ f.T + q
+        cross = cov[:, 0].copy()
+        s = cov[0, 0] + sigma_z**2
+        error = sample - x[0]
+        x = x + cross / s * error
+        cov = cov - np.outer(cross, cross) / s
+        cov = (cov + cov.T) / 2
+        states.append(x.copy())
+        covs.append(cov.copy())
+        gains.append(cross[0] / s)
+        nis.append(error * error / s)
+    return np.array(states), np.array(covs), np.array(gains), np.array(nis)
+
+
+def _p55(p):
+    rng = np.random.default_rng(5501)
+    a = 0.8 * rng.standard_normal(100)
+    v = 20 + np.r_[0.0, np.cumsum(a)]
+    x = 1000 + np.r_[0.0, np.cumsum(v[:-1] + a / 2)]
+    z = x + 25 * rng.standard_normal(101)
+    state, cov, gain, nis = _r55_filter(
+        z, 0 if p["broken_mode"] else p["acceleration_sigma_mps2"], p["report_sigma_m"]
+    )
+    low_r = _r55_filter(z, p["acceleration_sigma_mps2"], 0.5)[0]
+    rms = lambda a: np.sqrt(np.mean(a * a))
+    return [
+        not p["broken_mode"],
+        rms(state[15:, 0] - x[15:]),
+        rms(state[15:, 1] - v[15:]),
+        nis[15:].mean(),
+        np.sqrt(cov[-1, 0, 0]),
+        np.sqrt(cov[-1, 1, 1]),
+        gain[15:].mean(),
+        rms(low_r[15:, 0] - x[15:]),
+        np.linalg.eigvalsh(cov).min(),
+    ]
+
+
+def _p56(p):
+    from scipy.linalg import cho_factor, cho_solve
+
+    rng = np.random.default_rng(5601)
+    a = 0.25 * rng.standard_normal((2, 100))
+    velocity = np.array([4.0, -12.0])[:, None] + np.column_stack(
+        [np.zeros(2), np.cumsum(a, axis=1)]
+    )
+    position = np.array([-1600.0, 600.0])[:, None] + np.column_stack(
+        [np.zeros(2), np.cumsum(velocity[:, :-1] + a / 2, axis=1)]
+    )
+    radius = np.sqrt(np.sum(position**2, axis=0))
+    theta = np.arctan2(position[1], position[0])
+    z = np.column_stack(
+        [
+            radius + 18 * rng.standard_normal(101),
+            theta + np.deg2rad(0.8) * rng.standard_normal(101),
+        ]
+    )
+    z[:, 1] = np.angle(np.exp(1j * z[:, 1]))
+    # Independent state ordering [px,py,vx,vy] and Cholesky innovation solves.
+    f = np.block([[np.eye(2), np.eye(2)], [np.zeros((2, 2)), np.eye(2)]])
+    g = np.vstack([0.5 * np.eye(2), np.eye(2)])
+    q = 0.25**2 * g @ g.T
+    r = np.diag([324.0, np.deg2rad(p["bearing_sigma_deg"]) ** 2])
+    c, si = np.cos(z[0, 1]), np.sin(z[0, 1])
+    j = np.array([[c, -z[0, 0] * si], [si, z[0, 0] * c]])
+    state = np.array([z[0, 0] * c, z[0, 0] * si, 0.0, 0.0])
+    cov = np.zeros((4, 4))
+    cov[:2, :2] = j @ np.diag([324.0, np.deg2rad(0.8) ** 2]) @ j.T
+    cov[2:, 2:] = 400 * np.eye(2)
+    estimates = [state.copy()]
+    covs = [cov.copy()]
+    angles = [0.0]
+    nis = [0.0]
+    for sample in z[1:]:
+        state = f @ state
+        cov = f @ cov @ f.T + q
+        xx, yy = state[:2]
+        rr = xx * xx + yy * yy
+        radius = np.sqrt(rr)
+        h = np.array([[xx / radius, yy / radius, 0, 0], [-yy / rr, xx / rr, 0, 0]])
+        nu = sample - [radius, np.arctan2(yy, xx)]
+        if not p["broken_mode"]:
+            nu[1] = np.angle(np.exp(1j * nu[1]))
+        cross = cov @ h.T
+        s = h @ cross + r
+        factor = cho_factor(s)
+        gain = cho_solve(factor, cross.T).T
+        state += gain @ nu
+        cov -= gain @ cross.T
+        cov = (cov + cov.T) / 2
+        estimates.append(state.copy())
+        covs.append(cov.copy())
+        angles.append(nu[1])
+        nis.append(nu @ cho_solve(factor, nu))
+    estimates = np.array(estimates)
+    covs = np.array(covs)
+    error = estimates[:, :2] - position.T
+    tangent = p["geometry_range_m"] * np.deg2rad(p["bearing_sigma_deg"])
+    return [
+        not p["broken_mode"],
+        np.sqrt(np.mean(np.sum(error[15:] ** 2, axis=1))),
+        np.mean(nis[15:]),
+        np.rad2deg(np.max(abs(np.array(angles)))),
+        estimates[-1, 0],
+        estimates[-1, 1],
+        np.sqrt(np.trace(covs[-1, :2, :2])),
+        tangent,
+        max(18, tangent),
+        np.linalg.eigvalsh(covs).min(),
+    ]
+
+
+def _r57_assignment(cost, gate):
+    # Sorted edges with explicit exclusion sets, independent of matrix erasure.
+    pairs = sorted(
+        (float(cost[i, j]), j, i)
+        for i in range(cost.shape[0])
+        for j in range(cost.shape[1])
+        if gate[i, j]
+    )
+    used_rows = set()
+    used_columns = set()
+    result = np.full(cost.shape[0], -1, int)
+    for _, j, i in pairs:
+        if i not in used_rows and j not in used_columns:
+            result[i] = j
+            used_rows.add(i)
+            used_columns.add(j)
+    return result
+
+
+def _p57(p):
+    position = np.array([[0.0, 0.0], [200.0, 50.0], [400.0, -100.0]])
+    variance = np.array(
+        [
+            [45**2 + 5**2 + 0.25, 7**2 + 2**2 + 0.25],
+            [12**2 + 4**2 + 0.25, 12**2 + 4**2 + 0.25],
+            [14**2 + 4**2 + 0.25, 10**2 + 3**2 + 0.25],
+        ]
+    )
+    targets = (
+        position + [[44, 0], [4, -5], [-6, 7]] + 6 * _r53_normal(5701, 6).reshape(3, 2)
+    )
+    reports = np.array(
+        [targets[1], [0, 30], targets[0], [110, 140], targets[2], [520, 40]]
+    )
+    variances = p["covariance_scale"] * variance + 36
+    residual = reports[None, :, :] - position[:, None, :]
+    whitened = residual / np.sqrt(variances[:, None, :])
+    distance = np.sum(whitened**2, axis=2)
+    valid = distance <= p["gate_d2"]
+    cost = np.sum(residual**2, axis=2) if p["broken_mode"] else distance
+    assignment = _r57_assignment(
+        cost, np.ones_like(valid) if p["broken_mode"] else valid
+    )
+    labels = [2, 0, 1, 0, 3, 0]
+    correct = sum(j >= 0 and labels[j] == i + 1 for i, j in enumerate(assignment))
+    return [
+        not p["broken_mode"],
+        sum(assignment >= 0),
+        correct,
+        valid.sum(),
+        distance[0, 2],
+        distance[0, 1],
+        np.pi * p["gate_d2"] * np.sqrt(np.prod(variances[0])),
+        *(assignment + 1),
+    ]
+
+
+def _p58(p):
+    scans = np.arange(1, 31)
+    target_scans = scans[(scans >= 4) & (scans <= 24) & ~np.isin(scans, [6, 12, 13])]
+    target_values = (
+        1000 + 12 * (target_scans - 4) + 3 * _r53_normal(5802, len(target_scans), 0)
+    )
+    targets = dict(zip(target_scans, target_values))
+    false_scans = [2, 5, 8, 11, 15, 18, 22, 26]
+    false_values = 100 + 100 * np.arange(8) + 20 * (_r53_uniform(5801, 8, 0) - 0.5)
+    false = dict(zip(false_scans, false_values))
+    records = [
+        sorted(
+            ([(targets[k], 1)] if k in targets else [])
+            + ([(false[k], 0)] if k in false else [])
+        )
+        for k in scans
+    ]
+    required, window, coasts = (
+        (1, 1, 30)
+        if p["broken_mode"]
+        else (int(p["confirmation_hits"]), 4, int(p["coast_limit_scans"]))
+    )
+    tracks = []
+    active_counts = []
+    # Object/event formulation: lists of observation booleans and state transitions.
+    for scan, record in enumerate(records, 1):
+        eligible = [i for i, t in enumerate(tracks) if t["deleted"] == 0]
+        predictions = {
+            i: tracks[i]["position"] + tracks[i]["velocity"] for i in eligible
+        }
+        edges = sorted(
+            (abs(value - predictions[i]), j, i)
+            for i in eligible
+            for j, (value, _) in enumerate(record)
+            if abs(value - predictions[i]) <= 40
+        )
+        assigned = {}
+        used = set()
+        for _, j, i in edges:
+            if i not in assigned and j not in used:
+                assigned[i] = j
+                used.add(j)
+        for i in eligible:
+            t = tracks[i]
+            hit = i in assigned
+            t["observations"].append(hit)
+            t["observations"] = t["observations"][-window:]
+            if hit:
+                innovation = record[assigned[i]][0] - predictions[i]
+                t["position"] = predictions[i] + 0.7 * innovation
+                t["velocity"] += 0.2 * innovation
+                t["misses"] = 0
+            else:
+                t["position"] = predictions[i]
+                t["misses"] += 1
+            if not t["confirmed"] and sum(t["observations"]) >= required:
+                t["confirmed"] = scan
+            if (
+                not t["confirmed"]
+                and scan - t["born"] + 1 >= window
+                and sum(t["observations"]) < required
+            ) or (t["confirmed"] and t["misses"] > coasts):
+                t["deleted"] = scan
+            t["states"][scan] = (
+                4
+                if t["deleted"]
+                else (1 if not t["confirmed"] else (3 if t["misses"] else 2))
+            )
+        for j, (value, label) in enumerate(record):
+            if j not in used:
+                tracks.append(
+                    {
+                        "position": value,
+                        "velocity": 0.0,
+                        "observations": [True],
+                        "misses": 0,
+                        "born": scan,
+                        "confirmed": scan if required == 1 else 0,
+                        "deleted": 0,
+                        "origin": label,
+                        "states": {scan: 2 if required == 1 else 1},
+                    }
+                )
+        active_counts.append(sum(t["deleted"] == 0 for t in tracks))
+    targets = [t for t in tracks if t["origin"] == 1 and t["confirmed"]]
+    first = targets[0] if targets else None
+    survived = int(
+        first is not None
+        and [first["states"].get(k, 0) for k in [12, 13, 14]] == [3, 3, 2]
+    )
+    return [
+        not p["broken_mode"],
+        len(tracks),
+        sum(t["origin"] == 0 and t["confirmed"] > 0 for t in tracks),
+        len(targets),
+        min((t["confirmed"] for t in targets), default=0),
+        max((t["deleted"] for t in targets), default=0),
+        survived,
+        max(active_counts),
+        active_counts[-1],
+    ]
+
+
+def _r59_scene(seed, sigma, dt, separation=0):
+    noise = _r53_normal(seed, 200).reshape(25, 2, 4)
+    velocity = np.array([[20.0, 5.0], [20.0, -5.0]])
+    times = (np.arange(25) - 12) * dt
+    truth = np.array(
+        [velocity * t + [[-separation / 2, 0], [separation / 2, 0]] for t in times]
+    )
+    reports = truth + sigma * noise[:, :, :2]
+    vr = velocity + 3 * noise[:, :, 2:]
+    reports[1::2] = reports[1::2, ::-1].copy()
+    vr[1::2] = vr[1::2, ::-1].copy()
+    return truth, reports, vr
+
+
+def _r59_track(scene, sigma, dt, weight, reuse=False):
+    truth, reports, velocity_reports = scene
+    x = truth[0].copy()
+    velocity = np.array([[20.0, 5.0], [20.0, -5.0]])
+    states = []
+    truth_ids = []
+    duplicates = 0
+    for k in range(25):
+        predicted = x.copy() if k == 0 else x + dt * velocity
+        costs = np.empty((2, 2))
+        for i in range(2):
+            for j in range(2):
+                dx, dy = reports[k, j] - predicted[i]
+                dvx, dvy = velocity_reports[k, j] - velocity[i]
+                costs[i, j] = (dx * dx + dy * dy) / sigma**2 + weight * (
+                    dvx * dvx + dvy * dvy
+                ) / 9
+        if reuse:
+            assignment = np.argmin(costs, axis=1)
+        else:
+            assignment = _r57_assignment(costs, np.ones((2, 2), bool))
+        duplicates += int(assignment[0] == assignment[1])
+        truth_ids.append(assignment if k % 2 == 0 else 1 - assignment)
+        for i, j in enumerate(assignment):
+            residual = reports[k, j] - predicted[i]
+            x[i] = predicted[i] + 0.6 * residual
+            velocity[i] += 0.25 / dt * residual
+        states.append(x.copy())
+    ids = np.array(truth_ids)
+    wrong = int(np.count_nonzero(ids != [0, 1]))
+    changes = int(np.count_nonzero(ids[1:] != ids[:-1]))
+    rmse = np.sqrt(np.mean(np.sum((np.array(states) - truth) ** 2, axis=2)))
+    return wrong, changes, duplicates, rmse
+
+
+def _p59(p):
+    sigma = p["position_sigma_m"]
+    dt = p["scan_interval_s"]
+    scene = _r59_scene(5908, sigma, dt)
+    position = _r59_track(scene, sigma, dt, 0)
+    active = _r59_track(
+        scene, sigma, dt, 0 if p["broken_mode"] else 1, p["broken_mode"]
+    )
+    counts = np.zeros(3)
+    for seed in range(5901, 6101):
+        high = _r59_scene(seed, 10, dt)
+        wide = _r59_scene(seed, sigma, dt, 24)
+        counts[0] += _r59_track(high, 10, dt, 0)[0] > 0
+        counts[1] += _r59_track(high, 10, dt, 1)[0] > 0
+        counts[2] += _r59_track(wide, sigma, dt, 0)[0] > 0
+    return [
+        not p["broken_mode"],
+        active[0],
+        position[0],
+        active[1],
+        active[2],
+        active[3],
+        *(counts / 200),
+    ]
+
+
+def _r60_scene(strength):
+    acceleration = np.zeros((60, 2))
+    acceleration[15:25, 1] = strength
+    acceleration[38:48, 0] = -strength
+    velocity = np.array([20.0, 5.0]) + np.cumsum(acceleration, axis=0)
+    position = np.cumsum(velocity - 0.5 * acceleration, axis=0)
+    truth = np.column_stack(
+        [
+            position[:, 0],
+            velocity[:, 0],
+            acceleration[:, 0],
+            position[:, 1],
+            velocity[:, 1],
+            acceleration[:, 1],
+        ]
+    )
+    return (
+        truth,
+        position + 10 * _r53_normal(6007, 120).reshape(60, 2),
+        np.any(acceleration != 0, axis=1),
+    )
+
+
+def _r60_filter(reports, stay, broken):
+    from scipy.linalg import cho_factor, cho_solve
+
+    f = [
+        np.kron(np.eye(2), [[1.0, 1, 0], [0, 1, 0], [0, 0, 0]]),
+        np.kron(np.eye(2), [[1.0, 1, 0.5], [0, 1, 1], [0, 0, 1]]),
+    ]
+    g = [np.array([0.5, 1, 1]), np.array([1 / 6, 0.5, 1])]
+    q = [np.kron(np.eye(2), s * s * np.outer(a, a)) for s, a in zip([0.35, 0.8], g)]
+    matrix = np.eye(2) if broken else np.array([[stay, 1 - stay], [1 - stay, stay]])
+    prob = np.array([1.0, 0.0]) if broken else np.array([0.85, 0.15])
+    states = np.tile([0.0, 20, 0, 0, 5, 0], (2, 1))
+    covs = np.tile(np.diag([100.0, 100, 16, 100, 100, 16]), (2, 1, 1))
+    combined = []
+    combined_cov = []
+    probabilities = []
+    indices = [0, 3]
+    for z in reports:
+        prior = matrix.T @ prob
+        next_states = []
+        next_cov = []
+        logweights = []
+        for j in range(2):
+            w = prob * matrix[:, j] / prior[j] if prior[j] else np.eye(2)[j]
+            mean = w @ states
+            # Total second moment minus outer mixed mean, rather than offset accumulation.
+            second = sum(
+                w[i] * (covs[i] + np.outer(states[i], states[i])) for i in range(2)
+            )
+            mixed = second - np.outer(mean, mean)
+            xp = f[j] @ mean
+            pp = f[j] @ mixed @ f[j].T + q[j]
+            innovation = z - xp[indices]
+            s = pp[np.ix_(indices, indices)] + 100 * np.eye(2)
+            factor = cho_factor(s)
+            cross = pp[:, indices]
+            gain = cho_solve(factor, cross.T).T
+            updated = xp + gain @ innovation
+            covariance = pp - gain @ cross.T
+            next_states.append(updated)
+            next_cov.append((covariance + covariance.T) / 2)
+            ll = -0.5 * (
+                2 * np.log(2 * np.pi)
+                + np.linalg.slogdet(s)[1]
+                + innovation @ cho_solve(factor, innovation)
+            )
+            logweights.append(np.log(prior[j]) + ll if prior[j] else -np.inf)
+        states = np.array(next_states)
+        covs = np.array(next_cov)
+        logweights = np.array(logweights)
+        prob = np.exp(logweights - max(logweights))
+        prob /= prob.sum()
+        mean = prob @ states
+        second = sum(
+            prob[i] * (covs[i] + np.outer(states[i], states[i])) for i in range(2)
+        )
+        cov = second - np.outer(mean, mean)
+        combined.append(mean)
+        combined_cov.append((cov + cov.T) / 2)
+        probabilities.append(prob.copy())
+    return np.array(combined), np.array(combined_cov), np.array(probabilities)
+
+
+def _p60(p):
+    truth, reports, maneuver = _r60_scene(p["maneuver_acceleration_mps2"])
+    state, cov, prob = _r60_filter(
+        reports, p["mode_stay_probability"], p["broken_mode"]
+    )
+    fixed = _r60_filter(reports, p["mode_stay_probability"], True)[0]
+    rmse = lambda x: np.sqrt(
+        np.mean(np.sum((x[:, [0, 3]] - truth[:, [0, 3]]) ** 2, axis=1))
+    )
+    return [
+        not p["broken_mode"],
+        rmse(state),
+        rmse(fixed),
+        prob[maneuver, 1].mean(),
+        prob[:, 1].max(),
+        state[-1, 0],
+        state[-1, 3],
+        abs(prob.sum(axis=1) - 1).max(),
+        np.linalg.eigvalsh(cov).min(),
+    ]
+
+
+def _r61_snapshot(angle, q, noise=True):
+    m = np.arange(8)
+    phase = np.deg2rad(20) + 2 * np.pi * q * m * np.sin(np.deg2rad(angle))
+    real = np.cos(phase)
+    imag = np.sin(phase)
+    if noise:
+        z = _r53_normal(6101, 16) * 10 ** (-35 / 20) / np.sqrt(2)
+        real += z[:8]
+        imag += z[8:]
+    principal = np.arctan2(imag, real)
+    unwrapped = np.unwrap(principal)
+    coefficients = np.polynomial.polynomial.polyfit(m, unwrapped, 1)
+    fit = coefficients[0] + coefficients[1] * m
+    cross_real = np.sum(real[:-1] * real[1:] + imag[:-1] * imag[1:])
+    cross_imag = np.sum(real[:-1] * imag[1:] - imag[:-1] * real[1:])
+    step = np.arctan2(cross_imag, cross_real)
+    return (
+        coefficients[1],
+        step,
+        np.rad2deg(np.arcsin(np.clip(coefficients[1] / (2 * np.pi * q), -1, 1))),
+        np.sqrt(np.mean((unwrapped - fit) ** 2)),
+        real + 1j * imag,
+    )
+
+
+def _p61(p):
+    true_alias = np.rad2deg(np.arcsin(0.6))
+    alias = np.rad2deg(np.arcsin(-0.4))
+    angle = true_alias if p["broken_mode"] else p["arrival_angle_deg"]
+    q = 1 if p["broken_mode"] else p["spacing_wavelengths"]
+    active = _r61_snapshot(angle, q, not p["broken_mode"])
+    wrong = _r61_snapshot(true_alias, 1, False)
+    other = _r61_snapshot(alias, 1, False)
+    recovery = _r61_snapshot(true_alias, 0.5, False)
+    return [
+        not p["broken_mode"],
+        2 * np.pi * q * np.sin(np.deg2rad(angle)),
+        active[0],
+        active[1],
+        active[2],
+        active[2] - angle,
+        active[3],
+        max(abs(wrong[4] - other[4])),
+        recovery[2],
+        -7 * q * np.sin(np.deg2rad(angle)) / 3e9 * 1e12,
+    ]
+
+
+def _r62_sum(m, phase):
+    # Analytic finite geometric series, including removable singularities.
+    phase = np.asarray(phase)
+    den = np.sin(phase / 2)
+    out = np.empty(phase.shape, complex)
+    singular = abs(den) < 1e-12
+    out[singular] = m
+    out[~singular] = (
+        np.exp(0.5j * (m - 1) * phase[~singular])
+        * np.sin(m * phase[~singular] / 2)
+        / den[~singular]
+    )
+    return out
+
+
+def _r62_pattern(m, q, steer, angles, taper=False):
+    phase = 2 * np.pi * q * (np.sin(np.deg2rad(angles)) - np.sin(np.deg2rad(steer)))
+    if not taper:
+        return abs(_r62_sum(m, phase)) / m
+    shift = 2 * np.pi / (m - 1)
+    response = 0.54 * _r62_sum(m, phase) - 0.23 * (
+        _r62_sum(m, phase + shift) + _r62_sum(m, phase - shift)
+    )
+    return abs(response) / (0.54 * m - 0.46)
+
+
+def _r62_metrics(angles, response, steer):
+    from scipy.signal import find_peaks
+
+    indices = np.flatnonzero(abs(angles - steer) <= 5)
+    peak = indices[np.argmax(response[indices])]
+    response = response / response[peak]
+    half = 2**-0.5
+    lo = np.flatnonzero(response[:peak] <= half)[-1]
+    hi = peak + np.flatnonzero(response[peak:] <= half)[0]
+    left = np.interp(half, response[lo : lo + 2], angles[lo : lo + 2])
+    right = np.interp(
+        half, response[hi - 1 : hi + 1][::-1], angles[hi - 1 : hi + 1][::-1]
+    )
+    nulls = find_peaks(-response)[0]
+    a = nulls[nulls < peak][-1]
+    b = nulls[nulls > peak][0]
+    sidelobe = np.max(response[np.r_[np.arange(a + 1), np.arange(b, len(response))]])
+    return right - left, angles[b] - angles[a], 20 * np.log10(sidelobe), angles[peak]
+
+
+def _p62(p):
+    m = int(p["elements"])
+    q = 1 if p["broken_mode"] else p["spacing_wavelengths"]
+    steer = 30 if p["broken_mode"] else 0
+    angles = np.linspace(-90, 90, 7201)
+    metrics = _r62_metrics(angles, _r62_pattern(m, q, steer, angles), steer)
+    taper = _r62_metrics(angles, _r62_pattern(8, 0.5, 0, angles, True), 0)
+    visible = sum(
+        abs(np.sin(np.deg2rad(steer)) + order / q) <= 1
+        for order in range(-int(np.ceil(2 * q)), int(np.ceil(2 * q)) + 1)
+        if order
+    )
+    return [
+        not p["broken_mode"],
+        *metrics,
+        visible,
+        _r62_pattern(m, q, steer, np.array([-30]))[0],
+        taper[0],
+        taper[2],
+        _r62_pattern(m, 0.5, 30, np.array([-30]))[0],
+        _r62_pattern(m, q, steer, np.array([-60 + 120 * _r53_uniform(6201, 4)[0]]))[0],
+    ]
+
+
+def _r63_noise(seed, rows, columns):
+    u = _r53_uniform(seed, 2 * rows * columns)
+    amplitude = np.sqrt(-np.log(u[::2]))
+    phase = 2 * np.pi * u[1::2]
+    return (
+        (amplitude * np.cos(phase) + 1j * amplitude * np.sin(phase))
+        .reshape(columns, rows)
+        .T
+    )
+
+
+def _r63_scene(seed, m, directions, snr):
+    phases = 2 * np.pi * _r53_uniform(seed, 256).reshape(128, 2).T
+    source = np.cos(phases) + 1j * np.sin(phases)
+    data = _r63_noise(seed + 1, 16, 128)[:m] * 10 ** (-snr / 20)
+    for j, direction in enumerate(directions):
+        phase = np.pi * np.arange(m) * np.sin(np.deg2rad(direction))
+        data += (np.cos(phase) + 1j * np.sin(phase))[:, None] * source[j]
+    return data
+
+
+def _r63_power(data, angles, sign=1):
+    # Covariance-domain Bartlett power independently checks snapshot-domain sums.
+    m = len(data)
+    cov = data @ data.conj().T / data.shape[1]
+    phase = sign * np.pi * np.arange(m)[:, None] * np.sin(np.deg2rad(angles))
+    a = np.cos(phase) + 1j * np.sin(phase)
+    return np.real(np.einsum("ia,ij,ja->a", a.conj(), cov, a, optimize=False)) / m**2
+
+
+def _r63_peaks(angles, power, truth, radius):
+    from scipy.signal import find_peaks
+
+    local = set(find_peaks(power)[0])
+    result = []
+    flags = []
+    for angle in truth:
+        domain = np.flatnonzero(abs(angles - angle) <= radius + 1e-10)
+        j = domain[np.argmax(power[domain])]
+        result.append(angles[j])
+        flags.append(j in local)
+    return result, flags
+
+
+def _p63(p):
+    m = int(p["elements"])
+    snr = p["source_snr_db"]
+    angles = np.linspace(-60, 60, 1201)
+    baseline = _r63_power(_r63_scene(6301, m, [-20, 25], snr), angles)
+    data = _r63_scene(6315, m, [-20, 30], snr)
+    bad = _r63_power(data, angles, -1)
+    good = _r63_power(data, angles)
+    active = bad if p["broken_mode"] else baseline
+    expected = [-30, 20] if p["broken_mode"] else [-20, 25]
+    peaks, _ = _r63_peaks(angles, active, expected, 5)
+    background = (abs(angles + 20) > 10) & (abs(angles - 25) > 10)
+    wide = _r63_power(_r63_scene(6311, m, [-12, 12], snr), angles)
+    wp, wf = _r63_peaks(angles, wide, [-12, 12], 4)
+    large = _r63_power(_r63_scene(6312, 16, [-8, 8], snr), angles)
+    lp, lf = _r63_peaks(angles, large, [-8, 8], 5)
+    snap = _r63_power(_r63_scene(6314, m, [-20, 25], 0), angles)
+    ripple = np.std(
+        10 * np.log10(np.maximum(snap / snap.max(), 10 ** (-3.5)))[background], ddof=1
+    )
+    high = _r63_power(_r63_scene(6313, m, [-20, 25], 15), angles)
+    active_background = (
+        (abs(angles + 30) > 10) & (abs(angles - 20) > 10)
+        if p["broken_mode"]
+        else background
+    )
+    return [
+        not p["broken_mode"],
+        *peaks,
+        active.max(),
+        10 * np.log10(np.median(active[active_background]) / active.max()),
+        abs(bad - good[::-1]).max(),
+        all(wf) and wp[1] - wp[0] > 12,
+        all(lf) and lp[1] - lp[0] > 8,
+        ripple,
+        10 * np.log10(np.median(high[background]) / high.max()),
+    ]
+
+
+def _r64_pattern(q, angles):
+    # After boresight phase alignment, both channels share the centered-array phase.
+    direction = np.sin(np.deg2rad(angles))
+    squint = np.sin(np.deg2rad(q))
+    common = np.exp(5.5j * np.pi * direction)
+
+    def real_factor(offset):
+        x = np.pi * offset / 2
+        return np.divide(
+            np.sin(12 * x), 12 * np.sin(x), out=np.ones_like(x), where=abs(x) > 1e-14
+        )
+
+    return common * real_factor(direction + squint), common * real_factor(
+        direction - squint
+    )
+
+
+def _p64(p):
+    squint = p["beam_squint_deg"]
+    snr = p["receiver_snr_db"]
+    angles = np.linspace(-10, 10, 401)
+    left, right = _r64_pattern(squint, angles)
+    ratio = ((right - left) / (right + left)).real
+    mask = abs(angles) <= 4 + 1e-10
+    grid = angles[mask]
+    cal = ratio[mask]
+    noise = _r63_noise(6401, 16, 256)
+    signal = np.exp(1j * (np.pi * np.arange(12) * np.sin(np.deg2rad(2)) + 0.4))
+    data = signal[:, None] + noise[:12] * 10 ** (-snr / 20)
+    channels = []
+    for steer in [-squint, squint]:
+        phase = -np.pi * np.arange(12) * np.sin(np.deg2rad(steer))
+        coeff = (np.cos(phase) + 1j * np.sin(phase)) / 12
+        alignment = np.exp(-1j * np.angle(sum(coeff)))
+        channel = sum(coeff[m] * data[m] for m in range(12)) * alignment
+        channels.append(channel)
+    l, r = channels
+    sigma = (r + l) / 2
+    delta = (r - l) / 2
+    valid = abs(sigma) >= 0.15
+    ratios = (delta / sigma).real
+    estimates = np.interp(ratios[valid], cal, grid)
+    mean_ratio = float((delta.mean() / sigma.mean()).real)
+    estimate = np.interp(mean_ratio, cal, grid)
+    rmse = np.sqrt(np.mean((estimates - 2) ** 2))
+    clipped = np.count_nonzero((ratios[valid] < cal[0]) | (ratios[valid] > cal[-1]))
+    bias = np.interp(0.12 / 2.12, cal, grid)
+    recovered = np.interp(0.0, cal, grid)
+    active = bias if p["broken_mode"] else estimate
+    truth = 0 if p["broken_mode"] else 2
+    return [
+        not p["broken_mode"],
+        active,
+        active - truth,
+        rmse,
+        valid.sum(),
+        clipped,
+        mean_ratio,
+        bias,
+        recovered,
+        (ratio[220] - ratio[180]) / 2,
+        abs((right[200] + left[200]) / 2),
+    ]
+
+
+_REFERENCES.update({f"P{n}": globals()[f"_p{n}"] for n in range(53, 65)})
+
+# Scenario declarations for P53-P64.
+SCENARIOS.update({'P53': {'baseline': {'minimum_cells': 3, 'weight_exponent': 1, 'broken_mode': False}, 'sweep_1': {'minimum_cells': 18, 'weight_exponent': 1, 'broken_mode': False}, 'sweep_2': {'minimum_cells': 3, 'weight_exponent': 2, 'broken_mode': False}, 'broken': {'minimum_cells': 3, 'weight_exponent': 1, 'broken_mode': True}, 'recovery': {'minimum_cells': 3, 'weight_exponent': 1, 'broken_mode': False}}, 'P54': {'baseline': {'alpha_gain': 0.35, 'beta_gain': 0.08, 'broken_mode': False}, 'sweep_1': {'alpha_gain': 0.85, 'beta_gain': 0.08, 'broken_mode': False}, 'sweep_2': {'alpha_gain': 0.35, 'beta_gain': 0.3, 'broken_mode': False}, 'broken': {'alpha_gain': 0.35, 'beta_gain': 0.08, 'broken_mode': True}, 'recovery': {'alpha_gain': 0.35, 'beta_gain': 0.08, 'broken_mode': False}}, 'P55': {'baseline': {'acceleration_sigma_mps2': 0.8, 'report_sigma_m': 25, 'broken_mode': False}, 'sweep_1': {'acceleration_sigma_mps2': 3.2, 'report_sigma_m': 25, 'broken_mode': False}, 'sweep_2': {'acceleration_sigma_mps2': 0.8, 'report_sigma_m': 100, 'broken_mode': False}, 'broken': {'acceleration_sigma_mps2': 0.8, 'report_sigma_m': 25, 'broken_mode': True}, 'recovery': {'acceleration_sigma_mps2': 0.8, 'report_sigma_m': 25, 'broken_mode': False}}, 'P56': {'baseline': {'bearing_sigma_deg': 0.8, 'geometry_range_m': 1500, 'broken_mode': False}, 'sweep_1': {'bearing_sigma_deg': 3.2, 'geometry_range_m': 1500, 'broken_mode': False}, 'sweep_2': {'bearing_sigma_deg': 0.8, 'geometry_range_m': 3000, 'broken_mode': False}, 'broken': {'bearing_sigma_deg': 0.8, 'geometry_range_m': 1500, 'broken_mode': True}, 'recovery': {'bearing_sigma_deg': 0.8, 'geometry_range_m': 1500, 'broken_mode': False}}, 'P57': {'baseline': {'gate_d2': 5.991, 'covariance_scale': 1, 'broken_mode': False}, 'sweep_1': {'gate_d2': 0.5, 'covariance_scale': 1, 'broken_mode': False}, 'sweep_2': {'gate_d2': 5.991, 'covariance_scale': 4, 'broken_mode': False}, 'broken': {'gate_d2': 5.991, 'covariance_scale': 1, 'broken_mode': True}, 'recovery': {'gate_d2': 5.991, 'covariance_scale': 1, 'broken_mode': False}}, 'P58': {'baseline': {'confirmation_hits': 3, 'coast_limit_scans': 2, 'broken_mode': False}, 'sweep_1': {'confirmation_hits': 4, 'coast_limit_scans': 2, 'broken_mode': False}, 'sweep_2': {'confirmation_hits': 3, 'coast_limit_scans': 0, 'broken_mode': False}, 'broken': {'confirmation_hits': 3, 'coast_limit_scans': 2, 'broken_mode': True}, 'recovery': {'confirmation_hits': 3, 'coast_limit_scans': 2, 'broken_mode': False}}, 'P59': {'baseline': {'position_sigma_m': 6, 'scan_interval_s': 1, 'broken_mode': False}, 'sweep_1': {'position_sigma_m': 10, 'scan_interval_s': 1, 'broken_mode': False}, 'sweep_2': {'position_sigma_m': 6, 'scan_interval_s': 2, 'broken_mode': False}, 'broken': {'position_sigma_m': 6, 'scan_interval_s': 1, 'broken_mode': True}, 'recovery': {'position_sigma_m': 6, 'scan_interval_s': 1, 'broken_mode': False}}, 'P60': {'baseline': {'maneuver_acceleration_mps2': 2, 'mode_stay_probability': 0.94, 'broken_mode': False}, 'sweep_1': {'maneuver_acceleration_mps2': 3.2, 'mode_stay_probability': 0.94, 'broken_mode': False}, 'sweep_2': {'maneuver_acceleration_mps2': 2, 'mode_stay_probability': 0.99, 'broken_mode': False}, 'broken': {'maneuver_acceleration_mps2': 2, 'mode_stay_probability': 0.94, 'broken_mode': True}, 'recovery': {'maneuver_acceleration_mps2': 2, 'mode_stay_probability': 0.94, 'broken_mode': False}}, 'P61': {'baseline': {'arrival_angle_deg': 30, 'spacing_wavelengths': 0.5, 'broken_mode': False}, 'sweep_1': {'arrival_angle_deg': -30, 'spacing_wavelengths': 0.5, 'broken_mode': False}, 'sweep_2': {'arrival_angle_deg': 30, 'spacing_wavelengths': 0.25, 'broken_mode': False}, 'broken': {'arrival_angle_deg': 30, 'spacing_wavelengths': 0.5, 'broken_mode': True}, 'recovery': {'arrival_angle_deg': 30, 'spacing_wavelengths': 0.5, 'broken_mode': False}}, 'P62': {'baseline': {'elements': 8, 'spacing_wavelengths': 0.5, 'broken_mode': False}, 'sweep_1': {'elements': 16, 'spacing_wavelengths': 0.5, 'broken_mode': False}, 'sweep_2': {'elements': 8, 'spacing_wavelengths': 1, 'broken_mode': False}, 'broken': {'elements': 8, 'spacing_wavelengths': 0.5, 'broken_mode': True}, 'recovery': {'elements': 8, 'spacing_wavelengths': 0.5, 'broken_mode': False}}, 'P63': {'baseline': {'elements': 8, 'source_snr_db': 10, 'broken_mode': False}, 'sweep_1': {'elements': 16, 'source_snr_db': 10, 'broken_mode': False}, 'sweep_2': {'elements': 8, 'source_snr_db': -15, 'broken_mode': False}, 'broken': {'elements': 8, 'source_snr_db': 10, 'broken_mode': True}, 'recovery': {'elements': 8, 'source_snr_db': 10, 'broken_mode': False}}, 'P64': {'baseline': {'beam_squint_deg': 3, 'receiver_snr_db': 15, 'broken_mode': False}, 'sweep_1': {'beam_squint_deg': 5, 'receiver_snr_db': 15, 'broken_mode': False}, 'sweep_2': {'beam_squint_deg': 3, 'receiver_snr_db': -5, 'broken_mode': False}, 'broken': {'beam_squint_deg': 3, 'receiver_snr_db': 15, 'broken_mode': True}, 'recovery': {'beam_squint_deg': 3, 'receiver_snr_db': 15, 'broken_mode': False}}})
