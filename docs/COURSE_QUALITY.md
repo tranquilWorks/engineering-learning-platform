@@ -1,4 +1,4 @@
-# Revised-course quality position — 2026-09-28
+# Revised-course quality position — 2026-09-29
 
 All 288 native engineering lessons and two examples are embedded in Engineering
 Learning. Nine of the thirteen pinned source repositories remain source-only.
@@ -8,7 +8,7 @@ passed. Its historical evidence retains the exact image and screenshot hashes.
 | Curriculum | Native lessons | Current content position |
 | --- | ---: | --- |
 | DSP/Radar | 84 | 84 checkpoints, ten cumulative portfolios and aggregate authored/software review verified |
-| Controls/GNC | 68 | P66–P68 repaired within declared models; 19 additional findings remain blocked |
+| Controls/GNC | 68 | P36/P38/P42/P43/P45–P51/P55 and P66–P68 repaired within declared models; 7 findings remain blocked |
 | Robotics/Autonomy | 69 | P68–P69 repaired within declared models; 25 additional findings remain blocked |
 | Vehicle Dynamics | 67 | P61–P67 repaired within declared models; P01–P16 presentation findings remain blocked |
 
@@ -34,7 +34,7 @@ lessons have post-interaction drawn-curve assertions. PR53 records integration. 
 
 The browser's expanded lesson review identifies exactly what was checked.
 This is scoped synthetic-model evidence, not whole-course or learner acceptance.
-The remaining 60 findings are individually embedded and retained in the
+The remaining 48 findings are individually embedded and retained in the
 [additional finding register](course-quality/additional-semantic-findings.md).
 No unlisted lesson is automatically certified. Controls, Robotics and Vehicle aggregate numerical, curriculum and capstone stages
 remain blocked. DSP passes the separate authored/synthetic aggregate review
@@ -141,3 +141,18 @@ and selected first-scan controls do not alter its fixed baseline tracking sequen
 The 60 other lesson findings and all human/physical/production acceptance limits
 remain. Historical item conversion claims are retained as provenance; current
 aggregate browser evidence is recorded separately rather than rewriting them.
+
+## Next twelve Controls model repairs
+
+ELP-GNC-SEMANTIC-QUALITY-12 repairs P36/P38/P42/P43/P45–P51/P55 and adds twelve
+individually authored Course checkpoints. These execute state feedback, CARE LQR,
+anti-windup, nonlinear dynamics, sampled barrier filtering, gain interpolation,
+feedback linearization, sensitivity analysis, constrained MPC, dynamic fitting,
+RLS and actual sigma-point transformation. Five independently formulated cases
+per lesson retain 1e-8 absolute/relative tolerances. Physical tests check actual
+trajectories and all 96 control corners through the unchanged runtime.
+See [model and evidence plan](course-quality/gnc-quality-revision-plan.md) and
+[numerical record](course-quality/gnc-quality-revision.json). The selected browser
+checks passed before closing these findings; final whole-container and mandatory
+gate results are recorded in the batch evidence. P55 explicitly teaches the
+unscented-transform component rather than claiming recursive UKF implementation.

@@ -1,66 +1,57 @@
 # Switch Controllers Bumplessly with Anti-Windup
 
-**Guiding question:** How can a controller switch modes without a command jump and recover cleanly from saturation?
-
-Switch a saturated PI loop from manual to automatic, track the actuator for bumpless initialization, and compare back-calculation recovery with windup. This is a Python-first native design derived from the reviewed competency map. It is not presented as a conversion of the pinned MATLAB source and it stays inside deterministic software simulation.
-
-## Why this lesson exists
-
-The numerical result is not the objective by itself. The objective is to connect a design decision to a governing relation, an observable consequence, a failure mechanism, and a recovery check. Record the assumptions before interpreting any curve.
+Bumpless transfer initializes controller memory to reproduce the command already being applied. Anti-windup then reconciles that memory with actuator saturation. This is a declared 0.01-second sampled Euler plant/controller model with normalized output and command.
 
 ## Model and equations
 
-$$\text{u_sat=clip(k_p e+z)}$$
-$$\text{z_dot=k_i e+k_aw(u_sat-u_raw)}$$
-$$\text{z_switch=u_manual-k_p e}$$
+\[
+z_{k+1}=z_k+\Delta t\left[k_i(r_k-x_k)+k_{aw}(u_k-u_{raw,k})\right]
+\]
 
-Carry units through the model. A pole or zero is reported in inverse seconds, angular frequency in radians per second, phase in degrees or radians as labeled, and dimensionless ratios as `1`. The experiment evaluates the displayed equations directly; it does not call a black-box synthesis toolbox.
+`x[k+1]=x[k]+0.01*(-x[k]+u[k])`
 
-## Predict before running
+`u_raw=2*(r-x)+z; u=clip(u_raw,-limit,limit)`
 
-Tracking initialization makes the auto command equal the manual command at the switch, and positive back-calculation bounds windup during saturation. State which output should move first and which quantity should remain invariant before changing a control.
+`z[k+1]=z[k]+0.01*(1.2*(r-x)+k_aw*(u-u_raw))`
+
+Worked example: Manual command is min(0.7,limit). At the three-second switch, setting z=u_manual−2(r−x) makes u_raw equal the preceding manual command exactly. The reference drops from 2 to 0.2 at seven seconds.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read all three signature metrics.
-2. Inspect the response plot for the external behavior, then the mechanism plot for the governing internal relation.
-3. Check the units and limiting cases before accepting a stability, equivalence, or performance statement.
-4. Save the baseline, change one variable only, and explain the direction of change from the equations.
+Can a saturated actuator hide a requested-command jump? Compare the applied switch bump with the integral and requested-command histories.
+
+Run the default controls, record the metrics, and explain the plotted quantities before changing a setting. The first plot shows output and reference. The second retains actual z, raw command and saturated command. Peak integral state is max|z| in both modes. Recovery requires the output to remain within 0.04 of 0.2 for the rest of the window; an unobserved recovery is labeled a censored five-second lower bound.
 
 ## Two one-variable sweeps
 
-1. Hold `actuator_limit` at `1.2 1` and sweep `antiwindup_gain_per_s` from `0.0` through `4.0` to `12.0 1/s`.
-2. Restore `antiwindup_gain_per_s` to `4.0 1/s` and sweep `actuator_limit` from `0.4` through `1.2` to `3.0 1`.
-
-Do not tune both at once until you can attribute each metric change to one term in the equations. The retained evidence uses one endpoint from each sweep in addition to the baseline.
+Raise anti-windup gain from 4 to 12/s and compare integral unwinding after the reference drop. Reset, then raise actuator limit from 1.2 to 3: compare saturation duration and recovery; faster anti-windup need not minimize every settling measure.
 
 ## Intentionally broken case
 
-Broken mode disables tracking initialization and back-calculation, producing a mode-switch bump and a long saturated recovery. Broken mode is a named counterexample, not an alternative design recommendation.
+Broken mode starts z at zero on switching and disables back-calculation. It still obeys actuator limits, so the integrator can accumulate error that the actuator cannot realize.
 
 ## Recovery
 
-Initialize the integral state from the actual manual actuator command and restore back-calculation before enabling automatic control. The recovery case restores the exact baseline inputs so the evidence can prove that the failure is reversible rather than merely different.
+Disable broken mode, restore gain 4/s and limit 1.2, and verify a zero applied bump plus the actual integral history. Check the recovery-observed indicator before quoting a settling time.
 
 ## Limiting cases and invariants
 
-- With exact tracking initialization the ideal switch bump is zero.
-- Without saturation, the anti-windup correction term is zero.
-
-Teaching invariant: Tracking initialization makes the auto command equal the manual command at the switch, and positive back-calculation bounds windup during saturation.
+- At k_aw=0 the healthy switch is still bumpless, but no back-calculation acts afterward.
+- Both manual and automatic applied commands satisfy the selected limit.
+- A peak command is not a peak integral state, and a censored time is not an observed recovery.
 
 ## Independent evidence
 
-Expected signatures are produced by `expansion_reference_cases.py`, which imports no production experiment and consumes no production result. Production signatures are retained separately. Each baseline, two sweeps, broken case, and recovery case records fields, units, tolerances, measured error, and the named invariant. Agreement supports only these equations and scenarios; it is not MATLAB execution, broad robust certification, or physical validation.
+A separately written piecewise-affine state transition handles unsaturated and saturated regions, independently checking the scalar production recurrence. Five retained scenarios cover baseline, each one-variable sweep, fault and exact recovery. Absolute and relative tolerances remain 1e-8. The reference does not import or consume the production result.
 
 ## Common mistakes
 
-- Reading a plotted shape without checking its sign convention, units, or contour/path definition.
-- Treating a local, frequency-limited, or nominal result as a global guarantee.
-- Changing both design controls and then assigning causality to one of them.
-- Confusing a recovery that looks better with a recovery that restores the baseline invariant.
-- Claiming source equivalence, physical hardware evidence, or learner effectiveness from this software-only lab.
+Do not compare different quantities across modes. A small final integral state can conceal a large earlier windup peak.
 
 ## Teach-back
 
-Derive one signature quantity from the displayed equations, explain what the broken case violates, and name one result that this lab cannot establish. Then describe how the two sweeps separate sensitivity to `antiwindup_gain_per_s` from sensitivity to `actuator_limit`.
+Why can peak |z| exceed the command limit? What additional evidence is required before reporting a recovery time?
+
+Answer rationale: Only u is clipped; z is controller memory and can be much larger. Inspect recovery-observed and ensure all later samples stay inside the stated band. A censored lower bound cannot be presented as a successful recovery.
+
+Use the Course checkpoint section to assemble your own evidence. These are authored self-checks, not measured learner outcomes or hardware qualification.

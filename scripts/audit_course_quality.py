@@ -15,6 +15,54 @@ COURSES = ("dsp-radar", "controls-gnc", "robotics-autonomy", "vehicle-dynamics")
 REPAIRED = {
     (
         "controls-gnc",
+        36,
+    ): "Executed full state-feedback acceleration with position and velocity terms, dimensioned gains, analytic derivatives and DC/pole checks.",
+    (
+        "controls-gnc",
+        38,
+    ): "Executed declared-cost CARE LQR and actual coupled plant/observer states; analytic CARE/spectrum and state-transition checks.",
+    (
+        "controls-gnc",
+        42,
+    ): "Measured the actual integral-state peak consistently, bounded manual/automatic actuation and explicitly censored recovery; independent piecewise-affine replay.",
+    (
+        "controls-gnc",
+        43,
+    ): "Integrated double-well dynamics and damping work; independent implicit solver plus energy, phase-field and zero-damping checks.",
+    (
+        "controls-gnc",
+        45,
+    ): "Recomputed the barrier filter at every sampled state; independent linear/geometric trajectory and full-history safety checks.",
+    (
+        "controls-gnc",
+        46,
+    ): "Constructed real gain-table knots and measured interpolation errors; independent secant evaluator plus knot, off-grid and refinement checks.",
+    (
+        "controls-gnc",
+        47,
+    ): "Integrated nonlinear cancellation residual with an explicit departure event; independent reciprocal-state trajectory/event and exact-cancellation checks.",
+    (
+        "controls-gnc",
+        48,
+    ): "Evaluated dimensionless sensitivity over the declared uncertainty and frequency grid; independent complex transfer and stability/pole checks.",
+    (
+        "controls-gnc",
+        49,
+    ): "Solved actual bounded horizon optimization and applied receding-horizon moves; independent Bellman policy plus full-plan feasibility, objective and KKT checks.",
+    (
+        "controls-gnc",
+        50,
+    ): "Generated excitation, fitted an ARX model and evaluated separate held-out free-run data; independent convolution/normal equations and rank/recovery checks.",
+    (
+        "controls-gnc",
+        51,
+    ): "Executed recursive least-squares gain, estimate and covariance updates; independent weighted batch information and zero-excitation checks.",
+    (
+        "controls-gnc",
+        55,
+    ): "Constructed and transformed actual sigma points; independently checked Gaussian moments and distinct mean/covariance weights. Scope is the transform component, not recursive UKF.",
+    (
+        "controls-gnc",
         66,
     ): "Executed calibration identification, feedback and scalar estimation across three stressed plants; independent normal-equation/information-form replay and plant/rank checks.",
     (
@@ -69,42 +117,6 @@ for _number in range(1, 17):
     KNOWN[("vehicle-dynamics", _number)] = (
         "The main response chart joins signature quantities with different physical units on one generic SI axis; sweeps also lack a named response/unit. Replace these with physically meaningful curves or separately labeled quantities and specific limiting-case checks."
     )
-KNOWN[("controls-gnc", 36)] = (
-    "The displayed state-feedback control omits the velocity feedback term; recompute control from both propagated states and reconcile its units."
-)
-KNOWN[("controls-gnc", 38)] = (
-    "The separation-principle model places poles directly but the lesson calls the design LQR; distinguish pole placement from a cost-derived optimal gain."
-)
-KNOWN[("controls-gnc", 42)] = (
-    "The peak integral-state metric uses peak command in nominal mode and final integral state in broken mode; it does not measure the named quantity consistently."
-)
-KNOWN[("controls-gnc", 43)] = (
-    "The declared nonlinear double-well phase portrait is replaced by an exponential sinusoid and unrelated energy formulas; the stated dynamics are not integrated."
-)
-KNOWN[("controls-gnc", 45)] = (
-    "The barrier plot extrapolates one fixed command without reevaluating the state-dependent barrier; it can cross the safety boundary while presented as a filtered trajectory."
-)
-KNOWN[("controls-gnc", 46)] = (
-    "The interpolation error is assigned from grid spacing instead of measuring interpolation of a sampled gain schedule."
-)
-KNOWN[("controls-gnc", 47)] = (
-    "The quadratic feedback-linearization model is replaced by a linear exponential and an algebraic terminal-error formula; the nonlinear closed loop is not executed."
-)
-KNOWN[("controls-gnc", 48)] = (
-    "The uncertainty plot does not sweep the declared uncertainty interval, and the inverse decay-rate metric is labeled dimensionless sensitivity without a defined transfer response."
-)
-KNOWN[("controls-gnc", 49)] = (
-    "The MPC lesson clips a fixed move and divides a residual by horizon; it does not minimize the stated horizon cost or execute receding-horizon control."
-)
-KNOWN[("controls-gnc", 50)] = (
-    "Identification conditioning, parameter error and held-out residual are algebraic functions of excitation settings; no dynamic model is fitted or validated."
-)
-KNOWN[("controls-gnc", 51)] = (
-    "The online-identification lesson does not execute its recursive least-squares update; error and covariance metrics are parameter formulas."
-)
-KNOWN[("controls-gnc", 55)] = (
-    "Unscented-transform errors and weights are assigned directly; sigma points and their weighted transformed moments are not computed."
-)
 KNOWN[("controls-gnc", 56)] = (
     "The claimed RTS smoother multiplies filtered covariance by a fixed 0.65 instead of executing a forward filter and backward smoother."
 )

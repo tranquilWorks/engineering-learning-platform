@@ -84,7 +84,15 @@ def test_unaffected_reference_functions_origins_and_all_five_outputs_unchanged(c
     baseline_path = tmp_path / "baseline.py"
     baseline_path.write_text(old)
     baseline = load(baseline_path, "historical_reference")
-    revised = load(path, "revised_reference")
+    # This guard audits PR53, while the current successor has its own exact-baseline guard.
+    merged_source = subprocess.check_output(
+        ["git", "show", f"b107ac198543e8dfb563c6aae4175cc87da6210d:{path.relative_to(ROOT)}"],
+        cwd=ROOT,
+        text=True,
+    )
+    merged_path = tmp_path / "merged.py"
+    merged_path.write_text(merged_source)
+    revised = load(merged_path, "revised_reference")
 
     def definitions(text):
         return {
@@ -93,7 +101,7 @@ def test_unaffected_reference_functions_origins_and_all_five_outputs_unchanged(c
             if isinstance(n, ast.FunctionDef)
         }
 
-    before, after = definitions(old), definitions(path.read_text())
+    before, after = definitions(old), definitions(merged_source)
     mapping = yaml.safe_load((path.parent / "expansion-map.yaml").read_text())
     for row in mapping["implemented_native_modules"]:
         number = int(row["id"][1:])
@@ -101,7 +109,14 @@ def test_unaffected_reference_functions_origins_and_all_five_outputs_unchanged(c
             continue
         assert before[f"_p{number}"] == after[f"_p{number}"]
         assert baseline.origin(number) == revised.origin(number)
-        design = yaml.safe_load((path.parent / row["folder"] / "design.yaml").read_text())
+        design_path = (path.parent / row["folder"] / "design.yaml").relative_to(ROOT)
+        design = yaml.safe_load(
+            subprocess.check_output(
+                ["git", "show", f"b107ac198543e8dfb563c6aae4175cc87da6210d:{design_path}"],
+                cwd=ROOT,
+                text=True,
+            )
+        )
         for parameters in design["scenarios"].values():
             np.testing.assert_array_equal(
                 baseline.reference_signature(number, parameters),

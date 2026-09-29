@@ -42,10 +42,10 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Exact cancellation leaves the selected linear error dynamics; model mismatch appears explicitly as residual
-    nonlinear drift.
-  reveal: Restore the cancellation sign, bound parameter mismatch, and verify the residual over the stated state
-    interval.
+  text: "Does a positive tracking gain guarantee convergence for every mismatch and initial state? Use x_dot=x(delta*x\u2212\
+    k) to identify the boundary."
+  reveal: 'No: x=1 exceeds k/delta=0.4 and initially grows at 0.3/s. The terminal error must be accompanied by observed
+    duration and departure status; at x=10 the integrator stops before four seconds.'
 - type: controls
   title: Design controls
 - type: metrics
@@ -66,3 +66,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

@@ -312,3 +312,39 @@ test('trajectory feasibility fast path preserves real desktop and mobile fault r
     await drawn();
   }
 });
+
+test('Controls sigma-point checkpoint preserves the covariance distinction and actual fault', async ({ page }) => {
+  await page.goto('/courses/controls-gnc/modules/55-transform-uncertainty-with-an-unscented-kalman-filter');
+  await expect(page.locator('.module-hero h1')).toContainText('Transform Gaussian Uncertainty with Sigma Points');
+  await expect(page.locator('.js-plotly-plot')).toHaveCount(2);
+  await page.setViewportSize({width:390,height:844});
+  const jump=page.getByRole('navigation',{name:'Lesson sections'}).getByRole('link',{name:'Course checkpoint',exact:true});
+  await jump.focus(); await page.keyboard.press('Enter');
+  await expect(page.getByRole('heading',{name:'Course checkpoint',exact:true})).toBeInViewport();
+  await expect(page.getByRole('heading',{name:'P55 evidence task',exact:true})).toBeVisible();
+  await expect(page.locator('.prose').last()).toContainText('central covariance correction');
+  const toggle=page.locator('.control-panel:visible input[type=checkbox]');
+  const response=page.waitForResponse(r=>r.url().endsWith('/run') && r.request().method()==='POST');
+  await toggle.check(); const broken=await (await response).json();
+  expect(broken.diagnostics.mean).toBeCloseTo(.64,10);
+  expect(broken.diagnostics.variance).toBeCloseTo(0,10);
+  const recoveredResponse=page.waitForResponse(r=>r.url().endsWith('/run') && r.request().method()==='POST');
+  await toggle.uncheck(); const recovered=await (await recoveredResponse).json();
+  expect(recovered.diagnostics.variance).toBeCloseTo(.8192,10);
+  await expect(page.locator('.runtime-error')).toHaveCount(0);
+});
+
+test('Controls MPC browser executes a bounded plan and exposes unconstrained violation', async ({ page }) => {
+  await page.goto('/courses/controls-gnc/modules/49-control-a-constrained-plant-with-model-predictive-control');
+  await expect(page.locator('.js-plotly-plot')).toHaveCount(2);
+  const toggle=page.locator('.control-panel:visible input[type=checkbox]');
+  const response=page.waitForResponse(r=>r.url().endsWith('/run') && r.request().method()==='POST');
+  await toggle.check();const broken=await (await response).json();
+  expect(broken.diagnostics.signature[1]).toBeGreaterThan(0);
+  const recovery=page.waitForResponse(r=>r.url().endsWith('/run') && r.request().method()==='POST');
+  await toggle.uncheck();const healthy=await (await recovery).json();
+  expect(healthy.diagnostics.first_plan).toHaveLength(6);
+  expect(Math.max(...healthy.diagnostics.input.map(Math.abs))).toBeLessThanOrEqual(.8);
+  expect(Math.max(...healthy.diagnostics.kkt_residuals)).toBeLessThan(1e-8);
+  await expect(page.locator('.runtime-error')).toHaveCount(0);
+});

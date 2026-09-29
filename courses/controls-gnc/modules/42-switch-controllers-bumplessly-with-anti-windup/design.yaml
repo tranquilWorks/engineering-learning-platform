@@ -7,21 +7,23 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- u_sat=clip(k_p e+z)
-- z_dot=k_i e+k_aw(u_sat-u_raw)
-- z_switch=u_manual-k_p e
+- x[k+1]=x[k]+0.01*(-x[k]+u[k])
+- u_raw=2*(r-x)+z; u=clip(u_raw,-limit,limit)
+- z[k+1]=z[k]+0.01*(1.2*(r-x)+k_aw*(u-u_raw))
 signature:
-- field: transfer_bump
+- field: switch_bump
   unit: '1'
-- field: recovery_time
+- field: recovery_time_or_lower_bound
   unit: s
-- field: peak_integrator_state
+- field: peak_integral_state
   unit: '1'
-teaching_invariant: Tracking initialization makes the auto command equal the manual command at the switch, and positive
-  back-calculation bounds windup during saturation.
+- field: recovery_observed
+  unit: '1'
+teaching_invariant: At k_aw=0 the healthy switch is still bumpless, but no back-calculation acts afterward.
 limiting_cases:
-- With exact tracking initialization the ideal switch bump is zero.
-- Without saturation, the anti-windup correction term is zero.
+- At k_aw=0 the healthy switch is still bumpless, but no back-calculation acts afterward.
+- Both manual and automatic applied commands satisfy the selected limit.
+- A peak command is not a peak integral state, and a censored time is not an observed recovery.
 scenarios:
   baseline: &id001
     antiwindup_gain_per_s: 4.0
@@ -48,5 +50,6 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic Python model and authored self-check. Independent numerical and browser/container
+  checks are recorded separately; learner outcomes, MATLAB, manual screen-reader, hardware and production acceptance
+  not_run.

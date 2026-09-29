@@ -1,66 +1,57 @@
 # Use Phase Portraits to Separate Local and Global Stability
 
-**Guiding question:** What can a nonlinear phase portrait reveal that a local eigenvalue calculation cannot?
-
-Trace a damped Duffing trajectory, compare local decay with basin-scale energy motion, and identify negative damping as a global failure. This is a Python-first native design derived from the reviewed competency map. It is not presented as a conversion of the pinned MATLAB source and it stays inside deterministic software simulation.
-
-## Why this lesson exists
-
-The numerical result is not the objective by itself. The objective is to connect a design decision to a governing relation, an observable consequence, a failure mechanism, and a recovery check. Record the assumptions before interpreting any curve.
+The double-well oscillator has equilibria at x=−1, 0 and +1 m. Use unit mass, linear stiffness coefficient 1 kg/s² and cubic coefficient 1 kg/(m² s²). Its two wells are locally stable for positive damping, while the origin is a saddle. Integrating the actual equations reveals which well a finite-energy trajectory approaches.
 
 ## Model and equations
 
-$$\text{x_dot=v}$$
-$$\text{v_dot=x-x^3-c*v}$$
-$$\text{E=v^2/2-x^2/2+x^4/4}$$
+\[
+E=\frac{v^2}{2}-\frac{x^2}{2}+\frac{x^4}{4},\qquad \dot{E}=-cv^2
+\]
 
-Carry units through the model. A pole or zero is reported in inverse seconds, angular frequency in radians per second, phase in degrees or radians as labeled, and dimensionless ratios as `1`. The experiment evaluates the displayed equations directly; it does not call a black-box synthesis toolbox.
+`dx/dt=v; dv/dt=x-x^3-c*v`
 
-## Predict before running
+`E=v^2/2-x^2/2+x^4/4; dE/dt=-c*v^2`
 
-Positive damping makes energy nonincreasing even when a local linearization does not describe the full basin. State which output should move first and which quantity should remain invariant before changing a control.
+`well characteristic: lambda^2+c*lambda+2=0`
+
+Worked example: At x=0 and initial energy 0.8 J, v=sqrt(1.6)=1.264911 m/s. With c=0.25/s, the initial energy rate is −0.4 W. The well poles have real part −0.125/s; the origin still has one unstable pole.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read all three signature metrics.
-2. Inspect the response plot for the external behavior, then the mechanism plot for the governing internal relation.
-3. Check the units and limiting cases before accepting a stability, equivalence, or performance statement.
-4. Save the baseline, change one variable only, and explain the direction of change from the equations.
+Will positive damping force every initial condition toward the +1 m well? Use the phase portrait and the energy barrier at E=0 to justify your prediction.
+
+Run the default controls, record the metrics, and explain the plotted quantities before changing a setting. Double-well phase portrait plots the integrated x-v trajectory and all three equilibria. Mechanical energy balance compares computed energy with initial energy plus integrated damping work. The mean power metric averages the actual six-second energy change.
 
 ## Two one-variable sweeps
 
-1. Hold `initial_energy` at `0.8 J` and sweep `damping_per_s` from `0.02` through `0.25` to `1.0 1/s`.
-2. Restore `damping_per_s` to `0.25 1/s` and sweep `initial_energy` from `0.05` through `0.8` to `2.5 J`.
-
-Do not tune both at once until you can attribute each metric change to one term in the equations. The retained evidence uses one endpoint from each sweep in addition to the baseline.
+Raise damping from 0.25 to 1/s and inspect crossings and energy decay. Reset, then raise initial energy from 0.8 to 2.5 J and inspect how long the trajectory can cross the central barrier.
 
 ## Intentionally broken case
 
-Broken mode makes damping negative, so the energy derivative becomes positive and the phase spiral expands. Broken mode is a named counterexample, not an alternative design recommendation.
+Broken mode negates the selected damping, retaining the selected initial energy. Energy is supplied at +|c|v² rather than dissipated; the growing trajectory is integrated rather than replaced by an exponential sinusoid.
 
 ## Recovery
 
-Restore positive dissipation and verify both local eigenvalues and global energy decrease. The recovery case restores the exact baseline inputs so the evidence can prove that the failure is reversible rather than merely different.
+Restore positive damping and reset both controls. Check energy does not increase and the energy-work residual is small relative to the energy scale.
 
 ## Limiting cases and invariants
 
-- At the equilibria the vector field is zero.
-- With zero damping energy is conserved rather than asymptotically decreasing.
-
-Teaching invariant: Positive damping makes energy nonincreasing even when a local linearization does not describe the full basin.
+- For c=0, mechanical energy is conserved.
+- At either well with v=0 the state remains at equilibrium.
+- Energy decay alone does not establish global convergence to a particular well; the saddle and its invariant set remain.
 
 ## Independent evidence
 
-Expected signatures are produced by `expansion_reference_cases.py`, which imports no production experiment and consumes no production result. Production signatures are retained separately. Each baseline, two sweeps, broken case, and recovery case records fields, units, tolerances, measured error, and the named invariant. Agreement supports only these equations and scenarios; it is not MATLAB execution, broad robust certification, or physical validation.
+Production uses explicit DOP853 on state plus damping work. Independent implicit Radau integrates the two physical states, then derives terminal energy and well distance. Tests also check the energy-work identity. Five retained scenarios cover baseline, each one-variable sweep, fault and exact recovery. Absolute and relative tolerances remain 1e-8. The reference does not import or consume the production result.
 
 ## Common mistakes
 
-- Reading a plotted shape without checking its sign convention, units, or contour/path definition.
-- Treating a local, frequency-limited, or nominal result as a global guarantee.
-- Changing both design controls and then assigning causality to one of them.
-- Confusing a recovery that looks better with a recovery that restores the baseline invariant.
-- Claiming source equivalence, physical hardware evidence, or learner effectiveness from this software-only lab.
+A local eigenvalue describes a neighborhood, not every initial condition. Do not put energy in joules and power in watts on one undifferentiated axis.
 
 ## Teach-back
 
-Derive one signature quantity from the displayed equations, explain what the broken case violates, and name one result that this lab cannot establish. Then describe how the two sweeps separate sensitivity to `damping_per_s` from sensitivity to `initial_energy`.
+Explain why decreasing energy can coexist with switching wells early in the trajectory. What equation would a fabricated phase curve fail?
+
+Answer rationale: While E is above the zero-energy barrier, crossings are possible even with dissipation. The actual phase curve must satisfy x_dot=v and v_dot=x−x³−cv, with E−E0 equal to accumulated −cv² work.
+
+Use the Course checkpoint section to assemble your own evidence. These are authored self-checks, not measured learner outcomes or hardware qualification.

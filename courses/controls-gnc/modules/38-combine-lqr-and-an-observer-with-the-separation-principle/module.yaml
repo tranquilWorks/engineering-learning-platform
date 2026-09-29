@@ -42,10 +42,11 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: For the nominal linear model the combined estimator-controller eigenvalues are exactly the union of regulator
-    and observer eigenvalues.
-  reveal: Restore the innovation sign, keep the observer faster but not arbitrarily ill-conditioned, and check the
-    full augmented spectrum.
+  text: Increasing observer speed should change estimation-error decay but leave the regulator eigenvalues unchanged.
+    Predict this before moving the ratio control.
+  reveal: The off-diagonal BK block couples estimation error into the plant without changing the diagonal-block
+    spectra. The CARE with the stated Q and R establishes the cost-derived gain; the small CARE residual verifies
+    that calculation.
 - type: controls
   title: Design controls
 - type: metrics
@@ -66,3 +67,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

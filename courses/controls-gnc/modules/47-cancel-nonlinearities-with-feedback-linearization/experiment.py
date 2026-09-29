@@ -5,22 +5,39 @@ from typing import Any
 import numpy as np
 
 ITEM_NUMBER = 47
-BROKEN_TEXT = 'Broken mode reverses the cancellation term, doubling rather than removing the nonlinear drift.'
-RECOVERY_TEXT = 'Restore the cancellation sign, bound parameter mismatch, and verify the residual over the stated state interval.'
+BROKEN_TEXT = "Broken mode adds the estimated drift instead of subtracting it, so delta=2−mismatch. It retains both selected controls. At the default gain it decays slowly; at lower gain it can reach the departure threshold."
+RECOVERY_TEXT = "Restore the cancellation sign and default controls. Verify the observed duration returns to four seconds and terminal error decreases. Do not interpret a stopped trajectory as a clipped stable plant."
 
 
-def _trace(name: str, x: Any, y: Any, x_quantity: str, x_unit: str,
-           y_quantity: str, y_unit: str, *, mode: str = "lines") -> dict[str, Any]:
+def _trace(
+    name: str,
+    x: Any,
+    y: Any,
+    x_quantity: str,
+    x_unit: str,
+    y_quantity: str,
+    y_unit: str,
+    *,
+    mode: str = "lines",
+) -> dict[str, Any]:
     return {
-        "type": "scattergl", "mode": mode, "name": name,
-        "x": np.asarray(x, dtype=float), "y": np.asarray(y, dtype=float),
-        "meta": {"x_quantity": x_quantity, "x_unit": x_unit,
-                 "y_quantity": y_quantity, "y_unit": y_unit},
+        "type": "scatter",
+        "mode": mode,
+        "name": name,
+        "x": np.asarray(x, dtype=float),
+        "y": np.asarray(y, dtype=float),
+        "meta": {
+            "x_quantity": x_quantity,
+            "x_unit": x_unit,
+            "y_quantity": y_quantity,
+            "y_unit": y_unit,
+        },
     }
 
 
-def _plot(title: str, x_title: str, y_title: str,
-          traces: list[dict[str, Any]]) -> dict[str, Any]:
+def _plot(
+    title: str, x_title: str, y_title: str, traces: list[dict[str, Any]]
+) -> dict[str, Any]:
     return {
         "data": traces,
         "layout": {
@@ -29,7 +46,8 @@ def _plot(title: str, x_title: str, y_title: str,
             "yaxis": {"title": {"text": y_title}},
             "legend": {"orientation": "h"},
             "margin": {"l": 72, "r": 36, "t": 62, "b": 62},
-            "hovermode": "closest", "uirevision": "keep-view",
+            "hovermode": "closest",
+            "uirevision": "keep-view",
         },
         "config": {"responsive": True, "displaylogo": False},
     }
@@ -38,8 +56,13 @@ def _plot(title: str, x_title: str, y_title: str,
 def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
     return {
         "metrics": [
-            {"id": key, "label": label, "value": float(value), "unit": unit,
-              "emphasis": "primary" if index == 0 else "normal"}
+            {
+                "id": key,
+                "label": label,
+                "value": float(value),
+                "unit": unit,
+                "emphasis": "primary" if index == 0 else "normal",
+            }
             for index, (key, label, value, unit) in enumerate(model["metrics"])
         ],
         "plots": model["plots"],
@@ -50,27 +73,113 @@ def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
         },
         "diagnostics": {
             "item_number": ITEM_NUMBER,
+            **model.get("details", {}),
             "broken_active": bool(broken),
             "signature": [float(value) for value in model["signature"]],
         },
     }
 
-def _model(p: dict[str, Any], broken: bool) -> dict[str, Any]:
-    a=float(p["model_mismatch"]); b=float(p["tracking_gain_per_s"])
-    if broken: a=0.45; b=2.0
-    x=np.linspace(0.,10.,240)
-    signature=[float(2 if broken else a),float(-b+(2 if broken else a)),float(abs(2 if broken else a)/(b+1))]
-    y1=np.asarray(np.exp((-b+(2 if broken else a))*x),dtype=float); y2=np.asarray(np.exp(-b*x),dtype=float)
-    z1=np.asarray((2 if broken else a)*x*x,dtype=float); z2=np.asarray(np.zeros_like(x),dtype=float)
-    if y1.ndim==0: y1=np.full_like(x,float(y1))
-    if y2.ndim==0: y2=np.full_like(x,float(y2))
-    if z1.ndim==0: z1=np.full_like(x,float(z1))
-    if z2.ndim==0: z2=np.full_like(x,float(z2))
-    return {"signature":signature,"metrics":[("residual_drift", "Residual Drift", signature[0], "1/s"),("closed_loop_rate", "Closed Loop Rate", signature[1], "1/s"),("terminal_error", "Terminal Error", signature[2], "1")],"plots":{
-      "response":_plot("Feedback-linearized error","Time (s)","Tracking error (1)",[_trace("Nominal/filtered",x,y1,"Time","s","Tracking error","1"),_trace("Reference/boundary",x,y2,"Time","s","Tracking error","1")]),
-      "mechanism":_plot("Residual nonlinear drift","State magnitude (1)","Drift rate (1/s)",[_trace("Mechanism",x,z1,"State magnitude","1","Drift rate","1/s"),_trace("Requirement/reference",x,z2,"State magnitude","1","Drift rate","1/s")])},
-      "observation":"Exact cancellation leaves the selected linear error dynamics; model mismatch appears explicitly as residual nonlinear drift."}
 
+def _model(p, broken):
+    from scipy.integrate import solve_ivp
+
+    mismatch = float(p["model_mismatch"])
+    k = float(p["tracking_gain_per_s"])
+    chat = 1 - mismatch
+    cancellation = chat if broken else -chat
+    delta = 1 + cancellation
+
+    def rhs(t, x):
+        return delta * x * x - k * x
+
+    def escape(t, x):
+        return x[0] - 10.0
+
+    escape.terminal = True
+    escape.direction = 1
+    sol = solve_ivp(
+        rhs,
+        [0.0, 4.0],
+        [1.0],
+        events=escape,
+        dense_output=True,
+        rtol=2e-12,
+        atol=2e-13,
+        method="DOP853",
+    )
+    if not sol.success:
+        raise ValueError(sol.message)
+    end = sol.t[-1]
+    t = np.linspace(0.0, end, 241)
+    x = sol.sol(t)[0]
+    u = cancellation * x * x - k * x
+    escaped = bool(len(sol.t_events[0]))
+    return {
+        "signature": [delta, delta - k, abs(x[-1])],
+        "metrics": [
+            ("drift", "Initial uncancelled drift", delta, "1/s"),
+            ("rate", "Initial error rate", delta - k, "1/s"),
+            ("terminal", "Observed terminal error", abs(x[-1]), "1"),
+            ("horizon", "Observed duration", end, "s"),
+            ("escape", "Departure threshold reached", escaped, "1"),
+        ],
+        "plots": {
+            "response": _plot(
+                "Nonlinear cancellation dynamics",
+                "Time (s)",
+                "Normalized state (1)",
+                [
+                    _trace("Actual state", t, x, "Time", "s", "Normalized state", "1"),
+                    _trace(
+                        "Exact-cancellation comparison",
+                        t,
+                        np.exp(-k * t),
+                        "Time",
+                        "s",
+                        "Normalized state",
+                        "1",
+                    ),
+                ],
+            ),
+            "mechanism": _plot(
+                "Cancellation and applied input",
+                "Time (s)",
+                "Normalized state rate (1/s)",
+                [
+                    _trace(
+                        "Applied input",
+                        t,
+                        u,
+                        "Time",
+                        "s",
+                        "Normalized state rate",
+                        "1/s",
+                    ),
+                    _trace(
+                        "Plant drift",
+                        t,
+                        x * x,
+                        "Time",
+                        "s",
+                        "Normalized state rate",
+                        "1/s",
+                    ),
+                ],
+            ),
+        },
+        "details": {
+            "time": t,
+            "state": x,
+            "input": u,
+            "residual_coefficient": delta,
+            "escape_observed": escaped,
+        },
+        "observation": (
+            "Trajectory terminated at x=10; its last error is a departure event, not a four-second tracking score."
+            if escaped
+            else "The actual nonlinear trajectory reaches the four-second horizon. Cancellation mismatch remains state dependent; a decaying nominal linear law alone cannot establish nonlinear stability."
+        ),
+    }
 
 
 def run(parameters: dict[str, Any]) -> dict[str, Any]:

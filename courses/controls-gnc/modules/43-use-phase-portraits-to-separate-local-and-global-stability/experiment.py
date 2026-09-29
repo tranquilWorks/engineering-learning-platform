@@ -5,22 +5,39 @@ from typing import Any
 import numpy as np
 
 ITEM_NUMBER = 43
-BROKEN_TEXT = 'Broken mode makes damping negative, so the energy derivative becomes positive and the phase spiral expands.'
-RECOVERY_TEXT = 'Restore positive dissipation and verify both local eigenvalues and global energy decrease.'
+BROKEN_TEXT = "Broken mode negates the selected damping, retaining the selected initial energy. Energy is supplied at +|c|v² rather than dissipated; the growing trajectory is integrated rather than replaced by an exponential sinusoid."
+RECOVERY_TEXT = "Restore positive damping and reset both controls. Check energy does not increase and the energy-work residual is small relative to the energy scale."
 
 
-def _trace(name: str, x: Any, y: Any, x_quantity: str, x_unit: str,
-           y_quantity: str, y_unit: str, *, mode: str = "lines") -> dict[str, Any]:
+def _trace(
+    name: str,
+    x: Any,
+    y: Any,
+    x_quantity: str,
+    x_unit: str,
+    y_quantity: str,
+    y_unit: str,
+    *,
+    mode: str = "lines",
+) -> dict[str, Any]:
     return {
-        "type": "scattergl", "mode": mode, "name": name,
-        "x": np.asarray(x, dtype=float), "y": np.asarray(y, dtype=float),
-        "meta": {"x_quantity": x_quantity, "x_unit": x_unit,
-                 "y_quantity": y_quantity, "y_unit": y_unit},
+        "type": "scatter",
+        "mode": mode,
+        "name": name,
+        "x": np.asarray(x, dtype=float),
+        "y": np.asarray(y, dtype=float),
+        "meta": {
+            "x_quantity": x_quantity,
+            "x_unit": x_unit,
+            "y_quantity": y_quantity,
+            "y_unit": y_unit,
+        },
     }
 
 
-def _plot(title: str, x_title: str, y_title: str,
-          traces: list[dict[str, Any]]) -> dict[str, Any]:
+def _plot(
+    title: str, x_title: str, y_title: str, traces: list[dict[str, Any]]
+) -> dict[str, Any]:
     return {
         "data": traces,
         "layout": {
@@ -29,7 +46,8 @@ def _plot(title: str, x_title: str, y_title: str,
             "yaxis": {"title": {"text": y_title}},
             "legend": {"orientation": "h"},
             "margin": {"l": 72, "r": 36, "t": 62, "b": 62},
-            "hovermode": "closest", "uirevision": "keep-view",
+            "hovermode": "closest",
+            "uirevision": "keep-view",
         },
         "config": {"responsive": True, "displaylogo": False},
     }
@@ -38,8 +56,13 @@ def _plot(title: str, x_title: str, y_title: str,
 def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
     return {
         "metrics": [
-            {"id": key, "label": label, "value": float(value), "unit": unit,
-              "emphasis": "primary" if index == 0 else "normal"}
+            {
+                "id": key,
+                "label": label,
+                "value": float(value),
+                "unit": unit,
+                "emphasis": "primary" if index == 0 else "normal",
+            }
             for index, (key, label, value, unit) in enumerate(model["metrics"])
         ],
         "plots": model["plots"],
@@ -50,27 +73,107 @@ def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
         },
         "diagnostics": {
             "item_number": ITEM_NUMBER,
+            **model.get("details", {}),
             "broken_active": bool(broken),
             "signature": [float(value) for value in model["signature"]],
         },
     }
 
-def _model(p: dict[str, Any], broken: bool) -> dict[str, Any]:
-    a=float(p["damping_per_s"]); b=float(p["initial_energy"])
-    if broken: a=-0.18; b=1.8
-    x=np.linspace(0.,10.,240)
-    signature=[float(-a*b),float(np.sqrt(b)*np.exp(-a*8)),float(-a/2)]
-    y1=np.asarray(np.sqrt(2*b)*np.exp(-a*x)*np.cos(x),dtype=float); y2=np.asarray(-np.sqrt(2*b)*np.exp(-a*x)*np.sin(x),dtype=float)
-    z1=np.asarray(b*np.exp(-2*a*x),dtype=float); z2=np.asarray(-a*b*np.exp(-2*a*x),dtype=float)
-    if y1.ndim==0: y1=np.full_like(x,float(y1))
-    if y2.ndim==0: y2=np.full_like(x,float(y2))
-    if z1.ndim==0: z1=np.full_like(x,float(z1))
-    if z2.ndim==0: z2=np.full_like(x,float(z2))
-    return {"signature":signature,"metrics":[("energy_decay_rate", "Energy Decay Rate", signature[0], "W"),("terminal_radius", "Terminal Radius", signature[1], "1"),("local_decay_rate", "Local Decay Rate", signature[2], "1/s")],"plots":{
-      "response":_plot("Phase-plane trajectory","Position (m)","Velocity (m/s)",[_trace("Nominal/filtered",x,y1,"Position","m","Velocity","m/s"),_trace("Reference/boundary",x,y2,"Position","m","Velocity","m/s")]),
-      "mechanism":_plot("Energy dissipation","Time (s)","Energy rate (W)",[_trace("Mechanism",x,z1,"Time","s","Energy rate","W"),_trace("Requirement/reference",x,z2,"Time","s","Energy rate","W")])},
-      "observation":"Positive damping makes energy nonincreasing even when a local linearization does not describe the full basin."}
 
+def _model(p, broken):
+    from scipy.integrate import solve_ivp
+
+    c = float(p["damping_per_s"]) * (-1 if broken else 1)
+    E0 = float(p["initial_energy"])
+
+    def rhs(t, s):
+        x, v, _work = s
+        return [v, x - x**3 - c * v, -c * v * v]
+
+    t = np.linspace(0.0, 6.0, 401)
+    sol = solve_ivp(
+        rhs,
+        [0.0, 6.0],
+        [0.0, np.sqrt(2 * E0), 0.0],
+        t_eval=t,
+        method="DOP853",
+        rtol=2e-12,
+        atol=2e-13,
+    )
+    if not sol.success:
+        raise ValueError(sol.message)
+    x, v, work = sol.y
+    energy = 0.5 * v * v - 0.5 * x * x + 0.25 * x**4
+    local = max(np.roots([1.0, c, 2.0]).real)
+    distance = min(abs(x[-1] - 1), abs(x[-1] + 1))
+    return {
+        "signature": [(energy[-1] - energy[0]) / 6, distance, local],
+        "metrics": [
+            (
+                "power",
+                "Mean dissipated/supplied power",
+                (energy[-1] - energy[0]) / 6,
+                "W",
+            ),
+            ("well", "Final distance to nearest well", distance, "m"),
+            ("local", "Well linearization abscissa", local, "1/s"),
+            ("balance", "Energy-work residual", max(abs(energy - E0 - work)), "J"),
+        ],
+        "plots": {
+            "response": _plot(
+                "Double-well phase portrait",
+                "Position (m)",
+                "Velocity (m/s)",
+                [
+                    _trace(
+                        "Integrated trajectory",
+                        x,
+                        v,
+                        "Position",
+                        "m",
+                        "Velocity",
+                        "m/s",
+                    ),
+                    _trace(
+                        "Equilibria",
+                        [-1, 0, 1],
+                        [0, 0, 0],
+                        "Position",
+                        "m",
+                        "Velocity",
+                        "m/s",
+                        mode="markers",
+                    ),
+                ],
+            ),
+            "mechanism": _plot(
+                "Mechanical energy balance",
+                "Time (s)",
+                "Energy (J)",
+                [
+                    _trace("Mechanical energy", t, energy, "Time", "s", "Energy", "J"),
+                    _trace(
+                        "Initial energy plus work",
+                        t,
+                        E0 + work,
+                        "Time",
+                        "s",
+                        "Energy",
+                        "J",
+                    ),
+                ],
+            ),
+        },
+        "details": {
+            "time": t,
+            "position": x,
+            "velocity": v,
+            "energy": energy,
+            "damping_work": work,
+            "damping": c,
+        },
+        "observation": "This is an integrated double-well trajectory. The origin is a saddle; local decay about either well is not a global guarantee of convergence to that particular well. Negative damping supplies energy.",
+    }
 
 
 def run(parameters: dict[str, Any]) -> dict[str, Any]:

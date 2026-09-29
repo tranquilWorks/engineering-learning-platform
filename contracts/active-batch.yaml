@@ -1,48 +1,56 @@
 schema_version: 1
 batch:
-  id: ELP-DSP-AGGREGATE-QUALITY-01
-  title: Embed and verify DSP competency checkpoints and cumulative assessments
-  goal: Close the separate DSP aggregate content review with an explicit prerequisite/competency map, 84 browser
-    checkpoints and ten bounded cumulative evidence portfolios while preserving the repaired numerical models.
+  id: ELP-GNC-SEMANTIC-QUALITY-12
+  title: Repair twelve Controls/GNC model and teaching defects
+  goal: Replace twelve documented surrogate or inconsistent mechanisms with executed models, independent evidence
+    and browser-embedded lesson checkpoints.
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
   - products/engineering-learning-platform/COURSE_CALIBER.md
-  - 'Owner 2026-09-28: finish quality/course iteration with per-lesson evidence embedded in Engineering Learning
-    browser/container.'
-  - Target docs/course-quality/dsp-aggregate-review-plan.md
+  - 'Owner continuation 2026-09-29: next twelve existing lesson repairs, with retained verified development-merge
+    authorization.'
+  - 'Target docs/course-quality/additional-semantic-findings.md: Controls P36/P38/P42/P43/P45-P51/P55.'
   milestone: products/engineering-learning-platform/roadmap.yaml#ELP-M3
-  baseline_commit: b107ac198543e8dfb563c6aae4175cc87da6210d
-  baseline_tree: 21028d29c7e5f139f6907c6fcf7f467d96bbbfe8
+  baseline_commit: 00983cab0599b1ce3a613a2cc8ef42eb7b45f0b4
+  baseline_tree: 49b73ca015e87a862e79f98e15f13f5c6fb66150
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_baseline: 29bb88f04d2de70faf2618fe6a18fe49e841a2d9
-  control_plane_path: products/engineering-learning-platform/batches/ELP-DSP-AGGREGATE-QUALITY-01.yaml
+  control_plane_baseline: a506b76962e469b1827418497ca94186f5f543f1
+  control_plane_path: products/engineering-learning-platform/batches/ELP-GNC-SEMANTIC-QUALITY-12.yaml
   target_repository: tranquilWorks/engineering-learning-platform
-  predecessor_pr: 53
+  predecessor_pr: 54
 dependencies:
-- ELP-SEMANTIC-QUALITY-12
+- ELP-DSP-AGGREGATE-QUALITY-01
 scope:
   allowed_paths:
-  - courses/dsp-radar/competency-map.yaml
-  - courses/dsp-radar/competency-map.schema.json
-  - courses/dsp-radar/assessment-map.json
-  - courses/dsp-radar/modules/*/assessment.md
-  - courses/dsp-radar/modules/*/module.yaml
-  - courses/dsp-radar/modules/*/conversion.yaml
-  - courses/dsp-radar/coverage.yaml
-  - courses/dsp-radar/remediation-map.yaml
-  - apps/web/src/components/BlockRenderer.tsx
-  - apps/web/src/components/LessonQuality.tsx
-  - apps/web/src/lesson-quality.json
+  - courses/controls-gnc/modules/36-*/**
+  - courses/controls-gnc/modules/38-*/**
+  - courses/controls-gnc/modules/42-*/**
+  - courses/controls-gnc/modules/43-*/**
+  - courses/controls-gnc/modules/45-*/**
+  - courses/controls-gnc/modules/46-*/**
+  - courses/controls-gnc/modules/47-*/**
+  - courses/controls-gnc/modules/48-*/**
+  - courses/controls-gnc/modules/49-*/**
+  - courses/controls-gnc/modules/50-*/**
+  - courses/controls-gnc/modules/51-*/**
+  - courses/controls-gnc/modules/55-*/**
+  - courses/controls-gnc/expansion_reference_cases.py
+  - courses/controls-gnc/expansion-map.yaml
+  - courses/controls-gnc/competency-map.yaml
+  - apps/api/tests/test_gnc_quality_revision.py
+  - apps/api/tests/test_gnc_expansion.py
+  - apps/api/tests/test_capstone_quality_revision.py
   - apps/api/tests/test_dsp_aggregate_quality.py
   - apps/api/tests/test_dsp_fidelity_remediation*.py
   - apps/api/tests/test_course_caliber_status.py
   - apps/api/tests/test_course_delivery_quality.py
-  - apps/api/tests/test_capstone_quality_revision.py
-  - tests/browser/delivery.spec.ts
+  - apps/web/src/lesson-quality.json
   - scripts/audit_course_quality.py
   - scripts/browser-quality.mjs
-  - scripts/verify-dsp-assessments.py
+  - scripts/verify-gnc-quality.py
+  - scripts/verify-course-delivery.sh
+  - tests/browser/delivery.spec.ts
   - contracts/active-batch.yaml
   - contracts/repo-profile.yaml
   - contracts/verification.yaml
@@ -53,127 +61,107 @@ scope:
   - docs/CURRENT_STATE.md
   - docs/HANDOFF.md
   - docs/ROADMAP.md
-  - docs/evidence/ELP-DSP-AGGREGATE-QUALITY-01-*
-  - apps/web/src/components/AppShell.tsx
-  - courses/robotics-autonomy/modules/58-optimize-a-trajectory-through-obstacle-constraints/experiment.py
-  - apps/api/tests/test_robotics_runtime_margin.py
+  - docs/evidence/ELP-GNC-SEMANTIC-QUALITY-12-*
   forbidden_paths:
   - courses/*-learning/**
-  - courses/controls-gnc/**
+  - courses/dsp-radar/**
+  - courses/robotics-autonomy/**
   - courses/vehicle-dynamics/**
   - courses/demo-radar/**
   - courses/platform-showcase/**
-  - courses/dsp-radar/course.yaml
-  - courses/dsp-radar/source-map.yaml
-  - courses/dsp-radar/conversion-manifest.yaml
-  - courses/dsp-radar/remediation_reference_cases.py
-  - courses/dsp-radar/modules/*/experiment.py
-  - courses/dsp-radar/modules/*/lesson.md
-  - courses/dsp-radar/modules/*/evidence/**
+  - courses/*/course.yaml
+  - courses/*/source-map.yaml
+  - courses/*/fidelity-map.yaml
+  - courses/*/fixtures/**
   - .gitmodules
   - apps/api/src/**
+  - apps/web/src/components/**
   - packages/**
   - .github/**
   - products/**
-  - courses/robotics-autonomy/*.yaml
-  - courses/robotics-autonomy/*.json
-  - courses/robotics-autonomy/*reference*.py
-  - courses/robotics-autonomy/modules/*/module.yaml
-  - courses/robotics-autonomy/modules/*/design.yaml
-  - courses/robotics-autonomy/modules/*/lesson.md
-  - courses/robotics-autonomy/modules/*/evidence/**
 acceptance:
-- Activate only after verified PR53 merges, using its exact merge commit/tree and this merged control contract.
-  Preserve its twelve model repairs, generic SVG fallback and documented rendering/concurrent-load/hosted-CI boundaries.
-- Bind all 84 existing DSP identities to a reviewed competency/prerequisite graph with explicit target learners,
-  entry knowledge, outcomes, exclusions and cross-course handoffs. Validate the local copy of the existing competency
-  schema, acyclic dependencies and exact inventory-derived count. This is assessment of existing lessons, not new
-  inventory.
-- Embed 84 individually authored formative checkpoints and ten cumulative task/rubric portfolios covering the domains
-  in the retained aggregate review plan. Every checkpoint connects a concrete prediction, named live controls/plots,
-  dimensioned reasoning, fault/recovery, expected explanation and a limiting assumption. Avoid title-substituted
-  generic questions.
-- Use the portable markdown block contract for assessment.md. Add generic named additional-markdown navigation/headings
-  so Course checkpoint is reachable on desktop and mobile; do not hard-code DSP behavior in generic components.
-  Retain all existing lesson blocks, controls, plots, runtime definitions, source-copied lesson.md and experiment.py
-  bytes.
-- Reconcile conversion.yaml target.content_digest and target.files and coverage.yaml target digests through the
-  actual catalog after adding referenced assessment files. All other conversion provenance/equivalence/source/claim
-  fields remain unchanged; no source-map, framework-manifest, reference oracle or retained numeric artifact mutation.
-- Reconcile the 417 retained independent comparisons (two P01 signatures plus five scenarios for each P02-P84) with
-  the competency map and execute fresh independent reference/production comparisons. Retain origin/tolerance and
-  model-specific limiting/invariant checks. Add analytic P01 limits and actual cumulative-stage/metric binding checks
-  without production-derived expected values or weakened numerical gates.
-- Explicitly bound P84 to its executed pulsed-radar chain and fixed baseline eight-scan tracker; selected first-scan
-  controls do not recompute that trajectory. Arrays/FMCW/MIMO/imaging/passive branches receive separate cumulative
-  portfolios, not an invented universal capstone integration.
-- Reassess DSP numerical, curriculum and capstone maturity only from actual reviewed map, independently verified
-  stage traces and accessible browser assessments. Self-check authorship is not learner success. Retain Controls/Robotics/Vehicle
-  aggregate blocks and all sixty additional named findings. No representative-learner, manual screen-reader, MATLAB,
-  hardware or production acceptance.
-- Run mandatory contract/quick/full and actual baked read-only nonroot container checks. Verify all 290 HTTP modules,
-  580 desktop/mobile pages, every DSP checkpoint's visible navigation and all ten cumulative blocks in both viewports;
-  exercise relevant live controls/failure/recovery/reset. Require drawn plot evidence and preserve the single-request
-  pacing/no-concurrent-capacity claim. Retain image identity, content digests and representative visual screenshots.
-- Publish exact results and a reviewable PR. Retained owner continuation authorizes eligible verified development
-  merge; no production action, source-only course conversion or unrelated sixty-lesson repair consumption.
-- 'Navigation amendment: the actual checkpoint test exposed that a native fragment link triggers popstate with a
-  new route object for the same lesson; AppShell then resets scroll to the page top. Compare stable course/module
-  route identity before resetting focus/scroll, preserving ordinary anchor navigation and real lesson changes. Verify
-  checkpoint and existing section links, keyboard use, same-page history and actual next-lesson behavior on desktop/mobile;
-  no runtime/schema/source changes.'
-- Two mandatory full attempts exposed the unchanged Robotics P58 three-second timeout, including a default catalog-validation
-  call. Permit only a conservative vectorized already-feasible segment precheck in its production experiment. Preserve
-  the ordered correction fallback, objective, gradient, all 1200 iterations, endpoints, controls, tolerances, references,
-  goldens and three-second runtime limit. All other Robotics payloads remain excluded by the exact allowlist.
-- Require exact whole-output preservation against the PR53 production baseline for all five retained scenarios and
-  representative control corners; check near-contact, infeasible and degenerate segment paths against the unchanged
-  sequential projection. Retain separately originated reference comparisons, measured before/after execution times,
-  both failed full attempts and any remaining performance boundary. Rerun mandatory contract, quick and full gates
-  sequentially and rebuild/recheck all 290 HTTP and 580 desktop/mobile pages on the final image. This optimization
-  does not consume any of the sixty separate content findings or certify concurrent capacity.
+- Activate only after this control contract merges, using exact target PR54 merge/tree. Repair exactly existing
+  Controls P36, P38, P42, P43, P45-P51 and P55. Preserve 290 total modules, all source pins, all DSP content/assessments/numerics
+  and all Robotics/Vehicle payloads.
+- P36 propagate position and velocity and include both feedback terms in acceleration; report gains with separate
+  dimensions. P38 solve a declared LQR cost using CARE, propagate the actual plant/observer augmented state and
+  verify separation spectra and Riccati residual independently.
+- P42 retain actual integral-state history, enforce manual and automatic actuator limits, measure switch bump and
+  explicitly censor unobserved recovery. P43 integrate the double-well dynamics and verify energy balance, local
+  equilibria and damping-sign failure without substituting exponential envelopes.
+- P45 apply the barrier filter to the current state throughout the trajectory and verify the sampled safety condition.
+  P46 construct real gain-table knots and interpolate them, measuring interpolation errors at actual off-grid points
+  and preserving exact knot behavior.
+- P47 integrate the residual nonlinear dynamics with a documented terminal escape event rather than fabricating
+  a terminal error. P48 evaluate actual dimensionless sensitivity transfer functions over the declared uncertainty
+  interval and finite frequency band; distinguish instability from frequency-response magnitude.
+- P49 solve a constrained finite-horizon objective and execute receding-horizon moves, exposing predicted state,
+  applied input, objective and optimality/constraint checks. P50 generate excitation data, fit a dynamic model and
+  evaluate separate held-out free-run data, exposing rank and measured errors. P51 execute the RLS gain/estimate/covariance
+  recurrence and compare independent weighted batch least squares.
+- P55 construct, transform and weight actual sigma points against Gaussian moments. Distinguish mean and covariance
+  weights; negative central weights are not alone a fault. Narrow the visible title/outcomes to the unscented-transform
+  component actually executed, retaining its stable module identity. Only selected competency entry labels/outcomes/assessment
+  descriptions may change; preserve the prerequisite graph and inventory.
+- Individually author twelve portable Course checkpoint blocks and revised lessons with equations/units, worked
+  examples, predictions, two controls/sweeps, physical limits, named faults/recovery, answer rationale and scope
+  boundaries. Preserve keyboard accessibility and actual plots. No blanket curriculum promotion.
+- Retain five independently formulated scenarios per revised lesson, expected values generated solely from references,
+  explicit origins and existing 1e-8 tolerances. Add physical, limiting, negative, trajectory and all-control-corner
+  checks that detect the original defects. Preserve all unselected reference function bodies, origins and outputs
+  and all prior capstone repairs.
+- Historical preservation tests must continue comparing their original exact merged batch trees, rather than incorrectly
+  treating all later authorized work as forbidden. Add an exact PR54-to-current scope/payload/reference guard for
+  this new batch. Retain every historical numerical/invariant assertion; only active-contract successor bindings
+  and historically anchored scope guards may be adjusted.
+- 'Run focused checks and actual read-only nonroot baked-container browser delivery: all 290 HTTP modules, 580 desktop/mobile
+  pages, existing DSP checkpoints and new twelve Controls checkpoints, real control/fault/recovery/reset for every
+  revised lesson, drawn traces and representative screenshots. Preserve three-second runtime limits and single-request
+  pacing. Then run mandatory contract, quick and full sequentially without overlapping browser workloads.'
+- Remove a selected finding only after numerical and browser evidence passes. The resulting register should have
+  Controls 7, Robotics 25 and Vehicle 16 remaining findings, with all three aggregate reviews blocked. Preserve
+  all other defect disclosures and learner/manual-screen-reader/MATLAB/hardware/production not_run boundaries.
+- Publish exact evidence and a reviewable PR, then perform an eligible verified development merge under retained
+  owner authorization. Hosted CI is nonmandatory under retained owner direction; required local gates remain mandatory.
+  No production deployment or unrelated backlog consumption.
 validation:
   local:
-  - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_aggregate_quality.py
-  - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-dsp-assessments.py
-  - PYTHONPATH=apps/api/src .venv/bin/python scripts/audit_course_quality.py
+  - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_gnc_quality_revision.py apps/api/tests/test_gnc_expansion.py
+  - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-gnc-quality.py
   - npm run typecheck
   - npm run build
   - npm run test:web
   - npm run test:browser
+  - PYTHONPATH=apps/api/src .venv/bin/python scripts/audit_course_quality.py
+  - ./scripts/verify-course-delivery.sh
   - ./scripts/agent-verify.sh contract
   - ./scripts/agent-verify.sh quick
   - ./scripts/agent-verify.sh full
-  - ./scripts/verify-course-delivery.sh
   - git diff --check
   focused_tests_to_add:
-  - Exact competency/assessment/identity binding, acyclic prerequisites and no orphaned outcomes or rubric links.
-  - Preserved numerical/source files and conversion metadata, with newly reconciled referenced-markdown digests.
-  - Actual cumulative plot/metric quantities and analytic P01 limits; retain all prior numerical comparisons.
-  - Accessible checkpoint navigation and cumulative tasks on desktop/mobile; no inferred learner pass.
+  - Twelve actual model mechanisms, independent signatures and physical trajectory/negative/limiting checks.
+  - Every selected control boundary, finite outputs and execution within unchanged runtime budgets.
+  - Exact-baseline preservation and truthful per-lesson evidence/checkpoint navigation.
   required_ci:
   - Hosted CI nonmandatory under retained owner direction; all named local gates mandatory.
 risk:
   class: high
   hazards:
-  - Authored assessments mistaken for measured learner outcomes.
-  - Broad capstone claims that exceed the actual executed branches.
-  - Adding referenced content without reconciling immutable target identities.
+  - Correlated references hiding a model defect.
+  - Finite-horizon or event-limited evidence overstated as global stability or complete UKF.
+  - Slow numerical solves exceeding the unchanged trusted runtime.
   stop_conditions:
-  - Need to modify source pins, existing DSP model/source lesson bytes or Robotics model behavior beyond the exact
-    P58 semantics-preserving fast path, production runtime or public schemas.
-  - Independent evidence or browser delivery cannot support the claimed scope.
-  - Need learner personal data, physical hardware or production access.
+  - Need to change source pins, public schemas, generic runtime or unrelated lesson payloads.
+  - Independent numerical or browser/container validation cannot be made credible.
+  - Need learner personal data, actual vehicle/hardware or production access.
 rollback:
-  strategy: Revert the isolated assessment revision to the exact merged PR53 baseline; no learner-data/schema migration.
-    Preserve historical numerical repairs and honest maturity boundaries.
+  strategy: Revert this isolated batch to exact PR54 baseline. Preserve the original findings ledger; no schema/data
+    migration.
 evidence:
   output:
-  - docs/evidence/ELP-DSP-AGGREGATE-QUALITY-01-2026-09-28.md
-  - docs/course-quality/dsp-aggregate-review.json
-  - courses/dsp-radar/assessment-map.json
+  - docs/evidence/ELP-GNC-SEMANTIC-QUALITY-12-2026-09-29.md
+  - docs/course-quality/gnc-quality-revision.json
+  - docs/course-quality/lesson-audit.json
   - docs/COURSE_QUALITY.md
-  claim_boundary: Reviewed authored curriculum and independently verified synthetic numerical/browser/container
-    evidence only; no learner-effectiveness, manual assistive-technology, MATLAB, physical or production acceptance.
-    Robotics P58 has an exact-output runtime optimization only; its original numerical references and all other
-    course payloads remain unchanged.
+  claim_boundary: Deterministic synthetic numerical/browser/container evidence only. No representative learner,
+    manual screen-reader, MATLAB, measured vehicle, hardware or production acceptance.

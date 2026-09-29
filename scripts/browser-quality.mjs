@@ -16,7 +16,7 @@ const saveReport = () => {
 };
 const selected = process.env.ELP_BROWSER_COURSE;
 const selectedModule = process.env.ELP_BROWSER_MODULE;
-const semanticSelection = { 'controls-gnc': [66, 67, 68], 'robotics-autonomy': [68, 69], 'vehicle-dynamics': [61, 62, 63, 64, 65, 66, 67] };
+const semanticSelection = { 'controls-gnc': [36, 38, 42, 43, 45, 46, 47, 48, 49, 50, 51, 55, 66, 67, 68], 'robotics-autonomy': [68, 69], 'vehicle-dynamics': [61, 62, 63, 64, 65, 66, 67] };
 const cumulative = new Set([10, 20, 28, 40, 52, 60, 68, 74, 83, 84]);
 const isCumulative = (course, module) => course.id === 'dsp-radar' && cumulative.has(module.number);
 const isRevised = (course, module) => semanticSelection[course.id]?.includes(module.number) ?? false;
@@ -103,6 +103,16 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
             await checkpoint.screenshot({path:file});
             screenshots.push({path:file,sha256:crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
           }
+        }
+        if (course.id === 'controls-gnc' && [36,38,42,43,45,46,47,48,49,50,51,55].includes(module.number)) {
+          const jump = page.getByRole('navigation', {name:'Lesson sections'}).getByRole('link', {name:'Course checkpoint', exact:true});
+          await jump.click();
+          const heading = page.getByRole('heading', {name:'Course checkpoint', exact:true});
+          await expect(heading).toBeInViewport();
+          const content = await heading.locator('..').textContent();
+          if (!content.includes(`P${module.number} evidence task`) || !content.includes('Reasoning rubric') || !content.includes('no learner score is stored')) throw new Error('Missing Controls evidence task, rubric or learner boundary');
+          row.checkpoint_in_viewport = true;
+          row.checkpoint = true;
         }
         row.status = 'passed';
         if (module === course.modules.at(-1)) {

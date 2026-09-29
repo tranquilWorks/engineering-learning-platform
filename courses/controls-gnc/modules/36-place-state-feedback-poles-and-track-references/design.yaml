@@ -7,21 +7,23 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- u=-Kx+Nbar*r
-- det(sI-(A-BK))=(s+p_1)(s+p_2)
-- Nbar=-1/(C(A-BK)^-1 B)
+- dx/dt=v; dv/dt=u
+- u=-k_p*x-k_d*v+Nbar*r; k_p=p1*p2; k_d=p1+p2
+- Nbar=k_p gives x(infinity)=r
 signature:
 - field: pole_assignment_error
   unit: 1/s
 - field: steady_tracking_error
   unit: '1'
-- field: feedback_gain_norm
+- field: position_gain
   unit: 1/s^2
-teaching_invariant: Controllability permits both poles to be assigned, but unit steady reference tracking requires
-  the separately computed precompensator.
+- field: velocity_gain
+  unit: 1/s
+teaching_invariant: At zero velocity, the complete and incomplete command expressions coincide.
 limiting_cases:
-- For the double integrator K=[p1*p2,p1+p2].
-- The precompensator changes command gain without moving feedback poles.
+- At zero velocity, the complete and incomplete command expressions coincide.
+- "The feedback poles remain \u2212p1 and \u2212p2 regardless of Nbar."
+- A finite plotted endpoint need not equal the exact final value; the DC metric uses the equilibrium.
 scenarios:
   baseline: &id001
     dominant_pole_per_s: 2.0
@@ -48,5 +50,6 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic Python model and authored self-check. Independent numerical and browser/container
+  checks are recorded separately; learner outcomes, MATLAB, manual screen-reader, hardware and production acceptance
+  not_run.

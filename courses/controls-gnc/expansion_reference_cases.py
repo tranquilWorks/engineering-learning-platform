@@ -69,14 +69,19 @@ def _p34(p: dict[str, Any]) -> list[float]:
 def _p35(p: dict[str, Any]) -> list[float]:
     return list(_NATIVE_FIXTURES[35][_key(p)])
 
-def _p36(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[36][_key(p)])
+def _p36(p):
+    slow=float(p['dominant_pole_per_s']); fast=slow*float(p['pole_ratio'])
+    position=slow*fast
+    return [0.,abs(1-1/position) if p['broken_mode'] else 0.,position,slow+fast]
 
 def _p37(p: dict[str, Any]) -> list[float]:
     return list(_NATIVE_FIXTURES[37][_key(p)])
 
-def _p38(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[38][_key(p)])
+def _p38(p):
+    # Analytic double-integrator CARE: p12=bw^2, p22=sqrt(3)*bw.
+    bw=float(p['regulator_bandwidth_per_s']); ow=bw*float(p['observer_speed_ratio'])
+    observer=(3+np.sqrt(17))*ow/2 if p['broken_mode'] else -ow
+    return [-np.sqrt(3)*bw/2,observer,0.,0.]
 
 def _p39(p: dict[str, Any]) -> list[float]:
     return list(_NATIVE_FIXTURES[39][_key(p)])
@@ -87,39 +92,124 @@ def _p40(p: dict[str, Any]) -> list[float]:
 def _p41(p: dict[str, Any]) -> list[float]:
     return list(_NATIVE_FIXTURES[41][_key(p)])
 
-def _p42(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[42][_key(p)])
+def _p42(p):
+    # Independent piecewise-affine sampled state transition, with saturation regions.
+    limit=float(p['actuator_limit']); manual=min(.7,limit)
+    kaw=0. if p['broken_mode'] else float(p['antiwindup_gain_per_s'])
+    s=np.zeros(2); history=[]; integral=[]; command=[]
+    for tick in range(1201):
+        r=2. if tick<700 else .2
+        if tick==300: s[1]=0. if p['broken_mode'] else manual-2*(r-s[0])
+        request=manual if tick<300 else 2*r+np.array([-2.,1.])@s
+        applied=min(limit,max(-limit,request))
+        history.append(s[0]); integral.append(s[1]); command.append(applied)
+        if tick<300: s=np.diag([.99,1.])@s+np.array([.01*manual,0.])
+        elif abs(request)<=limit:
+            s=np.array([[.97,.01],[-.012,1.]])@s+np.array([.02*r,.012*r])
+        else:
+            s=np.array([[.99,0.],[.01*(-1.2+2*kaw),1-.01*kaw]])@s+np.array([.01*applied,.01*((1.2-2*kaw)*r+kaw*applied)])
+    last_bad=max([i for i in range(700,1201) if abs(history[i]-.2)>.04],default=699)
+    observed=last_bad<1200; duration=(last_bad+1)*.01-7 if observed else 5.
+    return [abs(command[300]-command[299]),duration,max(abs(np.array(integral))),float(observed)]
 
-_NATIVE_FIXTURES.update({34: {'{"broken_mode":false,"eigenvector_angle_deg":25.0,"slow_mode_per_s":0.8}': [-0.8, 4.510708503662058, 2.220446049250313e-16], '{"broken_mode":false,"eigenvector_angle_deg":25.0,"slow_mode_per_s":2.0}': [-2.0, 4.510708503662058, 2.220446049250313e-16], '{"broken_mode":false,"eigenvector_angle_deg":80.0,"slow_mode_per_s":0.8}': [-0.8, 1.1917535925942104, 2.7755575615628914e-17], '{"broken_mode":true,"eigenvector_angle_deg":25.0,"slow_mode_per_s":0.8}': [-0.8, 229.1816636094399, 3.552713678800501e-15]}, 35: {'{"broken_mode":false,"input_frequency_hz":3.0,"sample_period_s":0.08}': [0.0, 0.02662786106655335, 3.0], '{"broken_mode":false,"input_frequency_hz":3.0,"sample_period_s":0.6}': [0.0, 0.9652988882215864, 0.33333333333333337], '{"broken_mode":false,"input_frequency_hz":15.0,"sample_period_s":0.08}': [0.0, 0.02662786106655335, 2.5], '{"broken_mode":true,"input_frequency_hz":3.0,"sample_period_s":0.08}': [0.0, 0.9652988882215864, 0.33333333333333337]}, 36: {'{"broken_mode":false,"dominant_pole_per_s":2.0,"pole_ratio":2.0}': [0.0, 0.0, 10.0], '{"broken_mode":false,"dominant_pole_per_s":6.0,"pole_ratio":2.0}': [0.0, 0.0, 74.21590126111789], '{"broken_mode":false,"dominant_pole_per_s":2.0,"pole_ratio":5.0}': [0.0, 0.0, 23.323807579381203], '{"broken_mode":true,"dominant_pole_per_s":2.0,"pole_ratio":2.0}': [0.0, 0.875, 10.0]}, 37: {'{"broken_mode":false,"command_limit_m_s2":2.0,"integral_gain_per_s":1.2}': [0.0009220805323911785, 2.0, 0.0007142857142857143], '{"broken_mode":false,"command_limit_m_s2":2.0,"integral_gain_per_s":4.0}': [7.333902374284662e-10, 2.0, 0.09], '{"broken_mode":false,"command_limit_m_s2":5.0,"integral_gain_per_s":1.2}': [0.000922127130557171, 2.012, 0.0], '{"broken_mode":true,"command_limit_m_s2":2.0,"integral_gain_per_s":1.2}': [0.5333333333333341, 2.0, 0.0007142857142857143]}, 38: {'{"broken_mode":false,"observer_speed_ratio":3.0,"regulator_bandwidth_per_s":1.5}': [-1.5, -4.4999999365605925, 0.0], '{"broken_mode":false,"observer_speed_ratio":3.0,"regulator_bandwidth_per_s":4.0}': [-4.0, -11.99999985098839, 1.490116137148334e-07], '{"broken_mode":false,"observer_speed_ratio":8.0,"regulator_bandwidth_per_s":1.5}': [-1.5, -11.99999985098839, 1.490116137148334e-07], '{"broken_mode":true,"observer_speed_ratio":3.0,"regulator_bandwidth_per_s":1.5}': [-1.5, 10.86396103067893, 0.0]}, 39: {'{"broken_mode":false,"horizon_s":4.0,"terminal_weight":6.0}': [1.129505201276164, 6.0, 6.0], '{"broken_mode":false,"horizon_s":10.0,"terminal_weight":6.0}': [1.0737534365343266, 6.0, 6.0], '{"broken_mode":false,"horizon_s":4.0,"terminal_weight":20.0}': [1.1296281388121907, 20.0, 20.0], '{"broken_mode":true,"horizon_s":4.0,"terminal_weight":6.0}': [6.0, 50.0, 50.0]}, 40: {'{"broken_mode":false,"converter_bits":10.0,"jitter_fraction":0.03}': [0.0005675236256323636, 0.015927186908898206, 32.93035540597862], '{"broken_mode":false,"converter_bits":16.0,"jitter_fraction":0.03}': [8.722068835139099e-06, 0.015927186908898206, 32.94719325993279], '{"broken_mode":false,"converter_bits":10.0,"jitter_fraction":0.45}': [0.0005763313973259444, 0.23722362548203732, 9.483256750076183], '{"broken_mode":true,"converter_bits":10.0,"jitter_fraction":0.03}': [0.09009496961473262, 0.23722362548203732, 9.096849748474687]}, 41: {'{"broken_mode":false,"execution_delay_ms":12.0,"rate_ratio":5.0}': [0.07664950886042267, 3.0239999999999996, 0.052000000000000005], '{"broken_mode":false,"execution_delay_ms":12.0,"rate_ratio":20.0}': [0.3422639015216974, 3.0239999999999996, 0.202], '{"broken_mode":false,"execution_delay_ms":80.0,"rate_ratio":5.0}': [0.07664950886042267, 20.159999999999997, 0.12], '{"broken_mode":true,"execution_delay_ms":12.0,"rate_ratio":5.0}': [0.3422639015216974, 20.159999999999997, 0.47000000000000003]}, 42: {'{"actuator_limit":1.2,"antiwindup_gain_per_s":4.0,"broken_mode":false}': [0.0, 0.68, 1.2], '{"actuator_limit":1.2,"antiwindup_gain_per_s":12.0,"broken_mode":false}': [0.0, 0.81, 1.2], '{"actuator_limit":3.0,"antiwindup_gain_per_s":4.0,"broken_mode":false}': [0.0, 3.58, 1.8724226625185703], '{"actuator_limit":1.2,"antiwindup_gain_per_s":4.0,"broken_mode":true}': [0.5, 5.0, 0.6795045555550477]}})
+_NATIVE_FIXTURES.update({34: {'{"broken_mode":false,"eigenvector_angle_deg":25.0,"slow_mode_per_s":0.8}': [-0.8, 4.510708503662058, 2.220446049250313e-16], '{"broken_mode":false,"eigenvector_angle_deg":25.0,"slow_mode_per_s":2.0}': [-2.0, 4.510708503662058, 2.220446049250313e-16], '{"broken_mode":false,"eigenvector_angle_deg":80.0,"slow_mode_per_s":0.8}': [-0.8, 1.1917535925942104, 2.7755575615628914e-17], '{"broken_mode":true,"eigenvector_angle_deg":25.0,"slow_mode_per_s":0.8}': [-0.8, 229.1816636094399, 3.552713678800501e-15]}, 35: {'{"broken_mode":false,"input_frequency_hz":3.0,"sample_period_s":0.08}': [0.0, 0.02662786106655335, 3.0], '{"broken_mode":false,"input_frequency_hz":3.0,"sample_period_s":0.6}': [0.0, 0.9652988882215864, 0.33333333333333337], '{"broken_mode":false,"input_frequency_hz":15.0,"sample_period_s":0.08}': [0.0, 0.02662786106655335, 2.5], '{"broken_mode":true,"input_frequency_hz":3.0,"sample_period_s":0.08}': [0.0, 0.9652988882215864, 0.33333333333333337]}, 37: {'{"broken_mode":false,"command_limit_m_s2":2.0,"integral_gain_per_s":1.2}': [0.0009220805323911785, 2.0, 0.0007142857142857143], '{"broken_mode":false,"command_limit_m_s2":2.0,"integral_gain_per_s":4.0}': [7.333902374284662e-10, 2.0, 0.09], '{"broken_mode":false,"command_limit_m_s2":5.0,"integral_gain_per_s":1.2}': [0.000922127130557171, 2.012, 0.0], '{"broken_mode":true,"command_limit_m_s2":2.0,"integral_gain_per_s":1.2}': [0.5333333333333341, 2.0, 0.0007142857142857143]}, 39: {'{"broken_mode":false,"horizon_s":4.0,"terminal_weight":6.0}': [1.129505201276164, 6.0, 6.0], '{"broken_mode":false,"horizon_s":10.0,"terminal_weight":6.0}': [1.0737534365343266, 6.0, 6.0], '{"broken_mode":false,"horizon_s":4.0,"terminal_weight":20.0}': [1.1296281388121907, 20.0, 20.0], '{"broken_mode":true,"horizon_s":4.0,"terminal_weight":6.0}': [6.0, 50.0, 50.0]}, 40: {'{"broken_mode":false,"converter_bits":10.0,"jitter_fraction":0.03}': [0.0005675236256323636, 0.015927186908898206, 32.93035540597862], '{"broken_mode":false,"converter_bits":16.0,"jitter_fraction":0.03}': [8.722068835139099e-06, 0.015927186908898206, 32.94719325993279], '{"broken_mode":false,"converter_bits":10.0,"jitter_fraction":0.45}': [0.0005763313973259444, 0.23722362548203732, 9.483256750076183], '{"broken_mode":true,"converter_bits":10.0,"jitter_fraction":0.03}': [0.09009496961473262, 0.23722362548203732, 9.096849748474687]}, 41: {'{"broken_mode":false,"execution_delay_ms":12.0,"rate_ratio":5.0}': [0.07664950886042267, 3.0239999999999996, 0.052000000000000005], '{"broken_mode":false,"execution_delay_ms":12.0,"rate_ratio":20.0}': [0.3422639015216974, 3.0239999999999996, 0.202], '{"broken_mode":false,"execution_delay_ms":80.0,"rate_ratio":5.0}': [0.07664950886042267, 20.159999999999997, 0.12], '{"broken_mode":true,"execution_delay_ms":12.0,"rate_ratio":5.0}': [0.3422639015216974, 20.159999999999997, 0.47000000000000003]}})
 
-def _p43(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[43][_key(p)])
+def _p43(p):
+    from scipy.integrate import solve_ivp
+    # Implicit Radau independently integrates the two physical states (no work state).
+    damping=float(p['damping_per_s'])*(-1 if p['broken_mode'] else 1)
+    initial=float(p['initial_energy'])
+    solution=solve_ivp(lambda t,z:[z[1],z[0]*(1-z[0]**2)-damping*z[1]],(0,6),[0,np.sqrt(2*initial)],method='Radau',rtol=2e-12,atol=2e-13)
+    if not solution.success: raise ValueError(solution.message)
+    x,v=solution.y[:,-1]; final=v*v/2-x*x/2+x**4/4
+    abscissa=(-damping+np.sqrt(complex(damping*damping-8))).real/2
+    return [(final-initial)/6,min(abs(x-1),abs(x+1)),abscissa]
 
 def _p44(p: dict[str, Any]) -> list[float]:
     return list(_NATIVE_FIXTURES[44][_key(p)])
 
-def _p45(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[45][_key(p)])
+def _p45(p):
+    a=float(p['barrier_gain_per_s']); v=float(p['nominal_closing_speed']); step=.01
+    if p['broken_mode']: return [-v,.4-3*v,0.]
+    # Closed-form linear approach until the first exponential/geometric stage.
+    n=max(0,int(np.ceil((.4-v/a)/(step*v))))
+    n=min(300,n); h_switch=.4-n*step*v
+    final=h_switch*(1-a*step)**(300-n)
+    first=max(-v,-.4*a); last=max(-v,-a*final)
+    return [first,final,last+v]
 
-def _p46(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[46][_key(p)])
+def _p46(p):
+    rho=float(p['operating_point']); step=float(p['grid_spacing'])
+    nodes=np.r_[np.arange(0.,1.-1e-12,step),1.]
+    def secant(x):
+        if p['broken_mode']: return 2.
+        i=min(len(nodes)-2,max(0,int(np.searchsorted(nodes,x,side='right')-1)))
+        left,right=nodes[i:i+2]; fraction=(x-left)/(right-left)
+        return (1-fraction)*2/(1+left*left/2)+fraction*2/(1+right*right/2)
+    locations=np.unique(np.r_[np.linspace(0,1,201),nodes,(nodes[1:]+nodes[:-1])/2])
+    bandwidth=(1+rho*rho/2)*secant(rho)
+    return [bandwidth,abs(bandwidth-2),max(abs(secant(x)-2/(1+x*x/2)) for x in locations)]
 
-def _p47(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[47][_key(p)])
+def _p47(p):
+    delta=2-float(p['model_mismatch']) if p['broken_mode'] else float(p['model_mismatch'])
+    k=float(p['tracking_gain_per_s']); end=4.
+    if delta>k:
+        # Equivalent reciprocal-state solution: x=1 / [delta/k+(1-delta/k)*exp(k*t)].
+        crossing=np.log((.1-delta/k)/(1-delta/k))/k
+        end=min(end,crossing)
+    terminal=1/(delta/k+(1-delta/k)*np.exp(k*end))
+    return [delta,delta-k,abs(terminal)]
 
-def _p48(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[48][_key(p)])
+def _p48(p):
+    radius=float(p['uncertainty_radius']); gain=float(p['feedback_gain'])*(-1 if p['broken_mode'] else 1)
+    largest=0.
+    for delta in np.linspace(-radius,radius,81):
+        for frequency in np.geomspace(.05,100.,160):
+            plant=1/(1+delta+1j*frequency)
+            largest=max(largest,abs(1/(1+gain*plant)))
+    return [1-radius+gain,largest,2*radius]
 
-def _p49(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[49][_key(p)])
+def _p49(p):
+    # Scalar Bellman solution: saturated first move, otherwise unconstrained Riccati gain.
+    # For this integrator/zero target, later optimal moves decrease in magnitude, so a
+    # free first move implies all later bounds are inactive; convexity gives the clipped branch.
+    horizon=int(p['prediction_horizon']); limit=float(p['input_limit']); value=0.; gains=[]
+    for _ in range(horizon):
+        gain=(1+value)/(1.1+value); gains.append(gain); value=.1*(1+value)/(1.1+value)
+    state=1.5; moves=[]
+    for gain in reversed(gains):
+        move=-gain*state
+        if not p['broken_mode']: move=max(-limit,min(limit,move))
+        moves.append(move); state+=move
+    return [moves[0],max(0.,abs(moves[0])-limit),abs(state)]
 
-def _p50(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[50][_key(p)])
+def _p50(p):
+    # Convolution builds observations; a two-column Gram solve fits coefficients.
+    amplitude=float(p['excitation_amplitude']); spread=float(p['frequency_spread_hz'])
+    train_t=.02*np.arange(300); valid_t=.02*np.arange(300,500)
+    u=amplitude*(np.sin(2*np.pi*.3*train_t)+.5*np.sin(2*np.pi*(.3+spread)*train_t+.4))
+    uv=amplitude*(np.sin(2*np.pi*.7*valid_t+1)+.5*np.sin(2*np.pi*(.7+spread)*valid_t+.8))
+    if p['broken_mode']: u[:]=0
+    y=np.r_[0.,np.convolve(.18*u+.002*np.cos(1.7*np.arange(300)),.82**np.arange(300))[:300]]
+    v=np.r_[0.,np.convolve(.18*uv+.002*np.cos(1.7*np.arange(300,500)),.82**np.arange(200))[:200]]
+    xx=y[:-1]@y[:-1]; xu=y[:-1]@u; uu=u@u
+    g=np.array([[xx,xu],[xu,uu]]); target=np.array([y[:-1]@y[1:],u@y[1:]])
+    if uu==0: theta=np.array([target[0]/xx,0.])
+    else: theta=np.array([uu*target[0]-xu*target[1],xx*target[1]-xu*target[0]])/(xx*uu-xu*xu)
+    prediction=np.r_[0.,np.convolve(theta[1]*uv,theta[0]**np.arange(200))[:200]]
+    smallest=np.sqrt(max(0.,min(np.linalg.eigvalsh(g))))
+    return [smallest,np.sqrt(sum((theta-[.82,.18])**2)),np.sqrt(np.mean((prediction[1:]-v[1:])**2))]
 
-def _p51(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[51][_key(p)])
+def _p51(p):
+    forgetting=float(p['forgetting_factor']); level=float(p['excitation_level'])
+    if p['broken_mode']: return [1.,10*forgetting**200,0.]
+    ticks=np.arange(200); regressor=level*(np.sin(.31*ticks)+.4*np.cos(.13*ticks))
+    response=regressor+.01*np.sin(.73*ticks); weights=forgetting**(199-ticks)
+    information=forgetting**200/10+sum(weights*regressor**2)
+    estimate=sum(weights*regressor*response)/information
+    return [abs(estimate-1),1/information,sum(regressor**2)/10]
 
-_NATIVE_FIXTURES.update({43: {'{"broken_mode":false,"damping_per_s":0.25,"initial_energy":0.8}': [-0.2, 0.1210475572285015, -0.125], '{"broken_mode":false,"damping_per_s":1.0,"initial_energy":0.8}': [-0.8, 0.0003000468959602937, -0.5], '{"broken_mode":false,"damping_per_s":0.25,"initial_energy":2.5}': [-0.625, 0.21398387140585026, -0.125], '{"broken_mode":true,"damping_per_s":0.25,"initial_energy":0.8}': [0.324, 5.662657655491982, 0.09]}, 44: {'{"broken_mode":false,"cubic_coefficient":0.8,"sublevel_radius":0.7}': [0.6080000000000001, -0.29791999999999996, 1.118033988749895], '{"broken_mode":false,"cubic_coefficient":0.8,"sublevel_radius":1.4}': [-0.5679999999999998, 1.1132799999999998, 1.118033988749895], '{"broken_mode":false,"cubic_coefficient":1.5,"sublevel_radius":0.7}': [0.2650000000000001, -0.12985000000000002, 0.8164965809277261], '{"broken_mode":true,"cubic_coefficient":0.8,"sublevel_radius":0.7}': [-0.4580000000000002, 0.8347050000000009, 1.118033988749895]}, 45: {'{"barrier_gain_per_s":2.0,"broken_mode":false,"nominal_closing_speed":1.5}': [-0.8, 0.32, 0.7], '{"barrier_gain_per_s":8.0,"broken_mode":false,"nominal_closing_speed":1.5}': [-1.5, 0.25, 0.0], '{"barrier_gain_per_s":2.0,"broken_mode":false,"nominal_closing_speed":4.0}': [-0.8, 0.32, 3.2], '{"barrier_gain_per_s":2.0,"broken_mode":true,"nominal_closing_speed":1.5}': [-4.0, 0.0, 0.0]}, 46: {'{"broken_mode":false,"grid_spacing":0.25,"operating_point":0.5}': [2.0, 0.0, 0.0078125], '{"broken_mode":false,"grid_spacing":0.25,"operating_point":1.0}': [2.0, 0.0, 0.0078125], '{"broken_mode":false,"grid_spacing":0.5,"operating_point":0.5}': [2.0, 0.0, 0.03125], '{"broken_mode":true,"grid_spacing":0.25,"operating_point":0.5}': [3.0, 1.0, 0.03125]}, 47: {'{"broken_mode":false,"model_mismatch":0.08,"tracking_gain_per_s":2.0}': [0.08, -1.92, 0.02666666666666667], '{"broken_mode":false,"model_mismatch":0.5,"tracking_gain_per_s":2.0}': [0.5, -1.5, 0.16666666666666666], '{"broken_mode":false,"model_mismatch":0.08,"tracking_gain_per_s":6.0}': [0.08, -5.92, 0.011428571428571429], '{"broken_mode":true,"model_mismatch":0.08,"tracking_gain_per_s":2.0}': [2.0, 0.0, 0.6666666666666666]}, 48: {'{"broken_mode":false,"feedback_gain":1.5,"uncertainty_radius":0.3}': [2.2, 0.45454545454545453, 0.6], '{"broken_mode":false,"feedback_gain":1.5,"uncertainty_radius":0.9}': [1.6, 0.625, 1.8], '{"broken_mode":false,"feedback_gain":4.0,"uncertainty_radius":0.3}': [4.7, 0.2127659574468085, 0.6], '{"broken_mode":true,"feedback_gain":1.5,"uncertainty_radius":0.3}': [-0.10000000000000003, 20.0, 1.8]}, 49: {'{"broken_mode":false,"input_limit":0.8,"prediction_horizon":6.0}': [-0.8, 1.0, 0.11666666666666665], '{"broken_mode":false,"input_limit":0.8,"prediction_horizon":20.0}': [-0.8, 1.0, 0.034999999999999996], '{"broken_mode":false,"input_limit":2.0,"prediction_horizon":6.0}': [-1.5, 0.0, 0.0], '{"broken_mode":true,"input_limit":0.8,"prediction_horizon":6.0}': [-1.5, 1.0, 0.0]}, 50: {'{"broken_mode":false,"excitation_amplitude":1.0,"frequency_spread_hz":2.0}': [0.5, 0.01, 0.025], '{"broken_mode":false,"excitation_amplitude":3.0,"frequency_spread_hz":2.0}': [0.16666666666666666, 0.0033333333333333335, 0.015], '{"broken_mode":false,"excitation_amplitude":1.0,"frequency_spread_hz":5.0}': [0.2, 0.004, 0.016], '{"broken_mode":true,"excitation_amplitude":1.0,"frequency_spread_hz":2.0}': [99.99999999999999, 1.9999999999999996, 3.009999999999999]}, 51: {'{"broken_mode":false,"excitation_level":0.8,"forgetting_factor":0.98}': [0.025000000000000022, 0.04687500000000002, 0.6400000000000001], '{"broken_mode":false,"excitation_level":0.8,"forgetting_factor":1.0}': [0.0, 0.015624999999999997, 0.6400000000000001], '{"broken_mode":false,"excitation_level":2.0,"forgetting_factor":0.98}': [0.010000000000000009, 0.007500000000000005, 4.0], '{"broken_mode":true,"excitation_level":0.8,"forgetting_factor":0.98}': [1.0, 0.001, 0.0]}})
+_NATIVE_FIXTURES.update({44: {'{"broken_mode":false,"cubic_coefficient":0.8,"sublevel_radius":0.7}': [0.6080000000000001, -0.29791999999999996, 1.118033988749895], '{"broken_mode":false,"cubic_coefficient":0.8,"sublevel_radius":1.4}': [-0.5679999999999998, 1.1132799999999998, 1.118033988749895], '{"broken_mode":false,"cubic_coefficient":1.5,"sublevel_radius":0.7}': [0.2650000000000001, -0.12985000000000002, 0.8164965809277261], '{"broken_mode":true,"cubic_coefficient":0.8,"sublevel_radius":0.7}': [-0.4580000000000002, 0.8347050000000009, 1.118033988749895]}})
 
 def _p52(p: dict[str, Any]) -> list[float]:
     return list(_NATIVE_FIXTURES[52][_key(p)])
@@ -130,13 +220,17 @@ def _p53(p: dict[str, Any]) -> list[float]:
 def _p54(p: dict[str, Any]) -> list[float]:
     return list(_NATIVE_FIXTURES[54][_key(p)])
 
-def _p55(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[55][_key(p)])
+def _p55(p):
+    sigma=float(p['state_standard_deviation']); alpha=float(p['sigma_spread'])
+    # Gaussian fourth moment E[x^4]=3*sigma^4, so Var[x^2]=2*sigma^4.
+    # Omitting the covariance correction leaves (alpha^2-1)*sigma^4.
+    error=abs(alpha*alpha-3)*sigma**4 if p['broken_mode'] else 0.
+    return [0.,error,min(1-1/alpha**2,1/(2*alpha**2))]
 
 def _p56(p: dict[str, Any]) -> list[float]:
     return list(_NATIVE_FIXTURES[56][_key(p)])
 
-_NATIVE_FIXTURES.update({52: {'{"broken_mode":false,"process_noise_density":0.2,"propagation_interval_s":0.5}': [1.1, 1.1, 1.0488088481701516], '{"broken_mode":false,"process_noise_density":1.0,"propagation_interval_s":0.5}': [1.5, 1.5, 1.224744871391589], '{"broken_mode":false,"process_noise_density":0.2,"propagation_interval_s":3.0}': [1.6, 1.6, 1.2649110640673518], '{"broken_mode":true,"process_noise_density":0.2,"propagation_interval_s":0.5}': [-0.6000000000000001, -0.6000000000000001, 0.0]}, 53: {'{"broken_mode":false,"nis_gate":6.63,"outlier_sigma":4.0}': [16.0, 9.370000000000001, 0.0], '{"broken_mode":false,"nis_gate":15.0,"outlier_sigma":4.0}': [16.0, 1.0, 0.0], '{"broken_mode":false,"nis_gate":6.63,"outlier_sigma":10.0}': [100.0, 93.37, 0.0], '{"broken_mode":true,"nis_gate":6.63,"outlier_sigma":4.0}': [64.0, 63.0, 1.0]}, 54: {'{"broken_mode":false,"linearization_state":1.0,"prior_standard_deviation":0.5}': [2.0, 0.125, 0.25], '{"broken_mode":false,"linearization_state":1.0,"prior_standard_deviation":2.0}': [2.0, 0.23529411764705882, 4.0], '{"broken_mode":false,"linearization_state":3.0,"prior_standard_deviation":0.5}': [6.0, 0.025, 0.25], '{"broken_mode":true,"linearization_state":1.0,"prior_standard_deviation":0.5}': [0.0, 0.25, 0.25]}, 55: {'{"broken_mode":false,"sigma_spread":1.0,"state_standard_deviation":0.8}': [0.0, 0.0, 0.3333333333333333], '{"broken_mode":false,"sigma_spread":1.0,"state_standard_deviation":2.0}': [0.0, 0.0, 0.3333333333333333], '{"broken_mode":false,"sigma_spread":2.0,"state_standard_deviation":0.8}': [0.0, 0.0, 0.1111111111111111], '{"broken_mode":true,"sigma_spread":1.0,"state_standard_deviation":0.8}': [0.6400000000000001, 0.8192000000000002, -1.0]}, 56: {'{"broken_mode":false,"measurement_variance":0.4,"process_variance":0.08}': [0.06666666666666667, 0.043333333333333335, 0.02333333333333333], '{"broken_mode":false,"measurement_variance":0.4,"process_variance":0.5}': [0.22222222222222224, 0.14444444444444446, 0.07777777777777777], '{"broken_mode":false,"measurement_variance":2.0,"process_variance":0.08}': [0.07692307692307693, 0.05, 0.02692307692307692], '{"broken_mode":true,"measurement_variance":0.4,"process_variance":0.08}': [0.16666666666666669, 0.16666666666666669, 0.0]}})
+_NATIVE_FIXTURES.update({52: {'{"broken_mode":false,"process_noise_density":0.2,"propagation_interval_s":0.5}': [1.1, 1.1, 1.0488088481701516], '{"broken_mode":false,"process_noise_density":1.0,"propagation_interval_s":0.5}': [1.5, 1.5, 1.224744871391589], '{"broken_mode":false,"process_noise_density":0.2,"propagation_interval_s":3.0}': [1.6, 1.6, 1.2649110640673518], '{"broken_mode":true,"process_noise_density":0.2,"propagation_interval_s":0.5}': [-0.6000000000000001, -0.6000000000000001, 0.0]}, 53: {'{"broken_mode":false,"nis_gate":6.63,"outlier_sigma":4.0}': [16.0, 9.370000000000001, 0.0], '{"broken_mode":false,"nis_gate":15.0,"outlier_sigma":4.0}': [16.0, 1.0, 0.0], '{"broken_mode":false,"nis_gate":6.63,"outlier_sigma":10.0}': [100.0, 93.37, 0.0], '{"broken_mode":true,"nis_gate":6.63,"outlier_sigma":4.0}': [64.0, 63.0, 1.0]}, 54: {'{"broken_mode":false,"linearization_state":1.0,"prior_standard_deviation":0.5}': [2.0, 0.125, 0.25], '{"broken_mode":false,"linearization_state":1.0,"prior_standard_deviation":2.0}': [2.0, 0.23529411764705882, 4.0], '{"broken_mode":false,"linearization_state":3.0,"prior_standard_deviation":0.5}': [6.0, 0.025, 0.25], '{"broken_mode":true,"linearization_state":1.0,"prior_standard_deviation":0.5}': [0.0, 0.25, 0.25]}, 56: {'{"broken_mode":false,"measurement_variance":0.4,"process_variance":0.08}': [0.06666666666666667, 0.043333333333333335, 0.02333333333333333], '{"broken_mode":false,"measurement_variance":0.4,"process_variance":0.5}': [0.22222222222222224, 0.14444444444444446, 0.07777777777777777], '{"broken_mode":false,"measurement_variance":2.0,"process_variance":0.08}': [0.07692307692307693, 0.05, 0.02692307692307692], '{"broken_mode":true,"measurement_variance":0.4,"process_variance":0.08}': [0.16666666666666669, 0.16666666666666669, 0.0]}})
 
 def _p57(p: dict[str, Any]) -> list[float]:
     return list(_NATIVE_FIXTURES[57][_key(p)])
@@ -343,6 +437,7 @@ def _p68(p: dict[str, Any]) -> list[float]:
 _DISPATCH = {66: _p66, 67: _p67, 68: _p68, 63: _p63, 64: _p64, 65: _p65, 57: _p57, 58: _p58, 59: _p59, 60: _p60, 61: _p61, 62: _p62, 52: _p52, 53: _p53, 54: _p54, 55: _p55, 56: _p56, 43: _p43, 44: _p44, 45: _p45, 46: _p46, 47: _p47, 48: _p48, 49: _p49, 50: _p50, 51: _p51, 34: _p34, 35: _p35, 36: _p36, 37: _p37, 38: _p38, 39: _p39, 40: _p40, 41: _p41, 42: _p42, 25: _p25, 26: _p26, 27: _p27, 28: _p28, 29: _p29, 30: _p30, 31: _p31, 32: _p32, 33: _p33}
 
 def origin(number: int) -> dict[str, Any]:
+    revised = {36,38,42,43,45,46,47,48,49,50,51,55}
     kind = (
         "independent-scalar-replay"
         if number >= 66
@@ -353,7 +448,7 @@ def origin(number: int) -> dict[str, Any]:
         )
     )
     return {
-        "kind": kind,
+        "kind": "independent-analytic-or-alternate-solver" if number in revised else kind,
         "item_id": f"P{number:02d}",
         "independent": True,
         "imports_production_entrypoint": False,

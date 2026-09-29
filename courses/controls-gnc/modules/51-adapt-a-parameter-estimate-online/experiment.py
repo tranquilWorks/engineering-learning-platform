@@ -5,22 +5,39 @@ from typing import Any
 import numpy as np
 
 ITEM_NUMBER = 51
-BROKEN_TEXT = 'Broken mode removes excitation while forcing covariance downward, producing false confidence with persistent parameter error.'
-RECOVERY_TEXT = 'Restore informative excitation and covariance-consistent RLS updates, then monitor both error and uncertainty.'
+BROKEN_TEXT = "Broken mode sets the actual regressor to zero and uses the incorrect covariance update lambda*P. The parameter stays at zero while the reported covariance shrinks for lambda<1. The selected forgetting factor remains active."
+RECOVERY_TEXT = "Restore excitation and the correct covariance recurrence, then reset the controls. Check estimate motion is accompanied by nonzero regressors and actual information accumulation."
 
 
-def _trace(name: str, x: Any, y: Any, x_quantity: str, x_unit: str,
-           y_quantity: str, y_unit: str, *, mode: str = "lines") -> dict[str, Any]:
+def _trace(
+    name: str,
+    x: Any,
+    y: Any,
+    x_quantity: str,
+    x_unit: str,
+    y_quantity: str,
+    y_unit: str,
+    *,
+    mode: str = "lines",
+) -> dict[str, Any]:
     return {
-        "type": "scattergl", "mode": mode, "name": name,
-        "x": np.asarray(x, dtype=float), "y": np.asarray(y, dtype=float),
-        "meta": {"x_quantity": x_quantity, "x_unit": x_unit,
-                 "y_quantity": y_quantity, "y_unit": y_unit},
+        "type": "scatter",
+        "mode": mode,
+        "name": name,
+        "x": np.asarray(x, dtype=float),
+        "y": np.asarray(y, dtype=float),
+        "meta": {
+            "x_quantity": x_quantity,
+            "x_unit": x_unit,
+            "y_quantity": y_quantity,
+            "y_unit": y_unit,
+        },
     }
 
 
-def _plot(title: str, x_title: str, y_title: str,
-          traces: list[dict[str, Any]]) -> dict[str, Any]:
+def _plot(
+    title: str, x_title: str, y_title: str, traces: list[dict[str, Any]]
+) -> dict[str, Any]:
     return {
         "data": traces,
         "layout": {
@@ -29,7 +46,8 @@ def _plot(title: str, x_title: str, y_title: str,
             "yaxis": {"title": {"text": y_title}},
             "legend": {"orientation": "h"},
             "margin": {"l": 72, "r": 36, "t": 62, "b": 62},
-            "hovermode": "closest", "uirevision": "keep-view",
+            "hovermode": "closest",
+            "uirevision": "keep-view",
         },
         "config": {"responsive": True, "displaylogo": False},
     }
@@ -38,8 +56,13 @@ def _plot(title: str, x_title: str, y_title: str,
 def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
     return {
         "metrics": [
-            {"id": key, "label": label, "value": float(value), "unit": unit,
-              "emphasis": "primary" if index == 0 else "normal"}
+            {
+                "id": key,
+                "label": label,
+                "value": float(value),
+                "unit": unit,
+                "emphasis": "primary" if index == 0 else "normal",
+            }
             for index, (key, label, value, unit) in enumerate(model["metrics"])
         ],
         "plots": model["plots"],
@@ -50,27 +73,106 @@ def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
         },
         "diagnostics": {
             "item_number": ITEM_NUMBER,
+            **model.get("details", {}),
             "broken_active": bool(broken),
             "signature": [float(value) for value in model["signature"]],
         },
     }
 
-def _model(p: dict[str, Any], broken: bool) -> dict[str, Any]:
-    a=float(p["forgetting_factor"]); b=float(p["excitation_level"])
-    if broken: a=0.9; b=0.05
-    x=np.linspace(0.,10.,240)
-    signature=[float((1-a)/(max(b,.01)) if not broken else 1.),float((1-a+.01)/(b*b) if not broken else .001),float(b*b if not broken else 0.)]
-    y1=np.asarray(1-np.exp(-b*b*x),dtype=float); y2=np.asarray(np.ones_like(x),dtype=float)
-    z1=np.asarray(((1-a+.01)/(b*b))*np.exp(-(1-a+.01)*x),dtype=float); z2=np.asarray(np.full_like(x,.001 if broken else (1-a+.01)/(b*b)),dtype=float)
-    if y1.ndim==0: y1=np.full_like(x,float(y1))
-    if y2.ndim==0: y2=np.full_like(x,float(y2))
-    if z1.ndim==0: z1=np.full_like(x,float(z1))
-    if z2.ndim==0: z2=np.full_like(x,float(z2))
-    return {"signature":signature,"metrics":[("terminal_parameter_error", "Terminal Parameter Error", signature[0], "1"),("terminal_covariance", "Terminal Covariance", signature[1], "1"),("information_rate", "Information Rate", signature[2], "1/s")],"plots":{
-      "response":_plot("Online parameter convergence","Sample time (s)","Parameter estimate (1)",[_trace("Nominal/filtered",x,y1,"Sample time","s","Parameter estimate","1"),_trace("Reference/boundary",x,y2,"Sample time","s","Parameter estimate","1")]),
-      "mechanism":_plot("RLS covariance evolution","Sample time (s)","Parameter covariance (1)",[_trace("Mechanism",x,z1,"Sample time","s","Parameter covariance","1"),_trace("Requirement/reference",x,z2,"Sample time","s","Parameter covariance","1")])},
-      "observation":"Parameter convergence requires excitation; covariance must not shrink when the regressor carries no information."}
 
+def rls_history(forgetting, level, broken=False, noise=0.01):
+    k = np.arange(200)
+    phi = level * (np.sin(0.31 * k) + 0.4 * np.cos(0.13 * k))
+    if broken:
+        phi[:] = 0.0
+    y = phi + noise * np.sin(0.73 * k)
+    theta = [0.0]
+    covariance = [10.0]
+    gain = []
+    for f, measurement in zip(phi, y):
+        old = covariance[-1]
+        g = old * f / (forgetting + f * f * old)
+        theta.append(theta[-1] + g * (measurement - f * theta[-1]))
+        gain.append(g)
+        covariance.append(
+            forgetting * old if broken else (old - g * f * old) / forgetting
+        )
+    return phi, y, np.array(theta), np.array(covariance), np.array(gain)
+
+
+def _model(p, broken):
+    forgetting = float(p["forgetting_factor"])
+    phi, y, theta, cov, gain = rls_history(
+        forgetting, float(p["excitation_level"]), broken
+    )
+    rate = sum(phi * phi) / 10.0
+    t = np.arange(201) * 0.05
+    model = {
+        "signature": [abs(theta[-1] - 1), cov[-1], rate],
+        "metrics": [
+            ("error", "Final measured parameter error", abs(theta[-1] - 1), "1"),
+            ("covariance", "Final RLS covariance scale", cov[-1], "1"),
+            ("excitation", "Measured excitation information rate", rate, "1/s"),
+        ],
+        "plots": {
+            "response": _plot(
+                "Recursive parameter estimate",
+                "Time (s)",
+                "Parameter estimate (1)",
+                [
+                    _trace(
+                        "RLS estimate", t, theta, "Time", "s", "Parameter estimate", "1"
+                    ),
+                    _trace(
+                        "Synthetic truth",
+                        t,
+                        np.ones_like(t),
+                        "Time",
+                        "s",
+                        "Parameter estimate",
+                        "1",
+                    ),
+                ],
+            ),
+            "mechanism": _plot(
+                "Covariance and missing excitation",
+                "Time (s)",
+                "Covariance scale (1)",
+                [
+                    _trace(
+                        "Reported covariance",
+                        t,
+                        cov,
+                        "Time",
+                        "s",
+                        "Covariance scale",
+                        "1",
+                    ),
+                    _trace(
+                        "Correct zero-excitation evolution",
+                        t,
+                        10 / forgetting ** np.arange(201),
+                        "Time",
+                        "s",
+                        "Covariance scale",
+                        "1",
+                    ),
+                ],
+            ),
+        },
+        "details": {
+            "time": t,
+            "regressor": phi,
+            "measurement": y,
+            "estimate": theta,
+            "covariance": cov,
+            "gain": gain,
+        },
+        "observation": "Every estimate and covariance comes from an RLS update. Without excitation the correct covariance cannot shrink. The fault combines zero regressor with the erroneous multiplication by the forgetting factor, producing false confidence without learning.",
+    }
+
+    model["plots"]["mechanism"]["layout"]["yaxis"]["type"] = "log"
+    return model
 
 
 def run(parameters: dict[str, Any]) -> dict[str, Any]:

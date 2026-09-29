@@ -1,66 +1,57 @@
-# Transform Uncertainty with an Unscented Kalman Filter
+# Transform Gaussian Uncertainty with Sigma Points
 
-**Guiding question:** How do sigma points capture nonlinear mean and covariance beyond a first-order Jacobian?
-
-Transform a zero-mean Gaussian through x², compare analytic moments with a symmetric sigma set, and expose invalid weights. This is a Python-first native design derived from the reviewed competency map. It is not presented as a conversion of the pinned MATLAB source and it stays inside deterministic software simulation.
-
-## Why this lesson exists
-
-The numerical result is not the objective by itself. The objective is to connect a design decision to a governing relation, an observable consequence, a failure mechanism, and a recovery check. Record the assumptions before interpreting any curve.
+The unscented transform propagates selected points through a nonlinear map, then combines the transformed points with specified weights. This lesson executes that component of an unscented Kalman filter; it does not perform recursive state prediction, measurement assimilation or a complete UKF.
 
 ## Model and equations
 
-$$\text{y=x^2}$$
-$$\text{E[y]=sigma^2}$$
-$$\text{Var[y]=2 sigma^4}$$
+\[
+\bar y=\sum_i W_i^{(m)}f(\chi_i),\qquad P_y=\sum_i W_i^{(c)}(f(\chi_i)-\bar y)^2
+\]
 
-Carry units through the model. A pole or zero is reported in inverse seconds, angular frequency in radians per second, phase in degrees or radians as labeled, and dimensionless ratios as `1`. The experiment evaluates the displayed equations directly; it does not call a black-box synthesis toolbox.
+`x~N(0,sigma^2); y=x^2; E[y]=sigma^2; Var[y]=2*sigma^4`
 
-## Predict before running
+`points=[0,+alpha*sigma,-alpha*sigma]; Wm=[1-alpha^-2,1/(2*alpha^2),1/(2*alpha^2)]`
 
-A valid symmetric transform reproduces the declared nonlinear moments within its quadrature order and uses weights that sum to one. State which output should move first and which quantity should remain invariant before changing a control.
+`Wc0=Wm0+1-alpha^2+beta, beta=2; mean=sum(Wm*y); variance=sum(Wc*(y-mean)^2)`
+
+Worked example: At sigma=0.8 and alpha=1, points are 0 and ±0.8. Mean weights are [0,0.5,0.5], while covariance weights are [2,0.5,0.5]. Squaring gives mean 0.64 and variance 2*(0.8)^4=0.8192. Covariance weights sum to three, not one.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read all three signature metrics.
-2. Inspect the response plot for the external behavior, then the mechanism plot for the governing internal relation.
-3. Check the units and limiting cases before accepting a stability, equivalence, or performance statement.
-4. Save the baseline, change one variable only, and explain the direction of change from the equations.
+Does a negative central mean weight necessarily invalidate the transform? Try alpha below one and compare the computed moments with the Gaussian formulas.
+
+Run the default controls, record the metrics, and explain the plotted quantities before changing a setting. Actual sigma-point transform displays the nonlinear curve and the three transformed points. Weighted variance contributions shows what each point adds to the covariance calculation. The metrics expose computed moments, their errors, minimum mean weight and covariance-weight sum.
 
 ## Two one-variable sweeps
 
-1. Hold `sigma_spread` at `1.0 1` and sweep `state_standard_deviation` from `0.1` through `0.8` to `2.0 1`.
-2. Restore `state_standard_deviation` to `0.8 1` and sweep `sigma_spread` from `0.2` through `1.0` to `2.0 1`.
-
-Do not tune both at once until you can attribute each metric change to one term in the equations. The retained evidence uses one endpoint from each sweep in addition to the baseline.
+Increase state standard deviation from 0.8 to 2: mean scales as sigma² and variance as sigma⁴. Reset, then move sigma spread from 1 to 2 and down to 0.2: point positions and weights change, while the healthy quadratic moments stay exact within roundoff.
 
 ## Intentionally broken case
 
-Broken mode negates the central covariance weight, yielding a nonphysical moment estimate. Broken mode is a named counterexample, not an alternative design recommendation.
+Broken mode omits the Gaussian covariance correction and reuses mean weights for covariance. Mean remains correct, but variance becomes (alpha²−1)*sigma⁴: zero at alpha=1 and negative for alpha<1.
 
 ## Recovery
 
-Restore normalized mean/covariance weights and compare transformed moments to an analytic case before filtering data. The recovery case restores the exact baseline inputs so the evidence can prove that the failure is reversible rather than merely different.
+Restore the beta=2 covariance correction and reset both controls. Check both computed moments against analytic Gaussian values; do not reject a transform solely because its central mean weight is negative.
 
 ## Limiting cases and invariants
 
-- As state variance tends to zero, transformed variance tends to zero.
-- For zero-mean Gaussian x², mean equals variance of x.
-
-Teaching invariant: A valid symmetric transform reproduces the declared nonlinear moments within its quadrature order and uses weights that sum to one.
+- Mean weights sum to one; covariance weights generally do not.
+- Symmetric points reconstruct zero input mean and variance sigma².
+- Exactness here concerns a zero-mean Gaussian squared map, not every nonlinear function or a full recursive UKF.
 
 ## Independent evidence
 
-Expected signatures are produced by `expansion_reference_cases.py`, which imports no production experiment and consumes no production result. Production signatures are retained separately. Each baseline, two sweeps, broken case, and recovery case records fields, units, tolerances, measured error, and the named invariant. Agreement supports only these equations and scenarios; it is not MATLAB execution, broad robust certification, or physical validation.
+Independent Gaussian second/fourth moments and the closed-form missing-correction error check the actual weighted production calculation. Five retained scenarios cover baseline, each one-variable sweep, fault and exact recovery. Absolute and relative tolerances remain 1e-8. The reference does not import or consume the production result.
 
 ## Common mistakes
 
-- Reading a plotted shape without checking its sign convention, units, or contour/path definition.
-- Treating a local, frequency-limited, or nominal result as a global guarantee.
-- Changing both design controls and then assigning causality to one of them.
-- Confusing a recovery that looks better with a recovery that restores the baseline invariant.
-- Claiming source equivalence, physical hardware evidence, or learner effectiveness from this software-only lab.
+Renormalizing covariance weights as if they were probabilities changes the transform. Negative mean weights alone are not a fault criterion.
 
 ## Teach-back
 
-Derive one signature quantity from the displayed equations, explain what the broken case violates, and name one result that this lab cannot establish. Then describe how the two sweeps separate sensitivity to `state_standard_deviation` from sensitivity to `sigma_spread`.
+At alpha=1, why does removing the central covariance correction leave the mean correct but reduce variance to zero?
+
+Answer rationale: The two off-center transformed values equal the mean, so their variance contributions vanish. The center maps to zero, differs from mean by sigma² and contributes 2*sigma⁴ only through the covariance correction. Its mean weight is zero.
+
+Use the Course checkpoint section to assemble your own evidence. These are authored self-checks, not measured learner outcomes or hardware qualification.

@@ -1,66 +1,57 @@
 # Schedule Gains Across Operating Points
 
-**Guiding question:** When does interpolation across operating points improve control, and what does a schedule fail to guarantee?
-
-Schedule inverse plant gain across a nonlinear operating coordinate and quantify interpolation and closed-loop bandwidth error. This is a Python-first native design derived from the reviewed competency map. It is not presented as a conversion of the pinned MATLAB source and it stays inside deterministic software simulation.
-
-## Why this lesson exists
-
-The numerical result is not the objective by itself. The objective is to connect a design decision to a governing relation, an observable consequence, a failure mechanism, and a recovery check. Record the assumptions before interpreting any curve.
+Gain scheduling uses a finite table of gains across an operating range. Here a normalized first-order plant has input effectiveness g(rho), and ideal feedback makes the decay rate 2/s. The lesson constructs actual table knots, including the endpoint at rho=1, then interpolates between them.
 
 ## Model and equations
 
-$$\text{g(rho)=1+.5*rho^2}$$
-$$\text{K(rho)=2/g(rho)}$$
-$$\text{lambda_cl=-g(rho)K(rho)}$$
+\[
+K(\rho)=(1-\theta)K_i+\theta K_{i+1},\qquad \theta=\frac{\rho-\rho_i}{\rho_{i+1}-\rho_i}
+\]
 
-Carry units through the model. A pole or zero is reported in inverse seconds, angular frequency in radians per second, phase in degrees or radians as labeled, and dimensionless ratios as `1`. The experiment evaluates the displayed equations directly; it does not call a black-box synthesis toolbox.
+`g(rho)=1+rho^2/2; K_exact(rho)=2/g(rho)`
 
-## Predict before running
+`K_interp=(1-theta)*K_left+theta*K_right`
 
-At tabulated points the inverse-gain schedule restores the target bandwidth; interpolation error must be measured between points. State which output should move first and which quantity should remain invariant before changing a control.
+`closed-loop bandwidth=g(rho)*K_interp`
+
+Worked example: For rho=0.5, the exact gain is 2/1.125=1.777778/s. With spacing 0.25, rho=0.5 is a knot, so interpolation error there is zero. Between knots the nonlinear reciprocal law generally differs from its secant.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read all three signature metrics.
-2. Inspect the response plot for the external behavior, then the mechanism plot for the governing internal relation.
-3. Check the units and limiting cases before accepting a stability, equivalence, or performance statement.
-4. Save the baseline, change one variable only, and explain the direction of change from the equations.
+If the selected operating point is already a knot, will the selected bandwidth reveal the worst interpolation error?
+
+Run the default controls, record the metrics, and explain the plotted quantities before changing a setting. Gain table and interpolation displays the exact law, used schedule and sampled knots. Resulting closed-loop bandwidth shows the resulting decay rate across the full operating range. The maximum gain error is measured on the displayed grid, which includes midpoints.
 
 ## Two one-variable sweeps
 
-1. Hold `grid_spacing` at `0.25 1` and sweep `operating_point` from `0.0` through `0.5` to `1.0 1`.
-2. Restore `operating_point` to `0.5 1` and sweep `grid_spacing` from `0.05` through `0.25` to `0.5 1`.
-
-Do not tune both at once until you can attribute each metric change to one term in the equations. The retained evidence uses one endpoint from each sweep in addition to the baseline.
+Move operating point from 0.5 to 1 and then to an off-knot value such as 0.6. Reset, then increase grid spacing from 0.25 to 0.5 and inspect between-knot error rather than only the selected metric.
 
 ## Intentionally broken case
 
-Broken mode freezes the sea-level gain while evaluating the highest-gain operating point. Broken mode is a named counterexample, not an alternative design recommendation.
+Broken mode freezes K at its rho=0 value of 2/s. The table remains visible for comparison, but the used gain no longer adapts to the plant.
 
 ## Recovery
 
-Restore interpolation, test the grid midpoints, and keep stability claims within the scheduled envelope. The recovery case restores the exact baseline inputs so the evidence can prove that the failure is reversible rather than merely different.
+Restore interpolation, reset spacing and compare knot values with exact gains. Inspect an off-knot value as a separate check.
 
 ## Limiting cases and invariants
 
-- At rho=0 the schedule equals the nominal gain.
-- As grid spacing tends to zero interpolation approaches the exact inverse schedule.
-
-Teaching invariant: At tabulated points the inverse-gain schedule restores the target bandwidth; interpolation error must be measured between points.
+- Healthy interpolation equals the table exactly at every knot.
+- As maximum knot spacing tends to zero, the smooth reciprocal law is recovered.
+- The reported grid maximum is sampled evidence, not a rigorous continuous worst-case bound.
 
 ## Independent evidence
 
-Expected signatures are produced by `expansion_reference_cases.py`, which imports no production experiment and consumes no production result. Production signatures are retained separately. Each baseline, two sweeps, broken case, and recovery case records fields, units, tolerances, measured error, and the named invariant. Agreement supports only these equations and scenarios; it is not MATLAB execution, broad robust certification, or physical validation.
+An independent secant evaluator selects the bracketing interval and computes barycentric interpolation directly. It also checks actual midpoint/grid errors. Five retained scenarios cover baseline, each one-variable sweep, fault and exact recovery. Absolute and relative tolerances remain 1e-8. The reference does not import or consume the production result.
 
 ## Common mistakes
 
-- Reading a plotted shape without checking its sign convention, units, or contour/path definition.
-- Treating a local, frequency-limited, or nominal result as a global guarantee.
-- Changing both design controls and then assigning causality to one of them.
-- Confusing a recovery that looks better with a recovery that restores the baseline invariant.
-- Claiming source equivalence, physical hardware evidence, or learner effectiveness from this software-only lab.
+Assigning an error proportional to spacing does not measure this table. Zero error at one selected knot says little about the intervals around it.
 
 ## Teach-back
 
-Derive one signature quantity from the displayed equations, explain what the broken case violates, and name one result that this lab cannot establish. Then describe how the two sweeps separate sensitivity to `operating_point` from sensitivity to `grid_spacing`.
+Why can the selected bandwidth error be zero while sampled maximum gain error is positive? Which plot shows the missing information?
+
+Answer rationale: The selected point can coincide with a knot. The schedule plot exposes departures between knots, and the bandwidth plot shows their closed-loop effect across rho.
+
+Use the Course checkpoint section to assemble your own evidence. These are authored self-checks, not measured learner outcomes or hardware qualification.

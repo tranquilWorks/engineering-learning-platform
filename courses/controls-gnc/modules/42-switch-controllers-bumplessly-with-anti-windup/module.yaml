@@ -41,10 +41,10 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Tracking initialization makes the auto command equal the manual command at the switch, and positive back-calculation
-    bounds windup during saturation.
-  reveal: Initialize the integral state from the actual manual actuator command and restore back-calculation before
-    enabling automatic control.
+  text: Can a saturated actuator hide a requested-command jump? Compare the applied switch bump with the integral
+    and requested-command histories.
+  reveal: Only u is clipped; z is controller memory and can be much larger. Inspect recovery-observed and ensure
+    all later samples stay inside the stated band. A censored lower bound cannot be presented as a successful recovery.
 - type: controls
   title: Design controls
 - type: metrics
@@ -65,3 +65,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md
