@@ -5,22 +5,39 @@ from typing import Any
 import numpy as np
 
 ITEM_NUMBER = 65
-BROKEN_TEXT = 'Broken mode applies the unconstrained terminal command and reports zero miss despite violating actuator authority.'
-RECOVERY_TEXT = 'Restore saturation, propagate the constrained plant, and renegotiate terminal requirements when authority is insufficient.'
+BROKEN_TEXT = 'Broken mode solves the unconstrained objective and applies that command sequence without enforcing the selected actuator limit.'
+RECOVERY_TEXT = 'Restore the bounded solve, reset controls and verify every applied interval satisfies the limit. Compare the residual rather than assuming it becomes zero.'
 
 
-def _trace(name: str, x: Any, y: Any, x_quantity: str, x_unit: str,
-           y_quantity: str, y_unit: str, *, mode: str = "lines") -> dict[str, Any]:
+def _trace(
+    name: str,
+    x: Any,
+    y: Any,
+    x_quantity: str,
+    x_unit: str,
+    y_quantity: str,
+    y_unit: str,
+    *,
+    mode: str = "lines",
+) -> dict[str, Any]:
     return {
-        "type": "scattergl", "mode": mode, "name": name,
-        "x": np.asarray(x, dtype=float), "y": np.asarray(y, dtype=float),
-        "meta": {"x_quantity": x_quantity, "x_unit": x_unit,
-                 "y_quantity": y_quantity, "y_unit": y_unit},
+        "type": "scatter",
+        "mode": mode,
+        "name": name,
+        "x": np.asarray(x, dtype=float),
+        "y": np.asarray(y, dtype=float),
+        "meta": {
+            "x_quantity": x_quantity,
+            "x_unit": x_unit,
+            "y_quantity": y_quantity,
+            "y_unit": y_unit,
+        },
     }
 
 
-def _plot(title: str, x_title: str, y_title: str,
-          traces: list[dict[str, Any]]) -> dict[str, Any]:
+def _plot(
+    title: str, x_title: str, y_title: str, traces: list[dict[str, Any]]
+) -> dict[str, Any]:
     return {
         "data": traces,
         "layout": {
@@ -29,7 +46,8 @@ def _plot(title: str, x_title: str, y_title: str,
             "yaxis": {"title": {"text": y_title}},
             "legend": {"orientation": "h"},
             "margin": {"l": 72, "r": 36, "t": 62, "b": 62},
-            "hovermode": "closest", "uirevision": "keep-view",
+            "hovermode": "closest",
+            "uirevision": "keep-view",
         },
         "config": {"responsive": True, "displaylogo": False},
     }
@@ -38,8 +56,13 @@ def _plot(title: str, x_title: str, y_title: str,
 def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
     return {
         "metrics": [
-            {"id": key, "label": label, "value": float(value), "unit": unit,
-              "emphasis": "primary" if index == 0 else "normal"}
+            {
+                "id": key,
+                "label": label,
+                "value": float(value),
+                "unit": unit,
+                "emphasis": "primary" if index == 0 else "normal",
+            }
             for index, (key, label, value, unit) in enumerate(model["metrics"])
         ],
         "plots": model["plots"],
@@ -50,27 +73,39 @@ def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
         },
         "diagnostics": {
             "item_number": ITEM_NUMBER,
+            **model.get("details", {}),
             "broken_active": bool(broken),
             "signature": [float(value) for value in model["signature"]],
         },
     }
 
-def _model(p: dict[str, Any], broken: bool) -> dict[str, Any]:
-    a=float(p["acceleration_limit_m_s2"]); b=float(p["terminal_weight"])
-    if broken: a=8.0; b=20.0
-    x=np.linspace(0.,10.,240)
-    signature=[float(2.5*b),float(max(2.5*b-a,0)),float(0. if broken else max(2.5*b-a,0)*.4)]
-    y1=np.asarray(np.minimum(2.5*b/(x+.5),a) if not broken else 2.5*b/(x+.5),dtype=float); y2=np.asarray(np.full_like(x,a),dtype=float)
-    z1=np.asarray(np.maximum(2.5*b-a,0)*x/5,dtype=float); z2=np.asarray(np.zeros_like(x),dtype=float)
-    if y1.ndim==0: y1=np.full_like(x,float(y1))
-    if y2.ndim==0: y2=np.full_like(x,float(y2))
-    if z1.ndim==0: z1=np.full_like(x,float(z1))
-    if z2.ndim==0: z2=np.full_like(x,float(z2))
-    return {"signature":signature,"metrics":[("required_acceleration", "Required Acceleration", signature[0], "m/s^2"),("constraint_violation", "Constraint Violation", signature[1], "m/s^2"),("terminal_error_bound", "Terminal Error Bound", signature[2], "m")],"plots":{
-      "response":_plot("Terminal acceleration schedule","Time to go (s)","Acceleration command (m/s^2)",[_trace("Nominal/filtered",x,y1,"Time to go","s","Acceleration command","m/s^2"),_trace("Reference/boundary",x,y2,"Time to go","s","Acceleration command","m/s^2")]),
-      "mechanism":_plot("Constrained terminal-error bound","Time to go (s)","Terminal error (m)",[_trace("Mechanism",x,z1,"Time to go","s","Terminal error","m"),_trace("Requirement/reference",x,z2,"Time to go","s","Terminal error","m")])},
-      "observation":"The applied command never exceeds actuator authority; an infeasible terminal requirement must appear as residual error, not a hidden command."}
 
+def _model(p, broken):
+    from scipy.optimize import lsq_linear
+    limit=float(p['acceleration_limit_m_s2']); weight=float(p['terminal_weight'])
+    dt=.1; count=20
+    B=np.vstack([dt**2*(count-np.arange(count)-.5),np.full(count,dt)])
+    free=np.array([30.,0.]); W=np.diag([weight,.5*weight]); R=.1
+    A=np.vstack([np.sqrt(W)@B,np.sqrt(R)*np.eye(count)])
+    target=np.r_[-np.sqrt(W)@free,np.zeros(count)]
+    u=np.linalg.lstsq(A,target,rcond=None)[0] if broken else lsq_linear(A,target,bounds=(-limit,limit),method='bvls',tol=1e-13).x
+    states=[free.copy()]
+    for acceleration in u:
+        x,v=states[-1]
+        states.append(np.array([x+dt*v+.5*dt**2*acceleration,v+dt*acceleration]))
+    states=np.array(states); terminal=states[-1]; gradient=R*u+B.T@W@terminal
+    projected_gradient=u-np.clip(u-gradient,-limit,limit)
+    signature=[np.max(abs(u)),max(0.,np.max(abs(u))-limit),abs(terminal[0])]
+    return {'signature':signature,'metrics':[
+        ('peak_acceleration','Peak applied acceleration',signature[0],'m/s^2'),('actuator_violation','Actuator violation',signature[1],'m/s^2'),
+        ('terminal_position_error','Terminal position residual',signature[2],'m'),('terminal_velocity_error','Terminal velocity residual',abs(terminal[1]),'m/s')],
+        'plots':{'response':_plot('Executed terminal trajectory','Time (s)','Position (m)',[_trace('Position',np.arange(21)*dt,states[:,0],'Time','s','Position','m')]),
+            'mechanism':_plot('Applied bounded commands','Interval start (s)','Acceleration (m/s²)',[
+                _trace('Applied',np.arange(20)*dt,u,'Interval start','s','Acceleration','m/s^2',mode='lines+markers'),
+                _trace('Upper limit',np.arange(20)*dt,np.full(20,limit),'Interval start','s','Acceleration','m/s^2'),
+                _trace('Lower limit',np.arange(20)*dt,np.full(20,-limit),'Interval start','s','Acceleration','m/s^2')])},
+        'details':{'states':states,'commands':u,'endpoint_map':B,'terminal':terminal,'gradient':gradient,'projected_gradient':projected_gradient,'objective':R*(u@u)+terminal@W@terminal,'dt':dt},
+        'observation':'A twenty-interval bounded least-squares solve balances terminal position, terminal velocity and command effort. Actual applied commands propagate the double integrator. Finite terminal weights permit residual even when exact arrival is feasible; broken mode applies the unconstrained optimum.'}
 
 
 def run(parameters: dict[str, Any]) -> dict[str, Any]:

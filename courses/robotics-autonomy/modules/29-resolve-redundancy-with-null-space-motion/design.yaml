@@ -7,21 +7,23 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- q_dot=J# v+ (I-J#J)z
-- J(I-J#J)=0
-- J#=J^T(JJ^T+lambda^2 I)^-1
+- qdot_primary=J^T(JJ^T+lambda²I)^-1 v_desired
+- N=I-Jplus J; qdot_secondary=-gain N q
+- qdot=qdot_primary+qdot_secondary; leakage=||J qdot_secondary||
 signature:
 - field: task_velocity_error
   unit: m/s
-- field: null_space_leakage
+- field: secondary_leakage
   unit: m/s
-- field: joint_limit_margin
-  unit: rad
-teaching_invariant: Secondary motion may improve posture only through the Jacobian null space while the primary
-  task residual remains bounded.
+- field: joint_speed_norm
+  unit: rad/s
+teaching_invariant: Predict whether primary damping requires secondary posture motion to leak into the task
+  when an exact null projector is used.
 limiting_cases:
-- At zero null gain, only the primary task remains.
-- With an exact full-row-rank pseudoinverse, projected secondary velocity produces zero task velocity.
+- At zero gain both modes coincide because no secondary motion is requested.
+- At zero damping the full-row-rank primary inverse tracks the desired task to roundoff.
+- The null projector is local to one configuration; finite motion requires recomputing it.
+- No joint limits, collision constraints or integrated posture trajectory are claimed.
 scenarios:
   baseline: &id001
     damping: 0.08
@@ -48,5 +50,5 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic software evidence only. Browser/container checks are separately recorded.
+  No MATLAB runtime, representative learner, manual screen-reader, hardware, certification or production acceptance.

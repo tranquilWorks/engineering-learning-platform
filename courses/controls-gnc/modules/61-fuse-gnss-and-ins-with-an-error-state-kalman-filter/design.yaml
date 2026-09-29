@@ -7,21 +7,23 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- delta_x_dot=F delta_x+G w
-- P^-=F P F^T+G Q G^T
-- x_nominal+=delta_x_hat; delta_x_hat reset to zero
+- delta=[position error, velocity error, accelerometer bias error]
+- F=[[1,dt,-dt²/2],[0,1,-dt],[0,0,1]]; Pminus=F P F^T+Q
+- K=Pminus H^T/(H Pminus H^T+R); nominal+=K innovation; delta_reset=0
+- Pplus=(I-KH)Pminus(I-KH)^T+K R K^T
 signature:
-- field: preupdate_position_sigma
+- field: prior_sigma
   unit: m
-- field: postupdate_position_sigma
+- field: posterior_sigma
   unit: m
-- field: unmodeled_bias_error
+- field: terminal_error
   unit: m
-teaching_invariant: GNSS updates reduce navigation-error covariance, while an explicit bias error state prevents
-  systematic inertial drift from masquerading as white noise.
+teaching_invariant: Predict what happens if covariance is updated but the nominal navigation state never receives
+  the correction.
 limiting_cases:
-- As GNSS interval tends to zero inertial drift between updates shrinks.
-- Post-update covariance cannot exceed its pre-update value for a valid measurement update.
+- The terminal sigma can fall while actual error remains large in the fault.
+- Additive reset leaves covariance coordinates unchanged.
+- This lesson does not implement attitude, Earth frames, lever arms or a complete strapdown INS.
 scenarios:
   baseline: &id001
     gnss_interval_s: 1.0
@@ -48,5 +50,5 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic software evidence only. Browser/container checks are separately recorded.
+  No MATLAB runtime, representative learner, manual screen-reader, hardware, certification or production acceptance.

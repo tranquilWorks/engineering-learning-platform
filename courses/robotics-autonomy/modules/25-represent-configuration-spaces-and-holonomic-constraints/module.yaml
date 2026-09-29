@@ -1,10 +1,12 @@
 schema_version: 1
 id: 25-represent-configuration-spaces-and-holonomic-constraints
 number: 25
-title: Represent Configuration Spaces and Holonomic Constraints
-summary: Build a deterministic numerical laboratory to represent configuration spaces and holonomic constraints,
-  expose its governing relation, and diagnose a named counterexample before recovery.
-guiding_question: What assumptions and evidence make represent configuration spaces and holonomic constraints defensible?
+title: Project Configurations and Velocities onto a Circle Constraint
+summary: The circle constraint and its Jacobian are evaluated at each sampled configuration. Projection enforces
+  first-order tangency; the displayed arc is a configuration sweep, not an integrated velocity trajectory.
+  Tangency alone does not certify collision avoidance.
+guiding_question: At q=[1,0] m, why does projecting [1,0] m/s produce zero, and why can zero radius error fail
+  to diagnose the broken mode?
 status: implemented
 tags:
 - robotics-autonomy
@@ -41,9 +43,11 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: A valid constrained velocity lies in the null space of the constraint Jacobian and preserves configuration-space
-    clearance.
-  reveal: Use the equations, units, and mechanism plot to test the prediction.
+  text: Predict which quantities remain invariant when only the radial offset changes in normal mode, and whether
+    tangency guarantees clearance.
+  reveal: The requested velocity is wholly normal to the constraint and has no tangent component. With zero
+    input offset the configuration is already valid, but a nonzero outward velocity violates J_h v=0. Both
+    configuration and velocity evidence are needed.
 - type: controls
   title: Live model controls
 - type: metrics
@@ -64,3 +68,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

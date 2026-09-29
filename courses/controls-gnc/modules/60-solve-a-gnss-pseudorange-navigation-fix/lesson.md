@@ -1,66 +1,75 @@
-# Solve a GNSS Pseudorange Navigation Fix
+# Solve Position and Clock from Synthetic Pseudoranges
 
-**Guiding question:** How do receiver clock bias and satellite geometry jointly determine a pseudorange solution?
 
-Relate range noise and geometry dilution to position/clock error and reject a near-collinear geometry. This is a Python-first native design derived from the reviewed competency map. It is not presented as a conversion of the pinned MATLAB source and it stays inside deterministic software simulation.
-
-## Why this lesson exists
-
-The numerical result is not the objective by itself. The objective is to connect a design decision to a governing relation, an observable consequence, a failure mechanism, and a recovery check. Record the assumptions before interpreting any curve.
 
 ## Model and equations
 
-$$\text{rho_i=||r-r_i||+c dt+epsilon_i}$$
-$$\text{delta_x=(H^T H)^-1 H^T delta_rho}$$
-$$\text{sigma_pos=GDOP*sigma_rho}$$
+`rho_i=||s_i-x||+b+epsilon_i; b=c delta_t in metres`
 
-Carry units through the model. A pole or zero is reported in inverse seconds, angular frequency in radians per second, phase in degrees or radians as labeled, and dimensionless ratios as `1`. The experiment evaluates the displayed equations directly; it does not call a black-box synthesis toolbox.
+`H_i=[(x-s_i)^T/||x-s_i||,1]; delta=argmin ||H delta-r||²`
+
+`PDOP=sqrt(trace((H^T H)^-1[0:3,0:3]))`
+
+Eight synthetic satellites lie at radius 20 million metres. Their declared azimuths are [0,47,99,146,201,249,294,337] degrees divided by geometry concentration; elevations are 0.6+(base elevation-0.6)/sqrt(concentration) radians, with base elevations [18,55,32,73,24,61,40,16] degrees. Concentration is a geometry control, not an assigned dilution value. The receiver truth is [25,-12,20] m with a 30 m clock-range bias. The noise amplitude multiplies [0.4,-0.7,0.2,0.8,-0.5,0.1,-0.3,0.6]. A 30 m clock-range bias corresponds to about 100 nanoseconds. The solve starts at zero and repeatedly fits the actual range residual. Removing the known satellite radius from observations improves numerical conditioning; a rationalized distance difference avoids subtracting two nearly equal large distances. The fitted geometry determines the displayed dilution, while realized position error comes from the actual estimated coordinates.
 
 ## Predict before running
 
-A valid fix estimates position and clock bias together; geometry dilution scales range noise into state uncertainty. State which output should move first and which quantity should remain invariant before changing a control.
+Predict whether removing the receiver clock unknown merely changes clock error or also biases position.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read all three signature metrics.
-2. Inspect the response plot for the external behavior, then the mechanism plot for the governing internal relation.
-3. Check the units and limiting cases before accepting a stability, equivalence, or performance statement.
-4. Save the baseline, change one variable only, and explain the direction of change from the equations.
+Reset controls and leave the named fault disabled. Use Pseudorange noise = 2.0 m; Geometry concentration = 2.2 1. Write a prediction before executing. Read the response curve first, then explain it using the mechanism curve.
+
+Position iteration plots Position (m) against Iteration (1). Its series are x, y, z. Fitted range residuals plots Residual (m) against Satellite index (1). Its series are Post-fit residual.
+
+The computed default record is Position error: 1.77255 m; Clock-range error: 0.975552 m; Post-fit RMS: 0.925614 m; Computed position dilution: 2.71448 1. These values are a reproducible worked example, not acceptance thresholds for every slider setting. Retain units and parameter values when comparing another run. A displayed residual near machine precision should be interpreted with the stated model and numerical tolerance.
 
 ## Two one-variable sweeps
 
-1. Hold `geometry_dilution` at `2.2 1` and sweep `pseudorange_noise_m` from `0.1` through `2.0` to `10.0 m`.
-2. Restore `pseudorange_noise_m` to `2.0 m` and sweep `geometry_dilution` from `1.0` through `2.2` to `12.0 1`.
+1. Increase noise amplitude from 2 to 10 m at fixed concentration. Compare position, clock and post-fit residual separately; deterministic errors need not equal amplitude times PDOP.
 
-Do not tune both at once until you can attribute each metric change to one term in the equations. The retained evidence uses one endpoint from each sweep in addition to the baseline.
+2. Increase concentration from 2.2 to 12 with noise fixed. Inspect the computed dilution and convergence trace. Closely grouped directions make some state combinations harder to distinguish.
+
+Return to defaults between sweeps. Keep the other control fixed, record the changed quantity and identify an expected invariant. A control need not change every output; explain the model path through which it acts.
 
 ## Intentionally broken case
 
-Broken mode uses near-collinear geometry with dilution 25, making the normal equations practically singular. Broken mode is a named counterexample, not an alternative design recommendation.
+Broken mode omits the clock column and forces the fit to explain clock-biased measurements with three position coordinates.
+
+Run the same selected controls with the fault enabled. Compare the curve shape as well as the numerical summary. The fault is a specific executed operation; a red warning or a changed mode flag would not by itself demonstrate its consequence.
 
 ## Recovery
 
-Restore four-or-more diverse lines of sight, solve clock and position jointly, and inspect post-fit residuals. The recovery case restores the exact baseline inputs so the evidence can prove that the failure is reversible rather than merely different.
+Restore the fourth unknown, reset both controls and verify the post-fit residual and position/clock errors recover.
+
+Repeat one previously saved nominal setting and check that its values and curves return. Recovery should restore the mechanism, not merely dismiss the warning.
 
 ## Limiting cases and invariants
 
-- With zero range noise the linearized error bound tends to zero.
-- Worse geometry increases position error without changing receiver measurement noise.
-
-Teaching invariant: A valid fix estimates position and clock bias together; geometry dilution scales range noise into state uncertainty.
+Formal dilution assumes equal independent range variances and full column rank. Small residual alone does not prove accurate position. No atmosphere, ephemeris errors, Earth rotation, live receiver or operational accuracy claim is included.
 
 ## Independent evidence
 
-Expected signatures are produced by `expansion_reference_cases.py`, which imports no production experiment and consumes no production result. Production signatures are retained separately. Each baseline, two sweeps, broken case, and recovery case records fields, units, tolerances, measured error, and the named invariant. Agreement supports only these equations and scenarios; it is not MATLAB execution, broad robust certification, or physical validation.
+The reference uses complex-step derivatives and a separate nonlinear least-squares solver on dimensionless rationalized range offsets. The production solver uses an analytic Jacobian and Gauss-Newton increments.
+
+Five retained cases cover baseline, two single-control sweeps, the named fault and recovery. Expected values are generated independently; actual values come from the executable lesson. Absolute and relative tolerances remain 1e-8. Agreement checks the declared synthetic model, not empirical validity. MATLAB has not been executed and no MATLAB equivalence is claimed. Browser and container evidence are recorded separately from numerical evidence.
+
+## Engineering review checklist
+
+Check the declared coordinates, units and ordering before evaluating the result. Reconstruct at least one displayed value from retained state or geometric data. Identify which output changes in each sweep and which should remain invariant. Diagnose the named faulty operation, then demonstrate its recovery. Finally state the strongest claim supported by these observations and one claim that requires additional evidence.
 
 ## Common mistakes
 
-- Reading a plotted shape without checking its sign convention, units, or contour/path definition.
-- Treating a local, frequency-limited, or nominal result as a global guarantee.
-- Changing both design controls and then assigning causality to one of them.
-- Confusing a recovery that looks better with a recovery that restores the baseline invariant.
-- Claiming source equivalence, physical hardware evidence, or learner effectiveness from this software-only lab.
+Do not infer correctness from a changing headline alone. In this lesson, the critical limit is: Formal dilution assumes equal independent range variances and full column rank. Small residual alone does not prove accurate position. No atmosphere, ephemeris errors, Earth rotation, live receiver or operational accuracy claim is included.
+
+Do not compare two runs after changing both controls and attribute the difference to one cause. Do not treat a near-zero floating-point residual as symbolic identity, or a finite sample sweep as a proof for all configurations. Keep the operation that creates the evidence separate from the interpretation assigned to it.
 
 ## Teach-back
 
-Derive one signature quantity from the displayed equations, explain what the broken case violates, and name one result that this lab cannot establish. Then describe how the two sweeps separate sensitivity to `pseudorange_noise_m` from sensitivity to `geometry_dilution`.
+Why is geometry concentration an input while PDOP is an output, and why does clock omission affect position?
+
+Answer rationale: Concentration constructs lines of sight. Their design matrix determines PDOP. The omitted common range offset projects onto position columns, biasing the fitted position; it cannot generally be represented by a harmless display-only clock error.
+
+Use the embedded Course checkpoint to collect a default record, a sweep, a faulty record and a recovered record. Explain the evidence to a colleague using the governing relation and units, then name the untested boundary. This is a self-assessment; no learner score is stored.
+
+Related primary reference: [GNSS measurement modelling and estimation](https://gssc.esa.int/navipedia/index.php/GNSS_Measurements_Modelling).

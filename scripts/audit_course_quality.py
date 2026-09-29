@@ -110,6 +110,42 @@ REPAIRED = {
         67,
     ): "Executed an explicitly illustrative tire/load/gear/brake/aero/track/line/lap chain and friction scenarios; independent scalar solver and load/force/refinement checks.",
 }
+REPAIRED[("controls-gnc", 56)] = (
+    "Executed recover a trajectory with rts smoothing. An independently conditioned joint Gaussian trajectory uses C[i,j]=1+q min(i,j). Its posterior covariance is C-C(C+rI)^-1 C; prefix conditioning supplies the filtered variances. It does not import the production recursion. Embedded checkpoint; selected synthetic numerical and browser evidence. Aggregate course review remains separate."
+)
+REPAIRED[("controls-gnc", 57)] = (
+    "Executed compose quaternions and calibrate sensor vectors. The reference constructs independent axis rotations using rotation vectors and applies R_fault=I+1.2²(R_true-I). This identity tests the scaled-quaternion defect without calling the production quaternion functions. Embedded checkpoint; selected synthetic numerical and browser evidence. Aggregate course review remains separate."
+)
+REPAIRED[("controls-gnc", 60)] = (
+    "Executed solve position and clock from synthetic pseudoranges. The reference uses complex-step derivatives and a separate nonlinear least-squares solver on dimensionless rationalized range offsets. The production solver uses an analytic Jacobian and Gauss-Newton increments. Embedded checkpoint; selected synthetic numerical and browser evidence. Aggregate course review remains separate."
+)
+REPAIRED[("controls-gnc", 61)] = (
+    "Executed inject and reset a one-axis navigation error state. The independent full-state filter uses the same physical model but evaluates process covariance by three-point Gaussian quadrature and uses the Schur covariance update instead of the production Joseph recurrence. Embedded checkpoint; selected synthetic numerical and browser evidence. Aggregate course review remains separate."
+)
+REPAIRED[("controls-gnc", 62)] = (
+    "Executed detect and exclude a synthetic range fault. The reference computes leverage through an orthonormal SVD basis and uses a separate complex-step nonlinear solver before and after selecting a row. Embedded checkpoint; selected synthetic numerical and browser evidence. Aggregate course review remains separate."
+)
+REPAIRED[("controls-gnc", 64)] = (
+    "Executed compare civilian moving-beacon guidance trajectories. The independent reference integrates range, LOS angle and both headings in relative polar coordinates with a different numerical integrator, rather than replaying the Cartesian production state. Embedded checkpoint; selected synthetic numerical and browser evidence. Aggregate course review remains separate."
+)
+REPAIRED[("controls-gnc", 65)] = (
+    "Executed solve a bounded terminal guidance objective. The independent reference solves a two-dimensional dual terminal-residual equation with clipped controls, rather than the production twenty-variable bounded least-squares problem. Embedded checkpoint; selected synthetic numerical and browser evidence. Aggregate course review remains separate."
+)
+REPAIRED[("robotics-autonomy", 25)] = (
+    "Executed project configurations and velocities onto a circle constraint. The independent signature uses the analytic polar radius and obstacle distance. Physical tests use the tangent basis [-sin(theta),cos(theta)] to reconstruct velocity, separately from the production matrix projector. Embedded checkpoint; selected synthetic numerical and browser evidence. Aggregate course review remains separate."
+)
+REPAIRED[("robotics-autonomy", 26)] = (
+    "Executed compose rigid transforms and diagnose invalid rotation blends. The reference applies separate scalar x/z rotation formulas to coordinates and uses the analytic blend defect 2f(1-f)(1-cos(theta)). This independently checks the homogeneous-matrix implementation. Embedded checkpoint; selected synthetic numerical and browser evidence. Aggregate course review remains separate."
+)
+REPAIRED[("robotics-autonomy", 27)] = (
+    "Executed transform twists and dual wrenches with power invariance. The reference uses complex planar rotations and explicit cross products for the separate force, moment, angular and linear components. It does not construct or invert the production adjoint matrix. Embedded checkpoint; selected synthetic numerical and browser evidence. Aggregate course review remains separate."
+)
+REPAIRED[("robotics-autonomy", 28)] = (
+    "Executed build a planar position jacobian and diagnose singularities. The reference differentiates forward kinematics using complex steps and computes singular values from the two-by-two Gram matrix eigenvalues. It separately predicts the missing-column discrepancy instead of copying the production finite-difference array. Embedded checkpoint; selected synthetic numerical and browser evidence. Aggregate course review remains separate."
+)
+REPAIRED[("robotics-autonomy", 29)] = (
+    "Executed separate damped task motion from exact null-space motion. The reference derives the Jacobian by complex-step kinematics, computes the primary command with SVD and constructs the one-dimensional null basis from the cross product of the two Jacobian rows. It does not use the production pseudoinverse projector. Embedded checkpoint; selected synthetic numerical and browser evidence. Aggregate course review remains separate."
+)
 KNOWN = {}
 
 # Additional findings from the wider direct model review; separate repair scopes.
@@ -117,42 +153,6 @@ for _number in range(1, 17):
     KNOWN[("vehicle-dynamics", _number)] = (
         "The main response chart joins signature quantities with different physical units on one generic SI axis; sweeps also lack a named response/unit. Replace these with physically meaningful curves or separately labeled quantities and specific limiting-case checks."
     )
-KNOWN[("controls-gnc", 56)] = (
-    "The claimed RTS smoother multiplies filtered covariance by a fixed 0.65 instead of executing a forward filter and backward smoother."
-)
-KNOWN[("controls-gnc", 57)] = (
-    "Quaternion norm and rotation orthogonality errors are fixed constants; no quaternion-to-matrix transformation is evaluated."
-)
-KNOWN[("controls-gnc", 60)] = (
-    "GNSS position and clock errors are algebraic dilution formulas; the claimed pseudorange position/clock solve is not executed."
-)
-KNOWN[("controls-gnc", 61)] = (
-    "GNSS/INS uncertainty is reduced by a fixed 0.35 factor rather than an error-state covariance update and state reset."
-)
-KNOWN[("controls-gnc", 62)] = (
-    "The post-exclusion residual is multiplied by a fixed 0.15 without excluding a measurement and recomputing the navigation solution."
-)
-KNOWN[("controls-gnc", 64)] = (
-    "The guidance comparison reports an explicitly named miss proxy, but the trajectories and variants are not integrated; its scope and cumulative interpretation need revision."
-)
-KNOWN[("controls-gnc", 65)] = (
-    "Terminal error is assigned from an acceleration shortfall; the terminal dynamics are not propagated and the displayed violation is not measured from applied commands."
-)
-KNOWN[("robotics-autonomy", 25)] = (
-    "Constraint residual and tangent dimension are assigned without constructing the constraint Jacobian or projecting a configuration velocity."
-)
-KNOWN[("robotics-autonomy", 26)] = (
-    "Orthogonality, determinant and composition errors are algebraic surrogates without constructing and composing rigid transforms."
-)
-KNOWN[("robotics-autonomy", 27)] = (
-    "Power-invariance and adjoint round-trip errors are assigned without transforming an actual twist/wrench pair."
-)
-KNOWN[("robotics-autonomy", 28)] = (
-    "Singular values and finite-difference errors are assigned from elbow-angle formulas without constructing the Jacobian or differencing kinematics."
-)
-KNOWN[("robotics-autonomy", 29)] = (
-    "Task error and null-space leakage are parameter formulas without executing a Jacobian pseudoinverse and null-space projection."
-)
 KNOWN[("robotics-autonomy", 30)] = (
     "The virtual-power error is assigned from force times lever arm, which has torque units; no joint/Cartesian velocity power comparison is executed."
 )

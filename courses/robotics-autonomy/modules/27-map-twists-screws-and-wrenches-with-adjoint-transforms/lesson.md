@@ -1,87 +1,81 @@
-# Map Twists, Screws, and Wrenches with Adjoint Transforms
+# Transform Twists and Dual Wrenches with Power Invariance
 
-**Guiding question:** What assumptions and evidence make map twists, screws, and wrenches with adjoint transforms defensible?
 
-Build a deterministic numerical laboratory to map twists, screws, and wrenches with adjoint transforms, expose its governing relation, and diagnose a named counterexample before recovery. This module is a Python-first native design authorized by the reviewed issue-440 competency map. It is not a conversion of the pinned MATLAB-oriented source course, and it remains deterministic software evidence.
-
-## Why this lesson exists
-
-Robotics failures often cross representation boundaries: geometry into velocity, images into pose, estimates into maps, plans into commands, or contact forces into actuator effort. A result is defensible only when those boundaries carry explicit frames, signs, units, timing, constraints, and uncertainty. This lesson therefore connects one design decision to a governing equation, an observable response, a named failure, and an exact recovery.
-
-Before calculating, name the state, input, observation, and verdict. State which quantities are measured, which are modeled, and which are derived. A smooth curve is not evidence that a constraint was respected, an estimator was consistent, a path was collision free, or a contact remained passive.
 
 ## Model, derivation, and conventions
 
-- $$V_a=Ad_T V_b$$
-- $$F_a=Ad_T^{-T} F_b$$
-- $$F^T V is frame invariant$$
+`V=[omega;v]; W=[moment;force]; power=W^T V`
 
-Derive the first relation from the physical, geometric, probabilistic, or algorithmic definition. Use the second relation to propagate the decision into a measurable consequence. Use the third as an invariant, feasibility condition, or audit relation. Keep every coordinate frame and sampling instant attached until the final scalar metric. The experiment evaluates these relations directly with bounded NumPy arrays; it does not call a remote solver or hide the mechanism behind a black-box robotics stack.
+`Ad_T=[[R,0],[[t]cross R,R]]; V_A=Ad_T V_B`
 
-The three retained signature quantities are:
+`W_A=Ad_T^-T W_B; pitch=omega·v/(omega·omega)`
 
-- `power_invariance_error` (W)
-- `adjoint_roundtrip_error` (1)
-- `screw_pitch` (m/rad)
+A twist represents instantaneous rigid motion at a declared reference origin. This lesson orders its components as angular velocity followed by linear velocity. A wrench is the dual force object, ordered as moment followed by force. Angular velocity has units rad/s, linear velocity m/s, moment N m and force N. Their paired scalar is mechanical power in watts, treating radians as dimensionless in the power product. Adding angular and linear round-trip residuals into one unlabelled norm would hide their different physical dimensions, so the lesson reports linear residual in m/s and retains angular residual separately in rad/s.
 
-Carry units through each substitution. Dimensionless ranks, probabilities, ratios, and flags are labeled `1` or `count`; physical displacement, time, force, torque, energy, velocity, and pixel quantities retain their named units. If a sum combines unlike units or a transform maps a vector without a frame convention, stop before interpreting a number.
+The source twist is [0,0,speed,0.2,0.3,0.1]. The source wrench is [0.1,0.2,0.3,2,-1,0.5]. At the default speed 1.8 rad/s, source power is 0.3 times 1.8 plus 2 times 0.2 minus 0.3 plus 0.5 times 0.1, which equals 0.69 W. The linear velocity is specified at the source frame origin; translating the origin changes those components even when the physical motion is unchanged. At each of 121 fractions, the frame rotates about z by up to 60 degrees and translates by [lever times f,0.2 times lever times f,0] m. The motion adjoint includes the cross-product block formed from this translation.
+
+The wrench must transform contragrediently: the inverse transpose of the motion map preserves the pairing. Expanding the formula gives force_A=R force_B and moment_A=R moment_B+t cross (R force_B). In contrast, motion uses omega_A=R omega_B and v_A=R v_B+t cross (R omega_B). These two block relationships are different because force and motion are dual quantities. Reusing the motion adjoint on a wrench mixes the wrong blocks and, interpreted physically, the wrong dimensions. That is the named fault, not an alternative convention silently switched midway through the lesson.
+
+The screw pitch is omega dot v divided by squared angular speed. Here it equals 0.1/speed metres per radian. At speed 1.8 the pitch is approximately 0.05556 m/rad. The translated cross-product term is perpendicular to angular velocity, so it does not change this pitch. The speed slider excludes zero because this pitch expression is undefined for a pure translation.
 
 ## Predict before running
 
-A twist and its dual wrench must transform contragrediently so instantaneous power is frame invariant. Predict the sign and direction of all three signature changes before moving a slider. Identify the equation term responsible and one quantity that should remain invariant. This written prediction is the comparison point; post-hoc description is not the same as a test.
+Predict which transform preserves the scalar power pairing when the frame origin is translated.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read the three signature metrics with units.
-2. Inspect the response plot for task-level behavior, then the mechanism plot for the constraint, residual, energy, conditioning, or decision that explains it.
-3. Reproduce one signature quantity from the displayed equations to one or two significant figures.
-4. Check a limiting case before accepting the baseline.
-5. Save the baseline parameters and signature so recovery can be tested exactly.
+Reset controls and leave the named fault disabled. Use Lever arm = 0.45 m; Angular speed = 1.8 rad/s. Write a prediction before executing. Read the response curve first, then explain it using the mechanism curve.
+
+Transformed linear velocity plots Linear velocity (m/s) against Transform fraction (1). Its series are vx, vy, vz. Dual-transform power plots Power (W) against Transform fraction (1). Its series are Transformed power, Original power.
+
+The computed default record is Maximum power discrepancy: 4.44089e-16 W; Linear round-trip residual: 2.00148e-16 m/s; Screw pitch: 0.0555556 m/rad. These values are a reproducible worked example, not acceptance thresholds for every slider setting. Retain units and parameter values when comparing another run. A displayed residual near machine precision should be interpreted with the stated model and numerical tolerance.
 
 ## Two one-variable sweeps
 
-1. Hold `angular_speed_rad_s` at `1.8 rad/s` and sweep `lever_arm_m` from `0.05` through `0.45` to `1.5 m`.
-2. Restore `lever_arm_m` to `0.45 m` and sweep `angular_speed_rad_s` from `0.1` through `1.8` to `6.0 rad/s`.
+1. Increase lever arm while holding angular speed fixed. The transformed linear velocity and moment change, yet normal power stays at the source value. In broken mode compare the power discrepancy across the whole frame sweep rather than only its starting frame.
 
-Change one variable at a time. For each endpoint, record the predicted direction, actual direction, metric delta, and the mechanism-plot feature that supports causality. If the result reverses direction, check for a branch, active constraint, singularity, gate, saturation, or feasibility transition rather than smoothing it away.
+2. Increase angular speed while holding lever arm fixed. Recalculate source power and screw pitch. The correct power need not stay numerically equal to its previous run; it must stay invariant between frames within each run.
+
+Return to defaults between sweeps. Keep the other control fixed, record the changed quantity and identify an expected invariant. A control need not change every output; explain the model path through which it acts.
 
 ## Intentionally broken case
 
-Broken mode applies the twist adjoint to the wrench, violating duality and changing computed power. Broken mode is a falsifying counterexample, not a recommended alternative. Explain which assumption is violated before describing the visual symptom. Then locate the first intermediate quantity that departs from the baseline invariant; downstream task error alone rarely identifies the cause.
+Broken mode applies the motion adjoint directly to the wrench instead of its inverse transpose. It still performs the correct twist transformation and round-trip motion check.
+
+Run the same selected controls with the fault enabled. Compare the curve shape as well as the numerical summary. The fault is a specific executed operation; a red warning or a changed mode flag would not by itself demonstrate its consequence.
 
 ## Recovery
 
-Use the inverse-transpose wrench transform and verify an adjoint/inverse round trip plus equal power. Recovery is complete only when the original default inputs and diagnostic signature return within the independent-reference tolerance. A different setting that happens to look better is mitigation, not recovery. Preserve the fault, detection, decision, and recovery sequence as separate evidence.
+Restore the dual wrench transformation, reset both controls and compare the two power curves. The motion round-trip residual can remain tiny in both modes, so it alone cannot diagnose the wrench fault.
+
+Repeat one previously saved nominal setting and check that its values and curves return. Recovery should restore the mechanism, not merely dismiss the warning.
 
 ## Alternative and limiting cases
 
-- At zero lever arm, translation-rotation coupling vanishes.
-- A pure rotation screw has zero pitch when axial translation is zero.
-
-Use one limit as a hand calculation and one as a numerical sweep. Limits reveal whether a formula is continuous, singular, or branch-dependent. An undefined limit must be reported as such; clipping it into a convenient finite value changes the model.
+At zero transform fraction the adjoint is identity and the wrong wrench map can coincide with the correct map. Zero power discrepancy at one frame is insufficient. Pure translation has no finite pitch under this formula, and this lab deliberately keeps angular speed positive.
 
 ## Independent evidence and MATLAB-style design boundary
 
-The design was reasoned from the displayed equations in the same model-first workflow normally used before a MATLAB/Simulink implementation, but the delivered implementation is Python/NumPy only. Expected signatures are stored by `expansion_reference_cases.py`, which imports no production experiment, consumes no production result, and perturbs no production value. Production signatures are retained separately for baseline, both one-variable sweeps, broken, and exact recovery scenarios.
+The reference uses complex planar rotations and explicit cross products for the separate force, moment, angular and linear components. It does not construct or invert the production adjoint matrix.
 
-Agreement supports only the displayed model, input set, fields, units, and tolerances. No licensed MATLAB runtime was executed, so the evidence makes no MATLAB numerical-parity claim. It also does not establish global optimality, field robustness, physical calibration, hardware timing, safety certification, or production readiness.
+Five retained cases cover baseline, two single-control sweeps, the named fault and recovery. Expected values are generated independently; actual values come from the executable lesson. Absolute and relative tolerances remain 1e-8. Agreement checks the declared synthetic model, not empirical validity. MATLAB has not been executed and no MATLAB equivalence is claimed. Browser and container evidence are recorded separately from numerical evidence.
 
 ## Engineering review checklist
 
-- Verify equation dimensions, coordinate frames, signs, timestamp direction, and branch conventions.
-- Separate feasibility or safety from objective value and visual smoothness.
-- Inspect conditioning, covariance, clearance, saturation, energy, or data age when relevant.
-- Confirm the broken case changes the named mechanism and the recovery restores the baseline signature.
-- State one assumption whose violation would invalidate the result even if every test here passed.
+Check the declared coordinates, units and ordering before evaluating the result. Reconstruct at least one displayed value from retained state or geometric data. Identify which output changes in each sweep and which should remain invariant. Diagnose the named faulty operation, then demonstrate its recovery. Finally state the strongest claim supported by these observations and one claim that requires additional evidence.
 
 ## Common mistakes
 
-- Treating a local or finite-sample result as a global guarantee.
-- Changing both controls and assigning causality to only one.
-- Accepting endpoint checks where swept geometry, intermediate dynamics, or data freshness matter.
-- Confusing a low residual with observability, correct association, feasibility, or physical truth.
-- Claiming learner effectiveness, MATLAB parity, physical HIL, hardware safety, or certification from software fixtures.
+Do not infer correctness from a changing headline alone. In this lesson, the critical limit is: At zero transform fraction the adjoint is identity and the wrong wrench map can coincide with the correct map. Zero power discrepancy at one frame is insufficient. Pure translation has no finite pitch under this formula, and this lab deliberately keeps angular speed positive.
+
+Do not compare two runs after changing both controls and attribute the difference to one cause. Do not treat a near-zero floating-point residual as symbolic identity, or a finite sample sweep as a proof for all configurations. Keep the operation that creates the evidence separate from the interpretation assigned to it.
 
 ## Focused check and teach-back
 
-Calculate one baseline signature value, show one dimensional check, predict both sweeps, reproduce the named failure, and demonstrate exact recovery. Then teach the lesson back without starting from the plots: state the convention, derive the governing relationship, explain the invariant, identify the practical failure, and name the evidence boundary. Finish by naming the prerequisite module and the next mapped module that consumes this artifact.
+Why can the twist round-trip check pass while power invariance fails, and what is the default source power?
+
+Answer rationale: The twist and its inverse map can be correct while the wrench uses the wrong dual map. The default pairing is 0.54+0.4-0.3+0.05=0.69 W. Correct power invariance checks both sides of the dual relationship.
+
+Use the embedded Course checkpoint to collect a default record, a sweep, a faulty record and a recovered record. Explain the evidence to a colleague using the governing relation and units, then name the untested boundary. This is a self-assessment; no learner score is stored.
+
+Related primary reference: [Modern Robotics: wrenches and power invariance](https://modernrobotics.northwestern.edu/nu-gm-book-resource/3-4-wrenches/).

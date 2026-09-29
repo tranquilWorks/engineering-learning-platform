@@ -1,10 +1,12 @@
 schema_version: 1
 id: 64-compare-pursuit-laws-and-proportional-navigation-variants
 number: 64
-title: Compare Pursuit Laws and Proportional-Navigation Variants
-summary: Compare PN navigation constant and target-turn demand using closing-speed and LOS-rate conventions.
-guiding_question: When does proportional navigation outperform pure pursuit, and how do sign and target maneuver
-  alter miss distance?
+title: Compare Civilian Moving-Beacon Guidance Trajectories
+summary: Civilian point-mass rendezvous compares heading pursuit, velocity-normal PN and a declared feed-forward
+  variant. Each integration ends at one-metre capture or eight seconds. Closest separation is sampled on 121
+  points, not a continuous minimum or universal capture guarantee. No actuator limits are included in this
+  comparison.
+guiding_question: Why can two laws have the same one-metre minimum yet different guidance performance?
 status: implemented
 tags:
 - controls-gnc
@@ -26,7 +28,7 @@ controls:
   step: 0.1
 - id: target_turn_rate_deg_s
   type: slider
-  label: Target turn rate
+  label: Beacon turn rate
   default: 4.0
   unit: deg/s
   minimum: 0.0
@@ -41,10 +43,11 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: For a closing engagement with correct LOS-rate sign, N greater than two reduces the nonmaneuvering miss
-    proxy while increasing acceleration demand.
-  reveal: Restore the frame and closing convention, apply actuator limits, and compare pursuit laws under the same
-    target maneuver.
+  text: Predict how reversing the measured line-of-sight rate changes the initial PN command and the integrated
+    path.
+  reveal: Both may reach the declared capture event, which terminates their integrations at the same radius.
+    Capture time, command demand and trajectory history still differ; the threshold is not a fabricated miss
+    metric.
 - type: controls
   title: Design controls
 - type: metrics
@@ -65,3 +68,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

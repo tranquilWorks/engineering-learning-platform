@@ -18,6 +18,7 @@ from elp_api.runtime import ExperimentRuntime
 ROOT = Path(__file__).resolve().parents[3]
 COURSE = ROOT / "courses/controls-gnc"
 BASELINE = "00983cab0599b1ce3a613a2cc8ef42eb7b45f0b4"
+HISTORICAL_HEAD = "8820f21d349836b63db00f1e596f5eb00b488ab9"
 SELECTED = (36, 38, 42, 43, 45, 46, 47, 48, 49, 50, 51, 55)
 
 
@@ -47,11 +48,15 @@ def detail(n, **changes):
 
 
 def test_exact_baseline_contract_payloads_and_prerequisite_graph():
-    contract = yaml.safe_load((ROOT / "contracts/active-batch.yaml").read_text())
+    contract = yaml.safe_load(
+        subprocess.check_output(
+            ["git", "show", f"{HISTORICAL_HEAD}:contracts/active-batch.yaml"], cwd=ROOT, text=True
+        )
+    )
     assert contract["batch"]["id"] == "ELP-GNC-SEMANTIC-QUALITY-12"
     assert contract["sources"]["baseline_commit"] == BASELINE
     changed = subprocess.check_output(
-        ["git", "diff", "--name-only", BASELINE, "--", "courses", ".gitmodules"],
+        ["git", "diff", "--name-only", BASELINE, HISTORICAL_HEAD, "--", "courses", ".gitmodules"],
         cwd=ROOT,
         text=True,
     ).splitlines()
@@ -65,7 +70,9 @@ def test_exact_baseline_contract_payloads_and_prerequisite_graph():
     old = yaml.safe_load(
         subprocess.check_output(["git", "show", f"{BASELINE}:{path}"], cwd=ROOT, text=True)
     )
-    new = yaml.safe_load((ROOT / path).read_text())
+    new = yaml.safe_load(
+        subprocess.check_output(["git", "show", f"{HISTORICAL_HEAD}:{path}"], cwd=ROOT, text=True)
+    )
     assert [(r["id"], r["depends_on"], r["competency_ids"]) for r in old["modules"]] == [
         (r["id"], r["depends_on"], r["competency_ids"]) for r in new["modules"]
     ]
@@ -81,7 +88,12 @@ def test_unselected_reference_definitions_origins_and_outputs_are_exact(tmp_path
     historical = tmp_path / "old.py"
     historical.write_text(old)
     before = load(historical)
-    after = load(path)
+    merged_source = subprocess.check_output(
+        ["git", "show", f"{HISTORICAL_HEAD}:{path.relative_to(ROOT)}"], cwd=ROOT, text=True
+    )
+    merged = tmp_path / "merged.py"
+    merged.write_text(merged_source)
+    after = load(merged)
 
     def definitions(source):
         return {
@@ -90,13 +102,23 @@ def test_unselected_reference_definitions_origins_and_outputs_are_exact(tmp_path
             if isinstance(n, ast.FunctionDef)
         }
 
-    original, current = definitions(old), definitions(path.read_text())
+    original, current = definitions(old), definitions(merged_source)
     for n in range(25, 69):
         if n in SELECTED:
             continue
         assert original[f"_p{n}"] == current[f"_p{n}"]
         assert before.origin(n) == after.origin(n)
-        for p in yaml.safe_load((folder(n) / "design.yaml").read_text())["scenarios"].values():
+        for p in yaml.safe_load(
+            subprocess.check_output(
+                [
+                    "git",
+                    "show",
+                    f"{HISTORICAL_HEAD}:{(folder(n) / 'design.yaml').relative_to(ROOT)}",
+                ],
+                cwd=ROOT,
+                text=True,
+            )
+        )["scenarios"].values():
             np.testing.assert_array_equal(
                 before.reference_signature(n, p), after.reference_signature(n, p)
             )

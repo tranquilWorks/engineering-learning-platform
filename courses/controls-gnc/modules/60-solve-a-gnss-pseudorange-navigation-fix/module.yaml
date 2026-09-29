@@ -1,9 +1,12 @@
 schema_version: 1
 id: 60-solve-a-gnss-pseudorange-navigation-fix
 number: 60
-title: Solve a GNSS Pseudorange Navigation Fix
-summary: Relate range noise and geometry dilution to position/clock error and reject a near-collinear geometry.
-guiding_question: How do receiver clock bias and satellite geometry jointly determine a pseudorange solution?
+title: Solve Position and Clock from Synthetic Pseudoranges
+summary: Eight synthetic pseudoranges determine position and clock by nonlinear least squares. Concentration
+  changes actual lines of sight; position dilution is computed from the fitted geometry. This omits atmospheric,
+  orbital and Earth-rotation errors.
+guiding_question: Why is geometry concentration an input while PDOP is an output, and why does clock omission
+  affect position?
 status: implemented
 tags:
 - controls-gnc
@@ -25,7 +28,7 @@ controls:
   step: 0.1
 - id: geometry_dilution
   type: slider
-  label: Geometry dilution
+  label: Geometry concentration
   default: 2.2
   unit: '1'
   minimum: 1.0
@@ -40,9 +43,10 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: A valid fix estimates position and clock bias together; geometry dilution scales range noise into state
-    uncertainty.
-  reveal: Restore four-or-more diverse lines of sight, solve clock and position jointly, and inspect post-fit residuals.
+  text: Predict whether removing the receiver clock unknown merely changes clock error or also biases position.
+  reveal: Concentration constructs lines of sight. Their design matrix determines PDOP. The omitted common
+    range offset projects onto position columns, biasing the fitted position; it cannot generally be represented
+    by a harmless display-only clock error.
 - type: controls
   title: Design controls
 - type: metrics
@@ -63,3 +67,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

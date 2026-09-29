@@ -1,10 +1,12 @@
 schema_version: 1
 id: 26-compose-rotations-and-poses-on-so-3-and-se-3
 number: 26
-title: Compose Rotations and Poses on SO(3) and SE(3)
-summary: Build a deterministic numerical laboratory to compose rotations and poses on so(3) and se(3), expose its
-  governing relation, and diagnose a named counterexample before recovery.
-guiding_question: What assumptions and evidence make compose rotations and poses on so(3) and se(3) defensible?
+title: Compose Rigid Transforms and Diagnose Invalid Rotation Blends
+summary: A and B are explicitly composed homogeneous transforms applied to one 3D point; the chart shows its
+  x/y projection. Linear interpolation of rotation matrices leaves SO(3) between valid endpoints. Composition-order
+  difference is expected and is not itself a numerical error.
+guiding_question: Why can the final broken matrix pass both rotation checks while the lesson still reports
+  a nonzero maximum defect?
 status: implemented
 tags:
 - robotics-autonomy
@@ -41,9 +43,9 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Rigid transforms must remain on SE(3), round trip through their inverse, and preserve the declared composition
-    order.
-  reveal: Use the equations, units, and mechanism plot to test the prediction.
+  text: Predict whether two valid rotation endpoints make every linear matrix blend between them a valid rotation.
+  reveal: The blend equals the valid endpoint rotation at f=1. Interior blends generally leave SO(3); the metric
+    deliberately measures the maximum over the executed interpolation, not just its last sample.
 - type: controls
   title: Live model controls
 - type: metrics
@@ -64,3 +66,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

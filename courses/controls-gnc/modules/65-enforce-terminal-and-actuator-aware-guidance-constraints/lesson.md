@@ -1,66 +1,73 @@
-# Enforce Terminal and Actuator-Aware Guidance Constraints
+# Solve a Bounded Terminal Guidance Objective
 
-**Guiding question:** How do terminal requirements change when the actuator cannot deliver the unconstrained guidance command?
 
-Compare required terminal acceleration with actuator authority and propagate the residual terminal miss under saturation. This is a Python-first native design derived from the reviewed competency map. It is not presented as a conversion of the pinned MATLAB source and it stays inside deterministic software simulation.
-
-## Why this lesson exists
-
-The numerical result is not the objective by itself. The objective is to connect a design decision to a governing relation, an observable consequence, a failure mechanism, and a recovery check. Record the assumptions before interpreting any curve.
 
 ## Model and equations
 
-$$\text{a_req=2 e/t_go^2+2 v_e/t_go}$$
-$$\text{a_cmd=clip(a_req,a_max)}$$
-$$\text{terminal cost=w_f e(tf)^2}$$
+`p[k+1]=p[k]+dt v[k]+dt² u[k]/2; v[k+1]=v[k]+dt u[k]`
 
-Carry units through the model. A pole or zero is reported in inverse seconds, angular frequency in radians per second, phase in degrees or radians as labeled, and dimensionless ratios as `1`. The experiment evaluates the displayed equations directly; it does not call a black-box synthesis toolbox.
+`J=0.1 sum u[k]²+w p[N]²+0.5w v[N]², normalized by 1 m, 1 s`
+
+`|u[k]|<=a_max; N=20; dt=0.1 s`
+
+The one-dimensional double integrator starts 30 m from the origin at zero velocity. Twenty piecewise-constant accelerations act over two seconds. The endpoint map has position coefficients dt²(N-k-0.5) and velocity coefficients dt. A bounded least-squares solve minimizes normalized command effort and terminal position/velocity penalties. With a 3 m/s² limit, even continuous maximum deceleration over two seconds changes position by only 6 m before considering the velocity objective, so zero position error is impossible. With larger authority, exact endpoint feasibility still does not force a soft-penalty optimizer to choose exact arrival. The actual chosen controls propagate every displayed position and velocity sample. The peak command and limit violation are computed from that sequence, while the terminal residual comes from its last propagated state.
 
 ## Predict before running
 
-The applied command never exceeds actuator authority; an infeasible terminal requirement must appear as residual error, not a hidden command. State which output should move first and which quantity should remain invariant before changing a control.
+Predict whether a finite terminal penalty forces exact arrival, even when the command limits permit arrival.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read all three signature metrics.
-2. Inspect the response plot for the external behavior, then the mechanism plot for the governing internal relation.
-3. Check the units and limiting cases before accepting a stability, equivalence, or performance statement.
-4. Save the baseline, change one variable only, and explain the direction of change from the equations.
+Reset controls and leave the named fault disabled. Use Acceleration limit = 20.0 m/s^2; Terminal weight = 8.0 1. Write a prediction before executing. Read the response curve first, then explain it using the mechanism curve.
+
+Executed terminal trajectory plots Position (m) against Time (s). Its series are Position. Applied bounded commands plots Acceleration (m/s²) against Interval start (s). Its series are Applied, Upper limit, Lower limit.
+
+The computed default record is Peak applied acceleration: 20 m/s^2; Actuator violation: 0 m/s^2; Terminal position residual: 4.81371 m; Terminal velocity residual: 7.76155 m/s. These values are a reproducible worked example, not acceptance thresholds for every slider setting. Retain units and parameter values when comparing another run. A displayed residual near machine precision should be interpreted with the stated model and numerical tolerance.
 
 ## Two one-variable sweeps
 
-1. Hold `terminal_weight` at `8.0 1` and sweep `acceleration_limit_m_s2` from `3.0` through `20.0` to `50.0 m/s^2`.
-2. Restore `acceleration_limit_m_s2` to `20.0 m/s^2` and sweep `terminal_weight` from `1.0` through `8.0` to `20.0 1`.
+1. Increase acceleration authority from 3 to 50 m/s² at fixed terminal weight. Identify which intervals lie on bounds and compare actual terminal position and velocity.
 
-Do not tune both at once until you can attribute each metric change to one term in the equations. The retained evidence uses one endpoint from each sweep in addition to the baseline.
+2. Increase terminal weight from 1 to 20 with authority fixed. More emphasis on arrival can increase command effort, but active bounds may prevent the requested improvement.
+
+Return to defaults between sweeps. Keep the other control fixed, record the changed quantity and identify an expected invariant. A control need not change every output; explain the model path through which it acts.
 
 ## Intentionally broken case
 
-Broken mode applies the unconstrained terminal command and reports zero miss despite violating actuator authority. Broken mode is a named counterexample, not an alternative design recommendation.
+Broken mode solves the unconstrained objective and applies that command sequence without enforcing the selected actuator limit.
+
+Run the same selected controls with the fault enabled. Compare the curve shape as well as the numerical summary. The fault is a specific executed operation; a red warning or a changed mode flag would not by itself demonstrate its consequence.
 
 ## Recovery
 
-Restore saturation, propagate the constrained plant, and renegotiate terminal requirements when authority is insufficient. The recovery case restores the exact baseline inputs so the evidence can prove that the failure is reversible rather than merely different.
+Restore the bounded solve, reset controls and verify every applied interval satisfies the limit. Compare the residual rather than assuming it becomes zero.
+
+Repeat one previously saved nominal setting and check that its values and curves return. Recovery should restore the mechanism, not merely dismiss the warning.
 
 ## Limiting cases and invariants
 
-- If required acceleration is within the limit, clipping is inactive.
-- As time-to-go shrinks a fixed terminal error demands increasing acceleration.
-
-Teaching invariant: The applied command never exceeds actuator authority; an infeasible terminal requirement must appear as residual error, not a hidden command.
+This is an open-loop finite-horizon optimization, not a robust receding-horizon controller. Soft terminal penalties allow residual. The declared dimensionless normalization is necessary when adding position, velocity and acceleration costs.
 
 ## Independent evidence
 
-Expected signatures are produced by `expansion_reference_cases.py`, which imports no production experiment and consumes no production result. Production signatures are retained separately. Each baseline, two sweeps, broken case, and recovery case records fields, units, tolerances, measured error, and the named invariant. Agreement supports only these equations and scenarios; it is not MATLAB execution, broad robust certification, or physical validation.
+The independent reference solves a two-dimensional dual terminal-residual equation with clipped controls, rather than the production twenty-variable bounded least-squares problem.
+
+Five retained cases cover baseline, two single-control sweeps, the named fault and recovery. Expected values are generated independently; actual values come from the executable lesson. Absolute and relative tolerances remain 1e-8. Agreement checks the declared synthetic model, not empirical validity. MATLAB has not been executed and no MATLAB equivalence is claimed. Browser and container evidence are recorded separately from numerical evidence.
+
+## Engineering review checklist
+
+Check the declared coordinates, units and ordering before evaluating the result. Reconstruct at least one displayed value from retained state or geometric data. Identify which output changes in each sweep and which should remain invariant. Diagnose the named faulty operation, then demonstrate its recovery. Finally state the strongest claim supported by these observations and one claim that requires additional evidence.
 
 ## Common mistakes
 
-- Reading a plotted shape without checking its sign convention, units, or contour/path definition.
-- Treating a local, frequency-limited, or nominal result as a global guarantee.
-- Changing both design controls and then assigning causality to one of them.
-- Confusing a recovery that looks better with a recovery that restores the baseline invariant.
-- Claiming source equivalence, physical hardware evidence, or learner effectiveness from this software-only lab.
+Do not infer correctness from a changing headline alone. In this lesson, the critical limit is: This is an open-loop finite-horizon optimization, not a robust receding-horizon controller. Soft terminal penalties allow residual. The declared dimensionless normalization is necessary when adding position, velocity and acceleration costs.
+
+Do not compare two runs after changing both controls and attribute the difference to one cause. Do not treat a near-zero floating-point residual as symbolic identity, or a finite sample sweep as a proof for all configurations. Keep the operation that creates the evidence separate from the interpretation assigned to it.
 
 ## Teach-back
 
-Derive one signature quantity from the displayed equations, explain what the broken case violates, and name one result that this lab cannot establish. Then describe how the two sweeps separate sensitivity to `acceleration_limit_m_s2` from sensitivity to `terminal_weight`.
+Why is a positive terminal residual compatible with a correct bounded optimizer?
+
+Answer rationale: Bounds may make exact arrival infeasible, and finite penalties trade residual against effort even when arrival is feasible. Correctness requires executed dynamics, feasible controls and optimality evidence, not an assigned zero endpoint.
+
+Use the embedded Course checkpoint to collect a default record, a sweep, a faulty record and a recovered record. Explain the evidence to a colleague using the governing relation and units, then name the untested boundary. This is a self-assessment; no learner score is stored.

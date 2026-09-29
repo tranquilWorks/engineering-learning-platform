@@ -5,22 +5,39 @@ from typing import Any
 import numpy as np
 
 ITEM_NUMBER = 56
-BROKEN_TEXT = 'Broken mode skips the backward pass, so smoothed and filtered uncertainty are identical.'
-RECOVERY_TEXT = 'Restore the backward recursion after the forward filter completes and label the result offline, not causal.'
+BROKEN_TEXT = 'Broken mode skips the backward recursion and reports the forward filter as the smoother. Both controls still generate the data and filter covariance.'
+RECOVERY_TEXT = 'Disable the fault and reset the two variances. Confirm the last means and variances remain equal while earlier covariance usually falls.'
 
 
-def _trace(name: str, x: Any, y: Any, x_quantity: str, x_unit: str,
-           y_quantity: str, y_unit: str, *, mode: str = "lines") -> dict[str, Any]:
+def _trace(
+    name: str,
+    x: Any,
+    y: Any,
+    x_quantity: str,
+    x_unit: str,
+    y_quantity: str,
+    y_unit: str,
+    *,
+    mode: str = "lines",
+) -> dict[str, Any]:
     return {
-        "type": "scattergl", "mode": mode, "name": name,
-        "x": np.asarray(x, dtype=float), "y": np.asarray(y, dtype=float),
-        "meta": {"x_quantity": x_quantity, "x_unit": x_unit,
-                 "y_quantity": y_quantity, "y_unit": y_unit},
+        "type": "scatter",
+        "mode": mode,
+        "name": name,
+        "x": np.asarray(x, dtype=float),
+        "y": np.asarray(y, dtype=float),
+        "meta": {
+            "x_quantity": x_quantity,
+            "x_unit": x_unit,
+            "y_quantity": y_quantity,
+            "y_unit": y_unit,
+        },
     }
 
 
-def _plot(title: str, x_title: str, y_title: str,
-          traces: list[dict[str, Any]]) -> dict[str, Any]:
+def _plot(
+    title: str, x_title: str, y_title: str, traces: list[dict[str, Any]]
+) -> dict[str, Any]:
     return {
         "data": traces,
         "layout": {
@@ -29,7 +46,8 @@ def _plot(title: str, x_title: str, y_title: str,
             "yaxis": {"title": {"text": y_title}},
             "legend": {"orientation": "h"},
             "margin": {"l": 72, "r": 36, "t": 62, "b": 62},
-            "hovermode": "closest", "uirevision": "keep-view",
+            "hovermode": "closest",
+            "uirevision": "keep-view",
         },
         "config": {"responsive": True, "displaylogo": False},
     }
@@ -38,8 +56,13 @@ def _plot(title: str, x_title: str, y_title: str,
 def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
     return {
         "metrics": [
-            {"id": key, "label": label, "value": float(value), "unit": unit,
-              "emphasis": "primary" if index == 0 else "normal"}
+            {
+                "id": key,
+                "label": label,
+                "value": float(value),
+                "unit": unit,
+                "emphasis": "primary" if index == 0 else "normal",
+            }
             for index, (key, label, value, unit) in enumerate(model["metrics"])
         ],
         "plots": model["plots"],
@@ -50,27 +73,60 @@ def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
         },
         "diagnostics": {
             "item_number": ITEM_NUMBER,
+            **model.get("details", {}),
             "broken_active": bool(broken),
             "signature": [float(value) for value in model["signature"]],
         },
     }
 
-def _model(p: dict[str, Any], broken: bool) -> dict[str, Any]:
-    a=float(p["process_variance"]); b=float(p["measurement_variance"])
-    if broken: a=0.2; b=1.0
-    x=np.linspace(0.,10.,240)
-    signature=[float(a*b/(a+b)),float(a*b/(a+b) if broken else .65*a*b/(a+b)),float(0. if broken else .35*a*b/(a+b))]
-    y1=np.asarray((a+b)*(1-np.exp(-x)),dtype=float); y2=np.asarray(np.full_like(x,a*b/(a+b)),dtype=float)
-    z1=np.asarray(np.full_like(x,a*b/(a+b)),dtype=float); z2=np.asarray(np.full_like(x,a*b/(a+b) if broken else .65*a*b/(a+b)),dtype=float)
-    if y1.ndim==0: y1=np.full_like(x,float(y1))
-    if y2.ndim==0: y2=np.full_like(x,float(y2))
-    if z1.ndim==0: z1=np.full_like(x,float(z1))
-    if z2.ndim==0: z2=np.full_like(x,float(z2))
-    return {"signature":signature,"metrics":[("filtered_variance", "Filtered Variance", signature[0], "1"),("smoothed_variance", "Smoothed Variance", signature[1], "1"),("variance_reduction", "Variance Reduction", signature[2], "1")],"plots":{
-      "response":_plot("Forward-filter uncertainty","Time (s)","Variance (1)",[_trace("Nominal/filtered",x,y1,"Time","s","Variance","1"),_trace("Reference/boundary",x,y2,"Time","s","Variance","1")]),
-      "mechanism":_plot("Filtered and smoothed variance","Time (s)","Variance (1)",[_trace("Mechanism",x,z1,"Time","s","Variance","1"),_trace("Requirement/reference",x,z2,"Time","s","Variance","1")])},
-      "observation":"RTS smoothed covariance is no larger than filtered covariance for the same linear-Gaussian model and complete future data."}
 
+def _model(p, broken):
+    q = float(p['process_variance'])
+    r = float(p['measurement_variance'])
+    k = np.arange(41)
+    truth = np.r_[0., np.cumsum(np.sqrt(q) * (0.7*np.sin(0.6*k[1:]) + 0.2*np.cos(1.1*k[1:])))]
+    measurements = truth + np.sqrt(r)*(0.7*np.cos(1.4*k) + 0.2*np.sin(0.2*k))
+    predicted_mean, predicted_variance, filtered_mean, filtered_variance, gains = [], [], [], [], []
+    mean, variance = 0., 1.
+    for index, value in enumerate(measurements):
+        if index:
+            variance += q
+        predicted_mean.append(mean)
+        predicted_variance.append(variance)
+        gain = variance / (variance + r)
+        mean += gain*(value-mean)
+        variance = (1-gain)**2*variance + gain**2*r
+        gains.append(gain)
+        filtered_mean.append(mean)
+        filtered_variance.append(variance)
+    fm, fp = np.array(filtered_mean), np.array(filtered_variance)
+    sm, sp = fm.copy(), fp.copy()
+    smoother_gains = np.zeros(40)
+    if not broken:
+        for index in range(39,-1,-1):
+            gain = fp[index]/predicted_variance[index+1]
+            smoother_gains[index] = gain
+            sm[index] += gain*(sm[index+1]-predicted_mean[index+1])
+            sp[index] += gain**2*(sp[index+1]-predicted_variance[index+1])
+    t=k*0.25
+    signature = [np.mean(fp),np.mean(sp),np.mean(fp-sp)]
+    return {'signature':signature,'metrics':[
+        ('filtered_variance','Mean filtered variance',signature[0],'m^2'),
+        ('smoothed_variance','Mean reported smoothed variance',signature[1],'m^2'),
+        ('variance_reduction','Mean variance reduction',signature[2],'m^2'),
+        ('trajectory_rmse','Reported trajectory RMSE',np.sqrt(np.mean((sm-truth)**2)),'m')],
+        'plots':{
+            'response':_plot('Executed estimates','Time (s)','Position (m)',[
+                _trace('Synthetic truth',t,truth,'Time','s','Position','m'),
+                _trace('Forward filter',t,fm,'Time','s','Position','m'),
+                _trace('Reported smoother',t,sm,'Time','s','Position','m')]),
+            'mechanism':_plot('Filter/smoother covariance','Time (s)','Position variance (m²)',[
+                _trace('Filtered covariance',t,fp,'Time','s','Position variance','m^2'),
+                _trace('Reported smoothed covariance',t,sp,'Time','s','Position variance','m^2')])},
+        'details':{'time':t,'truth':truth,'measurements':measurements,'predicted_mean':predicted_mean,
+            'predicted_variance':predicted_variance,'filtered_mean':fm,'filtered_variance':fp,
+            'smoothed_mean':sm,'smoothed_variance':sp,'filter_gains':gains,'smoother_gains':smoother_gains},
+        'observation':'The plotted smoother executes a backward RTS pass over all 41 retained measurements. Its last state/covariance equal the filter. Model covariance reduction does not guarantee a smaller error for every individual measurement realization.'}
 
 
 def run(parameters: dict[str, Any]) -> dict[str, Any]:

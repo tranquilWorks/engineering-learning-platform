@@ -79,8 +79,15 @@ test('numeric menu defaults survive JavaScript serialization', async ({ page }) 
   await expect(page.locator('.runtime-error')).toHaveCount(0);
 });
 test('content review notes remain distinct from execution failures', async ({ page }) => {
-  await page.goto('/courses/robotics-autonomy/modules/26-compose-rotations-and-poses-on-so-3-and-se-3');
+  await page.goto('/courses/robotics-autonomy/modules/30-map-end-effector-wrenches-to-joint-torques');
   await expect(page.getByRole('note')).toContainText('Under revision');
+  await expect(page.locator('.js-plotly-plot')).toHaveCount(2);
+  await expect(page.locator('.runtime-error')).toHaveCount(0);
+  await page.goto('/courses/robotics-autonomy/modules/26-compose-rotations-and-poses-on-so-3-and-se-3');
+  await expect(page.getByRole('note')).toHaveCount(0);
+  await page.getByText('Lesson review and evidence', {exact:true}).click();
+  await expect(page.locator('.lesson-quality')).toContainText('Scoped model revision:');
+  await expect(page.locator('.lesson-quality')).toContainText('does not certify the whole course');
   await expect(page.locator('.js-plotly-plot')).toHaveCount(2);
   await expect(page.locator('.runtime-error')).toHaveCount(0);
 });
@@ -347,4 +354,58 @@ test('Controls MPC browser executes a bounded plan and exposes unconstrained vio
   expect(Math.max(...healthy.diagnostics.input.map(Math.abs))).toBeLessThanOrEqual(.8);
   expect(Math.max(...healthy.diagnostics.kkt_residuals)).toBeLessThan(1e-8);
   await expect(page.locator('.runtime-error')).toHaveCount(0);
+});
+
+test('Navigation exclusion checkpoint executes a fresh seven-row fit', async ({ page }) => {
+  await page.goto('/courses/controls-gnc/modules/62-monitor-navigation-integrity-and-exclude-faulty-measurements');
+  await expect(page.locator('.js-plotly-plot')).toHaveCount(2);
+  await page.setViewportSize({width:390,height:844});
+  const jump=page.getByRole('navigation',{name:'Lesson sections'}).getByRole('link',{name:'Course checkpoint',exact:true});
+  await jump.focus();await page.keyboard.press('Enter');
+  await expect(page.getByRole('heading',{name:'Course checkpoint',exact:true})).toBeInViewport();
+  const toggle=page.locator('.control-panel:visible input[type=checkbox]');
+  const response=page.waitForResponse(r=>r.url().endsWith('/run') && r.request().method()==='POST');
+  await toggle.check();const broken=await (await response).json();
+  expect(broken.diagnostics.retained_rows).toHaveLength(8);
+  const recovery=page.waitForResponse(r=>r.url().endsWith('/run') && r.request().method()==='POST');
+  await toggle.uncheck();const recovered=await (await recovery).json();
+  expect(recovered.diagnostics.retained_rows).toHaveLength(7);
+  expect(recovered.diagnostics.retained_rows).not.toContain(2);
+  expect(recovered.diagnostics.signature[2]).toBeLessThan(broken.diagnostics.signature[2]);
+  await expect(page.locator('.runtime-error')).toHaveCount(0);
+});
+
+test('Robotics geometry draws a real dual-power fault and recovers', async ({ page }) => {
+  await page.goto('/courses/robotics-autonomy/modules/27-map-twists-screws-and-wrenches-with-adjoint-transforms');
+  await expect(page.locator('.js-plotly-plot')).toHaveCount(2);
+  const toggle=page.locator('.control-panel:visible input[type=checkbox]');
+  const response=page.waitForResponse(r=>r.url().endsWith('/run') && r.request().method()==='POST');
+  await toggle.check();const broken=await (await response).json();
+  expect(broken.diagnostics.signature[0]).toBeGreaterThan(.01);
+  const recovery=page.waitForResponse(r=>r.url().endsWith('/run') && r.request().method()==='POST');
+  await toggle.uncheck();const recovered=await (await recovery).json();
+  expect(recovered.diagnostics.signature[0]).toBeLessThan(1e-12);
+  expect(recovered.diagnostics.powers.every((p:number)=>Math.abs(p-.69)<1e-12)).toBe(true);
+  await expect.poll(()=>page.locator('.js-plotly-plot').evaluateAll(nodes=>nodes.filter(n=>n.querySelector('.scatterlayer .trace path')).length)).toBe(2);
+  await expect(page.locator('.runtime-error')).toHaveCount(0);
+});
+
+test('zero-angle and zero-gain limits retain visible plotted points', async ({ page }) => {
+  const cases = [
+    ['controls-gnc/57-transform-frames-quaternions-and-sensor-alignment', 0, 'angles', 'yaw_angle_deg', 'ArrowLeft', 7],
+    ['robotics-autonomy/28-build-spatial-jacobians-and-diagnose-singularities', 0, 'angles_rad', 'elbow_angle_deg', 'Home', 1],
+    ['robotics-autonomy/29-resolve-redundancy-with-null-space-motion', 1, 'gains', 'null_gain_per_s', 'Home', 1],
+  ] as const;
+  for (const [path,index,key,parameter,button,presses] of cases) {
+    await page.goto('/courses/'+path.split('/')[0]+'/modules/'+path.split('/')[1]);
+    await page.locator('.compute-status:visible').first().filter({hasText:'Experiment synchronized'}).waitFor();
+    const slider=page.locator('.control-panel:visible input[type=range]').nth(index);
+    const response=page.waitForResponse(r=>r.url().endsWith('/run') && r.request().method()==='POST' && r.request().postDataJSON().parameters[parameter]===0);
+    await slider.focus();
+    for(let press=0;press<presses;press++) await slider.press(button);
+    const result=await (await response).json();
+    expect(result.diagnostics[key].every((v:number)=>v===0)).toBe(true);
+    await expect.poll(()=>page.locator('.js-plotly-plot').evaluateAll(nodes=>nodes.filter(n=>n.querySelector('.scatterlayer .trace .point')).length)).toBe(2);
+    await expect(page.locator('.runtime-error')).toHaveCount(0);
+  }
 });

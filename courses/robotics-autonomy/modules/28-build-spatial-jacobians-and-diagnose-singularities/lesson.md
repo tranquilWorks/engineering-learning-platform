@@ -1,87 +1,79 @@
-# Build Spatial Jacobians and Diagnose Singularities
+# Build a Planar Position Jacobian and Diagnose Singularities
 
-**Guiding question:** What assumptions and evidence make build spatial jacobians and diagnose singularities defensible?
 
-Build a deterministic numerical laboratory to build spatial jacobians and diagnose singularities, expose its governing relation, and diagnose a named counterexample before recovery. This module is a Python-first native design authorized by the reviewed issue-440 competency map. It is not a conversion of the pinned MATLAB-oriented source course, and it remains deterministic software evidence.
-
-## Why this lesson exists
-
-Robotics failures often cross representation boundaries: geometry into velocity, images into pose, estimates into maps, plans into commands, or contact forces into actuator effort. A result is defensible only when those boundaries carry explicit frames, signs, units, timing, constraints, and uncertainty. This lesson therefore connects one design decision to a governing equation, an observable response, a named failure, and an exact recovery.
-
-Before calculating, name the state, input, observation, and verdict. State which quantities are measured, which are modeled, and which are derived. A smooth curve is not evidence that a constraint was respected, an estimator was consistent, a path was collision free, or a contact remained passive.
 
 ## Model, derivation, and conventions
 
-- $$V_s=J_s(q) q_dot$$
-- $$mu=sqrt(det(J J^T))$$
-- $$sigma_min(J)->0 at singularity$$
+`x=l1 cos(q1)+l2 cos(q1+q2); y=l1 sin(q1)+l2 sin(q1+q2); l1=1 m`
 
-Derive the first relation from the physical, geometric, probabilistic, or algorithmic definition. Use the second relation to propagate the decision into a measurable consequence. Use the third as an invariant, feasibility condition, or audit relation. Keep every coordinate frame and sampling instant attached until the final scalar metric. The experiment evaluates these relations directly with bounded NumPy arrays; it does not call a remote solver or hide the mechanism behind a black-box robotics stack.
+`J=partial(x,y)/partial(q1,q2); task_velocity=J joint_velocity`
 
-The three retained signature quantities are:
+`manipulability=sigma_max sigma_min=|det J|`
 
-- `minimum_singular_value` (m/rad)
-- `manipulability` (m^2/rad^2)
-- `finite_difference_error` (m/rad)
+This is a two-link planar arm with proximal length one metre and distal length equal to the selected ratio times one metre. The shoulder is fixed at 0.4 rad for the configuration sweep, while the elbow ranges from zero to the selected angle in 121 samples. The task contains only end-effector x and y position. Therefore the computed Jacobian is a two-by-two position Jacobian with units m/rad. It is not a six-row spatial-twist Jacobian and does not assess all orientation capabilities. Narrowing that claim is essential: a position singularity and rank loss of a full twist map are different questions.
 
-Carry units through each substitution. Dimensionless ranks, probabilities, ratios, and flags are labeled `1` or `count`; physical displacement, time, force, torque, energy, velocity, and pixel quantities retain their named units. If a sum combines unlike units or a transform maps a vector without a frame convention, stop before interpreting a number.
+Each column is the derivative of the same forward kinematics that defines the arm endpoint. The shoulder moves both links, so its column contains proximal and distal contributions. The elbow moves only the distal link, so its column contains the distal contribution. Multiplying by joint velocities in rad/s gives task velocity in m/s. The analytic Jacobian is checked against central differences of the endpoint, perturbing one joint at a time by 1e-5 rad. A small residual checks agreement between two calculations; it is not proof of a complete robot model or a claim that finite differences are exact.
+
+For a hand example, choose shoulder zero, elbow 90 degrees and equal one-metre links. Then J=[[-1,-1],[1,0]] m/rad, with determinant one in m²/rad². A shoulder-only velocity [1,0] rad/s produces [-1,1] m/s, while elbow-only [0,1] produces [-1,0] m/s. The two columns are independent. At elbow zero both links align, the two columns become parallel and first-order radial position motion is unavailable. This geometric explanation should accompany the smallest singular value approaching zero.
+
+The singular values quantify local velocity amplification under the stated coordinates and units. Their product is planar position manipulability, an area scaling in m²/rad². It is not dimensionless and is not a global reachability score. A long distal link can change both singular values even at the same elbow angle. Near a straight or folded arm, finite perturbations and numerical roundoff require care: the lesson reports finite singular values and derivative residuals without manufacturing a finite condition number by silently clipping infinity.
 
 ## Predict before running
 
-The spatial Jacobian must match finite-difference kinematics and expose loss of motion authority through singular values. Predict the sign and direction of all three signature changes before moving a slider. Identify the equation term responsible and one quantity that should remain invariant. This written prediction is the comparison point; post-hoc description is not the same as a test.
+Predict what a missing elbow column does to task rank and to an independently differenced forward-kinematic check.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read the three signature metrics with units.
-2. Inspect the response plot for task-level behavior, then the mechanism plot for the constraint, residual, energy, conditioning, or decision that explains it.
-3. Reproduce one signature quantity from the displayed equations to one or two significant figures.
-4. Check a limiting case before accepting the baseline.
-5. Save the baseline parameters and signature so recovery can be tested exactly.
+Reset controls and leave the named fault disabled. Use Elbow angle = 70.0 deg; Distal/proximal link ratio = 0.8 1. Write a prediction before executing. Read the response curve first, then explain it using the mechanism curve.
+
+Position-task singular values plots Singular value (m/rad) against Elbow angle (deg). Its series are Largest, Smallest. Kinematic derivative check plots Jacobian difference (m/rad) against Elbow angle (deg). Its series are Central-difference residual.
+
+The computed default record is Minimum position singular value: 0.465256 m/rad; Position manipulability: 0.751754 m^2/rad^2; Jacobian difference norm: 3.17367e-11 m/rad. These values are a reproducible worked example, not acceptance thresholds for every slider setting. Retain units and parameter values when comparing another run. A displayed residual near machine precision should be interpreted with the stated model and numerical tolerance.
 
 ## Two one-variable sweeps
 
-1. Hold `link_ratio` at `0.8 1` and sweep `elbow_angle_deg` from `0.0` through `70.0` to `175.0 deg`.
-2. Restore `elbow_angle_deg` to `70.0 deg` and sweep `link_ratio` from `0.2` through `0.8` to `1.5 1`.
+1. Sweep elbow angle from zero to 70 and then 175 degrees at fixed link ratio. Compare the smallest singular value near straight and nearly folded configurations. The graph covers every intermediate sampled elbow angle, so its starting point is singular even when the selected endpoint is not.
 
-Change one variable at a time. For each endpoint, record the predicted direction, actual direction, metric delta, and the mechanism-plot feature that supports causality. If the result reverses direction, check for a branch, active constraint, singularity, gate, saturation, or feasibility transition rather than smoothing it away.
+2. Sweep link ratio from 0.2 to 1.5 with elbow fixed. Predict how the elbow column length changes, then compare singular values and manipulability. Keep the one-metre proximal length explicit when interpreting units.
+
+Return to defaults between sweeps. Keep the other control fixed, record the changed quantity and identify an expected invariant. A control need not change every output; explain the model path through which it acts.
 
 ## Intentionally broken case
 
-Broken mode evaluates the Jacobian at the wrong elbow sign, hiding the approaching straight-arm singularity. Broken mode is a falsifying counterexample, not a recommended alternative. Explain which assumption is violated before describing the visual symptom. Then locate the first intermediate quantity that departs from the baseline invariant; downstream task error alone rarely identifies the cause.
+Broken mode omits the elbow Jacobian column while leaving the forward kinematics unchanged. The computed Jacobian loses a joint contribution and the finite-difference residual exposes it.
+
+Run the same selected controls with the fault enabled. Compare the curve shape as well as the numerical summary. The fault is a specific executed operation; a red warning or a changed mode flag would not by itself demonstrate its consequence.
 
 ## Recovery
 
-Restore the joint convention, compare against a finite difference, and report conditioning rather than inverting blindly. Recovery is complete only when the original default inputs and diagnostic signature return within the independent-reference tolerance. A different setting that happens to look better is mitigation, not recovery. Preserve the fault, detection, decision, and recovery sequence as separate evidence.
+Restore the second column, reset controls and compare both derivative agreement and task singular values. A small singular value at a truly aligned configuration is expected and should not be repaired by adding an arbitrary floor.
+
+Repeat one previously saved nominal setting and check that its values and curves return. Recovery should restore the mechanism, not merely dismiss the warning.
 
 ## Alternative and limiting cases
 
-- At a straight two-link arm, one planar translational singular value vanishes.
-- Increasing the second link from zero adds reachable velocity directions away from singularity.
-
-Use one limit as a hand calculation and one as a numerical sweep. Limits reveal whether a formula is continuous, singular, or branch-dependent. An undefined limit must be reported as such; clipping it into a convenient finite value changes the model.
+At elbow zero the correct position map is singular. The shoulder angle rotates the task axes without changing singular values. A derivative check has truncation and floating-point error; exact symbolic zero is not required. No orientation or dynamics claim follows from this position-only calculation.
 
 ## Independent evidence and MATLAB-style design boundary
 
-The design was reasoned from the displayed equations in the same model-first workflow normally used before a MATLAB/Simulink implementation, but the delivered implementation is Python/NumPy only. Expected signatures are stored by `expansion_reference_cases.py`, which imports no production experiment, consumes no production result, and perturbs no production value. Production signatures are retained separately for baseline, both one-variable sweeps, broken, and exact recovery scenarios.
+The reference differentiates forward kinematics using complex steps and computes singular values from the two-by-two Gram matrix eigenvalues. It separately predicts the missing-column discrepancy instead of copying the production finite-difference array.
 
-Agreement supports only the displayed model, input set, fields, units, and tolerances. No licensed MATLAB runtime was executed, so the evidence makes no MATLAB numerical-parity claim. It also does not establish global optimality, field robustness, physical calibration, hardware timing, safety certification, or production readiness.
+Five retained cases cover baseline, two single-control sweeps, the named fault and recovery. Expected values are generated independently; actual values come from the executable lesson. Absolute and relative tolerances remain 1e-8. Agreement checks the declared synthetic model, not empirical validity. MATLAB has not been executed and no MATLAB equivalence is claimed. Browser and container evidence are recorded separately from numerical evidence.
 
 ## Engineering review checklist
 
-- Verify equation dimensions, coordinate frames, signs, timestamp direction, and branch conventions.
-- Separate feasibility or safety from objective value and visual smoothness.
-- Inspect conditioning, covariance, clearance, saturation, energy, or data age when relevant.
-- Confirm the broken case changes the named mechanism and the recovery restores the baseline signature.
-- State one assumption whose violation would invalidate the result even if every test here passed.
+Check the declared coordinates, units and ordering before evaluating the result. Reconstruct at least one displayed value from retained state or geometric data. Identify which output changes in each sweep and which should remain invariant. Diagnose the named faulty operation, then demonstrate its recovery. Finally state the strongest claim supported by these observations and one claim that requires additional evidence.
 
 ## Common mistakes
 
-- Treating a local or finite-sample result as a global guarantee.
-- Changing both controls and assigning causality to only one.
-- Accepting endpoint checks where swept geometry, intermediate dynamics, or data freshness matter.
-- Confusing a low residual with observability, correct association, feasibility, or physical truth.
-- Claiming learner effectiveness, MATLAB parity, physical HIL, hardware safety, or certification from software fixtures.
+Do not infer correctness from a changing headline alone. In this lesson, the critical limit is: At elbow zero the correct position map is singular. The shoulder angle rotates the task axes without changing singular values. A derivative check has truncation and floating-point error; exact symbolic zero is not required. No orientation or dynamics claim follows from this position-only calculation.
+
+Do not compare two runs after changing both controls and attribute the difference to one cause. Do not treat a near-zero floating-point residual as symbolic identity, or a finite sample sweep as a proof for all configurations. Keep the operation that creates the evidence separate from the interpretation assigned to it.
 
 ## Focused check and teach-back
 
-Calculate one baseline signature value, show one dimensional check, predict both sweeps, reproduce the named failure, and demonstrate exact recovery. Then teach the lesson back without starting from the plots: state the convention, derive the governing relationship, explain the invariant, identify the practical failure, and name the evidence boundary. Finish by naming the prerequisite module and the next mapped module that consumes this artifact.
+How do you distinguish a real position singularity from the omitted-column fault?
+
+Answer rationale: At a real aligned configuration the correct analytic Jacobian still agrees with independently differentiated kinematics. The omitted column disagrees with a nonzero elbow derivative and causes rank loss even away from geometric alignment.
+
+Use the embedded Course checkpoint to collect a default record, a sweep, a faulty record and a recovered record. Explain the evidence to a colleague using the governing relation and units, then name the untested boundary. This is a self-assessment; no learner score is stored.

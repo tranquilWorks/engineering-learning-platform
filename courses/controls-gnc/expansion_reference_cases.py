@@ -227,13 +227,22 @@ def _p55(p):
     error=abs(alpha*alpha-3)*sigma**4 if p['broken_mode'] else 0.
     return [0.,error,min(1-1/alpha**2,1/(2*alpha**2))]
 
-def _p56(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[56][_key(p)])
+def _p56(p):
+    q=float(p['process_variance']); r=float(p['measurement_variance']); k=np.arange(41)
+    C=1.+q*np.minimum.outer(k,k)
+    filtered=np.array([C[j,j]-C[j,:j+1]@np.linalg.solve(C[:j+1,:j+1]+r*np.eye(j+1),C[:j+1,j]) for j in k])
+    smoothed=filtered if p['broken_mode'] else np.diag(C-C@np.linalg.solve(C+r*np.eye(41),C))
+    return [np.mean(filtered),np.mean(smoothed),np.mean(filtered-smoothed)]
 
 _NATIVE_FIXTURES.update({52: {'{"broken_mode":false,"process_noise_density":0.2,"propagation_interval_s":0.5}': [1.1, 1.1, 1.0488088481701516], '{"broken_mode":false,"process_noise_density":1.0,"propagation_interval_s":0.5}': [1.5, 1.5, 1.224744871391589], '{"broken_mode":false,"process_noise_density":0.2,"propagation_interval_s":3.0}': [1.6, 1.6, 1.2649110640673518], '{"broken_mode":true,"process_noise_density":0.2,"propagation_interval_s":0.5}': [-0.6000000000000001, -0.6000000000000001, 0.0]}, 53: {'{"broken_mode":false,"nis_gate":6.63,"outlier_sigma":4.0}': [16.0, 9.370000000000001, 0.0], '{"broken_mode":false,"nis_gate":15.0,"outlier_sigma":4.0}': [16.0, 1.0, 0.0], '{"broken_mode":false,"nis_gate":6.63,"outlier_sigma":10.0}': [100.0, 93.37, 0.0], '{"broken_mode":true,"nis_gate":6.63,"outlier_sigma":4.0}': [64.0, 63.0, 1.0]}, 54: {'{"broken_mode":false,"linearization_state":1.0,"prior_standard_deviation":0.5}': [2.0, 0.125, 0.25], '{"broken_mode":false,"linearization_state":1.0,"prior_standard_deviation":2.0}': [2.0, 0.23529411764705882, 4.0], '{"broken_mode":false,"linearization_state":3.0,"prior_standard_deviation":0.5}': [6.0, 0.025, 0.25], '{"broken_mode":true,"linearization_state":1.0,"prior_standard_deviation":0.5}': [0.0, 0.25, 0.25]}, 56: {'{"broken_mode":false,"measurement_variance":0.4,"process_variance":0.08}': [0.06666666666666667, 0.043333333333333335, 0.02333333333333333], '{"broken_mode":false,"measurement_variance":0.4,"process_variance":0.5}': [0.22222222222222224, 0.14444444444444446, 0.07777777777777777], '{"broken_mode":false,"measurement_variance":2.0,"process_variance":0.08}': [0.07692307692307693, 0.05, 0.02692307692307692], '{"broken_mode":true,"measurement_variance":0.4,"process_variance":0.08}': [0.16666666666666669, 0.16666666666666669, 0.0]}})
 
-def _p57(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[57][_key(p)])
+def _p57(p):
+    from scipy.spatial.transform import Rotation
+    y=np.deg2rad(float(p['yaw_angle_deg'])); a=np.deg2rad(float(p['sensor_misalignment_deg']))
+    body=np.array([.4,.7,.2]); Ry=Rotation.from_rotvec([0,0,y]).as_matrix(); Ra=Rotation.from_rotvec([a,0,0]).as_matrix()
+    true=Ry@Ra; scale=1.2 if p['broken_mode'] else 1.
+    used=np.eye(3)+scale**2*(true-np.eye(3))
+    return [abs(scale-1),np.linalg.norm(used.T@used-np.eye(3)),np.linalg.norm(used@(Ra.T@body)-Ry@body)]
 
 def _p58(p: dict[str, Any]) -> list[float]:
     return list(_NATIVE_FIXTURES[58][_key(p)])
@@ -241,25 +250,79 @@ def _p58(p: dict[str, Any]) -> list[float]:
 def _p59(p: dict[str, Any]) -> list[float]:
     return list(_NATIVE_FIXTURES[59][_key(p)])
 
-def _p60(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[60][_key(p)])
+def _p60(p):
+    d,y,observe=_nav_reference_data(float(p['geometry_dilution']),float(p['pseudorange_noise_m']))
+    x,r,H=_nav_reference_fit(d,y,observe,np.arange(8),not p['broken_mode'])
+    return [np.linalg.norm(x[:3]-[25.,-12.,20.]),abs((0. if p['broken_mode'] else x[3])-30.),np.sqrt(r@r/len(r))]
 
-def _p61(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[61][_key(p)])
+def _p61(p):
+    interval=float(p['gnss_interval_s']); q=float(p['bias_random_walk'])
+    updates=np.arange(interval,20.+1e-9,interval); time=np.unique(np.round(np.r_[np.arange(0,20.0001,.1),updates],10))
+    state=np.array([0.,2.,0.]); P=np.diag([1.,.25,.0025]); points,weights=np.polynomial.legendre.leggauss(3)
+    for start,end in zip(time[:-1],time[1:]):
+        h=end-start
+        F=np.array([[1,h,-h*h/2],[0,1,-h],[0,0,1.]])
+        Q=np.zeros((3,3))
+        for point,weight in zip(points,weights):
+            tau=h*(point+1)/2; impulse=np.array([-tau*tau/2,-tau,1.])*q
+            Q+=weight*h/2*np.outer(impulse,impulse)
+        state=F@state+.04*np.array([h*h/2,h,0.]); P=F@P@F.T+Q
+        if np.any(abs(updates-end)<1e-8):
+            prior=np.sqrt(P[0,0]); column=P[:,0].copy(); innovation=2*end+.3*np.sin(.7*end)-state[0]
+            if not p['broken_mode']: state+=column/(P[0,0]+1)*innovation
+            P-=np.outer(column,column)/(P[0,0]+1); posterior=np.sqrt(P[0,0])
+    return [prior,posterior,abs(state[0]-40)]
 
-def _p62(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[62][_key(p)])
+def _p62(p):
+    d,y,observe=_nav_reference_data(1.,.1,float(p['fault_magnitude_m']))
+    x,r,H=_nav_reference_fit(d,y,observe,np.arange(8))
+    U,_,_=np.linalg.svd(H,full_matrices=False); residual_scale=np.sqrt(1-np.sum(U*U,axis=1))
+    standardized=r/residual_scale; statistic=max(abs(standardized)); rows=np.arange(8)
+    if statistic>float(p['integrity_threshold']) and not p['broken_mode']:
+        rows=rows[rows!=np.argmax(abs(standardized))]
+    x,r,H=_nav_reference_fit(d,y,observe,rows)
+    return [statistic,np.linalg.norm(x[:3]-[25.,-12.,20.]),np.sqrt(np.mean(r*r))]
 
 _NATIVE_FIXTURES.update({57: {'{"broken_mode":false,"sensor_misalignment_deg":3.0,"yaw_angle_deg":35.0}': [0.0, 0.0, 0.052335956242943835], '{"broken_mode":false,"sensor_misalignment_deg":3.0,"yaw_angle_deg":180.0}': [0.0, 0.0, 0.052335956242943835], '{"broken_mode":false,"sensor_misalignment_deg":20.0,"yaw_angle_deg":35.0}': [0.0, 0.0, 0.3420201433256687], '{"broken_mode":true,"sensor_misalignment_deg":3.0,"yaw_angle_deg":35.0}': [0.2, 0.44, 1.2588190451025207]}, 58: {'{"broken_mode":false,"maneuver_span_deg":60.0,"measurement_noise":0.05}': [299.9999999999999, 2.9999940000120007, 0.05773502691896258], '{"broken_mode":false,"maneuver_span_deg":180.0,"measurement_noise":0.05}': [5.9990391306474294e-30, 2000000.0, 50000.00000000001], '{"broken_mode":false,"maneuver_span_deg":60.0,"measurement_noise":0.3}': [8.333333333333332, 2.9999940000120007, 0.34641016151377546], '{"broken_mode":true,"maneuver_span_deg":60.0,"measurement_noise":0.05}': [0.0, 1000000000.0, 50000.00000000001]}, 59: {'{"accelerometer_bias_m_s2":0.03,"broken_mode":false,"coast_duration_s":30.0}': [0.8999999999999999, 13.499999999999998, 0.6749999999999999], '{"accelerometer_bias_m_s2":0.2,"broken_mode":false,"coast_duration_s":30.0}': [6.0, 90.0, 4.500000000000001], '{"accelerometer_bias_m_s2":0.03,"broken_mode":false,"coast_duration_s":120.0}': [3.5999999999999996, 215.99999999999997, 10.799999999999999], '{"accelerometer_bias_m_s2":0.03,"broken_mode":true,"coast_duration_s":30.0}': [14.4, 648.0, 324.0]}, 60: {'{"broken_mode":false,"geometry_dilution":2.2,"pseudorange_noise_m":2.0}': [4.4, 2.2, 1.0], '{"broken_mode":false,"geometry_dilution":2.2,"pseudorange_noise_m":10.0}': [22.0, 11.0, 5.0], '{"broken_mode":false,"geometry_dilution":12.0,"pseudorange_noise_m":2.0}': [24.0, 12.0, 1.0], '{"broken_mode":true,"geometry_dilution":2.2,"pseudorange_noise_m":2.0}': [50.0, 25.0, 1.0]}, 61: {'{"bias_random_walk":0.01,"broken_mode":false,"gnss_interval_s":1.0}': [0.505, 0.17675, 0.001], '{"bias_random_walk":0.01,"broken_mode":false,"gnss_interval_s":10.0}': [1.0, 0.35, 0.1], '{"bias_random_walk":0.08,"broken_mode":false,"gnss_interval_s":1.0}': [0.54, 0.189, 0.008], '{"bias_random_walk":0.01,"broken_mode":true,"gnss_interval_s":1.0}': [4.5, 1.575, 12.0]}, 62: {'{"broken_mode":false,"fault_magnitude_m":18.0,"integrity_threshold":5.0}': [6.0, 12.5, 2.6999999999999997], '{"broken_mode":false,"fault_magnitude_m":60.0,"integrity_threshold":5.0}': [20.0, 12.5, 9.0], '{"broken_mode":false,"fault_magnitude_m":18.0,"integrity_threshold":10.0}': [6.0, 25.0, 18.0], '{"broken_mode":true,"fault_magnitude_m":18.0,"integrity_threshold":5.0}': [20.0, 12.5, 60.0]}})
 
 def _p63(p: dict[str, Any]) -> list[float]:
     return list(_NATIVE_FIXTURES[63][_key(p)])
 
-def _p64(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[64][_key(p)])
+def _p64(p):
+    from scipy.integrate import solve_ivp
+    n=float(p['navigation_constant']); omega=np.deg2rad(float(p['target_turn_rate_deg_s'])); sign=-1 if p['broken_mode'] else 1
+    def rhs(t,state):
+        radius,los,heading,beacon=state
+        dr=np.cos(beacon-los)-3*np.cos(heading-los)
+        rate=(np.sin(beacon-los)-3*np.sin(heading-los))/radius
+        acceleration=sign*n*max(-dr,0.)*rate
+        return [dr,rate,acceleration/3,omega]
+    initial=[np.hypot(12,4),np.arctan2(4,12),0.,.6]
+    def capture(t,state): return state[0]-1
+    capture.terminal=True; capture.direction=-1
+    result=solve_ivp(rhs,[0,8],initial,method='RK45',rtol=2e-12,atol=2e-13,max_step=.015,events=capture,dense_output=True)
+    time=np.linspace(0,result.t[-1],121)
+    return [3*rhs(0,initial)[2],min(result.sol(time)[0]),time[-1]]
 
-def _p65(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[65][_key(p)])
+def _p65(p):
+    from scipy.optimize import root
+    weight=float(p['terminal_weight']); limit=float(p['acceleration_limit_m_s2'])
+    B=np.array([[.195-.01*j for j in range(20)],[.1]*20]); free=np.array([30.,0.]); W=np.diag([weight,.5*weight])
+    if p['broken_mode']:
+        z=np.linalg.solve(np.eye(2)+10*B@B.T@W,free)
+        commands=-10*B.T@W@z
+    else:
+        def fun(z): return z-free-B@np.clip(-10*B.T@W@z,-limit,limit)
+        def jac(z):
+            raw=-10*B.T@W@z; active=abs(raw)<limit
+            return np.eye(2)+10*B[:,active]@B[:,active].T@W
+        # A semismooth two-dimensional dual equation, independently of the primal BVLS solve.
+        result=root(fun,np.linalg.solve(np.eye(2)+10*B@B.T@W,free),jac=jac,tol=1e-11)
+        if np.linalg.norm(fun(result.x))>1e-9:
+            raise AssertionError('Dual residual did not converge')
+        commands=np.clip(-10*B.T@W@result.x,-limit,limit)
+    terminal=free+B@commands
+    return [max(abs(commands)),max(0.,max(abs(commands))-limit),abs(terminal[0])]
 
 _NATIVE_FIXTURES.update({63: {'{"broken_mode":false,"lookahead_distance_m":15.0,"vehicle_speed_m_s":8.0}': [0.5333333333333333, 0.016615572731739338, 33.690067525979785], '{"broken_mode":false,"lookahead_distance_m":60.0,"vehicle_speed_m_s":8.0}': [0.13333333333333333, 2.018965179946554, 9.462322208025617], '{"broken_mode":false,"lookahead_distance_m":15.0,"vehicle_speed_m_s":25.0}': [1.6666666666666667, 2.061153622438558e-08, 33.690067525979785], '{"broken_mode":true,"lookahead_distance_m":15.0,"vehicle_speed_m_s":8.0}': [-0.5333333333333333, 6018.450378720822, 33.690067525979785]}, 64: {'{"broken_mode":false,"navigation_constant":3.5,"target_turn_rate_deg_s":4.0}': [94.43460952792061, 44.9688616799622, 1.0], '{"broken_mode":false,"navigation_constant":6.0,"target_turn_rate_deg_s":4.0}': [161.8879020478639, 16.863323129985826, 1.0], '{"broken_mode":false,"navigation_constant":3.5,"target_turn_rate_deg_s":15.0}': [161.6297857297023, 76.96656463319157, 1.0], '{"broken_mode":true,"navigation_constant":3.5,"target_turn_rate_deg_s":4.0}': [-143.30382858376186, 68.23991837321994, -1.0]}, 65: {'{"acceleration_limit_m_s2":20.0,"broken_mode":false,"terminal_weight":8.0}': [20.0, 0.0, 0.0], '{"acceleration_limit_m_s2":50.0,"broken_mode":false,"terminal_weight":8.0}': [20.0, 0.0, 0.0], '{"acceleration_limit_m_s2":20.0,"broken_mode":false,"terminal_weight":20.0}': [50.0, 30.0, 12.0], '{"acceleration_limit_m_s2":20.0,"broken_mode":true,"terminal_weight":8.0}': [50.0, 42.0, 0.0]}})
 
@@ -434,10 +497,34 @@ def _p68(p: dict[str, Any]) -> list[float]:
     return [late_fraction, watch / 500, float(passed)]
 
 
+def _nav_reference_data(concentration, noise, fault=0.):
+    az=np.deg2rad([0,47,99,146,201,249,294,337])/concentration
+    el=.6+(np.deg2rad([18,55,32,73,24,61,40,16])-.6)/np.sqrt(concentration)
+    directions=np.array([np.cos(el)*np.cos(az),np.cos(el)*np.sin(az),np.sin(el)]).T
+    truth=np.array([25.,-12.,20.]); R=2.e7
+    def observation(x):
+        scaled=x/R
+        delta=scaled@scaled-2*directions@scaled
+        return R*delta/(np.sqrt(1+delta)+1)
+    values=observation(truth)+30.+noise*np.array([.4,-.7,.2,.8,-.5,.1,-.3,.6])
+    values[2]+=fault
+    return directions,values,observation
+
+def _nav_reference_fit(directions, values, observe, rows, clock=True):
+    from scipy.optimize import least_squares
+    def residual(x):
+        return observe(x[:3])[rows]+(x[3] if clock else 0.)-values[rows]
+    result=least_squares(residual,np.zeros(4 if clock else 3),jac='cs',xtol=1e-14,ftol=1e-14,gtol=1e-12,max_nfev=100)
+    x=result.x
+    displacement=x[:3]-2.e7*directions[rows]
+    H=displacement/np.linalg.norm(displacement,axis=1)[:,None]
+    if clock: H=np.column_stack([H,np.ones(len(rows))])
+    return x,-residual(x),H
+
 _DISPATCH = {66: _p66, 67: _p67, 68: _p68, 63: _p63, 64: _p64, 65: _p65, 57: _p57, 58: _p58, 59: _p59, 60: _p60, 61: _p61, 62: _p62, 52: _p52, 53: _p53, 54: _p54, 55: _p55, 56: _p56, 43: _p43, 44: _p44, 45: _p45, 46: _p46, 47: _p47, 48: _p48, 49: _p49, 50: _p50, 51: _p51, 34: _p34, 35: _p35, 36: _p36, 37: _p37, 38: _p38, 39: _p39, 40: _p40, 41: _p41, 42: _p42, 25: _p25, 26: _p26, 27: _p27, 28: _p28, 29: _p29, 30: _p30, 31: _p31, 32: _p32, 33: _p33}
 
 def origin(number: int) -> dict[str, Any]:
-    revised = {36,38,42,43,45,46,47,48,49,50,51,55}
+    revised = {36,38,42,43,45,46,47,48,49,50,51,55,56,57,60,61,62,64,65}
     kind = (
         "independent-scalar-replay"
         if number >= 66

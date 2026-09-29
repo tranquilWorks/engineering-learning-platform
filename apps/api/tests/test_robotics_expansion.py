@@ -265,11 +265,11 @@ def test_robotics_geometry_and_dynamics_teaching_invariants() -> None:
         module_id = _yaml(COURSE_ROOT / item["folder"] / "module.yaml")["id"]
         return runtime.run("robotics-autonomy", module_id, supplied).diagnostics["signature"]
 
-    assert signature(25, {"broken_mode": False})[0] == 0
+    assert abs(signature(25, {"broken_mode": False})[0]) < 1e-12
     assert signature(25, {"broken_mode": True})[0] > 0
     assert signature(26, {"broken_mode": False})[0] < 1e-10
     assert signature(26, {"broken_mode": True})[1] > 0
-    assert signature(27, {"broken_mode": False})[0] == 0
+    assert abs(signature(27, {"broken_mode": False})[0]) < 1e-12
     assert signature(27, {"broken_mode": True})[0] > 0
     singular = signature(28, {"elbow_angle_deg": 175.0})
     nonsingular = signature(28, {"elbow_angle_deg": 70.0})

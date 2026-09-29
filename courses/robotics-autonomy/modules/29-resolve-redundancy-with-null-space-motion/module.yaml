@@ -1,10 +1,11 @@
 schema_version: 1
 id: 29-resolve-redundancy-with-null-space-motion
 number: 29
-title: Resolve Redundancy with Null-Space Motion
-summary: Build a deterministic numerical laboratory to resolve redundancy with null-space motion, expose its governing
-  relation, and diagnose a named counterexample before recovery.
-guiding_question: What assumptions and evidence make resolve redundancy with null-space motion defensible?
+title: Separate Damped Task Motion from Exact Null-Space Motion
+summary: A damped primary inverse and an exact Moore-Penrose null projector have different roles. Normal secondary
+  posture velocity has negligible task leakage; bypassing the projector changes the actual task velocity. This
+  is an instantaneous calculation at one configuration, not integrated motion or a joint-limit guarantee.
+guiding_question: Why can the total task residual be nonzero while secondary leakage is essentially zero?
 status: implemented
 tags:
 - robotics-autonomy
@@ -41,9 +42,11 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Secondary motion may improve posture only through the Jacobian null space while the primary task residual
-    remains bounded.
-  reveal: Use the equations, units, and mechanism plot to test the prediction.
+  text: Predict whether primary damping requires secondary posture motion to leak into the task when an exact
+    null projector is used.
+  reveal: The damped primary inverse trades tracking accuracy against joint speed. An exact null projector
+    preserves that primary task velocity when posture motion is added; it does not undo the original damping
+    residual.
 - type: controls
   title: Live model controls
 - type: metrics
@@ -64,3 +67,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

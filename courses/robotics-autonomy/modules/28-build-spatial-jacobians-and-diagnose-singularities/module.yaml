@@ -1,10 +1,11 @@
 schema_version: 1
 id: 28-build-spatial-jacobians-and-diagnose-singularities
 number: 28
-title: Build Spatial Jacobians and Diagnose Singularities
-summary: Build a deterministic numerical laboratory to build spatial jacobians and diagnose singularities, expose
-  its governing relation, and diagnose a named counterexample before recovery.
-guiding_question: What assumptions and evidence make build spatial jacobians and diagnose singularities defensible?
+title: Build a Planar Position Jacobian and Diagnose Singularities
+summary: A two-link planar position Jacobian is differentiated from actual forward kinematics and checked by
+  central differences. The omitted-column fault loses one joint contribution. Rank loss refers to this two-dimensional
+  position task, not a full spatial-twist Jacobian.
+guiding_question: How do you distinguish a real position singularity from the omitted-column fault?
 status: implemented
 tags:
 - robotics-autonomy
@@ -41,9 +42,11 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: The spatial Jacobian must match finite-difference kinematics and expose loss of motion authority through
-    singular values.
-  reveal: Use the equations, units, and mechanism plot to test the prediction.
+  text: Predict what a missing elbow column does to task rank and to an independently differenced forward-kinematic
+    check.
+  reveal: At a real aligned configuration the correct analytic Jacobian still agrees with independently differentiated
+    kinematics. The omitted column disagrees with a nonzero elbow derivative and causes rank loss even away
+    from geometric alignment.
 - type: controls
   title: Live model controls
 - type: metrics
@@ -64,3 +67,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

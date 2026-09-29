@@ -1702,16 +1702,16 @@
   {
     "course": "controls-gnc",
     "module": "56-recover-a-trajectory-with-rauch-tung-striebel-smoothing",
-    "known_issue": "The claimed RTS smoother multiplies filtered covariance by a fixed 0.65 instead of executing a forward filter and backward smoother.",
-    "scoped_review": null,
+    "known_issue": null,
+    "scoped_review": "Executed recover a trajectory with rts smoothing. An independently conditioned joint Gaussian trajectory uses C[i,j]=1+q min(i,j). Its posterior covariance is C-C(C+rI)^-1 C; prefix conditioning supplies the filtered variances. It does not import the production recursion. Embedded checkpoint; selected synthetic numerical and browser evidence. Aggregate course review remains separate.",
     "assessment_review": null,
     "evidence_count": 3
   },
   {
     "course": "controls-gnc",
     "module": "57-transform-frames-quaternions-and-sensor-alignment",
-    "known_issue": "Quaternion norm and rotation orthogonality errors are fixed constants; no quaternion-to-matrix transformation is evaluated.",
-    "scoped_review": null,
+    "known_issue": null,
+    "scoped_review": "Executed compose quaternions and calibrate sensor vectors. The reference constructs independent axis rotations using rotation vectors and applies R_fault=I+1.2\u00b2(R_true-I). This identity tests the scaled-quaternion defect without calling the production quaternion functions. Embedded checkpoint; selected synthetic numerical and browser evidence. Aggregate course review remains separate.",
     "assessment_review": null,
     "evidence_count": 3
   },
@@ -1734,24 +1734,24 @@
   {
     "course": "controls-gnc",
     "module": "60-solve-a-gnss-pseudorange-navigation-fix",
-    "known_issue": "GNSS position and clock errors are algebraic dilution formulas; the claimed pseudorange position/clock solve is not executed.",
-    "scoped_review": null,
+    "known_issue": null,
+    "scoped_review": "Executed solve position and clock from synthetic pseudoranges. The reference uses complex-step derivatives and a separate nonlinear least-squares solver on dimensionless rationalized range offsets. The production solver uses an analytic Jacobian and Gauss-Newton increments. Embedded checkpoint; selected synthetic numerical and browser evidence. Aggregate course review remains separate.",
     "assessment_review": null,
     "evidence_count": 3
   },
   {
     "course": "controls-gnc",
     "module": "61-fuse-gnss-and-ins-with-an-error-state-kalman-filter",
-    "known_issue": "GNSS/INS uncertainty is reduced by a fixed 0.35 factor rather than an error-state covariance update and state reset.",
-    "scoped_review": null,
+    "known_issue": null,
+    "scoped_review": "Executed inject and reset a one-axis navigation error state. The independent full-state filter uses the same physical model but evaluates process covariance by three-point Gaussian quadrature and uses the Schur covariance update instead of the production Joseph recurrence. Embedded checkpoint; selected synthetic numerical and browser evidence. Aggregate course review remains separate.",
     "assessment_review": null,
     "evidence_count": 3
   },
   {
     "course": "controls-gnc",
     "module": "62-monitor-navigation-integrity-and-exclude-faulty-measurements",
-    "known_issue": "The post-exclusion residual is multiplied by a fixed 0.15 without excluding a measurement and recomputing the navigation solution.",
-    "scoped_review": null,
+    "known_issue": null,
+    "scoped_review": "Executed detect and exclude a synthetic range fault. The reference computes leverage through an orthonormal SVD basis and uses a separate complex-step nonlinear solver before and after selecting a row. Embedded checkpoint; selected synthetic numerical and browser evidence. Aggregate course review remains separate.",
     "assessment_review": null,
     "evidence_count": 3
   },
@@ -1766,16 +1766,16 @@
   {
     "course": "controls-gnc",
     "module": "64-compare-pursuit-laws-and-proportional-navigation-variants",
-    "known_issue": "The guidance comparison reports an explicitly named miss proxy, but the trajectories and variants are not integrated; its scope and cumulative interpretation need revision.",
-    "scoped_review": null,
+    "known_issue": null,
+    "scoped_review": "Executed compare civilian moving-beacon guidance trajectories. The independent reference integrates range, LOS angle and both headings in relative polar coordinates with a different numerical integrator, rather than replaying the Cartesian production state. Embedded checkpoint; selected synthetic numerical and browser evidence. Aggregate course review remains separate.",
     "assessment_review": null,
     "evidence_count": 3
   },
   {
     "course": "controls-gnc",
     "module": "65-enforce-terminal-and-actuator-aware-guidance-constraints",
-    "known_issue": "Terminal error is assigned from an acceleration shortfall; the terminal dynamics are not propagated and the displayed violation is not measured from applied commands.",
-    "scoped_review": null,
+    "known_issue": null,
+    "scoped_review": "Executed solve a bounded terminal guidance objective. The independent reference solves a two-dimensional dual terminal-residual equation with clipped controls, rather than the production twenty-variable bounded least-squares problem. Embedded checkpoint; selected synthetic numerical and browser evidence. Aggregate course review remains separate.",
     "assessment_review": null,
     "evidence_count": 3
   },
@@ -1998,40 +1998,40 @@
   {
     "course": "robotics-autonomy",
     "module": "25-represent-configuration-spaces-and-holonomic-constraints",
-    "known_issue": "Constraint residual and tangent dimension are assigned without constructing the constraint Jacobian or projecting a configuration velocity.",
-    "scoped_review": null,
+    "known_issue": null,
+    "scoped_review": "Executed project configurations and velocities onto a circle constraint. The independent signature uses the analytic polar radius and obstacle distance. Physical tests use the tangent basis [-sin(theta),cos(theta)] to reconstruct velocity, separately from the production matrix projector. Embedded checkpoint; selected synthetic numerical and browser evidence. Aggregate course review remains separate.",
     "assessment_review": null,
     "evidence_count": 3
   },
   {
     "course": "robotics-autonomy",
     "module": "26-compose-rotations-and-poses-on-so-3-and-se-3",
-    "known_issue": "Orthogonality, determinant and composition errors are algebraic surrogates without constructing and composing rigid transforms.",
-    "scoped_review": null,
+    "known_issue": null,
+    "scoped_review": "Executed compose rigid transforms and diagnose invalid rotation blends. The reference applies separate scalar x/z rotation formulas to coordinates and uses the analytic blend defect 2f(1-f)(1-cos(theta)). This independently checks the homogeneous-matrix implementation. Embedded checkpoint; selected synthetic numerical and browser evidence. Aggregate course review remains separate.",
     "assessment_review": null,
     "evidence_count": 3
   },
   {
     "course": "robotics-autonomy",
     "module": "27-map-twists-screws-and-wrenches-with-adjoint-transforms",
-    "known_issue": "Power-invariance and adjoint round-trip errors are assigned without transforming an actual twist/wrench pair.",
-    "scoped_review": null,
+    "known_issue": null,
+    "scoped_review": "Executed transform twists and dual wrenches with power invariance. The reference uses complex planar rotations and explicit cross products for the separate force, moment, angular and linear components. It does not construct or invert the production adjoint matrix. Embedded checkpoint; selected synthetic numerical and browser evidence. Aggregate course review remains separate.",
     "assessment_review": null,
     "evidence_count": 3
   },
   {
     "course": "robotics-autonomy",
     "module": "28-build-spatial-jacobians-and-diagnose-singularities",
-    "known_issue": "Singular values and finite-difference errors are assigned from elbow-angle formulas without constructing the Jacobian or differencing kinematics.",
-    "scoped_review": null,
+    "known_issue": null,
+    "scoped_review": "Executed build a planar position jacobian and diagnose singularities. The reference differentiates forward kinematics using complex steps and computes singular values from the two-by-two Gram matrix eigenvalues. It separately predicts the missing-column discrepancy instead of copying the production finite-difference array. Embedded checkpoint; selected synthetic numerical and browser evidence. Aggregate course review remains separate.",
     "assessment_review": null,
     "evidence_count": 3
   },
   {
     "course": "robotics-autonomy",
     "module": "29-resolve-redundancy-with-null-space-motion",
-    "known_issue": "Task error and null-space leakage are parameter formulas without executing a Jacobian pseudoinverse and null-space projection.",
-    "scoped_review": null,
+    "known_issue": null,
+    "scoped_review": "Executed separate damped task motion from exact null-space motion. The reference derives the Jacobian by complex-step kinematics, computes the primary command with SVD and constructs the one-dimensional null basis from the cross product of the two Jacobian rows. It does not use the production pseudoinverse projector. Embedded checkpoint; selected synthetic numerical and browser evidence. Aggregate course review remains separate.",
     "assessment_review": null,
     "evidence_count": 3
   },

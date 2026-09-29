@@ -1,10 +1,11 @@
 # Additional direct-review findings
 
-The wider delivery audit recorded 60 additional lessons beyond the initial
-twelve-lesson semantic repair. Twelve Controls findings are now closed within
-their declared synthetic models; the remaining 48 (Controls 7, Robotics 25,
-Vehicle 16) remain blocked. This is a defect register, not a claim
-that all remaining lessons have passed a complete semantic review.
+The wider delivery audit recorded sixty additional lessons beyond the initial
+capstone repair. Twenty-four of those findings are now closed within their
+declared synthetic models: twelve in PR55 and twelve in the navigation/geometry
+revision. Thirty-six remain (Controls 0, Robotics 20, Vehicle 16). This register
+is not exhaustive; all three non-DSP aggregate course reassessments remain
+blocked, including Controls with zero listed findings.
 
 The last sixteen findings were exposed when restored axis labels made the
 Vehicle P01–P16 mixed-unit signature charts visible during screenshot review.
@@ -13,18 +14,6 @@ lesson-specific checks require repair.
 
 | Course / lesson | Directly inspected gap |
 | --- | --- |
-| controls-gnc P56 | The claimed RTS smoother multiplies filtered covariance by a fixed 0.65 instead of executing a forward filter and backward smoother. |
-| controls-gnc P57 | Quaternion norm and rotation orthogonality errors are fixed constants; no quaternion-to-matrix transformation is evaluated. |
-| controls-gnc P60 | GNSS position and clock errors are algebraic dilution formulas; the claimed pseudorange position/clock solve is not executed. |
-| controls-gnc P61 | GNSS/INS uncertainty is reduced by a fixed 0.35 factor rather than an error-state covariance update and state reset. |
-| controls-gnc P62 | The post-exclusion residual is multiplied by a fixed 0.15 without excluding a measurement and recomputing the navigation solution. |
-| controls-gnc P64 | The guidance comparison reports an explicitly named miss proxy, but the trajectories and variants are not integrated; its scope and cumulative interpretation need revision. |
-| controls-gnc P65 | Terminal error is assigned from an acceleration shortfall; the terminal dynamics are not propagated and the displayed violation is not measured from applied commands. |
-| robotics-autonomy P25 | Constraint residual and tangent dimension are assigned without constructing the constraint Jacobian or projecting a configuration velocity. |
-| robotics-autonomy P26 | Orthogonality, determinant and composition errors are algebraic surrogates without constructing and composing rigid transforms. |
-| robotics-autonomy P27 | Power-invariance and adjoint round-trip errors are assigned without transforming an actual twist/wrench pair. |
-| robotics-autonomy P28 | Singular values and finite-difference errors are assigned from elbow-angle formulas without constructing the Jacobian or differencing kinematics. |
-| robotics-autonomy P29 | Task error and null-space leakage are parameter formulas without executing a Jacobian pseudoinverse and null-space projection. |
 | robotics-autonomy P30 | The virtual-power error is assigned from force times lever arm, which has torque units; no joint/Cartesian velocity power comparison is executed. |
 | robotics-autonomy P31 | Inertia eigenvalue and skew-identity error are assigned without constructing inertia and Coriolis matrices. |
 | robotics-autonomy P32 | Payload error, regressor conditioning and inverse-dynamics residual are formulas of the guess and excitation rather than an identified model and held-out torque calculation. |
@@ -98,3 +87,22 @@ These scoped closures do not promote the Controls course aggregate.
 | controls-gnc P50 | Identification conditioning, parameter error and held-out residual are algebraic functions of excitation settings; no dynamic model is fitted or validated. |
 | controls-gnc P51 | The online-identification lesson does not execute its recursive least-squares update; error and covariance metrics are parameter formulas. |
 | controls-gnc P55 | Unscented-transform errors and weights are assigned directly; sigma points and their weighted transformed moments are not computed. |
+
+## Navigation/geometry revision: closed findings history
+
+The following original observations are preserved. Their closure is limited to the executed synthetic models and retained numerical/browser evidence; it is not an aggregate course promotion.
+
+| Course / lesson | Original inspected gap, now repaired in this scope |
+| --- | --- |
+| controls-gnc P56 | The claimed RTS smoother multiplies filtered covariance by a fixed 0.65 instead of executing a forward filter and backward smoother. |
+| controls-gnc P57 | Quaternion norm and rotation orthogonality errors are fixed constants; no quaternion-to-matrix transformation is evaluated. |
+| controls-gnc P60 | GNSS position and clock errors are algebraic dilution formulas; the claimed pseudorange position/clock solve is not executed. |
+| controls-gnc P61 | GNSS/INS uncertainty is reduced by a fixed 0.35 factor rather than an error-state covariance update and state reset. |
+| controls-gnc P62 | The post-exclusion residual is multiplied by a fixed 0.15 without excluding a measurement and recomputing the navigation solution. |
+| controls-gnc P64 | The guidance comparison reports an explicitly named miss proxy, but the trajectories and variants are not integrated; its scope and cumulative interpretation need revision. |
+| controls-gnc P65 | Terminal error is assigned from an acceleration shortfall; the terminal dynamics are not propagated and the displayed violation is not measured from applied commands. |
+| robotics-autonomy P25 | Constraint residual and tangent dimension are assigned without constructing the constraint Jacobian or projecting a configuration velocity. |
+| robotics-autonomy P26 | Orthogonality, determinant and composition errors are algebraic surrogates without constructing and composing rigid transforms. |
+| robotics-autonomy P27 | Power-invariance and adjoint round-trip errors are assigned without transforming an actual twist/wrench pair. |
+| robotics-autonomy P28 | Singular values and finite-difference errors are assigned from elbow-angle formulas without constructing the Jacobian or differencing kinematics. |
+| robotics-autonomy P29 | Task error and null-space leakage are parameter formulas without executing a Jacobian pseudoinverse and null-space projection. |

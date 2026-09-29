@@ -7,21 +7,22 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- a_req=2 e/t_go^2+2 v_e/t_go
-- a_cmd=clip(a_req,a_max)
-- terminal cost=w_f e(tf)^2
+- p[k+1]=p[k]+dt v[k]+dt² u[k]/2; v[k+1]=v[k]+dt u[k]
+- J=0.1 sum u[k]²+w p[N]²+0.5w v[N]², normalized by 1 m, 1 s
+- '|u[k]|<=a_max; N=20; dt=0.1 s'
 signature:
-- field: required_acceleration
+- field: peak_acceleration
   unit: m/s^2
-- field: constraint_violation
+- field: actuator_violation
   unit: m/s^2
-- field: terminal_error_bound
+- field: terminal_position_error
   unit: m
-teaching_invariant: The applied command never exceeds actuator authority; an infeasible terminal requirement must
-  appear as residual error, not a hidden command.
+teaching_invariant: Predict whether a finite terminal penalty forces exact arrival, even when the command limits
+  permit arrival.
 limiting_cases:
-- If required acceleration is within the limit, clipping is inactive.
-- As time-to-go shrinks a fixed terminal error demands increasing acceleration.
+- This is an open-loop finite-horizon optimization, not a robust receding-horizon controller.
+- Soft terminal penalties allow residual.
+- The declared dimensionless normalization is necessary when adding position, velocity and acceleration costs.
 scenarios:
   baseline: &id001
     acceleration_limit_m_s2: 20.0
@@ -48,5 +49,5 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic software evidence only. Browser/container checks are separately recorded.
+  No MATLAB runtime, representative learner, manual screen-reader, hardware, certification or production acceptance.
