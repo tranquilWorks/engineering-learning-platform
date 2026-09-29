@@ -1,5 +1,5 @@
 {
-  "status": "reproduced_before_fix",
+  "status": "reproduced_and_fixed",
   "image": "sha256:5862d49e4b08a02c9271b800259d97e83cac93556b7c2041770ea7495686fc2e",
   "base": "http://127.0.0.1:8771",
   "rows": [
@@ -19,5 +19,10 @@
     }
   ],
   "finding": "Native same-lesson fragment navigation triggers a new route object. AppShell moves focus to lesson-main and scrolls to zero, overriding the anchor. Actual checkpoint heading remains outside the viewport.",
-  "closure": "pending stable route-identity correction and actual browser verification"
+  "closure": {
+    "image": "sha256:53892d096feb4f23c30a7aa9fa2c2f0b25d7ebf3924be7e5d41f971672a39b67",
+    "focused_browser_tests": 16,
+    "checkpoint_viewport_checks": 168,
+    "behavior": "Stable hrefFor(route) identity preserves same-lesson native anchors and history; actual lesson changes reset focus and scroll. Desktop/mobile keyboard, back/forward and next-lesson behavior verified."
+  }
 }

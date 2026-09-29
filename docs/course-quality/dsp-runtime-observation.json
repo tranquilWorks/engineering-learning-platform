@@ -1,5 +1,5 @@
 {
-  "status": "exact_output_optimization_verified_full_delivery_pending",
+  "status": "exact_output_optimization_and_final_gates_passed",
   "initial_full_gate": {
     "exit_code": 1,
     "result": "1 failed, 1316 passed, 3 warnings in 1305.56s",
@@ -232,5 +232,26 @@
     },
     "image": "sha256:53892d096feb4f23c30a7aa9fa2c2f0b25d7ebf3924be7e5d41f971672a39b67"
   },
-  "first_recheck_policy": "Rerun the mandatory full gate after quick completes, with unchanged source, parameters, assertions and three-second timeout. Retain both outcomes; no concurrent-user capacity claim."
+  "first_recheck_policy": "Rerun the mandatory full gate after quick completes, with unchanged source, parameters, assertions and three-second timeout. Retain both outcomes; no concurrent-user capacity claim.",
+  "post_optimization_quick_attempt": {
+    "exit_code": 2,
+    "result": "1148 passed, 73 setup errors, 3 warnings; interrupted after common fixture failure",
+    "underlying_failure": "DSP P26 default runtime exceeded 3.00 seconds during Robotics catalog fixture construction; one failed fixture caused 73 setup errors.",
+    "execution_context": "Quick and browser sweep overlapped; full had not started.",
+    "source_unchanged": "DSP P26 experiment, reference, parameters and timeout remain unchanged.",
+    "direct_p26_probe_seconds": [
+      1.5699,
+      1.3985,
+      1.4582,
+      1.757,
+      1.864
+    ],
+    "interpretation": "Direct probe wall and CPU time were close. These measurements do not prove the cause of the earlier timeout. Final local gates will run sequentially after the browser sweep, with no overlapping owned browser workload."
+  },
+  "final_image": "sha256:53892d096feb4f23c30a7aa9fa2c2f0b25d7ebf3924be7e5d41f971672a39b67",
+  "final_mandatory_gates": {
+    "contract": "103 passed in 88.43s (0:01:28)",
+    "quick": "1331 passed, 3 warnings in 1299.04s (0:21:39)",
+    "full": "1331 passed, 3 warnings in 1218.10s (0:20:18)"
+  }
 }

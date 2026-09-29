@@ -1,38 +1,40 @@
-# Current engineering-learning position — 2026-09-28
+# Current engineering-learning position — 2026-09-29
 
-All 288 native engineering lessons and two examples are embedded in Engineering
-Learning: six courses, 290 interactive modules. Nine other pinned sources remain
-source-only. Inventory does not establish course-wide quality acceptance.
+All **288 engineering lessons** and two examples are embedded in Engineering
+Learning: DSP 84, Controls 68, Robotics 69 and Vehicle 67. Nine other pinned
+source repositories remain outside this native revision sequence.
 
-The twelve-lesson revision is implemented and locally verified in
-[PR53](https://github.com/tranquilWorks/engineering-learning-platform/pull/53):
-Controls P66–P68, Robotics P68–P69 and Vehicle P61–P67 now execute the declared
-bounded mechanisms and expose computed requirements. Sixty independent comparisons,
-40 physical/preservation tests, mandatory contract/quick/full gates, 290 container
-HTTP checks, 580 desktop/mobile pages and 36 interactions passed. Generic 2D plots
-fall back to SVG when WebGL initialization fails; actual curves and label spacing
-were reviewed. See the exact [evidence](evidence/ELP-SEMANTIC-QUALITY-12-2026-09-28.md).
+The twelve model repairs merged through PR53 at `b107ac198543e8dfb563c6aae4175cc87da6210d`. Controls P66–P68,
+Robotics P68–P69 and Vehicle P61–P67 retain independent numerical comparisons,
+computed requirements, teaching revisions and verified browser rendering.
 
-The browser retains **60 additional blocked findings**: Controls 19, Robotics 25,
-Vehicle 16. These are separate repair scopes; the twelve fixes do not promote
-those course aggregates. The initial audit found 72 affected lessons.
+DSP's separate aggregate revision now embeds **84 lesson checkpoints and ten
+cumulative assessments**, connected by a reviewed competency/prerequisite map.
+All 417 retained independent comparisons were freshly replayed. The final baked
+container passed 290 HTTP checks, 580 desktop/mobile page checks, 168 checkpoint
+navigation checks, 20 cumulative-block checks and 56 real interactions. Mandatory
+local gates passed. See [DSP evidence](evidence/ELP-DSP-AGGREGATE-QUALITY-01-2026-09-28.md)
+and [PR54](https://github.com/tranquilWorks/engineering-learning-platform/pull/54)
+for the development merge record.
 
-Active DSP aggregate revision: control PR539 merged as
-`3eb977ec9015b8415426a9c5f3c5bcd639bdec64` from semantic PR53 merge
-`b107ac198543e8dfb563c6aae4175cc87da6210d`. All 84 checkpoints, ten cumulative
-portfolios, competency links and named browser navigation are implemented.
-The first 417 independent comparisons and 14 focused checks passed. Final content
-identity replay, complete local gates and new container/browser acceptance are
-in progress; the DSP revision is not yet merged.
+DSP numerical, authored-curriculum and pulsed-capstone review pass within their
+explicit synthetic software scope. P84 selected controls affect its first scan;
+its eight-scan tracker remains the fixed baseline demonstration. Arrays, FMCW,
+imaging and passive processing have separate portfolios. No learner success is
+inferred from authored self-checks.
 
-Representative learner, manual screen-reader, MATLAB, measured vehicle/hardware
-and production validation remain not_run. Concurrent-user capacity is not
-certified; browser experiment requests are paced one at a time. Hosted CI is
-reported separately and is not claimed green. No production deployment occurred.
+**60 findings remain unresolved:** Controls 19, Robotics 25 and Vehicle 16.
+Their lesson-specific browser notices and aggregate blocks remain. A supporting
+Robotics P58 execution optimization preserves its complete outputs exactly across
+13 retained/corner cases and keeps the three-second runtime limit. Those content repairs
+need separate bounded batches; this revision does not certify all four curricula.
 
-Browser recheck boundary: the final all-page invocation exited 1 after one
-Robotics P58 mobile request exceeded its unchanged three-second deadline. It
-retained 579 initial passes. Three isolated desktop/mobile repetitions on the
-same image passed all six checks; the reconciled 580 identities retain the
-original failed row and links to every recheck. This is not an initial clean
-sweep or concurrent-capacity certification; the timeout cause is not proven.
+The earlier visual review also retains narrow-canvas clipping of some long chart
+titles; full names remain readable in the numeric-range summaries. That polish
+item is separate from the sixty content findings.
+
+Local read-only nonroot preview: `http://127.0.0.1:8771`; exact image `sha256:53892d096feb4f23c30a7aa9fa2c2f0b25d7ebf3924be7e5d41f971672a39b67`.
+Hosted CI is reported separately and is not claimed green. Concurrent-user
+capacity, representative learners, manual screen-reader, MATLAB, measured
+vehicle/hardware and production validation remain unperformed. No deployment
+or source-only conversion occurred.

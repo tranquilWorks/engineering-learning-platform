@@ -8,8 +8,8 @@ or learner outcomes.
 
 The authoritative machine-readable projection is
 [`course-caliber-status.yaml`](course-caliber-status.yaml). It implements
-Portfolio Control standard `ELP-COURSE-CALIBER-1` at merged Vehicle Dynamics
-P17-P24 authorization revision `16699cf63ab5dc85413acd4eacf44e9b914fe68d`.
+Portfolio Control standard `ELP-COURSE-CALIBER-1` with the current DSP aggregate contract at merged control
+revision `7b2e3c1e425b196b400856a714f699f2e225a83a`.
 
 ## Six separately evidenced stages
 
@@ -58,13 +58,13 @@ but they are not independent correctness oracles.
 
 | Course | Native interactive lessons | Required follow-up |
 | --- | ---: | --- |
-| DSP/Radar | 84 | #441: aggregate competency mapping and cumulative assessment after completed item repairs |
+| DSP/Radar | 84 | Authored/software aggregate review passed: 84 checkpoints, ten cumulative portfolios and 417 independent comparisons; learner validation not_run |
 | Controls/GNC | 68 | 19 remaining affected lessons; three capstones have scoped numerical/physical repairs |
 | Robotics/Autonomy | 69 | 25 remaining affected lessons; two capstones have scoped numerical/physical repairs |
 | Vehicle Dynamics | 67 | 16 remaining affected lessons: P01–P16 mixed-unit charts; P61–P67 have scoped numerical/physical repairs |
 
-All four aggregate numerical, curriculum and capstone statuses remain blocked
-pending the named reassessments. Prior maps, references and tests are retained;
+Controls, Robotics and Vehicle aggregate numerical, curriculum and capstone
+statuses remain blocked. DSP passes its separate authored/synthetic reassessment. Prior maps, references and tests are retained;
 the newly demonstrated defects override earlier passed labels. Learner
 validation is `not_run` for every course. Browser/container acceptance is a
 separate delivery check and cannot promote educational maturity.
@@ -77,3 +77,8 @@ measured vehicle/track, representative learner or production claim is made.
 The wider direct review records 72 affected lessons, including 60 outside the
 initial twelve-lesson repair. Finishing that group alone cannot close Controls,
 Robotics or Vehicle aggregate maturity. See the per-lesson additional finding register.
+
+The separate DSP aggregate review closes its declared authored curriculum and
+synthetic numerical/pulsed-capstone scope. Controls, Robotics and Vehicle remain
+blocked by 60 named findings. No course has representative-learner validation.
+See course-caliber-status.yaml and the exact aggregate evidence.

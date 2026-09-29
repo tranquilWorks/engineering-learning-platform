@@ -7,7 +7,7 @@ passed. Its historical evidence retains the exact image and screenshot hashes.
 
 | Curriculum | Native lessons | Current content position |
 | --- | ---: | --- |
-| DSP/Radar | 84 | Item fidelity repairs retained; aggregate competency/assessment batch follows |
+| DSP/Radar | 84 | 84 checkpoints, ten cumulative portfolios and aggregate authored/software review verified |
 | Controls/GNC | 68 | P66–P68 repaired within declared models; 19 additional findings remain blocked |
 | Robotics/Autonomy | 69 | P68–P69 repaired within declared models; 25 additional findings remain blocked |
 | Vehicle Dynamics | 67 | P61–P67 repaired within declared models; P01–P16 presentation findings remain blocked |
@@ -36,8 +36,9 @@ The browser's expanded lesson review identifies exactly what was checked.
 This is scoped synthetic-model evidence, not whole-course or learner acceptance.
 The remaining 60 findings are individually embedded and retained in the
 [additional finding register](course-quality/additional-semantic-findings.md).
-No unlisted lesson is automatically certified. All four aggregate numerical,
-curriculum and capstone stages remain blocked pending their required reviews.
+No unlisted lesson is automatically certified. Controls, Robotics and Vehicle aggregate numerical, curriculum and capstone stages
+remain blocked. DSP passes the separate authored/synthetic aggregate review
+described below; learner validation remains not_run.
 
 ## Per-lesson evidence
 
@@ -119,3 +120,24 @@ retained 579 initial passes. Three isolated desktop/mobile repetitions on the
 same image passed all six checks; the reconciled 580 identities retain the
 original failed row and links to every recheck. This is not an initial clean
 sweep or concurrent-capacity certification; the timeout cause is not proven.
+
+## DSP aggregate assessment revision
+
+All 84 DSP lessons now have a Course checkpoint navigation link, individual
+prediction/evidence task, dimensioned relation, expected reasoning, exact retained
+fault/recovery and a model limit. Ten domain endpoints carry four-task cumulative
+portfolios and four-criterion rubrics. The map records prerequisites, exclusions
+and cross-course handoffs; no learner score or completion is stored.
+
+The fresh independent replay passed 417 retained cases, with 84 content bindings
+and ten concrete cumulative metric/plot probes. The final container passed 290
+HTTP modules, 580 desktop/mobile pages, 168 checkpoint navigation checks, 20
+cumulative blocks and 56 real control/fault/recovery/reset interactions. Every
+DSP plot has drawn SVG or image evidence. Exact image: `sha256:53892d096feb4f23c30a7aa9fa2c2f0b25d7ebf3924be7e5d41f971672a39b67`.
+
+This passes authored curriculum and retained synthetic model review. The P84
+pulsed chain does not execute the separate array/FMCW/imaging/passive branches,
+and selected first-scan controls do not alter its fixed baseline tracking sequence.
+The 60 other lesson findings and all human/physical/production acceptance limits
+remain. Historical item conversion claims are retained as provenance; current
+aggregate browser evidence is recorded separately rather than rewriting them.
