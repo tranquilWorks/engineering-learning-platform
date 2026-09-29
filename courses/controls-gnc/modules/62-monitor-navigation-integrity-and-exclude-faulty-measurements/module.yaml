@@ -1,10 +1,12 @@
 schema_version: 1
 id: 62-monitor-navigation-integrity-and-exclude-faulty-measurements
 number: 62
-title: Monitor Navigation Integrity and Exclude Faulty Measurements
-summary: Normalize a pseudorange fault, compare it with an integrity threshold, and measure residual reduction after
-  exclusion.
-guiding_question: How do residual testing, protection levels, and fault exclusion bound a navigation solution?
+title: Detect and Exclude a Synthetic Range Fault
+summary: An alarm selects the largest leverage-standardized residual. Normal mode removes that measurement
+  and recomputes the solution. The formal one-metre-noise covariance is not a certified protection level or
+  a guarantee against arbitrary multiple faults.
+guiding_question: What evidence distinguishes a real exclusion/refit from multiplying the displayed residual
+  by a fixed factor?
 status: implemented
 tags:
 - controls-gnc
@@ -19,14 +21,14 @@ controls:
 - id: fault_magnitude_m
   type: slider
   label: Fault magnitude
-  default: 18.0
+  default: 16.0
   unit: m
   minimum: 0.0
   maximum: 60.0
   step: 1.0
 - id: integrity_threshold
   type: slider
-  label: Integrity threshold
+  label: Residual alarm threshold
   default: 5.0
   unit: sigma
   minimum: 2.0
@@ -41,10 +43,10 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: A declared fault above threshold raises an alarm and the excluded solution must be recomputed before reporting
-    a reduced residual.
-  reveal: Restore residual monitoring, exclude the identified fault, recompute the solution, and keep protection-level
-    assumptions explicit.
+  text: Predict whether a zero injected fault should always trigger exclusion and whether deleting one residual
+    value is a valid refit.
+  reveal: The retained row identities and count change, the state estimate changes, and residuals recomputed
+    from retained measurements satisfy the new fit. A fixed factor cannot demonstrate those operations.
 - type: controls
   title: Design controls
 - type: metrics
@@ -65,3 +67,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

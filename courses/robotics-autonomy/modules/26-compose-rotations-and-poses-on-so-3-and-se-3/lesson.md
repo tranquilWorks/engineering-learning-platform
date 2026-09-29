@@ -1,87 +1,79 @@
-# Compose Rotations and Poses on SO(3) and SE(3)
+# Compose Rigid Transforms and Diagnose Invalid Rotation Blends
 
-**Guiding question:** What assumptions and evidence make compose rotations and poses on so(3) and se(3) defensible?
 
-Build a deterministic numerical laboratory to compose rotations and poses on so(3) and se(3), expose its governing relation, and diagnose a named counterexample before recovery. This module is a Python-first native design authorized by the reviewed issue-440 competency map. It is not a conversion of the pinned MATLAB-oriented source course, and it remains deterministic software evidence.
-
-## Why this lesson exists
-
-Robotics failures often cross representation boundaries: geometry into velocity, images into pose, estimates into maps, plans into commands, or contact forces into actuator effort. A result is defensible only when those boundaries carry explicit frames, signs, units, timing, constraints, and uncertainty. This lesson therefore connects one design decision to a governing equation, an observable response, a named failure, and an exact recovery.
-
-Before calculating, name the state, input, observation, and verdict. State which quantities are measured, which are modeled, and which are derived. A smooth curve is not evidence that a constraint was respected, an estimator was consistent, a path was collision free, or a contact remained passive.
 
 ## Model, derivation, and conventions
 
-- $$R^T R=I and det(R)=1$$
-- $$T_ab T_bc=T_ac$$
-- $$T^-1=[R^T,-R^T p]$$
+`T=[R,t;0,1]; p_A=T_AB p_B`
 
-Derive the first relation from the physical, geometric, probabilistic, or algorithmic definition. Use the second relation to propagate the decision into a measurable consequence. Use the third as an invariant, feasibility condition, or audit relation. Keep every coordinate frame and sampling instant attached until the final scalar metric. The experiment evaluates these relations directly with bounded NumPy arrays; it does not call a remote solver or hide the mechanism behind a black-box robotics stack.
+`T^-1=[R^T,-R^T t;0,1] only when R^T R=I`
 
-The three retained signature quantities are:
+`R_blend(f)=(1-f)I+f Rz(theta)`
 
-- `orthogonality_error` (1)
-- `determinant_error` (1)
-- `order_difference` (m)
+A homogeneous transform maps a column of point coordinates between declared frames. Its top-left block is a dimensionless rotation matrix, its translation is in metres, and its bottom row is [0,0,0,1]. The point uses homogeneous coordinate one, so translation acts on it. A free direction would use coordinate zero and should not receive that translation. This distinction explains why frame transformations must be applied to actual geometric objects, rather than checked only by a determinant display.
 
-Carry units through each substitution. Dimensionless ranks, probabilities, ratios, and flags are labeled `1` or `count`; physical displacement, time, force, torque, energy, velocity, and pixel quantities retain their named units. If a sum combines unlike units or a transform maps a vector without a frame convention, stop before interpreting a number.
+The moving transform A uses a z rotation and a translation along y. At fraction f it rotates by f times the selected angle and translates by [0,f times distance,0]. The fixed transform B rotates 30 degrees about x and translates by [0,0.25,0.1] m. The source point is [0.3,0.2,0.4] m. The experiment evaluates ABp and BAp separately at 121 fractions. The chart displays their x/y projection, while retained diagnostics contain all three spatial coordinates. Under column-vector conventions AB applies B first, then A. The two paths generally differ because rigid transforms do not commute. Their final separation is an expected order effect, not a numerical accuracy error.
+
+For a simple worked example, take a point [1,0,0] m, a 90-degree z rotation and translation [0,1,0] m. Rotating first and then translating gives [0,2,0] m. Translating first gives [1,1,0], and then rotating gives [-1,1,0] m. Each operation is valid, yet the results differ. This example isolates the order issue before interpreting the more complete fixed-x-rotation setup.
+
+The fault replaces the rotation path by a linear blend of endpoint matrices while retaining the same translation path. At a 180-degree endpoint rotation and f=0.5, the x/y block collapses to zero. Its determinant is zero and its orthogonality defect is large even though f=0 and f=1 are valid rotations. A true matrix inverse, where one exists, is not the same as the rigid inverse formula when orthogonality fails. The experiment deliberately applies the rigid formula and measures the resulting point round-trip residual.
 
 ## Predict before running
 
-Rigid transforms must remain on SE(3), round trip through their inverse, and preserve the declared composition order. Predict the sign and direction of all three signature changes before moving a slider. Identify the equation term responsible and one quantity that should remain invariant. This written prediction is the comparison point; post-hoc description is not the same as a test.
+Predict whether two valid rotation endpoints make every linear matrix blend between them a valid rotation.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read the three signature metrics with units.
-2. Inspect the response plot for task-level behavior, then the mechanism plot for the constraint, residual, energy, conditioning, or decision that explains it.
-3. Reproduce one signature quantity from the displayed equations to one or two significant figures.
-4. Check a limiting case before accepting the baseline.
-5. Save the baseline parameters and signature so recovery can be tested exactly.
+Reset controls and leave the named fault disabled. Use Rotation angle = 35.0 deg; Translation magnitude = 0.6 m. Write a prediction before executing. Read the response curve first, then explain it using the mechanism curve.
+
+Pose composition order plots World y coordinate (m) against World x coordinate (m). Its series are A after B, B after A. Rotation-group checks plots Rotation residual (1) against Composition fraction (1). Its series are Orthogonality error, Determinant error.
+
+The computed default record is Maximum rotation orthogonality error: 2.25194e-16 1; Maximum determinant error: 2.22045e-16 1; Final composition-order point difference: 0.3801 m. These values are a reproducible worked example, not acceptance thresholds for every slider setting. Retain units and parameter values when comparing another run. A displayed residual near machine precision should be interpreted with the stated model and numerical tolerance.
 
 ## Two one-variable sweeps
 
-1. Hold `translation_m` at `0.6 m` and sweep `rotation_angle_deg` from `-170.0` through `35.0` to `170.0 deg`.
-2. Restore `rotation_angle_deg` to `35.0 deg` and sweep `translation_m` from `0.0` through `0.6` to `2.0 m`.
+1. Sweep rotation angle from zero through 90 to 180 degrees at fixed translation. Inspect the entire fraction-dependent orthogonality curve in broken mode. Checking only the final matrix misses the invalid interior, because both endpoint rotations remain valid.
 
-Change one variable at a time. For each endpoint, record the predicted direction, actual direction, metric delta, and the mechanism-plot feature that supports causality. If the result reverses direction, check for a branch, active constraint, singularity, gate, saturation, or feasibility transition rather than smoothing it away.
+2. Sweep translation distance with rotation fixed. Rotation-group residuals should be unchanged because translation does not determine whether R belongs to SO(3). The composition-order point separation can change because the fixed x rotation acts on the y translation.
+
+Return to defaults between sweeps. Keep the other control fixed, record the changed quantity and identify an expected invariant. A control need not change every output; explain the model path through which it acts.
 
 ## Intentionally broken case
 
-Broken mode uses degrees as radians and composes translation in the wrong frame. Broken mode is a falsifying counterexample, not a recommended alternative. Explain which assumption is violated before describing the visual symptom. Then locate the first intermediate quantity that departs from the baseline invariant; downstream task error alone rarely identifies the cause.
+Broken mode linearly interpolates rotation matrices instead of constructing a rotation at each fractional angle.
+
+Run the same selected controls with the fault enabled. Compare the curve shape as well as the numerical summary. The fault is a specific executed operation; a red warning or a changed mode flag would not by itself demonstrate its consequence.
 
 ## Recovery
 
-Convert units once, compose left-to-right under named frames, and verify orthogonality, determinant, and round trip. Recovery is complete only when the original default inputs and diagnostic signature return within the independent-reference tolerance. A different setting that happens to look better is mitigation, not recovery. Preserve the fault, detection, decision, and recovery sequence as separate evidence.
+Restore angle-based rotation, reset defaults and check orthogonality, determinant and rigid-inverse point residual together. Keep the composition-order difference; making it vanish is not the recovery objective.
+
+Repeat one previously saved nominal setting and check that its values and curves return. Recovery should restore the mechanism, not merely dismiss the warning.
 
 ## Alternative and limiting cases
 
-- At zero rotation, the transform reduces to pure translation.
-- At zero translation, pose composition reduces to rotation composition on SO(3).
-
-Use one limit as a hand calculation and one as a numerical sweep. Limits reveal whether a formula is continuous, singular, or branch-dependent. An undefined limit must be reported as such; clipping it into a convenient finite value changes the model.
+Zero rotation is a legitimate degenerate case in which the blend remains identity. Determinant one alone does not establish orthogonality. The x/y chart omits a spatial component, so compare retained three-dimensional vectors before inferring identical poses.
 
 ## Independent evidence and MATLAB-style design boundary
 
-The design was reasoned from the displayed equations in the same model-first workflow normally used before a MATLAB/Simulink implementation, but the delivered implementation is Python/NumPy only. Expected signatures are stored by `expansion_reference_cases.py`, which imports no production experiment, consumes no production result, and perturbs no production value. Production signatures are retained separately for baseline, both one-variable sweeps, broken, and exact recovery scenarios.
+The reference applies separate scalar x/z rotation formulas to coordinates and uses the analytic blend defect 2f(1-f)(1-cos(theta)). This independently checks the homogeneous-matrix implementation.
 
-Agreement supports only the displayed model, input set, fields, units, and tolerances. No licensed MATLAB runtime was executed, so the evidence makes no MATLAB numerical-parity claim. It also does not establish global optimality, field robustness, physical calibration, hardware timing, safety certification, or production readiness.
+Five retained cases cover baseline, two single-control sweeps, the named fault and recovery. Expected values are generated independently; actual values come from the executable lesson. Absolute and relative tolerances remain 1e-8. Agreement checks the declared synthetic model, not empirical validity. MATLAB has not been executed and no MATLAB equivalence is claimed. Browser and container evidence are recorded separately from numerical evidence.
 
 ## Engineering review checklist
 
-- Verify equation dimensions, coordinate frames, signs, timestamp direction, and branch conventions.
-- Separate feasibility or safety from objective value and visual smoothness.
-- Inspect conditioning, covariance, clearance, saturation, energy, or data age when relevant.
-- Confirm the broken case changes the named mechanism and the recovery restores the baseline signature.
-- State one assumption whose violation would invalidate the result even if every test here passed.
+Check the declared coordinates, units and ordering before evaluating the result. Reconstruct at least one displayed value from retained state or geometric data. Identify which output changes in each sweep and which should remain invariant. Diagnose the named faulty operation, then demonstrate its recovery. Finally state the strongest claim supported by these observations and one claim that requires additional evidence.
 
 ## Common mistakes
 
-- Treating a local or finite-sample result as a global guarantee.
-- Changing both controls and assigning causality to only one.
-- Accepting endpoint checks where swept geometry, intermediate dynamics, or data freshness matter.
-- Confusing a low residual with observability, correct association, feasibility, or physical truth.
-- Claiming learner effectiveness, MATLAB parity, physical HIL, hardware safety, or certification from software fixtures.
+Do not infer correctness from a changing headline alone. In this lesson, the critical limit is: Zero rotation is a legitimate degenerate case in which the blend remains identity. Determinant one alone does not establish orthogonality. The x/y chart omits a spatial component, so compare retained three-dimensional vectors before inferring identical poses.
+
+Do not compare two runs after changing both controls and attribute the difference to one cause. Do not treat a near-zero floating-point residual as symbolic identity, or a finite sample sweep as a proof for all configurations. Keep the operation that creates the evidence separate from the interpretation assigned to it.
 
 ## Focused check and teach-back
 
-Calculate one baseline signature value, show one dimensional check, predict both sweeps, reproduce the named failure, and demonstrate exact recovery. Then teach the lesson back without starting from the plots: state the convention, derive the governing relationship, explain the invariant, identify the practical failure, and name the evidence boundary. Finish by naming the prerequisite module and the next mapped module that consumes this artifact.
+Why can the final broken matrix pass both rotation checks while the lesson still reports a nonzero maximum defect?
+
+Answer rationale: The blend equals the valid endpoint rotation at f=1. Interior blends generally leave SO(3); the metric deliberately measures the maximum over the executed interpolation, not just its last sample.
+
+Use the embedded Course checkpoint to collect a default record, a sweep, a faulty record and a recovered record. Explain the evidence to a colleague using the governing relation and units, then name the untested boundary. This is a self-assessment; no learner score is stored.

@@ -1,87 +1,79 @@
-# Resolve Redundancy with Null-Space Motion
+# Separate Damped Task Motion from Exact Null-Space Motion
 
-**Guiding question:** What assumptions and evidence make resolve redundancy with null-space motion defensible?
 
-Build a deterministic numerical laboratory to resolve redundancy with null-space motion, expose its governing relation, and diagnose a named counterexample before recovery. This module is a Python-first native design authorized by the reviewed issue-440 competency map. It is not a conversion of the pinned MATLAB-oriented source course, and it remains deterministic software evidence.
-
-## Why this lesson exists
-
-Robotics failures often cross representation boundaries: geometry into velocity, images into pose, estimates into maps, plans into commands, or contact forces into actuator effort. A result is defensible only when those boundaries carry explicit frames, signs, units, timing, constraints, and uncertainty. This lesson therefore connects one design decision to a governing equation, an observable response, a named failure, and an exact recovery.
-
-Before calculating, name the state, input, observation, and verdict. State which quantities are measured, which are modeled, and which are derived. A smooth curve is not evidence that a constraint was respected, an estimator was consistent, a path was collision free, or a contact remained passive.
 
 ## Model, derivation, and conventions
 
-- $$q_dot=J# v+ (I-J#J)z$$
-- $$J(I-J#J)=0$$
-- $$J#=J^T(JJ^T+lambda^2 I)^-1$$
+`qdot_primary=J^T(JJ^T+lambda²I)^-1 v_desired`
 
-Derive the first relation from the physical, geometric, probabilistic, or algorithmic definition. Use the second relation to propagate the decision into a measurable consequence. Use the third as an invariant, feasibility condition, or audit relation. Keep every coordinate frame and sampling instant attached until the final scalar metric. The experiment evaluates these relations directly with bounded NumPy arrays; it does not call a remote solver or hide the mechanism behind a black-box robotics stack.
+`N=I-Jplus J; qdot_secondary=-gain N q`
 
-The three retained signature quantities are:
+`qdot=qdot_primary+qdot_secondary; leakage=||J qdot_secondary||`
 
-- `task_velocity_error` (m/s)
-- `null_space_leakage` (m/s)
-- `joint_limit_margin` (rad)
+The arm has three planar revolute joints with link lengths [1,0.8,0.6] m. The fixed joint configuration is [0.3,-0.7,0.9] rad. Forward kinematics uses cumulative joint angles, and differentiating the end-effector position gives a two-by-three Jacobian. The task asks for velocity [0.1,-0.06] m/s. With two independent position constraints and three joint velocities, the full-row-rank Jacobian has a one-dimensional null space. This redundancy makes an instantaneous posture change possible without first-order task motion.
 
-Carry units through each substitution. Dimensionless ranks, probabilities, ratios, and flags are labeled `1` or `count`; physical displacement, time, force, torque, energy, velocity, and pixel quantities retain their named units. If a sum combines unlike units or a transform maps a vector without a frame convention, stop before interpreting a number.
+The primary command is a damped inverse solution. Length and angle coordinates are normalized by one metre and one radian before applying the dimensionless damping slider; reported velocities retain m/s and rad/s. Increasing damping regularizes the inverse but also introduces a task tracking residual. That residual belongs to the primary solution and must not automatically be called secondary leakage. The secondary command uses a separate exact Moore-Penrose null projector, formed from the current full-row-rank Jacobian. Its task effect should be near numerical roundoff for every selected posture gain.
+
+The posture direction is minus q, pulling joint coordinates toward zero instantaneously. The displayed sweep evaluates 121 gains from zero to the selected gain at the same configuration. It does not integrate joint angles or update the Jacobian as the arm moves. A decreasing instantaneous quadratic posture objective can motivate the direction, but it does not demonstrate eventual convergence or compliance with any joint limit. The third metric is the actual joint velocity norm, not an invented remaining joint-limit margin.
+
+For a small worked algebra example, let J=[[1,0,1],[0,1,0]]. A normalized null vector is [1,0,-1]/sqrt(2). Projecting posture q=[1,2,0] onto that direction gives [0.5,0,-0.5]. With unit gain, secondary velocity is [-0.5,0,0.5], and multiplying by J gives [0,0]. Bypassing projection instead gives [-1,-2,0], which produces task velocity [-1,-2]. This shows why a posture direction that seems reasonable in joint coordinates can corrupt the primary task unless its null-space property is actually checked.
 
 ## Predict before running
 
-Secondary motion may improve posture only through the Jacobian null space while the primary task residual remains bounded. Predict the sign and direction of all three signature changes before moving a slider. Identify the equation term responsible and one quantity that should remain invariant. This written prediction is the comparison point; post-hoc description is not the same as a test.
+Predict whether primary damping requires secondary posture motion to leak into the task when an exact null projector is used.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read the three signature metrics with units.
-2. Inspect the response plot for task-level behavior, then the mechanism plot for the constraint, residual, energy, conditioning, or decision that explains it.
-3. Reproduce one signature quantity from the displayed equations to one or two significant figures.
-4. Check a limiting case before accepting the baseline.
-5. Save the baseline parameters and signature so recovery can be tested exactly.
+Reset controls and leave the named fault disabled. Use Pseudoinverse damping = 0.08 1; Null-space gain = 0.6 1/s. Write a prediction before executing. Read the response curve first, then explain it using the mechanism curve.
+
+Instantaneous joint commands plots Joint velocity (rad/s) against Posture gain (1/s). Its series are Joint 1, Joint 2, Joint 3. Resulting task velocity plots Task velocity (m/s) against Posture gain (1/s). Its series are Actual x, Actual y, Desired x, Desired y.
+
+The computed default record is Task velocity residual: 0.00696372 m/s; Secondary task leakage: 3.35421e-16 m/s; Joint velocity norm: 0.31833 rad/s. These values are a reproducible worked example, not acceptance thresholds for every slider setting. Retain units and parameter values when comparing another run. A displayed residual near machine precision should be interpreted with the stated model and numerical tolerance.
 
 ## Two one-variable sweeps
 
-1. Hold `null_gain_per_s` at `0.6 1/s` and sweep `damping` from `0.0` through `0.08` to `0.5 1`.
-2. Restore `damping` to `0.08 1` and sweep `null_gain_per_s` from `0.0` through `0.6` to `2.0 1/s`.
+1. Increase primary damping from zero to 0.5 while holding posture gain fixed. Compare task velocity residual and joint speed. Secondary leakage should remain near roundoff in normal mode because the exact projector is independent of primary damping.
 
-Change one variable at a time. For each endpoint, record the predicted direction, actual direction, metric delta, and the mechanism-plot feature that supports causality. If the result reverses direction, check for a branch, active constraint, singularity, gate, saturation, or feasibility transition rather than smoothing it away.
+2. Increase posture gain from zero to two per second at fixed damping. The joint velocities change, while normal task velocity stays at the primary value. In broken mode the task velocity changes with gain because the unprojected posture direction has a task component.
+
+Return to defaults between sweeps. Keep the other control fixed, record the changed quantity and identify an expected invariant. A control need not change every output; explain the model path through which it acts.
 
 ## Intentionally broken case
 
-Broken mode adds the secondary velocity directly, leaking posture motion into the end-effector task. Broken mode is a falsifying counterexample, not a recommended alternative. Explain which assumption is violated before describing the visual symptom. Then locate the first intermediate quantity that departs from the baseline invariant; downstream task error alone rarely identifies the cause.
+Broken mode bypasses the null projector and adds minus gain times the full posture vector to the primary command.
+
+Run the same selected controls with the fault enabled. Compare the curve shape as well as the numerical summary. The fault is a specific executed operation; a red warning or a changed mode flag would not by itself demonstrate its consequence.
 
 ## Recovery
 
-Restore the null projector, tune damping near singularity, and verify task residual and joint-limit margin together. Recovery is complete only when the original default inputs and diagnostic signature return within the independent-reference tolerance. A different setting that happens to look better is mitigation, not recovery. Preserve the fault, detection, decision, and recovery sequence as separate evidence.
+Restore the exact projector and defaults. Check actual task velocity, secondary leakage and joint velocity together; a low total joint speed alone cannot certify task preservation.
+
+Repeat one previously saved nominal setting and check that its values and curves return. Recovery should restore the mechanism, not merely dismiss the warning.
 
 ## Alternative and limiting cases
 
-- At zero null gain, only the primary task remains.
-- With an exact full-row-rank pseudoinverse, projected secondary velocity produces zero task velocity.
-
-Use one limit as a hand calculation and one as a numerical sweep. Limits reveal whether a formula is continuous, singular, or branch-dependent. An undefined limit must be reported as such; clipping it into a convenient finite value changes the model.
+At zero gain both modes coincide because no secondary motion is requested. At zero damping the full-row-rank primary inverse tracks the desired task to roundoff. The null projector is local to one configuration; finite motion requires recomputing it. No joint limits, collision constraints or integrated posture trajectory are claimed.
 
 ## Independent evidence and MATLAB-style design boundary
 
-The design was reasoned from the displayed equations in the same model-first workflow normally used before a MATLAB/Simulink implementation, but the delivered implementation is Python/NumPy only. Expected signatures are stored by `expansion_reference_cases.py`, which imports no production experiment, consumes no production result, and perturbs no production value. Production signatures are retained separately for baseline, both one-variable sweeps, broken, and exact recovery scenarios.
+The reference derives the Jacobian by complex-step kinematics, computes the primary command with SVD and constructs the one-dimensional null basis from the cross product of the two Jacobian rows. It does not use the production pseudoinverse projector.
 
-Agreement supports only the displayed model, input set, fields, units, and tolerances. No licensed MATLAB runtime was executed, so the evidence makes no MATLAB numerical-parity claim. It also does not establish global optimality, field robustness, physical calibration, hardware timing, safety certification, or production readiness.
+Five retained cases cover baseline, two single-control sweeps, the named fault and recovery. Expected values are generated independently; actual values come from the executable lesson. Absolute and relative tolerances remain 1e-8. Agreement checks the declared synthetic model, not empirical validity. MATLAB has not been executed and no MATLAB equivalence is claimed. Browser and container evidence are recorded separately from numerical evidence.
 
 ## Engineering review checklist
 
-- Verify equation dimensions, coordinate frames, signs, timestamp direction, and branch conventions.
-- Separate feasibility or safety from objective value and visual smoothness.
-- Inspect conditioning, covariance, clearance, saturation, energy, or data age when relevant.
-- Confirm the broken case changes the named mechanism and the recovery restores the baseline signature.
-- State one assumption whose violation would invalidate the result even if every test here passed.
+Check the declared coordinates, units and ordering before evaluating the result. Reconstruct at least one displayed value from retained state or geometric data. Identify which output changes in each sweep and which should remain invariant. Diagnose the named faulty operation, then demonstrate its recovery. Finally state the strongest claim supported by these observations and one claim that requires additional evidence.
 
 ## Common mistakes
 
-- Treating a local or finite-sample result as a global guarantee.
-- Changing both controls and assigning causality to only one.
-- Accepting endpoint checks where swept geometry, intermediate dynamics, or data freshness matter.
-- Confusing a low residual with observability, correct association, feasibility, or physical truth.
-- Claiming learner effectiveness, MATLAB parity, physical HIL, hardware safety, or certification from software fixtures.
+Do not infer correctness from a changing headline alone. In this lesson, the critical limit is: At zero gain both modes coincide because no secondary motion is requested. At zero damping the full-row-rank primary inverse tracks the desired task to roundoff. The null projector is local to one configuration; finite motion requires recomputing it. No joint limits, collision constraints or integrated posture trajectory are claimed.
+
+Do not compare two runs after changing both controls and attribute the difference to one cause. Do not treat a near-zero floating-point residual as symbolic identity, or a finite sample sweep as a proof for all configurations. Keep the operation that creates the evidence separate from the interpretation assigned to it.
 
 ## Focused check and teach-back
 
-Calculate one baseline signature value, show one dimensional check, predict both sweeps, reproduce the named failure, and demonstrate exact recovery. Then teach the lesson back without starting from the plots: state the convention, derive the governing relationship, explain the invariant, identify the practical failure, and name the evidence boundary. Finish by naming the prerequisite module and the next mapped module that consumes this artifact.
+Why can the total task residual be nonzero while secondary leakage is essentially zero?
+
+Answer rationale: The damped primary inverse trades tracking accuracy against joint speed. An exact null projector preserves that primary task velocity when posture motion is added; it does not undo the original damping residual.
+
+Use the embedded Course checkpoint to collect a default record, a sweep, a faulty record and a recovered record. Explain the evidence to a colleague using the governing relation and units, then name the untested boundary. This is a self-assessment; no learner score is stored.

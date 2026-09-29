@@ -1,13 +1,12 @@
-# Active quality continuation — 2026-09-29
+# Verified navigation and geometry revision — 2026-09-29
 
-Delivery and twelve-lesson semantic repairs are merged. DSP's 84 checkpoints,
-ten cumulative portfolios and competency map are embedded and locally verified;
-417 independent comparisons and final browser/container checks passed. See
-CURRENT_STATE and the aggregate evidence for exact scope and merge tracking.
-The next twelve Controls model/checkpoint repairs passed all required local and
-browser/container gates. Forty-eight Controls/Robotics/Vehicle findings remain
-separate repair scopes; see the current batch evidence for integration status.
-Learner/manual accessibility/MATLAB/hardware/production validation is not_run.
+ELP-NAV-GEOMETRY-QUALITY-12 repairs existing Controls P56/P57/P60–P62/P64–P65 and Robotics P25–P29. All twelve now execute their declared mechanisms and include individually authored browser-embedded Course checkpoints. Contract [PR559](https://github.com/tranquilWorks/portfolio-control/pull/559) merged before implementation; the exact target baseline is PR55 merge `8820f21d349836b63db00f1e596f5eb00b488ab9`.
+
+Verification passed: sixty independent local comparisons and sixty baked HTTP comparisons, 43 physical/preservation tests covering 96 runtime control corners, 290 HTTP modules, 580 desktop/mobile pages, 216 checkpoint checks, twenty cumulative DSP checks, 104 real interaction sequences/screenshots, and 21 focused browser tests. All 290 host/baked module identities match. Mandatory gates passed sequentially (contract: 103 tests in 100.15 seconds; quick: 1420 tests in 1424.59 seconds; full: 1420 tests in 1324.75 seconds). See [batch evidence](evidence/ELP-NAV-GEOMETRY-QUALITY-12-2026-09-29.md) and [exact verification summary](course-quality/navigation-geometry-verification-summary.json). The development PR records integration; Portfolio Control records its merge SHA after closeout.
+
+**36 registered findings remain: Controls 0, Robotics 20, Vehicle 16.** The next repair scopes are Robotics P30–P48/P52 and Vehicle P01–P16. All three non-DSP aggregate numerical, curriculum and capstone reviews remain blocked, including Controls despite zero listed findings. This register is not exhaustive acceptance. The inventory remains 288 engineering lessons plus two examples; nine other pinned repositories remain source-only. DSP retains its separate authored/software aggregate acceptance.
+
+Verified development preview: `http://127.0.0.1:8773`; exact read-only nonroot image `sha256:65d1de31cc56d2d3ca053ac3bdcfe0b1dae39497637dca3b4bb9b31542a1f9ee`. Earlier previews remain preserved. Hosted CI is reported separately. Representative learners, manual screen-reader, MATLAB, hardware, concurrent capacity and production validation remain unperformed. This closeout activates no further batch.
 
 ## Earlier roadmap and historical dispositions
 
@@ -435,3 +434,7 @@ verification, the final 580-page whole-container sweep and all mandatory local
 gates passed. The batch evidence retains exact results and development PR tracking.
 Forty-eight findings remain blocked after these scoped closures. This batch adds
 no lessons and does not promote Controls/Robotics/Vehicle aggregate acceptance.
+
+## Navigation and geometry revision (2026-09-29)
+
+Twelve existing lessons now have executed mechanisms, independent references and embedded checkpoints. Full baked delivery and sequential contract/quick/full gates passed; the development PR and Portfolio Control closeout record integration. Remaining registered work is Robotics P30–P48/P52 and Vehicle P01–P16, plus separate non-DSP aggregate reassessments. Zero listed Controls findings does not authorize blanket acceptance or a new content expansion.

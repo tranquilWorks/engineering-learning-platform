@@ -7,9 +7,9 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- V_s=J_s(q) q_dot
-- mu=sqrt(det(J J^T))
-- sigma_min(J)->0 at singularity
+- x=l1 cos(q1)+l2 cos(q1+q2); y=l1 sin(q1)+l2 sin(q1+q2); l1=1 m
+- J=partial(x,y)/partial(q1,q2); task_velocity=J joint_velocity
+- manipulability=sigma_max sigma_min=|det J|
 signature:
 - field: minimum_singular_value
   unit: m/rad
@@ -17,11 +17,13 @@ signature:
   unit: m^2/rad^2
 - field: finite_difference_error
   unit: m/rad
-teaching_invariant: The spatial Jacobian must match finite-difference kinematics and expose loss of motion authority
-  through singular values.
+teaching_invariant: Predict what a missing elbow column does to task rank and to an independently differenced
+  forward-kinematic check.
 limiting_cases:
-- At a straight two-link arm, one planar translational singular value vanishes.
-- Increasing the second link from zero adds reachable velocity directions away from singularity.
+- At elbow zero the correct position map is singular.
+- The shoulder angle rotates the task axes without changing singular values.
+- A derivative check has truncation and floating-point error; exact symbolic zero is not required.
+- No orientation or dynamics claim follows from this position-only calculation.
 scenarios:
   baseline: &id001
     elbow_angle_deg: 70.0
@@ -48,5 +50,5 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic software evidence only. Browser/container checks are separately recorded.
+  No MATLAB runtime, representative learner, manual screen-reader, hardware, certification or production acceptance.

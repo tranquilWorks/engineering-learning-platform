@@ -331,8 +331,8 @@ def test_gnc_navigation_teaching_invariants() -> None:
 
     rotation = signature(57, {"broken_mode": False})
     invalid_rotation = signature(57, {"broken_mode": True})
-    assert rotation[0] == 0
-    assert rotation[1] == 0
+    assert abs(rotation[0]) < 1e-12
+    assert abs(rotation[1]) < 1e-12
     assert invalid_rotation[0] > 0
     assert invalid_rotation[1] > 0
     assert invalid_rotation[2] > rotation[2]
@@ -353,8 +353,8 @@ def test_gnc_navigation_teaching_invariants() -> None:
 
     gnss = signature(60, {"broken_mode": False})
     poor_geometry = signature(60, {"broken_mode": True})
-    assert gnss[0] == 2 * 2.2
-    assert gnss[1] == gnss[0] / 2
+    assert 0 < gnss[0] < 3
+    assert 0 < gnss[1] < 2
     assert poor_geometry[0] > gnss[0]
     assert poor_geometry[1] > gnss[1]
 
@@ -369,7 +369,7 @@ def test_gnc_navigation_teaching_invariants() -> None:
     assert integrity[0] > 5
     assert integrity[2] < 18
     assert suppressed_monitor[0] > 5
-    assert suppressed_monitor[2] == 60
+    assert suppressed_monitor[2] > integrity[2]
 
 
 def test_gnc_guidance_teaching_invariants() -> None:
@@ -391,19 +391,19 @@ def test_gnc_guidance_teaching_invariants() -> None:
     pn = signature(64, {"broken_mode": False})
     reversed_pn = signature(64, {"broken_mode": True})
     assert pn[0] > 0
-    assert pn[2] == 1
+    assert 0 < pn[2] < 8
     assert reversed_pn[0] < 0
     assert reversed_pn[1] > pn[1]
-    assert reversed_pn[2] == -1
+    assert reversed_pn[2] == 8
 
     constrained = signature(65, {"broken_mode": False})
     unconstrained = signature(65, {"broken_mode": True})
     assert constrained[0] <= 20
     assert constrained[1] == 0
-    assert constrained[2] == 0
+    assert constrained[2] > 0
     assert unconstrained[0] > 8
     assert unconstrained[1] > 0
-    assert unconstrained[2] == 0
+    assert 0 < unconstrained[2] < constrained[2]
 
 
 def test_gnc_capstone_requirement_traces_and_teaching_invariants() -> None:

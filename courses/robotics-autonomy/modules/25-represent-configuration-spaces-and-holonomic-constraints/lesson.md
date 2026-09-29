@@ -1,87 +1,77 @@
-# Represent Configuration Spaces and Holonomic Constraints
+# Project Configurations and Velocities onto a Circle Constraint
 
-**Guiding question:** What assumptions and evidence make represent configuration spaces and holonomic constraints defensible?
 
-Build a deterministic numerical laboratory to represent configuration spaces and holonomic constraints, expose its governing relation, and diagnose a named counterexample before recovery. This module is a Python-first native design authorized by the reviewed issue-440 competency map. It is not a conversion of the pinned MATLAB-oriented source course, and it remains deterministic software evidence.
-
-## Why this lesson exists
-
-Robotics failures often cross representation boundaries: geometry into velocity, images into pose, estimates into maps, plans into commands, or contact forces into actuator effort. A result is defensible only when those boundaries carry explicit frames, signs, units, timing, constraints, and uncertainty. This lesson therefore connects one design decision to a governing equation, an observable response, a named failure, and an exact recovery.
-
-Before calculating, name the state, input, observation, and verdict. State which quantities are measured, which are modeled, and which are derived. A smooth curve is not evidence that a constraint was respected, an estimator was consistent, a path was collision free, or a contact remained passive.
 
 ## Model, derivation, and conventions
 
-- $$q in C subset R^n$$
-- $$h(q)=0$$
-- $$J_h(q) q_dot=0$$
+`h(q)=||q||-1 m=0; J_h=q^T/||q||`
 
-Derive the first relation from the physical, geometric, probabilistic, or algorithmic definition. Use the second relation to propagate the decision into a measurable consequence. Use the third as an invariant, feasibility condition, or audit relation. Keep every coordinate frame and sampling instant attached until the final scalar metric. The experiment evaluates these relations directly with bounded NumPy arrays; it does not call a remote solver or hide the mechanism behind a black-box robotics stack.
+`P=I-J_h^T(J_h J_h^T)^-1 J_h; v=P[1,0]^T m/s`
 
-The three retained signature quantities are:
+`clearance=||q-[1.5,0.5] m||-0.2 m`
 
-- `constraint_residual` (m)
-- `tangent_dimension` (count)
-- `minimum_clearance` (m)
+The configuration q is a point in a two-dimensional Cartesian plane, measured in metres. It is constrained to a circle of radius one metre. This is a holonomic constraint because it is an equation of configuration, without a path-dependent velocity condition. The slider named joint span selects an angular interval around zero; it does not create an articulated-arm joint model. We sample 121 angles from minus half the span to plus half the span. Raw configurations lie at radius one plus the selected offset. Normal mode divides each raw vector by its norm, projecting it radially onto the unit circle. The raw and used configurations are both retained, so a control that disappears from the projected result still has a visible causal role.
 
-Carry units through each substitution. Dimensionless ranks, probabilities, ratios, and flags are labeled `1` or `count`; physical displacement, time, force, torque, energy, velocity, and pixel quantities retain their named units. If a sum combines unlike units or a transform maps a vector without a frame convention, stop before interpreting a number.
+The constraint Jacobian is the unit outward radial row vector. Its rank is one everywhere in this experiment because no sampled configuration is zero. Two ambient coordinates minus one independent constraint leave a one-dimensional tangent space. The requested candidate velocity is [1,0] m/s. Orthogonal projection removes its radial component. At angle zero, q=[1,0] and the requested velocity points entirely outward; the projected velocity is zero. At angle pi/2, q=[0,1] and the same requested velocity is already tangent, so it remains [1,0]. At angle pi/4, the result is [0.5,-0.5] m/s. These three hand calculations explain the radial-velocity mechanism plot without relying on a headline score.
+
+An obstacle is a disk centred at [1.5,0.5] m with radius 0.2 m. Clearance is the Euclidean centre distance minus that radius, evaluated at each used configuration. The minimum metric is over the displayed samples only. The arc is generated from angle, not by integrating the projected velocity. Consequently the plot does not claim that the candidate velocity traces that arc or avoids the obstacle over future time.
 
 ## Predict before running
 
-A valid constrained velocity lies in the null space of the constraint Jacobian and preserves configuration-space clearance. Predict the sign and direction of all three signature changes before moving a slider. Identify the equation term responsible and one quantity that should remain invariant. This written prediction is the comparison point; post-hoc description is not the same as a test.
+Predict which quantities remain invariant when only the radial offset changes in normal mode, and whether tangency guarantees clearance.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read the three signature metrics with units.
-2. Inspect the response plot for task-level behavior, then the mechanism plot for the constraint, residual, energy, conditioning, or decision that explains it.
-3. Reproduce one signature quantity from the displayed equations to one or two significant figures.
-4. Check a limiting case before accepting the baseline.
-5. Save the baseline parameters and signature so recovery can be tested exactly.
+Reset controls and leave the named fault disabled. Use Constraint offset = 0.08 m; Joint span = 1.2 rad. Write a prediction before executing. Read the response curve first, then explain it using the mechanism curve.
+
+Configuration projection plots Configuration y (m) against Configuration x (m). Its series are Raw configurations, Used configurations, Unit-radius constraint. Velocity tangency plots Radial velocity (m/s) against Configuration angle (rad). Its series are Used candidate velocity, Requested radial part.
+
+The computed default record is Maximum radius constraint residual: 2.22045e-16 m; Measured tangent dimension: 1 count; Minimum sampled obstacle clearance: 0.381143 m. These values are a reproducible worked example, not acceptance thresholds for every slider setting. Retain units and parameter values when comparing another run. A displayed residual near machine precision should be interpreted with the stated model and numerical tolerance.
 
 ## Two one-variable sweeps
 
-1. Hold `joint_span_rad` at `1.2 rad` and sweep `constraint_offset_m` from `0.0` through `0.08` to `0.4 m`.
-2. Restore `constraint_offset_m` to `0.08 m` and sweep `joint_span_rad` from `0.2` through `1.2` to `3.0 rad`.
+1. Increase radial offset from zero to 0.2 m with span fixed. The raw arc moves outward, while normal projection returns the same unit-circle arc. Confirm nearly zero constraint residual and unchanged projected clearance; an invariant output can be correct when the preprocessing intentionally removes the changed coordinate.
 
-Change one variable at a time. For each endpoint, record the predicted direction, actual direction, metric delta, and the mechanism-plot feature that supports causality. If the result reverses direction, check for a branch, active constraint, singularity, gate, saturation, or feasibility transition rather than smoothing it away.
+2. Increase angular span with offset fixed. The samples cover more of the circle, changing radial components of the requested velocity and potentially the minimum sampled obstacle clearance. Compare the location of the smallest clearance rather than assuming wider span is always safer.
+
+Return to defaults between sweeps. Keep the other control fixed, record the changed quantity and identify an expected invariant. A control need not change every output; explain the model path through which it acts.
 
 ## Intentionally broken case
 
-Broken mode ignores the constraint Jacobian and integrates a velocity with a nonzero normal component. Broken mode is a falsifying counterexample, not a recommended alternative. Explain which assumption is violated before describing the visual symptom. Then locate the first intermediate quantity that departs from the baseline invariant; downstream task error alone rarely identifies the cause.
+Broken mode bypasses both radial configuration projection and velocity projection. The Jacobian and its actual rank are still computed at the used configuration; the fault does not invent an extra tangent dimension.
+
+Run the same selected controls with the fault enabled. Compare the curve shape as well as the numerical summary. The fault is a specific executed operation; a red warning or a changed mode flag would not by itself demonstrate its consequence.
 
 ## Recovery
 
-Project velocity into the tangent space, re-evaluate h(q), and retain collision clearance before advancing. Recovery is complete only when the original default inputs and diagnostic signature return within the independent-reference tolerance. A different setting that happens to look better is mitigation, not recovery. Preserve the fault, detection, decision, and recovery sequence as separate evidence.
+Disable broken mode, restore defaults and compare raw versus used configurations. Check both radius residual and radial velocity; repairing the position alone would leave the velocity condition unverified.
+
+Repeat one previously saved nominal setting and check that its values and curves return. Recovery should restore the mechanism, not merely dismiss the warning.
 
 ## Alternative and limiting cases
 
-- With zero offset the nominal configuration lies exactly on the constraint manifold.
-- At full-rank one constraint, a two-coordinate configuration has one tangent degree of freedom.
-
-Use one limit as a hand calculation and one as a numerical sweep. Limits reveal whether a formula is continuous, singular, or branch-dependent. An undefined limit must be reported as such; clipping it into a convenient finite value changes the model.
+At zero offset the broken configuration already lies on the circle, so its radius residual can vanish while its unprojected velocity is still wrong. The Jacobian rank remains one. First-order tangency describes an instantaneous velocity and does not establish finite-step constraint preservation or collision avoidance.
 
 ## Independent evidence and MATLAB-style design boundary
 
-The design was reasoned from the displayed equations in the same model-first workflow normally used before a MATLAB/Simulink implementation, but the delivered implementation is Python/NumPy only. Expected signatures are stored by `expansion_reference_cases.py`, which imports no production experiment, consumes no production result, and perturbs no production value. Production signatures are retained separately for baseline, both one-variable sweeps, broken, and exact recovery scenarios.
+The independent signature uses the analytic polar radius and obstacle distance. Physical tests use the tangent basis [-sin(theta),cos(theta)] to reconstruct velocity, separately from the production matrix projector.
 
-Agreement supports only the displayed model, input set, fields, units, and tolerances. No licensed MATLAB runtime was executed, so the evidence makes no MATLAB numerical-parity claim. It also does not establish global optimality, field robustness, physical calibration, hardware timing, safety certification, or production readiness.
+Five retained cases cover baseline, two single-control sweeps, the named fault and recovery. Expected values are generated independently; actual values come from the executable lesson. Absolute and relative tolerances remain 1e-8. Agreement checks the declared synthetic model, not empirical validity. MATLAB has not been executed and no MATLAB equivalence is claimed. Browser and container evidence are recorded separately from numerical evidence.
 
 ## Engineering review checklist
 
-- Verify equation dimensions, coordinate frames, signs, timestamp direction, and branch conventions.
-- Separate feasibility or safety from objective value and visual smoothness.
-- Inspect conditioning, covariance, clearance, saturation, energy, or data age when relevant.
-- Confirm the broken case changes the named mechanism and the recovery restores the baseline signature.
-- State one assumption whose violation would invalidate the result even if every test here passed.
+Check the declared coordinates, units and ordering before evaluating the result. Reconstruct at least one displayed value from retained state or geometric data. Identify which output changes in each sweep and which should remain invariant. Diagnose the named faulty operation, then demonstrate its recovery. Finally state the strongest claim supported by these observations and one claim that requires additional evidence.
 
 ## Common mistakes
 
-- Treating a local or finite-sample result as a global guarantee.
-- Changing both controls and assigning causality to only one.
-- Accepting endpoint checks where swept geometry, intermediate dynamics, or data freshness matter.
-- Confusing a low residual with observability, correct association, feasibility, or physical truth.
-- Claiming learner effectiveness, MATLAB parity, physical HIL, hardware safety, or certification from software fixtures.
+Do not infer correctness from a changing headline alone. In this lesson, the critical limit is: At zero offset the broken configuration already lies on the circle, so its radius residual can vanish while its unprojected velocity is still wrong. The Jacobian rank remains one. First-order tangency describes an instantaneous velocity and does not establish finite-step constraint preservation or collision avoidance.
+
+Do not compare two runs after changing both controls and attribute the difference to one cause. Do not treat a near-zero floating-point residual as symbolic identity, or a finite sample sweep as a proof for all configurations. Keep the operation that creates the evidence separate from the interpretation assigned to it.
 
 ## Focused check and teach-back
 
-Calculate one baseline signature value, show one dimensional check, predict both sweeps, reproduce the named failure, and demonstrate exact recovery. Then teach the lesson back without starting from the plots: state the convention, derive the governing relationship, explain the invariant, identify the practical failure, and name the evidence boundary. Finish by naming the prerequisite module and the next mapped module that consumes this artifact.
+At q=[1,0] m, why does projecting [1,0] m/s produce zero, and why can zero radius error fail to diagnose the broken mode?
+
+Answer rationale: The requested velocity is wholly normal to the constraint and has no tangent component. With zero input offset the configuration is already valid, but a nonzero outward velocity violates J_h v=0. Both configuration and velocity evidence are needed.
+
+Use the embedded Course checkpoint to collect a default record, a sweep, a faulty record and a recovered record. Explain the evidence to a colleague using the governing relation and units, then name the untested boundary. This is a self-assessment; no learner score is stored.

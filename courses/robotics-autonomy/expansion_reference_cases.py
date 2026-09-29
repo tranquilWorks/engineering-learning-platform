@@ -16,20 +16,59 @@ _NATIVE_FIXTURES: dict[int, dict[str, list[float]]] = {}
 def _key(parameters: dict[str, Any]) -> str:
     return json.dumps(parameters, sort_keys=True, separators=(",", ":"))
 
-def _p25(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[25][_key(p)])
+def _p25(p):
+    angle=np.linspace(-float(p['joint_span_rad'])/2,float(p['joint_span_rad'])/2,121)
+    radius=1+float(p['constraint_offset_m']) if p['broken_mode'] else 1.
+    distance=np.hypot(radius*np.cos(angle)-1.5,radius*np.sin(angle)-.5)-.2
+    return [abs(radius-1),1.,min(distance)]
 
-def _p26(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[26][_key(p)])
+def _p26(p):
+    a=np.deg2rad(float(p['rotation_angle_deg'])); distance=float(p['translation_m']); phi=np.pi/6
+    def rz(v): return np.array([np.cos(a)*v[0]-np.sin(a)*v[1],np.sin(a)*v[0]+np.cos(a)*v[1],v[2]])
+    def rx(v): return np.array([v[0],np.cos(phi)*v[1]-np.sin(phi)*v[2],np.sin(phi)*v[1]+np.cos(phi)*v[2]])
+    point=np.array([.3,.2,.4]); b=np.array([0,.25,.1]); ta=np.array([0,distance,0])
+    ab=rz(rx(point)+b)+ta; ba=rx(rz(point)+ta)+b
+    # For affine interpolation each transverse squared norm is 1-2f(1-f)(1-cos a).
+    defect=.5*(1-np.cos(a)) if p['broken_mode'] else 0.
+    return [np.sqrt(2)*defect,defect,np.linalg.norm(ab-ba)]
 
-def _p27(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[27][_key(p)])
+def _p27(p):
+    lever=float(p['lever_arm_m']); speed=float(p['angular_speed_rad_s']); angular=np.array([0.,0.,speed]); linear=np.array([.2,.3,.1]); force=np.array([2.,-1.,.5]); moment=np.array([.1,.2,.3])
+    powers=[]
+    for fraction in np.linspace(0,1,121):
+        angle=np.pi*fraction/3; phase=np.exp(1j*angle)
+        def rotate(v):
+            xy=phase*complex(v[0],v[1]); return np.array([xy.real,xy.imag,v[2]])
+        t=np.array([lever*fraction,.2*lever*fraction,0.]); w=rotate(angular); v=rotate(linear)+np.cross(t,w)
+        if p['broken_mode']: n=rotate(moment); f=rotate(force)+np.cross(t,n)
+        else: f=rotate(force); n=rotate(moment)+np.cross(t,f)
+        powers.append(n@w+f@v)
+    return [max(abs(np.asarray(powers)-(moment@angular+force@linear))),0.,.1/speed]
 
-def _p28(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[28][_key(p)])
+def _p28(p):
+    a=float(p['elbow_angle_deg'])*np.pi/180; length=float(p['link_ratio']); q=np.array([.4,a])
+    def position(joints):
+        return np.array([np.cos(joints[0])+length*np.cos(joints.sum()),np.sin(joints[0])+length*np.sin(joints.sum())])
+    J=np.column_stack([np.imag(position(q.astype(complex)+1e-20j*axis))/1e-20 for axis in np.eye(2)])
+    difference=np.linalg.norm(J[:,1]) if p['broken_mode'] else 0.
+    if p['broken_mode']: J[:,1]=0.
+    # Eigenvalues of the 2x2 Gram matrix; stable small value via determinant / large value.
+    G=J.T@J; trace=np.trace(G); determinant=max(0.,np.linalg.det(G)); large=(trace+np.sqrt(max(0.,trace*trace-4*determinant)))/2
+    small=determinant/large
+    return [np.sqrt(small),np.sqrt(determinant),difference]
 
-def _p29(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[29][_key(p)])
+def _p29(p):
+    q=np.array([.3,-.7,.9]); lengths=np.array([1.,.8,.6]); cumulative=np.cumsum(q)
+    # Complex-step forward-kinematic derivative, independently of the analytic Jacobian.
+    def position(joints):
+        a=np.cumsum(joints); return np.array([np.sum(lengths*np.cos(a)),np.sum(lengths*np.sin(a))])
+    J=np.column_stack([position(q.astype(complex)+1e-20j*axis).imag/1e-20 for axis in np.eye(3)])
+    U,s,Vt=np.linalg.svd(J,full_matrices=False); damping=float(p['damping']); desired=np.array([.1,-.06])
+    primary=Vt.T@((s/(s*s+damping*damping))*(U.T@desired))
+    null=np.cross(J[0],J[1]); null/=np.linalg.norm(null)
+    secondary=-float(p['null_gain_per_s'])*(q if p['broken_mode'] else null*(null@q))
+    joint=primary+secondary
+    return [np.linalg.norm(J@joint-desired),np.linalg.norm(J@secondary),np.linalg.norm(joint)]
 
 def _p30(p: dict[str, Any]) -> list[float]:
     return list(_NATIVE_FIXTURES[30][_key(p)])

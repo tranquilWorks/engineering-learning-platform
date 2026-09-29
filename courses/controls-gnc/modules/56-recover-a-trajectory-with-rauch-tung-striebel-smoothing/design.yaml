@@ -7,21 +7,24 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- C_k=P_k F^T(P^-_{k+1})^-1
-- x^s_k=x_k+C_k(x^s_{k+1}-x^-_{k+1})
-- P^s_k=P_k+C_k(P^s_{k+1}-P^-_{k+1})C_k^T
+- x[k+1]=x[k]+w[k]; y[k]=x[k]+v[k]; Q=q m²; R=r m²
+- K=Pminus/(Pminus+r); Pplus=(1-K)²Pminus+K²r
+- C[k]=Pf[k]/Pminus[k+1]; ms[k]=mf[k]+C[k](ms[k+1]-mminus[k+1])
+- Ps[k]=Pf[k]+C[k]²(Ps[k+1]-Pminus[k+1])
 signature:
 - field: filtered_variance
-  unit: '1'
+  unit: m^2
 - field: smoothed_variance
-  unit: '1'
+  unit: m^2
 - field: variance_reduction
-  unit: '1'
-teaching_invariant: RTS smoothed covariance is no larger than filtered covariance for the same linear-Gaussian model
-  and complete future data.
+  unit: m^2
+teaching_invariant: Predict which sample cannot benefit from the backward pass, and whether smaller model covariance
+  guarantees smaller error in every realization.
 limiting_cases:
-- At the final sample smoothed and filtered estimates coincide.
-- With no future information the smoother cannot reduce uncertainty.
+- At the final sample no future measurement exists, so filter and smoother coincide.
+- Positive q and r maintain positive covariance.
+- A smoother uses a completed record and is not causal real-time estimation.
+- Model covariance and realized RMSE answer different questions.
 scenarios:
   baseline: &id001
     process_variance: 0.08
@@ -48,5 +51,5 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic software evidence only. Browser/container checks are separately recorded.
+  No MATLAB runtime, representative learner, manual screen-reader, hardware, certification or production acceptance.

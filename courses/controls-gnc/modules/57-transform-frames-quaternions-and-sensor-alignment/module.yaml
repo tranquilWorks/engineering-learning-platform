@@ -1,10 +1,11 @@
 schema_version: 1
 id: 57-transform-frames-quaternions-and-sensor-alignment
 number: 57
-title: Transform Frames, Quaternions, and Sensor Alignment
-summary: Rotate a body vector by a yaw quaternion, apply a sensor misalignment, and verify norm and DCM orthogonality
-  invariants.
-guiding_question: How do quaternion normalization and frame order prevent silent attitude and alignment errors?
+title: Compose Quaternions and Calibrate Sensor Vectors
+summary: Scalar-first active quaternions compose sensor-to-body followed by body-to-world rotation. Residuals
+  come from the actual matrices and vectors. A scaled identity quaternion is a special case where the unit-quaternion
+  matrix formula can look correct despite an invalid quaternion norm.
+guiding_question: At zero yaw and zero misalignment, does zero matrix residual prove that the fault is absent?
 status: implemented
 tags:
 - controls-gnc
@@ -41,10 +42,9 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: A normalized quaternion produces an orthogonal proper rotation that preserves vector norm; alignment order
-    remains explicit.
-  reveal: Convert units, normalize the quaternion, state active/passive frame order, and recheck vector norm and
-    determinant.
+  text: Predict whether a quaternion norm fault can escape a matrix check at zero total rotation.
+  reveal: No. The scalar quaternion can have norm 1.2 while its vector part is zero; the assumed-unit matrix
+    formula still yields identity. Inspect the quaternion norm and declare the formula precondition.
 - type: controls
   title: Design controls
 - type: metrics
@@ -65,3 +65,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

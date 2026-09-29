@@ -7,9 +7,9 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- q=[cos(psi/2),0,0,sin(psi/2)]
-- v_n=R_nb v_b
-- R^T R=I and det R=1
+- q=[w,x,y,z]; q_world_sensor=q_world_body ⊗ q_body_sensor
+- q_normalized=q/||q||; R(q)^T R(q)=I for unit q
+- v_world=R(q_world_sensor)v_sensor
 signature:
 - field: quaternion_norm_error
   unit: '1'
@@ -17,11 +17,12 @@ signature:
   unit: '1'
 - field: alignment_vector_error
   unit: '1'
-teaching_invariant: A normalized quaternion produces an orthogonal proper rotation that preserves vector norm; alignment
-  order remains explicit.
+teaching_invariant: Predict whether a quaternion norm fault can escape a matrix check at zero total rotation.
 limiting_cases:
-- Zero yaw produces the identity rotation.
-- Any proper rotation preserves Euclidean vector length.
+- q and -q encode the same rotation.
+- At identity the unit-quaternion matrix formula can return identity even for [1.2,0,0,0], so a matrix-only
+  test can miss invalid quaternion norm.
+- This is a static calibration/rotation exercise, not an attitude filter.
 scenarios:
   baseline: &id001
     yaw_angle_deg: 35.0
@@ -48,5 +49,5 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic software evidence only. Browser/container checks are separately recorded.
+  No MATLAB runtime, representative learner, manual screen-reader, hardware, certification or production acceptance.

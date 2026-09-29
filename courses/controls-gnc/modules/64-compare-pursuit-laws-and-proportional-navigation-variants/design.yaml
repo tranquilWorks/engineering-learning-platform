@@ -7,21 +7,24 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- a_n=N V_c lambda_dot
-- V_c=-R_dot>0 for closing
-- augmented PN adds target acceleration estimate
+- Rdot=r·vrel/||r||; lambda_dot=cross(r,vrel)/||r||²
+- a_PN=N max(-Rdot,0) lambda_dot; heading_dot=a/3
+- a_pursuit=v_p k_heading wrap(lambda-heading); v_p=3 m/s; k_heading=1.5/s
+- a_augmented=a_PN+(N/2) v_beacon omega_beacon cos(heading_beacon-heading); v_beacon=1 m/s
 signature:
-- field: pn_acceleration_demand
+- field: initial_command
   unit: m/s^2
-- field: miss_distance_proxy
+- field: sampled_closest
   unit: m
-- field: closing_sign
-  unit: '1'
-teaching_invariant: For a closing engagement with correct LOS-rate sign, N greater than two reduces the nonmaneuvering
-  miss proxy while increasing acceleration demand.
+- field: observed_duration
+  unit: s
+teaching_invariant: Predict how reversing the measured line-of-sight rate changes the initial PN command and
+  the integrated path.
 limiting_cases:
-- At zero LOS rate classical PN commands zero lateral acceleration.
-- Target maneuver increases required acceleration and residual miss when not estimated.
+- Capture is a one-metre event, not zero-distance contact.
+- Closest approach is sampled.
+- No actuator saturation, collision planning, sensor noise or universal capture guarantee is included.
+- A comparison ending early has a shorter observation window.
 scenarios:
   baseline: &id001
     navigation_constant: 3.5
@@ -48,5 +51,5 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic software evidence only. Browser/container checks are separately recorded.
+  No MATLAB runtime, representative learner, manual screen-reader, hardware, certification or production acceptance.

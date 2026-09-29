@@ -1,11 +1,11 @@
 schema_version: 1
 id: 65-enforce-terminal-and-actuator-aware-guidance-constraints
 number: 65
-title: Enforce Terminal and Actuator-Aware Guidance Constraints
-summary: Compare required terminal acceleration with actuator authority and propagate the residual terminal miss
-  under saturation.
-guiding_question: How do terminal requirements change when the actuator cannot deliver the unconstrained guidance
-  command?
+title: Solve a Bounded Terminal Guidance Objective
+summary: A twenty-interval bounded least-squares solve balances terminal position, terminal velocity and command
+  effort. Actual applied commands propagate the double integrator. Finite terminal weights permit residual
+  even when exact arrival is feasible; broken mode applies the unconstrained optimum.
+guiding_question: Why is a positive terminal residual compatible with a correct bounded optimizer?
 status: implemented
 tags:
 - controls-gnc
@@ -42,10 +42,11 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: The applied command never exceeds actuator authority; an infeasible terminal requirement must appear as
-    residual error, not a hidden command.
-  reveal: Restore saturation, propagate the constrained plant, and renegotiate terminal requirements when authority
-    is insufficient.
+  text: Predict whether a finite terminal penalty forces exact arrival, even when the command limits permit
+    arrival.
+  reveal: Bounds may make exact arrival infeasible, and finite penalties trade residual against effort even
+    when arrival is feasible. Correctness requires executed dynamics, feasible controls and optimality evidence,
+    not an assigned zero endpoint.
 - type: controls
   title: Design controls
 - type: metrics
@@ -66,3 +67,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

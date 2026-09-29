@@ -8,11 +8,30 @@ passed. Its historical evidence retains the exact image and screenshot hashes.
 | Curriculum | Native lessons | Current content position |
 | --- | ---: | --- |
 | DSP/Radar | 84 | 84 checkpoints, ten cumulative portfolios and aggregate authored/software review verified |
-| Controls/GNC | 68 | P36/P38/P42/P43/P45–P51/P55 and P66–P68 repaired within declared models; 7 findings remain blocked |
-| Robotics/Autonomy | 69 | P68–P69 repaired within declared models; 25 additional findings remain blocked |
+| Controls/GNC | 68 | P36/P38/P42/P43/P45–P51/P55–P57/P60–P62/P64–P68 repaired within declared models; zero listed findings; aggregate reassessment remains blocked |
+| Robotics/Autonomy | 69 | P25–P29 and P68–P69 repaired within declared models; 20 findings remain blocked |
 | Vehicle Dynamics | 67 | P61–P67 repaired within declared models; P01–P16 presentation findings remain blocked |
 
-## Twelve-lesson model revision
+## Navigation and geometry revision
+
+Controls P56/P57/P60–P62/P64–P65 and Robotics P25–P29 now execute their declared
+models and expose twelve individual Course checkpoints. Sixty independent
+comparisons and forty-three physical/preservation tests passed, including all 96
+control corners through the unchanged runtime. Twenty-four selected
+desktop/mobile page and interaction checks passed in the baked preflight.
+The default P62 fault is 16 m so its threshold sweep crosses the computed alarm
+boundary; thresholds five and ten respectively exclude and retain the row.
+
+This closes twelve scoped findings. The register now contains 36 findings:
+Controls 0, Robotics 20 and Vehicle 16. Controls still requires its separate
+aggregate numerical/curriculum/capstone reassessment; this defect register is
+not exhaustive. Final delivery passed 290 HTTP modules, 580 desktop/mobile pages,
+216 checkpoint checks, 104 real interactions and 21 focused browser tests.
+All 290 host/baked module identities match. Contract, quick and full gates passed
+sequentially. Exact results are recorded in
+[navigation/geometry evidence](evidence/ELP-NAV-GEOMETRY-QUALITY-12-2026-09-29.md).
+
+## Initial twelve-lesson model revision
 
 The initial audit found 72 affected lessons. The current scoped revision replaces
 Controls' algebraic capstone surrogates with executed identification/control/filter,
@@ -34,7 +53,7 @@ lessons have post-interaction drawn-curve assertions. PR53 records integration. 
 
 The browser's expanded lesson review identifies exactly what was checked.
 This is scoped synthetic-model evidence, not whole-course or learner acceptance.
-The remaining 48 findings are individually embedded and retained in the
+The remaining 36 findings are individually embedded and retained in the
 [additional finding register](course-quality/additional-semantic-findings.md).
 No unlisted lesson is automatically certified. Controls, Robotics and Vehicle aggregate numerical, curriculum and capstone stages
 remain blocked. DSP passes the separate authored/synthetic aggregate review

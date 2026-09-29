@@ -8,8 +8,9 @@ or learner outcomes.
 
 The authoritative machine-readable projection is
 [`course-caliber-status.yaml`](course-caliber-status.yaml). It implements
-Portfolio Control standard `ELP-COURSE-CALIBER-1` with the current DSP aggregate contract at merged control
-revision `7b2e3c1e425b196b400856a714f699f2e225a83a`.
+Portfolio Control standard `ELP-COURSE-CALIBER-1` with the navigation/geometry revision contract at merged control
+revision `15f2c1537b2be9710143d03ffbc182574de51376`. DSP retains its separate
+aggregate evidence from control revision `7b2e3c1e425b196b400856a714f699f2e225a83a`.
 
 ## Six separately evidenced stages
 
@@ -54,13 +55,13 @@ import the production entrypoint, derive values from production output, or
 perturb production output. Those artifacts may be useful regression fixtures,
 but they are not independent correctness oracles.
 
-## Current disposition (2026-09-28)
+## Current disposition (2026-09-29)
 
 | Course | Native interactive lessons | Required follow-up |
 | --- | ---: | --- |
 | DSP/Radar | 84 | Authored/software aggregate review passed: 84 checkpoints, ten cumulative portfolios and 417 independent comparisons; learner validation not_run |
-| Controls/GNC | 68 | 7 remaining affected lessons; fifteen lessons have scoped numerical/physical repairs |
-| Robotics/Autonomy | 69 | 25 remaining affected lessons; two capstones have scoped numerical/physical repairs |
+| Controls/GNC | 68 | Zero listed findings; 22 lessons have scoped repairs; aggregate reassessment remains pending |
+| Robotics/Autonomy | 69 | 20 remaining affected lessons; P25–P29 and two capstones have scoped repairs |
 | Vehicle Dynamics | 67 | 16 remaining affected lessons: P01–P16 mixed-unit charts; P61–P67 have scoped numerical/physical repairs |
 
 Controls, Robotics and Vehicle aggregate numerical, curriculum and capstone
@@ -80,5 +81,5 @@ Robotics or Vehicle aggregate maturity. See the per-lesson additional finding re
 
 The separate DSP aggregate review closes its declared authored curriculum and
 synthetic numerical/pulsed-capstone scope. Controls, Robotics and Vehicle remain
-blocked by 48 named findings. No course has representative-learner validation.
+blocked: 36 named findings remain in Robotics/Vehicle, and Controls requires a separate aggregate reassessment despite zero listed findings. No course has representative-learner validation.
 See course-caliber-status.yaml and the exact aggregate evidence.

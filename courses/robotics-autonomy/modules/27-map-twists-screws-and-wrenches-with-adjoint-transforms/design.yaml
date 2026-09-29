@@ -7,21 +7,22 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- V_a=Ad_T V_b
-- F_a=Ad_T^{-T} F_b
-- F^T V is frame invariant
+- V=[omega;v]; W=[moment;force]; power=W^T V
+- Ad_T=[[R,0],[[t]cross R,R]]; V_A=Ad_T V_B
+- W_A=Ad_T^-T W_B; pitch=omega·v/(omega·omega)
 signature:
-- field: power_invariance_error
+- field: power_error
   unit: W
-- field: adjoint_roundtrip_error
-  unit: '1'
+- field: linear_roundtrip
+  unit: m/s
 - field: screw_pitch
   unit: m/rad
-teaching_invariant: A twist and its dual wrench must transform contragrediently so instantaneous power is frame
-  invariant.
+teaching_invariant: Predict which transform preserves the scalar power pairing when the frame origin is translated.
 limiting_cases:
-- At zero lever arm, translation-rotation coupling vanishes.
-- A pure rotation screw has zero pitch when axial translation is zero.
+- At zero transform fraction the adjoint is identity and the wrong wrench map can coincide with the correct
+  map.
+- Zero power discrepancy at one frame is insufficient.
+- Pure translation has no finite pitch under this formula, and this lab deliberately keeps angular speed positive.
 scenarios:
   baseline: &id001
     lever_arm_m: 0.45
@@ -48,5 +49,5 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic software evidence only. Browser/container checks are separately recorded.
+  No MATLAB runtime, representative learner, manual screen-reader, hardware, certification or production acceptance.

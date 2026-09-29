@@ -1,10 +1,12 @@
 schema_version: 1
 id: 56-recover-a-trajectory-with-rauch-tung-striebel-smoothing
 number: 56
-title: Recover a Trajectory with Rauch-Tung-Striebel Smoothing
-summary: Compare scalar filtered and RTS-smoothed covariance and quantify the lagged improvement without calling
-  it real-time estimation.
-guiding_question: Why can a backward smoothing pass reduce past uncertainty after future measurements arrive?
+title: Recover a Trajectory with RTS Smoothing
+summary: The plotted smoother executes a backward RTS pass over all 41 retained measurements. Its last state/covariance
+  equal the filter. Model covariance reduction does not guarantee a smaller error for every individual measurement
+  realization.
+guiding_question: Why must the final smoother covariance equal the filter covariance, and why is a fixed 35
+  percent improvement incorrect?
 status: implemented
 tags:
 - controls-gnc
@@ -20,7 +22,7 @@ controls:
   type: slider
   label: Process variance
   default: 0.08
-  unit: '1'
+  unit: m^2
   minimum: 0.001
   maximum: 0.5
   step: 0.01
@@ -28,7 +30,7 @@ controls:
   type: slider
   label: Measurement variance
   default: 0.4
-  unit: '1'
+  unit: m^2
   minimum: 0.02
   maximum: 2.0
   step: 0.02
@@ -41,9 +43,11 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: RTS smoothed covariance is no larger than filtered covariance for the same linear-Gaussian model and complete
-    future data.
-  reveal: Restore the backward recursion after the forward filter completes and label the result offline, not causal.
+  text: Predict which sample cannot benefit from the backward pass, and whether smaller model covariance guarantees
+    smaller error in every realization.
+  reveal: The backward recursion is initialized by the final filtered pair. Earlier reductions depend on the
+    retained covariance ratios and future observations; no universal percentage follows. A lower posterior
+    covariance describes the model distribution, not guaranteed improvement for every observed truth trace.
 - type: controls
   title: Design controls
 - type: metrics
@@ -64,3 +68,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md
