@@ -1,7 +1,8 @@
 # Twelve Controls/GNC quality repairs
 
 Status: implementation and all required local numerical, browser/container and
-repository gates passed. The development PR is the authoritative merge record.
+repository gates passed. Development [PR55](https://github.com/tranquilWorks/engineering-learning-platform/pull/55)
+is the authoritative merge record.
 
 ## Authorization and exact boundary
 

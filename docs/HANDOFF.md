@@ -6,7 +6,8 @@ Controls models/checkpoints, sixty independent local and baked-HTTP comparisons,
 contract/quick/full gates passed. The final preview is `http://127.0.0.1:8772`.
 Active control contract revision is `6d81736bba58cc05f6ccc78e4a3ad66386d731bb`
 (control PR551). See the new batch evidence and its development PR for exact
-results and integration status. This contract is retained history after merge;
+results and integration status: [PR55](https://github.com/tranquilWorks/engineering-learning-platform/pull/55).
+This contract is retained history after merge;
 use a fresh exact-baseline contract for further course repairs.
 
 ## Previous completed sequence
