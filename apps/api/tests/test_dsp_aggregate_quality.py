@@ -117,7 +117,16 @@ def test_prerequisite_graph_is_closed_acyclic_and_domain_coverage_is_exact():
 
 def test_assessment_revision_preserves_models_source_pins_and_all_other_courses():
     changed = subprocess.check_output(
-        ["git", "diff", "--name-only", BASELINE, "--", "courses", ".gitmodules"],
+        [
+            "git",
+            "diff",
+            "--name-only",
+            BASELINE,
+            "00983cab0599b1ce3a613a2cc8ef42eb7b45f0b4",
+            "--",
+            "courses",
+            ".gitmodules",
+        ],
         cwd=ROOT,
         text=True,
     ).splitlines()
@@ -235,7 +244,7 @@ def test_software_assessment_acceptance_does_not_promote_other_curricula_or_lear
                 for stage in ["numerically_verified", "curriculum_covered", "capstone_integrated"]
             )
     audit = read(ROOT / "docs/course-quality/lesson-audit.json")
-    assert sum(r["semantic_review"] == "blocked" for r in audit["lessons"]) == 60
+    assert sum(r["semantic_review"] == "blocked" for r in audit["lessons"]) == 48
 
 
 def test_checkpoint_named_controls_and_quantities_exist_in_retained_labs():

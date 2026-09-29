@@ -7,21 +7,22 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- x_{k+1}=x_k+u_k
-- J=sum(x_k-r)^2+.1u_k^2
-- '|u_k|<=u_max'
+- x[k+1]=x[k]+u[k]; x[0]=1.5; reference=0
+- J=sum_{j=1..N} x[j]^2 + 0.1*sum_{j=0..N-1} u[j]^2
+- minimize J subject to -limit<=u[j]<=limit; apply first move and re-solve
 signature:
-- field: first_control_move
+- field: first_optimized_move
   unit: '1'
-- field: constraint_activity
+- field: applied_constraint_violation
   unit: '1'
-- field: predicted_terminal_error
+- field: first_plan_terminal_error
   unit: '1'
-teaching_invariant: The applied MPC move satisfies the declared input bound; an unconstrained optimum is not a feasible
-  control law when it exceeds that bound.
+teaching_invariant: Every healthy predicted and applied input obeys its bound.
 limiting_cases:
-- With zero initial error the optimal move is zero.
-- As input limit grows, the constrained move approaches the unconstrained optimum.
+- Every healthy predicted and applied input obeys its bound.
+- The prediction satisfies x[j+1]=x[j]+u[j] at every step.
+- For this scalar regulation problem, later optimal moves shrink; this special structure permits an independent
+  Bellman solution, not a shortcut for arbitrary MPC.
 scenarios:
   baseline: &id001
     prediction_horizon: 6.0
@@ -48,5 +49,6 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic Python model and authored self-check. Independent numerical and browser/container
+  checks are recorded separately; learner outcomes, MATLAB, manual screen-reader, hardware and production acceptance
+  not_run.

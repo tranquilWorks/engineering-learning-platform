@@ -5,22 +5,39 @@ from typing import Any
 import numpy as np
 
 ITEM_NUMBER = 55
-BROKEN_TEXT = 'Broken mode negates the central covariance weight, yielding a nonphysical moment estimate.'
-RECOVERY_TEXT = 'Restore normalized mean/covariance weights and compare transformed moments to an analytic case before filtering data.'
+BROKEN_TEXT = "Broken mode omits the Gaussian covariance correction and reuses mean weights for covariance. Mean remains correct, but variance becomes (alpha²−1)*sigma⁴: zero at alpha=1 and negative for alpha<1."
+RECOVERY_TEXT = "Restore the beta=2 covariance correction and reset both controls. Check both computed moments against analytic Gaussian values; do not reject a transform solely because its central mean weight is negative."
 
 
-def _trace(name: str, x: Any, y: Any, x_quantity: str, x_unit: str,
-           y_quantity: str, y_unit: str, *, mode: str = "lines") -> dict[str, Any]:
+def _trace(
+    name: str,
+    x: Any,
+    y: Any,
+    x_quantity: str,
+    x_unit: str,
+    y_quantity: str,
+    y_unit: str,
+    *,
+    mode: str = "lines",
+) -> dict[str, Any]:
     return {
-        "type": "scattergl", "mode": mode, "name": name,
-        "x": np.asarray(x, dtype=float), "y": np.asarray(y, dtype=float),
-        "meta": {"x_quantity": x_quantity, "x_unit": x_unit,
-                 "y_quantity": y_quantity, "y_unit": y_unit},
+        "type": "scatter",
+        "mode": mode,
+        "name": name,
+        "x": np.asarray(x, dtype=float),
+        "y": np.asarray(y, dtype=float),
+        "meta": {
+            "x_quantity": x_quantity,
+            "x_unit": x_unit,
+            "y_quantity": y_quantity,
+            "y_unit": y_unit,
+        },
     }
 
 
-def _plot(title: str, x_title: str, y_title: str,
-          traces: list[dict[str, Any]]) -> dict[str, Any]:
+def _plot(
+    title: str, x_title: str, y_title: str, traces: list[dict[str, Any]]
+) -> dict[str, Any]:
     return {
         "data": traces,
         "layout": {
@@ -29,7 +46,8 @@ def _plot(title: str, x_title: str, y_title: str,
             "yaxis": {"title": {"text": y_title}},
             "legend": {"orientation": "h"},
             "margin": {"l": 72, "r": 36, "t": 62, "b": 62},
-            "hovermode": "closest", "uirevision": "keep-view",
+            "hovermode": "closest",
+            "uirevision": "keep-view",
         },
         "config": {"responsive": True, "displaylogo": False},
     }
@@ -38,8 +56,13 @@ def _plot(title: str, x_title: str, y_title: str,
 def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
     return {
         "metrics": [
-            {"id": key, "label": label, "value": float(value), "unit": unit,
-              "emphasis": "primary" if index == 0 else "normal"}
+            {
+                "id": key,
+                "label": label,
+                "value": float(value),
+                "unit": unit,
+                "emphasis": "primary" if index == 0 else "normal",
+            }
             for index, (key, label, value, unit) in enumerate(model["metrics"])
         ],
         "plots": model["plots"],
@@ -50,27 +73,99 @@ def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
         },
         "diagnostics": {
             "item_number": ITEM_NUMBER,
+            **model.get("details", {}),
             "broken_active": bool(broken),
             "signature": [float(value) for value in model["signature"]],
         },
     }
 
-def _model(p: dict[str, Any], broken: bool) -> dict[str, Any]:
-    a=float(p["state_standard_deviation"]); b=float(p["sigma_spread"])
-    if broken: a=0.8; b=0.2
-    x=np.linspace(0.,10.,240)
-    signature=[float(0. if not broken else a*a),float(0. if not broken else 2*a**4),float(-1. if broken else 1/(2*b*b+1))]
-    y1=np.asarray(x*x,dtype=float); y2=np.asarray(np.full_like(x,a*a),dtype=float)
-    z1=np.asarray((x*x-a*a)**2,dtype=float); z2=np.asarray(np.full_like(x,2*a**4),dtype=float)
-    if y1.ndim==0: y1=np.full_like(x,float(y1))
-    if y2.ndim==0: y2=np.full_like(x,float(y2))
-    if z1.ndim==0: z1=np.full_like(x,float(z1))
-    if z2.ndim==0: z2=np.full_like(x,float(z2))
-    return {"signature":signature,"metrics":[("transformed_mean_error", "Transformed Mean Error", signature[0], "1"),("transformed_variance_error", "Transformed Variance Error", signature[1], "1"),("minimum_weight", "Minimum Weight", signature[2], "1")],"plots":{
-      "response":_plot("Unscented transform of x squared","Sigma-point state (1)","Transformed value (1)",[_trace("Nominal/filtered",x,y1,"Sigma-point state","1","Transformed value","1"),_trace("Reference/boundary",x,y2,"Sigma-point state","1","Transformed value","1")]),
-      "mechanism":_plot("Analytic transformed dispersion","Sigma-point state (1)","Squared deviation (1)",[_trace("Mechanism",x,z1,"Sigma-point state","1","Squared deviation","1"),_trace("Requirement/reference",x,z2,"Sigma-point state","1","Squared deviation","1")])},
-      "observation":"A valid symmetric transform reproduces the declared nonlinear moments within its quadrature order and uses weights that sum to one."}
 
+def _model(p, broken):
+    sigma = float(p["state_standard_deviation"])
+    alpha = float(p["sigma_spread"])
+    points = np.array([0.0, alpha * sigma, -alpha * sigma])
+    wm = np.array([1 - 1 / alpha**2, 1 / (2 * alpha**2), 1 / (2 * alpha**2)])
+    wc = wm.copy()
+    if not broken:
+        wc[0] += 1 - alpha**2 + 2
+    transformed = points**2
+    mean = wm @ transformed
+    contributions = wc * (transformed - mean) ** 2
+    variance = sum(contributions)
+    exact_mean = sigma * sigma
+    exact_variance = 2 * sigma**4
+    grid = np.linspace(-2 * sigma, 2 * sigma, 161)
+    return {
+        "signature": [abs(mean - exact_mean), abs(variance - exact_variance), min(wm)],
+        "metrics": [
+            ("mean_error", "Transformed mean error", abs(mean - exact_mean), "1"),
+            (
+                "variance_error",
+                "Transformed variance error",
+                abs(variance - exact_variance),
+                "1",
+            ),
+            ("weight", "Minimum mean weight", min(wm), "1"),
+            ("mean", "Computed transformed mean", mean, "1"),
+            ("variance", "Computed transformed variance", variance, "1"),
+            ("wc_sum", "Covariance weight sum", sum(wc), "1"),
+        ],
+        "plots": {
+            "response": _plot(
+                "Actual sigma-point transform",
+                "Normalized state (1)",
+                "Squared state (1)",
+                [
+                    _trace(
+                        "Square transform",
+                        grid,
+                        grid**2,
+                        "Normalized state",
+                        "1",
+                        "Squared state",
+                        "1",
+                    ),
+                    _trace(
+                        "Transformed sigma points",
+                        points,
+                        transformed,
+                        "Normalized state",
+                        "1",
+                        "Squared state",
+                        "1",
+                        mode="markers",
+                    ),
+                ],
+            ),
+            "mechanism": _plot(
+                "Weighted variance contributions",
+                "Sigma-point index (1)",
+                "Variance contribution (1)",
+                [
+                    _trace(
+                        "Covariance contributions",
+                        np.arange(3),
+                        contributions,
+                        "Sigma-point index",
+                        "1",
+                        "Variance contribution",
+                        "1",
+                        mode="lines+markers",
+                    )
+                ],
+            ),
+        },
+        "details": {
+            "points": points,
+            "mean_weights": wm,
+            "covariance_weights": wc,
+            "transformed": transformed,
+            "mean": mean,
+            "variance": variance,
+            "variance_contributions": contributions,
+        },
+        "observation": "Mean weights sum to one; covariance weights generally do not. A negative central mean weight can be valid. The fault omits the Gaussian covariance correction. This experiment executes the unscented transform component, not a recursive UKF.",
+    }
 
 
 def run(parameters: dict[str, Any]) -> dict[str, Any]:

@@ -7,21 +7,22 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- p(delta)=-(1+delta)
-- lambda_cl=p(delta)-K
-- margin=min_delta -Re(lambda_cl)
+- P(s)=1/(s+a); a=1+delta; delta in [-radius,+radius] 1/s
+- S(s)=1/(1+K*P(s))=(s+a)/(s+a+K)
+- closed-loop pole=-(a+K)
 signature:
 - field: worst_stability_margin
   unit: 1/s
-- field: worst_sensitivity
+- field: sampled_band_sensitivity_peak
   unit: '1'
-- field: family_width
+- field: uncertain_pole_rate_width
   unit: 1/s
-teaching_invariant: A robust statement is valid only for every member of the explicitly swept uncertainty family
-  and the stated performance metric.
+teaching_invariant: Zero uncertainty radius collapses the family to one model.
 limiting_cases:
-- At zero uncertainty the family collapses to the nominal plant.
-- Worst margin occurs at an interval endpoint for this affine scalar family.
+- Zero uncertainty radius collapses the family to one model.
+- As frequency tends to infinity, sensitivity magnitude tends to one.
+- An unstable transfer expression is not a bounded-input bounded-output performance certificate; the sampled finite-band
+  peak is not an H-infinity norm.
 scenarios:
   baseline: &id001
     uncertainty_radius: 0.3
@@ -48,5 +49,6 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic Python model and authored self-check. Independent numerical and browser/container
+  checks are recorded separately; learner outcomes, MATLAB, manual screen-reader, hardware and production acceptance
+  not_run.

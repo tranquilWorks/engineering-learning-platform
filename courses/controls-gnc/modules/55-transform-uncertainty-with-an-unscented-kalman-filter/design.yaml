@@ -7,21 +7,21 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- y=x^2
-- E[y]=sigma^2
-- Var[y]=2 sigma^4
+- x~N(0,sigma^2); y=x^2; E[y]=sigma^2; Var[y]=2*sigma^4
+- points=[0,+alpha*sigma,-alpha*sigma]; Wm=[1-alpha^-2,1/(2*alpha^2),1/(2*alpha^2)]
+- Wc0=Wm0+1-alpha^2+beta, beta=2; mean=sum(Wm*y); variance=sum(Wc*(y-mean)^2)
 signature:
 - field: transformed_mean_error
   unit: '1'
 - field: transformed_variance_error
   unit: '1'
-- field: minimum_weight
+- field: minimum_mean_weight
   unit: '1'
-teaching_invariant: A valid symmetric transform reproduces the declared nonlinear moments within its quadrature
-  order and uses weights that sum to one.
+teaching_invariant: Mean weights sum to one; covariance weights generally do not.
 limiting_cases:
-- As state variance tends to zero, transformed variance tends to zero.
-- "For zero-mean Gaussian x\xB2, mean equals variance of x."
+- Mean weights sum to one; covariance weights generally do not.
+- "Symmetric points reconstruct zero input mean and variance sigma\xB2."
+- Exactness here concerns a zero-mean Gaussian squared map, not every nonlinear function or a full recursive UKF.
 scenarios:
   baseline: &id001
     state_standard_deviation: 0.8
@@ -48,5 +48,6 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic Python model and authored self-check. Independent numerical and browser/container
+  checks are recorded separately; learner outcomes, MATLAB, manual screen-reader, hardware and production acceptance
+  not_run.

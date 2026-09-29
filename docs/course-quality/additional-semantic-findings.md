@@ -1,8 +1,9 @@
 # Additional direct-review findings
 
-These 60 additional lessons were found during the wider delivery audit, beyond
-the initially selected twelve-lesson semantic repair. They remain blocked and
-are not covered by that repair contract. This is a defect register, not a claim
+The wider delivery audit recorded 60 additional lessons beyond the initial
+twelve-lesson semantic repair. Twelve Controls findings are now closed within
+their declared synthetic models; the remaining 48 (Controls 7, Robotics 25,
+Vehicle 16) remain blocked. This is a defect register, not a claim
 that all remaining lessons have passed a complete semantic review.
 
 The last sixteen findings were exposed when restored axis labels made the
@@ -12,18 +13,6 @@ lesson-specific checks require repair.
 
 | Course / lesson | Directly inspected gap |
 | --- | --- |
-| controls-gnc P36 | The displayed state-feedback control omits the velocity feedback term; recompute control from both propagated states and reconcile its units. |
-| controls-gnc P38 | The separation-principle model places poles directly but the lesson calls the design LQR; distinguish pole placement from a cost-derived optimal gain. |
-| controls-gnc P42 | The peak integral-state metric uses peak command in nominal mode and final integral state in broken mode; it does not measure the named quantity consistently. |
-| controls-gnc P43 | The declared nonlinear double-well phase portrait is replaced by an exponential sinusoid and unrelated energy formulas; the stated dynamics are not integrated. |
-| controls-gnc P45 | The barrier plot extrapolates one fixed command without reevaluating the state-dependent barrier; it can cross the safety boundary while presented as a filtered trajectory. |
-| controls-gnc P46 | The interpolation error is assigned from grid spacing instead of measuring interpolation of a sampled gain schedule. |
-| controls-gnc P47 | The quadratic feedback-linearization model is replaced by a linear exponential and an algebraic terminal-error formula; the nonlinear closed loop is not executed. |
-| controls-gnc P48 | The uncertainty plot does not sweep the declared uncertainty interval, and the inverse decay-rate metric is labeled dimensionless sensitivity without a defined transfer response. |
-| controls-gnc P49 | The MPC lesson clips a fixed move and divides a residual by horizon; it does not minimize the stated horizon cost or execute receding-horizon control. |
-| controls-gnc P50 | Identification conditioning, parameter error and held-out residual are algebraic functions of excitation settings; no dynamic model is fitted or validated. |
-| controls-gnc P51 | The online-identification lesson does not execute its recursive least-squares update; error and covariance metrics are parameter formulas. |
-| controls-gnc P55 | Unscented-transform errors and weights are assigned directly; sigma points and their weighted transformed moments are not computed. |
 | controls-gnc P56 | The claimed RTS smoother multiplies filtered covariance by a fixed 0.65 instead of executing a forward filter and backward smoother. |
 | controls-gnc P57 | Quaternion norm and rotation orthogonality errors are fixed constants; no quaternion-to-matrix transformation is evaluated. |
 | controls-gnc P60 | GNSS position and clock errors are algebraic dilution formulas; the claimed pseudorange position/clock solve is not executed. |
@@ -86,3 +75,26 @@ Robotics P25–36 (12), Robotics P37–48 (12), and Robotics P52 (1), and Vehicl
 groups may combine the smaller tails. Preserve unrelated model outputs and
 require real numerical mechanisms, independent oracles and meaningful teaching
 checks in a fresh scoped contract before each repair.
+
+## Closed by ELP-GNC-SEMANTIC-QUALITY-12
+
+The following original findings are retained as history. Each has five independent
+numerical comparisons, model-specific physical tests, an embedded Course checkpoint
+and desktop/mobile control, fault, recovery and reset evidence. See
+[revision evidence](gnc-quality-revision.json) and the current browser report.
+These scoped closures do not promote the Controls course aggregate.
+
+| Course / lesson | Original finding, now repaired |
+| --- | --- |
+| controls-gnc P36 | The displayed state-feedback control omits the velocity feedback term; recompute control from both propagated states and reconcile its units. |
+| controls-gnc P38 | The separation-principle model places poles directly but the lesson calls the design LQR; distinguish pole placement from a cost-derived optimal gain. |
+| controls-gnc P42 | The peak integral-state metric uses peak command in nominal mode and final integral state in broken mode; it does not measure the named quantity consistently. |
+| controls-gnc P43 | The declared nonlinear double-well phase portrait is replaced by an exponential sinusoid and unrelated energy formulas; the stated dynamics are not integrated. |
+| controls-gnc P45 | The barrier plot extrapolates one fixed command without reevaluating the state-dependent barrier; it can cross the safety boundary while presented as a filtered trajectory. |
+| controls-gnc P46 | The interpolation error is assigned from grid spacing instead of measuring interpolation of a sampled gain schedule. |
+| controls-gnc P47 | The quadratic feedback-linearization model is replaced by a linear exponential and an algebraic terminal-error formula; the nonlinear closed loop is not executed. |
+| controls-gnc P48 | The uncertainty plot does not sweep the declared uncertainty interval, and the inverse decay-rate metric is labeled dimensionless sensitivity without a defined transfer response. |
+| controls-gnc P49 | The MPC lesson clips a fixed move and divides a residual by horizon; it does not minimize the stated horizon cost or execute receding-horizon control. |
+| controls-gnc P50 | Identification conditioning, parameter error and held-out residual are algebraic functions of excitation settings; no dynamic model is fitted or validated. |
+| controls-gnc P51 | The online-identification lesson does not execute its recursive least-squares update; error and covariance metrics are parameter formulas. |
+| controls-gnc P55 | Unscented-transform errors and weights are assigned directly; sigma points and their weighted transformed moments are not computed. |

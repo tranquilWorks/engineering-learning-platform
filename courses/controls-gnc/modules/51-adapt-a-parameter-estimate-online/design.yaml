@@ -7,21 +7,23 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- K_k=P phi/(lambda+phi^T P phi)
-- theta+=K(y-phi^T theta)
-- P=(P-K phi^T P)/lambda
+- g[k]=P[k-1]*phi[k]/(lambda+phi[k]^2*P[k-1])
+- theta[k]=theta[k-1]+g[k]*(y[k]-phi[k]*theta[k-1])
+- P[k]=(P[k-1]-g[k]*phi[k]*P[k-1])/lambda
 signature:
-- field: terminal_parameter_error
+- field: final_parameter_error
   unit: '1'
-- field: terminal_covariance
+- field: final_covariance_scale
   unit: '1'
-- field: information_rate
+- field: measured_information_rate
   unit: 1/s
-teaching_invariant: Parameter convergence requires excitation; covariance must not shrink when the regressor carries
-  no information.
+teaching_invariant: At lambda=1, recursive estimates match regularized batch least squares with prior information
+  1/P0.
 limiting_cases:
-- With zero regressor the measurement contains no parameter information.
-- At lambda=1 stationary data are accumulated without exponential forgetting.
+- At lambda=1, recursive estimates match regularized batch least squares with prior information 1/P0.
+- For zero regressor the correct estimate is unchanged and P cannot shrink when lambda<=1.
+- The deterministic disturbance is explicitly 0.01*sin(0.73*k); observed error is not a statistical convergence
+  guarantee.
 scenarios:
   baseline: &id001
     forgetting_factor: 0.98
@@ -48,5 +50,6 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic Python model and authored self-check. Independent numerical and browser/container
+  checks are recorded separately; learner outcomes, MATLAB, manual screen-reader, hardware and production acceptance
+  not_run.

@@ -5,22 +5,39 @@ from typing import Any
 import numpy as np
 
 ITEM_NUMBER = 45
-BROKEN_TEXT = 'Broken mode bypasses the safety filter while commanding rapid motion toward the boundary.'
-RECOVERY_TEXT = 'Restore the projection, inspect the intervention size, and keep the claim limited to the modeled relative-degree-one constraint.'
+BROKEN_TEXT = "Broken mode bypasses the filter and continuously applies the selected nominal closing speed. At the default speed, clearance crosses zero within three seconds; slower closing can stay positive throughout this finite window. No control setting is secretly replaced."
+RECOVERY_TEXT = "Disable broken mode and reset controls. Inspect the entire clearance history, not just its first sample, and verify a nonnegative minimum barrier residual."
 
 
-def _trace(name: str, x: Any, y: Any, x_quantity: str, x_unit: str,
-           y_quantity: str, y_unit: str, *, mode: str = "lines") -> dict[str, Any]:
+def _trace(
+    name: str,
+    x: Any,
+    y: Any,
+    x_quantity: str,
+    x_unit: str,
+    y_quantity: str,
+    y_unit: str,
+    *,
+    mode: str = "lines",
+) -> dict[str, Any]:
     return {
-        "type": "scattergl", "mode": mode, "name": name,
-        "x": np.asarray(x, dtype=float), "y": np.asarray(y, dtype=float),
-        "meta": {"x_quantity": x_quantity, "x_unit": x_unit,
-                 "y_quantity": y_quantity, "y_unit": y_unit},
+        "type": "scatter",
+        "mode": mode,
+        "name": name,
+        "x": np.asarray(x, dtype=float),
+        "y": np.asarray(y, dtype=float),
+        "meta": {
+            "x_quantity": x_quantity,
+            "x_unit": x_unit,
+            "y_quantity": y_quantity,
+            "y_unit": y_unit,
+        },
     }
 
 
-def _plot(title: str, x_title: str, y_title: str,
-          traces: list[dict[str, Any]]) -> dict[str, Any]:
+def _plot(
+    title: str, x_title: str, y_title: str, traces: list[dict[str, Any]]
+) -> dict[str, Any]:
     return {
         "data": traces,
         "layout": {
@@ -29,7 +46,8 @@ def _plot(title: str, x_title: str, y_title: str,
             "yaxis": {"title": {"text": y_title}},
             "legend": {"orientation": "h"},
             "margin": {"l": 72, "r": 36, "t": 62, "b": 62},
-            "hovermode": "closest", "uirevision": "keep-view",
+            "hovermode": "closest",
+            "uirevision": "keep-view",
         },
         "config": {"responsive": True, "displaylogo": False},
     }
@@ -38,8 +56,13 @@ def _plot(title: str, x_title: str, y_title: str,
 def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
     return {
         "metrics": [
-            {"id": key, "label": label, "value": float(value), "unit": unit,
-              "emphasis": "primary" if index == 0 else "normal"}
+            {
+                "id": key,
+                "label": label,
+                "value": float(value),
+                "unit": unit,
+                "emphasis": "primary" if index == 0 else "normal",
+            }
             for index, (key, label, value, unit) in enumerate(model["metrics"])
         ],
         "plots": model["plots"],
@@ -50,27 +73,83 @@ def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
         },
         "diagnostics": {
             "item_number": ITEM_NUMBER,
+            **model.get("details", {}),
             "broken_active": bool(broken),
             "signature": [float(value) for value in model["signature"]],
         },
     }
 
-def _model(p: dict[str, Any], broken: bool) -> dict[str, Any]:
-    a=float(p["barrier_gain_per_s"]); b=float(p["nominal_closing_speed"])
-    if broken: a=2.0; b=4.0
-    x=np.linspace(0.,10.,240)
-    signature=[float(-b if broken else max(-b,-a*.4)),float(.4+.1*(-b if broken else max(-b,-a*.4))),float(0 if broken else abs(max(-b,-a*.4)+b))]
-    y1=np.asarray(.4+(-b if broken else np.maximum(-b,-a*.4))*x,dtype=float); y2=np.asarray(.4-b*x,dtype=float)
-    z1=np.asarray(np.full_like(x,-b),dtype=float); z2=np.asarray(np.full_like(x,(-b if broken else max(-b,-a*.4))),dtype=float)
-    if y1.ndim==0: y1=np.full_like(x,float(y1))
-    if y2.ndim==0: y2=np.full_like(x,float(y2))
-    if z1.ndim==0: z1=np.full_like(x,float(z1))
-    if z2.ndim==0: z2=np.full_like(x,float(z2))
-    return {"signature":signature,"metrics":[("filtered_command", "Filtered Command", signature[0], "m/s"),("one_step_safety_margin", "One Step Safety Margin", signature[1], "m"),("intervention", "Intervention", signature[2], "m/s")],"plots":{
-      "response":_plot("Barrier-filtered distance","Time (s)","Safety distance (m)",[_trace("Nominal/filtered",x,y1,"Time","s","Safety distance","m"),_trace("Reference/boundary",x,y2,"Time","s","Safety distance","m")]),
-      "mechanism":_plot("Nominal and safe commands","Time (s)","Velocity command (m/s)",[_trace("Mechanism",x,z1,"Time","s","Velocity command","m/s"),_trace("Requirement/reference",x,z2,"Time","s","Velocity command","m/s")])},
-      "observation":"The filtered command satisfies the declared barrier inequality and equals the nominal command whenever that command is already safe."}
 
+def _model(p, broken):
+    alpha = float(p["barrier_gain_per_s"])
+    speed = float(p["nominal_closing_speed"])
+    dt = 0.01
+    t = np.arange(301) * dt
+    h = np.zeros(len(t))
+    h[0] = 0.4
+    u = np.zeros(len(t))
+    for j in range(len(t)):
+        u[j] = -speed if broken else max(-speed, -alpha * h[j])
+        if j < len(t) - 1:
+            h[j + 1] = h[j] + dt * u[j]
+    residual = u + alpha * h
+    intervention = u + speed
+    return {
+        "signature": [u[0], min(h), max(intervention)],
+        "metrics": [
+            ("first", "First filtered command", u[0], "m/s"),
+            ("margin", "Minimum safety margin", min(h), "m"),
+            ("intervention", "Peak intervention", max(intervention), "m/s"),
+            ("residual", "Minimum barrier residual", min(residual), "m/s"),
+        ],
+        "plots": {
+            "response": _plot(
+                "Safety margin over time",
+                "Time (s)",
+                "Safety margin (m)",
+                [
+                    _trace("Actual clearance", t, h, "Time", "s", "Safety margin", "m"),
+                    _trace(
+                        "Boundary",
+                        t,
+                        np.zeros_like(t),
+                        "Time",
+                        "s",
+                        "Safety margin",
+                        "m",
+                    ),
+                ],
+            ),
+            "mechanism": _plot(
+                "State-dependent barrier filter",
+                "Time (s)",
+                "Velocity (m/s)",
+                [
+                    _trace("Applied command", t, u, "Time", "s", "Velocity", "m/s"),
+                    _trace(
+                        "Nominal command",
+                        t,
+                        -speed * np.ones_like(t),
+                        "Time",
+                        "s",
+                        "Velocity",
+                        "m/s",
+                    ),
+                    _trace(
+                        "Barrier residual", t, residual, "Time", "s", "Velocity", "m/s"
+                    ),
+                ],
+            ),
+        },
+        "details": {
+            "time": t,
+            "clearance": h,
+            "command": u,
+            "barrier_residual": residual,
+            "sample_period": dt,
+        },
+        "observation": "The filter is recomputed every 0.01 s. With alpha*dt <= 0.08, the sampled update preserves nonnegative clearance. Bypassing the filter applies the selected closing speed; a boundary crossing can occur inside or after the three-second observation window.",
+    }
 
 
 def run(parameters: dict[str, Any]) -> dict[str, Any]:

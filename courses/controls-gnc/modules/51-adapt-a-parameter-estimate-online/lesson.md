@@ -1,66 +1,59 @@
 # Adapt a Parameter Estimate Online
 
-**Guiding question:** When does recursive estimation learn, forget, or become falsely confident?
-
-Track a scalar parameter with RLS, relate excitation and forgetting to covariance, and expose covariance collapse without information. This is a Python-first native design derived from the reviewed competency map. It is not presented as a conversion of the pinned MATLAB source and it stays inside deterministic software simulation.
-
-## Why this lesson exists
-
-The numerical result is not the objective by itself. The objective is to connect a design decision to a governing relation, an observable consequence, a failure mechanism, and a recovery check. Record the assumptions before interpreting any curve.
+Recursive least squares updates a parameter estimate using each regressor and prediction residual. The experiment uses theta_true=1, theta_0=0 and P_0=10, with 200 samples over ten seconds. P is the RLS inverse-information scale; without a calibrated measurement-noise model it is not a certified probabilistic interval.
 
 ## Model and equations
 
-$$\text{K_k=P phi/(lambda+phi^T P phi)}$$
-$$\text{theta+=K(y-phi^T theta)}$$
-$$\text{P=(P-K phi^T P)/lambda}$$
+\[
+g_k=\frac{P_{k-1}\phi_k}{\lambda+\phi_k^2P_{k-1}},\qquad P_k=\frac{P_{k-1}-g_k\phi_kP_{k-1}}{\lambda}
+\]
 
-Carry units through the model. A pole or zero is reported in inverse seconds, angular frequency in radians per second, phase in degrees or radians as labeled, and dimensionless ratios as `1`. The experiment evaluates the displayed equations directly; it does not call a black-box synthesis toolbox.
+`g[k]=P[k-1]*phi[k]/(lambda+phi[k]^2*P[k-1])`
 
-## Predict before running
+`theta[k]=theta[k-1]+g[k]*(y[k]-phi[k]*theta[k-1])`
 
-Parameter convergence requires excitation; covariance must not shrink when the regressor carries no information. State which output should move first and which quantity should remain invariant before changing a control.
+`P[k]=(P[k-1]-g[k]*phi[k]*P[k-1])/lambda`
+
+Worked example: For lambda=0.98 and a zero regressor, gain is zero: the estimate cannot learn. The correct covariance becomes P/0.98, so uncertainty increases. Multiplying by 0.98 would report shrinking uncertainty without any information.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read all three signature metrics.
-2. Inspect the response plot for the external behavior, then the mechanism plot for the governing internal relation.
-3. Check the units and limiting cases before accepting a stability, equivalence, or performance statement.
-4. Save the baseline, change one variable only, and explain the direction of change from the equations.
+What should happen to covariance when excitation vanishes and lambda<1? Decide before enabling the broken case.
+
+Run the default controls, record the metrics, and explain the plotted quantities before changing a setting. Recursive parameter estimate displays each computed update and known truth. Covariance and missing excitation compares reported P with the correct zero-excitation evolution. Information rate is the actual sum of squared regressors divided by ten seconds.
+
+The covariance axis is logarithmic because excited and unexcited information scales can differ by many orders of magnitude.
 
 ## Two one-variable sweeps
 
-1. Hold `excitation_level` at `0.8 1` and sweep `forgetting_factor` from `0.85` through `0.98` to `1.0 1`.
-2. Restore `forgetting_factor` to `0.98 1` and sweep `excitation_level` from `0.05` through `0.8` to `2.0 1`.
-
-Do not tune both at once until you can attribute each metric change to one term in the equations. The retained evidence uses one endpoint from each sweep in addition to the baseline.
+Increase forgetting factor from 0.98 to 1 and compare retained information and parameter error. Reset, then raise excitation level from 0.8 to 2: inspect covariance and measured information rate rather than assuming a fixed error formula.
 
 ## Intentionally broken case
 
-Broken mode removes excitation while forcing covariance downward, producing false confidence with persistent parameter error. Broken mode is a named counterexample, not an alternative design recommendation.
+Broken mode sets the actual regressor to zero and uses the incorrect covariance update lambda*P. The parameter stays at zero while the reported covariance shrinks for lambda<1. The selected forgetting factor remains active.
 
 ## Recovery
 
-Restore informative excitation and covariance-consistent RLS updates, then monitor both error and uncertainty. The recovery case restores the exact baseline inputs so the evidence can prove that the failure is reversible rather than merely different.
+Restore excitation and the correct covariance recurrence, then reset the controls. Check estimate motion is accompanied by nonzero regressors and actual information accumulation.
 
 ## Limiting cases and invariants
 
-- With zero regressor the measurement contains no parameter information.
-- At lambda=1 stationary data are accumulated without exponential forgetting.
-
-Teaching invariant: Parameter convergence requires excitation; covariance must not shrink when the regressor carries no information.
+- At lambda=1, recursive estimates match regularized batch least squares with prior information 1/P0.
+- For zero regressor the correct estimate is unchanged and P cannot shrink when lambda<=1.
+- The deterministic disturbance is explicitly 0.01*sin(0.73*k); observed error is not a statistical convergence guarantee.
 
 ## Independent evidence
 
-Expected signatures are produced by `expansion_reference_cases.py`, which imports no production experiment and consumes no production result. Production signatures are retained separately. Each baseline, two sweeps, broken case, and recovery case records fields, units, tolerances, measured error, and the named invariant. Agreement supports only these equations and scenarios; it is not MATLAB execution, broad robust certification, or physical validation.
+An independent exponentially weighted batch normal equation computes the final estimate and inverse information, without replaying the production covariance recurrence. Five retained scenarios cover baseline, each one-variable sweep, fault and exact recovery. Absolute and relative tolerances remain 1e-8. The reference does not import or consume the production result.
 
 ## Common mistakes
 
-- Reading a plotted shape without checking its sign convention, units, or contour/path definition.
-- Treating a local, frequency-limited, or nominal result as a global guarantee.
-- Changing both design controls and then assigning causality to one of them.
-- Confusing a recovery that looks better with a recovery that restores the baseline invariant.
-- Claiming source equivalence, physical hardware evidence, or learner effectiveness from this software-only lab.
+A decreasing covariance curve is not proof of learning. Examine regressors, gains and estimation error together.
 
 ## Teach-back
 
-Derive one signature quantity from the displayed equations, explain what the broken case violates, and name one result that this lab cannot establish. Then describe how the two sweeps separate sensitivity to `forgetting_factor` from sensitivity to `excitation_level`.
+At lambda=1, why does the broken covariance no longer shrink, and why is the estimate still wrong?
+
+Answer rationale: Multiplication by one leaves P fixed, so this particular false-confidence symptom disappears. The zero regressor still gives zero gain and no information, leaving theta=0 instead of the true value one.
+
+Use the Course checkpoint section to assemble your own evidence. These are authored self-checks, not measured learner outcomes or hardware qualification.

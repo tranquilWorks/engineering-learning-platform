@@ -16,9 +16,10 @@ commands:
   - npm run build
   lint:
   - .venv/bin/ruff check scripts/audit_course_quality.py scripts/container-quality.py apps/api/tests/test_course_delivery_quality.py
+    scripts/verify-gnc-quality.py apps/api/tests/test_gnc_quality_revision.py
   scope:
   - git diff --check
-  - git diff --name-only b107ac198543e8dfb563c6aae4175cc87da6210d
+  - git diff --name-only 00983cab0599b1ce3a613a2cc8ef42eb7b45f0b4
   dsp-fidelity-p77-p84:
   - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B
     -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py
@@ -37,7 +38,11 @@ commands:
   dsp-aggregate-quality:
   - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_aggregate_quality.py
   - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-dsp-assessments.py
-evidence_boundary: Authored DSP curriculum and independently verified synthetic software/browser/container evidence;
-  sixty other findings remain blocked. Run contract, quick and full sequentially after owned browser/experiment
-  sweeps finish, preserving the three-second runtime limits and retaining any failed attempts. No concurrent-capacity,
-  learner, manual screen-reader, MATLAB, physical or production acceptance.
+  gnc-quality-12:
+  - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_gnc_quality_revision.py apps/api/tests/test_gnc_expansion.py
+  - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-gnc-quality.py
+  - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-gnc-quality.py --base-url http://127.0.0.1:8772
+evidence_boundary: Authored and synthetic numerical/browser/container evidence only. Twelve scoped Controls repairs
+  have independent numerical and selected browser evidence; 48 remaining findings and Controls/Robotics/Vehicle
+  aggregates stay blocked. Run contract, quick and full sequentially after browser sweeps. No learner, manual screen-reader,
+  MATLAB, hardware, concurrent-capacity or production acceptance.

@@ -41,10 +41,10 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: The applied MPC move satisfies the declared input bound; an unconstrained optimum is not a feasible control
-    law when it exceeds that bound.
-  reveal: Restore the constraint projection, check feasibility before cost, and distinguish horizon approximation
-    from plant truth.
+  text: Does increasing the horizon necessarily change the first move when the actuator is already saturated?
+  reveal: Inspect the whole optimized plan, its terminal state, objective and KKT residual. Saturation can pin the
+    first move while later moves change. General coupled constraints require solving the constrained objective,
+    not clipping an unconstrained command.
 - type: controls
   title: Design controls
 - type: metrics
@@ -65,3 +65,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

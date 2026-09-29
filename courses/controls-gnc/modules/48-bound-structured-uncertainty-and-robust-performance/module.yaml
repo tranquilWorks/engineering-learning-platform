@@ -21,7 +21,7 @@ controls:
   type: slider
   label: Pole uncertainty radius
   default: 0.3
-  unit: '1'
+  unit: 1/s
   minimum: 0.0
   maximum: 0.9
   step: 0.05
@@ -29,7 +29,7 @@ controls:
   type: slider
   label: Feedback gain
   default: 1.5
-  unit: '1'
+  unit: 1/s
   minimum: 0.1
   maximum: 4.0
   step: 0.1
@@ -42,10 +42,10 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: A robust statement is valid only for every member of the explicitly swept uncertainty family and the stated
-    performance metric.
-  reveal: Restore the sign, recompute the worst member, and report the finite family and margin rather than general
-    robust certification.
+  text: Can a finite, smooth frequency-response curve prove the closed-loop family is stable? Check the pole calculation
+    separately.
+  reveal: "The denominator has a right-half-plane pole whenever a\u2212K<0. Sampling on the imaginary axis can produce\
+    \ finite values despite that pole; internal stability is a separate requirement."
 - type: controls
   title: Design controls
 - type: metrics
@@ -66,3 +66,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

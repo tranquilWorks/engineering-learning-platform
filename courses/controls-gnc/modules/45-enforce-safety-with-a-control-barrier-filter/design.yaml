@@ -7,21 +7,22 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- h=x-x_min
-- h_dot+alpha*h>=0
-- u_safe=argmin |u-u_nom| subject to u>=-alpha*h
+- h=x-x_min; dh/dt=u; u_nom=-v_close
+- u[k]=max(u_nom,-alpha*h[k]); h[k+1]=h[k]+dt*u[k]
+- dt=0.01 s; h[k+1]>=(1-alpha*dt)*h[k]
 signature:
-- field: filtered_command
+- field: first_filtered_command
   unit: m/s
-- field: one_step_safety_margin
+- field: minimum_safety_margin
   unit: m
-- field: intervention
+- field: peak_intervention
   unit: m/s
-teaching_invariant: The filtered command satisfies the declared barrier inequality and equals the nominal command
-  whenever that command is already safe.
+teaching_invariant: For alpha*dt<=1, nonnegative current clearance implies nonnegative next clearance.
 limiting_cases:
-- Far from the boundary a safe nominal command passes unchanged.
-- At the boundary the filter prohibits negative hdot.
+- For alpha*dt<=1, nonnegative current clearance implies nonnegative next clearance.
+- At h=0 the healthy controller refuses negative velocity.
+- If nominal velocity already satisfies the barrier, intervention is zero; this does not remove the need to reevaluate
+  it later.
 scenarios:
   baseline: &id001
     barrier_gain_per_s: 2.0
@@ -48,5 +49,6 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic Python model and authored self-check. Independent numerical and browser/container
+  checks are recorded separately; learner outcomes, MATLAB, manual screen-reader, hardware and production acceptance
+  not_run.

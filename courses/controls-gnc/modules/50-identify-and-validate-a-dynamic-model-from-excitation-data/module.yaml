@@ -41,9 +41,10 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: "Persistent excitation improves information conditioning, while held-out residual\u2014not training fit\u2014\
-    bounds the model claim."
-  reveal: Restore broadband excitation within safety limits and retain a separate validation segment.
+  text: Could a tiny training residual coexist with a useless input coefficient? Predict what removing training
+    excitation does to regressor rank.
+  reveal: With u=0, training contains no evidence about b. Held-out input exposes that missing coefficient. Free-run
+    prediction feeds back y_hat; one-step fitting uses measured y and can conceal drift.
 - type: controls
   title: Design controls
 - type: metrics
@@ -64,3 +65,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

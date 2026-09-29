@@ -7,21 +7,22 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- x_dot=v
-- v_dot=x-x^3-c*v
-- E=v^2/2-x^2/2+x^4/4
+- dx/dt=v; dv/dt=x-x^3-c*v
+- E=v^2/2-x^2/2+x^4/4; dE/dt=-c*v^2
+- 'well characteristic: lambda^2+c*lambda+2=0'
 signature:
-- field: energy_decay_rate
+- field: mean_energy_rate
   unit: W
-- field: terminal_radius
-  unit: '1'
-- field: local_decay_rate
+- field: final_nearest_well_distance
+  unit: m
+- field: well_abscissa
   unit: 1/s
-teaching_invariant: Positive damping makes energy nonincreasing even when a local linearization does not describe
-  the full basin.
+teaching_invariant: For c=0, mechanical energy is conserved.
 limiting_cases:
-- At the equilibria the vector field is zero.
-- With zero damping energy is conserved rather than asymptotically decreasing.
+- For c=0, mechanical energy is conserved.
+- At either well with v=0 the state remains at equilibrium.
+- Energy decay alone does not establish global convergence to a particular well; the saddle and its invariant set
+  remain.
 scenarios:
   baseline: &id001
     damping_per_s: 0.25
@@ -48,5 +49,6 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic Python model and authored self-check. Independent numerical and browser/container
+  checks are recorded separately; learner outcomes, MATLAB, manual screen-reader, hardware and production acceptance
+  not_run.

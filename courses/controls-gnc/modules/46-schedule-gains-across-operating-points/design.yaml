@@ -7,21 +7,21 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- g(rho)=1+.5*rho^2
-- K(rho)=2/g(rho)
-- lambda_cl=-g(rho)K(rho)
+- g(rho)=1+rho^2/2; K_exact(rho)=2/g(rho)
+- K_interp=(1-theta)*K_left+theta*K_right
+- closed-loop bandwidth=g(rho)*K_interp
 signature:
 - field: scheduled_bandwidth
   unit: 1/s
 - field: bandwidth_error
   unit: 1/s
-- field: interpolation_error
-  unit: '1'
-teaching_invariant: At tabulated points the inverse-gain schedule restores the target bandwidth; interpolation error
-  must be measured between points.
+- field: sampled_max_gain_error
+  unit: 1/s
+teaching_invariant: Healthy interpolation equals the table exactly at every knot.
 limiting_cases:
-- At rho=0 the schedule equals the nominal gain.
-- As grid spacing tends to zero interpolation approaches the exact inverse schedule.
+- Healthy interpolation equals the table exactly at every knot.
+- As maximum knot spacing tends to zero, the smooth reciprocal law is recovered.
+- The reported grid maximum is sampled evidence, not a rigorous continuous worst-case bound.
 scenarios:
   baseline: &id001
     operating_point: 0.5
@@ -48,5 +48,6 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic Python model and authored self-check. Independent numerical and browser/container
+  checks are recorded separately; learner outcomes, MATLAB, manual screen-reader, hardware and production acceptance
+  not_run.

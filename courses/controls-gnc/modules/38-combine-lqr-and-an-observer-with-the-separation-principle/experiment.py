@@ -5,22 +5,39 @@ from typing import Any
 import numpy as np
 
 ITEM_NUMBER = 38
-BROKEN_TEXT = 'Broken mode reverses observer injection, placing an estimation-error pole in the right half-plane despite a stable regulator.'
-RECOVERY_TEXT = 'Restore the innovation sign, keep the observer faster but not arbitrarily ill-conditioned, and check the full augmented spectrum.'
+BROKEN_TEXT = "Broken mode reverses the observer injection L. The error subsystem then has a positive pole, and its growing error drives the physical plant through BK e."
+RECOVERY_TEXT = "Restore the observer sign and reset controls. Verify both abscissae are negative and the CARE and separation residuals are near roundoff."
 
 
-def _trace(name: str, x: Any, y: Any, x_quantity: str, x_unit: str,
-           y_quantity: str, y_unit: str, *, mode: str = "lines") -> dict[str, Any]:
+def _trace(
+    name: str,
+    x: Any,
+    y: Any,
+    x_quantity: str,
+    x_unit: str,
+    y_quantity: str,
+    y_unit: str,
+    *,
+    mode: str = "lines",
+) -> dict[str, Any]:
     return {
-        "type": "scattergl", "mode": mode, "name": name,
-        "x": np.asarray(x, dtype=float), "y": np.asarray(y, dtype=float),
-        "meta": {"x_quantity": x_quantity, "x_unit": x_unit,
-                 "y_quantity": y_quantity, "y_unit": y_unit},
+        "type": "scatter",
+        "mode": mode,
+        "name": name,
+        "x": np.asarray(x, dtype=float),
+        "y": np.asarray(y, dtype=float),
+        "meta": {
+            "x_quantity": x_quantity,
+            "x_unit": x_unit,
+            "y_quantity": y_quantity,
+            "y_unit": y_unit,
+        },
     }
 
 
-def _plot(title: str, x_title: str, y_title: str,
-          traces: list[dict[str, Any]]) -> dict[str, Any]:
+def _plot(
+    title: str, x_title: str, y_title: str, traces: list[dict[str, Any]]
+) -> dict[str, Any]:
     return {
         "data": traces,
         "layout": {
@@ -29,7 +46,8 @@ def _plot(title: str, x_title: str, y_title: str,
             "yaxis": {"title": {"text": y_title}},
             "legend": {"orientation": "h"},
             "margin": {"l": 72, "r": 36, "t": 62, "b": 62},
-            "hovermode": "closest", "uirevision": "keep-view",
+            "hovermode": "closest",
+            "uirevision": "keep-view",
         },
         "config": {"responsive": True, "displaylogo": False},
     }
@@ -38,8 +56,13 @@ def _plot(title: str, x_title: str, y_title: str,
 def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
     return {
         "metrics": [
-            {"id": key, "label": label, "value": float(value), "unit": unit,
-              "emphasis": "primary" if index == 0 else "normal"}
+            {
+                "id": key,
+                "label": label,
+                "value": float(value),
+                "unit": unit,
+                "emphasis": "primary" if index == 0 else "normal",
+            }
             for index, (key, label, value, unit) in enumerate(model["metrics"])
         ],
         "plots": model["plots"],
@@ -50,20 +73,115 @@ def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
         },
         "diagnostics": {
             "item_number": ITEM_NUMBER,
+            **model.get("details", {}),
             "broken_active": bool(broken),
             "signature": [float(value) for value in model["signature"]],
         },
     }
 
-def _model(p: dict[str, Any], broken: bool) -> dict[str, Any]:
-    bw=float(p["regulator_bandwidth_per_s"]); ratio=float(p["observer_speed_ratio"]); A=np.array([[0.,1.],[0.,0.]]); B=np.array([[0.],[1.]]); C=np.array([[1.,0.]])
-    K=np.array([[bw*bw,2*bw]]); ow=bw*ratio; L=np.array([[2*ow],[ow*ow]]); L=-L if broken else L
-    reg=np.linalg.eigvals(A-B@K); obs=np.linalg.eigvals(A-L@C); aug=np.block([[A-B@K,B@K],[np.zeros((2,2)),A-L@C]]); combined=np.linalg.eigvals(aug)
-    union=np.concatenate([reg,obs]); sep=float(np.max(abs(np.sort_complex(combined)-np.sort_complex(union)))); t=np.linspace(0,6/max(bw,.1),240)
-    reg_env=np.exp(np.max(reg.real)*t); obs_env=np.exp(np.max(obs.real)*t)
-    return {"signature":[float(np.max(reg.real)),float(np.max(obs.real)),sep],"metrics":[("regulator","Regulator spectral abscissa",np.max(reg.real),"1/s"),("observer","Observer-error spectral abscissa",np.max(obs.real),"1/s"),("separation","Separation spectrum error",sep,"1/s")],
-      "plots":{"response":_plot("Regulator and observer modal envelopes","Time (s)","Normalized error envelope (1)",[_trace("Regulator envelope",t,reg_env,"Time","s","Normalized error envelope","1"),_trace("Observer envelope",t,obs_env,"Time","s","Normalized error envelope","1")]),
-      "mechanism":_plot("Separated closed-loop eigenvalues","Eigenvalue real part (1/s)","Eigenvalue imaginary part (1/s)",[_trace("Regulator poles",reg.real,reg.imag,"Eigenvalue real part","1/s","Eigenvalue imaginary part","1/s",mode="markers"),_trace("Observer poles",obs.real,obs.imag,"Eigenvalue real part","1/s","Eigenvalue imaginary part","1/s",mode="markers")])},"observation":"The block-triangular augmented model exposes the separation spectrum; the innovation sign still determines observer stability."}
+
+def _model(p, broken):
+    from scipy.linalg import expm, solve_continuous_are
+
+    bw = float(p["regulator_bandwidth_per_s"])
+    ow = bw * float(p["observer_speed_ratio"])
+    A = np.array([[0.0, 1.0], [0.0, 0.0]])
+    B = np.array([[0.0], [1.0]])
+    C = np.array([[1.0, 0.0]])
+    Q = np.diag([bw**4, bw**2])
+    P = solve_continuous_are(A, B, Q, np.ones((1, 1)))
+    K = B.T @ P
+    L = np.array([[3 * ow], [2 * ow**2]]) * (-1 if broken else 1)
+    reg = A - B @ K
+    obs = A - L @ C
+    aug = np.block([[reg, B @ K], [np.zeros((2, 2)), obs]])
+    rp = np.linalg.eigvals(reg)
+    op = np.linalg.eigvals(obs)
+    separation = np.max(
+        abs(np.sort_complex(np.linalg.eigvals(aug)) - np.sort_complex(np.r_[rp, op]))
+    )
+    # Fixed observer-normalized horizon bounds the unstable demonstration at every control corner.
+    t = np.linspace(0.0, 3 / ow, 201)
+    dt = t[1]
+    transition = expm(aug * dt)
+    history = [np.array([1.0, 0.0, 0.1, 0.0])]
+    for _ in t[1:]:
+        history.append(transition @ history[-1])
+    h = np.array(history)
+    residual = np.max(abs(A.T @ P + P @ A - P @ B @ B.T @ P + Q))
+    return {
+        "signature": [max(rp.real), max(op.real), separation, residual],
+        "metrics": [
+            ("regulator", "LQR spectral abscissa", max(rp.real), "1/s"),
+            ("observer", "Observer spectral abscissa", max(op.real), "1/s"),
+            ("separation", "Separation spectrum residual", separation, "1/s"),
+            ("care", "Normalized CARE residual", residual, "1"),
+            ("position_gain", "Normalized LQR position gain", K[0, 0], "1"),
+            ("velocity_gain", "Normalized LQR velocity gain", K[0, 1], "1"),
+        ],
+        "plots": {
+            "response": _plot(
+                "Plant and estimate",
+                "Time (s)",
+                "Normalized position (1)",
+                [
+                    _trace(
+                        "True position",
+                        t,
+                        h[:, 0],
+                        "Time",
+                        "s",
+                        "Normalized position",
+                        "1",
+                    ),
+                    _trace(
+                        "Estimated position",
+                        t,
+                        h[:, 0] - h[:, 2],
+                        "Time",
+                        "s",
+                        "Normalized position",
+                        "1",
+                    ),
+                ],
+            ),
+            "mechanism": _plot(
+                "Actual observer error",
+                "Time (s)",
+                "Normalized state error (1)",
+                [
+                    _trace(
+                        "Position error",
+                        t,
+                        h[:, 2],
+                        "Time",
+                        "s",
+                        "Normalized error",
+                        "1",
+                    ),
+                    _trace(
+                        "Velocity error (1 s scale)",
+                        t,
+                        h[:, 3],
+                        "Time",
+                        "s",
+                        "Normalized error",
+                        "1",
+                    ),
+                ],
+            ),
+        },
+        "details": {
+            "time": t,
+            "augmented_state": h,
+            "augmented_matrix": aug,
+            "Q": Q,
+            "P": P,
+            "K": K,
+            "L": L,
+        },
+        "observation": "K comes from the stated normalized quadratic cost, not pole placement. Curves propagate the coupled plant and estimation error; the finite observer-scaled window is not a settling-time claim.",
+    }
 
 
 def run(parameters: dict[str, Any]) -> dict[str, Any]:

@@ -26,9 +26,9 @@ def test_lesson_ledger_matches_actual_payloads_and_does_not_certify_presence():
     blocked = {
         (r["course"], r["number"]) for r in actual["lessons"] if r["semantic_review"] == "blocked"
     }
-    assert len(blocked) == 60
-    assert sum(r["semantic_review"] == "scoped_model_reviewed" for r in actual["lessons"]) == 12
-    assert {("controls-gnc", n) for n in (36, 43, 49, 55, 56, 60, 61)} <= blocked
+    assert len(blocked) == 48
+    assert sum(r["semantic_review"] == "scoped_model_reviewed" for r in actual["lessons"]) == 24
+    assert {("controls-gnc", n) for n in (56, 57, 60, 61, 62, 64, 65)} <= blocked
     assert {("robotics-autonomy", n) for n in (*range(25, 49), 52)} <= blocked
     assert not {("vehicle-dynamics", n) for n in range(61, 68)} & blocked
     assert {("vehicle-dynamics", n) for n in range(1, 17)} <= blocked
@@ -41,7 +41,7 @@ def test_browser_projection_keeps_confirmed_limitations_attached_to_lesson():
     assert [r["scoped_review"] for r in projection] == [
         r["scoped_review"] for r in audit["lessons"]
     ]
-    assert sum(bool(r["scoped_review"]) for r in projection) == 12
+    assert sum(bool(r["scoped_review"]) for r in projection) == 24
     assert sum(bool(r["assessment_review"]) for r in projection) == 84
     assert [r["assessment_review"] for r in projection] == [
         r["assessment_review"] for r in audit["lessons"]

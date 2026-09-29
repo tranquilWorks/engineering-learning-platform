@@ -1,66 +1,57 @@
 # Combine LQR and an Observer with the Separation Principle
 
-**Guiding question:** Why can regulator and observer poles be designed separately, and when does the combined loop still fail?
-
-Combine a stabilizing double-integrator feedback law with a full-order observer and verify the block-triangular separation spectrum. This is a Python-first native design derived from the reviewed competency map. It is not presented as a conversion of the pinned MATLAB source and it stays inside deterministic software simulation.
-
-## Why this lesson exists
-
-The numerical result is not the objective by itself. The objective is to connect a design decision to a governing relation, an observable consequence, a failure mechanism, and a recovery check. Record the assumptions before interpreting any curve.
+Separation combines an optimal state-feedback regulator with an independently designed observer. Positions, velocities and input are normalized using one metre, one second and one m/s²; the CARE uses these normalized coordinates and time. The bandwidth setting b parameterizes the cost rather than prescribing two real poles.
 
 ## Model and equations
 
-$$\text{u=-K x_hat}$$
-$$\text{x_hat_dot=A x_hat+B u+L(y-C x_hat)}$$
-$$\text{eig(A_aug)=eig(A-BK) union eig(A-LC)}$$
+\[
+A^T P+PA-PBR^{-1}B^TP+Q=0,\qquad K=R^{-1}B^TP
+\]
 
-Carry units through the model. A pole or zero is reported in inverse seconds, angular frequency in radians per second, phase in degrees or radians as labeled, and dimensionless ratios as `1`. The experiment evaluates the displayed equations directly; it does not call a black-box synthesis toolbox.
+`A=[[0,1],[0,0]], B=[0,1]^T, C=[1,0]`
 
-## Predict before running
+`A^T P+P A-P B B^T P+Q=0; K=B^T P; Q=diag(b^4,b^2), R=1`
 
-For the nominal linear model the combined estimator-controller eigenvalues are exactly the union of regulator and observer eigenvalues. State which output should move first and which quantity should remain invariant before changing a control.
+`e_dot=(A-LC)e; x_dot=(A-BK)x+BK e; L=[3w,2w^2]^T`
+
+Worked example: For b=1.5, Q=diag(5.0625,2.25), and the double-integrator CARE gives K=[2.25,2.598076]. The regulator poles have real part −1.299038/s. With ratio 3, w=4.5/s and observer poles are −4.5 and −9/s.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read all three signature metrics.
-2. Inspect the response plot for the external behavior, then the mechanism plot for the governing internal relation.
-3. Check the units and limiting cases before accepting a stability, equivalence, or performance statement.
-4. Save the baseline, change one variable only, and explain the direction of change from the equations.
+Increasing observer speed should change estimation-error decay but leave the regulator eigenvalues unchanged. Predict this before moving the ratio control.
+
+Run the default controls, record the metrics, and explain the plotted quantities before changing a setting. Plant and estimate propagates actual coupled states from x=[1,0] and e=[0.1,0]. Actual observer error shows both normalized error components, not spectral envelopes. The window is 3/w seconds, so changing observer speed also changes its physical duration.
 
 ## Two one-variable sweeps
 
-1. Hold `observer_speed_ratio` at `3.0 1` and sweep `regulator_bandwidth_per_s` from `0.4` through `1.5` to `4.0 1/s`.
-2. Restore `regulator_bandwidth_per_s` to `1.5 1/s` and sweep `observer_speed_ratio` from `1.2` through `3.0` to `8.0 1`.
-
-Do not tune both at once until you can attribute each metric change to one term in the equations. The retained evidence uses one endpoint from each sweep in addition to the baseline.
+Increase regulator bandwidth from 1.5 to 4/s: inspect the changed cost-derived K and regulator abscissa. Reset, then raise observer speed ratio from 3 to 8: the observer abscissa moves while the regulator abscissa stays fixed.
 
 ## Intentionally broken case
 
-Broken mode reverses observer injection, placing an estimation-error pole in the right half-plane despite a stable regulator. Broken mode is a named counterexample, not an alternative design recommendation.
+Broken mode reverses the observer injection L. The error subsystem then has a positive pole, and its growing error drives the physical plant through BK e.
 
 ## Recovery
 
-Restore the innovation sign, keep the observer faster but not arbitrarily ill-conditioned, and check the full augmented spectrum. The recovery case restores the exact baseline inputs so the evidence can prove that the failure is reversible rather than merely different.
+Restore the observer sign and reset controls. Verify both abscissae are negative and the CARE and separation residuals are near roundoff.
 
 ## Limiting cases and invariants
 
-- With zero initial estimation error, nominal state feedback and observer feedback coincide.
-- Separation guarantees nominal eigenvalues, not robustness to unmodeled dynamics or saturation.
-
-Teaching invariant: For the nominal linear model the combined estimator-controller eigenvalues are exactly the union of regulator and observer eigenvalues.
+- The augmented block-triangular spectrum is the union of regulator and observer spectra.
+- With zero initial estimation error, the observer-error state stays zero.
+- The finite demonstration excludes noise, saturation and model mismatch; arbitrarily fast observers are not certified here.
 
 ## Independent evidence
 
-Expected signatures are produced by `expansion_reference_cases.py`, which imports no production experiment and consumes no production result. Production signatures are retained separately. Each baseline, two sweeps, broken case, and recovery case records fields, units, tolerances, measured error, and the named invariant. Agreement supports only these equations and scenarios; it is not MATLAB execution, broad robust certification, or physical validation.
+Closed-form double-integrator CARE gains and the observer characteristic polynomial independently determine abscissae. Tests verify the Riccati identity and every sampled augmented-state transition. Five retained scenarios cover baseline, each one-variable sweep, fault and exact recovery. Absolute and relative tolerances remain 1e-8. The reference does not import or consume the production result.
 
 ## Common mistakes
 
-- Reading a plotted shape without checking its sign convention, units, or contour/path definition.
-- Treating a local, frequency-limited, or nominal result as a global guarantee.
-- Changing both design controls and then assigning causality to one of them.
-- Confusing a recovery that looks better with a recovery that restores the baseline invariant.
-- Claiming source equivalence, physical hardware evidence, or learner effectiveness from this software-only lab.
+A gain chosen by pole placement is not LQR unless it is derived from a declared cost. Negative eigenvalues alone do not make a plotted envelope an actual state trajectory.
 
 ## Teach-back
 
-Derive one signature quantity from the displayed equations, explain what the broken case violates, and name one result that this lab cannot establish. Then describe how the two sweeps separate sensitivity to `regulator_bandwidth_per_s` from sensitivity to `observer_speed_ratio`.
+Why does observer ratio leave the regulator abscissa unchanged but alter the plant trajectory? Which calculation establishes that K is LQR?
+
+Answer rationale: The off-diagonal BK block couples estimation error into the plant without changing the diagonal-block spectra. The CARE with the stated Q and R establishes the cost-derived gain; the small CARE residual verifies that calculation.
+
+Use the Course checkpoint section to assemble your own evidence. These are authored self-checks, not measured learner outcomes or hardware qualification.

@@ -1542,8 +1542,8 @@
   {
     "course": "controls-gnc",
     "module": "36-place-state-feedback-poles-and-track-references",
-    "known_issue": "The displayed state-feedback control omits the velocity feedback term; recompute control from both propagated states and reconcile its units.",
-    "scoped_review": null,
+    "known_issue": null,
+    "scoped_review": "Executed full state-feedback acceleration with position and velocity terms, dimensioned gains, analytic derivatives and DC/pole checks.",
     "assessment_review": null,
     "evidence_count": 3
   },
@@ -1558,8 +1558,8 @@
   {
     "course": "controls-gnc",
     "module": "38-combine-lqr-and-an-observer-with-the-separation-principle",
-    "known_issue": "The separation-principle model places poles directly but the lesson calls the design LQR; distinguish pole placement from a cost-derived optimal gain.",
-    "scoped_review": null,
+    "known_issue": null,
+    "scoped_review": "Executed declared-cost CARE LQR and actual coupled plant/observer states; analytic CARE/spectrum and state-transition checks.",
     "assessment_review": null,
     "evidence_count": 3
   },
@@ -1590,16 +1590,16 @@
   {
     "course": "controls-gnc",
     "module": "42-switch-controllers-bumplessly-with-anti-windup",
-    "known_issue": "The peak integral-state metric uses peak command in nominal mode and final integral state in broken mode; it does not measure the named quantity consistently.",
-    "scoped_review": null,
+    "known_issue": null,
+    "scoped_review": "Measured the actual integral-state peak consistently, bounded manual/automatic actuation and explicitly censored recovery; independent piecewise-affine replay.",
     "assessment_review": null,
     "evidence_count": 3
   },
   {
     "course": "controls-gnc",
     "module": "43-use-phase-portraits-to-separate-local-and-global-stability",
-    "known_issue": "The declared nonlinear double-well phase portrait is replaced by an exponential sinusoid and unrelated energy formulas; the stated dynamics are not integrated.",
-    "scoped_review": null,
+    "known_issue": null,
+    "scoped_review": "Integrated double-well dynamics and damping work; independent implicit solver plus energy, phase-field and zero-damping checks.",
     "assessment_review": null,
     "evidence_count": 3
   },
@@ -1614,56 +1614,56 @@
   {
     "course": "controls-gnc",
     "module": "45-enforce-safety-with-a-control-barrier-filter",
-    "known_issue": "The barrier plot extrapolates one fixed command without reevaluating the state-dependent barrier; it can cross the safety boundary while presented as a filtered trajectory.",
-    "scoped_review": null,
+    "known_issue": null,
+    "scoped_review": "Recomputed the barrier filter at every sampled state; independent linear/geometric trajectory and full-history safety checks.",
     "assessment_review": null,
     "evidence_count": 3
   },
   {
     "course": "controls-gnc",
     "module": "46-schedule-gains-across-operating-points",
-    "known_issue": "The interpolation error is assigned from grid spacing instead of measuring interpolation of a sampled gain schedule.",
-    "scoped_review": null,
+    "known_issue": null,
+    "scoped_review": "Constructed real gain-table knots and measured interpolation errors; independent secant evaluator plus knot, off-grid and refinement checks.",
     "assessment_review": null,
     "evidence_count": 3
   },
   {
     "course": "controls-gnc",
     "module": "47-cancel-nonlinearities-with-feedback-linearization",
-    "known_issue": "The quadratic feedback-linearization model is replaced by a linear exponential and an algebraic terminal-error formula; the nonlinear closed loop is not executed.",
-    "scoped_review": null,
+    "known_issue": null,
+    "scoped_review": "Integrated nonlinear cancellation residual with an explicit departure event; independent reciprocal-state trajectory/event and exact-cancellation checks.",
     "assessment_review": null,
     "evidence_count": 3
   },
   {
     "course": "controls-gnc",
     "module": "48-bound-structured-uncertainty-and-robust-performance",
-    "known_issue": "The uncertainty plot does not sweep the declared uncertainty interval, and the inverse decay-rate metric is labeled dimensionless sensitivity without a defined transfer response.",
-    "scoped_review": null,
+    "known_issue": null,
+    "scoped_review": "Evaluated dimensionless sensitivity over the declared uncertainty and frequency grid; independent complex transfer and stability/pole checks.",
     "assessment_review": null,
     "evidence_count": 3
   },
   {
     "course": "controls-gnc",
     "module": "49-control-a-constrained-plant-with-model-predictive-control",
-    "known_issue": "The MPC lesson clips a fixed move and divides a residual by horizon; it does not minimize the stated horizon cost or execute receding-horizon control.",
-    "scoped_review": null,
+    "known_issue": null,
+    "scoped_review": "Solved actual bounded horizon optimization and applied receding-horizon moves; independent Bellman policy plus full-plan feasibility, objective and KKT checks.",
     "assessment_review": null,
     "evidence_count": 3
   },
   {
     "course": "controls-gnc",
     "module": "50-identify-and-validate-a-dynamic-model-from-excitation-data",
-    "known_issue": "Identification conditioning, parameter error and held-out residual are algebraic functions of excitation settings; no dynamic model is fitted or validated.",
-    "scoped_review": null,
+    "known_issue": null,
+    "scoped_review": "Generated excitation, fitted an ARX model and evaluated separate held-out free-run data; independent convolution/normal equations and rank/recovery checks.",
     "assessment_review": null,
     "evidence_count": 3
   },
   {
     "course": "controls-gnc",
     "module": "51-adapt-a-parameter-estimate-online",
-    "known_issue": "The online-identification lesson does not execute its recursive least-squares update; error and covariance metrics are parameter formulas.",
-    "scoped_review": null,
+    "known_issue": null,
+    "scoped_review": "Executed recursive least-squares gain, estimate and covariance updates; independent weighted batch information and zero-excitation checks.",
     "assessment_review": null,
     "evidence_count": 3
   },
@@ -1694,8 +1694,8 @@
   {
     "course": "controls-gnc",
     "module": "55-transform-uncertainty-with-an-unscented-kalman-filter",
-    "known_issue": "Unscented-transform errors and weights are assigned directly; sigma points and their weighted transformed moments are not computed.",
-    "scoped_review": null,
+    "known_issue": null,
+    "scoped_review": "Constructed and transformed actual sigma points; independently checked Gaussian moments and distinct mean/covariance weights. Scope is the transform component, not recursive UKF.",
     "assessment_review": null,
     "evidence_count": 3
   },

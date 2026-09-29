@@ -7,21 +7,21 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- x_dot=c*x^2+u
-- u=-c_hat*x^2-k(x-r)
-- e_dot=-k*e+(c-c_hat)x^2
+- dx/dt=x^2+u; reference=0; x(0)=1
+- u=-(1-mismatch)*x^2-k*x; dx/dt=delta*x^2-k*x
+- 1/x(t)=delta/k+(1-delta/k)*exp(k*t)
 signature:
-- field: residual_drift
+- field: initial_residual_drift
   unit: 1/s
-- field: closed_loop_rate
+- field: initial_error_rate
   unit: 1/s
-- field: terminal_error
+- field: observed_terminal_error
   unit: '1'
-teaching_invariant: Exact cancellation leaves the selected linear error dynamics; model mismatch appears explicitly
-  as residual nonlinear drift.
+teaching_invariant: "With mismatch zero, healthy dynamics are exactly x_dot=\u2212kx."
 limiting_cases:
-- At x=0 the quadratic cancellation term is zero.
-- With exact model and positive k the tracking error decays exponentially.
+- "With mismatch zero, healthy dynamics are exactly x_dot=\u2212kx."
+- For delta>0 the nonzero equilibrium x=k/delta separates decay from growth on the positive axis.
+- The event threshold bounds this demonstration; it is not an actuator or state constraint implemented by the controller.
 scenarios:
   baseline: &id001
     model_mismatch: 0.08
@@ -48,5 +48,6 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic Python model and authored self-check. Independent numerical and browser/container
+  checks are recorded separately; learner outcomes, MATLAB, manual screen-reader, hardware and production acceptance
+  not_run.

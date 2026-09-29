@@ -15,11 +15,11 @@ npx playwright install chromium
 npm run test:web
 npm run typecheck
 npm run build
-docker build -t elp-course-quality:20260928 .
+docker build -t elp-gnc-quality:20260929 .
 docker run -d --name "$ELP_CONTAINER_NAME" --read-only \
   --tmpfs /tmp:rw,noexec,nosuid,size=128m --cap-drop ALL \
   --security-opt no-new-privileges --pids-limit 256 --memory 2g --cpus 2 \
-  -p "127.0.0.1:${ELP_BROWSER_URL##*:}:8080" elp-course-quality:20260928
+  -p "127.0.0.1:${ELP_BROWSER_URL##*:}:8080" elp-gnc-quality:20260929
 trap 'docker stop "$ELP_CONTAINER_NAME" >/dev/null' EXIT
 python3 - <<'PY'
 import os,time,urllib.request

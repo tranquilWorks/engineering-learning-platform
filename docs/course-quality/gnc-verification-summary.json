@@ -1,0 +1,44 @@
+{
+  "batch": "ELP-GNC-SEMANTIC-QUALITY-12",
+  "validation_level": "local_synthetic_browser_container",
+  "verified_baseline_head": "00983cab0599b1ce3a613a2cc8ef42eb7b45f0b4",
+  "image": "sha256:04e381f3626292f390fcd0ba76fe4ad5cfe305507a89e2e65174ae4b36851646",
+  "counts": {
+    "http_modules": 290,
+    "browser_pages": 580,
+    "checkpoint_checks": 192,
+    "cumulative_checks": 20,
+    "interactions": 80,
+    "screenshots": 80
+  },
+  "sequential_gates": [
+    {
+      "gate": "contract",
+      "command": "./scripts/agent-verify.sh contract",
+      "started_at": "2026-09-29T06:43:56.004319+00:00",
+      "seconds": 95.58460228901822,
+      "exit_code": 0,
+      "log": ".state/gnc12/mandatory-contract.log",
+      "pytest_summary": "103 passed in 94.19s (0:01:34)"
+    },
+    {
+      "gate": "quick",
+      "command": "./scripts/agent-verify.sh quick",
+      "started_at": "2026-09-29T06:45:31.589587+00:00",
+      "seconds": 1379.6437732799677,
+      "exit_code": 0,
+      "log": ".state/gnc12/mandatory-quick.log",
+      "pytest_summary": "1377 passed, 3 warnings in 1377.88s (0:22:57)"
+    },
+    {
+      "gate": "full",
+      "command": "./scripts/agent-verify.sh full",
+      "started_at": "2026-09-29T07:08:31.234061+00:00",
+      "seconds": 1374.1707853730768,
+      "exit_code": 0,
+      "log": ".state/gnc12/mandatory-full.log",
+      "pytest_summary": "1377 passed, 3 warnings in 1308.66s (0:21:48)"
+    }
+  ],
+  "claim_boundary": "No learner, manual screen-reader, MATLAB, hardware, concurrent-capacity or production acceptance."
+}

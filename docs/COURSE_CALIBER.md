@@ -59,7 +59,7 @@ but they are not independent correctness oracles.
 | Course | Native interactive lessons | Required follow-up |
 | --- | ---: | --- |
 | DSP/Radar | 84 | Authored/software aggregate review passed: 84 checkpoints, ten cumulative portfolios and 417 independent comparisons; learner validation not_run |
-| Controls/GNC | 68 | 19 remaining affected lessons; three capstones have scoped numerical/physical repairs |
+| Controls/GNC | 68 | 7 remaining affected lessons; fifteen lessons have scoped numerical/physical repairs |
 | Robotics/Autonomy | 69 | 25 remaining affected lessons; two capstones have scoped numerical/physical repairs |
 | Vehicle Dynamics | 67 | 16 remaining affected lessons: P01–P16 mixed-unit charts; P61–P67 have scoped numerical/physical repairs |
 
@@ -80,5 +80,5 @@ Robotics or Vehicle aggregate maturity. See the per-lesson additional finding re
 
 The separate DSP aggregate review closes its declared authored curriculum and
 synthetic numerical/pulsed-capstone scope. Controls, Robotics and Vehicle remain
-blocked by 60 named findings. No course has representative-learner validation.
+blocked by 48 named findings. No course has representative-learner validation.
 See course-caliber-status.yaml and the exact aggregate evidence.

@@ -7,9 +7,9 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- u=-K x_hat
-- x_hat_dot=A x_hat+B u+L(y-C x_hat)
-- eig(A_aug)=eig(A-BK) union eig(A-LC)
+- A=[[0,1],[0,0]], B=[0,1]^T, C=[1,0]
+- A^T P+P A-P B B^T P+Q=0; K=B^T P; Q=diag(b^4,b^2), R=1
+- e_dot=(A-LC)e; x_dot=(A-BK)x+BK e; L=[3w,2w^2]^T
 signature:
 - field: regulator_abscissa
   unit: 1/s
@@ -17,11 +17,14 @@ signature:
   unit: 1/s
 - field: separation_spectrum_error
   unit: 1/s
-teaching_invariant: For the nominal linear model the combined estimator-controller eigenvalues are exactly the union
-  of regulator and observer eigenvalues.
+- field: care_residual
+  unit: '1'
+teaching_invariant: The augmented block-triangular spectrum is the union of regulator and observer spectra.
 limiting_cases:
-- With zero initial estimation error, nominal state feedback and observer feedback coincide.
-- Separation guarantees nominal eigenvalues, not robustness to unmodeled dynamics or saturation.
+- The augmented block-triangular spectrum is the union of regulator and observer spectra.
+- With zero initial estimation error, the observer-error state stays zero.
+- The finite demonstration excludes noise, saturation and model mismatch; arbitrarily fast observers are not certified
+  here.
 scenarios:
   baseline: &id001
     regulator_bandwidth_per_s: 1.5
@@ -48,5 +51,6 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic Python model and authored self-check. Independent numerical and browser/container
+  checks are recorded separately; learner outcomes, MATLAB, manual screen-reader, hardware and production acceptance
+  not_run.

@@ -1,66 +1,59 @@
 # Bound Structured Uncertainty and Robust Performance
 
-**Guiding question:** How can a declared real-parameter family support a narrow robust-stability statement without becoming a certification claim?
-
-Sweep a first-order pole uncertainty, calculate the worst closed-loop margin and sensitivity proxy, and expose a destabilizing gain choice. This is a Python-first native design derived from the reviewed competency map. It is not presented as a conversion of the pinned MATLAB source and it stays inside deterministic software simulation.
-
-## Why this lesson exists
-
-The numerical result is not the objective by itself. The objective is to connect a design decision to a governing relation, an observable consequence, a failure mechanism, and a recovery check. Record the assumptions before interpreting any curve.
+Robust stability and sensitivity answer different questions. The uncertain pole rate a varies over a declared interval, and feedback gain K has units 1/s. Sensitivity is a ratio of responses and is dimensionless; an inverse decay rate would instead have units of seconds.
 
 ## Model and equations
 
-$$\text{p(delta)=-(1+delta)}$$
-$$\text{lambda_cl=p(delta)-K}$$
-$$\text{margin=min_delta -Re(lambda_cl)}$$
+\[
+S(s)=\frac{1}{1+KP(s)}=\frac{s+a}{s+a+K}
+\]
 
-Carry units through the model. A pole or zero is reported in inverse seconds, angular frequency in radians per second, phase in degrees or radians as labeled, and dimensionless ratios as `1`. The experiment evaluates the displayed equations directly; it does not call a black-box synthesis toolbox.
+`P(s)=1/(s+a); a=1+delta; delta in [-radius,+radius] 1/s`
 
-## Predict before running
+`S(s)=1/(1+K*P(s))=(s+a)/(s+a+K)`
 
-A robust statement is valid only for every member of the explicitly swept uncertainty family and the stated performance metric. State which output should move first and which quantity should remain invariant before changing a control.
+`closed-loop pole=-(a+K)`
+
+Worked example: At radius 0.3/s and K=1.5/s, a ranges from 0.7 to 1.3/s and the worst decay margin is 2.2/s. For a=1/s at zero frequency, S(0)=1/2.5=0.4. At high frequency, |S| tends to one.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read all three signature metrics.
-2. Inspect the response plot for the external behavior, then the mechanism plot for the governing internal relation.
-3. Check the units and limiting cases before accepting a stability, equivalence, or performance statement.
-4. Save the baseline, change one variable only, and explain the direction of change from the equations.
+Can a finite, smooth frequency-response curve prove the closed-loop family is stable? Check the pole calculation separately.
+
+Run the default controls, record the metrics, and explain the plotted quantities before changing a setting. Declared uncertainty family plots decay rate over exactly the selected perturbation interval. True sensitivity magnitude plots the maximum over 81 uncertainty samples at each of 160 frequencies from 0.05 to 100 rad/s. Its peak is a sampled finite-band quantity.
+
+The frequency axis is logarithmic so both low-frequency shaping and the high-frequency limit remain visible.
 
 ## Two one-variable sweeps
 
-1. Hold `feedback_gain` at `1.5 1` and sweep `uncertainty_radius` from `0.0` through `0.3` to `0.9 1`.
-2. Restore `uncertainty_radius` to `0.3 1` and sweep `feedback_gain` from `0.1` through `1.5` to `4.0 1`.
-
-Do not tune both at once until you can attribute each metric change to one term in the equations. The retained evidence uses one endpoint from each sweep in addition to the baseline.
+Raise uncertainty radius from 0.3 to 0.9/s and inspect the worst margin. Reset, then increase feedback gain from 1.5 to 4/s and compare stability margins with low-frequency sensitivity.
 
 ## Intentionally broken case
 
-Broken mode applies the feedback with the wrong sign, allowing the least-stable family member to cross right half-plane. Broken mode is a named counterexample, not an alternative design recommendation.
+Broken mode reverses the feedback sign, replacing a+K by a−K. At default settings the entire family is unstable even though finite-frequency magnitude values can still be computed.
 
 ## Recovery
 
-Restore the sign, recompute the worst member, and report the finite family and margin rather than general robust certification. The recovery case restores the exact baseline inputs so the evidence can prove that the failure is reversible rather than merely different.
+Restore negative feedback and reset both controls. Verify the minimum decay margin is positive before interpreting sensitivity as a stable closed-loop disturbance response.
 
 ## Limiting cases and invariants
 
-- At zero uncertainty the family collapses to the nominal plant.
-- Worst margin occurs at an interval endpoint for this affine scalar family.
-
-Teaching invariant: A robust statement is valid only for every member of the explicitly swept uncertainty family and the stated performance metric.
+- Zero uncertainty radius collapses the family to one model.
+- As frequency tends to infinity, sensitivity magnitude tends to one.
+- An unstable transfer expression is not a bounded-input bounded-output performance certificate; the sampled finite-band peak is not an H-infinity norm.
 
 ## Independent evidence
 
-Expected signatures are produced by `expansion_reference_cases.py`, which imports no production experiment and consumes no production result. Production signatures are retained separately. Each baseline, two sweeps, broken case, and recovery case records fields, units, tolerances, measured error, and the named invariant. Agreement supports only these equations and scenarios; it is not MATLAB execution, broad robust certification, or physical validation.
+Independent complex transfer-function evaluation checks every sampled frequency and parameter; a separate endpoint formula checks the worst pole margin. Five retained scenarios cover baseline, each one-variable sweep, fault and exact recovery. Absolute and relative tolerances remain 1e-8. The reference does not import or consume the production result.
 
 ## Common mistakes
 
-- Reading a plotted shape without checking its sign convention, units, or contour/path definition.
-- Treating a local, frequency-limited, or nominal result as a global guarantee.
-- Changing both design controls and then assigning causality to one of them.
-- Confusing a recovery that looks better with a recovery that restores the baseline invariant.
-- Claiming source equivalence, physical hardware evidence, or learner effectiveness from this software-only lab.
+Do not label 1/(decay rate) dimensionless sensitivity. Also do not infer stability from the absence of a singularity on a sampled frequency grid.
 
 ## Teach-back
 
-Derive one signature quantity from the displayed equations, explain what the broken case violates, and name one result that this lab cannot establish. Then describe how the two sweeps separate sensitivity to `uncertainty_radius` from sensitivity to `feedback_gain`.
+Why does reversing feedback invalidate a robustness claim even when the sensitivity chart contains only finite values?
+
+Answer rationale: The denominator has a right-half-plane pole whenever a−K<0. Sampling on the imaginary axis can produce finite values despite that pole; internal stability is a separate requirement.
+
+Use the Course checkpoint section to assemble your own evidence. These are authored self-checks, not measured learner outcomes or hardware qualification.

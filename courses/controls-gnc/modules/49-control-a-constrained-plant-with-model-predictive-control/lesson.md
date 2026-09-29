@@ -1,66 +1,57 @@
 # Control a Constrained Plant with Model-Predictive Control
 
-**Guiding question:** How does receding-horizon optimization expose feasibility, active constraints, and horizon tradeoffs?
-
-Solve a scalar constrained move analytically, compare unconstrained and clipped actions, and measure one-step residual cost. This is a Python-first native design derived from the reviewed competency map. It is not presented as a conversion of the pinned MATLAB source and it stays inside deterministic software simulation.
-
-## Why this lesson exists
-
-The numerical result is not the objective by itself. The objective is to connect a design decision to a governing relation, an observable consequence, a failure mechanism, and a recovery check. Record the assumptions before interpreting any curve.
+Model predictive control optimizes a sequence, applies its first move, observes the new state and solves again. The bounded scalar integrator isolates this mechanism without claiming general nonlinear MPC. Sample index, state and input are normalized; no physical sampling period is implied.
 
 ## Model and equations
 
-$$\text{x_{k+1}=x_k+u_k}$$
-$$\text{J=sum(x_k-r)^2+.1u_k^2}$$
-$$\text{|u_k|<=u_max}$$
+\[
+\min_{|u_j|\leq u_{max}}\sum_{j=1}^{N}x_j^2+0.1\sum_{j=0}^{N-1}u_j^2,\qquad x_{j+1}=x_j+u_j
+\]
 
-Carry units through the model. A pole or zero is reported in inverse seconds, angular frequency in radians per second, phase in degrees or radians as labeled, and dimensionless ratios as `1`. The experiment evaluates the displayed equations directly; it does not call a black-box synthesis toolbox.
+`x[k+1]=x[k]+u[k]; x[0]=1.5; reference=0`
 
-## Predict before running
+`J=sum_{j=1..N} x[j]^2 + 0.1*sum_{j=0..N-1} u[j]^2`
 
-The applied MPC move satisfies the declared input bound; an unconstrained optimum is not a feasible control law when it exceeds that bound. State which output should move first and which quantity should remain invariant before changing a control.
+`minimize J subject to -limit<=u[j]<=limit; apply first move and re-solve`
+
+Worked example: At x=1.5, N=6 and limit 0.8, the unconstrained first move is about −1.3741, so the constrained optimum starts at −0.8. Its next predicted state is 0.7. The solver optimizes the remaining moves as well; terminal error is computed from their accumulated effect.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read all three signature metrics.
-2. Inspect the response plot for the external behavior, then the mechanism plot for the governing internal relation.
-3. Check the units and limiting cases before accepting a stability, equivalence, or performance statement.
-4. Save the baseline, change one variable only, and explain the direction of change from the equations.
+Does increasing the horizon necessarily change the first move when the actuator is already saturated?
+
+Run the default controls, record the metrics, and explain the plotted quantities before changing a setting. Prediction and receding horizon contrasts the initial full optimized plan with sixteen executed receding-horizon moves. Executed control moves displays the actual inputs and both bounds. The first-plan objective sums its computed state and input costs. The projected-gradient residual tests optimality for the declared box.
 
 ## Two one-variable sweeps
 
-1. Hold `input_limit` at `0.8 1` and sweep `prediction_horizon` from `2.0` through `6.0` to `20.0 step`.
-2. Restore `prediction_horizon` to `6.0 step` and sweep `input_limit` from `0.1` through `0.8` to `2.0 1`.
-
-Do not tune both at once until you can attribute each metric change to one term in the equations. The retained evidence uses one endpoint from each sweep in addition to the baseline.
+Increase horizon from 6 to 20: compare first move, predicted terminal error and objective. Reset, then raise the input limit from 0.8 to 2: inspect when the first move becomes unconstrained.
 
 ## Intentionally broken case
 
-Broken mode applies the unconstrained move and records a limit violation. Broken mode is a named counterexample, not an alternative design recommendation.
+Broken mode solves the same horizon objective without bounds and applies that unconstrained move. Constraint violation is measured from applied inputs; at sufficiently large limits this fault need not cause a violation.
 
 ## Recovery
 
-Restore the constraint projection, check feasibility before cost, and distinguish horizon approximation from plant truth. The recovery case restores the exact baseline inputs so the evidence can prove that the failure is reversible rather than merely different.
+Reenable optimization bounds and reset the controls. Check every applied move against the limits and require a near-zero box KKT residual, not merely a clipped-looking first command.
 
 ## Limiting cases and invariants
 
-- With zero initial error the optimal move is zero.
-- As input limit grows, the constrained move approaches the unconstrained optimum.
-
-Teaching invariant: The applied MPC move satisfies the declared input bound; an unconstrained optimum is not a feasible control law when it exceeds that bound.
+- Every healthy predicted and applied input obeys its bound.
+- The prediction satisfies x[j+1]=x[j]+u[j] at every step.
+- For this scalar regulation problem, later optimal moves shrink; this special structure permits an independent Bellman solution, not a shortcut for arbitrary MPC.
 
 ## Independent evidence
 
-Expected signatures are produced by `expansion_reference_cases.py`, which imports no production experiment and consumes no production result. Production signatures are retained separately. Each baseline, two sweeps, broken case, and recovery case records fields, units, tolerances, measured error, and the named invariant. Agreement supports only these equations and scenarios; it is not MATLAB execution, broad robust certification, or physical validation.
+Production solves bounded least squares for the complete horizon. An independent scalar Bellman/Riccati construction derives the saturated/free policy and predicted terminal state. Tests check the full objective gradient and state recurrence. Five retained scenarios cover baseline, each one-variable sweep, fault and exact recovery. Absolute and relative tolerances remain 1e-8. The reference does not import or consume the production result.
 
 ## Common mistakes
 
-- Reading a plotted shape without checking its sign convention, units, or contour/path definition.
-- Treating a local, frequency-limited, or nominal result as a global guarantee.
-- Changing both design controls and then assigning causality to one of them.
-- Confusing a recovery that looks better with a recovery that restores the baseline invariant.
-- Claiming source equivalence, physical hardware evidence, or learner effectiveness from this software-only lab.
+Clipping a fixed move and dividing error by horizon is not horizon optimization. A feasible input alone does not establish optimality.
 
 ## Teach-back
 
-Derive one signature quantity from the displayed equations, explain what the broken case violates, and name one result that this lab cannot establish. Then describe how the two sweeps separate sensitivity to `prediction_horizon` from sensitivity to `input_limit`.
+If the first input is unchanged when N grows, what evidence shows the horizon was actually solved? Why is post hoc clipping insufficient in general?
+
+Answer rationale: Inspect the whole optimized plan, its terminal state, objective and KKT residual. Saturation can pin the first move while later moves change. General coupled constraints require solving the constrained objective, not clipping an unconstrained command.
+
+Use the Course checkpoint section to assemble your own evidence. These are authored self-checks, not measured learner outcomes or hardware qualification.

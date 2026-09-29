@@ -1,66 +1,57 @@
 # Enforce Safety with a Control Barrier Filter
 
-**Guiding question:** How can a minimally invasive barrier filter modify a nominal command before a state constraint is violated?
-
-Project a nominal closing-speed command onto the one-dimensional CBF inequality and measure intervention and one-step safety margin. This is a Python-first native design derived from the reviewed competency map. It is not presented as a conversion of the pinned MATLAB source and it stays inside deterministic software simulation.
-
-## Why this lesson exists
-
-The numerical result is not the objective by itself. The objective is to connect a design decision to a governing relation, an observable consequence, a failure mechanism, and a recovery check. Record the assumptions before interpreting any curve.
+A control barrier filter limits closing velocity using the current clearance, not just the initial clearance. The experiment uses a sampled integrator with initial h=0.4 m and no disturbances or actuator dynamics.
 
 ## Model and equations
 
-$$\text{h=x-x_min}$$
-$$\text{h_dot+alpha*h>=0}$$
-$$\text{u_safe=argmin |u-u_nom| subject to u>=-alpha*h}$$
+\[
+h_{k+1}\geq (1-\alpha\Delta t)h_k\geq 0\quad\text{if }0\leq\alpha\Delta t\leq1
+\]
 
-Carry units through the model. A pole or zero is reported in inverse seconds, angular frequency in radians per second, phase in degrees or radians as labeled, and dimensionless ratios as `1`. The experiment evaluates the displayed equations directly; it does not call a black-box synthesis toolbox.
+`h=x-x_min; dh/dt=u; u_nom=-v_close`
 
-## Predict before running
+`u[k]=max(u_nom,-alpha*h[k]); h[k+1]=h[k]+dt*u[k]`
 
-The filtered command satisfies the declared barrier inequality and equals the nominal command whenever that command is already safe. State which output should move first and which quantity should remain invariant before changing a control.
+`dt=0.01 s; h[k+1]>=(1-alpha*dt)*h[k]`
+
+Worked example: At alpha=2/s and nominal closing speed 1.5 m/s, the initial command is max(−1.5,−0.8)=−0.8 m/s. One sample later h=0.392 m and the bound changes to −0.784 m/s. Reusing −0.8 indefinitely would violate safety.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read all three signature metrics.
-2. Inspect the response plot for the external behavior, then the mechanism plot for the governing internal relation.
-3. Check the units and limiting cases before accepting a stability, equivalence, or performance statement.
-4. Save the baseline, change one variable only, and explain the direction of change from the equations.
+Should the safe trajectory cross h=0 if every command is reevaluated? State the sample-period condition your answer requires.
+
+Run the default controls, record the metrics, and explain the plotted quantities before changing a setting. Safety margin over time includes the zero boundary. State-dependent barrier filter shows applied and nominal velocities and u+alpha*h. A nonnegative residual certifies the sampled step under the declared integrator assumptions.
 
 ## Two one-variable sweeps
 
-1. Hold `nominal_closing_speed` at `1.5 m/s` and sweep `barrier_gain_per_s` from `0.2` through `2.0` to `8.0 1/s`.
-2. Restore `barrier_gain_per_s` to `2.0 1/s` and sweep `nominal_closing_speed` from `0.1` through `1.5` to `4.0 m/s`.
-
-Do not tune both at once until you can attribute each metric change to one term in the equations. The retained evidence uses one endpoint from each sweep in addition to the baseline.
+Raise barrier gain from 2 to 8/s: the nominal command may initially be allowed, then intervention begins as clearance falls. Reset, then raise closing speed from 1.5 to 4 m/s: compare requested and applied speeds.
 
 ## Intentionally broken case
 
-Broken mode bypasses the safety filter while commanding rapid motion toward the boundary. Broken mode is a named counterexample, not an alternative design recommendation.
+Broken mode bypasses the filter and continuously applies the selected nominal closing speed. At the default speed, clearance crosses zero within three seconds; slower closing can stay positive throughout this finite window. No control setting is secretly replaced.
 
 ## Recovery
 
-Restore the projection, inspect the intervention size, and keep the claim limited to the modeled relative-degree-one constraint. The recovery case restores the exact baseline inputs so the evidence can prove that the failure is reversible rather than merely different.
+Disable broken mode and reset controls. Inspect the entire clearance history, not just its first sample, and verify a nonnegative minimum barrier residual.
 
 ## Limiting cases and invariants
 
-- Far from the boundary a safe nominal command passes unchanged.
-- At the boundary the filter prohibits negative hdot.
-
-Teaching invariant: The filtered command satisfies the declared barrier inequality and equals the nominal command whenever that command is already safe.
+- For alpha*dt<=1, nonnegative current clearance implies nonnegative next clearance.
+- At h=0 the healthy controller refuses negative velocity.
+- If nominal velocity already satisfies the barrier, intervention is zero; this does not remove the need to reevaluate it later.
 
 ## Independent evidence
 
-Expected signatures are produced by `expansion_reference_cases.py`, which imports no production experiment and consumes no production result. Production signatures are retained separately. Each baseline, two sweeps, broken case, and recovery case records fields, units, tolerances, measured error, and the named invariant. Agreement supports only these equations and scenarios; it is not MATLAB execution, broad robust certification, or physical validation.
+A closed-form linear approach followed by a geometric decay independently predicts the sampled clearance sequence and signature. Five retained scenarios cover baseline, each one-variable sweep, fault and exact recovery. Absolute and relative tolerances remain 1e-8. The reference does not import or consume the production result.
 
 ## Common mistakes
 
-- Reading a plotted shape without checking its sign convention, units, or contour/path definition.
-- Treating a local, frequency-limited, or nominal result as a global guarantee.
-- Changing both design controls and then assigning causality to one of them.
-- Confusing a recovery that looks better with a recovery that restores the baseline invariant.
-- Claiming source equivalence, physical hardware evidence, or learner effectiveness from this software-only lab.
+A safe first command is not a safe fixed command forever. The continuous inequality also needs a sample/update argument before claiming discrete-time safety.
 
 ## Teach-back
 
-Derive one signature quantity from the displayed equations, explain what the broken case violates, and name one result that this lab cannot establish. Then describe how the two sweeps separate sensitivity to `barrier_gain_per_s` from sensitivity to `nominal_closing_speed`.
+Derive h[k+1]>=(1−alpha*dt)h[k] and explain why this browser range satisfies it. What physical effects are excluded?
+
+Answer rationale: Substitute u>=−alpha*h into the Euler integrator. Here alpha*dt<=0.08, so the multiplier stays nonnegative. Delay, disturbances and actuator lag are excluded; the demonstration does not certify a real robot.
+
+Use the Course checkpoint section to assemble your own evidence. These are authored self-checks, not measured learner outcomes or hardware qualification.

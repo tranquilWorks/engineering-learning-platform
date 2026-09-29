@@ -4,7 +4,9 @@ Delivery and twelve-lesson semantic repairs are merged. DSP's 84 checkpoints,
 ten cumulative portfolios and competency map are embedded and locally verified;
 417 independent comparisons and final browser/container checks passed. See
 CURRENT_STATE and the aggregate evidence for exact scope and merge tracking.
-Sixty additional Controls/Robotics/Vehicle findings remain separate repair scopes.
+The next twelve Controls model/checkpoint repairs passed all required local and
+browser/container gates. Forty-eight Controls/Robotics/Vehicle findings remain
+separate repair scopes; see the current batch evidence for integration status.
 Learner/manual accessibility/MATLAB/hardware/production validation is not_run.
 
 ## Earlier roadmap and historical dispositions
@@ -421,3 +423,15 @@ pending. Preserve P01-P76 and source/platform identities. No further lesson
 batch follows automatically; aggregate caliber, competency mapping and cumulative
 assessment are the next separate review under issue 441. Whole-course numerical,
 curriculum and capstone maturity remains blocked pending that review.
+
+## ELP-GNC-SEMANTIC-QUALITY-12 — twelve existing Controls model repairs
+
+Exact predecessor: PR54 merge `00983cab0599b1ce3a613a2cc8ef42eb7b45f0b4`.
+Control contract: PR551, `6d81736bba58cc05f6ccc78e4a3ad66386d731bb`.
+Scope: P36/P38/P42/P43/P45–P51/P55, preserving all other course payloads and the
+prerequisite graph. Actual mechanisms, independently generated numerical cases,
+physical tests and twelve Course checkpoints are implemented. Selected browser
+verification, the final 580-page whole-container sweep and all mandatory local
+gates passed. The batch evidence retains exact results and development PR tracking.
+Forty-eight findings remain blocked after these scoped closures. This batch adds
+no lessons and does not promote Controls/Robotics/Vehicle aggregate acceptance.

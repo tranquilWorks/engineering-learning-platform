@@ -7,21 +7,21 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- theta_hat=(Phi^T Phi)^-1 Phi^T y
-- cov(theta_hat) proportional (Phi^T Phi)^-1
-- validate on held-out input
+- y[k+1]=0.82*y[k]+0.18*u[k]+0.002*cos(1.7*k)
+- '[a_hat,b_hat]=argmin ||X*theta-y_next||_2; X=[y_current,u]'
+- held-out y_hat[k+1]=a_hat*y_hat[k]+b_hat*u[k]
 signature:
-- field: information_condition
+- field: smallest_regressor_singular_value
   unit: '1'
-- field: parameter_error_bound
+- field: measured_parameter_error_norm
   unit: '1'
-- field: validation_rms
+- field: heldout_free_run_rmse
   unit: '1'
-teaching_invariant: "Persistent excitation improves information conditioning, while held-out residual\u2014not training\
-  \ fit\u2014bounds the model claim."
+teaching_invariant: With nondegenerate excitation and zero disturbance, least squares recovers the exact coefficients.
 limiting_cases:
-- Zero excitation provides no parameter information.
-- Increasing independent excitation directions reduces covariance conditioning.
+- With nondegenerate excitation and zero disturbance, least squares recovers the exact coefficients.
+- With zero training input, no amount of output fitting identifies the input gain.
+- Held-out RMSE is a finite synthetic experiment result, not a guarantee for untested plants or noise processes.
 scenarios:
   baseline: &id001
     excitation_amplitude: 1.0
@@ -48,5 +48,6 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic Python model and authored self-check. Independent numerical and browser/container
+  checks are recorded separately; learner outcomes, MATLAB, manual screen-reader, hardware and production acceptance
+  not_run.

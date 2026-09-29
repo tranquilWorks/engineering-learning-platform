@@ -1,9 +1,9 @@
 schema_version: 1
 id: 55-transform-uncertainty-with-an-unscented-kalman-filter
 number: 55
-title: Transform Uncertainty with an Unscented Kalman Filter
-summary: "Transform a zero-mean Gaussian through x\xB2, compare analytic moments with a symmetric sigma set, and\
-  \ expose invalid weights."
+title: Transform Gaussian Uncertainty with Sigma Points
+summary: Compute a scaled unscented transform through the square map and distinguish mean weights from covariance
+  correction.
 guiding_question: How do sigma points capture nonlinear mean and covariance beyond a first-order Jacobian?
 status: implemented
 tags:
@@ -41,10 +41,11 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: A valid symmetric transform reproduces the declared nonlinear moments within its quadrature order and uses
-    weights that sum to one.
-  reveal: Restore normalized mean/covariance weights and compare transformed moments to an analytic case before
-    filtering data.
+  text: Does a negative central mean weight necessarily invalidate the transform? Try alpha below one and compare
+    the computed moments with the Gaussian formulas.
+  reveal: "The two off-center transformed values equal the mean, so their variance contributions vanish. The center\
+    \ maps to zero, differs from mean by sigma\xB2 and contributes 2*sigma\u2074 only through the covariance correction.\
+    \ Its mean weight is zero."
 - type: controls
   title: Design controls
 - type: metrics
@@ -65,3 +66,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md
