@@ -6,6 +6,11 @@ export function LessonQuality({ course, module }: { course: string; module: stri
     {review.known_issue ? <p role="note" className="lesson-content-note"><strong>Under revision:</strong> {review.known_issue}</p> : null}
     <details><summary>Lesson review and evidence</summary>
       {review.scoped_review ? <p><strong>Scoped model revision:</strong> {review.scoped_review} Five independent numerical scenarios and physical limiting checks passed. This does not certify the whole course or learner outcomes.</p> : null}
+      {review.assessment_review ? <>
+        <p><strong>Course assessment:</strong> Checkpoint {review.assessment_review.checkpoint} connects competency {review.assessment_review.competency} to cumulative assessment {review.assessment_review.cumulative}. Use the Course checkpoint link to reach the prediction, evidence task, reasoning and rubric.</p>
+        <p>This lesson retains {review.assessment_review.case_count} independent numerical comparison cases. Assessment guidance is authored; no learner score or completion is recorded.</p>
+        <p><strong>Model limit:</strong> {review.assessment_review.scope_limit}</p>
+      </> : null}
       <p>This lesson has {review.evidence_count} retained design or numerical evidence artifacts. Their presence does not establish complete subject coverage or learning effectiveness.</p>
       <p>The current audit checks delivery and records specific content issues. Representative learner and screen-reader validation have not been run.</p>
     </details>

@@ -32,16 +32,16 @@ export function BlockRenderer({ document, result, parameters, busy, onParameter,
       <nav className="lesson-jumps" aria-label="Lesson sections">
         {document.module.blocks.map((block, index) => {
           const labels: Record<string, string> = { markdown: "Concept", prediction: "Predict", controls: "Experiment", metrics: "Evidence" };
-          const label = labels[block.type];
+          const label = block.type === "markdown" && block.title ? block.title : labels[block.type];
           if (block.type === "controls") return <span key={index}><a className="lesson-jump-desktop" href="#experiment-settings">Experiment</a><a className="lesson-jump-mobile" href={`#lesson-block-${index}`}>Experiment</a></span>;
-          return label && document.module.blocks.findIndex((item) => item.type === block.type) === index ? <a key={index} href={`#lesson-block-${index}`}>{label}</a> : null;
+          return label && ((block.type === "markdown" && block.title) || document.module.blocks.findIndex((item) => item.type === block.type) === index) ? <a key={index} href={`#lesson-block-${index}`}>{label}</a> : null;
         })}
       </nav>
       {document.module.blocks.map((block, index) => {
         const key = `${document.module.id}-${block.type}-${index}`;
         if (block.type === "markdown") {
           const markdown = block.source ? document.markdown_sources[block.source] : block.text;
-          return markdown ? <section key={key} id={`lesson-block-${index}`} className="narrative-panel"><Markdown courseId={document.course.id} moduleId={document.module.id}>{markdown}</Markdown></section> : null;
+          return markdown ? <section key={key} id={`lesson-block-${index}`} className="narrative-panel" aria-labelledby={block.title ? `lesson-heading-${index}` : undefined}>{block.title ? <h2 id={`lesson-heading-${index}`}>{block.title}</h2> : null}<Markdown courseId={document.course.id} moduleId={document.module.id}>{markdown}</Markdown></section> : null;
         }
         if (block.type === "prediction") return <div key={key} id={`lesson-block-${index}`}><Prediction title={block.title} prompt={block.text ?? ""} reveal={block.reveal} /></div>;
         if (block.type === "controls") {

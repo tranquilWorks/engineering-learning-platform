@@ -1,11 +1,11 @@
-# Active quality continuation — 2026-09-28
+# Active quality continuation — 2026-09-29
 
-Delivery PR52 is merged. The twelve-lesson semantic revision in PR53 is locally
-verified: 60 independent comparisons, 40 physical/preservation tests, mandatory
-local gates, 290 HTTP modules, 580 desktop/mobile pages and 36 interactions.
-The next separate exact-baseline contract embeds and verifies DSP's 84 checkpoints,
-ten cumulative portfolios and competency graph. Sixty additional named lesson
-findings remain blocked. See CURRENT_STATE and COURSE_QUALITY.
+Delivery and twelve-lesson semantic repairs are merged. DSP's 84 checkpoints,
+ten cumulative portfolios and competency map are embedded and locally verified;
+417 independent comparisons and final browser/container checks passed. See
+CURRENT_STATE and the aggregate evidence for exact scope and merge tracking.
+Sixty additional Controls/Robotics/Vehicle findings remain separate repair scopes.
+Learner/manual accessibility/MATLAB/hardware/production validation is not_run.
 
 ## Earlier roadmap and historical dispositions
 

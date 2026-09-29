@@ -1,0 +1,3631 @@
+schema_version: 1
+course:
+  id: dsp-radar
+  title: DSP and Radar Learning Laboratory
+  authority: Owner-authorized aggregate review of the pinned DSP/radar source and retained native numerical repairs.
+  baseline: b107ac198543e8dfb563c6aae4175cc87da6210d
+scope:
+  target_learners:
+  - Engineering learners who can manipulate algebraic equations and want executable DSP/radar reasoning before specialist
+    implementation.
+  prerequisites:
+  - Algebra, trigonometry, complex numbers and elementary calculus.
+  - Basic probability, vectors/matrices and units; covariance/eigendecomposition and conditional probability are
+    developed where used.
+  outcomes:
+  - Explain a sampled-system result using complex phase, aliasing, noise, convolution and filtering assumptions.
+  - Distinguish spectral display, physical resolution and uncertainty, and explain signed IQ processing through
+    calibration and estimation.
+  - Relate modulation, matched filtering and adaptation to decision statistics and defensible finite-trial uncertainty.
+  - Connect radar power, waveform delay/compression, pulse ambiguity and coherent integration using consistent signs
+    and units.
+  - Choose and assess adaptive detection statistics with explicit training, valid-cell and finite-trial assumptions.
+  - Distinguish clustering, state estimation, association, lifecycle and maneuver inference using report-driven
+    histories.
+  - Relate array geometry and calibration to beamforming, subspace and adaptive space-time evidence.
+  - Separate FMCW delay/Doppler, multi-target pairing, virtual-array timing and time-varying Doppler under explicit
+    conventions.
+  - Explain coherent image formation, motion correction and passive/adaptive processing while distinguishing their
+    geometry and assumptions.
+  - Trace the retained end-to-end pulsed-radar mechanism and distinguish selected-scene changes from its fixed baseline
+    track demonstration.
+  exclusions:
+  - Physical RF hardware, antenna/receiver calibration campaigns, EMC/regulatory qualification and operational radar
+    acceptance.
+  - Licensed MATLAB execution equivalence, real-time embedded throughput, concurrency certification and production
+    deployment.
+  - 'Universal integration of all branches in P84: it executes a pulsed-radar chain, while FMCW/array/imaging/passive
+    competencies have separate cumulative portfolios.'
+  - Representative-learner effectiveness and manual assistive-technology acceptance; no score or learner pass is
+    recorded.
+  cross_course_handoffs:
+  - 'Controls/GNC: state-space modeling, covariance consistency and closed-loop estimation beyond these radar-report
+    examples; consult its visible quality limits.'
+  - 'Robotics/autonomy: perception/report interfaces, association and geometry; these experiments do not establish
+    robot safety or field localization.'
+  - 'Statistics/estimation and numerical optimization: inference assumptions, identifiability and constrained solvers
+    beyond the bounded cases.'
+  - 'RF, FPGA and embedded/HIL source curricula: physical front ends, data paths, timing and bench validation remain
+    separate source-only or separately governed work.'
+competencies:
+- id: DSP-C01
+  outcome: Set frequency_hz to its negative while preserving amplitude and phase. Explain the direction of the IQ
+    orbit and the first sample before inspecting rotation_direction.
+  prerequisite_ids: []
+  module_ids:
+  - P01
+  assessment_ids:
+  - DSP-F01
+  - DSP-A01
+- id: DSP-C02
+  outcome: Change sample_rate_hz while keeping the analog signal fixed, then change clock_offset_samples. Identify
+    which change alters sample spacing and which changes the sampling phase in measurements.
+  prerequisite_ids:
+  - DSP-C01
+  module_ids:
+  - P02
+  assessment_ids:
+  - DSP-F02
+  - DSP-A01
+- id: DSP-C03
+  outcome: At 700 Hz input and 1000 samples/s, predict the signed and apparent alias. Use phase_check to decide
+    whether a 300 Hz cosine needs the original or reversed phase.
+  prerequisite_ids:
+  - DSP-C02
+  module_ids:
+  - P03
+  assessment_ids:
+  - DSP-F03
+  - DSP-A01
+- id: DSP-C04
+  outcome: Compare 6 and 7 bits at amplitude_v=0.9, then increase amplitude to the converter limit. Use error and
+    the clipped-sample count to separate quantization from overload.
+  prerequisite_ids:
+  - DSP-C02
+  module_ids:
+  - P04
+  assessment_ids:
+  - DSP-F04
+  - DSP-A01
+- id: DSP-C05
+  outcome: Increase colored_memory while retaining noise_rms_v, then move interferer_offset_hz. Explain why equal
+    RMS does not imply equal spectrum or lag correlation.
+  prerequisite_ids:
+  - DSP-C01
+  module_ids:
+  - P05
+  assessment_ids:
+  - DSP-F05
+  - DSP-A01
+- id: DSP-C06
+  outcome: Increase echo_delay_samples and resonator_radius separately. Use impulse_responses and equivalence to
+    distinguish a translated echo from a longer decaying state response.
+  prerequisite_ids:
+  - DSP-C01
+  - DSP-C02
+  module_ids:
+  - P06
+  assessment_ids:
+  - DSP-F06
+  - DSP-A01
+- id: DSP-C07
+  outcome: Change middle_echo_delay_samples, then make third_echo_gain more negative. Predict where cancellation
+    occurs in echo_paths before checking sum_check.
+  prerequisite_ids:
+  - DSP-C06
+  module_ids:
+  - P07
+  assessment_ids:
+  - DSP-F07
+  - DSP-A01
+- id: DSP-C08
+  outcome: Decrease target_amplitude at fixed noise_sigma, then reduce target_separation_samples. Use correlation
+    to distinguish weak detection from merged peaks.
+  prerequisite_ids:
+  - DSP-C05
+  - DSP-C06
+  module_ids:
+  - P08
+  assessment_ids:
+  - DSP-F08
+  - DSP-A01
+- id: DSP-C09
+  outcome: Change fir_taps and iir_q separately; compare frequency_behavior with time_behavior. Explain a case where
+    a narrower response also rings longer.
+  prerequisite_ids:
+  - DSP-C06
+  - DSP-C07
+  - DSP-C08
+  module_ids:
+  - P09
+  assessment_ids:
+  - DSP-F09
+  - DSP-A01
+- id: DSP-C10
+  outcome: Move high_tone_hz while leaving the rate-change factors fixed, then change reconstruction_taps. Locate
+    the unwanted output component in decimation and explain its cause.
+  prerequisite_ids:
+  - DSP-C03
+  - DSP-C09
+  module_ids:
+  - P10
+  assessment_ids:
+  - DSP-F10
+  - DSP-A01
+- id: DSP-C11
+  outcome: At N=64 and fs=1024 Hz, predict the 144 Hz tone's zero-based bin. Change tone_bin_offset to 0.5 and compare
+    neighboring_bins; then enable the indexing failure.
+  prerequisite_ids:
+  - DSP-C01
+  - DSP-C02
+  module_ids:
+  - P11
+  assessment_ids:
+  - DSP-F11
+  - DSP-A02
+- id: DSP-C12
+  outcome: At tone_bin_offset=0.35, compare Rectangular and Hann windows in leakage_spectrum. Record both sidelobe
+    behavior and mainlobe width before choosing a window.
+  prerequisite_ids:
+  - DSP-C05
+  - DSP-C11
+  module_ids:
+  - P12
+  assessment_ids:
+  - DSP-F12
+  - DSP-A02
+- id: DSP-C13
+  outcome: Keep observation_multiplier=1 and compare padding_factor 1, 4 and 16. Then increase actual observation
+    length. Use padded_spectrum and observation_sweep to test the two-tone resolution claim.
+  prerequisite_ids:
+  - DSP-C11
+  - DSP-C12
+  module_ids:
+  - P13
+  assessment_ids:
+  - DSP-F13
+  - DSP-A02
+- id: DSP-C14
+  outcome: Compare segment_length 256 and 1024 on the same total record, then change overlap_fraction. Check psd_comparison
+    and explain how integrating its units returns power.
+  prerequisite_ids:
+  - DSP-C05
+  - DSP-C11
+  - DSP-C12
+  module_ids:
+  - P14
+  assessment_ids:
+  - DSP-F14
+  - DSP-A02
+- id: DSP-C15
+  outcome: Compare window_length 64 and 512 for the short burst, then increase overlap. Use spectrogram and window_sweep
+    to separate time support from display time step.
+  prerequisite_ids:
+  - DSP-C11
+  - DSP-C12
+  module_ids:
+  - P15
+  assessment_ids:
+  - DSP-F15
+  - DSP-A02
+- id: DSP-C16
+  outcome: Vary envelope_depth and phase_deviation_rad separately. Use waveform_envelope and reliability_gate to
+    decide where phase differentiation is trustworthy.
+  prerequisite_ids:
+  - DSP-C01
+  - DSP-C09
+  - DSP-C11
+  module_ids:
+  - P16
+  assessment_ids:
+  - DSP-F16
+  - DSP-A02
+- id: DSP-C17
+  outcome: Compare lo_frequency_hz=240 and 276, then change lo_phase_rad by pi/2. Use mixer_spectrum to locate the
+    difference and image terms before filtering.
+  prerequisite_ids:
+  - DSP-C01
+  - DSP-C09
+  - DSP-C11
+  module_ids:
+  - P17
+  assessment_ids:
+  - DSP-F17
+  - DSP-A02
+- id: DSP-C18
+  outcome: At offset_frequency_hz=160, compare sample_rate_hz=2048 and 256. Use iq_rotation and centered_spectra
+    to explain the signed complex alias.
+  prerequisite_ids:
+  - DSP-C02
+  - DSP-C03
+  - DSP-C17
+  module_ids:
+  - P18
+  assessment_ids:
+  - DSP-F18
+  - DSP-A02
+- id: DSP-C19
+  outcome: Compare i_gain=1 and 1.3, then quadrature_error_deg=0 and 15. Inspect trajectory and correction_stages
+    before deciding which calibration terms are required.
+  prerequisite_ids:
+  - DSP-C17
+  - DSP-C18
+  module_ids:
+  - P19
+  assessment_ids:
+  - DSP-F19
+  - DSP-A02
+  - DSP-A10
+- id: DSP-C20
+  outcome: Compare record_sample_count=64 and 512 at snr_db=8, then lower SNR. Use frequency_estimators and phase_estimators
+    to distinguish one estimate from bias and spread across trials.
+  prerequisite_ids:
+  - DSP-C05
+  - DSP-C11
+  - DSP-C16
+  - DSP-C19
+  module_ids:
+  - P20
+  assessment_ids:
+  - DSP-F20
+  - DSP-A02
+- id: DSP-C21
+  outcome: Increase modulation_depth through one while fixing message_frequency_hz. Explain the sideband changes
+    in spectrum and the envelope detector's failure in recovery.
+  prerequisite_ids:
+  - DSP-C11
+  - DSP-C16
+  module_ids:
+  - P21
+  assessment_ids:
+  - DSP-F21
+  - DSP-A03
+- id: DSP-C22
+  outcome: Double deviation_hz, then double message_frequency_hz separately. Compare spectrum and phase_slope and
+    state which control changes sideband spacing.
+  prerequisite_ids:
+  - DSP-C16
+  - DSP-C21
+  module_ids:
+  - P22
+  assessment_ids:
+  - DSP-F22
+  - DSP-A03
+- id: DSP-C23
+  outcome: Keep ebn0_db fixed and increase phase_error_deg. Use bit_mapping, constellation and phase_sweep to explain
+    why a compact cluster can still decode incorrectly.
+  prerequisite_ids:
+  - DSP-C05
+  - DSP-C18
+  - DSP-C20
+  module_ids:
+  - P23
+  assessment_ids:
+  - DSP-F23
+  - DSP-A03
+- id: DSP-C24
+  outcome: Compare span_symbols=2 and 8 at fixed rolloff. Account for both filter delays before interpreting decisions
+    and the eye opening.
+  prerequisite_ids:
+  - DSP-C07
+  - DSP-C08
+  - DSP-C23
+  module_ids:
+  - P24
+  assessment_ids:
+  - DSP-F24
+  - DSP-A03
+- id: DSP-C25
+  outcome: Increase echo_gain, then regularization. Use channel_spectrum, noise_gain and constellation to distinguish
+    inverse-channel correction from noise amplification.
+  prerequisite_ids:
+  - DSP-C07
+  - DSP-C09
+  - DSP-C24
+  module_ids:
+  - P25
+  assessment_ids:
+  - DSP-F25
+  - DSP-A03
+- id: DSP-C26
+  outcome: Compare step_size values and then reduce reference_correlation. Explain the coefficient and error histories
+    around the channel change using coefficients and convergence.
+  prerequisite_ids:
+  - DSP-C05
+  - DSP-C07
+  - DSP-C25
+  module_ids:
+  - P26
+  assessment_ids:
+  - DSP-F26
+  - DSP-A03
+- id: DSP-C27
+  outcome: Compare trial_count=100 and 4000 at fixed ebn0_db. Use blocks and running_ber to explain why repeated
+    copies of a trial cannot narrow uncertainty legitimately.
+  prerequisite_ids:
+  - DSP-C05
+  - DSP-C23
+  module_ids:
+  - P27
+  assessment_ids:
+  - DSP-F27
+  - DSP-A03
+- id: DSP-C28
+  outcome: Raise threshold_sigma at fixed matched_snr_db. Use roc and selection to explain both the detection tradeoff
+    and amplitude bias after selecting only detections.
+  prerequisite_ids:
+  - DSP-C08
+  - DSP-C20
+  - DSP-C27
+  module_ids:
+  - P28
+  assessment_ids:
+  - DSP-F28
+  - DSP-A03
+- id: DSP-C29
+  outcome: Double a range on power and compare the power change with changing transmit_power_kw. Explain why agreement
+    at one reference range cannot validate the spreading exponent.
+  prerequisite_ids:
+  - DSP-C05
+  - DSP-C28
+  module_ids:
+  - P29
+  assessment_ids:
+  - DSP-F29
+  - DSP-A04
+- id: DSP-C30
+  outcome: Compare sample_rate_mhz=20 and 40 with delay_us fixed. Use correlation and ranging to distinguish finer
+    bins from an improved waveform response.
+  prerequisite_ids:
+  - DSP-C02
+  - DSP-C08
+  - DSP-C29
+  module_ids:
+  - P30
+  assessment_ids:
+  - DSP-F30
+  - DSP-A04
+- id: DSP-C31
+  outcome: Compare bandwidth_mhz=2 and 8 at fixed target_separation_m, then vary separation. Use pair and accuracy
+    to explain why an isolated target can be located more precisely than two targets can be separated.
+  prerequisite_ids:
+  - DSP-C13
+  - DSP-C28
+  - DSP-C30
+  module_ids:
+  - P31
+  assessment_ids:
+  - DSP-F31
+  - DSP-A04
+- id: DSP-C32
+  outcome: Double bandwidth_mhz while fixing pulse_duration_us, then double duration at fixed bandwidth. Record
+    compression width and the normalization used by duration_gain.
+  prerequisite_ids:
+  - DSP-C08
+  - DSP-C22
+  - DSP-C30
+  - DSP-C31
+  module_ids:
+  - P32
+  assessment_ids:
+  - DSP-F32
+  - DSP-A04
+  - DSP-A10
+- id: DSP-C33
+  outcome: Compare taper_strength=0 and 1 at fixed separation_samples. Use taper_width, taper_cost and scene to
+    decide whether the weaker target benefits.
+  prerequisite_ids:
+  - DSP-C12
+  - DSP-C32
+  module_ids:
+  - P33
+  assessment_ids:
+  - DSP-F33
+  - DSP-A04
+  - DSP-A10
+- id: DSP-C34
+  outcome: Compare the delay and Doppler cuts of the rectangular pulse and LFM response. Predict the LFM ridge direction
+    under the displayed Doppler sign convention.
+  prerequisite_ids:
+  - DSP-C08
+  - DSP-C32
+  - DSP-C33
+  module_ids:
+  - P34
+  assessment_ids:
+  - DSP-F34
+  - DSP-A04
+- id: DSP-C35
+  outcome: At prf_khz=20 and true_range_km=18, predict the apparent range in folded before running the failure case.
+  prerequisite_ids:
+  - DSP-C03
+  - DSP-C30
+  module_ids:
+  - P35
+  assessment_ids:
+  - DSP-F35
+  - DSP-A04
+- id: DSP-C36
+  outcome: Reverse velocity_mps at the same carrier_ghz. Explain the phase slope and compare it with the magnitude-only
+    failure.
+  prerequisite_ids:
+  - DSP-C01
+  - DSP-C20
+  - DSP-C29
+  module_ids:
+  - P36
+  assessment_ids:
+  - DSP-F36
+  - DSP-A04
+- id: DSP-C37
+  outcome: Change middle_target_range_m and middle_velocity_mps separately. Identify which data-matrix axis and
+    phase history change.
+  prerequisite_ids:
+  - DSP-C30
+  - DSP-C32
+  - DSP-C36
+  module_ids:
+  - P37
+  assessment_ids:
+  - DSP-F37
+  - DSP-A04
+- id: DSP-C38
+  outcome: Compare the two-pulse and three-pulse outputs for slow_target_velocity_mps, then change prf_khz. Explain
+    the benefit and cost of an additional difference.
+  prerequisite_ids:
+  - DSP-C09
+  - DSP-C36
+  - DSP-C37
+  module_ids:
+  - P38
+  assessment_ids:
+  - DSP-F38
+  - DSP-A04
+- id: DSP-C39
+  outcome: Use a diverse secondary_prf_khz and then an equal-PRF comparison. Explain which primary blind-speed targets
+    can be recovered and which common null remains.
+  prerequisite_ids:
+  - DSP-C35
+  - DSP-C38
+  module_ids:
+  - P39
+  assessment_ids:
+  - DSP-F39
+  - DSP-A04
+- id: DSP-C40
+  outcome: Double pulse_count and compare coherent and noncoherent evidence at fixed input_snr_db. Then break phase
+    alignment and explain the change.
+  prerequisite_ids:
+  - DSP-C05
+  - DSP-C27
+  - DSP-C36
+  - DSP-C37
+  module_ids:
+  - P40
+  assessment_ids:
+  - DSP-F40
+  - DSP-A04
+- id: DSP-C41
+  outcome: Increase range_correlation while holding the scene's mean-power convention fixed. Explain why different
+    Swerling models retain different variability after pulse integration.
+  prerequisite_ids:
+  - DSP-C05
+  - DSP-C27
+  - DSP-C37
+  - DSP-C40
+  module_ids:
+  - P41
+  assessment_ids:
+  - DSP-F41
+  - DSP-A05
+- id: DSP-C42
+  outcome: Compare pulse_count=32 and 64, then alter hann_weight. Use the map to distinguish velocity-bin spacing,
+    leakage and range resolution.
+  prerequisite_ids:
+  - DSP-C11
+  - DSP-C12
+  - DSP-C32
+  - DSP-C37
+  - DSP-C40
+  module_ids:
+  - P42
+  assessment_ids:
+  - DSP-F42
+  - DSP-A05
+  - DSP-A10
+- id: DSP-C43
+  outcome: Double noise_rms without changing the threshold, then increase clutter_pedestal. Explain the native-unit
+    crossing rate and why normalizing by the true RMS changes the experiment.
+  prerequisite_ids:
+  - DSP-C28
+  - DSP-C41
+  - DSP-C42
+  module_ids:
+  - P43
+  assessment_ids:
+  - DSP-F43
+  - DSP-A05
+- id: DSP-C44
+  outcome: Move threshold_sigma at fixed matched_snr_db. Convert a requested Pfa of 0.001 into an expected count
+    over one million H0 cells and assess whether a small trial set can verify it.
+  prerequisite_ids:
+  - DSP-C27
+  - DSP-C28
+  - DSP-C43
+  module_ids:
+  - P44
+  assessment_ids:
+  - DSP-F44
+  - DSP-A05
+- id: DSP-C45
+  outcome: Multiply scene_power_scale by a common factor while keeping design_pfa fixed. Explain the unchanged decisions
+    using the CUT and training estimate, then enable the wrong-average failure.
+  prerequisite_ids:
+  - DSP-C27
+  - DSP-C43
+  - DSP-C44
+  module_ids:
+  - P45
+  assessment_ids:
+  - DSP-F45
+  - DSP-A05
+- id: DSP-C46
+  outcome: Increase guard_cells, then training_cells separately. Use the threshold traces to show a case where target
+    leakage and background locality compete.
+  prerequisite_ids:
+  - DSP-C33
+  - DSP-C45
+  module_ids:
+  - P46
+  assessment_ids:
+  - DSP-F46
+  - DSP-A05
+- id: DSP-C47
+  outcome: Compare training_count values while keeping design_pfa and the detection-probability target fixed. Explain
+    which curves actually support a CFAR-loss claim.
+  prerequisite_ids:
+  - DSP-C28
+  - DSP-C44
+  - DSP-C45
+  module_ids:
+  - P47
+  assessment_ids:
+  - DSP-F47
+  - DSP-A05
+- id: DSP-C48
+  outcome: Increase clutter_step_db and then interferer_power_db. Locate cases where GO protects the high-background
+    side and cases where SO preserves a weak target.
+  prerequisite_ids:
+  - DSP-C41
+  - DSP-C45
+  - DSP-C46
+  module_ids:
+  - P48
+  assessment_ids:
+  - DSP-F48
+  - DSP-A05
+- id: DSP-C49
+  outcome: Change os_rank and compare the effect of strong contaminants. Explain the breakdown when the count exceeds
+    N-k using the ascending order statistic.
+  prerequisite_ids:
+  - DSP-C45
+  - DSP-C46
+  - DSP-C48
+  module_ids:
+  - P49
+  assessment_ids:
+  - DSP-F49
+  - DSP-A05
+- id: DSP-C50
+  outcome: Calculate the rectangular ring's training-cell count from the displayed inner and outer half-widths.
+    Explain why the border target lacks a valid full stencil.
+  prerequisite_ids:
+  - DSP-C42
+  - DSP-C45
+  - DSP-C46
+  module_ids:
+  - P50
+  assessment_ids:
+  - DSP-F50
+  - DSP-A05
+  - DSP-A10
+- id: DSP-C51
+  outcome: Locate one miss and one excess crossing in the combined scene. Compare CA, GO, SO and OS reference statistics
+    before assigning a cause.
+  prerequisite_ids:
+  - DSP-C33
+  - DSP-C41
+  - DSP-C48
+  - DSP-C49
+  - DSP-C50
+  module_ids:
+  - P51
+  assessment_ids:
+  - DSP-F51
+  - DSP-A05
+- id: DSP-C52
+  outcome: Compare the iid empirical interval with the requested design_pfa, then inspect correlated and textured
+    cases. Explain why the exact iid formula and a finite estimate need not coincide.
+  prerequisite_ids:
+  - DSP-C27
+  - DSP-C44
+  - DSP-C45
+  - DSP-C51
+  module_ids:
+  - P52
+  assessment_ids:
+  - DSP-F52
+  - DSP-A05
+- id: DSP-C53
+  outcome: Compare minimum_cells 1, 3 and 18, then change weight_exponent. Explain which components survive and
+    why a report centroid moves within an unchanged detection component.
+  prerequisite_ids:
+  - DSP-C50
+  - DSP-C51
+  module_ids:
+  - P53
+  assessment_ids:
+  - DSP-F53
+  - DSP-A06
+  - DSP-A10
+- id: DSP-C54
+  outcome: Change alpha_gain and beta_gain independently, then inspect missing-scan behavior. Explain why beta zero
+    cannot learn an initially unknown speed.
+  prerequisite_ids:
+  - DSP-C36
+  - DSP-C53
+  module_ids:
+  - P54
+  assessment_ids:
+  - DSP-F54
+  - DSP-A06
+- id: DSP-C55
+  outcome: Increase report_sigma_m and compare gain, error and nis. Then change acceleration uncertainty and explain
+    how its units enter process covariance.
+  prerequisite_ids:
+  - DSP-C27
+  - DSP-C53
+  - DSP-C54
+  module_ids:
+  - P55
+  assessment_ids:
+  - DSP-F55
+  - DSP-A06
+- id: DSP-C56
+  outcome: Compare geometry_range_m at fixed bearing_sigma_deg. Use bearing_innovation to diagnose a near-full-turn
+    residual at the angle boundary.
+  prerequisite_ids:
+  - DSP-C16
+  - DSP-C55
+  module_ids:
+  - P56
+  assessment_ids:
+  - DSP-F56
+  - DSP-A06
+- id: DSP-C57
+  outcome: Increase covariance_scale at a fixed gate_d2, then widen the gate. Explain why the closest report in
+    metres need not be the closest in distance and why reports must remain unique across assignments.
+  prerequisite_ids:
+  - DSP-C53
+  - DSP-C55
+  - DSP-C56
+  module_ids:
+  - P57
+  assessment_ids:
+  - DSP-F57
+  - DSP-A06
+  - DSP-A10
+- id: DSP-C58
+  outcome: Compare confirmation_hits=3 with 4, then change coast_limit_scans. Trace a specific sequence in lifecycle
+    from tentative through confirmed, coasting and deleted.
+  prerequisite_ids:
+  - DSP-C54
+  - DSP-C55
+  - DSP-C57
+  module_ids:
+  - P58
+  assessment_ids:
+  - DSP-F58
+  - DSP-A06
+  - DSP-A10
+- id: DSP-C59
+  outcome: Increase position_sigma_m, then scan_interval_s. Locate a swapped identity in identity and explain whether
+    it came from an admissible wrong link or duplicate report reuse.
+  prerequisite_ids:
+  - DSP-C57
+  - DSP-C58
+  module_ids:
+  - P59
+  assessment_ids:
+  - DSP-F59
+  - DSP-A06
+- id: DSP-C60
+  outcome: Increase mode_stay_probability and compare probability through the acceleration bursts. Explain why a
+    zero-support maneuver mode cannot recover solely from a high likelihood.
+  prerequisite_ids:
+  - DSP-C55
+  - DSP-C57
+  - DSP-C59
+  module_ids:
+  - P60
+  assessment_ids:
+  - DSP-F60
+  - DSP-A06
+- id: DSP-C61
+  outcome: Change arrival_angle_deg sign at fixed spacing_wavelengths. Use geometry and phase to reconcile propagation
+    delay with the declared complex receive convention.
+  prerequisite_ids:
+  - DSP-C01
+  - DSP-C17
+  - DSP-C36
+  module_ids:
+  - P61
+  assessment_ids:
+  - DSP-F61
+  - DSP-A07
+- id: DSP-C62
+  outcome: Compare elements=4 and 16, then increase spacing_wavelengths. Use beamwidth and alias to distinguish
+    a narrower main beam from an unambiguous field of view.
+  prerequisite_ids:
+  - DSP-C11
+  - DSP-C12
+  - DSP-C61
+  module_ids:
+  - P62
+  assessment_ids:
+  - DSP-F62
+  - DSP-A07
+- id: DSP-C63
+  outcome: Compare elements and source_snr_db separately. Use alignment and scan to explain how conjugate steering
+    sums the desired phase pattern and why a sign error mirrors the estimate.
+  prerequisite_ids:
+  - DSP-C08
+  - DSP-C27
+  - DSP-C61
+  - DSP-C62
+  module_ids:
+  - P63
+  assessment_ids:
+  - DSP-F63
+  - DSP-A07
+- id: DSP-C64
+  outcome: Change beam_squint_deg, then receiver_snr_db. Use calibration and sum_guard to decide which ratio samples
+    support an angle estimate.
+  prerequisite_ids:
+  - DSP-C28
+  - DSP-C61
+  - DSP-C62
+  module_ids:
+  - P64
+  assessment_ids:
+  - DSP-F64
+  - DSP-A07
+- id: DSP-C65
+  outcome: Compare snapshots=4 and 128, then increase loading_alpha. Use eigenvalues, pattern and components to
+    explain the robustness/interference-rejection tradeoff.
+  prerequisite_ids:
+  - DSP-C27
+  - DSP-C55
+  - DSP-C63
+  module_ids:
+  - P65
+  assessment_ids:
+  - DSP-F65
+  - DSP-A07
+- id: DSP-C66
+  outcome: Reduce source_separation_deg and source_snr_db. Use eigenvalues, spectrum and count to explain how coherence
+    and an incorrect source count change the noise-subspace interpretation.
+  prerequisite_ids:
+  - DSP-C27
+  - DSP-C61
+  - DSP-C63
+  - DSP-C65
+  module_ids:
+  - P66
+  assessment_ids:
+  - DSP-F66
+  - DSP-A07
+- id: DSP-C67
+  outcome: Increase error_scale and coupling_magnitude separately. Compare channels, phase and the corrected scans;
+    explain why correcting data also changes the noise covariance.
+  prerequisite_ids:
+  - DSP-C19
+  - DSP-C63
+  - DSP-C65
+  - DSP-C66
+  module_ids:
+  - P67
+  assessment_ids:
+  - DSP-F67
+  - DSP-A07
+- id: DSP-C68
+  outcome: Reduce training_cells and increase contamination_fraction. Compare fixed, separate and joint processors
+    using components, not only the attractive shape of a notch.
+  prerequisite_ids:
+  - DSP-C38
+  - DSP-C41
+  - DSP-C42
+  - DSP-C65
+  module_ids:
+  - P68
+  assessment_ids:
+  - DSP-F68
+  - DSP-A07
+- id: DSP-C69
+  outcome: Double target_range_m or bandwidth_mhz separately. Use mixer and conversion to predict the beat and distinguish
+    range-bin spacing from bandwidth-limited resolution.
+  prerequisite_ids:
+  - DSP-C17
+  - DSP-C22
+  - DSP-C30
+  - DSP-C31
+  module_ids:
+  - P69
+  assessment_ids:
+  - DSP-F69
+  - DSP-A08
+- id: DSP-C70
+  outcome: Increase fast_samples and chirps separately. Use raw, phase and map to explain which support controls
+    fast-time versus slow-time bin spacing.
+  prerequisite_ids:
+  - DSP-C11
+  - DSP-C36
+  - DSP-C37
+  - DSP-C42
+  - DSP-C69
+  module_ids:
+  - P70
+  assessment_ids:
+  - DSP-F70
+  - DSP-A08
+- id: DSP-C71
+  outcome: Reverse velocity_mps at fixed bandwidth_mhz, then increase bandwidth. Explain the signed bias in ranges
+    when a moving target is interpreted with the stationary formula.
+  prerequisite_ids:
+  - DSP-C36
+  - DSP-C69
+  - DSP-C70
+  module_ids:
+  - P71
+  assessment_ids:
+  - DSP-F71
+  - DSP-A08
+- id: DSP-C72
+  outcome: Compare positive and negative velocity_mps at a fixed target_range_m. Use beats to identify the signed
+    sum and difference that isolate delay and Doppler, then inspect pairing_range.
+  prerequisite_ids:
+  - DSP-C69
+  - DSP-C71
+  module_ids:
+  - P72
+  assessment_ids:
+  - DSP-F72
+  - DSP-A08
+- id: DSP-C73
+  outcome: Compare velocity_mps=0 and 10 before and after compensation. Use geometry and motion to explain virtual
+    aperture and the phase error between TX slots.
+  prerequisite_ids:
+  - DSP-C36
+  - DSP-C61
+  - DSP-C62
+  - DSP-C70
+  module_ids:
+  - P73
+  assessment_ids:
+  - DSP-F73
+  - DSP-A08
+- id: DSP-C74
+  outcome: Compare swing_speed_mps and window_samples separately. Use velocity and spectrogram to predict the torso
+    line and limb extrema without confusing STFT smearing with different motion.
+  prerequisite_ids:
+  - DSP-C15
+  - DSP-C36
+  - DSP-C70
+  module_ids:
+  - P74
+  assessment_ids:
+  - DSP-F74
+  - DSP-A08
+- id: DSP-C75
+  outcome: Change target_cross_range_m and aperture_length_m separately. Use phase and focus to explain why similar
+    magnitude envelopes can correspond to different coherent images.
+  prerequisite_ids:
+  - DSP-C17
+  - DSP-C30
+  - DSP-C36
+  module_ids:
+  - P75
+  assessment_ids:
+  - DSP-F75
+  - DSP-A09
+- id: DSP-C76
+  outcome: Increase bandwidth_mhz at fixed pair_spacing_m. Use compressed and phase to show what range compression
+    accomplishes and what still requires azimuth processing.
+  prerequisite_ids:
+  - DSP-C31
+  - DSP-C32
+  - DSP-C75
+  module_ids:
+  - P76
+  assessment_ids:
+  - DSP-F76
+  - DSP-A09
+- id: DSP-C77
+  outcome: Compare aperture_looks and then introduce path_error_m. Use cuts and phase to explain why a small path
+    error can reduce focus despite a similar range envelope.
+  prerequisite_ids:
+  - DSP-C08
+  - DSP-C75
+  - DSP-C76
+  module_ids:
+  - P77
+  assessment_ids:
+  - DSP-F77
+  - DSP-A09
+- id: DSP-C78
+  outcome: Increase aperture_length_m and squint_offset_m separately. Use ridge and aligned to determine the interpolation
+    direction before comparing the final image.
+  prerequisite_ids:
+  - DSP-C30
+  - DSP-C75
+  - DSP-C76
+  - DSP-C77
+  module_ids:
+  - P78
+  assessment_ids:
+  - DSP-F78
+  - DSP-A09
+- id: DSP-C79
+  outcome: Change bandwidth_mhz and aperture_length_m separately. Use range and cross to assign each resolution
+    change, then inspect sampling for ambiguity.
+  prerequisite_ids:
+  - DSP-C12
+  - DSP-C31
+  - DSP-C62
+  - DSP-C77
+  - DSP-C78
+  module_ids:
+  - P79
+  assessment_ids:
+  - DSP-F79
+  - DSP-A09
+- id: DSP-C80
+  outcome: Increase error_rms_wavelengths, then random_fraction. Compare screen and cut and explain why an isolated
+    reference gate can estimate a common phase error.
+  prerequisite_ids:
+  - DSP-C16
+  - DSP-C19
+  - DSP-C75
+  - DSP-C77
+  module_ids:
+  - P80
+  assessment_ids:
+  - DSP-F80
+  - DSP-A09
+- id: DSP-C81
+  outcome: Change angular_aperture_deg and rotation_rate_deg_s separately. Use aligned_profiles and image to distinguish
+    envelope alignment, phase correction and cross-range scaling.
+  prerequisite_ids:
+  - DSP-C36
+  - DSP-C74
+  - DSP-C77
+  - DSP-C80
+  module_ids:
+  - P81
+  assessment_ids:
+  - DSP-F81
+  - DSP-A09
+- id: DSP-C82
+  outcome: Increase target_delay_samples, then degrade reference_quality_db. Use raw, active and recovery to separate
+    direct-path suppression from target contrast.
+  prerequisite_ids:
+  - DSP-C08
+  - DSP-C26
+  - DSP-C34
+  - DSP-C36
+  - DSP-C45
+  module_ids:
+  - P82
+  assessment_ids:
+  - DSP-F82
+  - DSP-A09
+- id: DSP-C83
+  outcome: Compare training_cells below and above the space-time dimension, then increase contaminated_fraction.
+    Use support, active and clean to explain rank and target mismatch.
+  prerequisite_ids:
+  - DSP-C41
+  - DSP-C42
+  - DSP-C52
+  - DSP-C65
+  - DSP-C68
+  module_ids:
+  - P83
+  assessment_ids:
+  - DSP-F83
+  - DSP-A09
+- id: DSP-C84
+  outcome: Trace the selected scene through waveform, receiver, matched, range_doppler, detections and reports.
+    Change design_pfa and replica_taper separately; use track and coast to explain the retained baseline scan-4
+    fade.
+  prerequisite_ids:
+  - DSP-C19
+  - DSP-C32
+  - DSP-C33
+  - DSP-C42
+  - DSP-C50
+  - DSP-C52
+  - DSP-C53
+  - DSP-C57
+  - DSP-C58
+  module_ids:
+  - P84
+  assessment_ids:
+  - DSP-F84
+  - DSP-A10
+modules:
+- id: P01
+  title: Build a Sinusoid and a Complex Phasor
+  competency_ids:
+  - DSP-C01
+  depends_on: []
+  lesson_kind: foundation
+- id: P02
+  title: See Sampling as Taking Measurements
+  competency_ids:
+  - DSP-C02
+  depends_on:
+  - P01
+  lesson_kind: foundation
+- id: P03
+  title: Make Aliasing Visually Obvious
+  competency_ids:
+  - DSP-C03
+  depends_on:
+  - P02
+  lesson_kind: foundation
+- id: P04
+  title: Quantize a Signal and Hear/See the Error
+  competency_ids:
+  - DSP-C04
+  depends_on:
+  - P02
+  lesson_kind: foundation
+- id: P05
+  title: Explore White, Colored, and Impulsive Noise
+  competency_ids:
+  - DSP-C05
+  depends_on:
+  - P01
+  lesson_kind: foundation
+- id: P06
+  title: Use an Impulse to Reveal a System
+  competency_ids:
+  - DSP-C06
+  depends_on:
+  - P01
+  - P02
+  lesson_kind: foundation
+- id: P07
+  title: Understand Convolution as Echo Addition
+  competency_ids:
+  - DSP-C07
+  depends_on:
+  - P06
+  lesson_kind: foundation
+- id: P08
+  title: Use Correlation to Find a Hidden Pattern
+  competency_ids:
+  - DSP-C08
+  depends_on:
+  - P05
+  - P06
+  lesson_kind: foundation
+- id: P09
+  title: Compare FIR and IIR Filters by Behavior
+  competency_ids:
+  - DSP-C09
+  depends_on:
+  - P06
+  - P07
+  - P08
+  lesson_kind: foundation
+- id: P10
+  title: Decimate and Interpolate Without Creating Artifacts
+  competency_ids:
+  - DSP-C10
+  depends_on:
+  - P03
+  - P09
+  lesson_kind: foundation
+- id: P11
+  title: Make FFT Bins Concrete
+  competency_ids:
+  - DSP-C11
+  depends_on:
+  - P01
+  - P02
+  lesson_kind: laboratory
+- id: P12
+  title: Separate Leakage from Noise
+  competency_ids:
+  - DSP-C12
+  depends_on:
+  - P05
+  - P11
+  lesson_kind: laboratory
+- id: P13
+  title: Prove Zero-Padding Does Not Improve True Resolution
+  competency_ids:
+  - DSP-C13
+  depends_on:
+  - P11
+  - P12
+  lesson_kind: laboratory
+- id: P14
+  title: Compare Periodogram and Welch PSD Estimates
+  competency_ids:
+  - DSP-C14
+  depends_on:
+  - P05
+  - P11
+  - P12
+  lesson_kind: laboratory
+- id: P15
+  title: Use a Spectrogram to See Time-Varying Frequency
+  competency_ids:
+  - DSP-C15
+  depends_on:
+  - P11
+  - P12
+  lesson_kind: laboratory
+- id: P16
+  title: Create an Analytic Signal with the Hilbert Transform
+  competency_ids:
+  - DSP-C16
+  depends_on:
+  - P01
+  - P09
+  - P11
+  lesson_kind: laboratory
+- id: P17
+  title: Perform Complex Downconversion by Hand
+  competency_ids:
+  - DSP-C17
+  depends_on:
+  - P01
+  - P09
+  - P11
+  lesson_kind: laboratory
+- id: P18
+  title: Contrast Real and Complex Sampling
+  competency_ids:
+  - DSP-C18
+  depends_on:
+  - P02
+  - P03
+  - P17
+  lesson_kind: laboratory
+- id: P19
+  title: Inject and Correct IQ Impairments
+  competency_ids:
+  - DSP-C19
+  depends_on:
+  - P17
+  - P18
+  lesson_kind: laboratory
+- id: P20
+  title: Estimate Tone Frequency and Phase from Noisy Samples
+  competency_ids:
+  - DSP-C20
+  depends_on:
+  - P05
+  - P11
+  - P16
+  - P19
+  lesson_kind: laboratory
+- id: P21
+  title: Visualize AM as Carrier and Sidebands
+  competency_ids:
+  - DSP-C21
+  depends_on:
+  - P11
+  - P16
+  lesson_kind: laboratory
+- id: P22
+  title: Relate FM Deviation to Bandwidth
+  competency_ids:
+  - DSP-C22
+  depends_on:
+  - P16
+  - P21
+  lesson_kind: laboratory
+- id: P23
+  title: Build BPSK and QPSK Constellation Intuition
+  competency_ids:
+  - DSP-C23
+  depends_on:
+  - P05
+  - P18
+  - P20
+  lesson_kind: laboratory
+- id: P24
+  title: See Pulse Shaping and Matched Filtering
+  competency_ids:
+  - DSP-C24
+  depends_on:
+  - P07
+  - P08
+  - P23
+  lesson_kind: laboratory
+- id: P25
+  title: Create and Equalize a Multipath Channel
+  competency_ids:
+  - DSP-C25
+  depends_on:
+  - P07
+  - P09
+  - P24
+  lesson_kind: laboratory
+- id: P26
+  title: Use LMS to Cancel an Interferer
+  competency_ids:
+  - DSP-C26
+  depends_on:
+  - P05
+  - P07
+  - P25
+  lesson_kind: laboratory
+- id: P27
+  title: Use Monte Carlo Trials Instead of One Lucky Run
+  competency_ids:
+  - DSP-C27
+  depends_on:
+  - P05
+  - P23
+  lesson_kind: laboratory
+- id: P28
+  title: Connect Thresholds to ROC Curves and Estimator Limits
+  competency_ids:
+  - DSP-C28
+  depends_on:
+  - P08
+  - P20
+  - P27
+  lesson_kind: laboratory
+- id: P29
+  title: Build a Radar Power-Budget Experiment
+  competency_ids:
+  - DSP-C29
+  depends_on:
+  - P05
+  - P28
+  lesson_kind: laboratory
+- id: P30
+  title: Measure Range from Echo Delay
+  competency_ids:
+  - DSP-C30
+  depends_on:
+  - P02
+  - P08
+  - P29
+  lesson_kind: laboratory
+- id: P31
+  title: Separate Range Resolution from Range Accuracy
+  competency_ids:
+  - DSP-C31
+  depends_on:
+  - P13
+  - P28
+  - P30
+  lesson_kind: laboratory
+- id: P32
+  title: Perform LFM Pulse Compression
+  competency_ids:
+  - DSP-C32
+  depends_on:
+  - P08
+  - P22
+  - P30
+  - P31
+  lesson_kind: laboratory
+- id: P33
+  title: Control Pulse-Compression Sidelobes
+  competency_ids:
+  - DSP-C33
+  depends_on:
+  - P12
+  - P32
+  lesson_kind: laboratory
+- id: P34
+  title: Plot and Interpret the Ambiguity Function
+  competency_ids:
+  - DSP-C34
+  depends_on:
+  - P08
+  - P32
+  - P33
+  lesson_kind: laboratory
+- id: P35
+  title: Create Unambiguous-Range Aliasing
+  competency_ids:
+  - DSP-C35
+  depends_on:
+  - P03
+  - P30
+  lesson_kind: laboratory
+- id: P36
+  title: Measure Doppler from Pulse-to-Pulse Phase
+  competency_ids:
+  - DSP-C36
+  depends_on:
+  - P01
+  - P20
+  - P29
+  lesson_kind: laboratory
+- id: P37
+  title: Build a Pulse-Doppler Data Matrix
+  competency_ids:
+  - DSP-C37
+  depends_on:
+  - P30
+  - P32
+  - P36
+  lesson_kind: laboratory
+- id: P38
+  title: Implement a Two-Pulse and Three-Pulse MTI Canceller
+  competency_ids:
+  - DSP-C38
+  depends_on:
+  - P09
+  - P36
+  - P37
+  lesson_kind: laboratory
+- id: P39
+  title: Expose Blind Speeds and Use Staggered PRF
+  competency_ids:
+  - DSP-C39
+  depends_on:
+  - P35
+  - P38
+  lesson_kind: laboratory
+- id: P40
+  title: Compare Coherent and Noncoherent Integration
+  competency_ids:
+  - DSP-C40
+  depends_on:
+  - P05
+  - P27
+  - P36
+  - P37
+  lesson_kind: laboratory
+- id: P41
+  title: Model Ground Clutter and Swerling Targets
+  competency_ids:
+  - DSP-C41
+  depends_on:
+  - P05
+  - P27
+  - P37
+  - P40
+  lesson_kind: laboratory
+- id: P42
+  title: Create a Full Range-Doppler Map
+  competency_ids:
+  - DSP-C42
+  depends_on:
+  - P11
+  - P12
+  - P32
+  - P37
+  - P40
+  lesson_kind: laboratory
+- id: P43
+  title: Use a Fixed Detection Threshold
+  competency_ids:
+  - DSP-C43
+  depends_on:
+  - P28
+  - P41
+  - P42
+  lesson_kind: laboratory
+- id: P44
+  title: Build an Empirical Radar ROC Curve
+  competency_ids:
+  - DSP-C44
+  depends_on:
+  - P27
+  - P28
+  - P43
+  lesson_kind: laboratory
+- id: P45
+  title: Implement 1-D Cell-Averaging CFAR
+  competency_ids:
+  - DSP-C45
+  depends_on:
+  - P27
+  - P43
+  - P44
+  lesson_kind: laboratory
+- id: P46
+  title: Vary CFAR Guard and Training Cells
+  competency_ids:
+  - DSP-C46
+  depends_on:
+  - P33
+  - P45
+  lesson_kind: laboratory
+- id: P47
+  title: Measure CFAR Loss
+  competency_ids:
+  - DSP-C47
+  depends_on:
+  - P28
+  - P44
+  - P45
+  lesson_kind: laboratory
+- id: P48
+  title: Compare GO-CFAR and SO-CFAR at a Clutter Edge
+  competency_ids:
+  - DSP-C48
+  depends_on:
+  - P41
+  - P45
+  - P46
+  lesson_kind: laboratory
+- id: P49
+  title: Use Ordered-Statistic CFAR with Interfering Targets
+  competency_ids:
+  - DSP-C49
+  depends_on:
+  - P45
+  - P46
+  - P48
+  lesson_kind: laboratory
+- id: P50
+  title: Apply 2-D CFAR to a Range-Doppler Map
+  competency_ids:
+  - DSP-C50
+  depends_on:
+  - P42
+  - P45
+  - P46
+  lesson_kind: laboratory
+- id: P51
+  title: Stress CFAR with Clutter Edges, Sidelobes, and Multiple Targets
+  competency_ids:
+  - DSP-C51
+  depends_on:
+  - P33
+  - P41
+  - P48
+  - P49
+  - P50
+  lesson_kind: laboratory
+- id: P52
+  title: Validate CFAR Pfa by Monte Carlo
+  competency_ids:
+  - DSP-C52
+  depends_on:
+  - P27
+  - P44
+  - P45
+  - P51
+  lesson_kind: laboratory
+- id: P53
+  title: Group Detection Cells into Target Reports
+  competency_ids:
+  - DSP-C53
+  depends_on:
+  - P50
+  - P51
+  lesson_kind: laboratory
+- id: P54
+  title: Build an Alpha-Beta Tracker
+  competency_ids:
+  - DSP-C54
+  depends_on:
+  - P36
+  - P53
+  lesson_kind: laboratory
+- id: P55
+  title: Implement a Constant-Velocity Kalman Filter
+  competency_ids:
+  - DSP-C55
+  depends_on:
+  - P27
+  - P53
+  - P54
+  lesson_kind: laboratory
+- id: P56
+  title: Use an EKF for Range-Bearing Measurements
+  competency_ids:
+  - DSP-C56
+  depends_on:
+  - P16
+  - P55
+  lesson_kind: laboratory
+- id: P57
+  title: Gate and Associate Detections by Nearest Neighbor
+  competency_ids:
+  - DSP-C57
+  depends_on:
+  - P53
+  - P55
+  - P56
+  lesson_kind: laboratory
+- id: P58
+  title: Implement Track Initiation, Confirmation, Coasting, and Deletion
+  competency_ids:
+  - DSP-C58
+  depends_on:
+  - P54
+  - P55
+  - P57
+  lesson_kind: laboratory
+- id: P59
+  title: Track Crossing Targets and Observe Association Failure
+  competency_ids:
+  - DSP-C59
+  depends_on:
+  - P57
+  - P58
+  lesson_kind: laboratory
+- id: P60
+  title: Use an IMM for a Maneuvering Target
+  competency_ids:
+  - DSP-C60
+  depends_on:
+  - P55
+  - P57
+  - P59
+  lesson_kind: laboratory
+- id: P61
+  title: See Phase Steering in a Uniform Linear Array
+  competency_ids:
+  - DSP-C61
+  depends_on:
+  - P01
+  - P17
+  - P36
+  lesson_kind: laboratory
+- id: P62
+  title: Plot Array Factor, Beamwidth, and Grating Lobes
+  competency_ids:
+  - DSP-C62
+  depends_on:
+  - P11
+  - P12
+  - P61
+  lesson_kind: laboratory
+- id: P63
+  title: Implement Conventional Delay-and-Sum Beamforming
+  competency_ids:
+  - DSP-C63
+  depends_on:
+  - P08
+  - P27
+  - P61
+  - P62
+  lesson_kind: laboratory
+- id: P64
+  title: Build an Amplitude-Comparison Monopulse Experiment
+  competency_ids:
+  - DSP-C64
+  depends_on:
+  - P28
+  - P61
+  - P62
+  lesson_kind: laboratory
+- id: P65
+  title: Use MVDR/Capon Adaptive Beamforming
+  competency_ids:
+  - DSP-C65
+  depends_on:
+  - P27
+  - P55
+  - P63
+  lesson_kind: laboratory
+- id: P66
+  title: Estimate DOA with MUSIC
+  competency_ids:
+  - DSP-C66
+  depends_on:
+  - P27
+  - P61
+  - P63
+  - P65
+  lesson_kind: laboratory
+- id: P67
+  title: Inject Array Calibration and Mutual-Coupling Errors
+  competency_ids:
+  - DSP-C67
+  depends_on:
+  - P19
+  - P63
+  - P65
+  - P66
+  lesson_kind: laboratory
+- id: P68
+  title: Build an Introductory STAP Clutter-Ridge Experiment
+  competency_ids:
+  - DSP-C68
+  depends_on:
+  - P38
+  - P41
+  - P42
+  - P65
+  lesson_kind: laboratory
+- id: P69
+  title: Derive FMCW Range from Beat Frequency
+  competency_ids:
+  - DSP-C69
+  depends_on:
+  - P17
+  - P22
+  - P30
+  - P31
+  lesson_kind: laboratory
+- id: P70
+  title: Create an FMCW Range-Doppler Map
+  competency_ids:
+  - DSP-C70
+  depends_on:
+  - P11
+  - P36
+  - P37
+  - P42
+  - P69
+  lesson_kind: laboratory
+- id: P71
+  title: Expose FMCW Range-Doppler Coupling
+  competency_ids:
+  - DSP-C71
+  depends_on:
+  - P36
+  - P69
+  - P70
+  lesson_kind: laboratory
+- id: P72
+  title: Use Up/Down Triangular Chirps to Separate Range and Velocity
+  competency_ids:
+  - DSP-C72
+  depends_on:
+  - P69
+  - P71
+  lesson_kind: laboratory
+- id: P73
+  title: Build a TDM-MIMO Virtual Array
+  competency_ids:
+  - DSP-C73
+  depends_on:
+  - P36
+  - P61
+  - P62
+  - P70
+  lesson_kind: laboratory
+- id: P74
+  title: Create a Micro-Doppler Spectrogram
+  competency_ids:
+  - DSP-C74
+  depends_on:
+  - P15
+  - P36
+  - P70
+  lesson_kind: laboratory
+- id: P75
+  title: Build SAR Phase-History Intuition
+  competency_ids:
+  - DSP-C75
+  depends_on:
+  - P17
+  - P30
+  - P36
+  lesson_kind: laboratory
+- id: P76
+  title: Perform SAR Range Compression
+  competency_ids:
+  - DSP-C76
+  depends_on:
+  - P31
+  - P32
+  - P75
+  lesson_kind: laboratory
+- id: P77
+  title: Focus SAR with Backprojection
+  competency_ids:
+  - DSP-C77
+  depends_on:
+  - P08
+  - P75
+  - P76
+  lesson_kind: laboratory
+- id: P78
+  title: Observe and Correct Range-Cell Migration
+  competency_ids:
+  - DSP-C78
+  depends_on:
+  - P30
+  - P75
+  - P76
+  - P77
+  lesson_kind: laboratory
+- id: P79
+  title: Compare SAR Resolution, Aperture Length, and Windowing
+  competency_ids:
+  - DSP-C79
+  depends_on:
+  - P12
+  - P31
+  - P62
+  - P77
+  - P78
+  lesson_kind: laboratory
+- id: P80
+  title: Inject SAR Motion Error and Apply Autofocus
+  competency_ids:
+  - DSP-C80
+  depends_on:
+  - P16
+  - P19
+  - P75
+  - P77
+  lesson_kind: laboratory
+- id: P81
+  title: Form an ISAR Image from a Rotating Target
+  competency_ids:
+  - DSP-C81
+  depends_on:
+  - P36
+  - P74
+  - P77
+  - P80
+  lesson_kind: laboratory
+- id: P82
+  title: Build a Passive Radar Cross-Ambiguity Experiment
+  competency_ids:
+  - DSP-C82
+  depends_on:
+  - P08
+  - P26
+  - P34
+  - P36
+  - P45
+  lesson_kind: laboratory
+- id: P83
+  title: Compare Range-Doppler Processing with a Small STAP Processor
+  competency_ids:
+  - DSP-C83
+  depends_on:
+  - P41
+  - P42
+  - P52
+  - P65
+  - P68
+  lesson_kind: laboratory
+- id: P84
+  title: Run the End-to-End Radar Processing Capstone
+  competency_ids:
+  - DSP-C84
+  depends_on:
+  - P19
+  - P32
+  - P33
+  - P42
+  - P50
+  - P52
+  - P53
+  - P57
+  - P58
+  lesson_kind: capstone
+assessments:
+- id: DSP-F01
+  type: formative
+  competency_ids:
+  - DSP-C01
+  evidence: 'modules/01-build-a-sinusoid-and-a-complex-phasor/assessment.md: authored prediction, evidence task,
+    expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F02
+  type: formative
+  competency_ids:
+  - DSP-C02
+  evidence: 'modules/02-see-sampling-as-taking-measurements/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F03
+  type: formative
+  competency_ids:
+  - DSP-C03
+  evidence: 'modules/03-make-aliasing-visually-obvious/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F04
+  type: formative
+  competency_ids:
+  - DSP-C04
+  evidence: 'modules/04-quantize-a-signal-and-hear-see-the-error/assessment.md: authored prediction, evidence task,
+    expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F05
+  type: formative
+  competency_ids:
+  - DSP-C05
+  evidence: 'modules/05-explore-white-colored-and-impulsive-noise/assessment.md: authored prediction, evidence task,
+    expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F06
+  type: formative
+  competency_ids:
+  - DSP-C06
+  evidence: 'modules/06-use-an-impulse-to-reveal-a-system/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F07
+  type: formative
+  competency_ids:
+  - DSP-C07
+  evidence: 'modules/07-understand-convolution-as-echo-addition/assessment.md: authored prediction, evidence task,
+    expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F08
+  type: formative
+  competency_ids:
+  - DSP-C08
+  evidence: 'modules/08-use-correlation-to-find-a-hidden-pattern/assessment.md: authored prediction, evidence task,
+    expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F09
+  type: formative
+  competency_ids:
+  - DSP-C09
+  evidence: 'modules/09-compare-fir-and-iir-filters-by-behavior/assessment.md: authored prediction, evidence task,
+    expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F10
+  type: formative
+  competency_ids:
+  - DSP-C10
+  evidence: 'modules/10-decimate-and-interpolate-without-creating-artifacts/assessment.md: authored prediction,
+    evidence task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F11
+  type: formative
+  competency_ids:
+  - DSP-C11
+  evidence: 'modules/11-make-fft-bins-concrete/assessment.md: authored prediction, evidence task, expected reasoning,
+    exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F12
+  type: formative
+  competency_ids:
+  - DSP-C12
+  evidence: 'modules/12-separate-leakage-from-noise/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F13
+  type: formative
+  competency_ids:
+  - DSP-C13
+  evidence: 'modules/13-prove-zero-padding-does-not-improve-true-resolution/assessment.md: authored prediction,
+    evidence task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F14
+  type: formative
+  competency_ids:
+  - DSP-C14
+  evidence: 'modules/14-compare-periodogram-and-welch-psd-estimates/assessment.md: authored prediction, evidence
+    task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F15
+  type: formative
+  competency_ids:
+  - DSP-C15
+  evidence: 'modules/15-use-a-spectrogram-to-see-time-varying-frequency/assessment.md: authored prediction, evidence
+    task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F16
+  type: formative
+  competency_ids:
+  - DSP-C16
+  evidence: 'modules/16-create-an-analytic-signal-with-the-hilbert-transform/assessment.md: authored prediction,
+    evidence task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F17
+  type: formative
+  competency_ids:
+  - DSP-C17
+  evidence: 'modules/17-perform-complex-downconversion-by-hand/assessment.md: authored prediction, evidence task,
+    expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F18
+  type: formative
+  competency_ids:
+  - DSP-C18
+  evidence: 'modules/18-contrast-real-and-complex-sampling/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F19
+  type: formative
+  competency_ids:
+  - DSP-C19
+  evidence: 'modules/19-inject-and-correct-iq-impairments/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F20
+  type: formative
+  competency_ids:
+  - DSP-C20
+  evidence: 'modules/20-estimate-tone-frequency-and-phase-from-noisy-samples/assessment.md: authored prediction,
+    evidence task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F21
+  type: formative
+  competency_ids:
+  - DSP-C21
+  evidence: 'modules/21-visualize-am-as-carrier-and-sidebands/assessment.md: authored prediction, evidence task,
+    expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F22
+  type: formative
+  competency_ids:
+  - DSP-C22
+  evidence: 'modules/22-relate-fm-deviation-to-bandwidth/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F23
+  type: formative
+  competency_ids:
+  - DSP-C23
+  evidence: 'modules/23-build-bpsk-and-qpsk-constellation-intuition/assessment.md: authored prediction, evidence
+    task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F24
+  type: formative
+  competency_ids:
+  - DSP-C24
+  evidence: 'modules/24-see-pulse-shaping-and-matched-filtering/assessment.md: authored prediction, evidence task,
+    expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F25
+  type: formative
+  competency_ids:
+  - DSP-C25
+  evidence: 'modules/25-create-and-equalize-a-multipath-channel/assessment.md: authored prediction, evidence task,
+    expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F26
+  type: formative
+  competency_ids:
+  - DSP-C26
+  evidence: 'modules/26-use-lms-to-cancel-an-interferer/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F27
+  type: formative
+  competency_ids:
+  - DSP-C27
+  evidence: 'modules/27-use-monte-carlo-trials-instead-of-one-lucky-run/assessment.md: authored prediction, evidence
+    task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F28
+  type: formative
+  competency_ids:
+  - DSP-C28
+  evidence: 'modules/28-connect-thresholds-to-roc-curves-and-estimator-limits/assessment.md: authored prediction,
+    evidence task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F29
+  type: formative
+  competency_ids:
+  - DSP-C29
+  evidence: 'modules/29-build-a-radar-power-budget-experiment/assessment.md: authored prediction, evidence task,
+    expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F30
+  type: formative
+  competency_ids:
+  - DSP-C30
+  evidence: 'modules/30-measure-range-from-echo-delay/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F31
+  type: formative
+  competency_ids:
+  - DSP-C31
+  evidence: 'modules/31-separate-range-resolution-from-range-accuracy/assessment.md: authored prediction, evidence
+    task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F32
+  type: formative
+  competency_ids:
+  - DSP-C32
+  evidence: 'modules/32-perform-lfm-pulse-compression/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F33
+  type: formative
+  competency_ids:
+  - DSP-C33
+  evidence: 'modules/33-control-pulse-compression-sidelobes/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F34
+  type: formative
+  competency_ids:
+  - DSP-C34
+  evidence: 'modules/34-plot-and-interpret-the-ambiguity-function/assessment.md: authored prediction, evidence task,
+    expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F35
+  type: formative
+  competency_ids:
+  - DSP-C35
+  evidence: 'modules/35-create-unambiguous-range-aliasing/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F36
+  type: formative
+  competency_ids:
+  - DSP-C36
+  evidence: 'modules/36-measure-doppler-from-pulse-to-pulse-phase/assessment.md: authored prediction, evidence task,
+    expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F37
+  type: formative
+  competency_ids:
+  - DSP-C37
+  evidence: 'modules/37-build-a-pulse-doppler-data-matrix/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F38
+  type: formative
+  competency_ids:
+  - DSP-C38
+  evidence: 'modules/38-implement-a-two-pulse-and-three-pulse-mti-canceller/assessment.md: authored prediction,
+    evidence task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F39
+  type: formative
+  competency_ids:
+  - DSP-C39
+  evidence: 'modules/39-expose-blind-speeds-and-use-staggered-prf/assessment.md: authored prediction, evidence task,
+    expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F40
+  type: formative
+  competency_ids:
+  - DSP-C40
+  evidence: 'modules/40-compare-coherent-and-noncoherent-integration/assessment.md: authored prediction, evidence
+    task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F41
+  type: formative
+  competency_ids:
+  - DSP-C41
+  evidence: 'modules/41-model-ground-clutter-and-swerling-targets/assessment.md: authored prediction, evidence task,
+    expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F42
+  type: formative
+  competency_ids:
+  - DSP-C42
+  evidence: 'modules/42-create-a-full-range-doppler-map/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F43
+  type: formative
+  competency_ids:
+  - DSP-C43
+  evidence: 'modules/43-use-a-fixed-detection-threshold/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F44
+  type: formative
+  competency_ids:
+  - DSP-C44
+  evidence: 'modules/44-build-an-empirical-radar-roc-curve/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F45
+  type: formative
+  competency_ids:
+  - DSP-C45
+  evidence: 'modules/45-implement-1-d-cell-averaging-cfar/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F46
+  type: formative
+  competency_ids:
+  - DSP-C46
+  evidence: 'modules/46-vary-cfar-guard-and-training-cells/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F47
+  type: formative
+  competency_ids:
+  - DSP-C47
+  evidence: 'modules/47-measure-cfar-loss/assessment.md: authored prediction, evidence task, expected reasoning,
+    exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F48
+  type: formative
+  competency_ids:
+  - DSP-C48
+  evidence: 'modules/48-compare-go-cfar-and-so-cfar-at-a-clutter-edge/assessment.md: authored prediction, evidence
+    task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F49
+  type: formative
+  competency_ids:
+  - DSP-C49
+  evidence: 'modules/49-use-ordered-statistic-cfar-with-interfering-targets/assessment.md: authored prediction,
+    evidence task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F50
+  type: formative
+  competency_ids:
+  - DSP-C50
+  evidence: 'modules/50-apply-2-d-cfar-to-a-range-doppler-map/assessment.md: authored prediction, evidence task,
+    expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F51
+  type: formative
+  competency_ids:
+  - DSP-C51
+  evidence: 'modules/51-stress-cfar-with-clutter-edges-sidelobes-and-multiple-targets/assessment.md: authored prediction,
+    evidence task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F52
+  type: formative
+  competency_ids:
+  - DSP-C52
+  evidence: 'modules/52-validate-cfar-pfa-by-monte-carlo/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F53
+  type: formative
+  competency_ids:
+  - DSP-C53
+  evidence: 'modules/53-group-detection-cells-into-target-reports/assessment.md: authored prediction, evidence task,
+    expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F54
+  type: formative
+  competency_ids:
+  - DSP-C54
+  evidence: 'modules/54-build-an-alpha-beta-tracker/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F55
+  type: formative
+  competency_ids:
+  - DSP-C55
+  evidence: 'modules/55-implement-a-constant-velocity-kalman-filter/assessment.md: authored prediction, evidence
+    task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F56
+  type: formative
+  competency_ids:
+  - DSP-C56
+  evidence: 'modules/56-use-an-ekf-for-range-bearing-measurements/assessment.md: authored prediction, evidence task,
+    expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F57
+  type: formative
+  competency_ids:
+  - DSP-C57
+  evidence: 'modules/57-gate-and-associate-detections-by-nearest-neighbor/assessment.md: authored prediction, evidence
+    task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F58
+  type: formative
+  competency_ids:
+  - DSP-C58
+  evidence: 'modules/58-implement-track-initiation-confirmation-coasting-and-deletion/assessment.md: authored prediction,
+    evidence task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F59
+  type: formative
+  competency_ids:
+  - DSP-C59
+  evidence: 'modules/59-track-crossing-targets-and-observe-association-failure/assessment.md: authored prediction,
+    evidence task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F60
+  type: formative
+  competency_ids:
+  - DSP-C60
+  evidence: 'modules/60-use-an-imm-for-a-maneuvering-target/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F61
+  type: formative
+  competency_ids:
+  - DSP-C61
+  evidence: 'modules/61-see-phase-steering-in-a-uniform-linear-array/assessment.md: authored prediction, evidence
+    task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F62
+  type: formative
+  competency_ids:
+  - DSP-C62
+  evidence: 'modules/62-plot-array-factor-beamwidth-and-grating-lobes/assessment.md: authored prediction, evidence
+    task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F63
+  type: formative
+  competency_ids:
+  - DSP-C63
+  evidence: 'modules/63-implement-conventional-delay-and-sum-beamforming/assessment.md: authored prediction, evidence
+    task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F64
+  type: formative
+  competency_ids:
+  - DSP-C64
+  evidence: 'modules/64-build-an-amplitude-comparison-monopulse-experiment/assessment.md: authored prediction, evidence
+    task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F65
+  type: formative
+  competency_ids:
+  - DSP-C65
+  evidence: 'modules/65-use-mvdr-capon-adaptive-beamforming/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F66
+  type: formative
+  competency_ids:
+  - DSP-C66
+  evidence: 'modules/66-estimate-doa-with-music/assessment.md: authored prediction, evidence task, expected reasoning,
+    exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F67
+  type: formative
+  competency_ids:
+  - DSP-C67
+  evidence: 'modules/67-inject-array-calibration-and-mutual-coupling-errors/assessment.md: authored prediction,
+    evidence task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F68
+  type: formative
+  competency_ids:
+  - DSP-C68
+  evidence: 'modules/68-build-an-introductory-stap-clutter-ridge-experiment/assessment.md: authored prediction,
+    evidence task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F69
+  type: formative
+  competency_ids:
+  - DSP-C69
+  evidence: 'modules/69-derive-fmcw-range-from-beat-frequency/assessment.md: authored prediction, evidence task,
+    expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F70
+  type: formative
+  competency_ids:
+  - DSP-C70
+  evidence: 'modules/70-create-an-fmcw-range-doppler-map/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F71
+  type: formative
+  competency_ids:
+  - DSP-C71
+  evidence: 'modules/71-expose-fmcw-range-doppler-coupling/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F72
+  type: formative
+  competency_ids:
+  - DSP-C72
+  evidence: 'modules/72-use-up-down-triangular-chirps-to-separate-range-and-velocity/assessment.md: authored prediction,
+    evidence task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F73
+  type: formative
+  competency_ids:
+  - DSP-C73
+  evidence: 'modules/73-build-a-tdm-mimo-virtual-array/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F74
+  type: formative
+  competency_ids:
+  - DSP-C74
+  evidence: 'modules/74-create-a-micro-doppler-spectrogram/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F75
+  type: formative
+  competency_ids:
+  - DSP-C75
+  evidence: 'modules/75-build-sar-phase-history-intuition/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F76
+  type: formative
+  competency_ids:
+  - DSP-C76
+  evidence: 'modules/76-perform-sar-range-compression/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F77
+  type: formative
+  competency_ids:
+  - DSP-C77
+  evidence: 'modules/77-focus-sar-with-backprojection/assessment.md: authored prediction, evidence task, expected
+    reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F78
+  type: formative
+  competency_ids:
+  - DSP-C78
+  evidence: 'modules/78-observe-and-correct-range-cell-migration/assessment.md: authored prediction, evidence task,
+    expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F79
+  type: formative
+  competency_ids:
+  - DSP-C79
+  evidence: 'modules/79-compare-sar-resolution-aperture-length-and-windowing/assessment.md: authored prediction,
+    evidence task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F80
+  type: formative
+  competency_ids:
+  - DSP-C80
+  evidence: 'modules/80-inject-sar-motion-error-and-apply-autofocus/assessment.md: authored prediction, evidence
+    task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F81
+  type: formative
+  competency_ids:
+  - DSP-C81
+  evidence: 'modules/81-form-an-isar-image-from-a-rotating-target/assessment.md: authored prediction, evidence task,
+    expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F82
+  type: formative
+  competency_ids:
+  - DSP-C82
+  evidence: 'modules/82-build-a-passive-radar-cross-ambiguity-experiment/assessment.md: authored prediction, evidence
+    task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F83
+  type: formative
+  competency_ids:
+  - DSP-C83
+  evidence: 'modules/83-compare-range-doppler-processing-with-a-small-stap-processor/assessment.md: authored prediction,
+    evidence task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-F84
+  type: formative
+  competency_ids:
+  - DSP-C84
+  evidence: 'modules/84-run-the-end-to-end-radar-processing-capstone/assessment.md: authored prediction, evidence
+    task, expected reasoning, exact retained fault/recovery and scope limit; no learner result recorded.'
+- id: DSP-A01
+  type: cumulative
+  competency_ids:
+  - DSP-C01
+  - DSP-C02
+  - DSP-C03
+  - DSP-C04
+  - DSP-C05
+  - DSP-C06
+  - DSP-C07
+  - DSP-C08
+  - DSP-C09
+  - DSP-C10
+  evidence: 'modules/10-decimate-and-interpolate-without-creating-artifacts/assessment.md: four explicit portfolio
+    tasks and four evidence-based rubric criteria. This is a portfolio across separate sampled-system experiments,
+    not a newly executed joint hardware chain.'
+- id: DSP-A02
+  type: cumulative
+  competency_ids:
+  - DSP-C11
+  - DSP-C12
+  - DSP-C13
+  - DSP-C14
+  - DSP-C15
+  - DSP-C16
+  - DSP-C17
+  - DSP-C18
+  - DSP-C19
+  - DSP-C20
+  evidence: 'modules/20-estimate-tone-frequency-and-phase-from-noisy-samples/assessment.md: four explicit portfolio
+    tasks and four evidence-based rubric criteria. The linked evidence is a learner synthesis of distinct experiments;
+    it is not a claim that P20 executes every preceding IQ stage.'
+- id: DSP-A03
+  type: cumulative
+  competency_ids:
+  - DSP-C21
+  - DSP-C22
+  - DSP-C23
+  - DSP-C24
+  - DSP-C25
+  - DSP-C26
+  - DSP-C27
+  - DSP-C28
+  evidence: 'modules/28-connect-thresholds-to-roc-curves-and-estimator-limits/assessment.md: four explicit portfolio
+    tasks and four evidence-based rubric criteria. No communication-channel field performance or universal convergence
+    guarantee is inferred from seeded software trials.'
+- id: DSP-A04
+  type: cumulative
+  competency_ids:
+  - DSP-C29
+  - DSP-C30
+  - DSP-C31
+  - DSP-C32
+  - DSP-C33
+  - DSP-C34
+  - DSP-C35
+  - DSP-C36
+  - DSP-C37
+  - DSP-C38
+  - DSP-C39
+  - DSP-C40
+  evidence: 'modules/40-compare-coherent-and-noncoherent-integration/assessment.md: four explicit portfolio tasks
+    and four evidence-based rubric criteria. The portfolio connects design reasoning across retained labs; it is
+    not a measured radar or a newly implemented transmitter/receiver chain.'
+- id: DSP-A05
+  type: cumulative
+  competency_ids:
+  - DSP-C41
+  - DSP-C42
+  - DSP-C43
+  - DSP-C44
+  - DSP-C45
+  - DSP-C46
+  - DSP-C47
+  - DSP-C48
+  - DSP-C49
+  - DSP-C50
+  - DSP-C51
+  - DSP-C52
+  evidence: 'modules/52-validate-cfar-pfa-by-monte-carlo/assessment.md: four explicit portfolio tasks and four evidence-based
+    rubric criteria. Calibration is supported for the retained synthetic cases. Real clutter and operational false-alarm
+    acceptance remain unvalidated.'
+- id: DSP-A06
+  type: cumulative
+  competency_ids:
+  - DSP-C53
+  - DSP-C54
+  - DSP-C55
+  - DSP-C56
+  - DSP-C57
+  - DSP-C58
+  - DSP-C59
+  - DSP-C60
+  evidence: 'modules/60-use-an-imm-for-a-maneuvering-target/assessment.md: four explicit portfolio tasks and four
+    evidence-based rubric criteria. Truth is used for offline scoring in these synthetic scenes. The assessment
+    does not establish field tracking reliability.'
+- id: DSP-A07
+  type: cumulative
+  competency_ids:
+  - DSP-C61
+  - DSP-C62
+  - DSP-C63
+  - DSP-C64
+  - DSP-C65
+  - DSP-C66
+  - DSP-C67
+  - DSP-C68
+  evidence: 'modules/68-build-an-introductory-stap-clutter-ridge-experiment/assessment.md: four explicit portfolio
+    tasks and four evidence-based rubric criteria. This is a bounded synthetic array/STAP assessment, not a measured
+    array calibration or operational adaptive-processing qualification.'
+- id: DSP-A08
+  type: cumulative
+  competency_ids:
+  - DSP-C69
+  - DSP-C70
+  - DSP-C71
+  - DSP-C72
+  - DSP-C73
+  - DSP-C74
+  evidence: 'modules/74-create-a-micro-doppler-spectrogram/assessment.md: four explicit portfolio tasks and four
+    evidence-based rubric criteria. No real target classification, deployed MIMO calibration or automotive radar
+    performance is claimed.'
+- id: DSP-A09
+  type: cumulative
+  competency_ids:
+  - DSP-C75
+  - DSP-C76
+  - DSP-C77
+  - DSP-C78
+  - DSP-C79
+  - DSP-C80
+  - DSP-C81
+  - DSP-C82
+  - DSP-C83
+  evidence: 'modules/83-compare-range-doppler-processing-with-a-small-stap-processor/assessment.md: four explicit
+    portfolio tasks and four evidence-based rubric criteria. These are separate branch assessments. They are not
+    components executed by the final pulsed-radar capstone and do not establish real-scene imaging quality.'
+- id: DSP-A10
+  type: capstone
+  competency_ids:
+  - DSP-C19
+  - DSP-C32
+  - DSP-C33
+  - DSP-C42
+  - DSP-C50
+  - DSP-C53
+  - DSP-C57
+  - DSP-C58
+  - DSP-C84
+  evidence: 'modules/84-run-the-end-to-end-radar-processing-capstone/assessment.md: four explicit portfolio tasks
+    and four evidence-based rubric criteria. This is an independently checked synthetic pulsed-radar chain and a
+    self-assessment rubric. It is not a record of a learner passing, MATLAB parity, physical radar validation or
+    operational detection/tracking acceptance.'
+capstones:
+- id: DSP-CAPSTONE-PULSED
+  module_ids:
+  - P84
+  competency_ids:
+  - DSP-C19
+  - DSP-C32
+  - DSP-C33
+  - DSP-C42
+  - DSP-C50
+  - DSP-C53
+  - DSP-C57
+  - DSP-C58
+  - DSP-C84
+  integration_claim: This is an independently checked synthetic pulsed-radar chain and a self-assessment rubric.
+    It is not a record of a learner passing, MATLAB parity, physical radar validation or operational detection/tracking
+    acceptance. Executed stage trace covers receiver IQ calibration, conjugate compression/taper, range-Doppler,
+    2D CFAR, reports and gated lifecycle tracking. Selected first-scan controls do not recompute the fixed baseline
+    eight-scan sequence.
+evidence_plan:
+- claim_id: DSP-C01
+  origin: closed_form
+  independent: true
+  method: Independent phasor identities and retained baseline/alias signatures in test_dsp_course.py.
+  tolerance: '{"aliased-sample-signature": {"absolute": 1e-12, "relative": 1e-12}, "baseline-phasor-signature":
+    {"absolute": 1e-12, "relative": 1e-12}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C02
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P02 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 0.0001, "relative": 0.0001}, "broken": {"absolute": 0.0001, "relative":
+    0.0001}, "recovery": {"absolute": 0.0001, "relative": 0.0001}, "sweep_1": {"absolute": 0.0001, "relative": 0.0001},
+    "sweep_2": {"absolute": 0.0001, "relative": 0.0001}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C03
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P03 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 0.0001, "relative": 0.0001}, "broken": {"absolute": 0.0001, "relative":
+    0.0001}, "recovery": {"absolute": 0.0001, "relative": 0.0001}, "sweep_1": {"absolute": 0.0001, "relative": 0.0001},
+    "sweep_2": {"absolute": 0.0001, "relative": 0.0001}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C04
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P04 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 0.0001, "relative": 0.0001}, "broken": {"absolute": 0.0001, "relative":
+    0.0001}, "recovery": {"absolute": 0.0001, "relative": 0.0001}, "sweep_1": {"absolute": 0.0001, "relative": 0.0001},
+    "sweep_2": {"absolute": 0.0001, "relative": 0.0001}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C05
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P05 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 0.0001, "relative": 0.0001}, "broken": {"absolute": 0.0001, "relative":
+    0.0001}, "recovery": {"absolute": 0.0001, "relative": 0.0001}, "sweep_1": {"absolute": 0.0001, "relative": 0.0001},
+    "sweep_2": {"absolute": 0.0001, "relative": 0.0001}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C06
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P06 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 0.0001, "relative": 0.0001}, "broken": {"absolute": 0.0001, "relative":
+    0.0001}, "recovery": {"absolute": 0.0001, "relative": 0.0001}, "sweep_1": {"absolute": 0.0001, "relative": 0.0001},
+    "sweep_2": {"absolute": 0.0001, "relative": 0.0001}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C07
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P07 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 0.0001, "relative": 0.0001}, "broken": {"absolute": 0.0001, "relative":
+    0.0001}, "recovery": {"absolute": 0.0001, "relative": 0.0001}, "sweep_1": {"absolute": 0.0001, "relative": 0.0001},
+    "sweep_2": {"absolute": 0.0001, "relative": 0.0001}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C08
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P08 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 0.0001, "relative": 0.0001}, "broken": {"absolute": 0.0001, "relative":
+    0.0001}, "recovery": {"absolute": 0.0001, "relative": 0.0001}, "sweep_1": {"absolute": 0.0001, "relative": 0.0001},
+    "sweep_2": {"absolute": 0.0001, "relative": 0.0001}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C09
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P09 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 0.0001, "relative": 0.0001}, "broken": {"absolute": 0.0001, "relative":
+    0.0001}, "recovery": {"absolute": 0.0001, "relative": 0.0001}, "sweep_1": {"absolute": 0.0001, "relative": 0.0001},
+    "sweep_2": {"absolute": 0.0001, "relative": 0.0001}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C10
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P10 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 0.0001, "relative": 0.0001}, "broken": {"absolute": 0.0001, "relative":
+    0.0001}, "recovery": {"absolute": 0.0001, "relative": 0.0001}, "sweep_1": {"absolute": 0.0001, "relative": 0.0001},
+    "sweep_2": {"absolute": 0.0001, "relative": 0.0001}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C11
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P11 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 0.0001, "relative": 0.0001}, "broken": {"absolute": 0.0001, "relative":
+    0.0001}, "recovery": {"absolute": 0.0001, "relative": 0.0001}, "sweep_1": {"absolute": 0.0001, "relative": 0.0001},
+    "sweep_2": {"absolute": 0.0001, "relative": 0.0001}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C12
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P12 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 0.0001, "relative": 0.0001}, "broken": {"absolute": 0.0001, "relative":
+    0.0001}, "recovery": {"absolute": 0.0001, "relative": 0.0001}, "sweep_1": {"absolute": 0.0001, "relative": 0.0001},
+    "sweep_2": {"absolute": 0.0001, "relative": 0.0001}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C13
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P13 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 0.0001, "relative": 0.0001}, "broken": {"absolute": 0.0001, "relative":
+    0.0001}, "recovery": {"absolute": 0.0001, "relative": 0.0001}, "sweep_1": {"absolute": 0.0001, "relative": 0.0001},
+    "sweep_2": {"absolute": 0.0001, "relative": 0.0001}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C14
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P14 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 0.0001, "relative": 0.0001}, "broken": {"absolute": 0.0001, "relative":
+    0.0001}, "recovery": {"absolute": 0.0001, "relative": 0.0001}, "sweep_1": {"absolute": 0.0001, "relative": 0.0001},
+    "sweep_2": {"absolute": 0.0001, "relative": 0.0001}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C15
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P15 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 0.0001, "relative": 0.0001}, "broken": {"absolute": 0.0001, "relative":
+    0.0001}, "recovery": {"absolute": 0.0001, "relative": 0.0001}, "sweep_1": {"absolute": 0.0001, "relative": 0.0001},
+    "sweep_2": {"absolute": 0.0001, "relative": 0.0001}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C16
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P16 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 0.0001, "relative": 0.0001}, "broken": {"absolute": 0.0001, "relative":
+    0.0001}, "recovery": {"absolute": 0.0001, "relative": 0.0001}, "sweep_1": {"absolute": 0.0001, "relative": 0.0001},
+    "sweep_2": {"absolute": 0.0001, "relative": 0.0001}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C17
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P17 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 0.0001, "relative": 0.0001}, "broken": {"absolute": 0.0001, "relative":
+    0.0001}, "recovery": {"absolute": 0.0001, "relative": 0.0001}, "sweep_1": {"absolute": 0.0001, "relative": 0.0001},
+    "sweep_2": {"absolute": 0.0001, "relative": 0.0001}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C18
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P18 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 0.0001, "relative": 0.0001}, "broken": {"absolute": 0.0001, "relative":
+    0.0001}, "recovery": {"absolute": 0.0001, "relative": 0.0001}, "sweep_1": {"absolute": 0.0001, "relative": 0.0001},
+    "sweep_2": {"absolute": 0.0001, "relative": 0.0001}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C19
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P19 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 0.0001, "relative": 0.0001}, "broken": {"absolute": 0.0001, "relative":
+    0.0001}, "recovery": {"absolute": 0.0001, "relative": 0.0001}, "sweep_1": {"absolute": 0.0001, "relative": 0.0001},
+    "sweep_2": {"absolute": 0.0001, "relative": 0.0001}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C20
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P20 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 0.0001, "relative": 0.0001}, "broken": {"absolute": 0.0001, "relative":
+    0.0001}, "recovery": {"absolute": 0.0001, "relative": 0.0001}, "sweep_1": {"absolute": 0.0001, "relative": 0.0001},
+    "sweep_2": {"absolute": 0.0001, "relative": 0.0001}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C21
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P21 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C22
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P22 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C23
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P23 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C24
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P24 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C25
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P25 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C26
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P26 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C27
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P27 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C28
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P28 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C29
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P29 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C30
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P30 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C31
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P31 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C32
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P32 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C33
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P33 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C34
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P34 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C35
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P35 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C36
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P36 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C37
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P37 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C38
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P38 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C39
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P39 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C40
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P40 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C41
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P41 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C42
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P42 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C43
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P43 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C44
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P44 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C45
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P45 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C46
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P46 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C47
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P47 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C48
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P48 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C49
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P49 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C50
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P50 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C51
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P51 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C52
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P52 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C53
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P53 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C54
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P54 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C55
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P55 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C56
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P56 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C57
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P57 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C58
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P58 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C59
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P59 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C60
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P60 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C61
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P61 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C62
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P62 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C63
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P63 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C64
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P64 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C65
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P65 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C66
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P66 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C67
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P67 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C68
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P68 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C69
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P69 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C70
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P70 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C71
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P71 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C72
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P72 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C73
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P73 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C74
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P74 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C75
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P75 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C76
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P76 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C77
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P77 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C78
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P78 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C79
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P79 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C80
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P80 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C81
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P81 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C82
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P82 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C83
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P83 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+- claim_id: DSP-C84
+  origin: separately_formulated_numerical
+  independent: true
+  method: Retained independent P84 formulation in remediation_reference_cases.py; replay its baseline, two sweeps,
+    broken and recovered scenarios and existing physical tests. The production experiment is not imported by the
+    oracle.
+  tolerance: '{"baseline": {"absolute": 1e-08, "relative": 1e-08}, "broken": {"absolute": 1e-08, "relative": 1e-08},
+    "recovery": {"absolute": 1e-08, "relative": 1e-08}, "sweep_1": {"absolute": 1e-08, "relative": 1e-08}, "sweep_2":
+    {"absolute": 1e-08, "relative": 1e-08}}'
+  imports_production_entrypoint: false
+  derived_from_production_output: false
+  perturbs_production_output: false
+batch_plan:
+- id: DSP-REVIEW-01-1
+  module_ids:
+  - P01
+  - P02
+  - P03
+  - P04
+  - P05
+  - P06
+  - P07
+  - P08
+  - P09
+  - P10
+  coherence: Sample, identify and reconstruct; assessment review of existing identities, no new lesson inventory.
+- id: DSP-REVIEW-02-1
+  module_ids:
+  - P11
+  - P12
+  - P13
+  - P14
+  - P15
+  - P16
+  - P17
+  - P18
+  - P19
+  - P20
+  coherence: Defend a spectral and IQ measurement; assessment review of existing identities, no new lesson inventory.
+- id: DSP-REVIEW-03-1
+  module_ids:
+  - P21
+  - P22
+  - P23
+  - P24
+  - P25
+  - P26
+  - P27
+  - P28
+  coherence: Recover a signal and justify uncertainty; assessment review of existing identities, no new lesson inventory.
+- id: DSP-REVIEW-04-1
+  module_ids:
+  - P29
+  - P30
+  - P31
+  - P32
+  - P33
+  - P34
+  - P35
+  - P36
+  - P37
+  - P38
+  coherence: Carry range and Doppler through a radar design; assessment review of existing identities, no new lesson
+    inventory.
+- id: DSP-REVIEW-04-2
+  module_ids:
+  - P39
+  - P40
+  coherence: Carry range and Doppler through a radar design; assessment review of existing identities, no new lesson
+    inventory.
+- id: DSP-REVIEW-05-1
+  module_ids:
+  - P41
+  - P42
+  - P43
+  - P44
+  - P45
+  - P46
+  - P47
+  - P48
+  - P49
+  - P50
+  coherence: Audit a detector's false-alarm claim; assessment review of existing identities, no new lesson inventory.
+- id: DSP-REVIEW-05-2
+  module_ids:
+  - P51
+  - P52
+  coherence: Audit a detector's false-alarm claim; assessment review of existing identities, no new lesson inventory.
+- id: DSP-REVIEW-06-1
+  module_ids:
+  - P53
+  - P54
+  - P55
+  - P56
+  - P57
+  - P58
+  - P59
+  - P60
+  coherence: Explain a track from reports to identity; assessment review of existing identities, no new lesson inventory.
+- id: DSP-REVIEW-07-1
+  module_ids:
+  - P61
+  - P62
+  - P63
+  - P64
+  - P65
+  - P66
+  - P67
+  - P68
+  coherence: Defend an array estimate under mismatch; assessment review of existing identities, no new lesson inventory.
+- id: DSP-REVIEW-08-1
+  module_ids:
+  - P69
+  - P70
+  - P71
+  - P72
+  - P73
+  - P74
+  coherence: Resolve FMCW signs, timing and motion; assessment review of existing identities, no new lesson inventory.
+- id: DSP-REVIEW-09-1
+  module_ids:
+  - P75
+  - P76
+  - P77
+  - P78
+  - P79
+  - P80
+  - P81
+  - P82
+  - P83
+  coherence: Audit coherent imaging and passive processing; assessment review of existing identities, no new lesson
+    inventory.
+- id: DSP-REVIEW-10-1
+  module_ids:
+  - P84
+  coherence: Defend the pulsed-radar processing chain; assessment review of existing identities, no new lesson inventory.
+count_derivation:
+  planned_module_count: 84
+  source: len(modules)
+  rationale: The competency-to-module matrix binds all 84 pre-existing source/native identities. Assessment adds
+    no modules; 84 formative and 10 cumulative tasks are derived from those competencies.

@@ -205,6 +205,12 @@ KNOWN[("robotics-autonomy", 52)] = (
 
 def audit():
     rows = []
+    registry_path = ROOT / "courses/dsp-radar/assessment-map.json"
+    checkpoints = (
+        {r["module_id"]: r for r in json.loads(registry_path.read_text())["lessons"]}
+        if registry_path.exists()
+        else {}
+    )
     for course in COURSES:
         for path in sorted(
             (ROOT / "courses" / course / "modules").glob("*/module.yaml")
@@ -323,6 +329,16 @@ def audit():
                         else "not_recertified_by_structural_audit"
                     ),
                     "scoped_review": REPAIRED.get((course, number)),
+                    "assessment_review": {
+                        "checkpoint": checkpoints[module["id"]]["id"],
+                        "competency": checkpoints[module["id"]]["competency_id"],
+                        "cumulative": checkpoints[module["id"]]["domain_id"],
+                        "case_count": len(checkpoints[module["id"]]["retained_cases"]),
+                        "scope_limit": checkpoints[module["id"]]["claim_limit"],
+                        "learner_result": "not_recorded",
+                    }
+                    if course == "dsp-radar" and module["id"] in checkpoints
+                    else None,
                     "known_issue": issue,
                     "manual_learner_validation": "not_run",
                 }
@@ -367,6 +383,7 @@ if __name__ == "__main__":
             "module": r["module"],
             "known_issue": r["known_issue"],
             "scoped_review": r["scoped_review"],
+            "assessment_review": r["assessment_review"],
             "evidence_count": len(r["checks"]["independent_evidence"]["paths"]),
         }
         for r in value["lessons"]

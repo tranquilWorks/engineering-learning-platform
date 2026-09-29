@@ -1,22 +1,25 @@
-# Authorized continuation
+# Quality continuation handoff
 
-The twelve-lesson semantic batch has completed its mandatory local verification;
-see CURRENT_STATE and the exact ELP-SEMANTIC-QUALITY-12 evidence. PR53 carries the
-isolated result from delivery PR52 baseline 4e8e39fb3fc05eef8b4ca5607bec4d0bc9320891.
-Control PR534 authorized the twelve models and PR537 authorized generic rendering
-repair. Retained owner authorization permits normal verified development merge.
-Verify the final head, baseline and review state, then use the actual merge commit
-and tree for the next control contract.
+Completed sequence: merged delivery PR52, merged twelve-lesson semantic PR53
+(`b107ac198543e8dfb563c6aae4175cc87da6210d`), and the verified DSP aggregate revision in
+[PR54](https://github.com/tranquilWorks/engineering-learning-platform/pull/54).
+The PR merge record is authoritative for integration status. All named local
+gates passed; hosted CI is separately reported and nonmandatory.
 
-Next activate ELP-DSP-AGGREGATE-QUALITY-01: 84 existing lesson checkpoints,
-ten cumulative portfolios and a competency/prerequisite graph. Preserve all DSP
-experiments, source lesson bytes, reference oracles, expected vectors and source
-pins. Referenced assessment files must participate in the actual module digest;
-reconcile only the conversion target identities and coverage target digests.
-The assessment drafts are preparation, not completed browser integration.
+The DSP map binds 84 authored checkpoints and ten cumulative portfolios to the
+preserved models. Assessment markdown is part of the real module content digest;
+source lessons, experiments, reference oracles and numeric goldens remain unchanged.
+The sole non-DSP experiment change is P58's already-feasible trajectory precheck,
+verified against original complete outputs and unchanged independent evidence.
+Control contract revision: `7b2e3c1e425b196b400856a714f699f2e225a83a`. Exact results and rollback are retained
+in ELP-DSP-AGGREGATE-QUALITY-01 evidence.
 
-Retain all 60 additional Controls/Robotics/Vehicle findings and blocked aggregate
-maturity. Do not convert numerical software evidence into learner effectiveness,
-manual assistive-technology, MATLAB, physical HIL or production acceptance.
-Hosted CI is nonmandatory under retained owner direction; all named local gates
-are mandatory, and actual hosted failures/pending results must remain explicit.
+Remaining content repair scopes are the 60 findings in
+course-quality/additional-semantic-findings.md: Controls 19, Robotics 25, Vehicle
+P01–P16. Do not promote those aggregates or convert source-only courses from this
+batch. The earlier visual review also retains some long chart titles clipping
+inside narrow plot canvases, with complete names in numeric-range summaries.
+A future repair must retain independently originated evidence and actual
+browser/container behavior, with owner-requested group sizing where coherent.
+No learner, manual assistive-technology, MATLAB, hardware or production acceptance
+is implied. The local preview is development evidence only.

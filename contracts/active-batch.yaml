@@ -1,57 +1,48 @@
 schema_version: 1
 batch:
-  id: ELP-SEMANTIC-QUALITY-12
-  title: Repair twelve cumulative and performance lesson quality gaps
-  goal: Replace unsupported capstone surrogates and dimensional/performance defects with executed, independently
-    assessed teaching models in twelve existing lessons.
+  id: ELP-DSP-AGGREGATE-QUALITY-01
+  title: Embed and verify DSP competency checkpoints and cumulative assessments
+  goal: Close the separate DSP aggregate content review with an explicit prerequisite/competency map, 84 browser
+    checkpoints and ten bounded cumulative evidence portfolios while preserving the repaired numerical models.
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
   - products/engineering-learning-platform/COURSE_CALIBER.md
-  - 'Owner 2026-09-28: vet and finish quality/course iteration in the revised curricula.'
-  - 'Target docs/course-quality/semantic-repair-plan.md and lesson-audit.json: twelve directly inspected defects.'
+  - 'Owner 2026-09-28: finish quality/course iteration with per-lesson evidence embedded in Engineering Learning
+    browser/container.'
+  - Target docs/course-quality/dsp-aggregate-review-plan.md
   milestone: products/engineering-learning-platform/roadmap.yaml#ELP-M3
-  baseline_commit: 4e8e39fb3fc05eef8b4ca5607bec4d0bc9320891
-  baseline_tree: 51d97a215479ea8103decb5901592dac3dd3b98a
+  baseline_commit: b107ac198543e8dfb563c6aae4175cc87da6210d
+  baseline_tree: 21028d29c7e5f139f6907c6fcf7f467d96bbbfe8
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_baseline: c98ee61591829e258c580b630b5aa01d7ea4baef
-  control_plane_path: products/engineering-learning-platform/batches/ELP-SEMANTIC-QUALITY-12.yaml
+  control_plane_baseline: 29bb88f04d2de70faf2618fe6a18fe49e841a2d9
+  control_plane_path: products/engineering-learning-platform/batches/ELP-DSP-AGGREGATE-QUALITY-01.yaml
   target_repository: tranquilWorks/engineering-learning-platform
-  predecessor_pr: 52
+  predecessor_pr: 53
 dependencies:
-- ELP-COURSE-DELIVERY-QUALITY-01
+- ELP-SEMANTIC-QUALITY-12
 scope:
   allowed_paths:
-  - courses/controls-gnc/modules/66-*/**
-  - courses/controls-gnc/modules/67-*/**
-  - courses/controls-gnc/modules/68-*/**
-  - courses/controls-gnc/expansion_reference_cases.py
-  - courses/controls-gnc/expansion-map.yaml
-  - courses/robotics-autonomy/modules/68-*/**
-  - courses/robotics-autonomy/modules/69-*/**
-  - courses/robotics-autonomy/expansion_reference_cases.py
-  - courses/robotics-autonomy/expansion-map.yaml
-  - courses/vehicle-dynamics/modules/61-*/**
-  - courses/vehicle-dynamics/modules/62-*/**
-  - courses/vehicle-dynamics/modules/63-*/**
-  - courses/vehicle-dynamics/modules/64-*/**
-  - courses/vehicle-dynamics/modules/65-*/**
-  - courses/vehicle-dynamics/modules/66-*/**
-  - courses/vehicle-dynamics/modules/67-*/**
-  - courses/vehicle-dynamics/expansion_reference_cases.py
-  - courses/vehicle-dynamics/expansion-map.yaml
-  - apps/api/tests/test_capstone_quality_revision.py
-  - apps/api/tests/test_gnc_expansion.py
-  - apps/api/tests/test_robotics_expansion.py
-  - apps/api/tests/test_vehicle_dynamics_expansion.py
+  - courses/dsp-radar/competency-map.yaml
+  - courses/dsp-radar/competency-map.schema.json
+  - courses/dsp-radar/assessment-map.json
+  - courses/dsp-radar/modules/*/assessment.md
+  - courses/dsp-radar/modules/*/module.yaml
+  - courses/dsp-radar/modules/*/conversion.yaml
+  - courses/dsp-radar/coverage.yaml
+  - courses/dsp-radar/remediation-map.yaml
+  - apps/web/src/components/BlockRenderer.tsx
+  - apps/web/src/components/LessonQuality.tsx
+  - apps/web/src/lesson-quality.json
+  - apps/api/tests/test_dsp_aggregate_quality.py
+  - apps/api/tests/test_dsp_fidelity_remediation*.py
   - apps/api/tests/test_course_caliber_status.py
   - apps/api/tests/test_course_delivery_quality.py
-  - apps/api/tests/test_dsp_fidelity_remediation*.py
-  - apps/web/src/lesson-quality.json
-  - apps/web/src/components/LessonQuality.tsx
+  - apps/api/tests/test_capstone_quality_revision.py
+  - tests/browser/delivery.spec.ts
   - scripts/audit_course_quality.py
   - scripts/browser-quality.mjs
-  - tests/browser/delivery.spec.ts
+  - scripts/verify-dsp-assessments.py
   - contracts/active-batch.yaml
   - contracts/repo-profile.yaml
   - contracts/verification.yaml
@@ -62,107 +53,127 @@ scope:
   - docs/CURRENT_STATE.md
   - docs/HANDOFF.md
   - docs/ROADMAP.md
-  - docs/evidence/ELP-SEMANTIC-QUALITY-12-*
-  - apps/web/src/components/PlotPanel.tsx
-  - apps/web/src/lib/plotRendering.ts
-  - apps/web/tests/plotRendering.test.mjs
+  - docs/evidence/ELP-DSP-AGGREGATE-QUALITY-01-*
+  - apps/web/src/components/AppShell.tsx
+  - courses/robotics-autonomy/modules/58-optimize-a-trajectory-through-obstacle-constraints/experiment.py
+  - apps/api/tests/test_robotics_runtime_margin.py
   forbidden_paths:
   - courses/*-learning/**
-  - courses/dsp-radar/**
+  - courses/controls-gnc/**
+  - courses/vehicle-dynamics/**
   - courses/demo-radar/**
   - courses/platform-showcase/**
-  - courses/*/course.yaml
-  - courses/*/source-map.yaml
-  - courses/*/fidelity-map.yaml
-  - courses/*/competency-map.yaml
-  - courses/*/fixtures/**
+  - courses/dsp-radar/course.yaml
+  - courses/dsp-radar/source-map.yaml
+  - courses/dsp-radar/conversion-manifest.yaml
+  - courses/dsp-radar/remediation_reference_cases.py
+  - courses/dsp-radar/modules/*/experiment.py
+  - courses/dsp-radar/modules/*/lesson.md
+  - courses/dsp-radar/modules/*/evidence/**
   - .gitmodules
   - apps/api/src/**
   - packages/**
   - .github/**
   - products/**
+  - courses/robotics-autonomy/*.yaml
+  - courses/robotics-autonomy/*.json
+  - courses/robotics-autonomy/*reference*.py
+  - courses/robotics-autonomy/modules/*/module.yaml
+  - courses/robotics-autonomy/modules/*/design.yaml
+  - courses/robotics-autonomy/modules/*/lesson.md
+  - courses/robotics-autonomy/modules/*/evidence/**
 acceptance:
-- Begin only after this control contract merges, from exact merged delivery PR52 revision 4e8e39fb3fc05eef8b4ca5607bec4d0bc9320891.
-  Delivery passed all local gates, 290 container checks and 580 desktop/mobile page checks; retain its documented
-  concurrent-load and hosted-CI limitations.
-- 'Repair exactly twelve existing lessons: Controls P66-P68, Robotics P68-P69, Vehicle P61-P67. Preserve the 6-course/290-module
-  inventory, every source pin, approved prerequisite map, source-bound lesson, unrelated native module and unaffected
-  reference output. No new course conversion or production action.'
-- 'Implement the target semantic-repair-plan: actual identify/control/estimate/stress, navigation/guidance/constraints,
-  and timestamped closed-loop/watchdog capstones for Controls; measured perception/replay/recovery and timed contact-interface
-  behavior for Robotics. Derive requirement verdicts from executed histories; no algebraic stand-ins or fixed flags
-  for unexecuted stages.'
-- For Vehicle P61-P65 correct dimensional signatures and concrete limiting cases; use consistent distance/time integration
-  in the bounded racing-line family; couple a finite energy budget into reachable lap speeds and derive braking
-  residuals without arbitrary offsets. Evaluate the factorial held-out metric at unused design points, not fitted
-  corners. Keep the factorial lesson explicitly a synthetic response surface rather than measured vehicle performance.
-- Execute the Vehicle P66 provenance/alignment/calibration/reconstruction/identification/held-out validation/uncertainty/diagnosis
-  chain and P67 tire/chassis/propulsion/brake/aero/track/line/lap/uncertainty/setup chain. Every trace requirement
-  has a named computed quantity, units, threshold and pass/fail. Bound approximation scope explicitly; no actual
-  GR86 calibration, track validation or physical HIL claim.
-- Every revised lesson includes governing relations with dimensions, a worked physical example, concrete prediction,
-  useful controls, explained plots/metrics, two sweeps, specific limiting cases, named failure and exact recovery,
-  focused questions with answer rationale and cumulative assessment where appropriate. Keep teaching prose accessible
-  and avoid generic template substitution.
-- Retain five independently originated scenarios per lesson, record formulation/origin/tolerances, and generate
-  expected values solely from the reference implementation. No imports of production models, consumption or perturbation
-  of production output. Add physical invariants and metamorphic/negative tests that detect the original false-integration
-  or dimensional defect; preserve all unaffected numerical evidence.
-- Run focused revision and existing expansion/course checks, mandatory contract/quick/full gates, actual desktop/mobile
-  controls/failure/recovery/reset for all twelve lessons, and the updated read-only nonroot one-port container.
-  Preserve the established generic delivery fixes and data/revision/trust boundaries.
-- Update per-lesson audit and embedded review disclosures with actual repaired evidence. Retain the 60 additional
-  Controls/Robotics/Vehicle defects from the wider review as blocked and outside this twelve-lesson scope; this
-  group cannot close their aggregate maturity. Vehicle P01-P16 dimensional chart defects also remain blocked; do
-  not promote any of the three course aggregates after these twelve repairs; DSP aggregate review remains a separate
-  next batch. Human learning/screen-reader/MATLAB/hardware/production validation stays not_run.
-- Publish exact evidence and a reviewable PR. Owner continuation retains the prior merge/next-group authorization
-  for eligible verified work; no production deployment or unrelated backlog consumption.
-- 'Rendering amendment: direct screenshots and a single-page replay found WebGL unsupported notices in existing
-  2D scattergl plots despite serialized data and visible axes. Add a generic capability-based SVG fallback for 2D
-  scattergl only, preserving all coordinates, units, curves and course calculations. Assert actual drawn traces
-  after failure/recovery/reset and retain the negative finding; do not claim a WebGL notice or plot container is
-  plotted evidence. Unrelated course payloads remain immutable.'
+- Activate only after verified PR53 merges, using its exact merge commit/tree and this merged control contract.
+  Preserve its twelve model repairs, generic SVG fallback and documented rendering/concurrent-load/hosted-CI boundaries.
+- Bind all 84 existing DSP identities to a reviewed competency/prerequisite graph with explicit target learners,
+  entry knowledge, outcomes, exclusions and cross-course handoffs. Validate the local copy of the existing competency
+  schema, acyclic dependencies and exact inventory-derived count. This is assessment of existing lessons, not new
+  inventory.
+- Embed 84 individually authored formative checkpoints and ten cumulative task/rubric portfolios covering the domains
+  in the retained aggregate review plan. Every checkpoint connects a concrete prediction, named live controls/plots,
+  dimensioned reasoning, fault/recovery, expected explanation and a limiting assumption. Avoid title-substituted
+  generic questions.
+- Use the portable markdown block contract for assessment.md. Add generic named additional-markdown navigation/headings
+  so Course checkpoint is reachable on desktop and mobile; do not hard-code DSP behavior in generic components.
+  Retain all existing lesson blocks, controls, plots, runtime definitions, source-copied lesson.md and experiment.py
+  bytes.
+- Reconcile conversion.yaml target.content_digest and target.files and coverage.yaml target digests through the
+  actual catalog after adding referenced assessment files. All other conversion provenance/equivalence/source/claim
+  fields remain unchanged; no source-map, framework-manifest, reference oracle or retained numeric artifact mutation.
+- Reconcile the 417 retained independent comparisons (two P01 signatures plus five scenarios for each P02-P84) with
+  the competency map and execute fresh independent reference/production comparisons. Retain origin/tolerance and
+  model-specific limiting/invariant checks. Add analytic P01 limits and actual cumulative-stage/metric binding checks
+  without production-derived expected values or weakened numerical gates.
+- Explicitly bound P84 to its executed pulsed-radar chain and fixed baseline eight-scan tracker; selected first-scan
+  controls do not recompute that trajectory. Arrays/FMCW/MIMO/imaging/passive branches receive separate cumulative
+  portfolios, not an invented universal capstone integration.
+- Reassess DSP numerical, curriculum and capstone maturity only from actual reviewed map, independently verified
+  stage traces and accessible browser assessments. Self-check authorship is not learner success. Retain Controls/Robotics/Vehicle
+  aggregate blocks and all sixty additional named findings. No representative-learner, manual screen-reader, MATLAB,
+  hardware or production acceptance.
+- Run mandatory contract/quick/full and actual baked read-only nonroot container checks. Verify all 290 HTTP modules,
+  580 desktop/mobile pages, every DSP checkpoint's visible navigation and all ten cumulative blocks in both viewports;
+  exercise relevant live controls/failure/recovery/reset. Require drawn plot evidence and preserve the single-request
+  pacing/no-concurrent-capacity claim. Retain image identity, content digests and representative visual screenshots.
+- Publish exact results and a reviewable PR. Retained owner continuation authorizes eligible verified development
+  merge; no production action, source-only course conversion or unrelated sixty-lesson repair consumption.
+- 'Navigation amendment: the actual checkpoint test exposed that a native fragment link triggers popstate with a
+  new route object for the same lesson; AppShell then resets scroll to the page top. Compare stable course/module
+  route identity before resetting focus/scroll, preserving ordinary anchor navigation and real lesson changes. Verify
+  checkpoint and existing section links, keyboard use, same-page history and actual next-lesson behavior on desktop/mobile;
+  no runtime/schema/source changes.'
+- Two mandatory full attempts exposed the unchanged Robotics P58 three-second timeout, including a default catalog-validation
+  call. Permit only a conservative vectorized already-feasible segment precheck in its production experiment. Preserve
+  the ordered correction fallback, objective, gradient, all 1200 iterations, endpoints, controls, tolerances, references,
+  goldens and three-second runtime limit. All other Robotics payloads remain excluded by the exact allowlist.
+- Require exact whole-output preservation against the PR53 production baseline for all five retained scenarios and
+  representative control corners; check near-contact, infeasible and degenerate segment paths against the unchanged
+  sequential projection. Retain separately originated reference comparisons, measured before/after execution times,
+  both failed full attempts and any remaining performance boundary. Rerun mandatory contract, quick and full gates
+  sequentially and rebuild/recheck all 290 HTTP and 580 desktop/mobile pages on the final image. This optimization
+  does not consume any of the sixty separate content findings or certify concurrent capacity.
 validation:
   local:
-  - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_capstone_quality_revision.py apps/api/tests/test_gnc_expansion.py
-    apps/api/tests/test_robotics_expansion.py apps/api/tests/test_vehicle_dynamics_expansion.py
+  - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_aggregate_quality.py
+  - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-dsp-assessments.py
+  - PYTHONPATH=apps/api/src .venv/bin/python scripts/audit_course_quality.py
   - npm run typecheck
   - npm run build
   - npm run test:web
   - npm run test:browser
-  - PYTHONPATH=apps/api/src .venv/bin/python scripts/audit_course_quality.py
   - ./scripts/agent-verify.sh contract
   - ./scripts/agent-verify.sh quick
   - ./scripts/agent-verify.sh full
   - ./scripts/verify-course-delivery.sh
   - git diff --check
   focused_tests_to_add:
-  - Computed cumulative stage traces and fault/recovery behavior for the twelve lessons.
-  - Independent numeric cases, dimensions, physical limits and parameter sensitivity; no production-derived oracles.
-  - Unaffected module/reference/source preservation and truthful embedded maturity.
-  - No-WebGL browser renders actual SVG traces with unchanged data, including after parameter changes and reset;
-    3D trace types are not silently projected.
+  - Exact competency/assessment/identity binding, acyclic prerequisites and no orphaned outcomes or rubric links.
+  - Preserved numerical/source files and conversion metadata, with newly reconciled referenced-markdown digests.
+  - Actual cumulative plot/metric quantities and analytic P01 limits; retain all prior numerical comparisons.
+  - Accessible checkpoint navigation and cumulative tasks on desktop/mobile; no inferred learner pass.
   required_ci:
   - Hosted CI nonmandatory under retained owner direction; all named local gates mandatory.
 risk:
   class: high
   hazards:
-  - Correlated reference and production errors.
-  - Cumulative labels exceeding executed model fidelity.
-  - Unbounded coupled numerical work or changed unrelated references.
+  - Authored assessments mistaken for measured learner outcomes.
+  - Broad capstone claims that exceed the actual executed branches.
+  - Adding referenced content without reconciling immutable target identities.
   stop_conditions:
-  - Need to change source pins, public schemas, generic runtime or unrelated lesson payloads.
-  - Independent numerical or browser/container validation cannot be made credible.
-  - Need learner personal data, actual vehicle/hardware or production access.
+  - Need to modify source pins, existing DSP model/source lesson bytes or Robotics model behavior beyond the exact
+    P58 semantics-preserving fast path, production runtime or public schemas.
+  - Independent evidence or browser delivery cannot support the claimed scope.
+  - Need learner personal data, physical hardware or production access.
 rollback:
-  strategy: Revert the isolated twelve-lesson repair to the delivery-quality baseline; retain the honest defect
-    ledger. No schema/data migration.
+  strategy: Revert the isolated assessment revision to the exact merged PR53 baseline; no learner-data/schema migration.
+    Preserve historical numerical repairs and honest maturity boundaries.
 evidence:
   output:
-  - docs/evidence/ELP-SEMANTIC-QUALITY-12-2026-09-28.md
-  - docs/course-quality/semantic-revision.json
-  - docs/course-quality/lesson-audit.json
+  - docs/evidence/ELP-DSP-AGGREGATE-QUALITY-01-2026-09-28.md
+  - docs/course-quality/dsp-aggregate-review.json
+  - courses/dsp-radar/assessment-map.json
   - docs/COURSE_QUALITY.md
-  claim_boundary: Deterministic synthetic numerical/browser/container evidence only. No representative learner,
-    manual screen-reader, MATLAB, measured vehicle, hardware or production acceptance.
+  claim_boundary: Reviewed authored curriculum and independently verified synthetic numerical/browser/container
+    evidence only; no learner-effectiveness, manual assistive-technology, MATLAB, physical or production acceptance.
+    Robotics P58 has an exact-output runtime optimization only; its original numerical references and all other
+    course payloads remain unchanged.

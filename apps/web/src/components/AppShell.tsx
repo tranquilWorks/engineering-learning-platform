@@ -1,7 +1,7 @@
 import { Activity, BookOpen, ChevronRight, FlaskConical, Home, Menu, X } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { CourseSummary } from "../types";
-import { navigate, type Route } from "../lib/routing";
+import { hrefFor, navigate, type Route } from "../lib/routing";
 
 interface Props {
   catalog: CourseSummary[];
@@ -14,7 +14,8 @@ export function AppShell({ catalog, route, children }: Props) {
   const [mobile, setMobile] = useState(() => window.matchMedia("(max-width: 900px)").matches);
   const opener = useRef<HTMLButtonElement>(null);
   const sidebar = useRef<HTMLElement>(null);
-  const previousRoute = useRef(route);
+  const routeKey = hrefFor(route);
+  const previousRoute = useRef(routeKey);
   const close = () => { setOpen(false); requestAnimationFrame(() => opener.current?.focus()); };
   useEffect(() => {
     const query = window.matchMedia("(max-width: 900px)");
@@ -26,14 +27,14 @@ export function AppShell({ catalog, route, children }: Props) {
     if (open && mobile) sidebar.current?.querySelector<HTMLButtonElement>("button")?.focus();
   }, [open, mobile]);
   useEffect(() => {
-    if (previousRoute.current !== route) {
-      previousRoute.current = route;
+    if (previousRoute.current !== routeKey) {
+      previousRoute.current = routeKey;
       requestAnimationFrame(() => {
         document.getElementById("lesson-main")?.focus();
         window.scrollTo(0, 0);
       });
     }
-  }, [route]);
+  }, [routeKey]);
   const activeCourse = route.kind === "home" ? null : catalog.find((item) => item.id === route.courseId);
   return (
     <div className="app-shell">

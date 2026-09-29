@@ -248,13 +248,13 @@ def test_active_contract_ledger_and_prior_source_prefix():
     )
     assert raw[185460:].lstrip().startswith(b"# P77-P84: alternate numerical formulations")
     contract = yaml.safe_load((ROOT / "contracts/active-batch.yaml").read_text())
-    assert contract["batch"]["id"] == "ELP-SEMANTIC-QUALITY-12"
-    assert contract["sources"]["baseline_commit"] == "4e8e39fb3fc05eef8b4ca5607bec4d0bc9320891"
+    assert contract["batch"]["id"] == "ELP-DSP-AGGREGATE-QUALITY-01"
+    assert contract["sources"]["baseline_commit"] == "b107ac198543e8dfb563c6aae4175cc87da6210d"
     ledger = yaml.safe_load((COURSE / "remediation-map.yaml").read_text())
     assert ledger["derived_counts"]["repaired_in_prior_batches"] == 75
     assert ledger["derived_counts"]["repaired_in_batch"] == 8
     assert ledger["derived_counts"]["pending"] == 0
-    assert ledger["claim_boundary"]["numerically_verified"] == "blocked"
+    assert ledger["claim_boundary"]["numerically_verified"] == "passed"
 
 
 @pytest.mark.parametrize("number", range(77, 85))
@@ -276,12 +276,21 @@ def test_controls_and_all_retained_combinations(number, runtime):
                 assert len(json.dumps(result, allow_nan=False).encode()) < 1_000_000
 
 
-def test_final_item_inventory_does_not_promote_aggregate_maturity():
+def test_aggregate_maturity_requires_separate_review_beyond_item_inventory():
     ledger = yaml.safe_load((COURSE / "remediation-map.yaml").read_text())
     assert ledger["scope"]["pending"]["items"] == []
     status = yaml.safe_load((ROOT / "docs/course-caliber-status.yaml").read_text())
     dsp = next(r for r in status["course_reviews"] if r["course_id"] == "dsp-radar")
     assert dsp["follow_up_issues"] == [441]
     for stage in ["numerically_verified", "curriculum_covered", "capstone_integrated"]:
-        assert dsp["maturity"][stage]["status"] == "blocked"
+        assert dsp["maturity"][stage]["status"] == "passed"
     assert "aggregate" in dsp["maturity"]["numerically_verified"]["limitation"].lower()
+
+
+def test_aggregate_review_retains_all_independent_cases_and_no_learner_claim():
+    report = json.loads((ROOT / "docs/course-quality/dsp-aggregate-review.json").read_text())
+    assert len(report["comparisons"]) == 417
+    assert all(c["status"] == "passed" for c in report["comparisons"])
+    assert len(report["checkpoint_bindings"]) == 84
+    assert len(report["cumulative_probes"]) == 10
+    assert report["learner_validation"] == "not_run"

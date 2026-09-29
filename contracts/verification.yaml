@@ -18,7 +18,7 @@ commands:
   - .venv/bin/ruff check scripts/audit_course_quality.py scripts/container-quality.py apps/api/tests/test_course_delivery_quality.py
   scope:
   - git diff --check
-  - git diff --name-only 4e8e39fb3fc05eef8b4ca5607bec4d0bc9320891
+  - git diff --name-only b107ac198543e8dfb563c6aae4175cc87da6210d
   dsp-fidelity-p77-p84:
   - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B
     -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py
@@ -34,6 +34,10 @@ commands:
   semantic-quality-12:
   - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_capstone_quality_revision.py apps/api/tests/test_gnc_expansion.py
     apps/api/tests/test_robotics_expansion.py apps/api/tests/test_vehicle_dynamics_expansion.py
-evidence_boundary: Scoped independent synthetic numerical, physical invariant and actual browser/container checks;
-  sixty further content findings and aggregate course acceptance remain blocked. Manual screen-reader, learner,
-  MATLAB, hardware and production validation not run.
+  dsp-aggregate-quality:
+  - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_aggregate_quality.py
+  - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-dsp-assessments.py
+evidence_boundary: Authored DSP curriculum and independently verified synthetic software/browser/container evidence;
+  sixty other findings remain blocked. Run contract, quick and full sequentially after owned browser/experiment
+  sweeps finish, preserving the three-second runtime limits and retaining any failed attempts. No concurrent-capacity,
+  learner, manual screen-reader, MATLAB, physical or production acceptance.

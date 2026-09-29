@@ -71,6 +71,16 @@ def _gradient(points: np.ndarray, safety_radius: float, smoothness_weight: float
 
 def _restore_segment_feasibility(points: np.ndarray, safety_radius: float) -> np.ndarray:
     restored = points.copy()
+    # Most candidate paths already satisfy every segment constraint. Test them
+    # in one array operation; retain the ordered correction below when needed.
+    delta = restored[1:] - restored[:-1]
+    to_center = CENTER - restored[:-1]
+    denominator = np.maximum(np.sum(delta * delta, axis=1), 1.0e-12)
+    fraction = np.clip(np.sum(to_center * delta, axis=1) / denominator, 0.0, 1.0)
+    closest = restored[:-1] + fraction[:, None] * delta
+    margins = np.linalg.norm(closest - CENTER, axis=1) - safety_radius
+    if np.all(margins >= 1.0e-8):
+        return restored
     for _ in range(12):
         changed = False
         for index in range(len(restored) - 1):

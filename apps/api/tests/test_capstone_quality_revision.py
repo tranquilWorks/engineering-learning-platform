@@ -50,7 +50,16 @@ def result(course, number, **overrides):
 
 def test_exact_twelve_payload_scope_and_preserved_source_pins():
     changed = subprocess.check_output(
-        ["git", "diff", "--name-only", BASELINE, "--", "courses", ".gitmodules"],
+        [
+            "git",
+            "diff",
+            "--name-only",
+            BASELINE,
+            "b107ac198543e8dfb563c6aae4175cc87da6210d",
+            "--",
+            "courses",
+            ".gitmodules",
+        ],
         cwd=ROOT,
         text=True,
     ).splitlines()
