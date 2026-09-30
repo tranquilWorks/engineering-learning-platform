@@ -56,26 +56,7 @@ def _p12(a: float, b: float, broken: bool) -> list[float]:
 
 
 def _p13(a: float, b: float, broken: bool) -> list[float]:
-    final_ratio = 4.10
-    eta = 1.0 if broken else 0.90
-    tire_radius = 0.315
-    velocity = 20.0
-    shaft_rad_s = velocity * b * final_ratio / tire_radius
-    engine_rpm = shaft_rad_s * 30.0 / math.pi
-    demanded_force = a * b * final_ratio * eta / tire_radius
-    available_force = 1320.0 * 9.81
-    delivered_force = demanded_force if broken else min(demanded_force, available_force)
-    output_power = delivered_force * velocity
-    transmitted_power = a * shaft_rad_s * eta
-    return [
-        engine_rpm,
-        demanded_force,
-        delivered_force,
-        available_force,
-        output_power,
-        output_power - transmitted_power,
-        float(broken),
-    ]
+    return _vehicle_driveline_reference_state(13, a, b, broken)["signature"]
 
 
 def _shift_torque(engine_rpm: float) -> float:
@@ -83,79 +64,15 @@ def _shift_torque(engine_rpm: float) -> float:
 
 
 def _p14(a: float, b: float, broken: bool) -> list[float]:
-    next_ratio = a * 1.10 if broken else b
-    redline = 7400.0
-    chosen = redline
-    for engine_rpm in [
-        2500.0 + (redline - 2500.0) * step / 120.0 for step in range(121)
-    ]:
-        after_shift = engine_rpm * next_ratio / a
-        if _shift_torque(after_shift) * next_ratio >= _shift_torque(engine_rpm) * a:
-            chosen = engine_rpm
-            break
-    after_shift = chosen * next_ratio / a
-    scale = 4.10 * 0.90 / 0.315
-    before_force = _shift_torque(chosen) * a * scale
-    after_force = _shift_torque(after_shift) * next_ratio * scale
-    road_speed = chosen * math.pi / 30.0 * 0.315 / (a * 4.10)
-    return [
-        chosen,
-        road_speed,
-        before_force,
-        after_force,
-        after_shift,
-        after_force - before_force,
-        float(next_ratio >= a),
-    ]
+    return _vehicle_driveline_reference_state(14, a, b, broken)["signature"]
 
 
 def _p15(a: float, b: float, broken: bool) -> list[float]:
-    vehicle_mass = 1320.0
-    gravity = 9.81
-    force_limit = 1.05 * vehicle_mass * gravity
-    brake_force = b if broken else min(b, force_limit)
-    deceleration = brake_force / vehicle_mass
-    distance = a * a / (2.0 * deceleration)
-    duration = a / deceleration
-    initial_energy = vehicle_mass * a * a / 2.0
-    heat_fraction = 1.0 if broken else 0.85
-    temperature_rise = heat_fraction * initial_energy / (28.0 * 460.0)
-    load_shift = vehicle_mass * deceleration * 0.50 / 2.57
-    front_load = 0.53 * vehicle_mass * gravity + load_shift
-    rear_load = vehicle_mass * gravity - front_load
-    return [
-        brake_force,
-        deceleration,
-        distance,
-        duration,
-        initial_energy,
-        temperature_rise,
-        front_load,
-        rear_load,
-        float(broken or rear_load < 0.0),
-    ]
+    return _vehicle_driveline_reference_state(15, a, b, broken)["signature"]
 
 
 def _p16(a: float, b: float, broken: bool) -> list[float]:
-    pressure = 1.225 * a * a / 2.0
-    drag_area = 0.65 + 0.0015 * b * b
-    lift_area = 0.30 + 0.045 * b
-    resistance = pressure * drag_area
-    vertical_load = pressure * lift_area
-    front_fraction = 0.48 + 0.006 * b
-    if broken:
-        resistance = -resistance
-        front_fraction = 1.20
-    grip = 1320.0 * 9.81 + vertical_load
-    return [
-        pressure,
-        resistance,
-        vertical_load,
-        grip,
-        resistance * a,
-        front_fraction,
-        float(resistance < 0.0 or not 0.0 <= front_fraction <= 1.0),
-    ]
+    return _vehicle_driveline_reference_state(16, a, b, broken)["signature"]
 
 
 def _p17(a: float, b: float, broken: bool) -> list[float]:
@@ -919,4 +836,283 @@ def vehicle_foundations_reference(number, primary, secondary, broken=False):
         "response": _vehicle_reference_response(
             number, float(primary), float(secondary), bool(broken)
         ),
+    }
+
+
+# Independent power/work, polynomial-root and energy formulations.
+# This file never imports production experiments or consumes their output.
+def _driveline_fields(n, signature, **extra):
+    fields = {
+        13: [
+            "engine_speed_rpm",
+            "requested_wheel_force_n",
+            "applied_wheel_force_n",
+            "traction_limit_n",
+            "wheel_power_w",
+            "power_residual_w",
+            "invalid",
+        ],
+        14: [
+            "shift_rpm",
+            "shift_speed_m_s",
+            "current_force_n",
+            "next_force_n",
+            "post_shift_rpm",
+            "force_gap_n",
+            "invalid",
+        ],
+        15: [
+            "applied_brake_force_n",
+            "deceleration_m_s2",
+            "stopping_distance_m",
+            "stop_time_s",
+            "kinetic_energy_j",
+            "rotor_delta_t_c",
+            "front_load_n",
+            "rear_load_n",
+            "invalid",
+        ],
+        16: [
+            "dynamic_pressure_pa",
+            "drag_n",
+            "downforce_n",
+            "tire_capacity_n",
+            "drag_power_w",
+            "front_aero_share",
+            "invalid",
+        ],
+    }
+    return dict(zip(fields[n], signature, strict=True), signature=signature, **extra)
+
+
+def _driveline_reference_torque(rpm):
+    return max(120.0, 95.0 + 0.06 * rpm - 6e-6 * rpm * rpm)
+
+
+def _driveline_reference_forces(current, nxt, rpm, fault):
+    ratio = nxt / current
+    post = rpm * ratio
+    scale = 4.1 * 0.9 / 0.315
+    return [
+        _driveline_reference_torque(rpm) * current * scale,
+        _driveline_reference_torque(rpm if fault else post) * nxt * scale,
+        post,
+    ]
+
+
+def _vehicle_driveline_reference_state(n, a, b, fault):
+    mass, gravity = 1320.0, 9.81
+    weight = mass * gravity
+    if n == 13:
+        # Begin with shaft work per revolution and power; invert for force/torque.
+        wheel_turns_per_second = 20.0 / (2 * math.pi * 0.315)
+        rpm = wheel_turns_per_second * b * 4.1 * 60
+        omega = rpm * math.pi / 30
+        request_power = a * omega
+        eta = 1.0 if fault else 0.9
+        delivered_power = min(request_power, weight * 20 / eta)
+        wheel_power = eta * delivered_power
+        applied = wheel_power / 20
+        demanded = eta * request_power / 20
+        loss = delivered_power / 10
+        residual = wheel_power + loss - delivered_power
+        signature = [
+            rpm,
+            demanded,
+            applied,
+            weight,
+            wheel_power,
+            residual,
+            float(abs(residual) > 1e-8),
+        ]
+        return _driveline_fields(
+            n,
+            signature,
+            engine_angular_speed_rad_s=omega,
+            wheel_angular_speed_rad_s=2 * math.pi * wheel_turns_per_second,
+            delivered_engine_torque_nm=delivered_power / omega,
+            requested_engine_power_w=request_power,
+            delivered_engine_power_w=delivered_power,
+            drivetrain_loss_w=loss,
+            curtailed_request_w=request_power - delivered_power,
+            transmitted_efficiency=eta,
+            traction_limited=float(demanded > weight),
+        )
+    if n == 14:
+        q = b / a
+        available = b < a
+        # Factoring F_next-F_current gives a quadratic. Resolve it analytically,
+        # independently of production's bracketed search. Only classify roots in-band.
+        A = 6e-6 * (q * q + q + 1)
+        B = 0.06 * (q + 1)
+        candidate = (B + math.sqrt(B * B + 380 * A)) / (2 * A)
+        crossover = available and not fault and candidate <= 7400
+        rpm = candidate if crossover else 7400.0
+        samples = [2500 + 4900 * i / 120 for i in range(121)]
+        errors = []
+        for r in samples:
+            used = _driveline_reference_torque(r if fault else r * q)
+            required = _driveline_reference_torque(r * q)
+            errors.append(abs(used - required) * b * 4.1 * 0.9 / 0.315)
+        error = max(errors)
+        fc, fn, _ = _driveline_reference_forces(a, b, 7400.0, fault)
+        if available:
+            current, nxt, post = _driveline_reference_forces(a, b, rpm, fault)
+            speed = (rpm / 60) / (a * 4.1) * (2 * math.pi * 0.315)
+            signature = [
+                rpm,
+                speed,
+                current,
+                nxt,
+                post,
+                nxt - current,
+                float(error > 1e-10),
+            ]
+        else:
+            signature = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+        return _driveline_fields(
+            n,
+            signature,
+            decision_available=float(available),
+            crossover=float(crossover),
+            redline_limited=float(available and not crossover),
+            gear_speed_ratio=q,
+            maximum_lookup_force_error_n=error,
+            redline_current_force_n=fc,
+            redline_next_force_n=fn,
+        )
+    if n == 15:
+        force = min(b, 1.05 * weight)
+        energy = mass * a * a / 2
+        distance = energy / force
+        stop = 2 * distance / a
+        rotor_fraction = 1.0 if fault else 0.85
+        rotor = energy * rotor_fraction
+        other = energy * 0.15
+        transfer = force * 0.5 / 2.57
+        front = weight * 0.53 + transfer
+        rear = weight * 0.47 - transfer
+        signature = [
+            force,
+            a / stop,
+            distance,
+            stop,
+            energy,
+            rotor / 12880,
+            front,
+            rear,
+            float(fault or rear < 0),
+        ]
+        return _driveline_fields(
+            n,
+            signature,
+            traction_limit_n=1.05 * weight,
+            stopping_work_j=energy,
+            rotor_heat_j=rotor,
+            other_heat_j=other,
+            heat_residual_fraction=rotor_fraction + 0.15 - 1,
+            work_residual_fraction=0.0,
+            load_transfer_n=transfer,
+            normal_load_residual_n=0.0,
+            pitch_moment_residual_nm=0.0,
+        )
+    if n == 16:
+        pressure = 0.6125 * a**2
+        drag_area = (650 + 1.5 * b * b) / 1000
+        down_area = (300 + 45 * b) / 1000
+        drag = pressure * drag_area * (-1 if fault else 1)
+        down = pressure * down_area
+        share = 1.2 if fault else (480 + 6 * b) / 1000
+        front = share * down
+        rear = down - front
+        fn = weight * 0.53 + front
+        rn = weight * 0.47 + rear
+        capacity = weight + down
+        signature = [
+            pressure,
+            drag,
+            down,
+            capacity,
+            drag * a,
+            share,
+            float(drag < 0 or share > 1 or share < 0),
+        ]
+        return _driveline_fields(
+            n,
+            signature,
+            drag_area_m2=drag_area,
+            downforce_area_m2=down_area,
+            front_aero_n=front,
+            rear_aero_n=rear,
+            front_normal_n=fn,
+            rear_normal_n=rn,
+            aero_allocation_residual_n=0.0,
+            normal_load_residual_n=0.0,
+            drag_model_residual_n=drag - pressure * drag_area,
+        )
+    raise ValueError("Reference covers only Vehicle P13-P16")
+
+
+def vehicle_driveline_reference(number, primary, secondary, broken=False):
+    n, a, b, fault = number, primary, secondary, broken
+    physical = _vehicle_driveline_reference_state(n, a, b, fault)
+    if n == 13:
+        xs = [0.8 + 3.4 * i / 60 for i in range(61)]
+        states = [_vehicle_driveline_reference_state(n, a, g, fault) for g in xs]
+        response = {
+            "x": xs,
+            "series": [
+                [s[k] for s in states]
+                for k in [
+                    "requested_wheel_force_n",
+                    "applied_wheel_force_n",
+                    "traction_limit_n",
+                ]
+            ],
+        }
+    elif n == 14:
+        xs = [2500 + 4900 * i / 120 for i in range(121)]
+        values = [_driveline_reference_forces(a, b, r, fault) for r in xs]
+        response = {
+            "x": xs,
+            "series": [[v[0] for v in values], [v[1] for v in values]],
+            "post_shift_rpm": [v[2] for v in values],
+            "next_torque_lookup_rpm": [r if fault else r * (b / a) for r in xs],
+        }
+    elif n == 15:
+        # Parameterize by fraction of stopping time. Kinetic-energy loss supplies heat.
+        u = [i / 60 for i in range(61)]
+        energy = 1320 * a * a / 2
+        force = min(b, 1.05 * 1320 * 9.81)
+        distance = energy / force
+        stop = 2 * distance / a
+        velocity = [a * (1 - v) for v in u]
+        remaining = [energy * (1 - v) ** 2 for v in u]
+        work = [energy * (2 * v - v * v) for v in u]
+        fraction = 1.0 if fault else 0.85
+        response = {
+            "x": [stop * v for v in u],
+            "series": [velocity],
+            "distance_m": [distance * (2 * v - v * v) for v in u],
+            "remaining_kinetic_energy_j": remaining,
+            "stopping_work_j": work,
+            "braking_power_w": [force * v for v in velocity],
+            "rotor_heat_j": [fraction * w for w in work],
+            "other_heat_j": [0.15 * w for w in work],
+            "rotor_temperature_rise_c": [fraction * w / 12880 for w in work],
+        }
+    else:
+        xs = [10 + i for i in range(61)]
+        states = [_vehicle_driveline_reference_state(n, v, b, fault) for v in xs]
+        response = {
+            "x": xs,
+            "series": [
+                [s[k] for s in states]
+                for k in ["drag_n", "downforce_n", "front_aero_n", "rear_aero_n"]
+            ],
+        }
+    return {
+        "physical": physical,
+        "response": response,
+        "signature": physical["signature"],
     }

@@ -1,57 +1,69 @@
-# Choose Shift Points
+# Distinguish a Force Crossover from a Redline Limit
 
-> **Guiding question:** When should the current gear be exchanged for the next gear to maximize wheel force?
+A shift decision needs a reason. One possible reason is that the next gear now produces at least as much wheel force. Another is that the current gear has reached its permitted engine speed. These are different events. A routine that returns redline whenever it finds no crossover must not describe every returned value as a force crossover.
 
-## Physical model, frame, and units
+## Physical model: torque map, ratios and units
 
-The vehicle-fixed convention is +x forward, +y left, +z upward, and positive yaw counter-clockwise from above. Loads and forces act on the vehicle unless stated otherwise. The independent controls are **Current gear ratio** (ratio) and **Next gear ratio** (ratio). Angles displayed in degrees are converted exactly once before trigonometric use.
+This lesson uses the empirical torque map
 
-The governing relation is
+\[
+T(r)=\max\left(120,\;245-6\times10^{-6}(r-5000)^2\right),
+\]
 
-`shift at first rpm where T(rpm_next)*i_next >= T(rpm)*i_current, otherwise at redline`
+where r is the numerical engine speed in RPM and T is in N·m. The quadratic coefficient therefore carries N·m/RPM². This is a teaching curve, not a measured engine calibration. Current engine speed is examined from 2500 to 7400 RPM. Final drive is 4.1, wheel radius is 0.315 m, and efficiency is 0.90.
 
-The teaching invariant is: **At a valid force-crossover shift, adjacent-gear wheel forces are equal within grid resolution.** The implementation is a Python-first native design derived from the reviewed P14 identity and competency. Its source folder was a scaffold; this is not a claim of source or MATLAB-runtime equivalence.
+Let g_c be current ratio, g_n next ratio, and q = g_n/g_c. A valid upshift requires 0 < q < 1. At unchanged vehicle speed, the engine drops to r_next = qr. The wheel forces are
 
-The search evaluates 121 deterministic points from 2500 to 7400 rpm on the declared torque curve. At each point, post-shift rpm is `rpm*i_next/i_current`; the first point where next-gear force meets or exceeds current-gear force is selected, otherwise the result is redline. A valid adjacent upshift requires `i_next<i_current`.
+\[
+F_c(r)=\frac{T(r)g_c g_f\eta}{R},\qquad
+F_n(r)=\frac{T(qr)g_n g_f\eta}{R}.
+\]
 
-## Predict and sweep one variable at a time
+The reduced engine speed changes torque as well as gearing. Comparing ratios alone, or evaluating both torque values at the old RPM, misses this mechanism. Road speed at a decision is r(2π/60)R/(g_c g_f), in m/s; the RPM conversion is necessary because the torque-map input and angular speed use different units.
 
-1. Hold `next_gear_ratio` at 1.541 ratio. Predict the sign, monotonic trend, validity boundary, and invariant, then sweep `current_gear_ratio` through 1.4, 2.188, and 3.7 ratio.
-2. Restore `current_gear_ratio` to 2.188 ratio. Hold every other assumption fixed and sweep `next_gear_ratio` through 0.8, 1.541, and 2.4 ratio.
+## Three honest outcomes
 
-Changing one physical input at a time distinguishes causality from correlation. The plots expose retained SI quantities rather than a renamed normalized waveform.
+A **force crossover** is a resolved root of F_n − F_c inside the permitted RPM interval. A **redline-limited decision** means no such crossover occurs before 7400 RPM, so the decision reaches the upper speed boundary while the forces can still differ. **Unavailable** means the selected next ratio is equal to or larger than the current ratio, so the pair is not an upshift under this lesson’s convention.
+
+The main panel still shows formal force curves for an invalid pair, but those curves do not make its upshift decision valid. Decision metrics are explicitly unavailable, and nominal decision sweeps omit invalid ratio regions. An empty portion of such a sweep is not a zero-RPM recommendation.
+
+For valid descending ratios, the in-band torque samples lie on the quadratic branch. Factoring the force difference by the positive quantity g_c(1−q) gives
+
+\[
+-95-0.06(1+q)r+6\times10^{-6}(1+q+q^2)r^2.
+\]
+
+Its zero can be resolved without subtracting almost identical gear forces repeatedly. The executed model uses a bracketed solve; a separately derived quadratic root checks it. The force curves are sampled for display, but the decision is not rounded to a display-grid point. Any algebraic candidate outside the permitted interval is not an in-band crossover.
+
+## Worked comparisons
+
+At the default ratios 2.188 to 1.541, the decision is redline-limited at 7400 RPM. Post-shift RPM is about 5211.79 and road speed about 27.2107 m/s. Current-gear force is about 5393.76 N, next-gear force 4417.81 N, and their next-minus-current gap is −975.95 N. Those separated forces directly refute a crossover claim at the default decision.
+
+Select current ratio 2.09 and next ratio 2.08. Both are reachable with the refined 0.001 slider steps. This near-equal pair crosses at approximately 7399.34147 RPM, with post-shift speed about 7363.93793 RPM and both forces about 5152.63672 N. The small RPM difference from redline matters because the event’s classification is different. Do not infer event type merely from a rounded display value near 7400.
+
+## Predict and sweep
+
+1. Hold next ratio at 1.541 and vary current ratio. Observe the nominal decision sweep only where current ratio exceeds next ratio. Compare an invalid setting, a valid wide ratio separation and a nearly equal pair. Use the force gap and decision label together rather than reading an RPM alone.
+2. Hold current ratio at 2.09 and vary next ratio. Compare 1.5, 2.08 and 2.09. Predict redline limitation, an in-band crossover and an unavailable decision respectively. The secondary sweep shows only valid nominal decisions. The force panel reveals why a ratio change alters the comparison across engine speed.
 
 ## Named broken behavior and exact recovery
 
-**Broken behavior:** Broken mode makes the next ratio greater than the current ratio and flags the invalid sequence. The invalid field is part of the model result, so a finite plot cannot disguise a nonphysical setup.
+The fault looks up next-gear torque at current RPM while still calculating the kinematic post-shift RPM correctly. At valid descending ratios this wrong force comparison stays below the current-gear force and selects redline. Inspect the same-input next-gear curves and the maximum torque-lookup force error across the displayed interval. A single matching point is insufficient: the quadratic torque curve is symmetric about 5000 RPM, so different RPMs can occasionally produce the same torque.
 
-**Exact recovery:** Restore a strictly descending adjacent-gear pair and recompute the crossover below redline. Disable broken mode, restore both defaults, and verify that the deterministic baseline signature returns exactly.
+Disable the fault at unchanged inputs and verify recovery of both the proper next-gear curve and the decision classification. Reset separately to recover the default redline-limited example.
 
 ## Limits and limiting cases
 
-The deterministic torque curve omits shift time, traction variation, gearbox losses by gear, rev limits after downshift, and engine transients. A redline result can mean there is no crossover inside the bounded search; it is not evidence that forces are equal there. Grid resolution bounds how closely a detected crossover can approach exact equality.
+This model omits shift duration, traction variation, gear-dependent losses, engine transients and lap-time objectives. A force-based or redline-based rule here does not establish an optimal shift strategy for a real vehicle.
 
 ## Common mistakes
 
-- Choosing peak engine power without comparing wheel force after the ratio change.
-- Forgetting to map current rpm into the next gear before evaluating torque.
-- Accepting a next-gear ratio greater than or equal to the current ratio as an upshift.
-- Changing two controls simultaneously and attributing the result to one.
-- Treating a steady instructional model as setup, safety, vehicle, or track validation.
+A redline return does not prove force equality. Correct post-shift RPM does not prove the torque lookup used it. Equal ratios are not an upshift, even though their nominal force curves coincide.
 
 ## Formative checks
 
-1. State every input, output, sign, and unit in the governing relation.
-2. Predict both one-variable sweep directions before running them.
-3. Identify the conserved or bounded quantity and verify it numerically.
-4. Name the broken assumption, recover the exact baseline, and state the residual limitation.
+What distinguishes the default decision from the 2.09-to-2.08 case? Check your reasoning: the default has a negative force gap at its boundary; the near-equal valid pair has a resolved in-band zero. Explain why a display-grid sample is not the numerical root.
 
 ## Teach-back checklist
 
-- [ ] I can answer the guiding question in two or three sentences.
-- [ ] I can derive or explain the governing relation and its units.
-- [ ] I predicted and verified both sweeps.
-- [ ] I diagnosed the named failure and demonstrated exact recovery.
-- [ ] I can state what this deterministic software-only model does not prove.
-
-This module is not measured-vehicle, firmware, radio, bench, track, hardware/HIL, certification, release, or production evidence.
+State all three outcomes, derive the RPM drop, compare actual forces, and diagnose the curve-wide lookup error. Separate a simplified shift rule from a real optimization objective. This is synthetic teaching evidence, not measured-vehicle validation.

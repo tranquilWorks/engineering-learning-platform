@@ -15,11 +15,11 @@ npx playwright install chromium
 npm run test:web
 npm run typecheck
 npm run build
-docker build -t elp-vehicle-foundations-quality:20260930 .
+docker build -t elp-vehicle-driveline-quality:20260930 .
 docker run -d --name "$ELP_CONTAINER_NAME" --read-only \
   --tmpfs /tmp:rw,noexec,nosuid,size=128m --cap-drop ALL \
   --security-opt no-new-privileges --pids-limit 256 --memory 2g --cpus 2 \
-  -p "127.0.0.1:${ELP_BROWSER_URL##*:}:8080" elp-vehicle-foundations-quality:20260930
+  -p "127.0.0.1:${ELP_BROWSER_URL##*:}:8080" elp-vehicle-driveline-quality:20260930
 trap 'docker stop "$ELP_CONTAINER_NAME" >/dev/null' EXIT
 python3 - <<'PY'
 import os,time,urllib.request
@@ -37,4 +37,4 @@ npm run test:browser
 PYTHONPATH=apps/api/src .venv/bin/python scripts/container-quality.py
 node scripts/browser-quality.mjs
 
-PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-vehicle-foundations-quality.py --base-url "$ELP_BROWSER_URL"
+PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-vehicle-driveline-quality.py --base-url "$ELP_BROWSER_URL"

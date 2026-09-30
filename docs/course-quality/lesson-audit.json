@@ -19792,17 +19792,18 @@
       "course": "vehicle-dynamics",
       "module": "13-map-engine-torque-through-gearing",
       "number": 13,
-      "title": "Map Engine Torque through Gearing",
+      "title": "Account for Gearing, Traction and Delivered Power",
       "path": "courses/vehicle-dynamics/modules/13-map-engine-torque-through-gearing",
-      "payload_sha256": "acdfd627d045e42f1e2abe2006d65600c963b58b1682944b08d03a3a2859667e",
+      "payload_sha256": "255c2db0af812e398a289b1f7ff7a7f227ac57ce5c605310d1990a2eab0895f0",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 579,
+          "word_count": 985,
           "headings": [
-            "Map Engine Torque through Gearing",
-            "Physical model, frame, and units",
-            "Predict and sweep one variable at a time",
+            "Account for Gearing, Traction and Delivered Power",
+            "Physical model and units",
+            "Worked baseline and saturated case",
+            "Predict and sweep",
             "Named broken behavior and exact recovery",
             "Limits and limiting cases",
             "Common mistakes",
@@ -19812,7 +19813,7 @@
         },
         "equations": {
           "state": "candidate_text_present",
-          "rendered_math_expected": false
+          "rendered_math_expected": true
         },
         "prediction": {
           "state": "present"
@@ -19820,9 +19821,9 @@
         "controls": {
           "state": "present",
           "labels": [
-            "Engine torque",
-            "Selected gear ratio",
-            "Activate the named broken behavior"
+            "Requested engine torque",
+            "Gear ratio",
+            "Omit declared drivetrain loss"
           ],
           "units": {
             "engine_torque_n_m": "N*m",
@@ -19846,6 +19847,8 @@
           "state": "retained_artifacts_require_semantic_review",
           "paths": [
             "courses/vehicle-dynamics/modules/13-map-engine-torque-through-gearing/actual.json",
+            "courses/vehicle-dynamics/modules/13-map-engine-torque-through-gearing/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/13-map-engine-torque-through-gearing/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/13-map-engine-torque-through-gearing/expected.json",
             "courses/vehicle-dynamics/modules/13-map-engine-torque-through-gearing/verification.yaml"
           ]
@@ -19854,27 +19857,29 @@
           "state": "map_present_requires_semantic_review"
         }
       },
-      "semantic_review": "blocked",
-      "scoped_review": null,
+      "semantic_review": "scoped_model_reviewed",
+      "scoped_review": "Executed engine-to-wheel gearing, capped applied force and delivered-power balance; independent power-first formulation separates requested-torque curtailment from drivetrain loss. Fixed-speed mapping does not establish engine/redline feasibility or tire-slip dynamics. Five independent full-state/response cases and runtime corners passed at unchanged 1e-10 tolerance. Individual embedded Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and SVG layout checks passed. Aggregate course review remains separate.",
       "assessment_review": null,
-      "known_issue": "The main response chart joins signature quantities with different physical units on one generic SI axis; sweeps also lack a named response/unit. Replace these with physically meaningful curves or separately labeled quantities and specific limiting-case checks.",
+      "known_issue": null,
       "manual_learner_validation": "not_run"
     },
     {
       "course": "vehicle-dynamics",
       "module": "14-choose-shift-points",
       "number": 14,
-      "title": "Choose Shift Points",
+      "title": "Distinguish a Force Crossover from a Redline Limit",
       "path": "courses/vehicle-dynamics/modules/14-choose-shift-points",
-      "payload_sha256": "2e3bd769b75ca50dce974f0036e6db8e6376bf2353caf609955e6c592e2a75da",
+      "payload_sha256": "7918e76661b2bf1df757600b6d9c648a1f6975a59cb42b832430f98b2ca991c2",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 594,
+          "word_count": 910,
           "headings": [
-            "Choose Shift Points",
-            "Physical model, frame, and units",
-            "Predict and sweep one variable at a time",
+            "Distinguish a Force Crossover from a Redline Limit",
+            "Physical model: torque map, ratios and units",
+            "Three honest outcomes",
+            "Worked comparisons",
+            "Predict and sweep",
             "Named broken behavior and exact recovery",
             "Limits and limiting cases",
             "Common mistakes",
@@ -19884,7 +19889,7 @@
         },
         "equations": {
           "state": "candidate_text_present",
-          "rendered_math_expected": false
+          "rendered_math_expected": true
         },
         "prediction": {
           "state": "present"
@@ -19894,7 +19899,7 @@
           "labels": [
             "Current gear ratio",
             "Next gear ratio",
-            "Activate the named broken behavior"
+            "Use pre-shift RPM for next-gear torque"
           ],
           "units": {
             "current_gear_ratio": "ratio",
@@ -19918,6 +19923,8 @@
           "state": "retained_artifacts_require_semantic_review",
           "paths": [
             "courses/vehicle-dynamics/modules/14-choose-shift-points/actual.json",
+            "courses/vehicle-dynamics/modules/14-choose-shift-points/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/14-choose-shift-points/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/14-choose-shift-points/expected.json",
             "courses/vehicle-dynamics/modules/14-choose-shift-points/verification.yaml"
           ]
@@ -19926,27 +19933,29 @@
           "state": "map_present_requires_semantic_review"
         }
       },
-      "semantic_review": "blocked",
-      "scoped_review": null,
+      "semantic_review": "scoped_model_reviewed",
+      "scoped_review": "Executed post-shift torque lookup and wheel-force comparison with resolved crossover, redline fallback and unavailable invalid-ratio decisions; independent analytic polynomial root. The actual refined controls reach 2.09 to 2.08 and the 7399.34147 RPM crossover. No shift-time or lap-optimality claim. Five independent full-state/response cases and runtime corners passed at unchanged 1e-10 tolerance. Individual embedded Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and SVG layout checks passed. Aggregate course review remains separate.",
       "assessment_review": null,
-      "known_issue": "The main response chart joins signature quantities with different physical units on one generic SI axis; sweeps also lack a named response/unit. Replace these with physically meaningful curves or separately labeled quantities and specific limiting-case checks.",
+      "known_issue": null,
       "manual_learner_validation": "not_run"
     },
     {
       "course": "vehicle-dynamics",
       "module": "15-model-braking-distance-and-heat",
       "number": 15,
-      "title": "Model Braking Distance and Heat",
+      "title": "Close the Braking Work and Heat Budgets",
       "path": "courses/vehicle-dynamics/modules/15-model-braking-distance-and-heat",
-      "payload_sha256": "5694901fc6a61aaee67f86eccd7bd252eef00eb721f152de19741dc033b4bda9",
+      "payload_sha256": "8e90db4458d5cf21ce43fa2fad48e1def86d41a477469a581e81929c4248e9fc",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 582,
+          "word_count": 1004,
           "headings": [
-            "Model Braking Distance and Heat",
-            "Physical model, frame, and units",
-            "Predict and sweep one variable at a time",
+            "Close the Braking Work and Heat Budgets",
+            "Physical model: constant-force stopping",
+            "Heat partition and normal loads",
+            "Worked baseline",
+            "Predict and sweep",
             "Named broken behavior and exact recovery",
             "Limits and limiting cases",
             "Common mistakes",
@@ -19956,7 +19965,7 @@
         },
         "equations": {
           "state": "candidate_text_present",
-          "rendered_math_expected": false
+          "rendered_math_expected": true
         },
         "prediction": {
           "state": "present"
@@ -19966,7 +19975,7 @@
           "labels": [
             "Initial speed",
             "Requested brake force",
-            "Activate the named broken behavior"
+            "Double-count heat allocation"
           ],
           "units": {
             "initial_speed_m_s": "m/s",
@@ -19990,6 +19999,8 @@
           "state": "retained_artifacts_require_semantic_review",
           "paths": [
             "courses/vehicle-dynamics/modules/15-model-braking-distance-and-heat/actual.json",
+            "courses/vehicle-dynamics/modules/15-model-braking-distance-and-heat/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/15-model-braking-distance-and-heat/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/15-model-braking-distance-and-heat/expected.json",
             "courses/vehicle-dynamics/modules/15-model-braking-distance-and-heat/verification.yaml"
           ]
@@ -19998,27 +20009,29 @@
           "state": "map_present_requires_semantic_review"
         }
       },
-      "semantic_review": "blocked",
-      "scoped_review": null,
+      "semantic_review": "scoped_model_reviewed",
+      "scoped_review": "Executed constant-force capped stopping, longitudinal load transfer and kinetic-energy/work/heat closure; independent energy-first trajectory. Actual double-counted heat fault changes rotor temperature while preserving motion. Cooling, brake bias and transient tire dynamics are excluded. Five independent full-state/response cases and runtime corners passed at unchanged 1e-10 tolerance. Individual embedded Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and SVG layout checks passed. Aggregate course review remains separate.",
       "assessment_review": null,
-      "known_issue": "The main response chart joins signature quantities with different physical units on one generic SI axis; sweeps also lack a named response/unit. Replace these with physically meaningful curves or separately labeled quantities and specific limiting-case checks.",
+      "known_issue": null,
       "manual_learner_validation": "not_run"
     },
     {
       "course": "vehicle-dynamics",
       "module": "16-balance-drag-and-downforce",
       "number": 16,
-      "title": "Balance Drag and Downforce",
+      "title": "Separate Aerodynamic Force, Power and Axle Allocation",
       "path": "courses/vehicle-dynamics/modules/16-balance-drag-and-downforce",
-      "payload_sha256": "04ca45046cd05b5ba5841b3c0c5cfbd81b9caed74fcd5ed867c02f8b36228bac",
+      "payload_sha256": "d2854197238c1630168d977402d47e45cdc69402d3983461b50002c2ac20df3f",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 559,
+          "word_count": 991,
           "headings": [
-            "Balance Drag and Downforce",
-            "Physical model, frame, and units",
-            "Predict and sweep one variable at a time",
+            "Separate Aerodynamic Force, Power and Axle Allocation",
+            "Physical model: empirical coefficients and declared signs",
+            "Allocate aerodynamic contributions before adding weight",
+            "Worked baseline and wing change",
+            "Predict and sweep",
             "Named broken behavior and exact recovery",
             "Limits and limiting cases",
             "Common mistakes",
@@ -20028,7 +20041,7 @@
         },
         "equations": {
           "state": "candidate_text_present",
-          "rendered_math_expected": false
+          "rendered_math_expected": true
         },
         "prediction": {
           "state": "present"
@@ -20038,7 +20051,7 @@
           "labels": [
             "Vehicle speed",
             "Wing angle",
-            "Activate the named broken behavior"
+            "Reverse drag and misallocate downforce"
           ],
           "units": {
             "speed_m_s": "m/s",
@@ -20062,6 +20075,8 @@
           "state": "retained_artifacts_require_semantic_review",
           "paths": [
             "courses/vehicle-dynamics/modules/16-balance-drag-and-downforce/actual.json",
+            "courses/vehicle-dynamics/modules/16-balance-drag-and-downforce/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/16-balance-drag-and-downforce/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/16-balance-drag-and-downforce/expected.json",
             "courses/vehicle-dynamics/modules/16-balance-drag-and-downforce/verification.yaml"
           ]
@@ -20070,10 +20085,10 @@
           "state": "map_present_requires_semantic_review"
         }
       },
-      "semantic_review": "blocked",
-      "scoped_review": null,
+      "semantic_review": "scoped_model_reviewed",
+      "scoped_review": "Executed drag/downforce coefficients, complementary axle allocation, normal loads and drag power; independent coefficient-area formulation and speed-scaling checks. Negative faulty rear aerodynamic contribution is distinguished from total wheel load; no measured-aero or tire-load-sensitivity claim. Five independent full-state/response cases and runtime corners passed at unchanged 1e-10 tolerance. Individual embedded Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and SVG layout checks passed. Aggregate course review remains separate.",
       "assessment_review": null,
-      "known_issue": "The main response chart joins signature quantities with different physical units on one generic SI axis; sweeps also lack a named response/unit. Replace these with physically meaningful curves or separately labeled quantities and specific limiting-case checks.",
+      "known_issue": null,
       "manual_learner_validation": "not_run"
     },
     {

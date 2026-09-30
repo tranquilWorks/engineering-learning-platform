@@ -16,6 +16,8 @@ const saveReport = () => {
 };
 const selected = process.env.ELP_BROWSER_COURSE;
 const selectedModule = process.env.ELP_BROWSER_MODULE;
+const vehicleDrivelineBatch = process.env.ELP_BROWSER_VEHICLE_DRIVELINE_BATCH === '1';
+const isVehicleDriveline = (course, module) => course.id === 'vehicle-dynamics' && module.number >= 13 && module.number <= 16;
 const vehicleFoundationsBatch = process.env.ELP_BROWSER_VEHICLE_FOUNDATIONS_BATCH === '1';
 const isVehicleFoundations = (course, module) => course.id === 'vehicle-dynamics' && module.number >= 1 && module.number <= 12;
 const roboticsPerceptionBatch = process.env.ELP_BROWSER_ROBOTICS_PERCEPTION_BATCH === '1';
@@ -24,7 +26,7 @@ const roboticsDynamicsBatch = process.env.ELP_BROWSER_ROBOTICS_DYNAMICS_BATCH ==
 const roboticsDynamicsSelection = { 'robotics-autonomy': Array.from({length:12}, (_,i)=>i+30) };
 const navigationBatch = process.env.ELP_BROWSER_NAVIGATION_BATCH === '1';
 const navigationSelection = { 'controls-gnc': [56,57,60,61,62,64,65], 'robotics-autonomy': [25,26,27,28,29] };
-const semanticSelection = { 'controls-gnc': [36, 38, 42, 43, 45, 46, 47, 48, 49, 50, 51, 55, 56, 57, 60, 61, 62, 64, 65, 66, 67, 68], 'robotics-autonomy': [25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 52, 68, 69], 'vehicle-dynamics': [1,2,3,4,5,6,7,8,9,10,11,12,61, 62, 63, 64, 65, 66, 67] };
+const semanticSelection = { 'controls-gnc': [36, 38, 42, 43, 45, 46, 47, 48, 49, 50, 51, 55, 56, 57, 60, 61, 62, 64, 65, 66, 67, 68], 'robotics-autonomy': [25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 52, 68, 69], 'vehicle-dynamics': [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,61, 62, 63, 64, 65, 66, 67] };
 const cumulative = new Set([10, 20, 28, 40, 52, 60, 68, 74, 83, 84]);
 const isCumulative = (course, module) => course.id === 'dsp-radar' && cumulative.has(module.number);
 const isRevised = (course, module) => semanticSelection[course.id]?.includes(module.number) ?? false;
@@ -48,7 +50,7 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
     page.setDefaultTimeout(30000);
     let errors = [];
     page.on('pageerror', e => errors.push(e.message));
-    for (const module of course.modules.filter(m => (!selectedModule || m.id === selectedModule) && (!vehicleFoundationsBatch || isVehicleFoundations(course,m)) && (!roboticsPerceptionBatch || roboticsPerceptionSelection[course.id]?.includes(m.number)) && (!roboticsDynamicsBatch || roboticsDynamicsSelection[course.id]?.includes(m.number)) && (!navigationBatch || navigationSelection[course.id]?.includes(m.number)))) {
+    for (const module of course.modules.filter(m => (!selectedModule || m.id === selectedModule) && (!vehicleDrivelineBatch || isVehicleDriveline(course,m)) && (!vehicleFoundationsBatch || isVehicleFoundations(course,m)) && (!roboticsPerceptionBatch || roboticsPerceptionSelection[course.id]?.includes(m.number)) && (!roboticsDynamicsBatch || roboticsDynamicsSelection[course.id]?.includes(m.number)) && (!navigationBatch || navigationSelection[course.id]?.includes(m.number)))) {
       errors = [];
       const row = { course: course.id, module: module.id, viewport, status: 'failed' };
       try {
@@ -85,7 +87,7 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
           });
           return failures;
         }));
-        if (isVehicleFoundations(course,module) || (course.id === 'robotics-autonomy' && ((module.number >= 30 && module.number <= 48) || module.number === 52))) {
+        if (isVehicleDriveline(course,module) || isVehicleFoundations(course,module) || (course.id === 'robotics-autonomy' && ((module.number >= 30 && module.number <= 48) || module.number === 52))) {
           row.plot_text_layout_errors = await page.locator('.js-plotly-plot').evaluateAll(nodes => nodes.flatMap((node, index) => {
             const failures = [], bounds = node.querySelector('svg.main-svg').getBoundingClientRect();
             const outside = (r, b) => r.left < b.left - 2 || r.right > b.right + 2 || r.top < b.top - 2 || r.bottom > b.bottom + 2;
@@ -132,7 +134,7 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
             screenshots.push({path:file,sha256:crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
           }
         }
-        if (isVehicleFoundations(course,module) || (course.id === 'controls-gnc' && [36,38,42,43,45,46,47,48,49,50,51,55,56,57,60,61,62,64,65].includes(module.number)) || (course.id === 'robotics-autonomy' && [25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,52].includes(module.number))) {
+        if (isVehicleDriveline(course,module) || isVehicleFoundations(course,module) || (course.id === 'controls-gnc' && [36,38,42,43,45,46,47,48,49,50,51,55,56,57,60,61,62,64,65].includes(module.number)) || (course.id === 'robotics-autonomy' && [25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,52].includes(module.number))) {
           const jump = page.getByRole('navigation', {name:'Lesson sections'}).getByRole('link', {name:'Course checkpoint', exact:true});
           await jump.click();
           const heading = page.getByRole('heading', {name:'Course checkpoint', exact:true});

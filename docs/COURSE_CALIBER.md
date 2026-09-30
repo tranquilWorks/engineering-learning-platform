@@ -104,3 +104,7 @@ The Robotics perception batch completed full delivery and mandatory sequential g
 Vehicle P01–P12 have individually authored explanations and embedded checkpoints, corrected dimensional plots and independently checked physical mechanisms. Four named Vehicle P13–P16 findings remain; Controls and Robotics have zero named findings. All non-DSP aggregate numerical, curriculum and capstone stages remain blocked. Original source/conversion evidence remains historical; revised native faults do not claim full-source equivalence. Complete delivery and mandatory gate status is retained in the active batch evidence.
 
 The Vehicle foundations revision completed full read-only delivery and mandatory sequential gates. Port 8776 is the verified development preview; exact image, frozen-input hashes and result counts are retained in `docs/course-quality/vehicle-foundations-verification-summary.json`. Four Vehicle findings and all non-DSP aggregate reviews remain open.
+
+## Final Vehicle selected revision
+
+P13–P16 have independent numerical and selected baked browser evidence, individual lessons and embedded checkpoints. The named register is now Controls 0, Robotics 0, Vehicle 0. All three non-DSP aggregate reviews remain blocked. Full delivery and mandatory sequential gates passed; port 8777 is the verified preview. Exact results are retained in docs/course-quality/vehicle-driveline-verification-summary.json. No learner, physical or production acceptance is implied.

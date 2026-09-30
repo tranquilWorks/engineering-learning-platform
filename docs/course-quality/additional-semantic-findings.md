@@ -1,24 +1,15 @@
 # Additional direct-review findings
 
-The wider delivery audit recorded sixty additional lessons beyond the initial capstone repair. Fifty-six now have scoped repairs: twelve Controls, twelve navigation/geometry, twenty Robotics and twelve Vehicle foundations lessons. Four named findings remain, all Vehicle P13–P16 (Controls 0, Robotics 0, Vehicle 4). The register is not exhaustive; all three non-DSP aggregate numerical, curriculum and capstone reassessments remain blocked.
+All sixty additional named findings now have scoped repairs, completing the owner-authorized Vehicle twelve-plus-four revision. The current named register is Controls 0, Robotics 0, Vehicle 0. This register is not exhaustive; all three non-DSP aggregate numerical, curriculum and capstone reassessments remain blocked.
 
-The selected Vehicle P01–P12 closures include a corrected P07 force/moment equilibrium, physical response curves with consistent units, meaningful executed faults and individually authored browser checkpoints. The separate numerical/selected-browser evidence precedes these closures. Complete final delivery and mandatory sequential gates subsequently passed; see vehicle-foundations-verification-summary.json.
+## Closed by ELP-VEHICLE-DRIVELINE-QUALITY-04
 
-| Course / lesson | Remaining directly inspected gap |
-| --- | --- |
-| vehicle-dynamics P13 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
-| vehicle-dynamics P14 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
-| vehicle-dynamics P15 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
-| vehicle-dynamics P16 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
+P13–P16 originally joined signature quantities with different physical units on a generic SI axis, with unnamed sweep units and insufficient limiting-case checks. Those findings are retained here as history. Each lesson now has physical curves, a substantial individual lesson and an embedded Course checkpoint. Twenty independent full-mechanism comparisons, 32 runtime corners, 106 selected/regression tests, eight baked desktop/mobile checks and the actual-control P14 crossover test passed before closure. Eight plot captures were inspected. Full delivery and all mandatory sequential gates subsequently passed; exact counts and hashes are retained in vehicle-driveline-verification-summary.json.
 
-Review source: each corresponding `courses/<course>/modules/<number>-*/experiment.py`
-against its `design.yaml`, lesson claims and retained references. Controls P34–65
-and Robotics P25–60 were inspected for executed model stages; Vehicle P25–67
-was screened and its final performance/capstone group inspected directly.
-The earlier DSP fidelity evidence remains retained. Static presence and these
-targeted inspections do not certify every pedagogical claim in all 288 lessons.
-
-The twenty Robotics findings are repaired. The owner-authorized Vehicle revision proceeds as twelve plus four: P01–P12 have selected verified closures; P13–P16 follow only after the first verified merge and a fresh exact-baseline contract. All non-DSP aggregate reassessments remain separate and blocked.
+- **P13:** Executed engine-to-wheel gearing, capped applied force and delivered-power balance; independent power-first formulation separates requested-torque curtailment from drivetrain loss. Fixed-speed mapping does not establish engine/redline feasibility or tire-slip dynamics.
+- **P14:** Executed post-shift torque lookup and wheel-force comparison with resolved crossover, redline fallback and unavailable invalid-ratio decisions; independent analytic polynomial root. The actual refined controls reach 2.09 to 2.08 and the 7399.34147 RPM crossover. No shift-time or lap-optimality claim.
+- **P15:** Executed constant-force capped stopping, longitudinal load transfer and kinetic-energy/work/heat closure; independent energy-first trajectory. Actual double-counted heat fault changes rotor temperature while preserving motion. Cooling, brake bias and transient tire dynamics are excluded.
+- **P16:** Executed drag/downforce coefficients, complementary axle allocation, normal loads and drag power; independent coefficient-area formulation and speed-scaling checks. Negative faulty rear aerodynamic contribution is distinguished from total wheel load; no measured-aero or tire-load-sensitivity claim.
 
 ## Closed by ELP-GNC-SEMANTIC-QUALITY-12
 

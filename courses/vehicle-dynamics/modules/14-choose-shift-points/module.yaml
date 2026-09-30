@@ -2,9 +2,9 @@
   "schema_version": 1,
   "id": "14-choose-shift-points",
   "number": 14,
-  "title": "Choose Shift Points",
-  "summary": "Choose an adjacent-gear shift from wheel-force crossover or redline on a bounded torque curve.",
-  "guiding_question": "When should the current gear be exchanged for the next gear to maximize wheel force?",
+  "title": "Distinguish a Force Crossover from a Redline Limit",
+  "summary": "Compare adjacent-gear force curves using the actual RPM drop, and distinguish crossover, redline-limited and unavailable upshift decisions.",
+  "guiding_question": "Does reaching the redline mean the next gear produces the same wheel force?",
   "status": "implemented",
   "tags": [
     "vehicle-dynamics",
@@ -25,9 +25,9 @@
       "default": 2.188,
       "minimum": 1.4,
       "maximum": 3.7,
-      "step": 0.05,
+      "step": 0.001,
       "unit": "ratio",
-      "description": "Change the primary physical input while holding the secondary input fixed."
+      "description": "Select the ratio before shifting; a valid upshift requires it to exceed the next ratio."
     },
     {
       "id": "next_gear_ratio",
@@ -36,14 +36,14 @@
       "default": 1.541,
       "minimum": 0.8,
       "maximum": 2.4,
-      "step": 0.05,
+      "step": 0.001,
       "unit": "ratio",
-      "description": "Change the secondary physical input while holding the primary input fixed."
+      "description": "Select the smaller post-shift ratio; equal or larger ratios give an unavailable upshift decision."
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Activate the named broken behavior",
+      "label": "Use pre-shift RPM for next-gear torque",
       "default": false
     }
   ],
@@ -55,8 +55,8 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Predict the sign, trend, conserved quantity, and validity boundary before changing one input.",
-      "reveal": "Use the governing relation, then verify one variable at a time."
+      "text": "At ratios 2.188 to 1.541, predict whether next-gear force catches current-gear force before 7400 RPM.",
+      "reveal": "The default remains force-separated at redline. A near-equal pair such as 2.09 to 2.08 crosses slightly below 7400 RPM."
     },
     {
       "type": "controls",
@@ -100,6 +100,11 @@
       "tone": "success",
       "title": "Recovery",
       "source": "recovery"
+    },
+    {
+      "type": "markdown",
+      "title": "Course checkpoint",
+      "source": "assessment.md"
     }
   ]
 }
