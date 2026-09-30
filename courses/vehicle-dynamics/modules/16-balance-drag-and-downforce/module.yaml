@@ -2,9 +2,9 @@
   "schema_version": 1,
   "id": "16-balance-drag-and-downforce",
   "number": 16,
-  "title": "Balance Drag and Downforce",
-  "summary": "Trade speed- and angle-dependent drag power against downforce, aero balance, and modeled tire capacity.",
-  "guiding_question": "How does aero setup trade straight-line drag against downforce and tire capacity?",
+  "title": "Separate Aerodynamic Force, Power and Axle Allocation",
+  "summary": "Use empirical area coefficients to compare drag, downforce, power demand and front/rear aerodynamic contributions without confusing them with total wheel loads.",
+  "guiding_question": "Why can the total downforce and tire-capacity sums look correct even when the aerodynamic signs and axle allocation are wrong?",
   "status": "implemented",
   "tags": [
     "vehicle-dynamics",
@@ -27,7 +27,7 @@
       "maximum": 70.0,
       "step": 2.0,
       "unit": "m/s",
-      "description": "Change the primary physical input while holding the secondary input fixed."
+      "description": "Set speed through still air for the empirical force and power estimates."
     },
     {
       "id": "wing_angle_deg",
@@ -38,12 +38,12 @@
       "maximum": 18.0,
       "step": 1.0,
       "unit": "deg",
-      "description": "Change the secondary physical input while holding the primary input fixed."
+      "description": "Set the degree-valued input to the declared coefficient-area and axle-share formulas."
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Activate the named broken behavior",
+      "label": "Reverse drag and misallocate downforce",
       "default": false
     }
   ],
@@ -55,8 +55,8 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Predict the sign, trend, conserved quantity, and validity boundary before changing one input.",
-      "reveal": "Use the governing relation, then verify one variable at a time."
+      "text": "At fixed wing angle, predict the changes in aerodynamic force and drag power when speed doubles, and decide whether total tire capacity also quadruples.",
+      "reveal": "Aerodynamic force grows by four and drag power by eight. Total capacity includes the unchanged static weight, so only its aerodynamic increment quadruples."
     },
     {
       "type": "controls",
@@ -100,6 +100,11 @@
       "tone": "success",
       "title": "Recovery",
       "source": "recovery"
+    },
+    {
+      "type": "markdown",
+      "title": "Course checkpoint",
+      "source": "assessment.md"
     }
   ]
 }

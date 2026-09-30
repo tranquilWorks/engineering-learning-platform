@@ -18,6 +18,7 @@ from elp_api.runtime import ExperimentRuntime
 
 ROOT = Path(__file__).resolve().parents[3]
 BASELINE = "607c716993be14e7b782897ab054a7f8478f5dc0"
+HISTORICAL_HEAD = "1a0041bd24de1168c03ff2bf2a656a6061cac0e3"
 COURSE = ROOT / "courses/vehicle-dynamics"
 
 
@@ -51,8 +52,12 @@ def original(path):
     return subprocess.check_output(["git", "show", f"{BASELINE}:{path}"], cwd=ROOT)
 
 
+def reviewed(path):
+    return subprocess.check_output(["git", "show", f"{HISTORICAL_HEAD}:{path}"], cwd=ROOT)
+
+
 def test_exact_scope_inventory_controls_and_historical_coverage():
-    contract = yaml.safe_load((ROOT / "contracts/active-batch.yaml").read_text())
+    contract = yaml.safe_load(reviewed("contracts/active-batch.yaml"))
     assert contract["batch"]["id"] == "ELP-VEHICLE-FOUNDATIONS-QUALITY-12"
     assert contract["sources"]["baseline_commit"] == BASELINE
     assert (
@@ -62,7 +67,7 @@ def test_exact_scope_inventory_controls_and_historical_coverage():
         == contract["sources"]["baseline_tree"]
     )
     changed = subprocess.check_output(
-        ["git", "diff", "--name-only", BASELINE, "--", "courses", ".gitmodules"],
+        ["git", "diff", "--name-only", BASELINE, HISTORICAL_HEAD, "--", "courses", ".gitmodules"],
         cwd=ROOT,
         text=True,
     ).splitlines()
@@ -73,15 +78,17 @@ def test_exact_scope_inventory_controls_and_historical_coverage():
     assert all(any(fnmatch.fnmatch(p, pattern) for pattern in allowed) for p in changed)
     # Compare bytes directly, including files that might otherwise be hidden by changed-path logic.
     tracked = subprocess.check_output(
-        ["git", "ls-tree", "-r", "--name-only", BASELINE, "--", "courses"], cwd=ROOT, text=True
+        ["git", "ls-tree", "-r", "--name-only", BASELINE, "--", "courses"],
+        cwd=ROOT,
+        text=True,
     ).splitlines()
     for path in tracked:
         if any(fnmatch.fnmatch(path, pattern) for pattern in allowed):
             continue
         if (ROOT / path).is_file():
-            assert (ROOT / path).read_bytes() == original(path), path
+            assert reviewed(path) == original(path), path
     before = json.loads(original("courses/vehicle-dynamics/coverage.yaml"))
-    after = json.loads((COURSE / "coverage.yaml").read_text())
+    after = json.loads(reviewed("courses/vehicle-dynamics/coverage.yaml"))
     for n, (a, b) in enumerate(zip(before["items"], after["items"], strict=True), 1):
         if n <= 12:
             a.pop("target_content_digest")
@@ -89,7 +96,10 @@ def test_exact_scope_inventory_controls_and_historical_coverage():
         assert a == b
     for n in range(1, 13):
         path = folder(n) / "module.yaml"
-        a, b = json.loads(original(path.relative_to(ROOT))), json.loads(path.read_text())
+        a, b = (
+            json.loads(original(path.relative_to(ROOT))),
+            json.loads(reviewed(path.relative_to(ROOT))),
+        )
         assert a["id"] == b["id"] and a["number"] == b["number"]
         for old, new in zip(a["controls"], b["controls"], strict=True):
             assert {k: v for k, v in old.items() if k not in ("label", "description")} == {
@@ -103,7 +113,7 @@ def test_exact_scope_inventory_controls_and_historical_coverage():
 def test_unselected_reference_definitions_and_outputs_unchanged(tmp_path):
     relative = "courses/vehicle-dynamics/reference_cases.py"
     before = original(relative).decode()
-    after = (ROOT / relative).read_text()
+    after = reviewed(relative).decode()
 
     def definitions(text):
         return {
@@ -116,15 +126,22 @@ def test_unselected_reference_definitions_and_outputs_unchanged(tmp_path):
     old_path = tmp_path / "old_reference.py"
     old_path.write_text(before)
     old = load(old_path)
+    reviewed_path = tmp_path / "reviewed_reference.py"
+    reviewed_path.write_text(after)
+    historical_reference = load(reviewed_path)
     for n in range(13, 25):
         assert a[f"_p{n:02d}"] == b[f"_p{n:02d}"]
-        m = json.loads((folder(n) / "module.yaml").read_text())
+        m = json.loads(reviewed((folder(n) / "module.yaml").relative_to(ROOT)))
         p, s = [c["id"] for c in m["controls"][:2]]
-        for case in json.loads((folder(n) / "verification.yaml").read_text())["scenarios"]:
+        for case in json.loads(reviewed((folder(n) / "verification.yaml").relative_to(ROOT)))[
+            "scenarios"
+        ]:
             inputs = case["inputs"]
             np.testing.assert_array_equal(
                 old.evaluate(f"P{n:02d}", inputs[p], inputs[s], inputs["broken_mode"]),
-                REFERENCE.evaluate(f"P{n:02d}", inputs[p], inputs[s], inputs["broken_mode"]),
+                historical_reference.evaluate(
+                    f"P{n:02d}", inputs[p], inputs[s], inputs["broken_mode"]
+                ),
             )
 
 

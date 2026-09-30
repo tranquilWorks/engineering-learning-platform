@@ -80,7 +80,10 @@ test('numeric menu defaults survive JavaScript serialization', async ({ page }) 
 });
 test('content review notes remain distinct from execution failures', async ({ page }) => {
   await page.goto('/courses/vehicle-dynamics/modules/13-map-engine-torque-through-gearing');
-  await expect(page.getByRole('note')).toContainText('Under revision');
+  await expect(page.getByRole('note')).toHaveCount(0);
+  await page.getByText('Lesson review and evidence', {exact:true}).click();
+  await expect(page.locator('.lesson-quality')).toContainText('Scoped model revision:');
+  await expect(page.locator('.lesson-quality')).toContainText('does not certify the whole course');
   await expect(page.locator('.js-plotly-plot')).toHaveCount(4);
   await expect(page.locator('.runtime-error')).toHaveCount(0);
   await page.goto('/courses/robotics-autonomy/modules/26-compose-rotations-and-poses-on-so-3-and-se-3');
@@ -435,6 +438,63 @@ test('Vehicle bicycle balance and damping availability are exposed in the actual
     await expect(page.locator('.compute-status:visible').first()).toContainText('Experiment synchronized');
     await page.locator('.control-panel:visible input[type=checkbox]').last().check();
     await expect(page.locator('.metric').filter({hasText:'Four slow-pole time constants'})).toContainText('Unavailable');
+    await expect(page.locator('.runtime-error')).toHaveCount(0);
+  }
+});
+
+test('Vehicle shift classifications are reachable through the actual controls', async ({ page }) => {
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.goto('/courses/vehicle-dynamics/modules/14-choose-shift-points');
+    await expect(page.locator('.compute-status:visible').first()).toContainText('Experiment synchronized');
+    const controls = page.locator('.control-panel:visible');
+    const sliders = controls.locator('input[type=range]');
+    const waitRun = async (action: () => Promise<unknown>) => {
+      const pending = page.waitForResponse(r => r.url().endsWith('/run') && r.request().method() === 'POST');
+      await action();
+      const response = await pending;
+      expect(response.ok()).toBe(true);
+      const body = await response.json();
+      await expect(page.locator('.compute-status:visible').first()).toContainText('Experiment synchronized');
+      return body;
+    };
+    const setRatio = async (index: number, value: string) => {
+      const slider = sliders.nth(index);
+      await expect(slider).toHaveAttribute('step', '0.001');
+      const body = await waitRun(() => slider.evaluate((element, next) => {
+        const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!;
+        setter.call(element, next);
+        element.dispatchEvent(new Event('input', { bubbles: true }));
+        element.dispatchEvent(new Event('change', { bubbles: true }));
+      }, value));
+      await expect(slider).toHaveValue(value);
+      return body;
+    };
+    await expect(page.locator('.metric').filter({ hasText: 'Shift decision' })).toContainText('Redline limited');
+    await setRatio(0, '2.09');
+    const crossed = await setRatio(1, '2.08');
+    expect(crossed.diagnostics.physical.crossover).toBe(1);
+    expect(crossed.diagnostics.physical.shift_rpm).toBeCloseTo(7399.3414738067, 6);
+    expect(Math.abs(crossed.diagnostics.physical.force_gap_n)).toBeLessThan(1e-10);
+    await sliders.nth(1).focus();
+    await waitRun(() => sliders.nth(1).press('ArrowRight'));
+    await expect(sliders.nth(1)).toHaveValue('2.081');
+    await waitRun(() => sliders.nth(1).press('ArrowLeft'));
+    await expect(sliders.nth(1)).toHaveValue('2.08');
+    const toggle = controls.locator('input[type=checkbox]').last();
+    const faulty = await waitRun(() => toggle.check());
+    expect(faulty.diagnostics.physical.redline_limited).toBe(1);
+    expect(faulty.diagnostics.physical.maximum_lookup_force_error_n).toBeGreaterThan(0);
+    const recovered = await waitRun(() => toggle.uncheck());
+    expect(recovered.diagnostics.physical.crossover).toBe(1);
+    for (const ratio of ['2.09', '2.4']) {
+      const invalid = await setRatio(1, ratio);
+      expect(invalid.diagnostics.physical.decision_available).toBe(0);
+      await expect(page.locator('.metric').filter({ hasText: 'Decision engine speed' })).toContainText('Unavailable');
+    }
+    const reset = await waitRun(() => controls.getByRole('button', { name: 'Reset parameters' }).click());
+    expect(reset.diagnostics.physical.redline_limited).toBe(1);
+    expect(reset.diagnostics.physical.force_gap_n).toBeCloseTo(-975.945908421696, 6);
     await expect(page.locator('.runtime-error')).toHaveCount(0);
   }
 });

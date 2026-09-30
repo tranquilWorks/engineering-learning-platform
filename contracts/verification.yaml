@@ -19,10 +19,10 @@ commands:
     scripts/verify-gnc-quality.py apps/api/tests/test_gnc_quality_revision.py scripts/verify-navigation-geometry-quality.py
     apps/api/tests/test_navigation_geometry_quality.py scripts/verify-robotics-dynamics-quality.py apps/api/tests/test_robotics_dynamics_quality.py
     scripts/verify-robotics-perception-quality.py apps/api/tests/test_robotics_perception_quality.py scripts/verify-vehicle-foundations-quality.py
-    apps/api/tests/test_vehicle_foundations_quality.py
+    apps/api/tests/test_vehicle_foundations_quality.py scripts/verify-vehicle-driveline-quality.py apps/api/tests/test_vehicle_driveline_quality.py
   scope:
   - git diff --check
-  - git diff --name-only 607c716993be14e7b782897ab054a7f8478f5dc0
+  - git diff --name-only 1a0041bd24de1168c03ff2bf2a656a6061cac0e3
   dsp-fidelity-p77-p84:
   - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B
     -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py
@@ -58,6 +58,11 @@ commands:
   - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_vehicle_foundations_quality.py apps/api/tests/test_vehicle_dynamics_course.py
   - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-vehicle-foundations-quality.py
   - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-vehicle-foundations-quality.py --base-url http://127.0.0.1:8776
-evidence_boundary: "Synthetic numerical/browser/container evidence only. Vehicle P01\u2013P12 are the active repair\
-  \ scope. Close only after independent and selected browser evidence; retain P13\u2013P16 and all non-DSP aggregate\
-  \ holds. No representative learner, manual screen-reader, MATLAB, hardware or production acceptance."
+  vehicle-driveline-quality-04:
+  - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_vehicle_driveline_quality.py apps/api/tests/test_vehicle_dynamics_course.py
+    apps/api/tests/test_vehicle_foundations_quality.py
+  - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-vehicle-driveline-quality.py
+  - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-vehicle-driveline-quality.py --base-url http://127.0.0.1:8777
+evidence_boundary: Synthetic numerical/browser/container evidence only. Active scope Vehicle P13–P16; selected findings
+  close only after independent and baked browser checks. All non-DSP aggregate holds remain blocked even with zero
+  named findings. No learner, manual screen-reader, MATLAB, hardware or production acceptance.

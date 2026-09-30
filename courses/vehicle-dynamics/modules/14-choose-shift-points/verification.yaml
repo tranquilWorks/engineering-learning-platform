@@ -4,7 +4,7 @@
   "provenance": "Python-first native",
   "reference": {
     "path": "../../reference_cases.py",
-    "origin": "separately formulated scalar analytic or bounded numerical oracle",
+    "origin": "Expanded torque polynomial with an independent closed-form crossing root and shifted-RPM evaluation",
     "imports_production": false,
     "consumes_production_output": false,
     "tolerance_abs": "1e-10",
@@ -16,11 +16,12 @@
       "post_shift_rpm",
       "force_gap_n",
       "invalid"
-    ]
+    ],
+    "tolerance_rel": "1e-10"
   },
-  "governing_relation": "shift at first rpm where T(rpm_next)*i_next >= T(rpm)*i_current, otherwise at redline",
-  "teaching_invariant": "At a valid force-crossover shift, adjacent-gear wheel forces are equal within grid resolution.",
-  "limitation": "The deterministic torque curve omits shift time, traction variation, gearbox losses by gear, and engine transients.",
+  "governing_relation": "Expanded torque polynomial with an independent closed-form crossing root and shifted-RPM evaluation",
+  "teaching_invariant": "A force crossover closes the actual adjacent-gear force gap; a redline fallback and invalid ratio ordering are separate outcomes.",
+  "limitation": "Equal or ascending ratios have no available upshift decision. Their curves are formal comparisons only. The empirical torque map omits shift time, traction and engine transients.",
   "scenarios": [
     {
       "name": "baseline",
@@ -44,7 +45,7 @@
       "name": "sweep_2",
       "inputs": {
         "current_gear_ratio": 2.188,
-        "next_gear_ratio": 2.4,
+        "next_gear_ratio": 2.187,
         "broken_mode": false
       },
       "status": "passed"
@@ -71,10 +72,15 @@
   "unperformed": [
     "MATLAB runtime comparison",
     "learner validation",
-    "browser accessibility",
     "measured vehicle data",
     "firmware/radio/bench/vehicle/track execution",
-    "physical HIL/hardware"
+    "physical HIL/hardware",
+    "manual screen-reader review"
+  ],
+  "revision_batch": "ELP-VEHICLE-DRIVELINE-QUALITY-04",
+  "historical_conversion": "Original conversion records, source pins and prerequisite identities remain historical and unchanged. This verifies the revised native teaching model, not measured vehicle or unchanged full-source equivalence.",
+  "full_mechanism_evidence": [
+    "evidence/expected-independent.json",
+    "evidence/actual-production.json"
   ]
 }
-

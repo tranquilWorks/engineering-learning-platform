@@ -2,9 +2,9 @@
   "schema_version": 1,
   "id": "15-model-braking-distance-and-heat",
   "number": 15,
-  "title": "Model Braking Distance and Heat",
-  "summary": "Couple tire-limited brake force to stopping distance, load transfer, kinetic energy, and bounded rotor heating.",
-  "guiding_question": "How do tire-limited braking force, load transfer, distance, and rotor heat connect?",
+  "title": "Close the Braking Work and Heat Budgets",
+  "summary": "Follow a constant-force stopping trajectory, enforce the tire-force cap, and account separately for rotor heat, other heat and temperature rise.",
+  "guiding_question": "Can a model predict the correct stopping distance while assigning more heat than the available kinetic energy?",
   "status": "implemented",
   "tags": [
     "vehicle-dynamics",
@@ -27,7 +27,7 @@
       "maximum": 55.0,
       "step": 1.0,
       "unit": "m/s",
-      "description": "Change the primary physical input while holding the secondary input fixed."
+      "description": "Set the positive speed at brake application; the plotted interval ends at the stop."
     },
     {
       "id": "requested_brake_force_n",
@@ -38,12 +38,12 @@
       "maximum": 18000.0,
       "step": 500.0,
       "unit": "N",
-      "description": "Change the secondary physical input while holding the primary input fixed."
+      "description": "Request a braking-force magnitude; the applied force remains capped at the declared tire capacity."
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Activate the named broken behavior",
+      "label": "Double-count heat allocation",
       "default": false
     }
   ],
@@ -55,8 +55,8 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Predict the sign, trend, conserved quantity, and validity boundary before changing one input.",
-      "reveal": "Use the governing relation, then verify one variable at a time."
+      "text": "At fixed initial speed, predict how stronger braking changes distance, time, total stopping work and final rotor temperature rise.",
+      "reveal": "Stronger force shortens the stop until the tire cap binds. Initial kinetic energy and the declared final heat partition remain unchanged at the same initial speed."
     },
     {
       "type": "controls",
@@ -100,6 +100,11 @@
       "tone": "success",
       "title": "Recovery",
       "source": "recovery"
+    },
+    {
+      "type": "markdown",
+      "title": "Course checkpoint",
+      "source": "assessment.md"
     }
   ]
 }

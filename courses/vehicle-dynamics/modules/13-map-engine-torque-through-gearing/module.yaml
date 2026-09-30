@@ -2,9 +2,9 @@
   "schema_version": 1,
   "id": "13-map-engine-torque-through-gearing",
   "number": 13,
-  "title": "Map Engine Torque through Gearing",
-  "summary": "Map engine torque and selected gear through final drive, efficiency, wheel radius, speed, rpm, and a tire-force cap.",
-  "guiding_question": "How do gearing, efficiency, and wheel radius turn engine torque into bounded wheel force?",
+  "title": "Account for Gearing, Traction and Delivered Power",
+  "summary": "Map a requested engine torque into wheel force, then distinguish traction-driven torque curtailment from drivetrain dissipation.",
+  "guiding_question": "When wheel force reaches its traction cap, where does the requested engine power go?",
   "status": "implemented",
   "tags": [
     "vehicle-dynamics",
@@ -21,29 +21,29 @@
     {
       "id": "engine_torque_n_m",
       "type": "slider",
-      "label": "Engine torque",
+      "label": "Requested engine torque",
       "default": 250.0,
       "minimum": 80.0,
       "maximum": 320.0,
       "step": 10.0,
       "unit": "N*m",
-      "description": "Change the primary physical input while holding the secondary input fixed."
+      "description": "Request shaft torque before the traction-limited torque curtailment."
     },
     {
       "id": "gear_ratio",
       "type": "slider",
-      "label": "Selected gear ratio",
+      "label": "Gear ratio",
       "default": 3.0,
       "minimum": 0.8,
       "maximum": 4.2,
       "step": 0.1,
       "unit": "ratio",
-      "description": "Change the secondary physical input while holding the primary input fixed."
+      "description": "Set the engine-to-transmission ratio at the fixed vehicle speed."
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Activate the named broken behavior",
+      "label": "Omit declared drivetrain loss",
       "default": false
     }
   ],
@@ -55,8 +55,8 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Predict the sign, trend, conserved quantity, and validity boundary before changing one input.",
-      "reveal": "Use the governing relation, then verify one variable at a time."
+      "text": "At 320 N·m and gear ratio 4.2, will all requested engine torque be delivered? Predict which power term represents curtailment and which represents dissipation.",
+      "reveal": "The traction cap reduces delivered engine torque. Only the declared drivetrain loss is dissipated in this model; the curtailed request was never delivered."
     },
     {
       "type": "controls",
@@ -100,6 +100,11 @@
       "tone": "success",
       "title": "Recovery",
       "source": "recovery"
+    },
+    {
+      "type": "markdown",
+      "title": "Course checkpoint",
+      "source": "assessment.md"
     }
   ]
 }

@@ -10,13 +10,17 @@ passed. Its historical evidence retains the exact image and screenshot hashes.
 | DSP/Radar | 84 | 84 checkpoints, ten cumulative portfolios and aggregate authored/software review verified |
 | Controls/GNC | 68 | P36/P38/P42/P43/P45–P51/P55–P57/P60–P62/P64–P68 repaired within declared models; zero listed findings; aggregate reassessment remains blocked |
 | Robotics/Autonomy | 69 | P25–P48, P52 and P68–P69 repaired within declared models; zero listed findings; aggregate reassessment remains blocked |
-| Vehicle Dynamics | 67 | P01–P12 and P61–P67 repaired within declared models; four P13–P16 findings and aggregate reassessment remain blocked |
+| Vehicle Dynamics | 67 | P01–P16 and P61–P67 repaired within declared models; zero listed findings; aggregate reassessment remains blocked |
 
-## Vehicle foundations revision
+## Final Vehicle powertrain, braking and aero revision
+
+Vehicle P13–P16 now execute delivered-power balance, classified shift decisions, stopping energy/heat and aerodynamic allocation with physical curves and four embedded Course checkpoints. Twenty independent cases, 32 runtime corners and eight selected baked browser pages passed; eight plot captures were inspected. The named register is Controls 0, Robotics 0, Vehicle 0. Final delivery passed 290 HTTP modules, 580 browser pages, 288 checkpoint checks and 174 interactions; all mandatory sequential gates passed. See [batch evidence](evidence/ELP-VEHICLE-DRIVELINE-QUALITY-04-2026-09-30.md). All non-DSP aggregate reviews remain blocked.
+
+## Historical Vehicle foundations revision
 
 Vehicle P01–P12 now display physical response curves, declared units, actual fault/recovery comparisons and twelve authored Course checkpoints. Sixty independent full-mechanism cases, all 96 runtime corners and 24 selected desktop/mobile checks passed; fifteen plot captures were inspected. The P07 steady bicycle model now closes both force and yaw-moment balance. Critical-speed and unstable damping outputs use explicit unavailable semantics.
 
-Four named findings remain, all Vehicle P13–P16. All non-DSP aggregate reviews remain blocked. Final delivery and mandatory sequential gates passed: 290 HTTP modules, 580 browser pages, 280 checkpoint checks, 166 interactions and 168 screenshots. See [batch evidence](evidence/ELP-VEHICLE-FOUNDATIONS-QUALITY-12-2026-09-30.md).
+At the foundations closeout, four named findings remained, all Vehicle P13–P16. All non-DSP aggregate reviews remain blocked. Final delivery and mandatory sequential gates passed: 290 HTTP modules, 580 browser pages, 280 checkpoint checks, 166 interactions and 168 screenshots. See [batch evidence](evidence/ELP-VEHICLE-FOUNDATIONS-QUALITY-12-2026-09-30.md).
 
 ## Historical Robotics perception and mapping revision
 
@@ -86,7 +90,7 @@ lessons have post-interaction drawn-curve assertions. PR53 records integration. 
 
 The browser's expanded lesson review identifies exactly what was checked.
 This is scoped synthetic-model evidence, not whole-course or learner acceptance.
-The remaining 16 findings are individually embedded and retained in the
+The additional findings and their scoped closures are retained in the
 [additional finding register](course-quality/additional-semantic-findings.md).
 No unlisted lesson is automatically certified. Controls, Robotics and Vehicle aggregate numerical, curriculum and capstone stages
 remain blocked. DSP passes the separate authored/synthetic aggregate review

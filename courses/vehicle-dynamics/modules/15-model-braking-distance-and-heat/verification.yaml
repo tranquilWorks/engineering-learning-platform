@@ -4,7 +4,7 @@
   "provenance": "Python-first native",
   "reference": {
     "path": "../../reference_cases.py",
-    "origin": "separately formulated scalar analytic or bounded numerical oracle",
+    "origin": "Kinetic-energy/work stop solution and fractional stopping-time energy trajectory",
     "imports_production": false,
     "consumes_production_output": false,
     "tolerance_abs": "1e-10",
@@ -18,11 +18,12 @@
       "front_load_n",
       "rear_load_n",
       "invalid"
-    ]
+    ],
+    "tolerance_rel": "1e-10"
   },
-  "governing_relation": "a=F_b/m; s=V0^2/(2*a); E_k=0.5*m*V0^2; DeltaT=eta_h*E_k/(m_rotor*c_p)",
-  "teaching_invariant": "Stopping work equals initial kinetic energy in the constant-force model.",
-  "limitation": "The stop uses constant friction and lumped rotor heat capacity; it omits cooling, pad fade, ABS cycling, and road grade.",
+  "governing_relation": "Kinetic-energy/work stop solution and fractional stopping-time energy trajectory",
+  "teaching_invariant": "Stopping work closes kinetic energy; rotor plus other heat must close the same budget independently.",
+  "limitation": "This constant-force stop omits cooling, brake bias, fade, ABS transients, drag and road grade. Temperature is a bulk rise, not an absolute rotor temperature.",
   "scenarios": [
     {
       "name": "baseline",
@@ -73,10 +74,15 @@
   "unperformed": [
     "MATLAB runtime comparison",
     "learner validation",
-    "browser accessibility",
     "measured vehicle data",
     "firmware/radio/bench/vehicle/track execution",
-    "physical HIL/hardware"
+    "physical HIL/hardware",
+    "manual screen-reader review"
+  ],
+  "revision_batch": "ELP-VEHICLE-DRIVELINE-QUALITY-04",
+  "historical_conversion": "Original conversion records, source pins and prerequisite identities remain historical and unchanged. This verifies the revised native teaching model, not measured vehicle or unchanged full-source equivalence.",
+  "full_mechanism_evidence": [
+    "evidence/expected-independent.json",
+    "evidence/actual-production.json"
   ]
 }
-

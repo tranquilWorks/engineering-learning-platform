@@ -244,7 +244,7 @@ def test_software_assessment_acceptance_does_not_promote_other_curricula_or_lear
                 for stage in ["numerically_verified", "curriculum_covered", "capstone_integrated"]
             )
     audit = read(ROOT / "docs/course-quality/lesson-audit.json")
-    assert sum(r["semantic_review"] == "blocked" for r in audit["lessons"]) == 4
+    assert sum(r["semantic_review"] == "blocked" for r in audit["lessons"]) == 0
 
 
 def test_checkpoint_named_controls_and_quantities_exist_in_retained_labs():
