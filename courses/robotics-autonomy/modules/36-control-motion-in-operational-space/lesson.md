@@ -1,87 +1,83 @@
-# Control Motion in Operational Space
+# Compute Operational Inertia and Dynamically Consistent Torque
 
-**Guiding question:** What assumptions and evidence make control motion in operational space defensible?
 
-Build a deterministic numerical laboratory to control motion in operational space, expose its governing relation, and diagnose a named counterexample before recovery. This module is a Python-first native design authorized by the reviewed issue-440 competency map. It is not a conversion of the pinned MATLAB-oriented source course, and it remains deterministic software evidence.
-
-## Why this lesson exists
-
-Robotics failures often cross representation boundaries: geometry into velocity, images into pose, estimates into maps, plans into commands, or contact forces into actuator effort. A result is defensible only when those boundaries carry explicit frames, signs, units, timing, constraints, and uncertainty. This lesson therefore connects one design decision to a governing equation, an observable response, a named failure, and an exact recovery.
-
-Before calculating, name the state, input, observation, and verdict. State which quantities are measured, which are modeled, and which are derived. A smooth curve is not evidence that a constraint was respected, an estimator was consistent, a path was collision free, or a contact remained passive.
 
 ## Model, derivation, and conventions
 
-- $$Lambda=(J M^-1 J^T)^-1$$
-- $$F=Lambda a_des+mu+p$$
-- $$tau=J^T F+N^T tau_0$$
+`Lambda=(J M^-1 J^T)^-1; Jbar=M^-1 J^T Lambda`
 
-Derive the first relation from the physical, geometric, probabilistic, or algorithmic definition. Use the second relation to propagate the decision into a measurable consequence. Use the third as an invariant, feasibility condition, or audit relation. Keep every coordinate frame and sampling instant attached until the final scalar metric. The experiment evaluates these relations directly with bounded NumPy arrays; it does not call a remote solver or hide the mechanism behind a black-box robotics stack.
+`N_tau=I-J^T Jbar^T; tau_secondary=N_tau tau_raw`
 
-The three retained signature quantities are:
+`xddot=J M^-1(tau_primary+tau_secondary)`
 
-- `task_acceleration_error` (m/s^2)
-- `null_torque_leakage` (N*m)
-- `effective_inertia` (kg)
+A planar three-revolute-joint arm has link lengths [1,0.8,0.6] m and a two-dimensional endpoint position task. Its fixed pose is [0.4,-1.2/sqrt(c),0.8/sqrt(c)] rad, where c is the geometry slider. The slider does not directly set a matrix condition number; the actual Jacobian condition is computed from that pose. The mass slider scales link masses [1,0.8,0.6] kg and adds 0.03 times the same scale to each joint's rotor inertia in kg m².
 
-Carry units through each substitution. Dimensionless ranks, probabilities, ratios, and flags are labeled `1` or `count`; physical displacement, time, force, torque, energy, velocity, and pixel quantities retain their named units. If a sum combines unlike units or a transform maps a vector without a frame convention, stop before interpreting a number.
+Each link mass is concentrated at its midpoint. Cartesian centre-of-mass Jacobians give M as the sum of mass times J_com transpose J_com, plus the positive rotor-inertia diagonal. This construction gives a symmetric positive-definite joint inertia with genuine coupling. The endpoint Jacobian J has two rows and three columns. The task inertia Lambda is the inverse of J M inverse J transpose, expressed in kilograms for this translational task. The third metric is its largest eigenvalue, so the direction with greatest apparent mass determines it.
+
+This is an instantaneous acceleration experiment at zero joint velocity. Consequently the Jdot*qdot term is zero. Gravity is assumed exactly compensated outside the incremental calculation. Desired task acceleration is [0.4,-0.2] m/s². The primary torque is J transpose Lambda times that desired acceleration. Substituting into the zero-velocity plant gives the requested task acceleration. The lesson makes no claim about maintaining that result through a moving trajectory without updating the model.
+
+A raw secondary torque [0.5,-0.3,0.7] N m is projected with N_tau=I-J transpose Jbar transpose. This torque projector is related to the dynamically consistent inverse, not simply the Euclidean velocity null projector. Its decisive property is J M inverse N_tau=0. The secondary torque may have a nonzero Euclidean task projection yet produce zero task acceleration after the physical inertia acts. Conversely, a torque satisfying J*tau=0 need not satisfy J M inverse tau=0.
+
+The response plot varies the fraction of secondary torque and shows actual task acceleration; compare it with the specified desired acceleration. The mechanism plot varies a unit task direction and computes directional inertia. The first two metrics measure total acceleration error and secondary acceleration leakage; both have units m/s², not velocity or force. A small numerical leakage checks the stated local algebra. It does not demonstrate posture convergence, collision avoidance, joint limits or robustness to a wrong inertia model.
+
+Broken mode substitutes I-J pseudoinverse J as the torque projector. That familiar matrix correctly suppresses Euclidean task velocity when used on a joint-velocity command, but torque first passes through M inverse. The resulting acceleration leakage is calculated from the actual torque and physical inertia, which makes the distinction observable.
 
 ## Predict before running
 
-Operational-space control must use dynamically consistent task inertia and a null torque that does not disturb the commanded task. Predict the sign and direction of all three signature changes before moving a slider. Identify the equation term responsible and one quantity that should remain invariant. This written prediction is the comparison point; post-hoc description is not the same as a test.
+Predict whether a torque in the Euclidean null space of J necessarily produces zero task acceleration. Record the expected direction of change and an invariant before reading the computed result. State a condition under which the fault could be hidden, rather than assuming every faulty setting must look worse.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read the three signature metrics with units.
-2. Inspect the response plot for task-level behavior, then the mechanism plot for the constraint, residual, energy, conditioning, or decision that explains it.
-3. Reproduce one signature quantity from the displayed equations to one or two significant figures.
-4. Check a limiting case before accepting the baseline.
-5. Save the baseline parameters and signature so recovery can be tested exactly.
+Reset controls and disable the named fault. Use Link mass scale = 2.0 kg; Pose straightness parameter = 5.0 1. Read the response curve, then connect it to the mechanism curve using the governing equations.
+
+Resulting task acceleration plots Acceleration (m/s²) against Torque fraction (1). Its series are Actual x, Actual y. Directional task inertia plots Inertia (kg) against Task direction (rad). Its series are Inertia.
+
+The default record is Actual task acceleration error: 5.55112e-16 m/s^2; Secondary acceleration leakage: 3.65494e-16 m/s^2; Largest task inertia eigenvalue: 4.97711 kg. These computed values are a worked example for these settings, not acceptance limits for every experiment. Keep parameter values and units beside the result. A near-zero residual has meaning only in relation to the stated model and numerical precision.
 
 ## Two one-variable sweeps
 
-1. Hold `jacobian_condition` at `5.0 1` and sweep `task_inertia_kg` from `0.3` through `2.0` to `8.0 kg`.
-2. Restore `task_inertia_kg` to `2.0 kg` and sweep `jacobian_condition` from `1.0` through `5.0` to `30.0 1`.
+1. Increase link mass scale at fixed geometry. The operational inertia scales with mass. The same raw secondary torque has less acceleration effect as mass grows, while correct primary compensation still requests the selected task acceleration.
 
-Change one variable at a time. For each endpoint, record the predicted direction, actual direction, metric delta, and the mechanism-plot feature that supports causality. If the result reverses direction, check for a branch, active constraint, singularity, gate, saturation, or feasibility transition rather than smoothing it away.
+2. Increase the straightness parameter at fixed mass. Compare actual conditioning, directional inertia and faulty secondary leakage. Explain the result through J and M rather than treating the slider value as measured conditioning.
+
+Return to defaults between sweeps. Hold the other control fixed and record both a changing output and an expected invariant. Explain the physical or numerical path from the selected input to the observed response.
 
 ## Intentionally broken case
 
-Broken mode substitutes identity inertia and an algebraic null projector near a conditioned Jacobian. Broken mode is a falsifying counterexample, not a recommended alternative. Explain which assumption is violated before describing the visual symptom. Then locate the first intermediate quantity that departs from the baseline invariant; downstream task error alone rarely identifies the cause.
+The fault projects secondary torque with a Euclidean velocity-null projector. It preserves the raw torque, physical inertia and primary task command, then computes the resulting acceleration.
+
+Run the same parameter values with the fault enabled. Compare complete curves as well as summary metrics. Identify the actual operation that changed and calculate why it affects the measured result. A changed warning label is not numerical evidence.
 
 ## Recovery
 
-Restore dynamic consistency, regularize the task inertia, and measure null-space leakage before adding posture objectives. Recovery is complete only when the original default inputs and diagnostic signature return within the independent-reference tolerance. A different setting that happens to look better is mitigation, not recovery. Preserve the fault, detection, decision, and recovery sequence as separate evidence.
+Restore the dynamically consistent torque projector and compare acceleration with and without the secondary torque. Check J M inverse tau_secondary directly.
+
+Repeat a saved nominal setting and confirm that its values and curves return. Recovery must restore the governing mechanism and its evidence, not merely clear a warning.
 
 ## Alternative and limiting cases
 
-- At identity unit inertia and Jacobian, operational and joint acceleration commands coincide.
-- At singularity, unregularized task inertia becomes ill-conditioned.
-
-Use one limit as a hand calculation and one as a numerical sweep. Limits reveal whether a formula is continuous, singular, or branch-dependent. An undefined limit must be reported as such; clipping it into a convenient finite value changes the model.
+At zero secondary fraction both modes reduce to the same primary task command. This is a local zero-velocity calculation with exact gravity compensation. A moving task requires Jdot*qdot, updated geometry and an actual trajectory controller.
 
 ## Independent evidence and MATLAB-style design boundary
 
-The design was reasoned from the displayed equations in the same model-first workflow normally used before a MATLAB/Simulink implementation, but the delivered implementation is Python/NumPy only. Expected signatures are stored by `expansion_reference_cases.py`, which imports no production experiment, consumes no production result, and perturbs no production value. Production signatures are retained separately for baseline, both one-variable sweeps, broken, and exact recovery scenarios.
+The reference differentiates link-centre and endpoint coordinates with complex steps, then solves a constrained block system for operational inertia and null acceleration. Its faulty comparison uses a cross-product null basis instead of the production pseudoinverse projector.
 
-Agreement supports only the displayed model, input set, fields, units, and tolerances. No licensed MATLAB runtime was executed, so the evidence makes no MATLAB numerical-parity claim. It also does not establish global optimality, field robustness, physical calibration, hardware timing, safety certification, or production readiness.
+Five retained cases cover baseline, two single-control sweeps, the named fault and recovery. Expected values come from the independent formulation; actual values come from the executable lesson. Absolute and relative comparison tolerances remain 1e-8. Full-state or geometric checks supplement these three-number signatures, which alone cannot establish correctness. MATLAB has not been executed and no MATLAB equivalence is claimed. Browser and container evidence is recorded separately. Agreement between synthetic implementations does not establish empirical model validity.
 
 ## Engineering review checklist
 
-- Verify equation dimensions, coordinate frames, signs, timestamp direction, and branch conventions.
-- Separate feasibility or safety from objective value and visual smoothness.
-- Inspect conditioning, covariance, clearance, saturation, energy, or data age when relevant.
-- Confirm the broken case changes the named mechanism and the recovery restores the baseline signature.
-- State one assumption whose violation would invalidate the result even if every test here passed.
+Reconstruct one displayed quantity from the actual state or geometric arrays. Check coordinate ordering, signs and units before comparing numbers. Explain which assumption each check constrains, and identify a defect that another check could miss. Preserve the baseline, one controlled sweep, fault and recovery as a reproducible evidence sequence. State the model boundary before making a broader engineering recommendation.
 
 ## Common mistakes
 
-- Treating a local or finite-sample result as a global guarantee.
-- Changing both controls and assigning causality to only one.
-- Accepting endpoint checks where swept geometry, intermediate dynamics, or data freshness matter.
-- Confusing a low residual with observability, correct association, feasibility, or physical truth.
-- Claiming learner effectiveness, MATLAB parity, physical HIL, hardware safety, or certification from software fixtures.
+Do not infer correctness from a changing headline alone. At zero secondary fraction both modes reduce to the same primary task command.
+
+Do not change both sliders at once and attribute the result to one cause. Separate a model assumption from a measured property, and a finite-horizon observation from a universal guarantee. Floating-point roundoff is not a physical effect; equally, an attractive plot is not a substitute for the governing calculation.
 
 ## Focused check and teach-back
 
-Calculate one baseline signature value, show one dimensional check, predict both sweeps, reproduce the named failure, and demonstrate exact recovery. Then teach the lesson back without starting from the plots: state the convention, derive the governing relationship, explain the invariant, identify the practical failure, and name the evidence boundary. Finish by naming the prerequisite module and the next mapped module that consumes this artifact.
+Why is J times secondary torque equal to zero the wrong condition for preserving task acceleration?
+
+Answer rationale: Torque is converted to joint acceleration through M inverse. At zero velocity the task effect is J M inverse tau_secondary, so a torque projector must cancel that quantity. The Euclidean null condition applies directly to joint velocity, not arbitrary torque.
+
+Use the embedded Course checkpoint to explain your default, sweep, fault and recovery records to a colleague. Include one calculation with units, the causal diagnosis and an explicit untested boundary. This is a self-assessment; no learner score is stored.

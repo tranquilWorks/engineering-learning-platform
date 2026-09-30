@@ -1,10 +1,10 @@
 schema_version: 1
 id: 41-project-3d-points-with-a-pinhole-camera
 number: 41
-title: Project 3D Points with a Pinhole Camera
-summary: Build a deterministic numerical laboratory to project 3d points with a pinhole camera, expose its governing
-  relation, and diagnose a named counterexample before recovery.
-guiding_question: What assumptions and evidence make project 3d points with a pinhole camera defensible?
+title: Transform and Project Points Through a Pinhole Camera
+summary: 70 of 121 selected points are accepted; 0 accepted rays violate the physical camera near plane. A
+  zero pixel metric with no accepted rays means unavailable projection, not perfect accuracy.
+guiding_question: Why can the faulty projection report zero invalid accepted rays and still be wrong?
 status: implemented
 tags:
 - robotics-autonomy
@@ -26,7 +26,7 @@ controls:
   unit: px
 - id: point_depth_m
   type: slider
-  label: Point depth
+  label: World cloud depth offset
   default: 3.0
   minimum: 0.3
   maximum: 12.0
@@ -41,9 +41,11 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Perspective projection is defined only for positive camera-frame depth and its pixel sensitivity grows inversely
-    with depth.
-  reveal: Use the equations, units, and mechanism plot to test the prediction.
+  text: Predict why a positive world height is insufficient to decide whether a point lies in front of a rotated
+    camera.
+  reveal: All points may genuinely lie in front of the camera while the omitted translation and rotation still
+    change their ray directions and pixels. Visibility is only one condition; coordinate transformation and
+    reprojection agreement must also be checked.
 - type: controls
   title: Live model controls
 - type: metrics
@@ -64,3 +66,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

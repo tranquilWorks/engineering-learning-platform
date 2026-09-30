@@ -146,6 +146,42 @@ REPAIRED[("robotics-autonomy", 28)] = (
 REPAIRED[("robotics-autonomy", 29)] = (
     "Executed separate damped task motion from exact null-space motion. The reference derives the Jacobian by complex-step kinematics, computes the primary command with SVD and constructs the one-dimensional null basis from the cross product of the two Jacobian rows. It does not use the production pseudoinverse projector. Embedded checkpoint; selected synthetic numerical and browser evidence. Aggregate course review remains separate."
 )
+REPAIRED[("robotics-autonomy", 30)] = (
+    "Executed map planar end-effector force to joint torque. The reference differentiates forward kinematics using complex steps, then independently forms torque and the two scalar powers. It retains Jacobians and torque vectors for full-sweep comparisons. Embedded checkpoint with selected synthetic numerical and browser evidence. At zero force both torque maps produce zero, so the fault is unobservable through power. At zero length the ideal geometric torques vanish; the interactive length range remains positive. This is quasistatic mapping, with no inertia, friction or actuator model. Aggregate course review remains separate."
+)
+REPAIRED[("robotics-autonomy", 31)] = (
+    "Executed construct manipulator inertia, coriolis and gravity terms. The reference builds mass from Cartesian point-mass Jacobians, obtains mass and potential derivatives by complex steps, and constructs C from Christoffel symbols. It checks M, C, Mdot and gravity separately. Embedded checkpoint with selected synthetic numerical and browser evidence. At elbow zero or pi the omitted sine coupling vanishes, so this fault can be locally hidden. The point-mass model excludes distributed link inertia, friction, elasticity and motor dynamics; it is an instantaneous identity check, not a trajectory experiment. Aggregate course review remains separate."
+)
+REPAIRED[("robotics-autonomy", 32)] = (
+    "Executed identify payload and damping from synthetic joint torque. The reference constructs the multisine through a frequency/phase array and solves the regularized normal equations, independently of the production augmented least-squares factorization. It retains fitted parameters, regressors and held-out residuals. Embedded checkpoint with selected synthetic numerical and browser evidence. Stationary samples cannot identify viscous damping because velocity is zero. The ridge solution depends on the stated units and prior; real identification also requires sensor calibration, suitable noise assumptions and a model of unmodeled dynamics. Aggregate course review remains separate."
+)
+REPAIRED[("robotics-autonomy", 33)] = (
+    "Executed time-scale two joint cubics under speed and acceleration limits. The reference constructs polynomial objects, differentiates them, and evaluates their extrema and sampled trajectories independently of the production explicit cubic formulas. Embedded checkpoint with selected synthetic numerical and browser evidence. At zero displacement the trajectory is stationary; the interactive displacement range remains positive to keep a nonzero duration. A short move or generous limits can make one second feasible, so the named fault does not guarantee a violation at every setting. Endpoint acceleration is nonzero and torque limits are absent. Aggregate course review remains separate."
+)
+REPAIRED[("robotics-autonomy", 34)] = (
+    "Executed compare joint and cartesian kinematic feedback. The reference differentiates forward kinematics by complex steps, uses an explicit two-by-two inverse, and integrates a separate Cartesian-controller state with RK45. Production uses an analytic Jacobian, pseudoinverse and DOP853. Embedded checkpoint with selected synthetic numerical and browser evidence. At zero Cartesian error both mappings command zero motion, so a settled target does not distinguish them. The experiment assumes ideal velocity servos, a fixed local goal branch and no collision or torque constraints. Near singularities, rate clipping changes the nominal exponential error law. Aggregate course review remains separate."
+)
+REPAIRED[("robotics-autonomy", 35)] = (
+    "Executed integrate computed torque with gravity error and saturation. The reference computes inverse dynamics from Cartesian point accelerations and Newton-Euler force moments. It obtains inertia columns through unit accelerations and integrates with RK45, independently of the production analytic M/C/g formulation and DOP853 integration. Embedded checkpoint with selected synthetic numerical and browser evidence. At zero mismatch and without saturation, computed torque yields the derived linear error equation. At a pose with zero gravity contribution the sign fault is locally hidden; along a trajectory it can reappear. Torque clipping invalidates exact cancellation even with an otherwise correct model. Aggregate course review remains separate."
+)
+REPAIRED[("robotics-autonomy", 36)] = (
+    "Executed compute operational inertia and dynamically consistent torque. The reference differentiates link-centre and endpoint coordinates with complex steps, then solves a constrained block system for operational inertia and null acceleration. Its faulty comparison uses a cross-product null basis instead of the production pseudoinverse projector. Embedded checkpoint with selected synthetic numerical and browser evidence. At zero secondary fraction both modes reduce to the same primary task command. This is a local zero-velocity calculation with exact gravity compensation. A moving task requires Jdot*qdot, updated geometry and an actual trajectory controller. Aggregate course review remains separate."
+)
+REPAIRED[("robotics-autonomy", 37)] = (
+    "Executed compare impedance and ideal admittance contact transients. The reference advances both state vectors using the exact two-by-two matrix exponential. Production integrates the differential equations with DOP853. Their complete state, energy and contact-force traces are compared. Embedded checkpoint with selected synthetic numerical and browser evidence. At zero damping the ideal system conserves energy and generally does not settle. The maintained-preload linearization and ideal position servo exclude contact loss, actuator limits and servo bandwidth. A censored 0.4 s result is not a measured settling time. Aggregate course review remains separate."
+)
+REPAIRED[("robotics-autonomy", 38)] = (
+    "Executed regulate tangential motion and normal contact force. The reference integrates normal and tangential surface coordinates with RK45, including the unilateral force law. Production integrates Cartesian position with DOP853; the resulting positions, velocities and forces are compared after an independent basis transformation. Embedded checkpoint with selected synthetic numerical and browser evidence. At zero surface angle world vertical and the physical normal coincide, so both modes agree. At zero force goal the unilateral contact may open in faulty mode. This ideal velocity-servo example omits impacts, robot inertia, sensor delay and actuator constraints. Aggregate course review remains separate."
+)
+REPAIRED[("robotics-autonomy", 39)] = (
+    "Executed account for delayed port work with a causal energy limiter. The reference uses cumulative candidate work and its running maximum to derive the minimal reflection correction that keeps the balance nonnegative. This global mathematical identity independently checks the production causal sample loop. Embedded checkpoint with selected synthetic numerical and browser evidence. At a zero-velocity sample the port work is zero regardless of finite force. This is a prescribed-motion, sampled-work demonstration with ideal force application. It does not establish continuous-time passivity, a closed-loop delay margin or stability of a physical haptic system. Aggregate course review remains separate."
+)
+REPAIRED[("robotics-autonomy", 40)] = (
+    "Executed swing up and capture a reaction-wheel pendulum. The reference integrates the coupled mass matrix in body and relative-wheel coordinates with RK45 and an independently expressed upright-angle event. Production integrates eliminated equations in absolute-wheel coordinates with DOP853. State conversion and body-energy traces are compared. Embedded checkpoint with selected synthetic numerical and browser evidence. Exactly downward at zero rate, this energy law cannot initiate motion without a perturbation. No capture within twelve seconds is censored evidence, not a proof of impossibility. Wheel speed and position are unregulated and unlimited; successful body capture is not hardware qualification. Aggregate course review remains separate."
+)
+REPAIRED[("robotics-autonomy", 41)] = (
+    "Executed transform and project points through a pinhole camera. The reference computes rotated camera components explicitly and derives projection and sensitivity from ray ratios, independently of the production matrix transform. It compares the entire camera cloud, accepted mask and projected pixels. Embedded checkpoint with selected synthetic numerical and browser evidence. At an empty accepted set, zero-valued projection summaries are unavailable sentinels, not visible on-axis points. A far cloud may hide the faulty visibility count while retaining wrong pixels. The model excludes lens distortion, occlusion, image bounds, calibration uncertainty and camera noise. Aggregate course review remains separate."
+)
 KNOWN = {}
 
 # Additional findings from the wider direct model review; separate repair scopes.
@@ -153,42 +189,6 @@ for _number in range(1, 17):
     KNOWN[("vehicle-dynamics", _number)] = (
         "The main response chart joins signature quantities with different physical units on one generic SI axis; sweeps also lack a named response/unit. Replace these with physically meaningful curves or separately labeled quantities and specific limiting-case checks."
     )
-KNOWN[("robotics-autonomy", 30)] = (
-    "The virtual-power error is assigned from force times lever arm, which has torque units; no joint/Cartesian velocity power comparison is executed."
-)
-KNOWN[("robotics-autonomy", 31)] = (
-    "Inertia eigenvalue and skew-identity error are assigned without constructing inertia and Coriolis matrices."
-)
-KNOWN[("robotics-autonomy", 32)] = (
-    "Payload error, regressor conditioning and inverse-dynamics residual are formulas of the guess and excitation rather than an identified model and held-out torque calculation."
-)
-KNOWN[("robotics-autonomy", 33)] = (
-    "The cubic trajectory duration omits its 1.5 peak-velocity factor, while the nominal limit-violation metric is forced to zero and plotted acceleration omits time scaling."
-)
-KNOWN[("robotics-autonomy", 34)] = (
-    "Joint/task tracking and torque metrics use condition-number formulas rather than executing the stated kinematics and feedback loops."
-)
-KNOWN[("robotics-autonomy", 35)] = (
-    "Computed-torque tracking and gravity residuals are algebraic surrogates rather than an integrated robot model with model-based compensation."
-)
-KNOWN[("robotics-autonomy", 36)] = (
-    "Operational-space inertia and residuals are assigned without forming the joint inertia, Jacobian or operational-space dynamics."
-)
-KNOWN[("robotics-autonomy", 37)] = (
-    "Contact responses and settling metrics use exponential surrogates instead of the declared impedance/admittance differential equations."
-)
-KNOWN[("robotics-autonomy", 38)] = (
-    "Hybrid motion/force residuals and projector error are assigned without constructing the surface-frame projectors or executing feedback."
-)
-KNOWN[("robotics-autonomy", 39)] = (
-    "Passivity energy and recovery are formulas of delay and force limit; no delayed work/energy trace is executed."
-)
-KNOWN[("robotics-autonomy", 40)] = (
-    "Swing-up time and balance error are algebraic surrogates; no underactuated dynamics, energy controller or balancing transition is executed."
-)
-KNOWN[("robotics-autonomy", 41)] = (
-    "Pinhole projection executes, but the near-plane violation metric is a fixed mode flag rather than a test of projected point depth."
-)
 KNOWN[("robotics-autonomy", 42)] = (
     "Calibration errors are formulas of view count and distortion; no synthetic calibration views are fitted or independently reprojected."
 )

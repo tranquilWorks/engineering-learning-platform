@@ -83,3 +83,10 @@ The separate DSP aggregate review closes its declared authored curriculum and
 synthetic numerical/pulsed-capstone scope. Controls, Robotics and Vehicle remain
 blocked: 36 named findings remain in Robotics/Vehicle, and Controls requires a separate aggregate reassessment despite zero listed findings. No course has representative-learner validation.
 See course-caliber-status.yaml and the exact aggregate evidence.
+
+
+## Robotics dynamics scope — 2026-09-29
+
+Control PR569 authorized Robotics P30-P41. These twelve scoped repairs add real mechanisms, independent calculations and embedded formative checkpoints. Eight named Robotics findings remain (P42-P48/P52), alongside sixteen Vehicle findings. All non-DSP aggregate numerical, curriculum and capstone reviews remain blocked. Completing the named register is not aggregate acceptance. The active batch evidence records the required delivery/gate status.
+
+The Robotics dynamics batch completed full delivery and mandatory sequential gates. Its verified development preview is port 8774; exact image, input hashes, results and remaining acceptance boundaries are in `docs/course-quality/robotics-dynamics-verification-summary.json`. This scoped result does not promote an aggregate course stage.

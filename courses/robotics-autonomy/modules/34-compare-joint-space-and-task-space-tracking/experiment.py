@@ -1,100 +1,198 @@
 from __future__ import annotations
 
-from typing import Any
-
 import numpy as np
 
-ITEM_NUMBER = 34
-BROKEN_TEXT = 'Broken mode treats task error as joint error and omits the Jacobian transpose.'
-RECOVERY_TEXT = 'Choose the controlled coordinate explicitly, restore the correct map, and inspect task error together with joint effort.'
 
-
-def _trace(name: str, x: Any, y: Any, x_quantity: str, x_unit: str,
-           y_quantity: str, y_unit: str) -> dict[str, Any]:
+def trace(name, x, y, x_quantity, x_unit, y_quantity, y_unit):
+    x, y = np.asarray(x, float), np.asarray(y, float)
     return {
-        "type": "scattergl", "mode": "lines", "name": name,
-        "x": np.asarray(x, dtype=float), "y": np.asarray(y, dtype=float),
-        "meta": {"x_quantity": x_quantity, "x_unit": x_unit,
-                 "y_quantity": y_quantity, "y_unit": y_unit},
+        "type": "scatter",
+        "mode": "lines+markers" if np.ptp(x) == 0 else "lines",
+        "name": name,
+        "x": x,
+        "y": y,
+        "meta": {
+            "x_quantity": x_quantity,
+            "x_unit": x_unit,
+            "y_quantity": y_quantity,
+            "y_unit": y_unit,
+        },
     }
 
 
-def _plot(title: str, x_title: str, y_title: str,
-          traces: list[dict[str, Any]]) -> dict[str, Any]:
+def plot(title, x, y, traces):
     return {
         "data": traces,
         "layout": {
             "title": {"text": title, "x": 0.02},
-            "xaxis": {"title": {"text": x_title}},
-            "yaxis": {"title": {"text": y_title}},
-            "legend": {"orientation": "h"},
-            "margin": {"l": 72, "r": 36, "t": 62, "b": 62},
-            "hovermode": "closest", "uirevision": "keep-view",
+            "xaxis": {"title": {"text": x, "standoff": 16}},
+            "yaxis": {"title": {"text": y, "standoff": 16}},
+            "legend": {
+                "orientation": "h",
+                "y": -0.3,
+                "entrywidth": 0.5,
+                "entrywidthmode": "fraction",
+            },
+            "margin": {"l": 72, "r": 25, "t": 65, "b": 115},
+            "uirevision": "keep-view",
         },
         "config": {"responsive": True, "displaylogo": False},
     }
 
 
-def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
+def finish(number, broken, diagnostics, metrics, plots, observation, fault, recovery):
+    diagnostics.update(
+        item_number=number,
+        broken_active=broken,
+        software_only=True,
+        signature=[float(m[2]) for m in metrics],
+    )
     return {
         "metrics": [
-            {"id": key, "label": label, "value": float(value), "unit": unit,
-              "emphasis": "primary" if index == 0 else "normal"}
-            for index, (key, label, value, unit) in enumerate(model["metrics"])
+            {
+                "id": key,
+                "label": label,
+                "value": float(value),
+                "unit": unit,
+                "emphasis": "primary" if i == 0 else "normal",
+            }
+            for i, (key, label, value, unit) in enumerate(metrics)
         ],
-        "plots": model["plots"],
+        "plots": plots,
+        "diagnostics": diagnostics,
         "explanations": {
-            "observation": model["observation"],
-            "broken": BROKEN_TEXT,
-            "recovery": RECOVERY_TEXT,
-        },
-        "diagnostics": {
-            "item_number": ITEM_NUMBER,
-            "broken_active": bool(broken),
-            "sample_count": int(model["sample_count"]),
-            "signature": [float(value) for value in model["signature"]],
-            "software_only": True,
+            "observation": observation,
+            "broken": fault,
+            "recovery": recovery,
         },
     }
 
-def _model(p: dict[str, Any], broken: bool) -> dict[str, Any]:
-    a = float(p["jacobian_condition"])
-    b = float(p["joint_gain_per_s"])
-    if broken:
-        a, b = (35.0, 0.4)
-    x = np.linspace(0.0, 1.0, 181)
-    signature = [float(value) for value in [1/(1+b), a/(1+b)*(.3 if broken else .03), b*a*(1.5 if broken else .2)]]
-    y1 = np.asarray(np.exp(-b*x), dtype=float)
-    y2 = np.asarray(np.zeros_like(x), dtype=float)
-    z1 = np.asarray(a*np.exp(-b*x), dtype=float)
-    z2 = np.asarray(np.ones_like(x), dtype=float)
-    if y1.ndim == 0:
-        y1 = np.full_like(x, float(y1))
-    if y2.ndim == 0:
-        y2 = np.full_like(x, float(y2))
-    if z1.ndim == 0:
-        z1 = np.full_like(x, float(z1))
-    if z2.ndim == 0:
-        z2 = np.full_like(x, float(z2))
-    return {
-        "signature": signature,
-        "sample_count": len(x),
-        "metrics": [("joint_error", "Joint Error", signature[0], "rad"), ("task_error", "Task Error", signature[1], "m"), ("control_effort", "Control Effort", signature[2], "N*m")],
-        "plots": {
-            "response": _plot("Joint-space tracking error", "Time fraction (1)", "Joint error (rad)", [
-                _trace("Model response", x, y1, "Time fraction", "1", "Joint error", "rad"),
-                _trace("Reference or bound", x, y2, "Time fraction", "1", "Joint error", "rad"),
-            ]),
-            "mechanism": _plot("Task-space error amplification", "Time fraction (1)", "Cartesian error (m)", [
-                _trace("Governing mechanism", x, z1, "Time fraction", "1", "Cartesian error", "m"),
-                _trace("Requirement or reference", x, z2, "Time fraction", "1", "Cartesian error", "m"),
-            ]),
-        },
-        "observation": 'Joint and task tracking optimize different errors; Jacobian conditioning determines how joint error maps into Cartesian error and effort.',
+
+from scipy.integrate import solve_ivp
+
+
+def kinematics(q):
+    a, b = q
+    c = a + b
+    return np.array(
+        [np.cos(a) + 0.7 * np.cos(c), np.sin(a) + 0.7 * np.sin(c)]
+    ), np.array(
+        [
+            [-np.sin(a) - 0.7 * np.sin(c), -0.7 * np.sin(c)],
+            [np.cos(a) + 0.7 * np.cos(c), 0.7 * np.cos(c)],
+        ]
+    )
+
+
+def run(p):
+    geometry = float(p["jacobian_condition"])
+    gain = float(p["joint_gain_per_s"])
+    broken = bool(p["broken_mode"])
+    goal = np.array([0.4, -1.2 / np.sqrt(geometry)])
+    desired, Jgoal = kinematics(goal)
+    initial = goal + np.array([0.18, -0.12])
+    t = np.linspace(0, 4, 121)
+
+    def commands(state):
+        joint = gain * (goal - state[:2])
+        position, J = kinematics(state[2:])
+        e = gain * (desired - position)
+        task = (J.T if broken else np.linalg.pinv(J, rcond=1e-10)) @ e
+        return np.r_[np.clip(joint, -2, 2), np.clip(task, -2, 2)]
+
+    solution = solve_ivp(
+        lambda _, y: commands(y),
+        (0, 4),
+        np.r_[initial, initial],
+        t_eval=t,
+        method="DOP853",
+        rtol=2e-11,
+        atol=2e-12,
+        max_step=0.04,
+    )
+    assert solution.success
+    states = solution.y.T
+    velocities = np.array([commands(y) for y in states])
+    joint_error = np.linalg.norm(states[:, :2] - goal, axis=1)
+    positions = np.array([[kinematics(y[:2])[0], kinematics(y[2:])[0]] for y in states])
+    task_errors = np.linalg.norm(positions - desired, axis=2)
+    metric = [
+        (
+            "joint_error",
+            "Task-controller terminal joint error",
+            np.linalg.norm(states[-1, 2:] - goal),
+            "rad",
+        ),
+        (
+            "task_error",
+            "Task-controller terminal Cartesian error",
+            task_errors[-1, 1],
+            "m",
+        ),
+        (
+            "control_effort",
+            "Peak applied task joint speed",
+            max(abs(velocities[:, 2:]).ravel()),
+            "rad/s",
+        ),
+    ]
+    plots = {
+        "response": plot(
+            "Joint tracking errors",
+            "Time (s)",
+            "Joint error (rad)",
+            [
+                trace(
+                    "Joint servo",
+                    t,
+                    joint_error,
+                    "Time",
+                    "s",
+                    "Joint error",
+                    "rad",
+                ),
+                trace(
+                    "Task servo",
+                    t,
+                    np.linalg.norm(states[:, 2:] - goal, axis=1),
+                    "Time",
+                    "s",
+                    "Joint error",
+                    "rad",
+                ),
+            ],
+        ),
+        "mechanism": plot(
+            "Cartesian tracking errors",
+            "Time (s)",
+            "Position error (m)",
+            [
+                trace(name, t, task_errors[:, i], "Time", "s", "Position error", "m")
+                for i, name in enumerate(["Joint servo", "Task servo"])
+            ],
+        ),
     }
-
-
-
-def run(parameters: dict[str, Any]) -> dict[str, Any]:
-    broken = bool(parameters["broken_mode"])
-    return _result(_model(parameters, broken), broken)
+    return finish(
+        34,
+        broken,
+        {
+            "sample_count": 121,
+            "time": t,
+            "states": states,
+            "applied_velocity": velocities,
+            "positions": positions,
+            "task_errors": task_errors,
+            "goal_q": goal,
+            "goal_position": desired,
+            "goal_J": Jgoal,
+            "actual_condition": np.linalg.cond(Jgoal),
+            "speed_limit": 2.0,
+        },
+        metric,
+        plots,
+        "Both trajectories execute ideal joint velocity servos capped at 2 rad/s. Geometry controls the goal elbow, whose measured Jacobian condition is "
+        + f"{np.linalg.cond(Jgoal):.3f}"
+        + ". No actuator torque dynamics are simulated.",
+        "The fault substitutes a transpose task-gradient law for the velocity inverse while keeping the same gain; it no longer realizes the requested Cartesian velocity.",
+        "Restore the inverse and compare both actual joint and Cartesian errors. A transpose gradient is a valid alternative with different convergence, not an inverse with the same bandwidth.",
+    )

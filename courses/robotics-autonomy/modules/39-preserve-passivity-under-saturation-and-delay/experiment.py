@@ -1,100 +1,163 @@
 from __future__ import annotations
 
-from typing import Any
-
 import numpy as np
 
-ITEM_NUMBER = 39
-BROKEN_TEXT = 'Broken mode bypasses the passivity observer/controller and replays delayed force without energy limiting.'
-RECOVERY_TEXT = 'Restore the energy tank, include saturation in the observer, and reduce gain or delay until energy remains bounded.'
 
-
-def _trace(name: str, x: Any, y: Any, x_quantity: str, x_unit: str,
-           y_quantity: str, y_unit: str) -> dict[str, Any]:
+def trace(name, x, y, x_quantity, x_unit, y_quantity, y_unit):
+    x, y = np.asarray(x, float), np.asarray(y, float)
     return {
-        "type": "scattergl", "mode": "lines", "name": name,
-        "x": np.asarray(x, dtype=float), "y": np.asarray(y, dtype=float),
-        "meta": {"x_quantity": x_quantity, "x_unit": x_unit,
-                 "y_quantity": y_quantity, "y_unit": y_unit},
+        "type": "scatter",
+        "mode": "lines+markers" if np.ptp(x) == 0 else "lines",
+        "name": name,
+        "x": x,
+        "y": y,
+        "meta": {
+            "x_quantity": x_quantity,
+            "x_unit": x_unit,
+            "y_quantity": y_quantity,
+            "y_unit": y_unit,
+        },
     }
 
 
-def _plot(title: str, x_title: str, y_title: str,
-          traces: list[dict[str, Any]]) -> dict[str, Any]:
+def plot(title, x, y, traces):
     return {
         "data": traces,
         "layout": {
             "title": {"text": title, "x": 0.02},
-            "xaxis": {"title": {"text": x_title}},
-            "yaxis": {"title": {"text": y_title}},
-            "legend": {"orientation": "h"},
-            "margin": {"l": 72, "r": 36, "t": 62, "b": 62},
-            "hovermode": "closest", "uirevision": "keep-view",
+            "xaxis": {"title": {"text": x, "standoff": 16}},
+            "yaxis": {"title": {"text": y, "standoff": 16}},
+            "legend": {
+                "orientation": "h",
+                "y": -0.3,
+                "entrywidth": 0.5,
+                "entrywidthmode": "fraction",
+            },
+            "margin": {"l": 72, "r": 25, "t": 65, "b": 115},
+            "uirevision": "keep-view",
         },
         "config": {"responsive": True, "displaylogo": False},
     }
 
 
-def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
+def finish(number, broken, diagnostics, metrics, plots, observation, fault, recovery):
+    diagnostics.update(
+        item_number=number,
+        broken_active=broken,
+        software_only=True,
+        signature=[float(m[2]) for m in metrics],
+    )
     return {
         "metrics": [
-            {"id": key, "label": label, "value": float(value), "unit": unit,
-              "emphasis": "primary" if index == 0 else "normal"}
-            for index, (key, label, value, unit) in enumerate(model["metrics"])
+            {
+                "id": key,
+                "label": label,
+                "value": float(value),
+                "unit": unit,
+                "emphasis": "primary" if i == 0 else "normal",
+            }
+            for i, (key, label, value, unit) in enumerate(metrics)
         ],
-        "plots": model["plots"],
+        "plots": plots,
+        "diagnostics": diagnostics,
         "explanations": {
-            "observation": model["observation"],
-            "broken": BROKEN_TEXT,
-            "recovery": RECOVERY_TEXT,
-        },
-        "diagnostics": {
-            "item_number": ITEM_NUMBER,
-            "broken_active": bool(broken),
-            "sample_count": int(model["sample_count"]),
-            "signature": [float(value) for value in model["signature"]],
-            "software_only": True,
+            "observation": observation,
+            "broken": fault,
+            "recovery": recovery,
         },
     }
 
-def _model(p: dict[str, Any], broken: bool) -> dict[str, Any]:
-    a = float(p["round_trip_delay_ms"])
-    b = float(p["force_limit_n"])
-    if broken:
-        a, b = (110.0, 5.0)
-    x = np.linspace(0.0, 1.0, 181)
-    signature = [float(value) for value in [(-.002*a*b if broken else .0005*b*max(0.,40-a)), min(1.,20/max(2.,b)), max(0.,80-a)*(0.5 if broken else 1.)]]
-    y1 = np.asarray((.02*b-a*.002)*x if broken else .0005*b*(1-np.exp(-4*x)), dtype=float)
-    y2 = np.asarray(np.zeros_like(x), dtype=float)
-    z1 = np.asarray(np.minimum(1.,20/max(2.,b))*np.ones_like(x), dtype=float)
-    z2 = np.asarray(np.zeros_like(x), dtype=float)
-    if y1.ndim == 0:
-        y1 = np.full_like(x, float(y1))
-    if y2.ndim == 0:
-        y2 = np.full_like(x, float(y2))
-    if z1.ndim == 0:
-        z1 = np.full_like(x, float(z1))
-    if z2.ndim == 0:
-        z2 = np.full_like(x, float(z2))
-    return {
-        "signature": signature,
-        "sample_count": len(x),
-        "metrics": [("passivity_energy", "Passivity Energy", signature[0], "J"), ("saturation_fraction", "Saturation Fraction", signature[1], "1"), ("delay_margin", "Delay Margin", signature[2], "ms")],
-        "plots": {
-            "response": _plot("Passivity-observer energy", "Time fraction (1)", "Observed energy (J)", [
-                _trace("Model response", x, y1, "Time fraction", "1", "Observed energy", "J"),
-                _trace("Reference or bound", x, y2, "Time fraction", "1", "Observed energy", "J"),
-            ]),
-            "mechanism": _plot("Force saturation occupancy", "Time fraction (1)", "Saturation fraction (1)", [
-                _trace("Governing mechanism", x, z1, "Time fraction", "1", "Saturation fraction", "1"),
-                _trace("Requirement or reference", x, z2, "Time fraction", "1", "Saturation fraction", "1"),
-            ]),
-        },
-        "observation": "A delayed saturated interaction remains within this lesson's claim only when observed net energy and the energy tank stay nonnegative.",
+
+def run(p):
+    delay = float(p["round_trip_delay_ms"]) / 1000
+    bound = float(p["force_limit_n"])
+    broken = bool(p["broken_mode"])
+    dt = 0.005
+    t = np.arange(401) * dt
+    omega = 2 * np.pi * 3
+    position = 0.02 * np.sin(omega * t)
+    velocity = 0.02 * omega * np.cos(omega * t)
+    delayed = np.maximum(t - delay, 0.0)
+    request = -900 * 0.02 * np.sin(omega * delayed) - 0.4 * 0.02 * omega * np.cos(
+        omega * delayed
+    )
+    # Before the first delayed sample, the buffer is explicitly initialized to zero.
+    request[t < delay] = 0.0
+    saturated = np.clip(request, -bound, bound)
+    energy = 0.01
+    energies = [energy]
+    applied = []
+    work = []
+    limited = []
+    for f, v in zip(saturated, velocity, strict=True):
+        desired_work = f * v * dt
+        cut = (not broken) and desired_work > energy
+        used = f if not cut else energy / (v * dt)
+        w = used * v * dt
+        energy -= w
+        applied.append(used)
+        work.append(w)
+        limited.append(cut)
+        energies.append(energy)
+    applied = np.array(applied)
+    energies = np.array(energies)
+    work = np.array(work)
+    metric = [
+        ("passivity_energy", "Minimum observed tank energy", min(energies), "J"),
+        (
+            "saturation_fraction",
+            "Force saturation fraction",
+            np.mean(abs(request) > bound),
+            "1",
+        ),
+        (
+            "removed_active_work",
+            "Active work removed by limiter",
+            sum((saturated - applied) * velocity * dt),
+            "J",
+        ),
+    ]
+    plots = {
+        "response": plot(
+            "Port energy balance",
+            "Time (s)",
+            "Energy (J)",
+            [
+                trace("Tank", t, energies[1:], "Time", "s", "Energy", "J"),
+                trace("Zero", t, np.zeros_like(t), "Time", "s", "Energy", "J"),
+            ],
+        ),
+        "mechanism": plot(
+            "Requested and applied force",
+            "Time (s)",
+            "Force (N)",
+            [
+                trace("Requested", t, saturated, "Time", "s", "Force", "N"),
+                trace("Applied", t, applied, "Time", "s", "Force", "N"),
+            ],
+        ),
     }
-
-
-
-def run(parameters: dict[str, Any]) -> dict[str, Any]:
-    broken = bool(parameters["broken_mode"])
-    return _result(_model(parameters, broken), broken)
+    return finish(
+        39,
+        broken,
+        {
+            "sample_count": 401,
+            "time": t,
+            "dt": dt,
+            "position": position,
+            "velocity": velocity,
+            "requested_force": request,
+            "saturated_force": saturated,
+            "applied_force": applied,
+            "work": work,
+            "energy": energies,
+            "initial_energy": 0.01,
+            "intervention": limited,
+            "force_limit": bound,
+        },
+        metric,
+        plots,
+        "Positive F·v is energy delivered by the force source to the prescribed moving port. The observer uses applied force after saturation and limiting. Its sampled work identity is exact for this declared quadrature.",
+        "The fault bypasses the energy limiter while retaining the selected delay, saturation and moving-port samples.",
+        "Restore the limiter and reconcile initial energy minus cumulative applied work. This prescribed-port experiment is not a closed-loop robot stability certificate or a measured delay margin.",
+    )

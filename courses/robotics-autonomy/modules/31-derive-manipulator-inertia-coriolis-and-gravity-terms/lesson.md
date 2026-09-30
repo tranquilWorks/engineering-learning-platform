@@ -1,87 +1,81 @@
-# Derive Manipulator Inertia, Coriolis, and Gravity Terms
+# Construct Manipulator Inertia, Coriolis and Gravity Terms
 
-**Guiding question:** What assumptions and evidence make derive manipulator inertia, coriolis, and gravity terms defensible?
 
-Build a deterministic numerical laboratory to derive manipulator inertia, coriolis, and gravity terms, expose its governing relation, and diagnose a named counterexample before recovery. This module is a Python-first native design authorized by the reviewed issue-440 competency map. It is not a conversion of the pinned MATLAB-oriented source course, and it remains deterministic software evidence.
-
-## Why this lesson exists
-
-Robotics failures often cross representation boundaries: geometry into velocity, images into pose, estimates into maps, plans into commands, or contact forces into actuator effort. A result is defensible only when those boundaries carry explicit frames, signs, units, timing, constraints, and uncertainty. This lesson therefore connects one design decision to a governing equation, an observable response, a named failure, and an exact recovery.
-
-Before calculating, name the state, input, observation, and verdict. State which quantities are measured, which are modeled, and which are derived. A smooth curve is not evidence that a constraint was respected, an estimator was consistent, a path was collision free, or a contact remained passive.
 
 ## Model, derivation, and conventions
 
-- $$M(q) q_ddot+C(q,q_dot)q_dot+g(q)=tau$$
-- $$M=M^T>0$$
-- $$q_dot^T(M_dot-2C)q_dot=0$$
+`M(q) qddot+C(q,qdot) qdot+g(q)=tau`
 
-Derive the first relation from the physical, geometric, probabilistic, or algorithmic definition. Use the second relation to propagate the decision into a measurable consequence. Use the third as an invariant, feasibility condition, or audit relation. Keep every coordinate frame and sampling instant attached until the final scalar metric. The experiment evaluates these relations directly with bounded NumPy arrays; it does not call a remote solver or hide the mechanism behind a black-box robotics stack.
+`kinetic_energy=0.5 qdot^T M(q) qdot`
 
-The three retained signature quantities are:
+`S=Mdot-2C; S+S^T=0`
 
-- `minimum_inertia_eigenvalue` (kg*m^2)
-- `skew_identity_error` (1)
-- `gravity_torque` (N*m)
+Two ideal point masses define this planar arm. The first mass is 1 kg at the end of a 0.7 m proximal link. The second mass is 0.8 kg plus the selected payload at the end of a 0.5 m distal link. The links themselves are massless. Joint angles are relative revolute angles, measured from the horizontal through cumulative orientation. The shoulder is 0.4 rad, the selected elbow angle is converted from degrees, and the declared instantaneous joint rate is [0.6,-0.35] rad/s. Gravity is 9.81 m/s² downward.
 
-Carry units through each substitution. Dimensionless ranks, probabilities, ratios, and flags are labeled `1` or `count`; physical displacement, time, force, torque, energy, velocity, and pixel quantities retain their named units. If a sum combines unlike units or a transform maps a vector without a frame convention, stop before interpreting a number.
+Writing a=m1*l1²+m2*(l1²+l2²), b=m2*l1*l2 and d=m2*l2² gives M=[[a+2b cos(q2),d+b cos(q2)],[d+b cos(q2),d]]. This matrix comes from Cartesian kinetic energy of the two masses. Its symmetry and positive eigenvalues ensure positive kinetic energy for every nonzero joint velocity at the selected configuration. The two positive physical masses and nonzero link lengths keep the matrix positive definite throughout the displayed elbow sweep, including a straight arm; a kinematic position singularity does not imply a singular joint inertia.
+
+Let h=b sin(q2). The velocity matrix used here is C=[[-h*v2,-h*(v1+v2)],[h*v1,0]]. Individual Coriolis matrices depend on convention, but C times velocity must represent the correct generalized velocity forces. For this Christoffel convention, Mdot-2C is skew symmetric. Its symmetric-part norm is computed from an analytic mass derivative along the declared rate. Units are kg m²/s, equivalent to rotational damping units, and the defect is not itself a torque or energy.
+
+Potential energy is 9.81*((m1+m2)*l1*sin(q1)+m2*l2*sin(q1+q2)). Differentiating it gives the gravity vector. The shoulder component is the third metric and can change sign with geometry; it is not an absolute maximum across all poses. The plots independently sweep elbow angle from -pi to pi, showing inertia eigenvalues and gravity torque while the metrics refer to the selected pose. Read that distinction before comparing a plotted extreme with a headline value.
+
+At elbow zero, h vanishes and every displayed Coriolis entry is zero even though the robot can be moving. Omitting one entry is then invisible to this local skew test. Away from alignment, dropping C12 leaves the same positive inertia matrix but breaks the kinetic-energy cancellation. This is why one positive-definiteness check cannot certify the entire dynamics model.
 
 ## Predict before running
 
-A physically consistent rigid manipulator has symmetric positive inertia and satisfies the kinetic-energy skew identity. Predict the sign and direction of all three signature changes before moving a slider. Identify the equation term responsible and one quantity that should remain invariant. This written prediction is the comparison point; post-hoc description is not the same as a test.
+Predict whether positive inertia alone can reveal a missing Coriolis coupling. Record the expected direction of change and an invariant before reading the computed result. State a condition under which the fault could be hidden, rather than assuming every faulty setting must look worse.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read the three signature metrics with units.
-2. Inspect the response plot for task-level behavior, then the mechanism plot for the constraint, residual, energy, conditioning, or decision that explains it.
-3. Reproduce one signature quantity from the displayed equations to one or two significant figures.
-4. Check a limiting case before accepting the baseline.
-5. Save the baseline parameters and signature so recovery can be tested exactly.
+Reset controls and disable the named fault. Use Payload mass = 1.0 kg; Elbow angle = 55.0 deg. Read the response curve, then connect it to the mechanism curve using the governing equations.
+
+Joint inertia eigenvalues plots Inertia (kg·m²) against Elbow angle (rad). Its series are Min eig, Max eig. Joint gravity torques plots Torque (N·m) against Elbow angle (rad). Its series are Joint 1, Joint 2.
+
+The default record is Minimum inertia eigenvalue: 0.172497 kg*m^2; Symmetric skew-identity defect: 0 kg*m^2/s; Shoulder gravity torque: 19.5578 N*m. These computed values are a worked example for these settings, not acceptance limits for every experiment. Keep parameter values and units beside the result. A near-zero residual has meaning only in relation to the stated model and numerical precision.
 
 ## Two one-variable sweeps
 
-1. Hold `elbow_angle_deg` at `55.0 deg` and sweep `payload_kg` from `0.0` through `1.0` to `5.0 kg`.
-2. Restore `payload_kg` to `1.0 kg` and sweep `elbow_angle_deg` from `-160.0` through `55.0` to `160.0 deg`.
+1. Increase payload at fixed elbow angle. Compare both inertia eigenvalues and the shoulder gravity component. The normal skew defect stays near roundoff even though the underlying mass derivative and Coriolis entries grow.
 
-Change one variable at a time. For each endpoint, record the predicted direction, actual direction, metric delta, and the mechanism-plot feature that supports causality. If the result reverses direction, check for a branch, active constraint, singularity, gate, saturation, or feasibility transition rather than smoothing it away.
+2. Sweep elbow angle through zero and a bent pose at fixed payload. Inspect the gravity sign and actual inertia eigenvalues. Enable the fault at both poses to identify the zero-sine blind spot.
+
+Return to defaults between sweeps. Hold the other control fixed and record both a changing output and an expected invariant. Explain the physical or numerical path from the selected input to the observed response.
 
 ## Intentionally broken case
 
-Broken mode drops a coupling term from Coriolis while retaining its inertia dependence, violating the skew identity. Broken mode is a falsifying counterexample, not a recommended alternative. Explain which assumption is violated before describing the visual symptom. Then locate the first intermediate quantity that departs from the baseline invariant; downstream task error alone rarely identifies the cause.
+The fault removes C12 while preserving the physical mass and gravity calculations. The symmetric part of Mdot-2C therefore measures an executed missing coupling.
+
+Run the same parameter values with the fault enabled. Compare complete curves as well as summary metrics. Identify the actual operation that changed and calculate why it affects the measured result. A changed warning label is not numerical evidence.
 
 ## Recovery
 
-Restore paired inertia/Coriolis terms and verify energy balance before using inverse dynamics. Recovery is complete only when the original default inputs and diagnostic signature return within the independent-reference tolerance. A different setting that happens to look better is mitigation, not recovery. Preserve the fault, detection, decision, and recovery sequence as separate evidence.
+Restore C12 and repeat the bent-pose comparison. Check positive eigenvalues, the skew identity and the gravity vector separately.
+
+Repeat a saved nominal setting and confirm that its values and curves return. Recovery must restore the governing mechanism and its evidence, not merely clear a warning.
 
 ## Alternative and limiting cases
 
-- With zero velocity, Coriolis/centrifugal power is zero.
-- At zero payload, the inertia remains positive from the links.
-
-Use one limit as a hand calculation and one as a numerical sweep. Limits reveal whether a formula is continuous, singular, or branch-dependent. An undefined limit must be reported as such; clipping it into a convenient finite value changes the model.
+At elbow zero or pi the omitted sine coupling vanishes, so this fault can be locally hidden. The point-mass model excludes distributed link inertia, friction, elasticity and motor dynamics; it is an instantaneous identity check, not a trajectory experiment.
 
 ## Independent evidence and MATLAB-style design boundary
 
-The design was reasoned from the displayed equations in the same model-first workflow normally used before a MATLAB/Simulink implementation, but the delivered implementation is Python/NumPy only. Expected signatures are stored by `expansion_reference_cases.py`, which imports no production experiment, consumes no production result, and perturbs no production value. Production signatures are retained separately for baseline, both one-variable sweeps, broken, and exact recovery scenarios.
+The reference builds mass from Cartesian point-mass Jacobians, obtains mass and potential derivatives by complex steps, and constructs C from Christoffel symbols. It checks M, C, Mdot and gravity separately.
 
-Agreement supports only the displayed model, input set, fields, units, and tolerances. No licensed MATLAB runtime was executed, so the evidence makes no MATLAB numerical-parity claim. It also does not establish global optimality, field robustness, physical calibration, hardware timing, safety certification, or production readiness.
+Five retained cases cover baseline, two single-control sweeps, the named fault and recovery. Expected values come from the independent formulation; actual values come from the executable lesson. Absolute and relative comparison tolerances remain 1e-8. Full-state or geometric checks supplement these three-number signatures, which alone cannot establish correctness. MATLAB has not been executed and no MATLAB equivalence is claimed. Browser and container evidence is recorded separately. Agreement between synthetic implementations does not establish empirical model validity.
 
 ## Engineering review checklist
 
-- Verify equation dimensions, coordinate frames, signs, timestamp direction, and branch conventions.
-- Separate feasibility or safety from objective value and visual smoothness.
-- Inspect conditioning, covariance, clearance, saturation, energy, or data age when relevant.
-- Confirm the broken case changes the named mechanism and the recovery restores the baseline signature.
-- State one assumption whose violation would invalidate the result even if every test here passed.
+Reconstruct one displayed quantity from the actual state or geometric arrays. Check coordinate ordering, signs and units before comparing numbers. Explain which assumption each check constrains, and identify a defect that another check could miss. Preserve the baseline, one controlled sweep, fault and recovery as a reproducible evidence sequence. State the model boundary before making a broader engineering recommendation.
 
 ## Common mistakes
 
-- Treating a local or finite-sample result as a global guarantee.
-- Changing both controls and assigning causality to only one.
-- Accepting endpoint checks where swept geometry, intermediate dynamics, or data freshness matter.
-- Confusing a low residual with observability, correct association, feasibility, or physical truth.
-- Claiming learner effectiveness, MATLAB parity, physical HIL, hardware safety, or certification from software fixtures.
+Do not infer correctness from a changing headline alone. At elbow zero or pi the omitted sine coupling vanishes, so this fault can be locally hidden.
+
+Do not change both sliders at once and attribute the result to one cause. Separate a model assumption from a measured property, and a finite-horizon observation from a universal guarantee. Floating-point roundoff is not a physical effect; equally, an attractive plot is not a substitute for the governing calculation.
 
 ## Focused check and teach-back
 
-Calculate one baseline signature value, show one dimensional check, predict both sweeps, reproduce the named failure, and demonstrate exact recovery. Then teach the lesson back without starting from the plots: state the convention, derive the governing relationship, explain the invariant, identify the practical failure, and name the evidence boundary. Finish by naming the prerequisite module and the next mapped module that consumes this artifact.
+Why does a positive minimum inertia eigenvalue not prove that the velocity forces are correct?
+
+Answer rationale: Positive inertia certifies the kinetic-energy quadratic form. A missing C entry leaves that form unchanged while breaking the skew identity at a bent moving configuration. The tests constrain different parts of the dynamics.
+
+Use the embedded Course checkpoint to explain your default, sweep, fault and recovery records to a colleague. Include one calculation with units, the causal diagnosis and an explicit untested boundary. This is a self-assessment; no learner score is stored.

@@ -71,44 +71,44 @@ def _p29(p):
     return [np.linalg.norm(J@joint-desired),np.linalg.norm(J@secondary),np.linalg.norm(joint)]
 
 def _p30(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[30][_key(p)])
+    return robotics_dynamics_reference(30, p)["signature"]
 
 def _p31(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[31][_key(p)])
+    return robotics_dynamics_reference(31, p)["signature"]
 
 def _p32(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[32][_key(p)])
+    return robotics_dynamics_reference(32, p)["signature"]
 
 def _p33(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[33][_key(p)])
+    return robotics_dynamics_reference(33, p)["signature"]
 
 _NATIVE_FIXTURES.update({25: {'{"broken_mode":false,"constraint_offset_m":0.08,"joint_span_rad":1.2}': [0.0, 1.0, 0.36], '{"broken_mode":false,"constraint_offset_m":0.4,"joint_span_rad":1.2}': [0.0, 1.0, 0.03999999999999998], '{"broken_mode":false,"constraint_offset_m":0.08,"joint_span_rad":3.0}': [0.0, 1.0, 0.26999999999999996], '{"broken_mode":true,"constraint_offset_m":0.08,"joint_span_rad":1.2}': [0.35, 2.0, 0.010000000000000037]}, 26: {'{"broken_mode":false,"rotation_angle_deg":35.0,"translation_m":0.6}': [5.735764363510461e-13, 0.0, 0.0860364654526569], '{"broken_mode":false,"rotation_angle_deg":170.0,"translation_m":0.6}': [1.7364817766693026e-13, 0.0, 0.02604722665003954], '{"broken_mode":false,"rotation_angle_deg":35.0,"translation_m":2.0}': [5.735764363510461e-13, 0.0, 0.286788218175523], '{"broken_mode":true,"rotation_angle_deg":35.0,"translation_m":0.6}': [0.09999999999999999, 0.07148764296291647, 0.8999999999999999]}, 27: {'{"angular_speed_rad_s":1.8,"broken_mode":false,"lever_arm_m":0.45}': [0.0, 4.5e-13, 0.16071428571428573], '{"angular_speed_rad_s":1.8,"broken_mode":false,"lever_arm_m":1.5}': [0.0, 1.5e-12, 0.5357142857142857], '{"angular_speed_rad_s":6.0,"broken_mode":false,"lever_arm_m":0.45}': [0.0, 4.5e-13, 0.0642857142857143], '{"angular_speed_rad_s":1.8,"broken_mode":true,"lever_arm_m":0.45}': [1.7875, 0.13, 0.2]}, 28: {'{"broken_mode":false,"elbow_angle_deg":70.0,"link_ratio":0.8}': [0.7517540966287267, 0.7517540966287267, 1.8e-07], '{"broken_mode":false,"elbow_angle_deg":175.0,"link_ratio":0.8}': [0.06972459419812656, 0.06972459419812656, 1.8e-07], '{"broken_mode":false,"elbow_angle_deg":70.0,"link_ratio":1.5}': [0.9396926207859083, 1.4095389311788624, 2.5e-07], '{"broken_mode":true,"elbow_angle_deg":70.0,"link_ratio":0.8}': [0.008724874175625242, 0.008724874175625242, 0.0625]}, 29: {'{"broken_mode":false,"damping":0.08,"null_gain_per_s":0.6}': [0.005925925925925926, 0.04444444444444444, 0.772], '{"broken_mode":false,"damping":0.5,"null_gain_per_s":0.6}': [0.16666666666666666, 0.19999999999999998, 0.73], '{"broken_mode":false,"damping":0.08,"null_gain_per_s":2.0}': [0.005925925925925926, 0.14814814814814814, 0.492], '{"broken_mode":true,"damping":0.08,"null_gain_per_s":0.6}': [0.54, 0.7200000000000001, 0.49500000000000005]}, 30: {'{"broken_mode":false,"force_n":8.0,"lever_arm_m":0.4}': [3.2, 0.0, 2.5], '{"broken_mode":false,"force_n":30.0,"lever_arm_m":0.4}': [12.0, 0.0, 2.5], '{"broken_mode":false,"force_n":8.0,"lever_arm_m":1.2}': [9.6, 0.0, 0.8333333333333334], '{"broken_mode":true,"force_n":8.0,"lever_arm_m":0.4}': [43.120000000000005, 6.160000000000001, 0.9090909090909091]}, 31: {'{"broken_mode":false,"elbow_angle_deg":55.0,"payload_kg":1.0}': [0.27441458618106274, 1e-10, 2.8133924203018816], '{"broken_mode":false,"elbow_angle_deg":55.0,"payload_kg":5.0}': [0.6520729309053137, 1e-10, 7.314820292784892], '{"broken_mode":false,"elbow_angle_deg":160.0,"payload_kg":1.0}': [0.2963815572471545, 1e-10, -4.60919230495488], '{"broken_mode":true,"elbow_angle_deg":55.0,"payload_kg":1.0}': [0.6711710519580278, 0.54, -9.643057865370013]}, 32: {'{"broken_mode":false,"excitation_amplitude_rad":0.7,"payload_guess_kg":1.1}': [0.011428571428571439, 0.10000000000000009, 2.0408163265306127], '{"broken_mode":false,"excitation_amplitude_rad":1.5,"payload_guess_kg":1.1}': [0.005333333333333338, 0.10000000000000009, 0.4444444444444444], '{"broken_mode":false,"excitation_amplitude_rad":0.7,"payload_guess_kg":3.0}': [0.2285714285714286, 2.0, 2.0408163265306127], '{"broken_mode":true,"excitation_amplitude_rad":0.7,"payload_guess_kg":1.1}': [0.35, 1.7999999999999998, 1499.9999999999998]}, 33: {'{"broken_mode":false,"path_distance_rad":2.0,"speed_limit_rad_s":1.2}': [1.6666666666666667, 4.319999999999999, 0.0], '{"broken_mode":false,"path_distance_rad":6.0,"speed_limit_rad_s":1.2}': [5.0, 1.44, 0.0], '{"broken_mode":false,"path_distance_rad":2.0,"speed_limit_rad_s":4.0}': [0.5, 48.0, 0.0], '{"broken_mode":true,"path_distance_rad":2.0,"speed_limit_rad_s":1.2}': [1.0, 33.0, 5.15]}})
 
 def _p34(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[34][_key(p)])
+    return robotics_dynamics_reference(34, p)["signature"]
 
 def _p35(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[35][_key(p)])
+    return robotics_dynamics_reference(35, p)["signature"]
 
 def _p36(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[36][_key(p)])
+    return robotics_dynamics_reference(36, p)["signature"]
 
 def _p37(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[37][_key(p)])
+    return robotics_dynamics_reference(37, p)["signature"]
 
 def _p38(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[38][_key(p)])
+    return robotics_dynamics_reference(38, p)["signature"]
 
 def _p39(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[39][_key(p)])
+    return robotics_dynamics_reference(39, p)["signature"]
 
 def _p40(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[40][_key(p)])
+    return robotics_dynamics_reference(40, p)["signature"]
 
 _NATIVE_FIXTURES.update({34: {'{"broken_mode":false,"jacobian_condition":4.0,"joint_gain_per_s":3.0}': [0.25, 0.03, 2.4000000000000004], '{"broken_mode":false,"jacobian_condition":40.0,"joint_gain_per_s":3.0}': [0.25, 0.3, 24.0], '{"broken_mode":false,"jacobian_condition":4.0,"joint_gain_per_s":10.0}': [0.09090909090909091, 0.010909090909090908, 8.0], '{"broken_mode":true,"jacobian_condition":4.0,"joint_gain_per_s":3.0}': [0.7142857142857143, 7.5, 21.0]}, 35: {'{"broken_mode":false,"model_error_fraction":0.08,"tracking_bandwidth_per_s":3.0}': [0.008, 9.24, 0.48], '{"broken_mode":false,"model_error_fraction":0.6,"tracking_bandwidth_per_s":3.0}': [0.06, 10.8, 3.5999999999999996], '{"broken_mode":false,"model_error_fraction":0.08,"tracking_bandwidth_per_s":8.0}': [0.0012307692307692308, 14.64, 0.48], '{"broken_mode":true,"model_error_fraction":0.08,"tracking_bandwidth_per_s":3.0}': [0.738255033557047, 7.953, 12.0]}, 36: {'{"broken_mode":false,"jacobian_condition":5.0,"task_inertia_kg":2.0}': [0.1, 0.02, 2.5], '{"broken_mode":false,"jacobian_condition":5.0,"task_inertia_kg":8.0}': [0.4, 0.08, 10.0], '{"broken_mode":false,"jacobian_condition":30.0,"task_inertia_kg":2.0}': [0.6, 0.12, 5.0], '{"broken_mode":true,"jacobian_condition":5.0,"task_inertia_kg":2.0}': [45.5, 36.400000000000006, 16.099999999999998]}, 37: {'{"broken_mode":false,"environment_stiffness_n_m":800.0,"virtual_damping_n_s_m":45.0}': [8.0, 0.08888888888888889, 0.04], '{"broken_mode":false,"environment_stiffness_n_m":3000.0,"virtual_damping_n_s_m":45.0}': [30.0, 0.08888888888888889, 0.15], '{"broken_mode":false,"environment_stiffness_n_m":800.0,"virtual_damping_n_s_m":150.0}': [8.0, 0.02666666666666667, 0.04], '{"broken_mode":true,"environment_stiffness_n_m":800.0,"virtual_damping_n_s_m":45.0}': [42.0, 4.0, 0.28]}, 38: {'{"broken_mode":false,"force_setpoint_n":12.0,"surface_angle_deg":25.0}': [0.15214257422665178, 0.0021130913087034973, 0.0], '{"broken_mode":false,"force_setpoint_n":40.0,"surface_angle_deg":25.0}': [0.5071419140888394, 0.0021130913087034973, 0.0], '{"broken_mode":false,"force_setpoint_n":12.0,"surface_angle_deg":80.0}': [0.35453079108439484, 0.00492403876506104, 0.0], '{"broken_mode":true,"force_setpoint_n":12.0,"surface_angle_deg":25.0}': [16.903701960058694, 0.19318516525781368, 0.38637033051562736]}, 39: {'{"broken_mode":false,"force_limit_n":25.0,"round_trip_delay_ms":18.0}': [0.275, 0.8, 62.0], '{"broken_mode":false,"force_limit_n":25.0,"round_trip_delay_ms":120.0}': [0.0, 0.8, 0.0], '{"broken_mode":false,"force_limit_n":80.0,"round_trip_delay_ms":18.0}': [0.88, 0.25, 62.0], '{"broken_mode":true,"force_limit_n":25.0,"round_trip_delay_ms":18.0}': [-1.1, 1.0, 0.0]}, 40: {'{"broken_mode":false,"energy_gain_per_s":1.4,"torque_limit_n_m":2.2}': [3.896103896103896, 0.3246753246753247, 0.49019607843137253], '{"broken_mode":false,"energy_gain_per_s":4.0,"torque_limit_n_m":2.2}': [1.3636363636363635, 0.11363636363636363, 0.2040816326530612], '{"broken_mode":false,"energy_gain_per_s":1.4,"torque_limit_n_m":6.0}': [1.4285714285714288, 0.11904761904761907, 0.21276595744680854], '{"broken_mode":true,"energy_gain_per_s":1.4,"torque_limit_n_m":2.2}': [400.0, 9.42477796076938, 3.773584905660377]}})
 
 def _p41(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[41][_key(p)])
+    return robotics_dynamics_reference(41, p)["signature"]
 
 def _p42(p: dict[str, Any]) -> list[float]:
     return list(_NATIVE_FIXTURES[42][_key(p)])
@@ -1202,12 +1202,606 @@ def _p69(p: dict[str, Any]) -> list[float]:
     return [float(valid), float(pickup), float(minimum)]
 
 
+from scipy.integrate import solve_ivp
+from scipy.linalg import expm
+
+
+def _rd_derivative(function, q):
+    return np.column_stack(
+        [
+            np.imag(function(np.asarray(q, complex) + 1e-20j * e)) / 1e-20
+            for e in np.eye(len(q))
+        ]
+    )
+
+
+def _rd30(p):
+    length = float(p["lever_arm_m"])
+    force = float(p["force_n"]) * np.array([0.6, 0.8])
+    rate = np.array([0.7, -0.4])
+    values = []
+    powers = []
+    gains = []
+    jacobians = []
+
+    def fk(q):
+        # Explicit sine/cosine support a holomorphic coordinate derivative.
+        return length * np.array(
+            [np.cos(q[0]) + 0.7 * np.cos(q.sum()), np.sin(q[0]) + 0.7 * np.sin(q.sum())]
+        )
+
+    for a in np.linspace(-0.8, 0.8, 121):
+        J = _rd_derivative(fk, np.array([0.4, a]))
+        tau = (J if p["broken_mode"] else J.T) @ force
+        values.append(tau)
+        powers.append([sum(tau * rate), sum(force * (J @ rate))])
+        gains.append(np.linalg.norm(J.T @ np.array([0.6, 0.8])))
+        jacobians.append(J)
+    values, powers = np.array(values), np.array(powers)
+    return {
+        "signature": [
+            max(abs(values).ravel()),
+            max(abs(powers[:, 0] - powers[:, 1])),
+            max(gains),
+        ],
+        "jacobians": jacobians,
+        "torques": values,
+        "powers": powers,
+    }
+
+
+def _rd31(p):
+    q = np.array([0.4, np.deg2rad(float(p["elbow_angle_deg"]))])
+    v = np.array([0.6, -0.35])
+    m2 = 0.8 + float(p["payload_kg"])
+
+    def mass(q):
+        # Cartesian kinetic energy of the proximal and distal point masses.
+        e1 = np.array([-np.sin(q[0]), np.cos(q[0])])
+        e2 = np.array([-np.sin(q.sum()), np.cos(q.sum())])
+        J1 = np.column_stack([0.7 * e1, np.zeros(2)])
+        J2 = np.column_stack([0.7 * e1 + 0.5 * e2, 0.5 * e2])
+        return J1.T @ J1 + m2 * J2.T @ J2
+
+    derivatives = [
+        np.imag(mass(q.astype(complex) + 1e-20j * axis)) / 1e-20 for axis in np.eye(2)
+    ]
+    M = mass(q)
+    C = np.zeros((2, 2))
+    for i in range(2):
+        for j in range(2):
+            for k in range(2):
+                C[i, j] += (
+                    0.5
+                    * (
+                        derivatives[k][i, j]
+                        + derivatives[j][i, k]
+                        - derivatives[i][j, k]
+                    )
+                    * v[k]
+                )
+    if p["broken_mode"]:
+        C[0, 1] = 0.0
+
+    def potential(q):
+        return 9.81 * ((1 + m2) * 0.7 * np.sin(q[0]) + m2 * 0.5 * np.sin(q.sum()))
+
+    g = np.array(
+        [
+            np.imag(potential(q.astype(complex) + 1e-20j * axis)) / 1e-20
+            for axis in np.eye(2)
+        ]
+    )
+    Md = sum(derivatives[k] * v[k] for k in range(2))
+    S = Md - 2 * C
+    return {
+        "signature": [np.linalg.eigvalsh(M)[0], np.linalg.norm(S + S.T), g[0]],
+        "M": M,
+        "C": C,
+        "Mdot": Md,
+        "gravity": g,
+    }
+
+
+def _rd32(p):
+    t = np.linspace(0, 6, 121)
+    amplitude = float(p["excitation_amplitude_rad"])
+    phases = np.array([1.3, 3.1])[:, None] * t
+    weights = np.array([1.0, 0.25])[:, None]
+    q = 0.4 + amplitude * np.sum(weights * np.sin(phases), axis=0)
+    v = amplitude * np.sum(
+        weights * np.array([1.3, 3.1])[:, None] * np.cos(phases), axis=0
+    )
+    a = -amplitude * np.sum(
+        weights * np.array([1.3, 3.1])[:, None] ** 2 * np.sin(phases), axis=0
+    )
+    if p["broken_mode"]:
+        q[:] = 0.4
+        v[:] = 0
+        a[:] = 0
+    Y = np.column_stack([0.25 * a + 4.905 * np.cos(q), v])
+    truth = np.array([1.0, 0.12])
+    prior = np.array([float(p["payload_guess_kg"]), 0.08])
+    observed = Y @ truth + 0.015 * np.sin(2.7 * t + 0.2)
+    gram = Y.T @ Y + 0.02 * np.eye(2)
+    fitted = np.linalg.solve(gram, Y.T @ observed + 0.02 * prior)
+    eigen = np.linalg.eigvalsh(gram)
+    testq = 0.3 + 0.45 * np.cos(1.7 * t)
+    testv = -0.765 * np.sin(1.7 * t)
+    testa = -1.3005 * np.cos(1.7 * t)
+    testY = np.column_stack([0.25 * testa + 4.905 * np.cos(testq), testv])
+    residual = testY @ (fitted - truth)
+    return {
+        "signature": [
+            np.sqrt(np.mean(residual**2)),
+            abs(fitted[0] - 1),
+            np.sqrt(eigen[-1] / eigen[0]),
+        ],
+        "fitted_parameters": fitted,
+        "heldout_residual": residual,
+        "regressor": Y,
+    }
+
+
+def _rd33(p):
+    polynomial = np.polynomial.Polynomial([0, 0, 3, -2])
+    d = np.array([float(p["path_distance_rad"]), -0.6 * float(p["path_distance_rad"])])
+    limit = float(p["speed_limit_rad_s"])
+    vpoly = polynomial.deriv()
+    apoly = vpoly.deriv()
+    critical = np.r_[0.0, 1.0, apoly.roots()]
+    peak_v = max(abs(vpoly(critical)))
+    peak_a = max(abs(apoly([0.0, 1.0])))
+    required = max(max(abs(d)) * peak_v / limit, np.sqrt(max(abs(d)) * peak_a / 3))
+    T = 1.0 if p["broken_mode"] else required
+    s = np.linspace(0, 1, 121)
+    q = polynomial(s)[:, None] * d
+    v = vpoly(s)[:, None] * d / T
+    a = apoly(s)[:, None] * d / T**2
+    return {
+        "signature": [T, max(abs(a).ravel()), max(0.0, max(abs(v).ravel()) - limit)],
+        "position": q,
+        "velocity": v,
+        "acceleration": a,
+        "required_duration": required,
+    }
+
+
+def _rd34(p):
+    gain = float(p["joint_gain_per_s"])
+    goal = np.array([0.4, -1.2 / np.sqrt(float(p["jacobian_condition"]))])
+    initial = goal + np.array([0.18, -0.12])
+    time = np.linspace(0, 4, 121)
+
+    def position(q):
+        return np.array(
+            [np.cos(q[0]) + 0.7 * np.cos(q.sum()), np.sin(q[0]) + 0.7 * np.sin(q.sum())]
+        )
+
+    target = position(goal)
+
+    def velocity(_, q):
+        J = _rd_derivative(position, q)
+        request = gain * (target - position(q))
+        if p["broken_mode"]:
+            v = J.T @ request
+        else:
+            determinant = J[0, 0] * J[1, 1] - J[0, 1] * J[1, 0]
+            v = (
+                np.array(
+                    [
+                        J[1, 1] * request[0] - J[0, 1] * request[1],
+                        -J[1, 0] * request[0] + J[0, 0] * request[1],
+                    ]
+                )
+                / determinant
+            )
+        return np.clip(v, -2, 2)
+
+    sol = solve_ivp(
+        velocity, (0, 4), initial, t_eval=time, rtol=3e-12, atol=3e-13, max_step=0.025
+    )
+    assert sol.success
+    states = sol.y.T
+    commands = np.array([velocity(t, q) for t, q in zip(time, states)])
+    positions = np.array([position(q) for q in states])
+    return {
+        "signature": [
+            np.linalg.norm(states[-1] - goal),
+            np.linalg.norm(positions[-1] - target),
+            max(abs(commands).ravel()),
+        ],
+        "task_states": states,
+        "task_velocity": commands,
+        "task_positions": positions,
+    }
+
+
+def _rd_inverse_torque(q, v, a):
+    # Newton-Euler point-force moments about each joint, independent of a stored M/C formula.
+    e1 = np.array([np.cos(q[0]), np.sin(q[0])])
+    e2 = np.array([np.cos(q.sum()), np.sin(q.sum())])
+    n1 = np.array([-e1[1], e1[0]])
+    n2 = np.array([-e2[1], e2[0]])
+    r1 = 0.7 * e1
+    r2 = r1 + 0.5 * e2
+    acc1 = 0.7 * (n1 * a[0] - e1 * v[0] ** 2)
+    acc2 = acc1 + 0.5 * (n2 * a.sum() - e2 * v.sum() ** 2)
+    f1 = acc1 + np.array([0.0, 9.81])
+    f2 = 0.8 * (acc2 + np.array([0.0, 9.81]))
+
+    def moment(r, f):
+        return r[0] * f[1] - r[1] * f[0]
+
+    return np.array([moment(r1, f1) + moment(r2, f2), moment(r2 - r1, f2)])
+
+
+def _rd35(p):
+    mismatch = float(p["model_error_fraction"])
+    w = float(p["tracking_bandwidth_per_s"])
+    time = np.linspace(0, 4, 241)
+
+    def desired(t):
+        return (
+            np.array([0.4 + 0.15 * np.sin(t), 0.6 + 0.12 * np.cos(1.3 * t)]),
+            np.array([0.15 * np.cos(t), -0.156 * np.sin(1.3 * t)]),
+            np.array([-0.15 * np.sin(t), -0.2028 * np.cos(1.3 * t)]),
+        )
+
+    def evaluate(t, y):
+        q, v = y[:2], y[2:]
+        g = _rd_inverse_torque(q, np.zeros(2), np.zeros(2))
+        bias = _rd_inverse_torque(q, v, np.zeros(2))
+        M = np.column_stack(
+            [_rd_inverse_torque(q, np.zeros(2), axis) - g for axis in np.eye(2)]
+        )
+        goal, rate, acc = desired(t)
+        request = (1 + mismatch) * _rd_inverse_torque(
+            q, v, acc + 2 * w * (rate - v) + w * w * (goal - q)
+        )
+        if p["broken_mode"]:
+            request -= 2 * (1 + mismatch) * g
+        applied = np.clip(request, -20, 20)
+        derivative = np.r_[v, np.linalg.solve(M, applied - bias)]
+        defect = ((-(1 + mismatch) if p["broken_mode"] else 1 + mismatch) - 1) * g
+        return derivative, applied, defect
+
+    y0 = np.r_[desired(0)[0] + [0.1, -0.08], [0.0, 0.0]]
+    sol = solve_ivp(
+        lambda t, y: evaluate(t, y)[0],
+        (0, 4),
+        y0,
+        t_eval=time,
+        rtol=2e-12,
+        atol=2e-13,
+        max_step=0.01,
+    )
+    assert sol.success
+    states = sol.y.T
+    values = [evaluate(t, y) for t, y in zip(time, states)]
+    torque = np.array([v[1] for v in values])
+    defect = np.array([v[2] for v in values])
+    errors = states[:, :2] - np.array([desired(t)[0] for t in time])
+    return {
+        "signature": [
+            np.sqrt(np.mean(np.sum(errors**2, axis=1))),
+            max(abs(torque).ravel()),
+            np.sqrt(np.mean(np.sum(defect**2, axis=1))),
+        ],
+        "state": states,
+        "applied_torque": torque,
+        "tracking_error": errors,
+        "gravity_compensation_defect": defect,
+    }
+
+
+def _rd36(p):
+    q = np.array(
+        [
+            0.4,
+            -1.2 / np.sqrt(float(p["jacobian_condition"])),
+            0.8 / np.sqrt(float(p["jacobian_condition"])),
+        ]
+    )
+    mass = float(p["task_inertia_kg"])
+    lengths = np.array([1.0, 0.8, 0.6])
+
+    def coordinates(q, link, fraction):
+        a = np.cumsum(q)
+        weights = lengths.copy()
+        weights[link] *= fraction
+        weights[link + 1 :] = 0
+        return np.array([weights @ np.cos(a), weights @ np.sin(a)])
+
+    J = _rd_derivative(lambda q: coordinates(q, 2, 1.0), q)
+    M = 0.03 * mass * np.eye(3)
+    for link in range(3):
+        Jc = _rd_derivative(lambda q: coordinates(q, link, 0.5), q)
+        M += mass * (1 - 0.2 * link) * (Jc.T @ Jc)
+    K = np.block([[M, -J.T], [J, np.zeros((2, 2))]])
+    solution = np.linalg.solve(K, np.vstack([np.zeros((3, 2)), np.eye(2)]))
+    Lambda = solution[3:]
+    primary = J.T @ (Lambda @ np.array([0.4, -0.2]))
+    raw = np.array([0.5, -0.3, 0.7])
+    if p["broken_mode"]:
+        null = np.cross(J[0], J[1])
+        null /= np.linalg.norm(null)
+        secondary = null * (null @ raw)
+    else:
+        null_solution = np.linalg.solve(K, np.r_[raw, [0.0, 0.0]])
+        secondary = M @ null_solution[:3]
+    actual = J @ np.linalg.solve(M, primary + secondary)
+    leak = J @ np.linalg.solve(M, secondary)
+    return {
+        "signature": [
+            np.linalg.norm(actual - [0.4, -0.2]),
+            np.linalg.norm(leak),
+            np.linalg.eigvalsh(Lambda)[-1],
+        ],
+        "J": J,
+        "M": M,
+        "Lambda": Lambda,
+        "secondary_torque": secondary,
+        "actual_acceleration": actual,
+    }
+
+
+def _rd37(p):
+    stiffness = 150 + float(p["environment_stiffness_n_m"])
+    b = float(p["virtual_damping_n_s_m"]) * (-1 if p["broken_mode"] else 1)
+    time = np.linspace(0, 0.4, 241)
+    A = np.array([[0.0, 1.0], [-stiffness / 2, -b / 2]])
+    step = expm(A * (time[1] - time[0]))
+    x = np.array([[0.01, 0.0], [0.0, 0.2]])
+    states = [x.copy()]
+    for _ in time[1:]:
+        x = step @ x
+        states.append(x.copy())
+    states = np.array(states)
+    q = states[:, 0, :]
+    v = states[:, 1, :]
+    force = float(p["environment_stiffness_n_m"]) * q
+    energy = v * v + 0.5 * stiffness * q * q
+    outside = np.flatnonzero(np.maximum(abs(q[:, 0]) / 0.01, abs(v[:, 0]) / 0.2) > 0.02)
+    settling = 0.0 if not len(outside) else time[min(outside[-1] + 1, len(time) - 1)]
+    # Columns of x represent the two independent initial excitations.
+    combined = np.column_stack([q[:, 0], v[:, 0], q[:, 1], v[:, 1]])
+    return {
+        "signature": [max(abs(force).ravel()), settling, max(energy[:, 0])],
+        "state": combined,
+        "energy": energy,
+        "contact_force": force,
+    }
+
+
+def _rd38(p):
+    # Integrate surface coordinates rather than the production Cartesian state.
+    angle = np.deg2rad(float(p["surface_angle_deg"]))
+    n = np.array([-np.sin(angle), np.cos(angle)])
+    tangent = np.array([np.cos(angle), np.sin(angle)])
+    basis = np.column_stack([tangent, n])
+    used = (
+        np.array([np.sin(angle), np.cos(angle)])
+        if p["broken_mode"]
+        else np.array([0.0, 1.0])
+    )
+    Pt = np.eye(2) - np.outer(used, used)
+    force = float(p["force_setpoint_n"])
+    time = np.linspace(0, 2, 121)
+
+    def rhs(t, z):
+        motion = np.array([0.03, 0.0]) + 5 * (np.array([0.03 * t, 0.0]) - z)
+        return Pt @ motion + used * 0.012 * (force - 600 * max(z[1], 0.0))
+
+    sol = solve_ivp(
+        rhs, (0, 2), [0.0, 0.0], t_eval=time, rtol=2e-12, atol=2e-13, max_step=0.01
+    )
+    assert sol.success
+    coordinates = sol.y.T
+    position = coordinates @ basis.T
+    velocity = np.array([rhs(t, z) for t, z in zip(time, coordinates)]) @ basis.T
+    measured = 600 * np.maximum(coordinates[:, 1], 0.0)
+    leak = velocity @ tangent - 0.03
+    return {
+        "signature": [
+            abs(measured[-1] - force),
+            np.sqrt(np.mean(leak**2)),
+            np.linalg.norm(np.outer(used, used) - np.diag([0.0, 1.0])),
+        ],
+        "position": position,
+        "velocity": velocity,
+        "normal_force": measured,
+    }
+
+
+def _rd39(p):
+    time = np.arange(401) * 0.005
+    delay = float(p["round_trip_delay_ms"]) / 1000
+    bound = float(p["force_limit_n"])
+    frequency = 6 * np.pi
+    phase = frequency * np.maximum(time - delay, 0)
+    request = -18 * np.sin(phase) - 0.4 * 0.02 * frequency * np.cos(phase)
+    request[time < delay] = 0
+    force = np.clip(request, -bound, bound)
+    velocity = 0.02 * frequency * np.cos(frequency * time)
+    requested_work = 0.005 * force * velocity
+    cumulative = np.cumsum(requested_work)
+    correction = (
+        np.zeros(len(time))
+        if p["broken_mode"]
+        else np.maximum.accumulate(np.maximum(cumulative - 0.01, 0))
+    )
+    energy = np.r_[0.01, 0.01 - cumulative + correction]
+    return {
+        "signature": [min(energy), np.mean(abs(request) > bound), correction[-1]],
+        "energy": energy,
+        "requested_work": requested_work,
+        "cumulative_removed_work": correction,
+    }
+
+
+def _rd40(p):
+    k = float(p["energy_gain_per_s"])
+    bound = float(p["torque_limit_n_m"])
+    I = 0.05
+    J = 0.008
+    g = 0.3 * 9.81 * 0.35
+    M = np.array([[I + J, J], [J, J]])
+    time = np.linspace(0, 12, 241)
+
+    def error(theta):
+        return np.arctan2(-np.sin(theta), -np.cos(theta))
+
+    def motor(y, balance):
+        theta, phi, rate, rotor_rate = y
+        E = 0.5 * I * rate * rate + g * (1 - np.cos(theta))
+        body = (
+            g * np.sin(theta) - 2 * error(theta) - 0.65 * rate
+            if balance
+            else (-1 if p["broken_mode"] else 1) * k * (2 * g - E) * rate
+        )
+        return -max(-bound, min(bound, body))
+
+    def rhs(balance):
+        def equation(t, y):
+            acc = np.linalg.solve(M, np.array([-g * np.sin(y[0]), motor(y, balance)]))
+            return np.r_[y[2:], acc]
+
+        return equation
+
+    def capture(t, y):
+        return max(abs(error(y[0])) / 0.2, abs(y[2]) / 1.5) - 1
+
+    capture.terminal = True
+    capture.direction = -1
+    y0 = [0.0, 0.0, 0.15, -0.15]
+    swing = solve_ivp(
+        rhs(False),
+        (0, 12),
+        y0,
+        events=capture,
+        dense_output=True,
+        rtol=2e-13,
+        atol=2e-14,
+        max_step=0.01,
+    )
+    assert swing.success
+    caught = bool(len(swing.t_events[0]))
+    tc = float(swing.t_events[0][0]) if caught else 12.0
+    before = time <= tc
+    states = np.empty((241, 4))
+    states[before] = swing.sol(time[before]).T
+    if caught:
+        balance = solve_ivp(
+            rhs(True),
+            (tc, 12),
+            swing.y_events[0][0],
+            dense_output=True,
+            rtol=2e-13,
+            atol=2e-14,
+            max_step=0.01,
+        )
+        assert balance.success
+        states[~before] = balance.sol(time[~before]).T
+    E = 0.5 * I * states[:, 2] ** 2 + g * (1 - np.cos(states[:, 0]))
+    converted = np.column_stack(
+        [
+            states[:, 0],
+            states[:, 2],
+            states[:, 0] + states[:, 1],
+            states[:, 2] + states[:, 3],
+        ]
+    )
+    return {
+        "signature": [tc, abs(error(states[-1, 0])), max(abs(E - 2 * g))],
+        "state_body_and_absolute_rotor": converted,
+        "body_energy": E,
+        "captured": caught,
+    }
+
+
+def _rd41(p):
+    f = float(p["focal_length_px"])
+    depth = float(p["point_depth_m"])
+    x = np.linspace(-0.4, 0.4, 121)
+    z = depth + np.linspace(-3.2, 0, 121)
+    c, s = np.cos(0.3), np.sin(0.3)
+    X = c * (x - 0.2) - s * (z - 1)
+    Y = np.full(121, 0.3)
+    Z = s * (x - 0.2) + c * (z - 1)
+    camera = np.column_stack([X, Y, Z])
+    used = np.column_stack([x, np.full(121, 0.2), z]) if p["broken_mode"] else camera
+    valid = used[:, 2] > 0.05
+    selected = used[valid]
+    pixels = f * selected[:, :2] / selected[:, 2, None]
+    radii = np.linalg.norm(pixels, axis=1)
+    sensitivity = radii / selected[:, 2]
+    return {
+        "signature": [
+            max(radii, default=0.0),
+            max(sensitivity, default=0.0),
+            int(sum(valid & (Z <= 0.05))),
+        ],
+        "camera_points": camera,
+        "accepted": valid,
+        "pixels": pixels,
+        "depth_sensitivity": sensitivity,
+    }
+
+
+def robotics_dynamics_reference(number, parameters):
+    functions = {
+        30: _rd30,
+        31: _rd31,
+        32: _rd32,
+        33: _rd33,
+        34: _rd34,
+        35: _rd35,
+        36: _rd36,
+        37: _rd37,
+        38: _rd38,
+        39: _rd39,
+        40: _rd40,
+        41: _rd41,
+    }
+    return functions[number](dict(parameters))
+
+
 _DISPATCH = {66: _p66, 67: _p67, 68: _p68, 69: _p69, 61: _p61, 62: _p62, 63: _p63, 64: _p64, 65: _p65, 58: _p58, 59: _p59, 60: _p60, 54: _p54, 55: _p55, 56: _p56, 57: _p57, 49: _p49, 50: _p50, 51: _p51, 52: _p52, 53: _p53, 41: _p41, 42: _p42, 43: _p43, 44: _p44, 45: _p45, 46: _p46, 47: _p47, 48: _p48, 34: _p34, 35: _p35, 36: _p36, 37: _p37, 38: _p38, 39: _p39, 40: _p40, 25: _p25, 26: _p26, 27: _p27, 28: _p28, 29: _p29, 30: _p30, 31: _p31, 32: _p32, 33: _p33, }
 
 def origin(number: int) -> dict[str, Any]:
-    return {"kind": "independent-analytic-python", "item_id": f"P{number:02d}", "independent": True,
-            "imports_production_entrypoint": False, "derived_from_production_output": False,
-            "perturbs_production_output": False}
+    if 30 <= number <= 41:
+        return {
+            "kind": "independent-numerical-python",
+            "item_id": f"P{number:02d}",
+            "independent": True,
+            "imports_production_entrypoint": False,
+            "derived_from_production_output": False,
+            "perturbs_production_output": False,
+            "method": {
+                30: "complex-step kinematics and virtual work",
+                31: "Cartesian kinetic energy, complex-step derivatives and Christoffel symbols",
+                32: "regularized normal equations and independent held-out trajectory",
+                33: "polynomial derivatives and analytic extrema",
+                34: "complex-step Jacobian, explicit inverse and RK45",
+                35: "Newton-Euler point forces and RK45",
+                36: "complex-step centre-of-mass kinematics and constrained block solve",
+                37: "matrix exponential of linear contact dynamics",
+                38: "surface-coordinate unilateral contact and RK45",
+                39: "cumulative work reflection",
+                40: "relative-wheel coupled mass matrix and RK45 event integration",
+                41: "explicit camera components and ray geometry",
+            }[number],
+        }
+    return {
+        "kind": "independent-analytic-python",
+        "item_id": f"P{number:02d}",
+        "independent": True,
+        "imports_production_entrypoint": False,
+        "derived_from_production_output": False,
+        "perturbs_production_output": False,
+    }
+
 
 def reference_signature(number: int, parameters: dict[str, Any]) -> list[float]:
     return list(_DISPATCH[number](dict(parameters)))

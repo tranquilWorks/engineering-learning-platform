@@ -1,10 +1,11 @@
 schema_version: 1
 id: 34-compare-joint-space-and-task-space-tracking
 number: 34
-title: Compare Joint-Space and Task-Space Tracking
-summary: Build a deterministic numerical laboratory to compare joint-space and task-space tracking, expose its governing
-  relation, and diagnose a named counterexample before recovery.
-guiding_question: What assumptions and evidence make compare joint-space and task-space tracking defensible?
+title: Compare Joint and Cartesian Kinematic Feedback
+summary: Both trajectories execute ideal joint velocity servos capped at 2 rad/s. Geometry controls the goal
+  elbow, whose measured Jacobian condition is 7.805. No actuator torque dynamics are simulated.
+guiding_question: Why is the peak control output a joint speed rather than a torque, and why can transpose
+  feedback still reduce error?
 status: implemented
 tags:
 - robotics-autonomy
@@ -18,7 +19,7 @@ runtime:
 controls:
 - id: jacobian_condition
   type: slider
-  label: Jacobian condition
+  label: Goal straightness parameter
   default: 4.0
   minimum: 1.0
   maximum: 40.0
@@ -26,7 +27,7 @@ controls:
   unit: '1'
 - id: joint_gain_per_s
   type: slider
-  label: Joint feedback gain
+  label: Velocity feedback gain
   default: 3.0
   minimum: 0.2
   maximum: 10.0
@@ -41,9 +42,11 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Joint and task tracking optimize different errors; Jacobian conditioning determines how joint error maps
-    into Cartesian error and effort.
-  reveal: Use the equations, units, and mechanism plot to test the prediction.
+  text: Predict why a Jacobian-transpose descent law can move toward the target without matching the Cartesian
+    convergence of an inverse velocity map.
+  reveal: The integrated plant is qdot equal to the applied velocity command, with no mass or torque equation.
+    The transpose is a gradient direction for endpoint error, but its task response is weighted by J J transpose
+    and does not implement the inverse velocity law.
 - type: controls
   title: Live model controls
 - type: metrics
@@ -64,3 +67,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

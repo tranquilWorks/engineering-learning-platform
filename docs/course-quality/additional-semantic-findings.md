@@ -1,11 +1,11 @@
 # Additional direct-review findings
 
 The wider delivery audit recorded sixty additional lessons beyond the initial
-capstone repair. Twenty-four of those findings are now closed within their
-declared synthetic models: twelve in PR55 and twelve in the navigation/geometry
-revision. Thirty-six remain (Controls 0, Robotics 20, Vehicle 16). This register
-is not exhaustive; all three non-DSP aggregate course reassessments remain
-blocked, including Controls with zero listed findings.
+capstone repair. Thirty-six are now closed within their declared synthetic
+models: twelve in PR55, twelve in the navigation/geometry revision and twelve
+in the Robotics dynamics revision. Twenty-four remain (Controls 0, Robotics 8,
+Vehicle 16). This register is not exhaustive; all three non-DSP aggregate
+course reassessments remain blocked, including Controls with zero listed findings.
 
 The last sixteen findings were exposed when restored axis labels made the
 Vehicle P01–P16 mixed-unit signature charts visible during screenshot review.
@@ -14,18 +14,6 @@ lesson-specific checks require repair.
 
 | Course / lesson | Directly inspected gap |
 | --- | --- |
-| robotics-autonomy P30 | The virtual-power error is assigned from force times lever arm, which has torque units; no joint/Cartesian velocity power comparison is executed. |
-| robotics-autonomy P31 | Inertia eigenvalue and skew-identity error are assigned without constructing inertia and Coriolis matrices. |
-| robotics-autonomy P32 | Payload error, regressor conditioning and inverse-dynamics residual are formulas of the guess and excitation rather than an identified model and held-out torque calculation. |
-| robotics-autonomy P33 | The cubic trajectory duration omits its 1.5 peak-velocity factor, while the nominal limit-violation metric is forced to zero and plotted acceleration omits time scaling. |
-| robotics-autonomy P34 | Joint/task tracking and torque metrics use condition-number formulas rather than executing the stated kinematics and feedback loops. |
-| robotics-autonomy P35 | Computed-torque tracking and gravity residuals are algebraic surrogates rather than an integrated robot model with model-based compensation. |
-| robotics-autonomy P36 | Operational-space inertia and residuals are assigned without forming the joint inertia, Jacobian or operational-space dynamics. |
-| robotics-autonomy P37 | Contact responses and settling metrics use exponential surrogates instead of the declared impedance/admittance differential equations. |
-| robotics-autonomy P38 | Hybrid motion/force residuals and projector error are assigned without constructing the surface-frame projectors or executing feedback. |
-| robotics-autonomy P39 | Passivity energy and recovery are formulas of delay and force limit; no delayed work/energy trace is executed. |
-| robotics-autonomy P40 | Swing-up time and balance error are algebraic surrogates; no underactuated dynamics, energy controller or balancing transition is executed. |
-| robotics-autonomy P41 | Pinhole projection executes, but the near-plane violation metric is a fixed mode flag rather than a test of projected point depth. |
 | robotics-autonomy P42 | Calibration errors are formulas of view count and distortion; no synthetic calibration views are fitted or independently reprojected. |
 | robotics-autonomy P43 | Feature repeatability, descriptor distance and count are formulas of threshold and rotation; no image features or descriptors are computed. |
 | robotics-autonomy P44 | Inlier and false-acceptance metrics are formulas of outlier fraction and threshold; no correspondence consensus model is fitted. |
@@ -58,12 +46,10 @@ was screened and its final performance/capstone group inspected directly.
 The earlier DSP fidelity evidence remains retained. Static presence and these
 targeted inspections do not certify every pedagogical claim in all 288 lessons.
 
-Candidate further groups, subject to the owner’s scope preference: Controls
-P36/P38/P42/P43/P45–51/P55 (12), Controls P56/P57/P60–62/P64–65 (7),
-Robotics P25–36 (12), Robotics P37–48 (12), and Robotics P52 (1), and Vehicle P01–P16 (split into coherent groups). Cohesive
-groups may combine the smaller tails. Preserve unrelated model outputs and
-require real numerical mechanisms, independent oracles and meaningful teaching
-checks in a fresh scoped contract before each repair.
+The owner-authorized Robotics successor scope is P42-P48/P52 (eight lessons),
+after this revision's verified development merge and a fresh exact-baseline
+contract. Vehicle P01-P16 remains a separate repair scope. Preserve unrelated
+model outputs, source pins and prerequisite identities in every revision.
 
 ## Closed by ELP-GNC-SEMANTIC-QUALITY-12
 
@@ -106,3 +92,22 @@ The following original observations are preserved. Their closure is limited to t
 | robotics-autonomy P27 | Power-invariance and adjoint round-trip errors are assigned without transforming an actual twist/wrench pair. |
 | robotics-autonomy P28 | Singular values and finite-difference errors are assigned from elbow-angle formulas without constructing the Jacobian or differencing kinematics. |
 | robotics-autonomy P29 | Task error and null-space leakage are parameter formulas without executing a Jacobian pseudoinverse and null-space projection. |
+
+## Robotics dynamics revision: closed findings history
+
+The original findings below are retained. Closure is limited to the executed synthetic models, independent calculations, physical checks and embedded browser checkpoints. It does not promote aggregate course acceptance.
+
+| Course / lesson | Original inspected gap, now repaired in this scope |
+| --- | --- |
+| robotics-autonomy P30 | The virtual-power error is assigned from force times lever arm, which has torque units; no joint/Cartesian velocity power comparison is executed. |
+| robotics-autonomy P31 | Inertia eigenvalue and skew-identity error are assigned without constructing inertia and Coriolis matrices. |
+| robotics-autonomy P32 | Payload error, regressor conditioning and inverse-dynamics residual are formulas of the guess and excitation rather than an identified model and held-out torque calculation. |
+| robotics-autonomy P33 | The cubic trajectory duration omits its 1.5 peak-velocity factor, while the nominal limit-violation metric is forced to zero and plotted acceleration omits time scaling. |
+| robotics-autonomy P34 | Joint/task tracking and torque metrics use condition-number formulas rather than executing the stated kinematics and feedback loops. |
+| robotics-autonomy P35 | Computed-torque tracking and gravity residuals are algebraic surrogates rather than an integrated robot model with model-based compensation. |
+| robotics-autonomy P36 | Operational-space inertia and residuals are assigned without forming the joint inertia, Jacobian or operational-space dynamics. |
+| robotics-autonomy P37 | Contact responses and settling metrics use exponential surrogates instead of the declared impedance/admittance differential equations. |
+| robotics-autonomy P38 | Hybrid motion/force residuals and projector error are assigned without constructing the surface-frame projectors or executing feedback. |
+| robotics-autonomy P39 | Passivity energy and recovery are formulas of delay and force limit; no delayed work/energy trace is executed. |
+| robotics-autonomy P40 | Swing-up time and balance error are algebraic surrogates; no underactuated dynamics, energy controller or balancing transition is executed. |
+| robotics-autonomy P41 | Pinhole projection executes, but the near-plane violation metric is a fixed mode flag rather than a test of projected point depth. |

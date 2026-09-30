@@ -1,10 +1,10 @@
 schema_version: 1
 id: 39-preserve-passivity-under-saturation-and-delay
 number: 39
-title: Preserve Passivity under Saturation and Delay
-summary: Build a deterministic numerical laboratory to preserve passivity under saturation and delay, expose its
-  governing relation, and diagnose a named counterexample before recovery.
-guiding_question: What assumptions and evidence make preserve passivity under saturation and delay defensible?
+title: Account for Delayed Port Work with a Causal Energy Limiter
+summary: Positive F·v is energy delivered by the force source to the prescribed moving port. The observer uses
+  applied force after saturation and limiting. Its sampled work identity is exact for this declared quadrature.
+guiding_question: Why can a force remain within its actuator bound while violating the energy budget?
 status: implemented
 tags:
 - robotics-autonomy
@@ -41,9 +41,10 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: A delayed saturated interaction remains within this lesson's claim only when observed net energy and the
-    energy tank stay nonnegative.
-  reveal: Use the equations, units, and mechanism plot to test the prediction.
+  text: Predict why force saturation alone cannot guarantee that the accumulated port energy stays nonnegative.
+  reveal: An amplitude bound limits each force value, whereas the budget limits accumulated force times velocity
+    times sample duration. Repeated bounded positive work can exceed the initial energy; the causal work limiter
+    must constrain the actual applied work.
 - type: controls
   title: Live model controls
 - type: metrics
@@ -64,3 +65,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

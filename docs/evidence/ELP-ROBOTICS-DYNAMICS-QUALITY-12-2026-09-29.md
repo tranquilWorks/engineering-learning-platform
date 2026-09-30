@@ -1,0 +1,61 @@
+# Verified Robotics dynamics revision — 2026-09-30
+
+ELP-ROBOTICS-DYNAMICS-QUALITY-12 repairs existing Robotics P30-P41 with executed models, independent references and twelve individually authored browser-embedded Course checkpoints. Control [PR569](https://github.com/tranquilWorks/portfolio-control/pull/569) merged before implementation at `b072a1b26e8fd608a5519737ea6b67fda0b6edb5`; the exact target baseline is PR56 merge `e8d94c521a086a93a3b595c035867c19866bbdbd`.
+
+Verification passed: sixty independent local comparisons and sixty baked HTTP comparisons, 62 focused physical/preservation tests including all 96 runtime control corners, 290 HTTP modules, 580 desktop/mobile pages, 240 checkpoint checks, twenty cumulative DSP checks, 128 real interaction sequences/screenshots, and 21 focused browser tests. All 290 host/baked module identities match. Fourteen plot-grid captures were visually inspected; 24 selected pages passed actual SVG text-clipping and legend-overlap checks. Mandatory gates passed sequentially (contract: 103 tests in 102.48 seconds; quick: 1482 tests in 1542.87 seconds; full: 1482 tests in 1469.57 seconds). See [batch evidence](ELP-ROBOTICS-DYNAMICS-QUALITY-12-2026-09-29.md) and [exact verification summary](../course-quality/robotics-dynamics-verification-summary.json). Development integration is recorded by the PR; Portfolio Control closeout binds its exact merge SHA.
+
+**24 registered findings remain: Controls 0, Robotics 8, Vehicle 16.** The owner-authorized next group is Robotics P42-P48/P52 after this group's verified merge and a fresh exact-baseline successor contract. Vehicle P01-P16 remains outside this request. All three non-DSP aggregate numerical, curriculum and capstone reviews remain blocked, including Controls despite zero listed findings. The register is not exhaustive acceptance. Inventory remains 288 engineering lessons plus two examples and nine source-only repositories. DSP retains its separate authored/software aggregate acceptance.
+
+Verified development preview: `http://127.0.0.1:8774`; exact read-only nonroot image `sha256:eaabddbbb6efa3fd8825075043f4623e0a6749365ac4e87efb484ed4a3f740d6`. Earlier final previews remain preserved. Temporary review containers were retired after archiving metadata/logs. Hosted CI remains separately reported: control PR569 did not start because of billing/spending limits; historical target PR56 backend failed on missing pinned source files/history (78 failed, 1328 passed, 14 errors), while its frontend passed and container job was skipped. No account, workflow or protection changes were made. Representative learners, manual screen-reader, MATLAB, hardware, concurrent capacity and production validation remain unperformed.
+
+## Model and reference evidence
+
+- P30: Map Planar End-Effector Force to Joint Torque. The reference differentiates forward kinematics using complex steps, then independently forms torque and the two scalar powers. It retains Jacobians and torque vectors for full-sweep comparisons.
+- P31: Construct Manipulator Inertia, Coriolis and Gravity Terms. The reference builds mass from Cartesian point-mass Jacobians, obtains mass and potential derivatives by complex steps, and constructs C from Christoffel symbols. It checks M, C, Mdot and gravity separately.
+- P32: Identify Payload and Damping from Synthetic Joint Torque. The reference constructs the multisine through a frequency/phase array and solves the regularized normal equations, independently of the production augmented least-squares factorization. It retains fitted parameters, regressors and held-out residuals.
+- P33: Time-Scale Two Joint Cubics Under Speed and Acceleration Limits. The reference constructs polynomial objects, differentiates them, and evaluates their extrema and sampled trajectories independently of the production explicit cubic formulas.
+- P34: Compare Joint and Cartesian Kinematic Feedback. The reference differentiates forward kinematics by complex steps, uses an explicit two-by-two inverse, and integrates a separate Cartesian-controller state with RK45. Production uses an analytic Jacobian, pseudoinverse and DOP853.
+- P35: Integrate Computed Torque with Gravity Error and Saturation. The reference computes inverse dynamics from Cartesian point accelerations and Newton-Euler force moments. It obtains inertia columns through unit accelerations and integrates with RK45, independently of the production analytic M/C/g formulation and DOP853 integration.
+- P36: Compute Operational Inertia and Dynamically Consistent Torque. The reference differentiates link-centre and endpoint coordinates with complex steps, then solves a constrained block system for operational inertia and null acceleration. Its faulty comparison uses a cross-product null basis instead of the production pseudoinverse projector.
+- P37: Compare Impedance and Ideal Admittance Contact Transients. The reference advances both state vectors using the exact two-by-two matrix exponential. Production integrates the differential equations with DOP853. Their complete state, energy and contact-force traces are compared.
+- P38: Regulate Tangential Motion and Normal Contact Force. The reference integrates normal and tangential surface coordinates with RK45, including the unilateral force law. Production integrates Cartesian position with DOP853; the resulting positions, velocities and forces are compared after an independent basis transformation.
+- P39: Account for Delayed Port Work with a Causal Energy Limiter. The reference uses cumulative candidate work and its running maximum to derive the minimal reflection correction that keeps the balance nonnegative. This global mathematical identity independently checks the production causal sample loop.
+- P40: Swing Up and Capture a Reaction-Wheel Pendulum. The reference integrates the coupled mass matrix in body and relative-wheel coordinates with RK45 and an independently expressed upright-angle event. Production integrates eliminated equations in absolute-wheel coordinates with DOP853. State conversion and body-energy traces are compared.
+- P41: Transform and Project Points Through a Pinhole Camera. The reference computes rotated camera components explicitly and derives projection and sensitivity from ray ratios, independently of the production matrix transform. It compares the entire camera cloud, accepted mask and projected pixels.
+
+## Validation detail and open work
+
+The local verifier passed 60 independent comparisons at unchanged 1e-8 absolute/relative tolerance and 62 focused tests in 64.67 seconds. The focused tests include full-state/matrix comparisons for both modes, physical identities and 96 slider-corner runs through the unchanged three-second runtime. An initial attempt had a test-scope NameError and an unrelated DSP P26 catalog-initialization timeout; the scope guard was corrected and the new runtime fixture was narrowed to the Robotics course. No runtime timeout or numerical tolerance was relaxed. The final full-course gates passed as recorded below.
+
+Selected preflight checks cover 24 desktop/mobile pages and 24 control/fault/recovery/reset sequences. Final complete delivery and sequential gates passed as recorded below.
+
+Unused ELP web-build cache images were retired after confirming they were untagged, unused leaves whose build history identifies @elp/web. Exact metadata and deletion logs are retained locally. Existing previews and unrelated product images were preserved.
+
+Rollback is a normal revert of this batch plus rebuilding its prior target image; no mutable data migration or source-repository write is involved. The final development integration and control closeout will bind exact head/merge/tree evidence.
+
+## Final delivery and frozen-input verification
+
+All 103 implementation/test/contract input hashes remained unchanged through final verification. The final read-only nonroot image is `sha256:eaabddbbb6efa3fd8825075043f4623e0a6749365ac4e87efb484ed4a3f740d6` at `http://127.0.0.1:8774`. [The verification summary](../course-quality/robotics-dynamics-verification-summary.json) binds inputs, image, exact result counts and gate-log hashes.
+
+- 290 HTTP modules and 290 canonical host/baked content identities passed.
+- 580 desktop/mobile page checks, 240 checkpoint-navigation checks, twenty cumulative DSP checks, 128 real control/fault/recovery/reset sequences and 128 screenshot hash checks passed.
+- Twenty-one focused real-browser tests passed. Twenty-four new Robotics page checks include actual SVG title/axis/tick bounds and legend clipping/overlap assertions.
+- Sixty independent numerical cases passed locally and sixty through baked HTTP at unchanged 1e-8 absolute/relative tolerances. The 62 focused physical/preservation tests cover complete state/matrix arrays, physical identities, degeneracies and 96 control corners under the unchanged three-second limit.
+- An additional Robotics expansion, delivery-ledger and course-status suite passed 33 tests in 198.57 seconds. Three DSP successor-ledger guards also passed.
+- Mandatory local gates passed in order: contract: 103 tests in 102.48 seconds; quick: 1482 tests in 1542.87 seconds; full: 1482 tests in 1469.57 seconds. Full includes deterministic course execution, schema checks, the entire backend suite, frontend typecheck and production build. Existing warnings are retained in the summary.
+
+## Visual findings and corrections
+
+Fourteen plot-grid screenshots cover all twelve mobile lessons plus two desktop examples. They were inspected against actual Chromium output. Initial review found long titles and overlapping legends; those labels were shortened without changing numerical data. A dynamically generated inertia legend needed a second correction. The nominal hybrid controller's tiny floating-point velocity variation was being magnified by automatic axis scaling; its plot now includes a meaningful physical span, while all raw samples and metrics remain unchanged. The lesson explains that choice.
+
+The new clipping assertion initially compared against Plotly's zero-height positioning wrapper and falsely failed valid text. Inspection showed that the actual SVG had a 330-pixel height. The check was corrected to use the rendered SVG boundary and retained its clipping/overlap assertions. The final selected browser pass verified all 24 pages. These failed attempts and temporary container metadata remain in local `.state/robotics20` logs; the committed [visual review](../course-quality/robotics-dynamics-visual-review.json) binds the final fourteen image hashes and their actual review-container image. That review image differs from the final delivery image only after later packaging; all selected canonical module hashes agree.
+
+The owner has authorized the remaining eight Robotics findings. They must use a fresh contract anchored to this group's actual merge after control closeout. No Vehicle repair or aggregate course acceptance is activated here.
+
+## Normalization convention for the final wording polish
+
+P31 computes the unnormalised skew-identity defect `||S+Sᵀ||`, where `S=Mdot−2C`; this is twice the conventional norm of the symmetric part. Production and independent calculations use the same declared skew identity and agree. The embedded prose currently calls this a symmetric-part norm without specifying that factor. The owner-authorized final Robotics group will clarify only this wording in P31, preserving its numerical program, arrays, signatures and evidence. Its fresh contract must explicitly permit those three prose-bearing files and retain a preservation check. This is a wording follow-up, not an unverified dynamics calculation.
+
+The final wording polish also replaces default-result snapshots in the static P32/P34/P36/P37/P40/P41 manifest summaries with parameter-independent lesson overviews. Their live interpretation panels already report the selected run. The fresh successor contract permits only those six summary fields and requires all other manifest fields and numerical payloads to remain unchanged.
+
+After reconciling the current rubric prose, all twelve course-caliber status checks passed in 0.49 seconds. Maturity statuses remained unchanged. The final scope audit accepted all 160 changed paths and confirmed all 103 frozen input hashes.

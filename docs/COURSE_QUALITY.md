@@ -1,4 +1,4 @@
-# Revised-course quality position — 2026-09-29
+# Revised-course quality position — 2026-09-30
 
 All 288 native engineering lessons and two examples are embedded in Engineering
 Learning. Nine of the thirteen pinned source repositories remain source-only.
@@ -9,10 +9,24 @@ passed. Its historical evidence retains the exact image and screenshot hashes.
 | --- | ---: | --- |
 | DSP/Radar | 84 | 84 checkpoints, ten cumulative portfolios and aggregate authored/software review verified |
 | Controls/GNC | 68 | P36/P38/P42/P43/P45–P51/P55–P57/P60–P62/P64–P68 repaired within declared models; zero listed findings; aggregate reassessment remains blocked |
-| Robotics/Autonomy | 69 | P25–P29 and P68–P69 repaired within declared models; 20 findings remain blocked |
+| Robotics/Autonomy | 69 | P25–P41 and P68–P69 repaired within declared models; 8 findings remain blocked |
 | Vehicle Dynamics | 67 | P61–P67 repaired within declared models; P01–P16 presentation findings remain blocked |
 
-## Navigation and geometry revision
+## Robotics dynamics revision
+
+Robotics P30-P41 now execute force/torque mapping, point-mass dynamics,
+regularized identification, bounded cubic timing, kinematic feedback, computed
+torque, operational inertia, contact dynamics, hybrid projection, sampled work
+limiting, reaction-wheel swing-up and camera-frame projection. Each includes
+an authored browser checkpoint. Sixty independent comparisons, 62 focused
+physical/preservation tests and selected desktop/mobile checks passed.
+
+The current register has 24 findings: Controls 0, Robotics 8 and Vehicle 16.
+All non-DSP aggregate reassessments remain blocked. Final delivery passed 290 HTTP modules, 580 desktop/mobile pages, 240 checkpoint checks,
+128 real interaction sequences, 21 focused browser tests and all 290 host/baked identities.
+Contract, quick and full gates passed sequentially; see the [active batch evidence](evidence/ELP-ROBOTICS-DYNAMICS-QUALITY-12-2026-09-29.md).
+
+## Historical navigation and geometry revision
 
 Controls P56/P57/P60–P62/P64–P65 and Robotics P25–P29 now execute their declared
 models and expose twelve individual Course checkpoints. Sixty independent
@@ -22,7 +36,7 @@ desktop/mobile page and interaction checks passed in the baked preflight.
 The default P62 fault is 16 m so its threshold sweep crosses the computed alarm
 boundary; thresholds five and ten respectively exclude and retain the row.
 
-This closes twelve scoped findings. The register now contains 36 findings:
+This closes twelve scoped findings. At that revision, the register contained 36 findings:
 Controls 0, Robotics 20 and Vehicle 16. Controls still requires its separate
 aggregate numerical/curriculum/capstone reassessment; this defect register is
 not exhaustive. Final delivery passed 290 HTTP modules, 580 desktop/mobile pages,
@@ -53,7 +67,7 @@ lessons have post-interaction drawn-curve assertions. PR53 records integration. 
 
 The browser's expanded lesson review identifies exactly what was checked.
 This is scoped synthetic-model evidence, not whole-course or learner acceptance.
-The remaining 36 findings are individually embedded and retained in the
+The remaining 24 findings are individually embedded and retained in the
 [additional finding register](course-quality/additional-semantic-findings.md).
 No unlisted lesson is automatically certified. Controls, Robotics and Vehicle aggregate numerical, curriculum and capstone stages
 remain blocked. DSP passes the separate authored/synthetic aggregate review

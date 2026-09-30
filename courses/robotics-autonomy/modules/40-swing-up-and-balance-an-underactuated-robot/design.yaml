@@ -7,9 +7,9 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- u=k(E_d-E) q_dot cos(q)
-- E=1/2 m l^2 q_dot^2+mgl(1-cos q)
-- switch to balance inside capture region
+- I_body*theta_ddot+g_moment*sin(theta)=tau_body
+- J_rotor*psi_ddot=-tau_body; E=0.5 I_body*theta_dot²+g_moment(1-cos(theta))
+- tau_swing=k(E_target-E)*theta_dot/omega_reference²
 signature:
 - field: capture_time
   unit: s
@@ -17,11 +17,12 @@ signature:
   unit: rad
 - field: peak_energy_error
   unit: J
-teaching_invariant: Energy shaping must add energy below the upright target, remove it above target, and hand off
-  to balancing only inside a reachable capture region.
+teaching_invariant: Predict why reversing the energy-pumping sign prevents the default pendulum from reaching
+  the capture region.
 limiting_cases:
-- At the hanging equilibrium with zero velocity, energy error is maximal.
-- At exact upright rest, energy error and balance error are zero.
+- Exactly downward at zero rate, this energy law cannot initiate motion without a perturbation.
+- No capture within twelve seconds is censored evidence, not a proof of impossibility. Wheel speed and position
+  are unregulated and unlimited; successful body capture is not hardware qualification.
 scenarios:
   baseline: &id001
     energy_gain_per_s: 1.4
@@ -48,5 +49,5 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic software evidence only. Browser/container checks are recorded separately.
+  No MATLAB runtime, representative learner, manual screen-reader, hardware, certification or production acceptance.

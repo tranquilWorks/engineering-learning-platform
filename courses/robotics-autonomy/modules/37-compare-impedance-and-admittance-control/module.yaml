@@ -1,10 +1,11 @@
 schema_version: 1
 id: 37-compare-impedance-and-admittance-control
 number: 37
-title: Compare Impedance and Admittance Control
-summary: Build a deterministic numerical laboratory to compare impedance and admittance control, expose its governing
-  relation, and diagnose a named counterexample before recovery.
-guiding_question: What assumptions and evidence make compare impedance and admittance control defensible?
+title: Compare Impedance and Ideal Admittance Contact Transients
+summary: An ideal torque-rendered impedance and ideal position-servo admittance share the declared mass–spring–damper
+  equation under different initial excitation. The impedance meets the sampled 2% state band.
+guiding_question: Why does a reported value of 0.4 s not necessarily mean that the response settled at 0.4
+  s?
 status: implemented
 tags:
 - robotics-autonomy
@@ -41,9 +42,10 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Impedance shapes force from motion error while admittance shapes motion from force; both require an energy
-    and damping interpretation at contact.
-  reveal: Use the equations, units, and mechanism plot to test the prediction.
+  text: Predict the energy trend when damping is positive and when the same damping is given the wrong sign.
+  reveal: The value can be the observation horizon with a censored status. Settling requires both normalized
+    displacement and velocity to stay within the band; an oscillatory force zero crossing or the last available
+    sample does not establish it.
 - type: controls
   title: Live model controls
 - type: metrics
@@ -64,3 +66,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

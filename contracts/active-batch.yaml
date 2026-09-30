@@ -1,49 +1,45 @@
 schema_version: 1
 batch:
-  id: ELP-NAV-GEOMETRY-QUALITY-12
-  title: Repair seven navigation lessons and five robotics geometry lessons
-  goal: Execute the remaining recorded Controls navigation mechanisms and the first five Robotics geometry mechanisms,
-    with independent evidence and embedded lesson checkpoints.
+  id: ELP-ROBOTICS-DYNAMICS-QUALITY-12
+  title: Repair twelve robotics dynamics, interaction and projection lessons
+  goal: Replace recorded Robotics P30-P41 surrogates with executed mechanisms, independent numerical checks
+    and embedded lesson checkpoints.
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
   - products/engineering-learning-platform/COURSE_CALIBER.md
-  - Owner next-batch continuation 2026-09-29, with retained approximately twelve-at-a-time repair and verified development-merge
-    authorization.
-  - 'Target additional-semantic-findings register: Controls P56/P57/P60-P62/P64-P65 and Robotics P25-P29.'
+  - Owner requests all twenty remaining Robotics findings, in retained roughly-twelve-lesson groups, with verified
+    normal development merges. First P30-P41, then P42-P48/P52 through a fresh successor contract.
+  - Target additional-semantic-findings register, Robotics P30-P41.
   milestone: products/engineering-learning-platform/roadmap.yaml#ELP-M3
-  baseline_commit: 8820f21d349836b63db00f1e596f5eb00b488ab9
-  baseline_tree: c30d90aa2dacdf7ceecad518efca787fb3f51f73
+  baseline_commit: e8d94c521a086a93a3b595c035867c19866bbdbd
+  baseline_tree: fcbc077681461d348d894cba4d1abf493e85b306
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_baseline: a82253d2cb2c290f77c2be7c9c7af88cfc0ae9ef
-  control_plane_path: products/engineering-learning-platform/batches/ELP-NAV-GEOMETRY-QUALITY-12.yaml
+  control_plane_baseline: 1a2c1ee989319ffcd6c2d1874f13e1ed0f82bccb
+  control_plane_path: products/engineering-learning-platform/batches/ELP-ROBOTICS-DYNAMICS-QUALITY-12.yaml
   target_repository: tranquilWorks/engineering-learning-platform
-  predecessor_pr: 55
+  predecessor_pr: 56
 dependencies:
-- ELP-GNC-SEMANTIC-QUALITY-12
+- ELP-NAV-GEOMETRY-QUALITY-12
 scope:
   allowed_paths:
-  - courses/controls-gnc/modules/56-*/**
-  - courses/controls-gnc/modules/57-*/**
-  - courses/controls-gnc/modules/60-*/**
-  - courses/controls-gnc/modules/61-*/**
-  - courses/controls-gnc/modules/62-*/**
-  - courses/controls-gnc/modules/64-*/**
-  - courses/controls-gnc/modules/65-*/**
-  - courses/robotics-autonomy/modules/25-*/**
-  - courses/robotics-autonomy/modules/26-*/**
-  - courses/robotics-autonomy/modules/27-*/**
-  - courses/robotics-autonomy/modules/28-*/**
-  - courses/robotics-autonomy/modules/29-*/**
-  - courses/controls-gnc/expansion_reference_cases.py
-  - courses/controls-gnc/competency-map.yaml
-  - courses/controls-gnc/expansion-map.yaml
+  - courses/robotics-autonomy/modules/30-*/**
+  - courses/robotics-autonomy/modules/31-*/**
+  - courses/robotics-autonomy/modules/32-*/**
+  - courses/robotics-autonomy/modules/33-*/**
+  - courses/robotics-autonomy/modules/34-*/**
+  - courses/robotics-autonomy/modules/35-*/**
+  - courses/robotics-autonomy/modules/36-*/**
+  - courses/robotics-autonomy/modules/37-*/**
+  - courses/robotics-autonomy/modules/38-*/**
+  - courses/robotics-autonomy/modules/39-*/**
+  - courses/robotics-autonomy/modules/40-*/**
+  - courses/robotics-autonomy/modules/41-*/**
   - courses/robotics-autonomy/expansion_reference_cases.py
   - courses/robotics-autonomy/competency-map.yaml
   - courses/robotics-autonomy/expansion-map.yaml
+  - apps/api/tests/test_robotics_dynamics_quality.py
   - apps/api/tests/test_navigation_geometry_quality.py
-  - apps/api/tests/test_gnc_quality_revision.py
-  - apps/api/tests/test_gnc_expansion.py
   - apps/api/tests/test_robotics_expansion.py
   - apps/api/tests/test_capstone_quality_revision.py
   - apps/api/tests/test_dsp_aggregate_quality.py
@@ -53,7 +49,7 @@ scope:
   - apps/web/src/lesson-quality.json
   - scripts/audit_course_quality.py
   - scripts/browser-quality.mjs
-  - scripts/verify-navigation-geometry-quality.py
+  - scripts/verify-robotics-dynamics-quality.py
   - scripts/verify-course-delivery.sh
   - tests/browser/delivery.spec.ts
   - contracts/active-batch.yaml
@@ -66,10 +62,11 @@ scope:
   - docs/CURRENT_STATE.md
   - docs/HANDOFF.md
   - docs/ROADMAP.md
-  - docs/evidence/ELP-NAV-GEOMETRY-QUALITY-12-*
+  - docs/evidence/ELP-ROBOTICS-DYNAMICS-QUALITY-12-*
   forbidden_paths:
   - courses/*-learning/**
   - courses/dsp-radar/**
+  - courses/controls-gnc/**
   - courses/vehicle-dynamics/**
   - courses/demo-radar/**
   - courses/platform-showcase/**
@@ -84,71 +81,68 @@ scope:
   - .github/**
   - products/**
 acceptance:
-- Activate only after this control contract merges, from exact PR55 merge/tree. Repair exactly existing Controls
-  P56/P57/P60-P62/P64-P65 and Robotics P25-P29. Preserve all 290 module identities, source pins, DSP content/numerics/assessments,
-  Vehicle payloads and all unselected Controls/Robotics payloads.
-- Controls P56 must execute a forward Kalman filter and backward RTS smoother, retaining actual means/covariances
-  and final-sample equality. Compare an independently formulated joint Gaussian posterior. Fault skips smoothing
-  without overwriting controls. Do not claim every finite realization must have smaller trajectory error.
-- Controls P57 must construct, compose and normalize quaternions, evaluate rotation matrices and transform actual
-  sensor vectors. Compute norm, orthogonality and calibration residuals from those operations. Declare scalar/vector
-  and frame conventions; exercise a normalization fault and degenerate limits.
-- Controls P60 must generate declared synthetic satellite geometry/pseudoranges and solve receiver position and
-  clock together, with actual post-fit residuals and geometry conditioning. Geometry concentration is an input;
-  dilution is a computed output. A clock-omission fault must execute the wrong solve. P62 must detect an injected
-  measurement fault, select an exclusion only when warranted, remove that row and recompute the navigation solution
-  and residuals. No certified protection/integrity claim from a toy covariance.
-- Controls P61 must propagate a declared additive one-axis position/velocity/bias error state, process covariance
-  and GNSS updates, then inject and reset the state with an appropriate covariance update. Compare an equivalent
-  independently evaluated full-state filter. The fault may update covariance while withholding state correction;
-  show the actual resulting estimation error. Narrow visible scope to the executed one-axis model rather than claim
-  full three-dimensional attitude ESKF.
-- Controls P64 must integrate declared civilian moving-beacon pursuit and proportional-navigation comparison trajectories
-  and actual commands over a bounded observation/capture window. Disclose sampled closest approach, capture events
-  and limits; no assigned miss proxy or universal capture claim. P65 must solve a declared constrained terminal
-  objective, propagate the terminal dynamics using actual applied commands, and measure actuator violation and terminal
-  residual from that execution. Compare a separately formulated constrained reference; no assigned infeasibility
-  bound.
-- Robotics P25 must construct a holonomic constraint and its Jacobian, project actual configurations/candidate velocities,
-  compute rank/tangency and geometric clearance, and distinguish sampled configuration analysis from integrated
-  dynamics. P26 must construct and compose homogeneous transforms, evaluate rotation-group/rigid-inverse residuals
-  and demonstrate noncommuting operations. Invalid interpolation must be an executed fault.
-- Robotics P27 must construct a twist, dual wrench and adjoint transform, verify actual power invariance and separate
-  angular/linear round-trip units. P28 must construct a declared arm Jacobian, compute singular values/manipulability
-  and compare independently differenced kinematics. Distinguish a position-task singularity from full spatial-twist
-  rank. P29 must execute primary inverse kinematics and a null-space projection with an actual task velocity and
-  posture direction; report true residual/leakage without inventing joint-limit guarantees.
-- Individually author twelve portable Course checkpoint blocks with equations/units, a worked example, prediction,
-  two meaningful sweeps, named fault/recovery, limits and answer rationale. Preserve accessible labels/keyboard
-  operation and drawn plots. Selected competency labels/method descriptions may narrow unsupported claims; preserve
-  the prerequisite graph, competency IDs and inventory. No blanket course promotion.
-- Retain five independently formulated scenarios per selected lesson with expected artifacts generated only by references
-  and unchanged absolute/relative 1e-8 tolerances. Add trajectory/algebra/physical, negative and limiting tests
-  plus all 96 control corners through the unchanged runtime. Preserve all unselected reference definitions, origins
-  and five-scenario outputs against exact PR55.
-- Anchor historical PR55 scope/reference preservation guards to their original exact merged trees while retaining
-  their live numerical/physical checks. Add a PR55-to-current scope/reference/content guard for this batch. Only
-  selected obsolete surrogate assertions and active-contract successor bindings may change; replace them with mechanism-level
-  checks rather than weaken coverage.
-- Close selected findings only after independent numerical and selected browser evidence passes. Final baked read-only
-  nonroot delivery must check 290 HTTP modules, 580 desktop/mobile pages, all retained DSP/Controls checkpoints
-  plus the new twelve checkpoints, and real control/fault/recovery/reset with drawn traces for all revised lessons.
-  Bind host canonical content identities to the baked image and replay sixty independent cases over actual HTTP.
-  Keep single-request pacing and three-second runtime limits. Then run mandatory contract, quick and full sequentially.
-- 'After verified closure retain 36 findings: Controls zero listed, Robotics twenty and Vehicle sixteen. Controls
-  numerical/curriculum/capstone aggregate reassessment remains separately blocked even with no remaining listed
-  Controls finding; absence from this register is not exhaustive acceptance. Preserve original findings history
-  and all learner/manual-screen-reader/MATLAB/hardware/production not_run boundaries.'
-- Publish exact evidence and a reviewable PR, then perform an eligible exact-head normal development merge under
-  retained owner authorization and reconcile Portfolio Control. Hosted CI remains separately reported/nonmandatory;
-  local gates mandatory. Retain PR55 hosted checkout/history failures (75 failed, 14 errors, 1288 passed), distinct
-  from its passed local gates. No workflow/protection/account changes, production deployment or unrelated backlog
-  consumption.
+- Activate only after this contract merges from exact PR56 merge/tree. Repair exactly existing Robotics P30-P41;
+  preserve all 290 identities, source pins, prerequisites, unselected module payloads and unselected reference
+  definitions/origins/five-case outputs.
+- P30 must construct a declared arm Jacobian and apply its transpose to force, comparing actual joint and Cartesian
+  virtual power with velocity and units. Wrong transpose is an executed map, not a torque-scaled assigned power
+  error. P31 must construct physical inertia, Coriolis and gravity terms, compute positive inertia eigenvalues
+  and the time-derivative skew identity; a dropped Coriolis coupling must create the measured defect.
+- P32 must generate synthetic excitation/torque data, fit declared parameters, report actual regressor rank/conditioning
+  and independently held-out inverse-dynamics error. Disclose any prior regularization and use a physically
+  specified excitation failure. P33 must derive duration from actual cubic peak velocity (including its 1.5
+  factor) and declared acceleration constraints, retain actual multi-joint q/qdot/qddot and measure applied-limit
+  violations.
+- P34 must execute joint-space and task-space feedback using actual forward kinematics/Jacobians and trajectories.
+  Distinguish a kinematic velocity-servo scope from torque dynamics; derive conditioning from the declared
+  geometry rather than assign it as an output. P35 must integrate a declared robot equation with applied computed
+  torque, inertia/velocity/gravity compensation and actual model mismatch or compensation-sign failure.
+- P36 must construct a physical joint inertia and Jacobian, derive operational inertia/dynamically consistent
+  inverse/null torque, and compute resulting task acceleration and leakage. Explicitly distinguish a local
+  acceleration experiment from integrated motion. P37 must execute the declared impedance/admittance differential
+  equations, with measured contact-force/energy traces and finite-window settling status; no assigned exponential
+  proxy or universal stability claim.
+- P38 must construct surface-frame motion/force projectors and execute feedback with a declared contact model.
+  A wrong-frame fault can remain algebraically orthogonal; report the actual frame mismatch and resulting force/motion
+  errors rather than invent projector nonorthogonality. P39 must replay delayed saturated force with an actual
+  work/energy observer and causal energy limiter, preserving selected controls. Report energy balance and intervention
+  from the trace; distinguish a sampled prescribed-port passivity experiment from closed-loop hardware stability.
+- P40 must integrate a genuinely underactuated two-coordinate/one-input robot, execute bounded energy swing-up
+  and a declared state-dependent balance handoff, and measure capture and terminal state. A reaction-wheel
+  pendulum is permitted with explicit rotor coordinate/torque and wheel-speed/position limits excluded. Retain
+  no-capture/censored cases honestly and zero-motion equilibrium limitations. P41 must transform actual points
+  into camera coordinates, test near/behind-plane depth, and compute projection/sensitivity/reprojection on
+  valid rays. Wrong-frame behavior must operate on those points, not replace a count by a mode flag.
+- Individually author twelve substantive portable lessons and Course checkpoint blocks with equations/units,
+  worked examples, prediction, two sweeps, named failure/recovery, limits and reasoning rubrics. Every plotted
+  series must come from the executed mechanism with readable axis/legend units and visible zero-span points.
+  Selected labels may narrow unsupported claims while identities, inventory and prerequisite graph remain fixed.
+- Retain five independently formulated scenarios per lesson at unchanged absolute/relative 1e-8 tolerances.
+  Expected artifacts must originate solely from separate references, actual artifacts solely from production.
+  Add mechanism, negative, physical/energy, degenerate/zero-limit and all96 runtime-control-corner checks.
+  Preserve the three-second execution limit. Independently test full trajectories or algebra beyond three-number
+  signatures.
+- Anchor historical PR56 scope/reference guards to exact PR55-to-PR56 trees, preserving their live numerical
+  checks; add a PR56-to-current scope/reference guard. Update only obsolete selected surrogate assertions and
+  successor-contract bindings; do not weaken runtime, tolerances, independent evidence or unrelated checks.
+- Close only selected findings after independent numerical and selected baked browser evidence passes. Final
+  read-only nonroot delivery must verify all290 HTTP modules, all580 desktop/mobile pages, all existing plus
+  twelve new embedded checkpoints, and real control/fault/recovery/reset/drawn-plot sequences for all revised
+  lessons. Bind all290 host/baked identities and replay60 independent cases over HTTP. Then run mandatory contract,
+  quick and full sequentially; hosted CI remains separately reported/nonmandatory.
+- 'After verified closure retain24 findings: Controls0, Robotics8 (P42-P48/P52), Vehicle16. All three non-DSP
+  numerical/curriculum/capstone aggregates remain blocked, including Controls with zero listed findings. No
+  representative learner, manual screen-reader, MATLAB, hardware, production or concurrent-capacity acceptance.'
+- Publish reviewable exact evidence and perform an eligible normal exact-head development merge under standing
+  owner authorization, then reconcile Portfolio Control. The user has authorized the subsequent eight Robotics
+  findings, but activate them only through a fresh exact-merged-baseline successor contract. Do not consume
+  Vehicle findings or course-wide aggregate acceptance in this contract. Preserve historical local/hosted discrepancies
+  and billing limitations; no workflow, protection or account changes.
 validation:
   local:
-  - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_navigation_geometry_quality.py apps/api/tests/test_gnc_expansion.py
+  - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_robotics_dynamics_quality.py
     apps/api/tests/test_robotics_expansion.py
-  - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-navigation-geometry-quality.py
+  - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-robotics-dynamics-quality.py
   - npm run typecheck
   - npm run build
   - npm run test:web
@@ -160,30 +154,28 @@ validation:
   - ./scripts/agent-verify.sh full
   - git diff --check
   focused_tests_to_add:
-  - Executed filtering, navigation, terminal dynamics, geometric transforms and Jacobian mechanisms with independent
-    references.
-  - Every selected control corner, failure and meaningful zero/degenerate limit with unchanged tolerances/runtime.
-  - Exact-baseline unselected preservation plus checkpoint navigation, units and drawn browser output.
+  - Executed robotics mechanisms with separately formulated references and full-trajectory/energy/algebra checks.
+  - All96 control corners, meaningful zero/degenerate limits, no-capture and actual feedback/fault behavior.
+  - Exact baseline preservation, checkpoint navigation, units and actual drawn traces in browser/container.
   required_ci:
   - Hosted CI nonmandatory under retained owner direction; all named local gates mandatory.
 risk:
   class: high
   hazards:
-  - Correlated reference formulations hiding the same numerical defect.
-  - Overstating synthetic navigation covariance, sampled closest approach or local Jacobian checks as operational
-    certification/global guarantees.
-  - Slow solves or browser workloads exceeding unchanged runtime limits.
+  - Correlated dynamics/reference implementations hiding defects.
+  - Overstating local Jacobian, prescribed-port energy or finite-window capture as global/physical guarantees.
+  - Runtime or host-storage constraints invalidating repeatable verification.
   stop_conditions:
   - Need to change source pins, public schemas, generic runtime or unrelated lesson payloads.
   - Independent numerical or browser/container validation cannot be made credible.
   - Need learner personal data, actual vehicle/hardware or production access.
 rollback:
-  strategy: Revert this isolated batch to exact PR55 baseline; retain original findings. No schema or persisted-data
-    migration.
+  strategy: Revert this isolated group to exact PR56 baseline and restore its original findings; no schema
+    or persisted-data migration.
 evidence:
   output:
-  - docs/evidence/ELP-NAV-GEOMETRY-QUALITY-12-2026-09-29.md
-  - docs/course-quality/navigation-geometry-quality-revision.json
+  - docs/evidence/ELP-ROBOTICS-DYNAMICS-QUALITY-12-2026-09-29.md
+  - docs/course-quality/robotics-dynamics-quality-revision.json
   - docs/course-quality/lesson-audit.json
   - docs/COURSE_QUALITY.md
   claim_boundary: Deterministic synthetic numerical/browser/container evidence only. No representative learner,

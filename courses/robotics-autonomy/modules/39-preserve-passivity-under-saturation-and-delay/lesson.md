@@ -1,87 +1,83 @@
-# Preserve Passivity under Saturation and Delay
+# Account for Delayed Port Work with a Causal Energy Limiter
 
-**Guiding question:** What assumptions and evidence make preserve passivity under saturation and delay defensible?
 
-Build a deterministic numerical laboratory to preserve passivity under saturation and delay, expose its governing relation, and diagnose a named counterexample before recovery. This module is a Python-first native design authorized by the reviewed issue-440 competency map. It is not a conversion of the pinned MATLAB-oriented source course, and it remains deterministic software evidence.
-
-## Why this lesson exists
-
-Robotics failures often cross representation boundaries: geometry into velocity, images into pose, estimates into maps, plans into commands, or contact forces into actuator effort. A result is defensible only when those boundaries carry explicit frames, signs, units, timing, constraints, and uncertainty. This lesson therefore connects one design decision to a governing equation, an observable response, a named failure, and an exact recovery.
-
-Before calculating, name the state, input, observation, and verdict. State which quantities are measured, which are modeled, and which are derived. A smooth curve is not evidence that a constraint was respected, an estimator was consistent, a path was collision free, or a contact remained passive.
 
 ## Model, derivation, and conventions
 
-- $$E_obs=integral F^T v dt$$
-- $$E_tank>=0$$
-- $$delay consumes phase and passivity margin$$
+`work_k=F_applied,k*v_k*dt; E_next=E-work_k`
 
-Derive the first relation from the physical, geometric, probabilistic, or algorithmic definition. Use the second relation to propagate the decision into a measurable consequence. Use the third as an invariant, feasibility condition, or audit relation. Keep every coordinate frame and sampling instant attached until the final scalar metric. The experiment evaluates these relations directly with bounded NumPy arrays; it does not call a remote solver or hide the mechanism behind a black-box robotics stack.
+`F_requested=-900*x_delayed-0.4*v_delayed`
 
-The three retained signature quantities are:
+`positive_work_applied=min(positive_work_requested,E_available)`
 
-- `passivity_energy` (J)
-- `saturation_fraction` (1)
-- `delay_margin` (ms)
+This is a sampled interaction-port calculation with prescribed motion. Position is x=0.02*sin(6*pi*t) m and velocity is its analytic derivative, sampled every 0.005 s for 401 force applications. The motion is imposed externally and is not integrated from force, so the example does not establish closed-loop mechanical stability. Positive F*v means the controller supplies mechanical power to that port; negative work means the port returns energy to the bookkeeping reservoir.
 
-Carry units through each substitution. Dimensionless ranks, probabilities, ratios, and flags are labeled `1` or `count`; physical displacement, time, force, torque, energy, velocity, and pixel quantities retain their named units. If a sum combines unlike units or a transform maps a vector without a frame convention, stop before interpreting a number.
+The requested spring-damper force uses delayed position and velocity, with stiffness 900 N/m and damping 0.4 N s/m. The selected round-trip delay is converted from milliseconds to seconds. Before delayed history exists, requested force is explicitly zero. After that, the delayed analytic samples define the request. The force-limit slider clips the request symmetrically before energy limiting. This order distinguishes an actuator amplitude bound from a work constraint.
+
+The reservoir begins with 0.01 J. At each sample, compute candidate work from the saturated force, current prescribed velocity and the 0.005 s step. If candidate work is positive and exceeds available energy, scale the force so that the applied positive work spends only the available balance. Negative candidate work is accepted and replenishes the balance. Then update energy using the actual applied force. This is a causal rule: it uses only current work and the retained prior balance, never future samples.
+
+There are 401 force and work samples but 402 energy values because the initial balance precedes the first application. Comparing these arrays without that one-step offset would create a false conservation error. The minimum-energy metric includes the initial and every updated balance. Tiny negative values near floating-point roundoff are numerical residuals; they are not evidence of a substantial energy debt. The saturation fraction measures how often the delayed request exceeds the amplitude bound, before the energy limiter acts.
+
+The third metric is total positive work removed by the limiter, in joules. It accumulates the difference between candidate and applied work, rather than reporting an invented delay margin. Intervention count is retained as a diagnostic but can be sensitive to roundoff at an exactly empty reservoir, so it is not used as a strict numerical comparison signature. The plots show force requests versus applied force and the actual energy balance over time.
+
+Broken mode bypasses the work limiter but retains delay, amplitude clipping and energy accounting. If the delayed force supplies more net work than the initial balance, energy becomes negative. Saturation may reduce that deficit but cannot by itself enforce the cumulative inequality. Conversely, a sufficiently dissipative setting can remain within budget even with the limiter bypassed; the fault is a missing enforcement mechanism, not a command to force every run to fail.
 
 ## Predict before running
 
-A delayed saturated interaction remains within this lesson's claim only when observed net energy and the energy tank stay nonnegative. Predict the sign and direction of all three signature changes before moving a slider. Identify the equation term responsible and one quantity that should remain invariant. This written prediction is the comparison point; post-hoc description is not the same as a test.
+Predict why force saturation alone cannot guarantee that the accumulated port energy stays nonnegative. Record the expected direction of change and an invariant before reading the computed result. State a condition under which the fault could be hidden, rather than assuming every faulty setting must look worse.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read the three signature metrics with units.
-2. Inspect the response plot for task-level behavior, then the mechanism plot for the constraint, residual, energy, conditioning, or decision that explains it.
-3. Reproduce one signature quantity from the displayed equations to one or two significant figures.
-4. Check a limiting case before accepting the baseline.
-5. Save the baseline parameters and signature so recovery can be tested exactly.
+Reset controls and disable the named fault. Use Round-trip delay = 18.0 ms; Force limit = 25.0 N. Read the response curve, then connect it to the mechanism curve using the governing equations.
+
+Port energy balance plots Energy (J) against Time (s). Its series are Tank, Zero. Requested and applied force plots Force (N) against Time (s). Its series are Requested, Applied.
+
+The default record is Minimum observed tank energy: -3.46945e-18 J; Force saturation fraction: 0 1; Active work removed by limiter: 2.18063 J. These computed values are a worked example for these settings, not acceptance limits for every experiment. Keep parameter values and units beside the result. A near-zero residual has meaning only in relation to the stated model and numerical precision.
 
 ## Two one-variable sweeps
 
-1. Hold `force_limit_n` at `25.0 N` and sweep `round_trip_delay_ms` from `0.0` through `18.0` to `120.0 ms`.
-2. Restore `round_trip_delay_ms` to `18.0 ms` and sweep `force_limit_n` from `2.0` through `25.0` to `80.0 N`.
+1. Increase delay at fixed force bound. Compare force phase, negative energy in bypass mode and actual removed work in normal mode. Avoid interpreting a monotonic delay slider as a proven stability threshold.
 
-Change one variable at a time. For each endpoint, record the predicted direction, actual direction, metric delta, and the mechanism-plot feature that supports causality. If the result reverses direction, check for a branch, active constraint, singularity, gate, saturation, or feasibility transition rather than smoothing it away.
+2. Reduce force bound at fixed delay. Compare saturation fraction and supplied work. Explain why a bounded force can still accumulate too much positive work over repeated samples.
+
+Return to defaults between sweeps. Hold the other control fixed and record both a changing output and an expected invariant. Explain the physical or numerical path from the selected input to the observed response.
 
 ## Intentionally broken case
 
-Broken mode bypasses the passivity observer/controller and replays delayed force without energy limiting. Broken mode is a falsifying counterexample, not a recommended alternative. Explain which assumption is violated before describing the visual symptom. Then locate the first intermediate quantity that departs from the baseline invariant; downstream task error alone rarely identifies the cause.
+The fault bypasses the causal energy limiter while preserving the delayed request and saturation. The same actual-work update then reveals any reservoir deficit.
+
+Run the same parameter values with the fault enabled. Compare complete curves as well as summary metrics. Identify the actual operation that changed and calculate why it affects the measured result. A changed warning label is not numerical evidence.
 
 ## Recovery
 
-Restore the energy tank, include saturation in the observer, and reduce gain or delay until energy remains bounded. Recovery is complete only when the original default inputs and diagnostic signature return within the independent-reference tolerance. A different setting that happens to look better is mitigation, not recovery. Preserve the fault, detection, decision, and recovery sequence as separate evidence.
+Restore work limiting and compare applied force, sample work and every energy update. Verify conservation with the initial balance included.
+
+Repeat a saved nominal setting and confirm that its values and curves return. Recovery must restore the governing mechanism and its evidence, not merely clear a warning.
 
 ## Alternative and limiting cases
 
-- At zero delay, delay-induced energy injection vanishes in the ideal sampled model.
-- With an infinite force limit, saturation fraction tends to zero but delay risk remains.
-
-Use one limit as a hand calculation and one as a numerical sweep. Limits reveal whether a formula is continuous, singular, or branch-dependent. An undefined limit must be reported as such; clipping it into a convenient finite value changes the model.
+At a zero-velocity sample the port work is zero regardless of finite force. This is a prescribed-motion, sampled-work demonstration with ideal force application. It does not establish continuous-time passivity, a closed-loop delay margin or stability of a physical haptic system.
 
 ## Independent evidence and MATLAB-style design boundary
 
-The design was reasoned from the displayed equations in the same model-first workflow normally used before a MATLAB/Simulink implementation, but the delivered implementation is Python/NumPy only. Expected signatures are stored by `expansion_reference_cases.py`, which imports no production experiment, consumes no production result, and perturbs no production value. Production signatures are retained separately for baseline, both one-variable sweeps, broken, and exact recovery scenarios.
+The reference uses cumulative candidate work and its running maximum to derive the minimal reflection correction that keeps the balance nonnegative. This global mathematical identity independently checks the production causal sample loop.
 
-Agreement supports only the displayed model, input set, fields, units, and tolerances. No licensed MATLAB runtime was executed, so the evidence makes no MATLAB numerical-parity claim. It also does not establish global optimality, field robustness, physical calibration, hardware timing, safety certification, or production readiness.
+Five retained cases cover baseline, two single-control sweeps, the named fault and recovery. Expected values come from the independent formulation; actual values come from the executable lesson. Absolute and relative comparison tolerances remain 1e-8. Full-state or geometric checks supplement these three-number signatures, which alone cannot establish correctness. MATLAB has not been executed and no MATLAB equivalence is claimed. Browser and container evidence is recorded separately. Agreement between synthetic implementations does not establish empirical model validity.
 
 ## Engineering review checklist
 
-- Verify equation dimensions, coordinate frames, signs, timestamp direction, and branch conventions.
-- Separate feasibility or safety from objective value and visual smoothness.
-- Inspect conditioning, covariance, clearance, saturation, energy, or data age when relevant.
-- Confirm the broken case changes the named mechanism and the recovery restores the baseline signature.
-- State one assumption whose violation would invalidate the result even if every test here passed.
+Reconstruct one displayed quantity from the actual state or geometric arrays. Check coordinate ordering, signs and units before comparing numbers. Explain which assumption each check constrains, and identify a defect that another check could miss. Preserve the baseline, one controlled sweep, fault and recovery as a reproducible evidence sequence. State the model boundary before making a broader engineering recommendation.
 
 ## Common mistakes
 
-- Treating a local or finite-sample result as a global guarantee.
-- Changing both controls and assigning causality to only one.
-- Accepting endpoint checks where swept geometry, intermediate dynamics, or data freshness matter.
-- Confusing a low residual with observability, correct association, feasibility, or physical truth.
-- Claiming learner effectiveness, MATLAB parity, physical HIL, hardware safety, or certification from software fixtures.
+Do not infer correctness from a changing headline alone. At a zero-velocity sample the port work is zero regardless of finite force.
+
+Do not change both sliders at once and attribute the result to one cause. Separate a model assumption from a measured property, and a finite-horizon observation from a universal guarantee. Floating-point roundoff is not a physical effect; equally, an attractive plot is not a substitute for the governing calculation.
 
 ## Focused check and teach-back
 
-Calculate one baseline signature value, show one dimensional check, predict both sweeps, reproduce the named failure, and demonstrate exact recovery. Then teach the lesson back without starting from the plots: state the convention, derive the governing relationship, explain the invariant, identify the practical failure, and name the evidence boundary. Finish by naming the prerequisite module and the next mapped module that consumes this artifact.
+Why can a force remain within its actuator bound while violating the energy budget?
+
+Answer rationale: An amplitude bound limits each force value, whereas the budget limits accumulated force times velocity times sample duration. Repeated bounded positive work can exceed the initial energy; the causal work limiter must constrain the actual applied work.
+
+Use the embedded Course checkpoint to explain your default, sweep, fault and recovery records to a colleague. Include one calculation with units, the causal diagnosis and an explicit untested boundary. This is a self-assessment; no learner score is stored.

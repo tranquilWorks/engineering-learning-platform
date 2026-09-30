@@ -1,87 +1,85 @@
-# Regulate Hybrid Motion and Contact Force
+# Regulate Tangential Motion and Normal Contact Force
 
-**Guiding question:** What assumptions and evidence make regulate hybrid motion and contact force defensible?
 
-Build a deterministic numerical laboratory to regulate hybrid motion and contact force, expose its governing relation, and diagnose a named counterexample before recovery. This module is a Python-first native design authorized by the reviewed issue-440 competency map. It is not a conversion of the pinned MATLAB-oriented source course, and it remains deterministic software evidence.
-
-## Why this lesson exists
-
-Robotics failures often cross representation boundaries: geometry into velocity, images into pose, estimates into maps, plans into commands, or contact forces into actuator effort. A result is defensible only when those boundaries carry explicit frames, signs, units, timing, constraints, and uncertainty. This lesson therefore connects one design decision to a governing equation, an observable response, a named failure, and an exact recovery.
-
-Before calculating, name the state, input, observation, and verdict. State which quantities are measured, which are modeled, and which are derived. A smooth curve is not evidence that a constraint was respected, an estimator was consistent, a path was collision free, or a contact remained passive.
 
 ## Model, derivation, and conventions
 
-- $$S v controls motion$$
-- $$(I-S)F controls force$$
-- $$S(I-S)=0$$
+`n=[-sin(theta),cos(theta)]; t=[cos(theta),sin(theta)]`
 
-Derive the first relation from the physical, geometric, probabilistic, or algorithmic definition. Use the second relation to propagate the decision into a measurable consequence. Use the third as an invariant, feasibility condition, or audit relation. Keep every coordinate frame and sampling instant attached until the final scalar metric. The experiment evaluates these relations directly with bounded NumPy arrays; it does not call a remote solver or hide the mechanism behind a black-box robotics stack.
+`P_force=n n^T; P_motion=I-P_force`
 
-The three retained signature quantities are:
+`F=600 max(n^T x,0); xdot=P_motion(v_t+5(x_goal-x))+n*0.012(F_goal-F)`
 
-- `force_error` (N)
-- `motion_leakage` (m/s)
-- `selection_orthogonality` (1)
+The environment is a planar contact surface through the origin. Its unit normal is n=[-sin(theta),cos(theta)] and its unit tangent is t=[cos(theta),sin(theta)], with the selected angle converted from degrees. The endpoint begins at the surface origin. Positive normal displacement is penetration, and a unilateral spring produces force magnitude F=600*max(n dot x,0) N. Negative penetration corresponds to loss of contact and zero spring force. This distinction matters even in a simple kinematic controller.
 
-Carry units through each substitution. Dimensionless ranks, probabilities, ratios, and flags are labeled `1` or `count`; physical displacement, time, force, torque, energy, velocity, and pixel quantities retain their named units. If a sum combines unlike units or a transform maps a vector without a frame convention, stop before interpreting a number.
+The desired tangential velocity is 0.03 m/s and the moving position goal is 0.03*time*t. Tangential feedback adds five per second times position error before projection. Normal force feedback uses gain 0.012 m/(N s) times desired-minus-measured force, converting force error into an endpoint velocity along the selected controller normal. The ideal velocity servo integrates this two-dimensional command over two seconds. There is no inertial robot, force sensor delay or joint-space torque mapping in this experiment.
+
+In normal mode, the force projector n n transpose and motion projector I-n n transpose split orthogonal directions of the actual surface. Tangential motion then has no normal component, while force feedback has no tangential component. With zero initial normal displacement and a nonnegative force goal, penetration approaches goal force divided by 600. For example, a 10 N goal corresponds to approximately 0.01667 m spring deflection. That number describes this soft synthetic environment, not an acceptable physical indentation.
+
+Broken mode uses world vertical [0,1] as the controller normal regardless of the surface angle. Its two projectors remain symmetric, idempotent, complementary and orthogonal. The failure is geometric alignment: world vertical is not the actual surface normal when the plane is tilted. Force feedback can then cause tangential motion, and the nominal motion command can change penetration. Reporting an orthogonality defect would falsely claim that these valid matrix properties had failed.
+
+The tangential-speed plot includes zero and a 0.06 m/s reference span, expanding if actual motion requires it. This prevents automatic scaling from magnifying roundoff around the constant nominal speed into an apparent physical oscillation. The underlying samples are retained unchanged.
+
+The first metric is terminal normal-force error. The second is RMS tangential speed error across the actual trajectory, not merely its terminal value. The third is the norm of the difference between the used force projector and the physical normal projector. This dimensionless frame-alignment defect identifies the selected direction error even when force happens to converge. Retained diagnostics include position, velocity, force and both projectors.
+
+At zero requested force, faulty tangential motion can move the endpoint away from the surface. The unilateral force then remains zero rather than becoming a tensile spring force. The independent reference explicitly handles this branch in surface coordinates. A linear bilateral formula would be insufficient at that boundary and could agree in the baseline while failing a valid corner case.
 
 ## Predict before running
 
-Hybrid control must assign complementary motion and force subspaces so normal force regulation does not corrupt tangential motion. Predict the sign and direction of all three signature changes before moving a slider. Identify the equation term responsible and one quantity that should remain invariant. This written prediction is the comparison point; post-hoc description is not the same as a test.
+Predict whether two perfectly orthogonal projectors can still be wrong for a tilted contact surface. Record the expected direction of change and an invariant before reading the computed result. State a condition under which the fault could be hidden, rather than assuming every faulty setting must look worse.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read the three signature metrics with units.
-2. Inspect the response plot for task-level behavior, then the mechanism plot for the constraint, residual, energy, conditioning, or decision that explains it.
-3. Reproduce one signature quantity from the displayed equations to one or two significant figures.
-4. Check a limiting case before accepting the baseline.
-5. Save the baseline parameters and signature so recovery can be tested exactly.
+Reset controls and disable the named fault. Use Normal-force setpoint = 12.0 N; Surface angle = 25.0 deg. Read the response curve, then connect it to the mechanism curve using the governing equations.
+
+Normal force feedback plots Normal force (N) against Time (s). Its series are Actual, Setpoint. Tangential motion plots Velocity (m/s) against Time (s). Its series are Actual, Desired.
+
+The default record is Terminal normal-force error: 6.68868e-06 N; Tangential speed-error RMS: 3.14725e-17 m/s; Force-projector frame mismatch: 0 1. These computed values are a worked example for these settings, not acceptance limits for every experiment. Keep parameter values and units beside the result. A near-zero residual has meaning only in relation to the stated model and numerical precision.
 
 ## Two one-variable sweeps
 
-1. Hold `surface_angle_deg` at `25.0 deg` and sweep `force_setpoint_n` from `1.0` through `12.0` to `40.0 N`.
-2. Restore `force_setpoint_n` to `12.0 N` and sweep `surface_angle_deg` from `0.0` through `25.0` to `80.0 deg`.
+1. Increase force goal at fixed surface angle. Compare terminal force and transient tangential speed. Correct projection preserves tangential tracking while normal displacement changes to support the new force.
 
-Change one variable at a time. For each endpoint, record the predicted direction, actual direction, metric delta, and the mechanism-plot feature that supports causality. If the result reverses direction, check for a branch, active constraint, singularity, gate, saturation, or feasibility transition rather than smoothing it away.
+2. Increase surface angle at fixed force goal. In normal mode the coordinate directions rotate together. In faulty world-axis mode compare frame-alignment error and tangential leakage.
+
+Return to defaults between sweeps. Hold the other control fixed and record both a changing output and an expected invariant. Explain the physical or numerical path from the selected input to the observed response.
 
 ## Intentionally broken case
 
-Broken mode defines selection axes in the world frame while contact normal rotates with the surface. Broken mode is a falsifying counterexample, not a recommended alternative. Explain which assumption is violated before describing the visual symptom. Then locate the first intermediate quantity that departs from the baseline invariant; downstream task error alone rarely identifies the cause.
+The fault retains complementary orthogonal projectors but builds them from world vertical instead of the actual surface normal. Physical force is still measured along the real normal.
+
+Run the same parameter values with the fault enabled. Compare complete curves as well as summary metrics. Identify the actual operation that changed and calculate why it affects the measured result. A changed warning label is not numerical evidence.
 
 ## Recovery
 
-Express selection matrices in the contact frame, restore complementarity, and verify force error plus tangential leakage. Recovery is complete only when the original default inputs and diagnostic signature return within the independent-reference tolerance. A different setting that happens to look better is mitigation, not recovery. Preserve the fault, detection, decision, and recovery sequence as separate evidence.
+Restore surface-aligned projectors and reset position. Check physical force and tangential velocity, then verify that the matrix alignment defect returns to roundoff.
+
+Repeat a saved nominal setting and confirm that its values and curves return. Recovery must restore the governing mechanism and its evidence, not merely clear a warning.
 
 ## Alternative and limiting cases
 
-- At zero surface angle, aligned world/contact selection matrices coincide.
-- An ideal complementary selector has zero product S(I-S).
-
-Use one limit as a hand calculation and one as a numerical sweep. Limits reveal whether a formula is continuous, singular, or branch-dependent. An undefined limit must be reported as such; clipping it into a convenient finite value changes the model.
+At zero surface angle world vertical and the physical normal coincide, so both modes agree. At zero force goal the unilateral contact may open in faulty mode. This ideal velocity-servo example omits impacts, robot inertia, sensor delay and actuator constraints.
 
 ## Independent evidence and MATLAB-style design boundary
 
-The design was reasoned from the displayed equations in the same model-first workflow normally used before a MATLAB/Simulink implementation, but the delivered implementation is Python/NumPy only. Expected signatures are stored by `expansion_reference_cases.py`, which imports no production experiment, consumes no production result, and perturbs no production value. Production signatures are retained separately for baseline, both one-variable sweeps, broken, and exact recovery scenarios.
+The reference integrates normal and tangential surface coordinates with RK45, including the unilateral force law. Production integrates Cartesian position with DOP853; the resulting positions, velocities and forces are compared after an independent basis transformation.
 
-Agreement supports only the displayed model, input set, fields, units, and tolerances. No licensed MATLAB runtime was executed, so the evidence makes no MATLAB numerical-parity claim. It also does not establish global optimality, field robustness, physical calibration, hardware timing, safety certification, or production readiness.
+Five retained cases cover baseline, two single-control sweeps, the named fault and recovery. Expected values come from the independent formulation; actual values come from the executable lesson. Absolute and relative comparison tolerances remain 1e-8. Full-state or geometric checks supplement these three-number signatures, which alone cannot establish correctness. MATLAB has not been executed and no MATLAB equivalence is claimed. Browser and container evidence is recorded separately. Agreement between synthetic implementations does not establish empirical model validity.
 
 ## Engineering review checklist
 
-- Verify equation dimensions, coordinate frames, signs, timestamp direction, and branch conventions.
-- Separate feasibility or safety from objective value and visual smoothness.
-- Inspect conditioning, covariance, clearance, saturation, energy, or data age when relevant.
-- Confirm the broken case changes the named mechanism and the recovery restores the baseline signature.
-- State one assumption whose violation would invalidate the result even if every test here passed.
+Reconstruct one displayed quantity from the actual state or geometric arrays. Check coordinate ordering, signs and units before comparing numbers. Explain which assumption each check constrains, and identify a defect that another check could miss. Preserve the baseline, one controlled sweep, fault and recovery as a reproducible evidence sequence. State the model boundary before making a broader engineering recommendation.
 
 ## Common mistakes
 
-- Treating a local or finite-sample result as a global guarantee.
-- Changing both controls and assigning causality to only one.
-- Accepting endpoint checks where swept geometry, intermediate dynamics, or data freshness matter.
-- Confusing a low residual with observability, correct association, feasibility, or physical truth.
-- Claiming learner effectiveness, MATLAB parity, physical HIL, hardware safety, or certification from software fixtures.
+Do not infer correctness from a changing headline alone. At zero surface angle world vertical and the physical normal coincide, so both modes agree.
+
+Do not change both sliders at once and attribute the result to one cause. Separate a model assumption from a measured property, and a finite-horizon observation from a universal guarantee. Floating-point roundoff is not a physical effect; equally, an attractive plot is not a substitute for the governing calculation.
 
 ## Focused check and teach-back
 
-Calculate one baseline signature value, show one dimensional check, predict both sweeps, reproduce the named failure, and demonstrate exact recovery. Then teach the lesson back without starting from the plots: state the convention, derive the governing relationship, explain the invariant, identify the practical failure, and name the evidence boundary. Finish by naming the prerequisite module and the next mapped module that consumes this artifact.
+How can the projector algebra pass while hybrid motion and force regulation is still wrong?
+
+Answer rationale: Orthogonality describes the relation between the two chosen subspaces, not their alignment with the environment. World-axis projectors are internally orthogonal but mix real normal and tangential directions on a tilted surface.
+
+Use the embedded Course checkpoint to explain your default, sweep, fault and recovery records to a colleague. Include one calculation with units, the causal diagnosis and an explicit untested boundary. This is a self-assessment; no learner score is stored.

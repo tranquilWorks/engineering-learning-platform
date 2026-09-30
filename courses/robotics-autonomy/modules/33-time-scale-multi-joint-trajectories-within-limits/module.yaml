@@ -1,10 +1,10 @@
 schema_version: 1
 id: 33-time-scale-multi-joint-trajectories-within-limits
 number: 33
-title: Time-Scale Multi-Joint Trajectories within Limits
-summary: Build a deterministic numerical laboratory to time-scale multi-joint trajectories within limits, expose
-  its governing relation, and diagnose a named counterexample before recovery.
-guiding_question: What assumptions and evidence make time-scale multi-joint trajectories within limits defensible?
+title: Time-Scale Two Joint Cubics Under Speed and Acceleration Limits
+summary: The minimum duration is within the declared rest-to-rest cubic family, using both the exact 1.5 velocity
+  peak and the 6/T² acceleration peak. It is not a global time-optimal trajectory.
+guiding_question: Why can increasing the allowed speed cease to shorten the move?
 status: implemented
 tags:
 - robotics-autonomy
@@ -41,8 +41,10 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Time scaling must preserve the geometric path while enforcing joint velocity and acceleration bounds.
-  reveal: Use the equations, units, and mechanism plot to test the prediction.
+  text: Predict why distance divided by the speed limit is too short for a rest-to-rest cubic trajectory.
+  reveal: The acceleration requirement then sets the shared duration. For the fixed cubic, speed scales as
+    1/T while acceleration scales as 1/T²; both constraints must be satisfied, and the larger required time
+    wins.
 - type: controls
   title: Live model controls
 - type: metrics
@@ -63,3 +65,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

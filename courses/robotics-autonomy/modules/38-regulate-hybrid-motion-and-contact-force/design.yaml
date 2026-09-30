@@ -7,21 +7,22 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- S v controls motion
-- (I-S)F controls force
-- S(I-S)=0
+- n=[-sin(theta),cos(theta)]; t=[cos(theta),sin(theta)]
+- P_force=n n^T; P_motion=I-P_force
+- F=600 max(n^T x,0); xdot=P_motion(v_t+5(x_goal-x))+n*0.012(F_goal-F)
 signature:
 - field: force_error
   unit: N
 - field: motion_leakage
   unit: m/s
-- field: selection_orthogonality
+- field: selection_frame_error
   unit: '1'
-teaching_invariant: Hybrid control must assign complementary motion and force subspaces so normal force regulation
-  does not corrupt tangential motion.
+teaching_invariant: Predict whether two perfectly orthogonal projectors can still be wrong for a tilted contact
+  surface.
 limiting_cases:
-- At zero surface angle, aligned world/contact selection matrices coincide.
-- An ideal complementary selector has zero product S(I-S).
+- At zero surface angle world vertical and the physical normal coincide, so both modes agree.
+- At zero force goal the unilateral contact may open in faulty mode. This ideal velocity-servo example omits
+  impacts, robot inertia, sensor delay and actuator constraints.
 scenarios:
   baseline: &id001
     force_setpoint_n: 12.0
@@ -48,5 +49,5 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic software evidence only. Browser/container checks are recorded separately.
+  No MATLAB runtime, representative learner, manual screen-reader, hardware, certification or production acceptance.

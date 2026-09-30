@@ -7,21 +7,22 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- Lambda=(J M^-1 J^T)^-1
-- F=Lambda a_des+mu+p
-- tau=J^T F+N^T tau_0
+- Lambda=(J M^-1 J^T)^-1; Jbar=M^-1 J^T Lambda
+- N_tau=I-J^T Jbar^T; tau_secondary=N_tau tau_raw
+- xddot=J M^-1(tau_primary+tau_secondary)
 signature:
 - field: task_acceleration_error
   unit: m/s^2
 - field: null_torque_leakage
-  unit: N*m
+  unit: m/s^2
 - field: effective_inertia
   unit: kg
-teaching_invariant: Operational-space control must use dynamically consistent task inertia and a null torque that
-  does not disturb the commanded task.
+teaching_invariant: Predict whether a torque in the Euclidean null space of J necessarily produces zero task
+  acceleration.
 limiting_cases:
-- At identity unit inertia and Jacobian, operational and joint acceleration commands coincide.
-- At singularity, unregularized task inertia becomes ill-conditioned.
+- At zero secondary fraction both modes reduce to the same primary task command.
+- This is a local zero-velocity calculation with exact gravity compensation. A moving task requires Jdot*qdot,
+  updated geometry and an actual trajectory controller.
 scenarios:
   baseline: &id001
     task_inertia_kg: 2.0
@@ -48,5 +49,5 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic software evidence only. Browser/container checks are recorded separately.
+  No MATLAB runtime, representative learner, manual screen-reader, hardware, certification or production acceptance.
