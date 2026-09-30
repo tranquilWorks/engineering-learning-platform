@@ -1,10 +1,10 @@
 schema_version: 1
 id: 30-map-end-effector-wrenches-to-joint-torques
 number: 30
-title: Map End-Effector Wrenches to Joint Torques
-summary: Build a deterministic numerical laboratory to map end-effector wrenches to joint torques, expose its governing
-  relation, and diagnose a named counterexample before recovery.
-guiding_question: What assumptions and evidence make map end-effector wrenches to joint torques defensible?
+title: Map Planar End-Effector Force to Joint Torque
+summary: The two powers use the same force, configuration and joint velocity. Their equality tests the transpose
+  map, not a torque magnitude proxy.
+guiding_question: Why can a matrix multiplication run successfully while producing the wrong joint torques?
 status: implemented
 tags:
 - robotics-autonomy
@@ -26,7 +26,7 @@ controls:
   unit: N
 - id: lever_arm_m
   type: slider
-  label: Moment arm
+  label: Proximal link length
   default: 0.4
   minimum: 0.05
   maximum: 1.2
@@ -41,8 +41,11 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Jacobian transpose statics must preserve virtual power between joint and Cartesian coordinates.
-  reveal: Use the equations, units, and mechanism plot to test the prediction.
+  text: Predict which mapping preserves virtual power throughout an elbow sweep, and whether zero force can
+    expose the wrong mapping.
+  reveal: The square array dimensions do not enforce physical duality. Only J transpose maps Cartesian force
+    into joint torque while preserving F dot (J qdot) = tau dot qdot. A zero-force trial cannot distinguish
+    the maps.
 - type: controls
   title: Live model controls
 - type: metrics
@@ -63,3 +66,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

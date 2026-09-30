@@ -7,9 +7,9 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- tau=Y(q,q_dot,q_ddot) theta
-- theta_hat=(Y^T Y)^-1Y^T tau
-- validate on held-out motion
+- tau=0.08 qddot + [0.25 qddot+4.905 cos(q), qdot] theta
+- theta_hat=argmin ||Y theta-y||²+0.02||theta-theta_prior||²
+- heldout_error=tau_predicted-tau_true
 signature:
 - field: inverse_dynamics_residual
   unit: N*m
@@ -17,11 +17,12 @@ signature:
   unit: kg
 - field: regressor_condition
   unit: '1'
-teaching_invariant: Inverse dynamics and parameter identification are credible only when excitation is informative
-  and held-out torque residuals remain small.
+teaching_invariant: Predict which parameter becomes unobservable when training measurements use a stationary
+  joint.
 limiting_cases:
-- At zero excitation, dynamic parameters are unidentifiable.
-- With the exact payload and informative noiseless data, held-out residual tends to zero.
+- Stationary samples cannot identify viscous damping because velocity is zero.
+- The ridge solution depends on the stated units and prior; real identification also requires sensor calibration,
+  suitable noise assumptions and a model of unmodeled dynamics.
 scenarios:
   baseline: &id001
     excitation_amplitude_rad: 0.7
@@ -48,5 +49,5 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic software evidence only. Browser/container checks are recorded separately.
+  No MATLAB runtime, representative learner, manual screen-reader, hardware, certification or production acceptance.

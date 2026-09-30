@@ -7,21 +7,22 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- tau=-K_q(q-q_d)
-- F=-K_x(x-x_d)
-- tau=J^T F
+- qdot_joint=k(q_goal-q)
+- qdot_task=J(q)^+ k(x_goal-x(q))
+- applied_qdot=clip(requested_qdot,-2,2)
 signature:
 - field: joint_error
   unit: rad
 - field: task_error
   unit: m
 - field: control_effort
-  unit: N*m
-teaching_invariant: Joint and task tracking optimize different errors; Jacobian conditioning determines how joint
-  error maps into Cartesian error and effort.
+  unit: rad/s
+teaching_invariant: Predict why a Jacobian-transpose descent law can move toward the target without matching
+  the Cartesian convergence of an inverse velocity map.
 limiting_cases:
-- At identity Jacobian, equally scaled joint and task laws coincide.
-- Near singularity, small task corrections can demand large joint motion or effort.
+- At zero Cartesian error both mappings command zero motion, so a settled target does not distinguish them.
+- The experiment assumes ideal velocity servos, a fixed local goal branch and no collision or torque constraints.
+  Near singularities, rate clipping changes the nominal exponential error law.
 scenarios:
   baseline: &id001
     jacobian_condition: 4.0
@@ -48,5 +49,5 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic software evidence only. Browser/container checks are recorded separately.
+  No MATLAB runtime, representative learner, manual screen-reader, hardware, certification or production acceptance.

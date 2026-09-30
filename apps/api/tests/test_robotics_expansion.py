@@ -180,7 +180,7 @@ def test_robotics_native_reference_has_no_production_execution_path() -> None:
     tree = __import__("ast").parse(
         (COURSE_ROOT / "expansion_reference_cases.py").read_text(encoding="utf-8")
     )
-    allowed_imports = {"json", "typing", "numpy", "__future__"}
+    allowed_imports = {"json", "typing", "numpy", "scipy", "__future__"}
     forbidden_calls = {"eval", "exec", "compile", "__import__", "run", "import_module"}
     ast = __import__("ast")
     for node in ast.walk(tree):
@@ -275,7 +275,7 @@ def test_robotics_geometry_and_dynamics_teaching_invariants() -> None:
     nonsingular = signature(28, {"elbow_angle_deg": 70.0})
     assert singular[0] < nonsingular[0]
     assert signature(29, {"broken_mode": True})[1] > signature(29, {"broken_mode": False})[1]
-    assert signature(30, {"broken_mode": False})[1] == 0
+    assert abs(signature(30, {"broken_mode": False})[1]) < 1e-12
     assert signature(30, {"broken_mode": True})[1] > 0
     inertia = signature(31, {"broken_mode": False})
     assert inertia[0] > 0 and math.isfinite(inertia[2])
@@ -303,7 +303,7 @@ def test_robotics_control_and_interaction_teaching_invariants() -> None:
     assert hybrid[2] == 0 < hybrid_broken[2]
     passive = signature(39, {"broken_mode": False})
     active = signature(39, {"broken_mode": True})
-    assert passive[0] > 0 > active[0]
+    assert passive[0] >= -1e-12 and active[0] < -1e-3
     swing_up = signature(40, {"broken_mode": False})
     wrong_energy_sign = signature(40, {"broken_mode": True})
     assert wrong_energy_sign[0] > swing_up[0]
@@ -500,5 +500,7 @@ def test_robotics_capstone_requirement_traces_close_over_reviewed_dependencies()
         assert len({requirement["id"] for requirement in trace["requirements"]}) == len(
             trace["requirements"]
         )
-        assert all(requirement["mechanism"] and requirement["evidence"]
-                   for requirement in trace["requirements"])
+        assert all(
+            requirement["mechanism"] and requirement["evidence"]
+            for requirement in trace["requirements"]
+        )

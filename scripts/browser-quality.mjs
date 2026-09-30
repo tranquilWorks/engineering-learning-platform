@@ -16,9 +16,11 @@ const saveReport = () => {
 };
 const selected = process.env.ELP_BROWSER_COURSE;
 const selectedModule = process.env.ELP_BROWSER_MODULE;
+const roboticsDynamicsBatch = process.env.ELP_BROWSER_ROBOTICS_DYNAMICS_BATCH === '1';
+const roboticsDynamicsSelection = { 'robotics-autonomy': Array.from({length:12}, (_,i)=>i+30) };
 const navigationBatch = process.env.ELP_BROWSER_NAVIGATION_BATCH === '1';
 const navigationSelection = { 'controls-gnc': [56,57,60,61,62,64,65], 'robotics-autonomy': [25,26,27,28,29] };
-const semanticSelection = { 'controls-gnc': [36, 38, 42, 43, 45, 46, 47, 48, 49, 50, 51, 55, 56, 57, 60, 61, 62, 64, 65, 66, 67, 68], 'robotics-autonomy': [25, 26, 27, 28, 29, 68, 69], 'vehicle-dynamics': [61, 62, 63, 64, 65, 66, 67] };
+const semanticSelection = { 'controls-gnc': [36, 38, 42, 43, 45, 46, 47, 48, 49, 50, 51, 55, 56, 57, 60, 61, 62, 64, 65, 66, 67, 68], 'robotics-autonomy': [25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 68, 69], 'vehicle-dynamics': [61, 62, 63, 64, 65, 66, 67] };
 const cumulative = new Set([10, 20, 28, 40, 52, 60, 68, 74, 83, 84]);
 const isCumulative = (course, module) => course.id === 'dsp-radar' && cumulative.has(module.number);
 const isRevised = (course, module) => semanticSelection[course.id]?.includes(module.number) ?? false;
@@ -42,7 +44,7 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
     page.setDefaultTimeout(30000);
     let errors = [];
     page.on('pageerror', e => errors.push(e.message));
-    for (const module of course.modules.filter(m => (!selectedModule || m.id === selectedModule) && (!navigationBatch || navigationSelection[course.id]?.includes(m.number)))) {
+    for (const module of course.modules.filter(m => (!selectedModule || m.id === selectedModule) && (!roboticsDynamicsBatch || roboticsDynamicsSelection[course.id]?.includes(m.number)) && (!navigationBatch || navigationSelection[course.id]?.includes(m.number)))) {
       errors = [];
       const row = { course: course.id, module: module.id, viewport, status: 'failed' };
       try {
@@ -79,6 +81,26 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
           });
           return failures;
         }));
+        if (course.id === 'robotics-autonomy' && module.number >= 30 && module.number <= 41) {
+          row.plot_text_layout_errors = await page.locator('.js-plotly-plot').evaluateAll(nodes => nodes.flatMap((node, index) => {
+            const failures = [], bounds = node.querySelector('svg.main-svg').getBoundingClientRect();
+            const outside = (r, b) => r.left < b.left - 2 || r.right > b.right + 2 || r.top < b.top - 2 || r.bottom > b.bottom + 2;
+            for (const text of node.querySelectorAll('.gtitle, .xtitle, .ytitle, .xtick text, .ytick text')) {
+              if (outside(text.getBoundingClientRect(), bounds)) failures.push(`${index}:clipped ${text.textContent}`);
+            }
+            const legend = node.querySelector('.legend .bg');
+            if (legend) {
+              const box = legend.getBoundingClientRect(), labels = [...node.querySelectorAll('.legendtext')];
+              for (const text of labels) if (outside(text.getBoundingClientRect(), box)) failures.push(`${index}:clipped legend ${text.textContent}`);
+              for (let a=0; a<labels.length; a++) for (let b=a+1; b<labels.length; b++) {
+                const x=labels[a].getBoundingClientRect(), y=labels[b].getBoundingClientRect();
+                if (Math.min(x.right,y.right)-Math.max(x.left,y.left)>2 && Math.min(x.bottom,y.bottom)-Math.max(x.top,y.top)>2) failures.push(`${index}:overlapping legends`);
+              }
+            }
+            return failures;
+          }));
+          if (row.plot_text_layout_errors.length) throw new Error('Plot text is clipped or overlapping: '+row.plot_text_layout_errors.join('; '));
+        }
         row.horizontal_overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1);
         row.errors = errors;
         row.mobile_navigation_hidden = viewport !== 'mobile' || await page.locator('.sidebar').getAttribute('inert') !== null;
@@ -106,7 +128,7 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
             screenshots.push({path:file,sha256:crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
           }
         }
-        if ((course.id === 'controls-gnc' && [36,38,42,43,45,46,47,48,49,50,51,55,56,57,60,61,62,64,65].includes(module.number)) || (course.id === 'robotics-autonomy' && [25,26,27,28,29].includes(module.number))) {
+        if ((course.id === 'controls-gnc' && [36,38,42,43,45,46,47,48,49,50,51,55,56,57,60,61,62,64,65].includes(module.number)) || (course.id === 'robotics-autonomy' && [25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41].includes(module.number))) {
           const jump = page.getByRole('navigation', {name:'Lesson sections'}).getByRole('link', {name:'Course checkpoint', exact:true});
           await jump.click();
           const heading = page.getByRole('heading', {name:'Course checkpoint', exact:true});

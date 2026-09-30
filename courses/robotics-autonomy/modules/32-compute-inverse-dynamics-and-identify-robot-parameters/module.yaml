@@ -1,10 +1,10 @@
 schema_version: 1
 id: 32-compute-inverse-dynamics-and-identify-robot-parameters
 number: 32
-title: Compute Inverse Dynamics and Identify Robot Parameters
-summary: Build a deterministic numerical laboratory to compute inverse dynamics and identify robot parameters, expose
-  its governing relation, and diagnose a named counterexample before recovery.
-guiding_question: What assumptions and evidence make compute inverse dynamics and identify robot parameters defensible?
+title: Identify Payload and Damping from Synthetic Joint Torque
+summary: A regularized two-parameter fit uses training torque only. The separate held-out motion tests predicted
+  torque; raw design rank is 2 of 2. Columns use declared 1 kg and 1 N·m·s parameter scales.
+guiding_question: How can a rank-deficient experiment return a finite condition number and a unique fit?
 status: implemented
 tags:
 - robotics-autonomy
@@ -26,7 +26,7 @@ controls:
   unit: rad
 - id: payload_guess_kg
   type: slider
-  label: Payload estimate
+  label: Payload prior
   default: 1.1
   minimum: 0.0
   maximum: 3.0
@@ -41,9 +41,10 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Inverse dynamics and parameter identification are credible only when excitation is informative and held-out
-    torque residuals remain small.
-  reveal: Use the equations, units, and mechanism plot to test the prediction.
+  text: Predict which parameter becomes unobservable when training measurements use a stationary joint.
+  reveal: The reported condition belongs to the regularized augmented system. Its prior supplies a numerical
+    constraint on damping, but stationary training supplies no damping information. A dynamic held-out residual
+    exposes that distinction.
 - type: controls
   title: Live model controls
 - type: metrics
@@ -64,3 +65,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

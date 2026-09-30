@@ -1,10 +1,11 @@
 schema_version: 1
 id: 36-control-motion-in-operational-space
 number: 36
-title: Control Motion in Operational Space
-summary: Build a deterministic numerical laboratory to control motion in operational space, expose its governing
-  relation, and diagnose a named counterexample before recovery.
-guiding_question: What assumptions and evidence make control motion in operational space defensible?
+title: Compute Operational Inertia and Dynamically Consistent Torque
+summary: This local zero-velocity calculation uses physical link mass/inertia and actual J M⁻¹ τ. The geometry
+  control determines elbow configuration; the measured Jacobian condition is 14.060. Gravity is assumed exactly
+  compensated.
+guiding_question: Why is J times secondary torque equal to zero the wrong condition for preserving task acceleration?
 status: implemented
 tags:
 - robotics-autonomy
@@ -18,7 +19,7 @@ runtime:
 controls:
 - id: task_inertia_kg
   type: slider
-  label: Task-space inertia
+  label: Link mass scale
   default: 2.0
   minimum: 0.3
   maximum: 8.0
@@ -26,7 +27,7 @@ controls:
   unit: kg
 - id: jacobian_condition
   type: slider
-  label: Jacobian condition
+  label: Pose straightness parameter
   default: 5.0
   minimum: 1.0
   maximum: 30.0
@@ -41,9 +42,10 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Operational-space control must use dynamically consistent task inertia and a null torque that does not disturb
-    the commanded task.
-  reveal: Use the equations, units, and mechanism plot to test the prediction.
+  text: Predict whether a torque in the Euclidean null space of J necessarily produces zero task acceleration.
+  reveal: Torque is converted to joint acceleration through M inverse. At zero velocity the task effect is
+    J M inverse tau_secondary, so a torque projector must cancel that quantity. The Euclidean null condition
+    applies directly to joint velocity, not arbitrary torque.
 - type: controls
   title: Live model controls
 - type: metrics
@@ -64,3 +66,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

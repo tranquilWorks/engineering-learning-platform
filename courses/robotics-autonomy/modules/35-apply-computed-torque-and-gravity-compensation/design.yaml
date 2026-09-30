@@ -7,9 +7,9 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- tau=M(q)v+C q_dot+g
-- v=q_ddot_d-K_d e_dot-K_p e
-- e_ddot+K_d e_dot+K_p e=Delta
+- M(q) qddot+C(q,qdot) qdot+g(q)=tau_applied
+- tau_requested=(1+epsilon)[M(a_d+2w(v_d-v)+w²(q_d-q))+Cv+g]
+- tau_applied=clip(tau_requested,-20,20)
 signature:
 - field: tracking_error
   unit: rad
@@ -17,11 +17,12 @@ signature:
   unit: N*m
 - field: cancellation_residual
   unit: N*m
-teaching_invariant: Computed torque yields the selected nominal error dynamics only to the extent that inertia,
-  velocity, and gravity models cancel consistently.
+teaching_invariant: Predict why increasing feedback bandwidth may not reduce tracking error when requested
+  torques exceed actuator limits.
 limiting_cases:
-- With exact model and zero error, commanded torque equals feedforward dynamics.
-- At zero gravity, gravity compensation contributes no torque.
+- At zero mismatch and without saturation, computed torque yields the derived linear error equation.
+- At a pose with zero gravity contribution the sign fault is locally hidden; along a trajectory it can reappear.
+  Torque clipping invalidates exact cancellation even with an otherwise correct model.
 scenarios:
   baseline: &id001
     model_error_fraction: 0.08
@@ -48,5 +49,5 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic software evidence only. Browser/container checks are recorded separately.
+  No MATLAB runtime, representative learner, manual screen-reader, hardware, certification or production acceptance.

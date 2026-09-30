@@ -1,87 +1,81 @@
-# Time-Scale Multi-Joint Trajectories within Limits
+# Time-Scale Two Joint Cubics Under Speed and Acceleration Limits
 
-**Guiding question:** What assumptions and evidence make time-scale multi-joint trajectories within limits defensible?
 
-Build a deterministic numerical laboratory to time-scale multi-joint trajectories within limits, expose its governing relation, and diagnose a named counterexample before recovery. This module is a Python-first native design authorized by the reviewed issue-440 competency map. It is not a conversion of the pinned MATLAB-oriented source course, and it remains deterministic software evidence.
-
-## Why this lesson exists
-
-Robotics failures often cross representation boundaries: geometry into velocity, images into pose, estimates into maps, plans into commands, or contact forces into actuator effort. A result is defensible only when those boundaries carry explicit frames, signs, units, timing, constraints, and uncertainty. This lesson therefore connects one design decision to a governing equation, an observable response, a named failure, and an exact recovery.
-
-Before calculating, name the state, input, observation, and verdict. State which quantities are measured, which are modeled, and which are derived. A smooth curve is not evidence that a constraint was respected, an estimator was consistent, a path was collision free, or a contact remained passive.
 
 ## Model, derivation, and conventions
 
-- $$q(t)=q(s(t))$$
-- $$q_dot=q_s s_dot$$
-- $$T>=max |q_s|/q_dot_max$$
+`q_i=d_i(3s²-2s³); s=t/T`
 
-Derive the first relation from the physical, geometric, probabilistic, or algorithmic definition. Use the second relation to propagate the decision into a measurable consequence. Use the third as an invariant, feasibility condition, or audit relation. Keep every coordinate frame and sampling instant attached until the final scalar metric. The experiment evaluates these relations directly with bounded NumPy arrays; it does not call a remote solver or hide the mechanism behind a black-box robotics stack.
+`peak_speed=1.5 max|d_i|/T; peak_acceleration=6 max|d_i|/T²`
 
-The three retained signature quantities are:
+`T=max(1.5 max|d_i|/v_limit, sqrt(6 max|d_i|/a_limit))`
 
-- `minimum_duration` (s)
-- `peak_acceleration` (rad/s^2)
-- `limit_violation` (rad/s)
+Two joints move from zero to displacements [d,-0.6d] rad using a shared normalized cubic. The displacement slider chooses d, and the other slider selects a common joint-speed bound in rad/s. Both joints have a fixed acceleration bound of 3 rad/s². The normalized coordinate s runs from zero to one. The polynomial h(s)=3s²-2s³ makes position continuous and sets velocity to zero at both endpoints. It does not set endpoint acceleration to zero.
 
-Carry units through each substitution. Dimensionless ranks, probabilities, ratios, and flags are labeled `1` or `count`; physical displacement, time, force, torque, energy, velocity, and pixel quantities retain their named units. If a sum combines unlike units or a transform maps a vector without a frame convention, stop before interpreting a number.
+Differentiating with actual elapsed time gives qdot=d*(6s-6s²)/T and qddot=d*(6-12s)/T² for each joint. The speed parabola peaks at s=0.5, where its coefficient is 1.5. Acceleration is linear and its greatest magnitude occurs at an endpoint, with coefficient six. These analytic extrema derive the two required durations. The selected duration is the larger of the speed-based and acceleration-based requirements, using the largest absolute displacement across joints.
+
+The response plot shows the actual two joint velocities over zero to the applied duration, with their positive and negative speed bounds. The mechanism plot shows actual joint accelerations. Retained diagnostics also include accelerations, peak values, required duration and acceleration excess. The headline acceleration is a measured maximum absolute joint acceleration, not the declared bound. Speed violation is max(0, peak speed minus selected bound); a zero violation means that constraint is satisfied within floating-point precision, not that the trajectory uses all available speed.
+
+At the default displacement 2 rad and speed bound 1.2 rad/s, speed requires T=2.5 s. Acceleration requires T=2 s. Applying T=2.5 s gives peak acceleration 1.92 rad/s², below its 3 rad/s² limit. A naive distance-over-speed duration would be approximately 1.667 s and would underestimate the cubic peak speed by a factor of 1.5. The second joint has a smaller displacement and therefore smaller absolute speed and acceleration under the shared timing.
+
+This construction is minimum duration only within the fixed, synchronized cubic family and the stated independent kinematic bounds. It is not a globally time-optimal path parameterization and does not include actuator torque, gravity, obstacles or jerk constraints. Acceleration jumps when connecting this cubic to a stationary segment, so a robot requiring smooth jerk needs a different profile or transition construction. Keeping that boundary explicit prevents an easy kinematic calculation from being sold as a complete motion planner.
 
 ## Predict before running
 
-Time scaling must preserve the geometric path while enforcing joint velocity and acceleration bounds. Predict the sign and direction of all three signature changes before moving a slider. Identify the equation term responsible and one quantity that should remain invariant. This written prediction is the comparison point; post-hoc description is not the same as a test.
+Predict why distance divided by the speed limit is too short for a rest-to-rest cubic trajectory. Record the expected direction of change and an invariant before reading the computed result. State a condition under which the fault could be hidden, rather than assuming every faulty setting must look worse.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read the three signature metrics with units.
-2. Inspect the response plot for task-level behavior, then the mechanism plot for the constraint, residual, energy, conditioning, or decision that explains it.
-3. Reproduce one signature quantity from the displayed equations to one or two significant figures.
-4. Check a limiting case before accepting the baseline.
-5. Save the baseline parameters and signature so recovery can be tested exactly.
+Reset controls and disable the named fault. Use Joint-space path length = 2.0 rad; Joint speed limit = 1.2 rad/s. Read the response curve, then connect it to the mechanism curve using the governing equations.
+
+Synchronized velocities plots Velocity (rad/s) against Time (s). Its series are Joint 1, Joint 2, Speed +, Speed −. Joint accelerations plots Acceleration (rad/s²) against Time (s). Its series are Joint 1, Joint 2.
+
+The default record is Applied cubic duration: 2.5 s; Peak joint acceleration: 1.92 rad/s^2; Measured speed-limit excess: 0 rad/s. These computed values are a worked example for these settings, not acceptance limits for every experiment. Keep parameter values and units beside the result. A near-zero residual has meaning only in relation to the stated model and numerical precision.
 
 ## Two one-variable sweeps
 
-1. Hold `speed_limit_rad_s` at `1.2 rad/s` and sweep `path_distance_rad` from `0.2` through `2.0` to `6.0 rad`.
-2. Restore `path_distance_rad` to `2.0 rad` and sweep `speed_limit_rad_s` from `0.2` through `1.2` to `4.0 rad/s`.
+1. Increase displacement while holding speed bound fixed. Compare the linear speed-duration requirement with the square-root acceleration-duration requirement; identify which one sets the applied time.
 
-Change one variable at a time. For each endpoint, record the predicted direction, actual direction, metric delta, and the mechanism-plot feature that supports causality. If the result reverses direction, check for a branch, active constraint, singularity, gate, saturation, or feasibility transition rather than smoothing it away.
+2. Increase speed allowance at fixed displacement. Duration eventually stops decreasing when acceleration becomes the active constraint. Confirm the plateau using computed acceleration rather than assuming the slider is ineffective.
+
+Return to defaults between sweeps. Hold the other control fixed and record both a changing output and an expected invariant. Explain the physical or numerical path from the selected input to the observed response.
 
 ## Intentionally broken case
 
-Broken mode keeps unit duration regardless of path length, exceeding the joint-speed limit. Broken mode is a falsifying counterexample, not a recommended alternative. Explain which assumption is violated before describing the visual symptom. Then locate the first intermediate quantity that departs from the baseline invariant; downstream task error alone rarely identifies the cause.
+The fault applies a fixed one-second duration instead of the derived duration. It then differentiates the actual applied cubic, so speed and acceleration violations follow from the trajectory.
+
+Run the same parameter values with the fault enabled. Compare complete curves as well as summary metrics. Identify the actual operation that changed and calculate why it affects the measured result. A changed warning label is not numerical evidence.
 
 ## Recovery
 
-Increase duration from the active bound, recompute acceleration, and verify every joint rather than only the endpoint. Recovery is complete only when the original default inputs and diagnostic signature return within the independent-reference tolerance. A different setting that happens to look better is mitigation, not recovery. Preserve the fault, detection, decision, and recovery sequence as separate evidence.
+Restore derived timing and inspect both speed and acceleration constraints. A small speed excess alone cannot certify acceleration feasibility.
+
+Repeat a saved nominal setting and confirm that its values and curves return. Recovery must restore the governing mechanism and its evidence, not merely clear a warning.
 
 ## Alternative and limiting cases
 
-- At zero path length, required motion duration tends to zero.
-- Doubling every speed limit halves the velocity-dominated minimum duration.
-
-Use one limit as a hand calculation and one as a numerical sweep. Limits reveal whether a formula is continuous, singular, or branch-dependent. An undefined limit must be reported as such; clipping it into a convenient finite value changes the model.
+At zero displacement the trajectory is stationary; the interactive displacement range remains positive to keep a nonzero duration. A short move or generous limits can make one second feasible, so the named fault does not guarantee a violation at every setting. Endpoint acceleration is nonzero and torque limits are absent.
 
 ## Independent evidence and MATLAB-style design boundary
 
-The design was reasoned from the displayed equations in the same model-first workflow normally used before a MATLAB/Simulink implementation, but the delivered implementation is Python/NumPy only. Expected signatures are stored by `expansion_reference_cases.py`, which imports no production experiment, consumes no production result, and perturbs no production value. Production signatures are retained separately for baseline, both one-variable sweeps, broken, and exact recovery scenarios.
+The reference constructs polynomial objects, differentiates them, and evaluates their extrema and sampled trajectories independently of the production explicit cubic formulas.
 
-Agreement supports only the displayed model, input set, fields, units, and tolerances. No licensed MATLAB runtime was executed, so the evidence makes no MATLAB numerical-parity claim. It also does not establish global optimality, field robustness, physical calibration, hardware timing, safety certification, or production readiness.
+Five retained cases cover baseline, two single-control sweeps, the named fault and recovery. Expected values come from the independent formulation; actual values come from the executable lesson. Absolute and relative comparison tolerances remain 1e-8. Full-state or geometric checks supplement these three-number signatures, which alone cannot establish correctness. MATLAB has not been executed and no MATLAB equivalence is claimed. Browser and container evidence is recorded separately. Agreement between synthetic implementations does not establish empirical model validity.
 
 ## Engineering review checklist
 
-- Verify equation dimensions, coordinate frames, signs, timestamp direction, and branch conventions.
-- Separate feasibility or safety from objective value and visual smoothness.
-- Inspect conditioning, covariance, clearance, saturation, energy, or data age when relevant.
-- Confirm the broken case changes the named mechanism and the recovery restores the baseline signature.
-- State one assumption whose violation would invalidate the result even if every test here passed.
+Reconstruct one displayed quantity from the actual state or geometric arrays. Check coordinate ordering, signs and units before comparing numbers. Explain which assumption each check constrains, and identify a defect that another check could miss. Preserve the baseline, one controlled sweep, fault and recovery as a reproducible evidence sequence. State the model boundary before making a broader engineering recommendation.
 
 ## Common mistakes
 
-- Treating a local or finite-sample result as a global guarantee.
-- Changing both controls and assigning causality to only one.
-- Accepting endpoint checks where swept geometry, intermediate dynamics, or data freshness matter.
-- Confusing a low residual with observability, correct association, feasibility, or physical truth.
-- Claiming learner effectiveness, MATLAB parity, physical HIL, hardware safety, or certification from software fixtures.
+Do not infer correctness from a changing headline alone. At zero displacement the trajectory is stationary; the interactive displacement range remains positive to keep a nonzero duration.
+
+Do not change both sliders at once and attribute the result to one cause. Separate a model assumption from a measured property, and a finite-horizon observation from a universal guarantee. Floating-point roundoff is not a physical effect; equally, an attractive plot is not a substitute for the governing calculation.
 
 ## Focused check and teach-back
 
-Calculate one baseline signature value, show one dimensional check, predict both sweeps, reproduce the named failure, and demonstrate exact recovery. Then teach the lesson back without starting from the plots: state the convention, derive the governing relationship, explain the invariant, identify the practical failure, and name the evidence boundary. Finish by naming the prerequisite module and the next mapped module that consumes this artifact.
+Why can increasing the allowed speed cease to shorten the move?
+
+Answer rationale: The acceleration requirement then sets the shared duration. For the fixed cubic, speed scales as 1/T while acceleration scales as 1/T²; both constraints must be satisfied, and the larger required time wins.
+
+Use the embedded Course checkpoint to explain your default, sweep, fault and recovery records to a colleague. Include one calculation with units, the causal diagnosis and an explicit untested boundary. This is a self-assessment; no learner score is stored.

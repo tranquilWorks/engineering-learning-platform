@@ -1,87 +1,79 @@
-# Map End-Effector Wrenches to Joint Torques
+# Map Planar End-Effector Force to Joint Torque
 
-**Guiding question:** What assumptions and evidence make map end-effector wrenches to joint torques defensible?
 
-Build a deterministic numerical laboratory to map end-effector wrenches to joint torques, expose its governing relation, and diagnose a named counterexample before recovery. This module is a Python-first native design authorized by the reviewed issue-440 competency map. It is not a conversion of the pinned MATLAB-oriented source course, and it remains deterministic software evidence.
-
-## Why this lesson exists
-
-Robotics failures often cross representation boundaries: geometry into velocity, images into pose, estimates into maps, plans into commands, or contact forces into actuator effort. A result is defensible only when those boundaries carry explicit frames, signs, units, timing, constraints, and uncertainty. This lesson therefore connects one design decision to a governing equation, an observable response, a named failure, and an exact recovery.
-
-Before calculating, name the state, input, observation, and verdict. State which quantities are measured, which are modeled, and which are derived. A smooth curve is not evidence that a constraint was respected, an estimator was consistent, a path was collision free, or a contact remained passive.
 
 ## Model, derivation, and conventions
 
-- $$tau=J^T F$$
-- $$tau^T q_dot=F^T V$$
-- $$V=J q_dot$$
+`v=J(q) qdot; tau=J(q)^T F`
 
-Derive the first relation from the physical, geometric, probabilistic, or algorithmic definition. Use the second relation to propagate the decision into a measurable consequence. Use the third as an invariant, feasibility condition, or audit relation. Keep every coordinate frame and sampling instant attached until the final scalar metric. The experiment evaluates these relations directly with bounded NumPy arrays; it does not call a remote solver or hide the mechanism behind a black-box robotics stack.
+`joint_power=tau^T qdot; Cartesian_power=F^T v`
 
-The three retained signature quantities are:
+`force_to_torque_gain=||J^T F_unit||`
 
-- `joint_torque` (N*m)
-- `virtual_power_error` (W)
-- `mechanical_advantage` (1)
+The robot is a planar two-revolute-joint arm. Its proximal link length is L, selected in metres; its distal link is 0.7L. Shoulder angle is fixed at 0.4 rad and elbow angle sweeps from -0.8 to 0.8 rad in 121 samples. Endpoint position is L[cos(q1)+0.7cos(q1+q2), sin(q1)+0.7sin(q1+q2)]. Differentiating each coordinate with respect to both angles constructs the actual two-by-two position Jacobian. Its entries have units metres per radian. This task includes a Cartesian force, not an independently commanded endpoint moment; a full spatial wrench would require the corresponding angular rows.
 
-Carry units through each substitution. Dimensionless ranks, probabilities, ratios, and flags are labeled `1` or `count`; physical displacement, time, force, torque, energy, velocity, and pixel quantities retain their named units. If a sum combines unlike units or a transform maps a vector without a frame convention, stop before interpreting a number.
+The force direction is [0.6,0.8], a unit vector, multiplied by the selected force magnitude. Both force components use the same fixed world frame as the endpoint position. Joint velocity is [0.7,-0.4] rad/s. Multiplying J by this velocity gives the Cartesian velocity at each configuration. The force-to-torque map follows directly by equating incremental work: F transpose dx equals tau transpose dq, and dx equals J dq. Consequently tau equals J transpose F. Joint and Cartesian are calculated separately from their actual vectors rather than one being assigned to equal the other.
+
+The third metric is the norm of J transpose times the unit force direction. It has units metres when radians are treated as dimensionless in mechanical work. It is not a dimensionless mechanical advantage. Dividing the torque norm by force magnitude would give the same value at nonzero force, but constructing the unit-force response also defines it at zero magnitude. Peak torque is the largest absolute component across the elbow sweep, whereas this gain is a vector norm; their numerical values therefore need not be proportional by the same coefficient.
+
+For a hand calculation, set shoulder and elbow to zero temporarily and choose L=0.4 m. The Jacobian is [[0,0],[0.68,0.28]]. A vertical 8 N force gives joint torques [5.44,2.24] N m. With the stated joint rates, endpoint vertical speed is 0.364 m/s and both power calculations give 2.912 W. Applying J directly to the force instead gives [0,2.24] N m, whose joint power is -0.896 W. The live sweep uses a different shoulder angle, so this example teaches the multiplication and sign convention rather than supplying its default answer.
 
 ## Predict before running
 
-Jacobian transpose statics must preserve virtual power between joint and Cartesian coordinates. Predict the sign and direction of all three signature changes before moving a slider. Identify the equation term responsible and one quantity that should remain invariant. This written prediction is the comparison point; post-hoc description is not the same as a test.
+Predict which mapping preserves virtual power throughout an elbow sweep, and whether zero force can expose the wrong mapping. Record the expected direction of change and an invariant before reading the computed result. State a condition under which the fault could be hidden, rather than assuming every faulty setting must look worse.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read the three signature metrics with units.
-2. Inspect the response plot for task-level behavior, then the mechanism plot for the constraint, residual, energy, conditioning, or decision that explains it.
-3. Reproduce one signature quantity from the displayed equations to one or two significant figures.
-4. Check a limiting case before accepting the baseline.
-5. Save the baseline parameters and signature so recovery can be tested exactly.
+Reset controls and disable the named fault. Use End-effector force = 8.0 N; Proximal link length = 0.4 m. Read the response curve, then connect it to the mechanism curve using the governing equations.
+
+Mapped joint torques plots Torque (N·m) against Elbow angle (rad). Its series are Joint 1, Joint 2. Virtual power check plots Power (W) against Elbow angle (rad). Its series are Joint, Cartesian.
+
+The default record is Peak joint torque: 3.78415 N*m; Maximum virtual-power mismatch: 8.88178e-16 W; Peak force-to-torque gain: 0.545518 m. These computed values are a worked example for these settings, not acceptance limits for every experiment. Keep parameter values and units beside the result. A near-zero residual has meaning only in relation to the stated model and numerical precision.
 
 ## Two one-variable sweeps
 
-1. Hold `lever_arm_m` at `0.4 m` and sweep `force_n` from `0.0` through `8.0` to `30.0 N`.
-2. Restore `force_n` to `8.0 N` and sweep `lever_arm_m` from `0.05` through `0.4` to `1.2 m`.
+1. Increase force magnitude while holding proximal length fixed. Torque and both power traces scale linearly. The unit-force gain stays unchanged, and normal power discrepancy remains near numerical roundoff.
 
-Change one variable at a time. For each endpoint, record the predicted direction, actual direction, metric delta, and the mechanism-plot feature that supports causality. If the result reverses direction, check for a branch, active constraint, singularity, gate, saturation, or feasibility transition rather than smoothing it away.
+2. Increase proximal length while holding force fixed. Both links scale together, so Jacobian entries, torques and endpoint speeds scale with length. Compare the gain in metres; do not call the change an efficiency improvement.
+
+Return to defaults between sweeps. Hold the other control fixed and record both a changing output and an expected invariant. Explain the physical or numerical path from the selected input to the observed response.
 
 ## Intentionally broken case
 
-Broken mode uses J F rather than J-transpose F, producing a dimensionally and energetically inconsistent torque. Broken mode is a falsifying counterexample, not a recommended alternative. Explain which assumption is violated before describing the visual symptom. Then locate the first intermediate quantity that departs from the baseline invariant; downstream task error alone rarely identifies the cause.
+The fault applies J F instead of J transpose F. Because this planar map happens to be square, the multiplication has compatible array dimensions and runs, but it violates the work duality.
+
+Run the same parameter values with the fault enabled. Compare complete curves as well as summary metrics. Identify the actual operation that changed and calculate why it affects the measured result. A changed warning label is not numerical evidence.
 
 ## Recovery
 
-Restore the transpose map, carry wrench frame labels, and verify virtual power before interpreting force capability. Recovery is complete only when the original default inputs and diagnostic signature return within the independent-reference tolerance. A different setting that happens to look better is mitigation, not recovery. Preserve the fault, detection, decision, and recovery sequence as separate evidence.
+Restore the transpose, reset controls, and compare both power traces across every elbow sample. A single zero-power configuration is insufficient evidence.
+
+Repeat a saved nominal setting and confirm that its values and curves return. Recovery must restore the governing mechanism and its evidence, not merely clear a warning.
 
 ## Alternative and limiting cases
 
-- At zero force, every mapped joint torque is zero.
-- At zero moment arm, torque from a transverse force tends to zero.
-
-Use one limit as a hand calculation and one as a numerical sweep. Limits reveal whether a formula is continuous, singular, or branch-dependent. An undefined limit must be reported as such; clipping it into a convenient finite value changes the model.
+At zero force both torque maps produce zero, so the fault is unobservable through power. At zero length the ideal geometric torques vanish; the interactive length range remains positive. This is quasistatic mapping, with no inertia, friction or actuator model.
 
 ## Independent evidence and MATLAB-style design boundary
 
-The design was reasoned from the displayed equations in the same model-first workflow normally used before a MATLAB/Simulink implementation, but the delivered implementation is Python/NumPy only. Expected signatures are stored by `expansion_reference_cases.py`, which imports no production experiment, consumes no production result, and perturbs no production value. Production signatures are retained separately for baseline, both one-variable sweeps, broken, and exact recovery scenarios.
+The reference differentiates forward kinematics using complex steps, then independently forms torque and the two scalar powers. It retains Jacobians and torque vectors for full-sweep comparisons.
 
-Agreement supports only the displayed model, input set, fields, units, and tolerances. No licensed MATLAB runtime was executed, so the evidence makes no MATLAB numerical-parity claim. It also does not establish global optimality, field robustness, physical calibration, hardware timing, safety certification, or production readiness.
+Five retained cases cover baseline, two single-control sweeps, the named fault and recovery. Expected values come from the independent formulation; actual values come from the executable lesson. Absolute and relative comparison tolerances remain 1e-8. Full-state or geometric checks supplement these three-number signatures, which alone cannot establish correctness. MATLAB has not been executed and no MATLAB equivalence is claimed. Browser and container evidence is recorded separately. Agreement between synthetic implementations does not establish empirical model validity.
 
 ## Engineering review checklist
 
-- Verify equation dimensions, coordinate frames, signs, timestamp direction, and branch conventions.
-- Separate feasibility or safety from objective value and visual smoothness.
-- Inspect conditioning, covariance, clearance, saturation, energy, or data age when relevant.
-- Confirm the broken case changes the named mechanism and the recovery restores the baseline signature.
-- State one assumption whose violation would invalidate the result even if every test here passed.
+Reconstruct one displayed quantity from the actual state or geometric arrays. Check coordinate ordering, signs and units before comparing numbers. Explain which assumption each check constrains, and identify a defect that another check could miss. Preserve the baseline, one controlled sweep, fault and recovery as a reproducible evidence sequence. State the model boundary before making a broader engineering recommendation.
 
 ## Common mistakes
 
-- Treating a local or finite-sample result as a global guarantee.
-- Changing both controls and assigning causality to only one.
-- Accepting endpoint checks where swept geometry, intermediate dynamics, or data freshness matter.
-- Confusing a low residual with observability, correct association, feasibility, or physical truth.
-- Claiming learner effectiveness, MATLAB parity, physical HIL, hardware safety, or certification from software fixtures.
+Do not infer correctness from a changing headline alone. At zero force both torque maps produce zero, so the fault is unobservable through power.
+
+Do not change both sliders at once and attribute the result to one cause. Separate a model assumption from a measured property, and a finite-horizon observation from a universal guarantee. Floating-point roundoff is not a physical effect; equally, an attractive plot is not a substitute for the governing calculation.
 
 ## Focused check and teach-back
 
-Calculate one baseline signature value, show one dimensional check, predict both sweeps, reproduce the named failure, and demonstrate exact recovery. Then teach the lesson back without starting from the plots: state the convention, derive the governing relationship, explain the invariant, identify the practical failure, and name the evidence boundary. Finish by naming the prerequisite module and the next mapped module that consumes this artifact.
+Why can a matrix multiplication run successfully while producing the wrong joint torques?
+
+Answer rationale: The square array dimensions do not enforce physical duality. Only J transpose maps Cartesian force into joint torque while preserving F dot (J qdot) = tau dot qdot. A zero-force trial cannot distinguish the maps.
+
+Use the embedded Course checkpoint to explain your default, sweep, fault and recovery records to a colleague. Include one calculation with units, the causal diagnosis and an explicit untested boundary. This is a self-assessment; no learner score is stored.

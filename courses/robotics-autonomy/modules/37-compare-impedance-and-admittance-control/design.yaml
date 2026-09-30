@@ -7,9 +7,9 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- F=K_v(x_d-x)-B_v x_dot
-- M_a x_ddot+B_a x_dot+K_a x=F_ext
-- E=1/2 K_v e^2
+- m xddot+b xdot+(k_virtual+k_environment)x=0
+- contact_force=k_environment*x
+- E=0.5m xdot²+0.5(k_virtual+k_environment)x²; Edot=-b xdot²
 signature:
 - field: peak_contact_force
   unit: N
@@ -17,11 +17,12 @@ signature:
   unit: s
 - field: interaction_energy
   unit: J
-teaching_invariant: Impedance shapes force from motion error while admittance shapes motion from force; both require
-  an energy and damping interpretation at contact.
+teaching_invariant: Predict the energy trend when damping is positive and when the same damping is given the
+  wrong sign.
 limiting_cases:
-- In free space, environment contact force is zero.
-- With very large environment stiffness, small penetration creates large force and demands adequate damping.
+- At zero damping the ideal system conserves energy and generally does not settle.
+- The maintained-preload linearization and ideal position servo exclude contact loss, actuator limits and servo
+  bandwidth. A censored 0.4 s result is not a measured settling time.
 scenarios:
   baseline: &id001
     environment_stiffness_n_m: 800.0
@@ -48,5 +49,5 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic software evidence only. Browser/container checks are recorded separately.
+  No MATLAB runtime, representative learner, manual screen-reader, hardware, certification or production acceptance.

@@ -1,10 +1,11 @@
 schema_version: 1
 id: 35-apply-computed-torque-and-gravity-compensation
 number: 35
-title: Apply Computed Torque and Gravity Compensation
-summary: Build a deterministic numerical laboratory to apply computed torque and gravity compensation, expose its
-  governing relation, and diagnose a named counterexample before recovery.
-guiding_question: What assumptions and evidence make apply computed torque and gravity compensation defensible?
+title: Integrate Computed Torque with Gravity Error and Saturation
+summary: The plant integrates coupled inertia, Coriolis and gravity dynamics. Selected model error scales the
+  controller model; actual torques saturate at ±20 N·m. Nominal error dynamics apply only without mismatch
+  or saturation.
+guiding_question: Why can exact parameters still fail to produce the nominal critically damped tracking error?
 status: implemented
 tags:
 - robotics-autonomy
@@ -41,9 +42,11 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Computed torque yields the selected nominal error dynamics only to the extent that inertia, velocity, and
-    gravity models cancel consistently.
-  reveal: Use the equations, units, and mechanism plot to test the prediction.
+  text: Predict why increasing feedback bandwidth may not reduce tracking error when requested torques exceed
+    actuator limits.
+  reveal: The derivation assumes the requested torque reaches the plant. Clipping changes that input and leaves
+    an uncompensated acceleration. Compare requested and applied torque along the actual trajectory before
+    applying the linear error equation.
 - type: controls
   title: Live model controls
 - type: metrics
@@ -64,3 +67,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

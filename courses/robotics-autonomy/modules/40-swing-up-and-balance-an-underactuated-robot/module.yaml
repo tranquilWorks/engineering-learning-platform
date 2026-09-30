@@ -1,10 +1,11 @@
 schema_version: 1
 id: 40-swing-up-and-balance-an-underactuated-robot
 number: 40
-title: Swing Up and Balance an Underactuated Robot
-summary: Build a deterministic numerical laboratory to swing up and balance an underactuated robot, expose its governing
-  relation, and diagnose a named counterexample before recovery.
-guiding_question: What assumptions and evidence make swing up and balance an underactuated robot defensible?
+title: Swing Up and Capture a Reaction-Wheel Pendulum
+summary: Capture occurred at 0.7781 s. Two coordinates share one internal motor torque. Body balance does not
+  regulate rotor position or speed; neither wheel limits nor hardware feasibility are certified.
+guiding_question: What makes this plant underactuated, and why is a captured body insufficient to claim a practical
+  balanced robot?
 status: implemented
 tags:
 - robotics-autonomy
@@ -41,9 +42,11 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Energy shaping must add energy below the upright target, remove it above target, and hand off to balancing
-    only inside a reachable capture region.
-  reveal: Use the equations, units, and mechanism plot to test the prediction.
+  text: Predict why reversing the energy-pumping sign prevents the default pendulum from reaching the capture
+    region.
+  reveal: Two rotational coordinates share one equal-and-opposite internal motor torque. Capturing the body
+    can leave substantial wheel motion; the model lacks wheel-speed and momentum limits, so body tracking alone
+    cannot establish actuator feasibility.
 - type: controls
   title: Live model controls
 - type: metrics
@@ -64,3 +67,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

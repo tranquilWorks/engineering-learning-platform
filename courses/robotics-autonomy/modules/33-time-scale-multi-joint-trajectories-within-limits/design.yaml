@@ -7,9 +7,9 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- q(t)=q(s(t))
-- q_dot=q_s s_dot
-- T>=max |q_s|/q_dot_max
+- q_i=d_i(3s²-2s³); s=t/T
+- peak_speed=1.5 max|d_i|/T; peak_acceleration=6 max|d_i|/T²
+- T=max(1.5 max|d_i|/v_limit, sqrt(6 max|d_i|/a_limit))
 signature:
 - field: minimum_duration
   unit: s
@@ -17,11 +17,12 @@ signature:
   unit: rad/s^2
 - field: limit_violation
   unit: rad/s
-teaching_invariant: Time scaling must preserve the geometric path while enforcing joint velocity and acceleration
-  bounds.
+teaching_invariant: Predict why distance divided by the speed limit is too short for a rest-to-rest cubic trajectory.
 limiting_cases:
-- At zero path length, required motion duration tends to zero.
-- Doubling every speed limit halves the velocity-dominated minimum duration.
+- At zero displacement the trajectory is stationary; the interactive displacement range remains positive to
+  keep a nonzero duration.
+- A short move or generous limits can make one second feasible, so the named fault does not guarantee a violation
+  at every setting. Endpoint acceleration is nonzero and torque limits are absent.
 scenarios:
   baseline: &id001
     path_distance_rad: 2.0
@@ -48,5 +49,5 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic software evidence only. Browser/container checks are recorded separately.
+  No MATLAB runtime, representative learner, manual screen-reader, hardware, certification or production acceptance.

@@ -1,100 +1,186 @@
 from __future__ import annotations
 
-from typing import Any
-
 import numpy as np
 
-ITEM_NUMBER = 31
-BROKEN_TEXT = 'Broken mode drops a coupling term from Coriolis while retaining its inertia dependence, violating the skew identity.'
-RECOVERY_TEXT = 'Restore paired inertia/Coriolis terms and verify energy balance before using inverse dynamics.'
 
-
-def _trace(name: str, x: Any, y: Any, x_quantity: str, x_unit: str,
-           y_quantity: str, y_unit: str) -> dict[str, Any]:
+def trace(name, x, y, x_quantity, x_unit, y_quantity, y_unit):
+    x, y = np.asarray(x, float), np.asarray(y, float)
     return {
-        "type": "scattergl", "mode": "lines", "name": name,
-        "x": np.asarray(x, dtype=float), "y": np.asarray(y, dtype=float),
-        "meta": {"x_quantity": x_quantity, "x_unit": x_unit,
-                 "y_quantity": y_quantity, "y_unit": y_unit},
+        "type": "scatter",
+        "mode": "lines+markers" if np.ptp(x) == 0 else "lines",
+        "name": name,
+        "x": x,
+        "y": y,
+        "meta": {
+            "x_quantity": x_quantity,
+            "x_unit": x_unit,
+            "y_quantity": y_quantity,
+            "y_unit": y_unit,
+        },
     }
 
 
-def _plot(title: str, x_title: str, y_title: str,
-          traces: list[dict[str, Any]]) -> dict[str, Any]:
+def plot(title, x, y, traces):
     return {
         "data": traces,
         "layout": {
             "title": {"text": title, "x": 0.02},
-            "xaxis": {"title": {"text": x_title}},
-            "yaxis": {"title": {"text": y_title}},
-            "legend": {"orientation": "h"},
-            "margin": {"l": 72, "r": 36, "t": 62, "b": 62},
-            "hovermode": "closest", "uirevision": "keep-view",
+            "xaxis": {"title": {"text": x, "standoff": 16}},
+            "yaxis": {"title": {"text": y, "standoff": 16}},
+            "legend": {
+                "orientation": "h",
+                "y": -0.3,
+                "entrywidth": 0.5,
+                "entrywidthmode": "fraction",
+            },
+            "margin": {"l": 72, "r": 25, "t": 65, "b": 115},
+            "uirevision": "keep-view",
         },
         "config": {"responsive": True, "displaylogo": False},
     }
 
 
-def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
+def finish(number, broken, diagnostics, metrics, plots, observation, fault, recovery):
+    diagnostics.update(
+        item_number=number,
+        broken_active=broken,
+        software_only=True,
+        signature=[float(m[2]) for m in metrics],
+    )
     return {
         "metrics": [
-            {"id": key, "label": label, "value": float(value), "unit": unit,
-              "emphasis": "primary" if index == 0 else "normal"}
-            for index, (key, label, value, unit) in enumerate(model["metrics"])
+            {
+                "id": key,
+                "label": label,
+                "value": float(value),
+                "unit": unit,
+                "emphasis": "primary" if i == 0 else "normal",
+            }
+            for i, (key, label, value, unit) in enumerate(metrics)
         ],
-        "plots": model["plots"],
+        "plots": plots,
+        "diagnostics": diagnostics,
         "explanations": {
-            "observation": model["observation"],
-            "broken": BROKEN_TEXT,
-            "recovery": RECOVERY_TEXT,
-        },
-        "diagnostics": {
-            "item_number": ITEM_NUMBER,
-            "broken_active": bool(broken),
-            "sample_count": int(model["sample_count"]),
-            "signature": [float(value) for value in model["signature"]],
-            "software_only": True,
+            "observation": observation,
+            "broken": fault,
+            "recovery": recovery,
         },
     }
 
-def _model(p: dict[str, Any], broken: bool) -> dict[str, Any]:
-    a = float(p["payload_kg"])
-    b = float(p["elbow_angle_deg"])
-    if broken:
-        a, b = (4.5, 145.0)
-    x = np.linspace(0.0, 1.0, 181)
-    signature = [float(value) for value in [.18+.06*a*(1+abs(np.cos(np.deg2rad(b)))), (.12*a if broken else 1e-10), 9.81*(.3+.2*a)*np.cos(np.deg2rad(b))]]
-    y1 = np.asarray(.18+.06*a*(1+np.cos(np.deg2rad(160*x))**2), dtype=float)
-    y2 = np.asarray(np.full_like(x,.18), dtype=float)
-    z1 = np.asarray(9.81*(.3+.2*a)*np.cos(np.deg2rad(160*x-80)), dtype=float)
-    z2 = np.asarray(np.zeros_like(x), dtype=float)
-    if y1.ndim == 0:
-        y1 = np.full_like(x, float(y1))
-    if y2.ndim == 0:
-        y2 = np.full_like(x, float(y2))
-    if z1.ndim == 0:
-        z1 = np.full_like(x, float(z1))
-    if z2.ndim == 0:
-        z2 = np.full_like(x, float(z2))
-    return {
-        "signature": signature,
-        "sample_count": len(x),
-        "metrics": [("minimum_inertia_eigenvalue", "Minimum Inertia Eigenvalue", signature[0], "kg*m^2"), ("skew_identity_error", "Skew Identity Error", signature[1], "1"), ("gravity_torque", "Gravity Torque", signature[2], "N*m")],
-        "plots": {
-            "response": _plot("Manipulator inertia eigenvalue", "Configuration sweep (1)", "Inertia eigenvalue (kg*m^2)", [
-                _trace("Model response", x, y1, "Configuration sweep", "1", "Inertia eigenvalue", "kg*m^2"),
-                _trace("Reference or bound", x, y2, "Configuration sweep", "1", "Inertia eigenvalue", "kg*m^2"),
-            ]),
-            "mechanism": _plot("Gravity torque over configuration", "Configuration sweep (1)", "Joint torque (N*m)", [
-                _trace("Governing mechanism", x, z1, "Configuration sweep", "1", "Joint torque", "N*m"),
-                _trace("Requirement or reference", x, z2, "Configuration sweep", "1", "Joint torque", "N*m"),
-            ]),
-        },
-        "observation": 'A physically consistent rigid manipulator has symmetric positive inertia and satisfies the kinetic-energy skew identity.',
+
+def terms(q, v, payload):
+    # Two point masses, with the distal payload lumped into the second mass.
+    l1, l2, m1, m2 = 0.7, 0.5, 1.0, 0.8 + payload
+    b = m2 * l1 * l2
+    c = np.cos(q[1])
+    h = b * np.sin(q[1])
+    M = np.array(
+        [
+            [(m1 + m2) * l1 * l1 + m2 * l2 * l2 + 2 * b * c, m2 * l2 * l2 + b * c],
+            [m2 * l2 * l2 + b * c, m2 * l2 * l2],
+        ]
+    )
+    C = np.array([[-h * v[1], -h * (v[0] + v[1])], [h * v[0], 0.0]])
+    g = 9.81 * np.array(
+        [
+            (m1 + m2) * l1 * np.cos(q[0]) + m2 * l2 * np.cos(q.sum()),
+            m2 * l2 * np.cos(q.sum()),
+        ]
+    )
+    Md = -b * np.sin(q[1]) * v[1] * np.array([[2.0, 1.0], [1.0, 0.0]])
+    return M, C, g, Md
+
+
+def run(p):
+    payload = float(p["payload_kg"])
+    elbow = np.deg2rad(float(p["elbow_angle_deg"]))
+    broken = bool(p["broken_mode"])
+    angles = np.linspace(-np.pi, np.pi, 121)
+    velocity = np.array([0.6, -0.35])
+    inertia = []
+    gravity = []
+    defects = []
+
+    def evaluate(a):
+        q = np.array([0.4, a])
+        M, C, g, Md = terms(q, velocity, payload)
+        if broken:
+            C[0, 1] = 0.0
+        S = Md - 2 * C
+        return M, C, g, Md, np.linalg.norm(S + S.T)
+
+    for a in angles:
+        M, C, g, Md, e = evaluate(a)
+        inertia.append(np.linalg.eigvalsh(M))
+        gravity.append(g)
+        defects.append(e)
+    M, C, g, Md, error = evaluate(elbow)
+    inertia, gravity = np.array(inertia), np.array(gravity)
+    metric = [
+        (
+            "minimum_inertia_eigenvalue",
+            "Minimum inertia eigenvalue",
+            np.linalg.eigvalsh(M)[0],
+            "kg*m^2",
+        ),
+        ("skew_identity_error", "Symmetric skew-identity defect", error, "kg*m^2/s"),
+        ("gravity_torque", "Shoulder gravity torque", g[0], "N*m"),
+    ]
+    plots = {
+        "response": plot(
+            "Joint inertia eigenvalues",
+            "Elbow angle (rad)",
+            "Inertia (kg·m²)",
+            [
+                trace(
+                    ["Min eig", "Max eig"][i],
+                    angles,
+                    inertia[:, i],
+                    "Elbow angle",
+                    "rad",
+                    "Inertia eigenvalue",
+                    "kg*m^2",
+                )
+                for i in range(2)
+            ],
+        ),
+        "mechanism": plot(
+            "Joint gravity torques",
+            "Elbow angle (rad)",
+            "Torque (N·m)",
+            [
+                trace(
+                    f"Joint {i + 1}",
+                    angles,
+                    gravity[:, i],
+                    "Elbow angle",
+                    "rad",
+                    "Gravity torque",
+                    "N*m",
+                )
+                for i in range(2)
+            ],
+        ),
     }
-
-
-
-def run(parameters: dict[str, Any]) -> dict[str, Any]:
-    broken = bool(parameters["broken_mode"])
-    return _result(_model(parameters, broken), broken)
+    return finish(
+        31,
+        broken,
+        {
+            "sample_count": 121,
+            "angles": angles,
+            "inertia_eigenvalues": inertia,
+            "gravity_sweep": gravity,
+            "skew_defects": defects,
+            "M": M,
+            "C": C,
+            "Mdot": Md,
+            "gravity": g,
+            "q": np.array([0.4, elbow]),
+            "velocity": velocity,
+        },
+        metric,
+        plots,
+        "M comes from the kinetic energy of two moving point masses. The reported skew defect is the norm of the symmetric part of Mdot−2C, with inertia-rate units.",
+        "The fault deletes C[0,1] while leaving M and its derivative intact.",
+        "Restore the coupling and verify positive inertia plus the skew identity; a straight elbow can hide the missing sine coupling.",
+    )

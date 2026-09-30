@@ -1,10 +1,10 @@
 schema_version: 1
 id: 31-derive-manipulator-inertia-coriolis-and-gravity-terms
 number: 31
-title: Derive Manipulator Inertia, Coriolis, and Gravity Terms
-summary: Build a deterministic numerical laboratory to derive manipulator inertia, coriolis, and gravity terms,
-  expose its governing relation, and diagnose a named counterexample before recovery.
-guiding_question: What assumptions and evidence make derive manipulator inertia, coriolis, and gravity terms defensible?
+title: Construct Manipulator Inertia, Coriolis and Gravity Terms
+summary: M comes from the kinetic energy of two moving point masses. The reported skew defect is the norm of
+  the symmetric part of Mdot−2C, with inertia-rate units.
+guiding_question: Why does a positive minimum inertia eigenvalue not prove that the velocity forces are correct?
 status: implemented
 tags:
 - robotics-autonomy
@@ -41,9 +41,10 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: A physically consistent rigid manipulator has symmetric positive inertia and satisfies the kinetic-energy
-    skew identity.
-  reveal: Use the equations, units, and mechanism plot to test the prediction.
+  text: Predict whether positive inertia alone can reveal a missing Coriolis coupling.
+  reveal: Positive inertia certifies the kinetic-energy quadratic form. A missing C entry leaves that form
+    unchanged while breaking the skew identity at a bent moving configuration. The tests constrain different
+    parts of the dynamics.
 - type: controls
   title: Live model controls
 - type: metrics
@@ -64,3 +65,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

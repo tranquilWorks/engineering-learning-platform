@@ -1,100 +1,187 @@
 from __future__ import annotations
 
-from typing import Any
-
 import numpy as np
 
-ITEM_NUMBER = 41
-BROKEN_TEXT = 'Broken mode uses world-frame depth without applying the camera pose and projects a point behind the camera.'
-RECOVERY_TEXT = 'Transform every point into the camera frame, reject nonpositive depth, and verify projection against a ray ratio.'
 
-
-def _trace(name: str, x: Any, y: Any, x_quantity: str, x_unit: str,
-           y_quantity: str, y_unit: str) -> dict[str, Any]:
+def trace(name, x, y, x_quantity, x_unit, y_quantity, y_unit):
+    x, y = np.asarray(x, float), np.asarray(y, float)
     return {
-        "type": "scattergl", "mode": "lines", "name": name,
-        "x": np.asarray(x, dtype=float), "y": np.asarray(y, dtype=float),
-        "meta": {"x_quantity": x_quantity, "x_unit": x_unit,
-                 "y_quantity": y_quantity, "y_unit": y_unit},
+        "type": "scatter",
+        "mode": "lines+markers" if np.ptp(x) == 0 else "lines",
+        "name": name,
+        "x": x,
+        "y": y,
+        "meta": {
+            "x_quantity": x_quantity,
+            "x_unit": x_unit,
+            "y_quantity": y_quantity,
+            "y_unit": y_unit,
+        },
     }
 
 
-def _plot(title: str, x_title: str, y_title: str,
-          traces: list[dict[str, Any]]) -> dict[str, Any]:
+def plot(title, x, y, traces):
     return {
         "data": traces,
         "layout": {
             "title": {"text": title, "x": 0.02},
-            "xaxis": {"title": {"text": x_title}},
-            "yaxis": {"title": {"text": y_title}},
-            "legend": {"orientation": "h"},
-            "margin": {"l": 72, "r": 36, "t": 62, "b": 62},
-            "hovermode": "closest", "uirevision": "keep-view",
+            "xaxis": {"title": {"text": x, "standoff": 16}},
+            "yaxis": {"title": {"text": y, "standoff": 16}},
+            "legend": {
+                "orientation": "h",
+                "y": -0.3,
+                "entrywidth": 0.5,
+                "entrywidthmode": "fraction",
+            },
+            "margin": {"l": 72, "r": 25, "t": 65, "b": 115},
+            "uirevision": "keep-view",
         },
         "config": {"responsive": True, "displaylogo": False},
     }
 
 
-def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
+def finish(number, broken, diagnostics, metrics, plots, observation, fault, recovery):
+    diagnostics.update(
+        item_number=number,
+        broken_active=broken,
+        software_only=True,
+        signature=[float(m[2]) for m in metrics],
+    )
     return {
         "metrics": [
-            {"id": key, "label": label, "value": float(value), "unit": unit,
-              "emphasis": "primary" if index == 0 else "normal"}
-            for index, (key, label, value, unit) in enumerate(model["metrics"])
+            {
+                "id": key,
+                "label": label,
+                "value": float(value),
+                "unit": unit,
+                "emphasis": "primary" if i == 0 else "normal",
+            }
+            for i, (key, label, value, unit) in enumerate(metrics)
         ],
-        "plots": model["plots"],
+        "plots": plots,
+        "diagnostics": diagnostics,
         "explanations": {
-            "observation": model["observation"],
-            "broken": BROKEN_TEXT,
-            "recovery": RECOVERY_TEXT,
-        },
-        "diagnostics": {
-            "item_number": ITEM_NUMBER,
-            "broken_active": bool(broken),
-            "sample_count": int(model["sample_count"]),
-            "signature": [float(value) for value in model["signature"]],
-            "software_only": True,
+            "observation": observation,
+            "broken": fault,
+            "recovery": recovery,
         },
     }
 
-def _model(p: dict[str, Any], broken: bool) -> dict[str, Any]:
-    a = float(p["focal_length_px"])
-    b = float(p["point_depth_m"])
-    if broken:
-        a, b = (1100.0, 0.4)
-    x = np.linspace(0.0, 1.0, 181)
-    signature = [float(value) for value in [a*.4/max(.1,b), a*.4/max(.1,b*b), 1.0 if broken else 0.0]]
-    y1 = np.asarray(a*.4/(b+.5*x), dtype=float)
-    y2 = np.asarray(np.full_like(x,a*.4/b), dtype=float)
-    z1 = np.asarray(a*.4/(b+.5*x)**2, dtype=float)
-    z2 = np.asarray(np.zeros_like(x), dtype=float)
-    if y1.ndim == 0:
-        y1 = np.full_like(x, float(y1))
-    if y2.ndim == 0:
-        y2 = np.full_like(x, float(y2))
-    if z1.ndim == 0:
-        z1 = np.full_like(x, float(z1))
-    if z2.ndim == 0:
-        z2 = np.full_like(x, float(z2))
-    return {
-        "signature": signature,
-        "sample_count": len(x),
-        "metrics": [("image_radius", "Image Radius", signature[0], "px"), ("depth_sensitivity", "Depth Sensitivity", signature[1], "px/m"), ("behind_camera_count", "Behind Camera Count", signature[2], "count")],
-        "plots": {
-            "response": _plot("Perspective image displacement", "Ray sample fraction (1)", "Image radius (px)", [
-                _trace("Model response", x, y1, "Ray sample fraction", "1", "Image radius", "px"),
-                _trace("Reference or bound", x, y2, "Ray sample fraction", "1", "Image radius", "px"),
-            ]),
-            "mechanism": _plot("Depth sensitivity of projection", "Ray sample fraction (1)", "Pixel sensitivity (px/m)", [
-                _trace("Governing mechanism", x, z1, "Ray sample fraction", "1", "Pixel sensitivity", "px/m"),
-                _trace("Requirement or reference", x, z2, "Ray sample fraction", "1", "Pixel sensitivity", "px/m"),
-            ]),
-        },
-        "observation": 'Perspective projection is defined only for positive camera-frame depth and its pixel sensitivity grows inversely with depth.',
+
+def run(p):
+    focal = float(p["focal_length_px"])
+    depth = float(p["point_depth_m"])
+    broken = bool(p["broken_mode"])
+    angle = 0.3
+    R = np.array(
+        [
+            [np.cos(angle), 0, np.sin(angle)],
+            [0, 1, 0],
+            [-np.sin(angle), 0, np.cos(angle)],
+        ]
+    )
+    camera = np.array([0.2, -0.1, 1.0])
+    x = np.linspace(-0.4, 0.4, 121)
+    world = np.column_stack(
+        [x, np.full_like(x, 0.2), depth + np.linspace(-3.2, 0, 121)]
+    )
+    true = (world - camera) @ R
+    used = world if broken else true
+    valid = used[:, 2] > 0.05
+    true_valid = true[:, 2] > 0.05
+    pixels = focal * used[valid, :2] / used[valid, 2, None]
+    physical_invalid = int(np.count_nonzero(~true_valid & valid))
+    sensitivity = focal * np.linalg.norm(used[valid, :2], axis=1) / used[valid, 2] ** 2
+    rays = np.column_stack([pixels / focal, np.ones(len(pixels))])
+    reconstructed = rays * used[valid, 2, None]
+    error = np.linalg.norm(reconstructed - true[valid], axis=1)
+    # A second, always-visible depth sweep makes near-plane rejection observable even if all selected points are rejected.
+    depths = np.linspace(0.1, 12, 121)
+    center = np.column_stack([np.full(121, 0.4), np.full(121, 0.2), depths])
+    ct = (center - camera) @ R
+    uv = center if broken else ct
+    mask = uv[:, 2] > 0.05
+    u = focal * uv[mask, 0] / uv[mask, 2]
+    metric = [
+        (
+            "image_radius",
+            "Maximum accepted image radius",
+            max(np.linalg.norm(pixels, axis=1), default=0.0),
+            "px",
+        ),
+        (
+            "depth_sensitivity",
+            "Maximum accepted depth sensitivity",
+            max(sensitivity, default=0.0),
+            "px/m",
+        ),
+        (
+            "behind_camera_count",
+            "Invalid camera rays incorrectly accepted",
+            physical_invalid,
+            "count",
+        ),
+    ]
+    plots = {
+        "response": plot(
+            "Projection over depth",
+            "World depth (m)",
+            "Image x (px)",
+            [
+                trace(
+                    "Projection",
+                    depths[mask],
+                    u,
+                    "World depth",
+                    "m",
+                    "Horizontal image coordinate",
+                    "px",
+                )
+            ],
+        ),
+        "mechanism": plot(
+            "Camera-frame depths",
+            "World x (m)",
+            "Camera depth (m)",
+            [
+                trace("Depth", x, true[:, 2], "World x", "m", "Camera depth", "m"),
+                trace(
+                    "Near plane",
+                    x,
+                    np.full(121, 0.05),
+                    "World x",
+                    "m",
+                    "Camera depth",
+                    "m",
+                ),
+            ],
+        ),
     }
-
-
-
-def run(parameters: dict[str, Any]) -> dict[str, Any]:
-    broken = bool(parameters["broken_mode"])
-    return _result(_model(parameters, broken), broken)
+    return finish(
+        41,
+        broken,
+        {
+            "sample_count": 121,
+            "world_points": world,
+            "camera_rotation": R,
+            "camera_origin": camera,
+            "camera_points": true,
+            "used_points": used,
+            "accepted": valid,
+            "projection_available": bool(np.any(valid)),
+            "physically_valid": true_valid,
+            "pixels": pixels,
+            "depth_sensitivity": sensitivity,
+            "reconstructed_points": reconstructed,
+            "reconstruction_error": error,
+            "rejected_count": int(sum(~valid)),
+            "invalid_accepted_count": physical_invalid,
+            "depth_sweep": depths,
+            "depth_sweep_accepted": mask,
+        },
+        metric,
+        plots,
+        f"{int(sum(valid))} of 121 selected points are accepted; {physical_invalid} accepted rays violate the physical camera near plane. A zero pixel metric with no accepted rays means unavailable projection, not perfect accuracy.",
+        "The fault omits camera pose, tests world Z as though it were camera Z, and projects those incorrectly framed points.",
+        "Restore camera-frame transformation and depth rejection. At large positive depth the fault may accept no invalid rays yet still have a nonzero reconstruction error.",
+    )

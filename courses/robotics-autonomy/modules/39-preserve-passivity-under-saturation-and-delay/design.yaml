@@ -7,21 +7,22 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- E_obs=integral F^T v dt
-- E_tank>=0
-- delay consumes phase and passivity margin
+- work_k=F_applied,k*v_k*dt; E_next=E-work_k
+- F_requested=-900*x_delayed-0.4*v_delayed
+- positive_work_applied=min(positive_work_requested,E_available)
 signature:
 - field: passivity_energy
   unit: J
 - field: saturation_fraction
   unit: '1'
-- field: delay_margin
-  unit: ms
-teaching_invariant: A delayed saturated interaction remains within this lesson's claim only when observed net energy
-  and the energy tank stay nonnegative.
+- field: removed_active_work
+  unit: J
+teaching_invariant: Predict why force saturation alone cannot guarantee that the accumulated port energy stays
+  nonnegative.
 limiting_cases:
-- At zero delay, delay-induced energy injection vanishes in the ideal sampled model.
-- With an infinite force limit, saturation fraction tends to zero but delay risk remains.
+- At a zero-velocity sample the port work is zero regardless of finite force.
+- This is a prescribed-motion, sampled-work demonstration with ideal force application. It does not establish
+  continuous-time passivity, a closed-loop delay margin or stability of a physical haptic system.
 scenarios:
   baseline: &id001
     round_trip_delay_ms: 18.0
@@ -48,5 +49,5 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic software evidence only. Browser/container checks are recorded separately.
+  No MATLAB runtime, representative learner, manual screen-reader, hardware, certification or production acceptance.

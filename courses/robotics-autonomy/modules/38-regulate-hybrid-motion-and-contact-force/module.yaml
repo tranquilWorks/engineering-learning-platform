@@ -1,10 +1,10 @@
 schema_version: 1
 id: 38-regulate-hybrid-motion-and-contact-force
 number: 38
-title: Regulate Hybrid Motion and Contact Force
-summary: Build a deterministic numerical laboratory to regulate hybrid motion and contact force, expose its governing
-  relation, and diagnose a named counterexample before recovery.
-guiding_question: What assumptions and evidence make regulate hybrid motion and contact force defensible?
+title: Regulate Tangential Motion and Normal Contact Force
+summary: The normal force comes from actual spring penetration. Both projector pairs remain orthogonal; the
+  failure is their alignment with the physical surface, measured separately.
+guiding_question: How can the projector algebra pass while hybrid motion and force regulation is still wrong?
 status: implemented
 tags:
 - robotics-autonomy
@@ -41,9 +41,10 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Hybrid control must assign complementary motion and force subspaces so normal force regulation does not
-    corrupt tangential motion.
-  reveal: Use the equations, units, and mechanism plot to test the prediction.
+  text: Predict whether two perfectly orthogonal projectors can still be wrong for a tilted contact surface.
+  reveal: Orthogonality describes the relation between the two chosen subspaces, not their alignment with the
+    environment. World-axis projectors are internally orthogonal but mix real normal and tangential directions
+    on a tilted surface.
 - type: controls
   title: Live model controls
 - type: metrics
@@ -64,3 +65,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

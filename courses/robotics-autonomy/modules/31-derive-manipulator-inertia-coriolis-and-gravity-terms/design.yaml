@@ -7,21 +7,21 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- M(q) q_ddot+C(q,q_dot)q_dot+g(q)=tau
-- M=M^T>0
-- q_dot^T(M_dot-2C)q_dot=0
+- M(q) qddot+C(q,qdot) qdot+g(q)=tau
+- kinetic_energy=0.5 qdot^T M(q) qdot
+- S=Mdot-2C; S+S^T=0
 signature:
 - field: minimum_inertia_eigenvalue
   unit: kg*m^2
 - field: skew_identity_error
-  unit: '1'
+  unit: kg*m^2/s
 - field: gravity_torque
   unit: N*m
-teaching_invariant: A physically consistent rigid manipulator has symmetric positive inertia and satisfies the kinetic-energy
-  skew identity.
+teaching_invariant: Predict whether positive inertia alone can reveal a missing Coriolis coupling.
 limiting_cases:
-- With zero velocity, Coriolis/centrifugal power is zero.
-- At zero payload, the inertia remains positive from the links.
+- At elbow zero or pi the omitted sine coupling vanishes, so this fault can be locally hidden.
+- The point-mass model excludes distributed link inertia, friction, elasticity and motor dynamics; it is an
+  instantaneous identity check, not a trajectory experiment.
 scenarios:
   baseline: &id001
     payload_kg: 1.0
@@ -48,5 +48,5 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic software evidence only. Browser/container checks are recorded separately.
+  No MATLAB runtime, representative learner, manual screen-reader, hardware, certification or production acceptance.

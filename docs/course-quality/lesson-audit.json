@@ -15836,16 +15836,15 @@
       "course": "robotics-autonomy",
       "module": "30-map-end-effector-wrenches-to-joint-torques",
       "number": 30,
-      "title": "Map End-Effector Wrenches to Joint Torques",
+      "title": "Map Planar End-Effector Force to Joint Torque",
       "path": "courses/robotics-autonomy/modules/30-map-end-effector-wrenches-to-joint-torques",
-      "payload_sha256": "515f323d8d1e8bbb44141cd5abde6575e19fa4f890d9508f7d7e7bd8f5d0c035",
+      "payload_sha256": "5dedfa14f47e8956c5b598dcc9a70e9c14aa334048fc0998f850c034ad6d8921",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 1066,
+          "word_count": 1175,
           "headings": [
-            "Map End-Effector Wrenches to Joint Torques",
-            "Why this lesson exists",
+            "Map Planar End-Effector Force to Joint Torque",
             "Model, derivation, and conventions",
             "Predict before running",
             "Baseline workflow",
@@ -15861,7 +15860,7 @@
         },
         "equations": {
           "state": "candidate_text_present",
-          "rendered_math_expected": true
+          "rendered_math_expected": false
         },
         "prediction": {
           "state": "present"
@@ -15870,7 +15869,7 @@
           "state": "present",
           "labels": [
             "End-effector force",
-            "Moment arm",
+            "Proximal link length",
             "Enable named failure"
           ],
           "units": {
@@ -15903,26 +15902,25 @@
           "state": "map_present_requires_semantic_review"
         }
       },
-      "semantic_review": "blocked",
-      "scoped_review": null,
+      "semantic_review": "scoped_model_reviewed",
+      "scoped_review": "Executed map planar end-effector force to joint torque. The reference differentiates forward kinematics using complex steps, then independently forms torque and the two scalar powers. It retains Jacobians and torque vectors for full-sweep comparisons. Embedded checkpoint with selected synthetic numerical and browser evidence. At zero force both torque maps produce zero, so the fault is unobservable through power. At zero length the ideal geometric torques vanish; the interactive length range remains positive. This is quasistatic mapping, with no inertia, friction or actuator model. Aggregate course review remains separate.",
       "assessment_review": null,
-      "known_issue": "The virtual-power error is assigned from force times lever arm, which has torque units; no joint/Cartesian velocity power comparison is executed.",
+      "known_issue": null,
       "manual_learner_validation": "not_run"
     },
     {
       "course": "robotics-autonomy",
       "module": "31-derive-manipulator-inertia-coriolis-and-gravity-terms",
       "number": 31,
-      "title": "Derive Manipulator Inertia, Coriolis, and Gravity Terms",
+      "title": "Construct Manipulator Inertia, Coriolis and Gravity Terms",
       "path": "courses/robotics-autonomy/modules/31-derive-manipulator-inertia-coriolis-and-gravity-terms",
-      "payload_sha256": "73e9c91eea8cbbe327132b7ecf0869aa4331dff301a87b07217b8cb0762c040e",
+      "payload_sha256": "88d2b0b1c77db35533b7a25540bdd2f8088cdafbacbdf755e115418d2a7b190a",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 1062,
+          "word_count": 1160,
           "headings": [
-            "Derive Manipulator Inertia, Coriolis, and Gravity Terms",
-            "Why this lesson exists",
+            "Construct Manipulator Inertia, Coriolis and Gravity Terms",
             "Model, derivation, and conventions",
             "Predict before running",
             "Baseline workflow",
@@ -15938,7 +15936,7 @@
         },
         "equations": {
           "state": "candidate_text_present",
-          "rendered_math_expected": true
+          "rendered_math_expected": false
         },
         "prediction": {
           "state": "present"
@@ -15980,26 +15978,25 @@
           "state": "map_present_requires_semantic_review"
         }
       },
-      "semantic_review": "blocked",
-      "scoped_review": null,
+      "semantic_review": "scoped_model_reviewed",
+      "scoped_review": "Executed construct manipulator inertia, coriolis and gravity terms. The reference builds mass from Cartesian point-mass Jacobians, obtains mass and potential derivatives by complex steps, and constructs C from Christoffel symbols. It checks M, C, Mdot and gravity separately. Embedded checkpoint with selected synthetic numerical and browser evidence. At elbow zero or pi the omitted sine coupling vanishes, so this fault can be locally hidden. The point-mass model excludes distributed link inertia, friction, elasticity and motor dynamics; it is an instantaneous identity check, not a trajectory experiment. Aggregate course review remains separate.",
       "assessment_review": null,
-      "known_issue": "Inertia eigenvalue and skew-identity error are assigned without constructing inertia and Coriolis matrices.",
+      "known_issue": null,
       "manual_learner_validation": "not_run"
     },
     {
       "course": "robotics-autonomy",
       "module": "32-compute-inverse-dynamics-and-identify-robot-parameters",
       "number": 32,
-      "title": "Compute Inverse Dynamics and Identify Robot Parameters",
+      "title": "Identify Payload and Damping from Synthetic Joint Torque",
       "path": "courses/robotics-autonomy/modules/32-compute-inverse-dynamics-and-identify-robot-parameters",
-      "payload_sha256": "40df8dd9e6f328e8560dafa42ecacdda8bce6b161cbf0e66f9f4d425bebfe3f9",
+      "payload_sha256": "6932ae0b7cd63d8a239777cf0c77d82aa3ef9ad9b6379cc493b1ceb4ef925b39",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 1072,
+          "word_count": 1193,
           "headings": [
-            "Compute Inverse Dynamics and Identify Robot Parameters",
-            "Why this lesson exists",
+            "Identify Payload and Damping from Synthetic Joint Torque",
             "Model, derivation, and conventions",
             "Predict before running",
             "Baseline workflow",
@@ -16015,7 +16012,7 @@
         },
         "equations": {
           "state": "candidate_text_present",
-          "rendered_math_expected": true
+          "rendered_math_expected": false
         },
         "prediction": {
           "state": "present"
@@ -16024,7 +16021,7 @@
           "state": "present",
           "labels": [
             "Excitation amplitude",
-            "Payload estimate",
+            "Payload prior",
             "Enable named failure"
           ],
           "units": {
@@ -16057,26 +16054,25 @@
           "state": "map_present_requires_semantic_review"
         }
       },
-      "semantic_review": "blocked",
-      "scoped_review": null,
+      "semantic_review": "scoped_model_reviewed",
+      "scoped_review": "Executed identify payload and damping from synthetic joint torque. The reference constructs the multisine through a frequency/phase array and solves the regularized normal equations, independently of the production augmented least-squares factorization. It retains fitted parameters, regressors and held-out residuals. Embedded checkpoint with selected synthetic numerical and browser evidence. Stationary samples cannot identify viscous damping because velocity is zero. The ridge solution depends on the stated units and prior; real identification also requires sensor calibration, suitable noise assumptions and a model of unmodeled dynamics. Aggregate course review remains separate.",
       "assessment_review": null,
-      "known_issue": "Payload error, regressor conditioning and inverse-dynamics residual are formulas of the guess and excitation rather than an identified model and held-out torque calculation.",
+      "known_issue": null,
       "manual_learner_validation": "not_run"
     },
     {
       "course": "robotics-autonomy",
       "module": "33-time-scale-multi-joint-trajectories-within-limits",
       "number": 33,
-      "title": "Time-Scale Multi-Joint Trajectories within Limits",
+      "title": "Time-Scale Two Joint Cubics Under Speed and Acceleration Limits",
       "path": "courses/robotics-autonomy/modules/33-time-scale-multi-joint-trajectories-within-limits",
-      "payload_sha256": "834a7bde647477b009d1e3d9d95bb606b046a2b36ea717be877f4219fd821fdd",
+      "payload_sha256": "333659df5f32cb06da927d24dbf3908c90e0781a9010b492cbccdb788fb4767a",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 1059,
+          "word_count": 1175,
           "headings": [
-            "Time-Scale Multi-Joint Trajectories within Limits",
-            "Why this lesson exists",
+            "Time-Scale Two Joint Cubics Under Speed and Acceleration Limits",
             "Model, derivation, and conventions",
             "Predict before running",
             "Baseline workflow",
@@ -16092,7 +16088,7 @@
         },
         "equations": {
           "state": "candidate_text_present",
-          "rendered_math_expected": true
+          "rendered_math_expected": false
         },
         "prediction": {
           "state": "present"
@@ -16134,26 +16130,25 @@
           "state": "map_present_requires_semantic_review"
         }
       },
-      "semantic_review": "blocked",
-      "scoped_review": null,
+      "semantic_review": "scoped_model_reviewed",
+      "scoped_review": "Executed time-scale two joint cubics under speed and acceleration limits. The reference constructs polynomial objects, differentiates them, and evaluates their extrema and sampled trajectories independently of the production explicit cubic formulas. Embedded checkpoint with selected synthetic numerical and browser evidence. At zero displacement the trajectory is stationary; the interactive displacement range remains positive to keep a nonzero duration. A short move or generous limits can make one second feasible, so the named fault does not guarantee a violation at every setting. Endpoint acceleration is nonzero and torque limits are absent. Aggregate course review remains separate.",
       "assessment_review": null,
-      "known_issue": "The cubic trajectory duration omits its 1.5 peak-velocity factor, while the nominal limit-violation metric is forced to zero and plotted acceleration omits time scaling.",
+      "known_issue": null,
       "manual_learner_validation": "not_run"
     },
     {
       "course": "robotics-autonomy",
       "module": "34-compare-joint-space-and-task-space-tracking",
       "number": 34,
-      "title": "Compare Joint-Space and Task-Space Tracking",
+      "title": "Compare Joint and Cartesian Kinematic Feedback",
       "path": "courses/robotics-autonomy/modules/34-compare-joint-space-and-task-space-tracking",
-      "payload_sha256": "7407679f6c229220c355f7d5cfee5e98595dbb7f81dc38723e947f89664dbf8c",
+      "payload_sha256": "f83ab9458d419f7672808ab8a28fc530cadf8905acb67f924d78268810273b32",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 1066,
+          "word_count": 1223,
           "headings": [
-            "Compare Joint-Space and Task-Space Tracking",
-            "Why this lesson exists",
+            "Compare Joint and Cartesian Kinematic Feedback",
             "Model, derivation, and conventions",
             "Predict before running",
             "Baseline workflow",
@@ -16169,7 +16164,7 @@
         },
         "equations": {
           "state": "candidate_text_present",
-          "rendered_math_expected": true
+          "rendered_math_expected": false
         },
         "prediction": {
           "state": "present"
@@ -16177,8 +16172,8 @@
         "controls": {
           "state": "present",
           "labels": [
-            "Jacobian condition",
-            "Joint feedback gain",
+            "Goal straightness parameter",
+            "Velocity feedback gain",
             "Enable named failure"
           ],
           "units": {
@@ -16211,26 +16206,25 @@
           "state": "map_present_requires_semantic_review"
         }
       },
-      "semantic_review": "blocked",
-      "scoped_review": null,
+      "semantic_review": "scoped_model_reviewed",
+      "scoped_review": "Executed compare joint and cartesian kinematic feedback. The reference differentiates forward kinematics by complex steps, uses an explicit two-by-two inverse, and integrates a separate Cartesian-controller state with RK45. Production uses an analytic Jacobian, pseudoinverse and DOP853. Embedded checkpoint with selected synthetic numerical and browser evidence. At zero Cartesian error both mappings command zero motion, so a settled target does not distinguish them. The experiment assumes ideal velocity servos, a fixed local goal branch and no collision or torque constraints. Near singularities, rate clipping changes the nominal exponential error law. Aggregate course review remains separate.",
       "assessment_review": null,
-      "known_issue": "Joint/task tracking and torque metrics use condition-number formulas rather than executing the stated kinematics and feedback loops.",
+      "known_issue": null,
       "manual_learner_validation": "not_run"
     },
     {
       "course": "robotics-autonomy",
       "module": "35-apply-computed-torque-and-gravity-compensation",
       "number": 35,
-      "title": "Apply Computed Torque and Gravity Compensation",
+      "title": "Integrate Computed Torque with Gravity Error and Saturation",
       "path": "courses/robotics-autonomy/modules/35-apply-computed-torque-and-gravity-compensation",
-      "payload_sha256": "eb991417e6f326049fe15c8f191b5387d9713e7647b8c03ac5ae649f7fded50e",
+      "payload_sha256": "c4eebac1c2bf6cc5e21351e364cf1302ba9958c39128fd4c2411de2d798b93e7",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 1064,
+          "word_count": 1233,
           "headings": [
-            "Apply Computed Torque and Gravity Compensation",
-            "Why this lesson exists",
+            "Integrate Computed Torque with Gravity Error and Saturation",
             "Model, derivation, and conventions",
             "Predict before running",
             "Baseline workflow",
@@ -16246,7 +16240,7 @@
         },
         "equations": {
           "state": "candidate_text_present",
-          "rendered_math_expected": true
+          "rendered_math_expected": false
         },
         "prediction": {
           "state": "present"
@@ -16288,26 +16282,25 @@
           "state": "map_present_requires_semantic_review"
         }
       },
-      "semantic_review": "blocked",
-      "scoped_review": null,
+      "semantic_review": "scoped_model_reviewed",
+      "scoped_review": "Executed integrate computed torque with gravity error and saturation. The reference computes inverse dynamics from Cartesian point accelerations and Newton-Euler force moments. It obtains inertia columns through unit accelerations and integrates with RK45, independently of the production analytic M/C/g formulation and DOP853 integration. Embedded checkpoint with selected synthetic numerical and browser evidence. At zero mismatch and without saturation, computed torque yields the derived linear error equation. At a pose with zero gravity contribution the sign fault is locally hidden; along a trajectory it can reappear. Torque clipping invalidates exact cancellation even with an otherwise correct model. Aggregate course review remains separate.",
       "assessment_review": null,
-      "known_issue": "Computed-torque tracking and gravity residuals are algebraic surrogates rather than an integrated robot model with model-based compensation.",
+      "known_issue": null,
       "manual_learner_validation": "not_run"
     },
     {
       "course": "robotics-autonomy",
       "module": "36-control-motion-in-operational-space",
       "number": 36,
-      "title": "Control Motion in Operational Space",
+      "title": "Compute Operational Inertia and Dynamically Consistent Torque",
       "path": "courses/robotics-autonomy/modules/36-control-motion-in-operational-space",
-      "payload_sha256": "f164a298a5716b3a266ad5d0c2b57ab84f9e54a8d523a00766f3a3f73bb40a6e",
+      "payload_sha256": "72560f4ba133520f46c68246af3d66c5e75dcbbc6bbc5f6781142dd0256785a1",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 1066,
+          "word_count": 1251,
           "headings": [
-            "Control Motion in Operational Space",
-            "Why this lesson exists",
+            "Compute Operational Inertia and Dynamically Consistent Torque",
             "Model, derivation, and conventions",
             "Predict before running",
             "Baseline workflow",
@@ -16323,7 +16316,7 @@
         },
         "equations": {
           "state": "candidate_text_present",
-          "rendered_math_expected": true
+          "rendered_math_expected": false
         },
         "prediction": {
           "state": "present"
@@ -16331,8 +16324,8 @@
         "controls": {
           "state": "present",
           "labels": [
-            "Task-space inertia",
-            "Jacobian condition",
+            "Link mass scale",
+            "Pose straightness parameter",
             "Enable named failure"
           ],
           "units": {
@@ -16365,26 +16358,25 @@
           "state": "map_present_requires_semantic_review"
         }
       },
-      "semantic_review": "blocked",
-      "scoped_review": null,
+      "semantic_review": "scoped_model_reviewed",
+      "scoped_review": "Executed compute operational inertia and dynamically consistent torque. The reference differentiates link-centre and endpoint coordinates with complex steps, then solves a constrained block system for operational inertia and null acceleration. Its faulty comparison uses a cross-product null basis instead of the production pseudoinverse projector. Embedded checkpoint with selected synthetic numerical and browser evidence. At zero secondary fraction both modes reduce to the same primary task command. This is a local zero-velocity calculation with exact gravity compensation. A moving task requires Jdot*qdot, updated geometry and an actual trajectory controller. Aggregate course review remains separate.",
       "assessment_review": null,
-      "known_issue": "Operational-space inertia and residuals are assigned without forming the joint inertia, Jacobian or operational-space dynamics.",
+      "known_issue": null,
       "manual_learner_validation": "not_run"
     },
     {
       "course": "robotics-autonomy",
       "module": "37-compare-impedance-and-admittance-control",
       "number": 37,
-      "title": "Compare Impedance and Admittance Control",
+      "title": "Compare Impedance and Ideal Admittance Contact Transients",
       "path": "courses/robotics-autonomy/modules/37-compare-impedance-and-admittance-control",
-      "payload_sha256": "a381ed12143f135f7dae64f5af9a8654ba753ba96e2beaccdac47eb2724c7e07",
+      "payload_sha256": "bf1a49370a2d20dc79c9520bfa871dbc0a28139f6a920a9c8eca178d6d3eda8d",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 1068,
+          "word_count": 1234,
           "headings": [
-            "Compare Impedance and Admittance Control",
-            "Why this lesson exists",
+            "Compare Impedance and Ideal Admittance Contact Transients",
             "Model, derivation, and conventions",
             "Predict before running",
             "Baseline workflow",
@@ -16400,7 +16392,7 @@
         },
         "equations": {
           "state": "candidate_text_present",
-          "rendered_math_expected": true
+          "rendered_math_expected": false
         },
         "prediction": {
           "state": "present"
@@ -16442,26 +16434,25 @@
           "state": "map_present_requires_semantic_review"
         }
       },
-      "semantic_review": "blocked",
-      "scoped_review": null,
+      "semantic_review": "scoped_model_reviewed",
+      "scoped_review": "Executed compare impedance and ideal admittance contact transients. The reference advances both state vectors using the exact two-by-two matrix exponential. Production integrates the differential equations with DOP853. Their complete state, energy and contact-force traces are compared. Embedded checkpoint with selected synthetic numerical and browser evidence. At zero damping the ideal system conserves energy and generally does not settle. The maintained-preload linearization and ideal position servo exclude contact loss, actuator limits and servo bandwidth. A censored 0.4 s result is not a measured settling time. Aggregate course review remains separate.",
       "assessment_review": null,
-      "known_issue": "Contact responses and settling metrics use exponential surrogates instead of the declared impedance/admittance differential equations.",
+      "known_issue": null,
       "manual_learner_validation": "not_run"
     },
     {
       "course": "robotics-autonomy",
       "module": "38-regulate-hybrid-motion-and-contact-force",
       "number": 38,
-      "title": "Regulate Hybrid Motion and Contact Force",
+      "title": "Regulate Tangential Motion and Normal Contact Force",
       "path": "courses/robotics-autonomy/modules/38-regulate-hybrid-motion-and-contact-force",
-      "payload_sha256": "296b3585d2a9daec631a43aef732658a49f5e9b732eb04c77a548625377cd29b",
+      "payload_sha256": "5e75e3adc5b7bfa6df536e36c7fec5939ce5d87d90ba0af6e0af7d59d154d208",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 1069,
+          "word_count": 1261,
           "headings": [
-            "Regulate Hybrid Motion and Contact Force",
-            "Why this lesson exists",
+            "Regulate Tangential Motion and Normal Contact Force",
             "Model, derivation, and conventions",
             "Predict before running",
             "Baseline workflow",
@@ -16477,7 +16468,7 @@
         },
         "equations": {
           "state": "candidate_text_present",
-          "rendered_math_expected": true
+          "rendered_math_expected": false
         },
         "prediction": {
           "state": "present"
@@ -16519,26 +16510,25 @@
           "state": "map_present_requires_semantic_review"
         }
       },
-      "semantic_review": "blocked",
-      "scoped_review": null,
+      "semantic_review": "scoped_model_reviewed",
+      "scoped_review": "Executed regulate tangential motion and normal contact force. The reference integrates normal and tangential surface coordinates with RK45, including the unilateral force law. Production integrates Cartesian position with DOP853; the resulting positions, velocities and forces are compared after an independent basis transformation. Embedded checkpoint with selected synthetic numerical and browser evidence. At zero surface angle world vertical and the physical normal coincide, so both modes agree. At zero force goal the unilateral contact may open in faulty mode. This ideal velocity-servo example omits impacts, robot inertia, sensor delay and actuator constraints. Aggregate course review remains separate.",
       "assessment_review": null,
-      "known_issue": "Hybrid motion/force residuals and projector error are assigned without constructing the surface-frame projectors or executing feedback.",
+      "known_issue": null,
       "manual_learner_validation": "not_run"
     },
     {
       "course": "robotics-autonomy",
       "module": "39-preserve-passivity-under-saturation-and-delay",
       "number": 39,
-      "title": "Preserve Passivity under Saturation and Delay",
+      "title": "Account for Delayed Port Work with a Causal Energy Limiter",
       "path": "courses/robotics-autonomy/modules/39-preserve-passivity-under-saturation-and-delay",
-      "payload_sha256": "ab5b903a56c3bcfb1f7f880f3dbb20b3ef97eba3aae6b255d6206a2fdba05f46",
+      "payload_sha256": "e917457e6f2121271af97d881070aba62a3c8d1bd6edd61873f14d507381b188",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 1082,
+          "word_count": 1245,
           "headings": [
-            "Preserve Passivity under Saturation and Delay",
-            "Why this lesson exists",
+            "Account for Delayed Port Work with a Causal Energy Limiter",
             "Model, derivation, and conventions",
             "Predict before running",
             "Baseline workflow",
@@ -16554,7 +16544,7 @@
         },
         "equations": {
           "state": "candidate_text_present",
-          "rendered_math_expected": true
+          "rendered_math_expected": false
         },
         "prediction": {
           "state": "present"
@@ -16596,26 +16586,25 @@
           "state": "map_present_requires_semantic_review"
         }
       },
-      "semantic_review": "blocked",
-      "scoped_review": null,
+      "semantic_review": "scoped_model_reviewed",
+      "scoped_review": "Executed account for delayed port work with a causal energy limiter. The reference uses cumulative candidate work and its running maximum to derive the minimal reflection correction that keeps the balance nonnegative. This global mathematical identity independently checks the production causal sample loop. Embedded checkpoint with selected synthetic numerical and browser evidence. At a zero-velocity sample the port work is zero regardless of finite force. This is a prescribed-motion, sampled-work demonstration with ideal force application. It does not establish continuous-time passivity, a closed-loop delay margin or stability of a physical haptic system. Aggregate course review remains separate.",
       "assessment_review": null,
-      "known_issue": "Passivity energy and recovery are formulas of delay and force limit; no delayed work/energy trace is executed.",
+      "known_issue": null,
       "manual_learner_validation": "not_run"
     },
     {
       "course": "robotics-autonomy",
       "module": "40-swing-up-and-balance-an-underactuated-robot",
       "number": 40,
-      "title": "Swing Up and Balance an Underactuated Robot",
+      "title": "Swing Up and Capture a Reaction-Wheel Pendulum",
       "path": "courses/robotics-autonomy/modules/40-swing-up-and-balance-an-underactuated-robot",
-      "payload_sha256": "c39f1ae4a38e050c6a8591658ce930d48e0d2a1d65d4c0c80711833327327975",
+      "payload_sha256": "b72247537e646cf21234b740f156b9d73bada8720337d35701cf93a17ddb5fee",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 1087,
+          "word_count": 1231,
           "headings": [
-            "Swing Up and Balance an Underactuated Robot",
-            "Why this lesson exists",
+            "Swing Up and Capture a Reaction-Wheel Pendulum",
             "Model, derivation, and conventions",
             "Predict before running",
             "Baseline workflow",
@@ -16631,7 +16620,7 @@
         },
         "equations": {
           "state": "candidate_text_present",
-          "rendered_math_expected": true
+          "rendered_math_expected": false
         },
         "prediction": {
           "state": "present"
@@ -16673,26 +16662,25 @@
           "state": "map_present_requires_semantic_review"
         }
       },
-      "semantic_review": "blocked",
-      "scoped_review": null,
+      "semantic_review": "scoped_model_reviewed",
+      "scoped_review": "Executed swing up and capture a reaction-wheel pendulum. The reference integrates the coupled mass matrix in body and relative-wheel coordinates with RK45 and an independently expressed upright-angle event. Production integrates eliminated equations in absolute-wheel coordinates with DOP853. State conversion and body-energy traces are compared. Embedded checkpoint with selected synthetic numerical and browser evidence. Exactly downward at zero rate, this energy law cannot initiate motion without a perturbation. No capture within twelve seconds is censored evidence, not a proof of impossibility. Wheel speed and position are unregulated and unlimited; successful body capture is not hardware qualification. Aggregate course review remains separate.",
       "assessment_review": null,
-      "known_issue": "Swing-up time and balance error are algebraic surrogates; no underactuated dynamics, energy controller or balancing transition is executed.",
+      "known_issue": null,
       "manual_learner_validation": "not_run"
     },
     {
       "course": "robotics-autonomy",
       "module": "41-project-3d-points-with-a-pinhole-camera",
       "number": 41,
-      "title": "Project 3D Points with a Pinhole Camera",
+      "title": "Transform and Project Points Through a Pinhole Camera",
       "path": "courses/robotics-autonomy/modules/41-project-3d-points-with-a-pinhole-camera",
-      "payload_sha256": "13c0288b12f7d2fb2c3bdd1074367baf6102d5bfe9189dcd6616af1c8abaf424",
+      "payload_sha256": "2de0f866ff26714105930d7541b6efaad6e4bc3c66fa2d3929556d79a79d565b",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 1076,
+          "word_count": 1346,
           "headings": [
-            "Project 3D Points with a Pinhole Camera",
-            "Why this lesson exists",
+            "Transform and Project Points Through a Pinhole Camera",
             "Model, derivation, and conventions",
             "Predict before running",
             "Baseline workflow",
@@ -16708,7 +16696,7 @@
         },
         "equations": {
           "state": "candidate_text_present",
-          "rendered_math_expected": true
+          "rendered_math_expected": false
         },
         "prediction": {
           "state": "present"
@@ -16717,7 +16705,7 @@
           "state": "present",
           "labels": [
             "Focal length",
-            "Point depth",
+            "World cloud depth offset",
             "Enable named failure"
           ],
           "units": {
@@ -16750,10 +16738,10 @@
           "state": "map_present_requires_semantic_review"
         }
       },
-      "semantic_review": "blocked",
-      "scoped_review": null,
+      "semantic_review": "scoped_model_reviewed",
+      "scoped_review": "Executed transform and project points through a pinhole camera. The reference computes rotated camera components explicitly and derives projection and sensitivity from ray ratios, independently of the production matrix transform. It compares the entire camera cloud, accepted mask and projected pixels. Embedded checkpoint with selected synthetic numerical and browser evidence. At an empty accepted set, zero-valued projection summaries are unavailable sentinels, not visible on-axis points. A far cloud may hide the faulty visibility count while retaining wrong pixels. The model excludes lens distortion, occlusion, image bounds, calibration uncertainty and camera noise. Aggregate course review remains separate.",
       "assessment_review": null,
-      "known_issue": "Pinhole projection executes, but the near-plane violation metric is a fixed mode flag rather than a test of projected point depth.",
+      "known_issue": null,
       "manual_learner_validation": "not_run"
     },
     {

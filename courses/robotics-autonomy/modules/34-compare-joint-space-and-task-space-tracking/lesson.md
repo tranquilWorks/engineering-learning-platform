@@ -1,87 +1,81 @@
-# Compare Joint-Space and Task-Space Tracking
+# Compare Joint and Cartesian Kinematic Feedback
 
-**Guiding question:** What assumptions and evidence make compare joint-space and task-space tracking defensible?
 
-Build a deterministic numerical laboratory to compare joint-space and task-space tracking, expose its governing relation, and diagnose a named counterexample before recovery. This module is a Python-first native design authorized by the reviewed issue-440 competency map. It is not a conversion of the pinned MATLAB-oriented source course, and it remains deterministic software evidence.
-
-## Why this lesson exists
-
-Robotics failures often cross representation boundaries: geometry into velocity, images into pose, estimates into maps, plans into commands, or contact forces into actuator effort. A result is defensible only when those boundaries carry explicit frames, signs, units, timing, constraints, and uncertainty. This lesson therefore connects one design decision to a governing equation, an observable response, a named failure, and an exact recovery.
-
-Before calculating, name the state, input, observation, and verdict. State which quantities are measured, which are modeled, and which are derived. A smooth curve is not evidence that a constraint was respected, an estimator was consistent, a path was collision free, or a contact remained passive.
 
 ## Model, derivation, and conventions
 
-- $$tau=-K_q(q-q_d)$$
-- $$F=-K_x(x-x_d)$$
-- $$tau=J^T F$$
+`qdot_joint=k(q_goal-q)`
 
-Derive the first relation from the physical, geometric, probabilistic, or algorithmic definition. Use the second relation to propagate the decision into a measurable consequence. Use the third as an invariant, feasibility condition, or audit relation. Keep every coordinate frame and sampling instant attached until the final scalar metric. The experiment evaluates these relations directly with bounded NumPy arrays; it does not call a remote solver or hide the mechanism behind a black-box robotics stack.
+`qdot_task=J(q)^+ k(x_goal-x(q))`
 
-The three retained signature quantities are:
+`applied_qdot=clip(requested_qdot,-2,2)`
 
-- `joint_error` (rad)
-- `task_error` (m)
-- `control_effort` (N*m)
+This lesson integrates two kinematic velocity servos for a planar two-link arm with lengths 1 and 0.7 m. It does not integrate torque dynamics. The gain slider has units inverse seconds. The legacy geometry control sets c and chooses the goal configuration [0.4,-1.2/sqrt(c)] rad. It is a straightness parameter, not a measured Jacobian condition number. The actual condition number is computed from the current geometry and retained separately.
 
-Carry units through each substitution. Dimensionless ranks, probabilities, ratios, and flags are labeled `1` or `count`; physical displacement, time, force, torque, energy, velocity, and pixel quantities retain their named units. If a sum combines unlike units or a transform maps a vector without a frame convention, stop before interpreting a number.
+Both servos start at the goal configuration plus [0.18,-0.12] rad. The joint-space servo commands gain times joint error. The Cartesian servo first computes the goal endpoint through forward kinematics, then commands gain times Cartesian position error. In normal mode it maps that Cartesian velocity through the Moore-Penrose inverse of the actual position Jacobian at the current state. Both systems clip each commanded joint velocity to ±2 rad/s before integrating over four seconds. The Jacobian is recalculated during integration, rather than frozen at the initial configuration.
+
+Without clipping, joint-space error obeys a scalar exponential decay in each coordinate. Cartesian inverse feedback similarly gives xdot=k*(x_goal-x) where the Jacobian is nonsingular. However, straight-line endpoint motion need not correspond to a straight line in joint coordinates. The two controllers therefore trace different paths even when both eventually approach the same local inverse-kinematic solution. Near a straight arm, a modest Cartesian velocity can require large joint rates, making the clipping operation consequential.
+
+The named faulty comparison substitutes J transpose for the inverse in the Cartesian command. This is a recognizable gradient direction for squared endpoint error; it is not universally unstable or meaningless. It generally produces xdot=J J transpose k e rather than k e. The matrix J J transpose weights different task directions differently, especially near a singular geometry, so its convergence can be slow and anisotropic. Calling it a transpose alternative with changed convergence is more accurate than pretending every transpose use is an algebraic impossibility.
+
+The first two metrics are the Cartesian controller's terminal joint error in rad and terminal endpoint error in metres. The third is its peak applied joint speed in rad/s. The plots compare joint-error norms and Cartesian-error norms for both controllers through time; applied joint velocities are retained in diagnostics. No N m torque claim follows from those velocities. The four-second horizon can leave a nonzero residual without proving eventual divergence, and the local goal branch does not establish global inverse-kinematic convergence.
 
 ## Predict before running
 
-Joint and task tracking optimize different errors; Jacobian conditioning determines how joint error maps into Cartesian error and effort. Predict the sign and direction of all three signature changes before moving a slider. Identify the equation term responsible and one quantity that should remain invariant. This written prediction is the comparison point; post-hoc description is not the same as a test.
+Predict why a Jacobian-transpose descent law can move toward the target without matching the Cartesian convergence of an inverse velocity map. Record the expected direction of change and an invariant before reading the computed result. State a condition under which the fault could be hidden, rather than assuming every faulty setting must look worse.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read the three signature metrics with units.
-2. Inspect the response plot for task-level behavior, then the mechanism plot for the constraint, residual, energy, conditioning, or decision that explains it.
-3. Reproduce one signature quantity from the displayed equations to one or two significant figures.
-4. Check a limiting case before accepting the baseline.
-5. Save the baseline parameters and signature so recovery can be tested exactly.
+Reset controls and disable the named fault. Use Goal straightness parameter = 4.0 1; Velocity feedback gain = 3.0 1/s. Read the response curve, then connect it to the mechanism curve using the governing equations.
+
+Joint tracking errors plots Joint error (rad) against Time (s). Its series are Joint servo, Task servo. Cartesian tracking errors plots Position error (m) against Time (s). Its series are Joint servo, Task servo.
+
+The default record is Task-controller terminal joint error: 1.71021e-06 rad; Task-controller terminal Cartesian error: 1.31783e-06 m; Peak applied task joint speed: 0.476095 rad/s. These computed values are a worked example for these settings, not acceptance limits for every experiment. Keep parameter values and units beside the result. A near-zero residual has meaning only in relation to the stated model and numerical precision.
 
 ## Two one-variable sweeps
 
-1. Hold `joint_gain_per_s` at `3.0 1/s` and sweep `jacobian_condition` from `1.0` through `4.0` to `40.0 1`.
-2. Restore `jacobian_condition` to `4.0 1` and sweep `joint_gain_per_s` from `0.2` through `3.0` to `10.0 1/s`.
+1. Increase feedback gain at fixed geometry. Observe convergence and whether velocity clipping becomes active. A faster requested response need not yield proportionally faster applied motion once rates saturate.
 
-Change one variable at a time. For each endpoint, record the predicted direction, actual direction, metric delta, and the mechanism-plot feature that supports causality. If the result reverses direction, check for a branch, active constraint, singularity, gate, saturation, or feasibility transition rather than smoothing it away.
+2. Increase the straightness parameter at fixed gain. Compare measured Jacobian conditioning and endpoint error in both modes. The slider chooses a pose; the resulting condition must be calculated.
+
+Return to defaults between sweeps. Hold the other control fixed and record both a changing output and an expected invariant. Explain the physical or numerical path from the selected input to the observed response.
 
 ## Intentionally broken case
 
-Broken mode treats task error as joint error and omits the Jacobian transpose. Broken mode is a falsifying counterexample, not a recommended alternative. Explain which assumption is violated before describing the visual symptom. Then locate the first intermediate quantity that departs from the baseline invariant; downstream task error alone rarely identifies the cause.
+The Cartesian controller uses a Jacobian-transpose gradient direction instead of inverse velocity mapping. The joint-space comparison and actual rate limits remain unchanged.
+
+Run the same parameter values with the fault enabled. Compare complete curves as well as summary metrics. Identify the actual operation that changed and calculate why it affects the measured result. A changed warning label is not numerical evidence.
 
 ## Recovery
 
-Choose the controlled coordinate explicitly, restore the correct map, and inspect task error together with joint effort. Recovery is complete only when the original default inputs and diagnostic signature return within the independent-reference tolerance. A different setting that happens to look better is mitigation, not recovery. Preserve the fault, detection, decision, and recovery sequence as separate evidence.
+Restore inverse mapping and reset the initial state. Compare complete error curves and applied joint speeds, not just one final position.
+
+Repeat a saved nominal setting and confirm that its values and curves return. Recovery must restore the governing mechanism and its evidence, not merely clear a warning.
 
 ## Alternative and limiting cases
 
-- At identity Jacobian, equally scaled joint and task laws coincide.
-- Near singularity, small task corrections can demand large joint motion or effort.
-
-Use one limit as a hand calculation and one as a numerical sweep. Limits reveal whether a formula is continuous, singular, or branch-dependent. An undefined limit must be reported as such; clipping it into a convenient finite value changes the model.
+At zero Cartesian error both mappings command zero motion, so a settled target does not distinguish them. The experiment assumes ideal velocity servos, a fixed local goal branch and no collision or torque constraints. Near singularities, rate clipping changes the nominal exponential error law.
 
 ## Independent evidence and MATLAB-style design boundary
 
-The design was reasoned from the displayed equations in the same model-first workflow normally used before a MATLAB/Simulink implementation, but the delivered implementation is Python/NumPy only. Expected signatures are stored by `expansion_reference_cases.py`, which imports no production experiment, consumes no production result, and perturbs no production value. Production signatures are retained separately for baseline, both one-variable sweeps, broken, and exact recovery scenarios.
+The reference differentiates forward kinematics by complex steps, uses an explicit two-by-two inverse, and integrates a separate Cartesian-controller state with RK45. Production uses an analytic Jacobian, pseudoinverse and DOP853.
 
-Agreement supports only the displayed model, input set, fields, units, and tolerances. No licensed MATLAB runtime was executed, so the evidence makes no MATLAB numerical-parity claim. It also does not establish global optimality, field robustness, physical calibration, hardware timing, safety certification, or production readiness.
+Five retained cases cover baseline, two single-control sweeps, the named fault and recovery. Expected values come from the independent formulation; actual values come from the executable lesson. Absolute and relative comparison tolerances remain 1e-8. Full-state or geometric checks supplement these three-number signatures, which alone cannot establish correctness. MATLAB has not been executed and no MATLAB equivalence is claimed. Browser and container evidence is recorded separately. Agreement between synthetic implementations does not establish empirical model validity.
 
 ## Engineering review checklist
 
-- Verify equation dimensions, coordinate frames, signs, timestamp direction, and branch conventions.
-- Separate feasibility or safety from objective value and visual smoothness.
-- Inspect conditioning, covariance, clearance, saturation, energy, or data age when relevant.
-- Confirm the broken case changes the named mechanism and the recovery restores the baseline signature.
-- State one assumption whose violation would invalidate the result even if every test here passed.
+Reconstruct one displayed quantity from the actual state or geometric arrays. Check coordinate ordering, signs and units before comparing numbers. Explain which assumption each check constrains, and identify a defect that another check could miss. Preserve the baseline, one controlled sweep, fault and recovery as a reproducible evidence sequence. State the model boundary before making a broader engineering recommendation.
 
 ## Common mistakes
 
-- Treating a local or finite-sample result as a global guarantee.
-- Changing both controls and assigning causality to only one.
-- Accepting endpoint checks where swept geometry, intermediate dynamics, or data freshness matter.
-- Confusing a low residual with observability, correct association, feasibility, or physical truth.
-- Claiming learner effectiveness, MATLAB parity, physical HIL, hardware safety, or certification from software fixtures.
+Do not infer correctness from a changing headline alone. At zero Cartesian error both mappings command zero motion, so a settled target does not distinguish them.
+
+Do not change both sliders at once and attribute the result to one cause. Separate a model assumption from a measured property, and a finite-horizon observation from a universal guarantee. Floating-point roundoff is not a physical effect; equally, an attractive plot is not a substitute for the governing calculation.
 
 ## Focused check and teach-back
 
-Calculate one baseline signature value, show one dimensional check, predict both sweeps, reproduce the named failure, and demonstrate exact recovery. Then teach the lesson back without starting from the plots: state the convention, derive the governing relationship, explain the invariant, identify the practical failure, and name the evidence boundary. Finish by naming the prerequisite module and the next mapped module that consumes this artifact.
+Why is the peak control output a joint speed rather than a torque, and why can transpose feedback still reduce error?
+
+Answer rationale: The integrated plant is qdot equal to the applied velocity command, with no mass or torque equation. The transpose is a gradient direction for endpoint error, but its task response is weighted by J J transpose and does not implement the inverse velocity law.
+
+Use the embedded Course checkpoint to explain your default, sweep, fault and recovery records to a colleague. Include one calculation with units, the causal diagnosis and an explicit untested boundary. This is a self-assessment; no learner score is stored.

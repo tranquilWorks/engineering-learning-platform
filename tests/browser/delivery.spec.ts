@@ -79,7 +79,7 @@ test('numeric menu defaults survive JavaScript serialization', async ({ page }) 
   await expect(page.locator('.runtime-error')).toHaveCount(0);
 });
 test('content review notes remain distinct from execution failures', async ({ page }) => {
-  await page.goto('/courses/robotics-autonomy/modules/30-map-end-effector-wrenches-to-joint-torques');
+  await page.goto('/courses/robotics-autonomy/modules/42-calibrate-camera-intrinsics-and-lens-distortion');
   await expect(page.getByRole('note')).toContainText('Under revision');
   await expect(page.locator('.js-plotly-plot')).toHaveCount(2);
   await expect(page.locator('.runtime-error')).toHaveCount(0);
