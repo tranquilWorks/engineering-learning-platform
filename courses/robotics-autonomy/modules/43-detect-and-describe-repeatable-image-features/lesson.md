@@ -1,87 +1,85 @@
-# Detect and Describe Repeatable Image Features
+# Detect Corners and Normalize Patch Orientation
 
-**Guiding question:** What assumptions and evidence make detect and describe repeatable image features defensible?
 
-Build a deterministic numerical laboratory to detect and describe repeatable image features, expose its governing relation, and diagnose a named counterexample before recovery. This module is a Python-first native design authorized by the reviewed issue-440 competency map. It is not a conversion of the pinned MATLAB-oriented source course, and it remains deterministic software evidence.
-
-## Why this lesson exists
-
-Robotics failures often cross representation boundaries: geometry into velocity, images into pose, estimates into maps, plans into commands, or contact forces into actuator effort. A result is defensible only when those boundaries carry explicit frames, signs, units, timing, constraints, and uncertainty. This lesson therefore connects one design decision to a governing equation, an observable response, a named failure, and an exact recovery.
-
-Before calculating, name the state, input, observation, and verdict. State which quantities are measured, which are modeled, and which are derived. A smooth curve is not evidence that a constraint was respected, an estimator was consistent, a path was collision free, or a contact remained passive.
 
 ## Model, derivation, and conventions
 
-- $$R=det(M)-k trace(M)^2$$
-- $$theta=atan2(m_01,m_10)$$
-- $$d=||d_1-d_2||$$
+`H=det(M)-0.04*trace(M)²; M=smooth(gradient(I)*gradient(I)^T)`
 
-Derive the first relation from the physical, geometric, probabilistic, or algorithmic definition. Use the second relation to propagate the decision into a measurable consequence. Use the third as an invariant, feasibility condition, or audit relation. Keep every coordinate frame and sampling instant attached until the final scalar metric. The experiment evaluates these relations directly with bounded NumPy arrays; it does not call a remote solver or hide the mechanism behind a black-box robotics stack.
+`theta=atan2(sum(y*I),sum(x*I)) within a circular patch`
 
-The three retained signature quantities are:
+`descriptor=(rotated_sampled_patch-mean)/norm; distance=||d1-d2||2`
 
-- `repeatability` (1)
-- `descriptor_distance` (1)
-- `feature_count` (count)
+Two actual 96 by 96 synthetic grayscale images are sampled from a continuous scene. Nine separated, textured soft corners have different orientations and amplitudes. The second image samples the same scene after the selected in-plane rotation about image centre [47.5,47.5] px. Analytic resampling avoids introducing an additional interpolation policy into image generation, but detection and descriptors still operate on finite sampled pixels. This is a fixed-scale corner-and-patch laboratory, not an implementation of SIFT or a demonstration of general viewpoint invariance.
 
-Carry units through each substitution. Dimensionless ranks, probabilities, ratios, and flags are labeled `1` or `count`; physical displacement, time, force, torque, energy, velocity, and pixel quantities retain their named units. If a sum combines unlike units or a transform maps a vector without a frame convention, stop before interpreting a number.
+Horizontal and vertical finite differences estimate the sampled image gradient. Their squared and cross products are smoothed with the separable binomial weights [1,4,6,4,1]/16. Those entries form the local two-by-two structure tensor M. The Harris response is determinant(M) minus 0.04 times trace(M) squared. A corner has substantial intensity variation in two directions; a strong edge can have one large gradient direction without providing the same positional constraint. Image intensity and this response have arbitrary synthetic scales, so the threshold is expressed relative to the peak response of each image.
+
+Candidates must exceed the selected positive response fraction, be maxima within a seven-pixel window, and lie outside an eight-pixel boundary exclusion. A deterministic descending-response order resolves candidate selection, and accepted centres must be more than six pixels apart. These operations actually determine the feature count. Increasing threshold can discard weak corners; it does not multiply an assigned count by a threshold formula. Rotation changes where corner structure falls on the sampling lattice, so the two images need not yield identical candidate counts even when they contain the same continuous scene.
+
+For each accepted feature, an intensity centroid inside a circular radius-six patch gives an orientation angle through atan2. The descriptor samples a nine-by-nine intensity patch in that estimated frame using bilinear interpolation. Its mean is removed and the resulting vector is normalized to unit Euclidean length. Mean removal and normalization reduce simple brightness-offset and scale effects within this model; they do not guarantee robustness to arbitrary illumination or occlusion. Flat patches need a finite normalization floor, although the positive corner threshold normally avoids them in this fixture.
+
+Evaluation transforms detected base-image coordinates by the known scene rotation and pairs them with nearby detected centres in the second image. A pair must lie within 2.5 px and use a target feature only once. This ground-truth geometry is used for evaluation, not to discover an unknown camera motion. Geometric repeatability is the number of accepted pairs divided by the number of base detections. Mean descriptor distance is computed only on those paired vectors. The final count is the number of detections in the rotated image. All three quantities are measured from detector and patch outputs rather than assigned by rotation angle.
+
+The fault samples each descriptor in the image axes instead of its estimated orientation. It leaves both sampled images, corner responses, suppression and geometric pairing unchanged. Consequently geometric repeatability and detected count should agree across modes. A claim that this descriptor-only fault necessarily reduces corner repeatability would confuse distinct stages of a vision pipeline. At zero image rotation the two images coincide, and both descriptor treatments can give zero pair distance. At other rotations, orientation normalization commonly reduces the distance, but finite sampling, imperfect orientation and ambiguous patches prevent a universal guarantee.
+
+Descriptor distance is dimensionless. For two unit vectors it lies between zero and two, with zero meaning identical normalized samples and two meaning opposite vectors. A low distance does not establish a unique feature match, and the geometric pairing used here must not be presented as a deployed matching algorithm. If no geometric pairs exist, the finite zero summary is marked unavailable rather than described as perfect matching. The patch-distance axis spans its dimensionless zero-to-two range, so near-zero roundoff is not magnified into apparent mismatch. The plotted image uses black for lower intensity and white for higher intensity. Its detected centres let the learner inspect what the feature count actually represents; the paired-distance curve supplies evidence about the separate descriptor stage.
 
 ## Predict before running
 
-A useful feature remains localized and descriptively close under the declared viewpoint transformation while retaining spatial coverage. Predict the sign and direction of all three signature changes before moving a slider. Identify the equation term responsible and one quantity that should remain invariant. This written prediction is the comparison point; post-hoc description is not the same as a test.
+Predict which results should stay unchanged when descriptor orientation normalization is disabled while the detector and images stay fixed. Record the expected direction of change and an invariant before reading the computed result. State a condition under which the fault could be hidden, rather than assuming every faulty setting must look worse.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read the three signature metrics with units.
-2. Inspect the response plot for task-level behavior, then the mechanism plot for the constraint, residual, energy, conditioning, or decision that explains it.
-3. Reproduce one signature quantity from the displayed equations to one or two significant figures.
-4. Check a limiting case before accepting the baseline.
-5. Save the baseline parameters and signature so recovery can be tested exactly.
+Reset controls and disable the named fault. Use Relative corner threshold = 0.12 1; Image rotation = 25.0 deg. Read the response curve, then connect it to the mechanism curve using the governing equations.
+
+Detected corners plots Row (px) against Column (px). Its series are Image, Corners. Paired patch distance plots Distance (1) against Pair index (1). Its series are Distance.
+
+The default record is Geometric repeatability: 1 1; Mean paired descriptor distance: 0.177203 1; Rotated-image detections: 8 count. These computed values are a worked example for these settings, not acceptance limits for every experiment. Keep parameter values and units beside the result. A near-zero residual has meaning only in relation to the stated model and numerical precision.
 
 ## Two one-variable sweeps
 
-1. Hold `image_rotation_deg` at `25.0 deg` and sweep `detector_threshold` from `0.01` through `0.12` to `0.8 1`.
-2. Restore `detector_threshold` to `0.12 1` and sweep `image_rotation_deg` from `0.0` through `25.0` to `180.0 deg`.
+1. Raise the relative corner threshold at a fixed rotation. Inspect the actual detected centres and pairing count, then distinguish changes in detector coverage from changes in descriptor distance.
 
-Change one variable at a time. For each endpoint, record the predicted direction, actual direction, metric delta, and the mechanism-plot feature that supports causality. If the result reverses direction, check for a branch, active constraint, singularity, gate, saturation, or feasibility transition rather than smoothing it away.
+2. Change rotation at a fixed threshold, including zero and a quarter turn. Compare oriented and image-axis descriptors while checking that geometric detections and repeatability agree between modes at each setting.
+
+Return to defaults between sweeps. Hold the other control fixed and record both a changing output and an expected invariant. Explain the physical or numerical path from the selected input to the observed response.
 
 ## Intentionally broken case
 
-Broken mode omits orientation normalization so descriptors drift under image rotation. Broken mode is a falsifying counterexample, not a recommended alternative. Explain which assumption is violated before describing the visual symptom. Then locate the first intermediate quantity that departs from the baseline invariant; downstream task error alone rarely identifies the cause.
+Only descriptor orientation normalization is disabled. Detection, image formation and ground-truth geometric pairing remain identical.
+
+Run the same parameter values with the fault enabled. Compare complete curves as well as summary metrics. Identify the actual operation that changed and calculate why it affects the measured result. A changed warning label is not numerical evidence.
 
 ## Recovery
 
-Restore orientation-normalized patches, apply nonmaximum suppression, and report repeatability with coverage and descriptor distance. Recovery is complete only when the original default inputs and diagnostic signature return within the independent-reference tolerance. A different setting that happens to look better is mitigation, not recovery. Preserve the fault, detection, decision, and recovery sequence as separate evidence.
+Restore orientation-based sampling and compare the same paired patches. Confirm that feature counts remain fixed across the fault/recovery comparison.
+
+Repeat a saved nominal setting and confirm that its values and curves return. Recovery must restore the governing mechanism and its evidence, not merely clear a warning.
 
 ## Alternative and limiting cases
 
-- At zero image rotation, orientation-induced descriptor difference vanishes.
-- As threshold rises, retained feature count cannot increase for fixed responses.
-
-Use one limit as a hand calculation and one as a numerical sweep. Limits reveal whether a formula is continuous, singular, or branch-dependent. An undefined limit must be reported as such; clipping it into a convenient finite value changes the model.
+This is a fixed-scale synthetic corner detector and normalized intensity descriptor; it makes no SIFT, scale, perspective or general illumination-invariance claim. Zero rotation can hide the orientation fault. Empty matching sets have an unavailable-distance status, and low distance alone does not establish unique correspondence.
 
 ## Independent evidence and MATLAB-style design boundary
 
-The design was reasoned from the displayed equations in the same model-first workflow normally used before a MATLAB/Simulink implementation, but the delivered implementation is Python/NumPy only. Expected signatures are stored by `expansion_reference_cases.py`, which imports no production experiment, consumes no production result, and perturbs no production value. Production signatures are retained separately for baseline, both one-variable sweeps, broken, and exact recovery scenarios.
+The reference separately constructs image coordinates, uses explicit finite differences and two-dimensional convolution for the tensor, performs window maxima selection, and evaluates bilinear interpolation from its four pixel weights. Full images, responses, detections, orientations and descriptors are compared.
 
-Agreement supports only the displayed model, input set, fields, units, and tolerances. No licensed MATLAB runtime was executed, so the evidence makes no MATLAB numerical-parity claim. It also does not establish global optimality, field robustness, physical calibration, hardware timing, safety certification, or production readiness.
+Five retained cases cover baseline, two single-control sweeps, the named fault and recovery. Expected values come from the independent formulation; actual values come from the executable lesson. Absolute and relative comparison tolerances remain 1e-8. Full-state or geometric checks supplement these three-number signatures, which alone cannot establish correctness. MATLAB has not been executed and no MATLAB equivalence is claimed. Browser and container evidence is recorded separately. Agreement between synthetic implementations does not establish empirical model validity.
 
 ## Engineering review checklist
 
-- Verify equation dimensions, coordinate frames, signs, timestamp direction, and branch conventions.
-- Separate feasibility or safety from objective value and visual smoothness.
-- Inspect conditioning, covariance, clearance, saturation, energy, or data age when relevant.
-- Confirm the broken case changes the named mechanism and the recovery restores the baseline signature.
-- State one assumption whose violation would invalidate the result even if every test here passed.
+Reconstruct one displayed quantity from the actual state or geometric arrays. Check coordinate ordering, signs and units before comparing numbers. Explain which assumption each check constrains, and identify a defect that another check could miss. Preserve the baseline, one controlled sweep, fault and recovery as a reproducible evidence sequence. State the model boundary before making a broader engineering recommendation.
 
 ## Common mistakes
 
-- Treating a local or finite-sample result as a global guarantee.
-- Changing both controls and assigning causality to only one.
-- Accepting endpoint checks where swept geometry, intermediate dynamics, or data freshness matter.
-- Confusing a low residual with observability, correct association, feasibility, or physical truth.
-- Claiming learner effectiveness, MATLAB parity, physical HIL, hardware safety, or certification from software fixtures.
+Do not infer correctness from a changing headline alone. This is a fixed-scale synthetic corner detector and normalized intensity descriptor; it makes no SIFT, scale, perspective or general illumination-invariance claim.
+
+Do not change both sliders at once and attribute the result to one cause. Separate a model assumption from a measured property, and a finite-horizon observation from a universal guarantee. Floating-point roundoff is not a physical effect; equally, an attractive plot is not a substitute for the governing calculation.
 
 ## Focused check and teach-back
 
-Calculate one baseline signature value, show one dimensional check, predict both sweeps, reproduce the named failure, and demonstrate exact recovery. Then teach the lesson back without starting from the plots: state the convention, derive the governing relationship, explain the invariant, identify the practical failure, and name the evidence boundary. Finish by naming the prerequisite module and the next mapped module that consumes this artifact.
+Why should the orientation fault leave geometric repeatability unchanged even when descriptor distances increase?
+
+Answer rationale: Repeatability is measured from detected positions and known image geometry. The fault changes only how a patch is sampled into a descriptor after detection; it cannot retroactively change those feature centres.
+
+Use the embedded Course checkpoint to explain your default, sweep, fault and recovery records to a colleague. Include one calculation with units, the causal diagnosis and an explicit untested boundary. This is a self-assessment; no learner score is stored.

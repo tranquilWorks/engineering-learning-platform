@@ -7,21 +7,23 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- z_i=pi(K T_co X_i)
-- min_T sum rho(||z_i-pi(T X_i)||^2)
-- T in SE(3)
+- pixel_i=project(R*landmark_i+t); R in SO(3), t in metres
+- delta=argmin ||J*delta+pixel_residual||²
+- R_next=exp([delta_rotation]x)*R; t_next=t+delta_translation
 signature:
 - field: translation_error
   unit: m
 - field: rotation_error
   unit: deg
-- field: inlier_count
-  unit: count
-teaching_invariant: Pose estimation must keep the solution on SE(3), use nondegenerate landmarks, and report geometric
-  residuals plus inlier support.
+- field: reprojection_rms
+  unit: px
+teaching_invariant: Predict whether more visible landmarks can repair a focal-calibration error, and distinguish
+  residual fit from actual pose accuracy.
 limiting_cases:
-- With exact nondegenerate landmarks and calibration, pose residual tends to zero.
-- Four coplanar points can support planar pose but weak depth geometry increases ambiguity.
+- This solves a local six-degree-of-freedom pose from a near initializer and a synthetic noncoplanar object;
+  it makes no global PnP uniqueness or arbitrary-initialization claim.
+- The noise sequence is deterministic, visible points are selected by a fixed rule, and solver budget or stalling
+  status remains meaningful even when two independent estimates agree closely.
 scenarios:
   baseline: &id001
     landmark_noise_px: 1.2
@@ -48,5 +50,5 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic software evidence only. Browser/container checks are recorded separately.
+  No MATLAB runtime, representative learner, manual screen-reader, hardware, certification or production acceptance.

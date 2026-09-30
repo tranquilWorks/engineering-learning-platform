@@ -79,9 +79,9 @@ test('numeric menu defaults survive JavaScript serialization', async ({ page }) 
   await expect(page.locator('.runtime-error')).toHaveCount(0);
 });
 test('content review notes remain distinct from execution failures', async ({ page }) => {
-  await page.goto('/courses/robotics-autonomy/modules/42-calibrate-camera-intrinsics-and-lens-distortion');
+  await page.goto('/courses/vehicle-dynamics/modules/01-turn-steering-and-speed-into-a-vehicle-path');
   await expect(page.getByRole('note')).toContainText('Under revision');
-  await expect(page.locator('.js-plotly-plot')).toHaveCount(2);
+  await expect(page.locator('.js-plotly-plot')).toHaveCount(4);
   await expect(page.locator('.runtime-error')).toHaveCount(0);
   await page.goto('/courses/robotics-autonomy/modules/26-compose-rotations-and-poses-on-so-3-and-se-3');
   await expect(page.getByRole('note')).toHaveCount(0);

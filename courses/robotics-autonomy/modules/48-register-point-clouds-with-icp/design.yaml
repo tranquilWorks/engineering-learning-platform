@@ -7,21 +7,23 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- c_i=argmin_j ||T p_i-q_j||
-- min_T sum rho(||T p_i-q_ci||^2)
-- T_{k+1}=Delta T T_k
+- nearest_i=argmin_j ||R*source_i+t-target_j||
+- delta_R,delta_t=argmin sum_accepted ||delta_R*moved_i+delta_t-target_nearest_i||²
+- R_next=delta_R*R; t_next=delta_R*t+delta_t
 signature:
-- field: alignment_rmse
+- field: correspondence_rms
   unit: m
-- field: pose_error
+- field: transform_point_error
   unit: m
-- field: iterations
+- field: executed_iterations
   unit: count
-teaching_invariant: 'ICP supports only a local registration claim: correspondences, robust weighting, and initialization
-  jointly determine convergence.'
+teaching_invariant: Predict whether a falling nearest-neighbour residual establishes correct registration when
+  initialization is poor or correspondences include clutter.
 limiting_cases:
-- At exact alignment with identical clouds, residual and pose update are zero.
-- Without geometric overlap, nearest-neighbor ICP cannot establish the correct transform.
+- The problem is planar SE(2), uses a fixed local initializer family and can reach a wrong local alignment
+  or its iteration budget.
+- Zero clutter can hide the rejection fault. A decreasing nearest-neighbour objective or tiny final increment
+  does not establish the correct physical correspondence or a global optimum.
 scenarios:
   baseline: &id001
     initial_offset_m: 0.25
@@ -48,5 +50,5 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic software evidence only. Browser/container checks are recorded separately.
+  No MATLAB runtime, representative learner, manual screen-reader, hardware, certification or production acceptance.

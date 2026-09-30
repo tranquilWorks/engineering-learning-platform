@@ -180,7 +180,7 @@ def run(p):
         },
         metric,
         plots,
-        "M comes from the kinetic energy of two moving point masses. The reported skew defect is the norm of the symmetric part of Mdot−2C, with inertia-rate units.",
+        "M comes from the kinetic energy of two moving point masses. The reported skew defect is ||S+Sᵀ|| with S=Mdot−2C, twice the conventional symmetric-part norm, with inertia-rate units.",
         "The fault deletes C[0,1] while leaving M and its derivative intact.",
         "Restore the coupling and verify positive inertia plus the skew identity; a straight elbow can hide the missing sine coupling.",
     )

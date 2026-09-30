@@ -7,21 +7,23 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- R=det(M)-k trace(M)^2
-- theta=atan2(m_01,m_10)
-- d=||d_1-d_2||
+- H=det(M)-0.04*trace(M)²; M=smooth(gradient(I)*gradient(I)^T)
+- theta=atan2(sum(y*I),sum(x*I)) within a circular patch
+- descriptor=(rotated_sampled_patch-mean)/norm; distance=||d1-d2||2
 signature:
-- field: repeatability
+- field: geometric_repeatability
   unit: '1'
 - field: descriptor_distance
   unit: '1'
-- field: feature_count
+- field: detected_features
   unit: count
-teaching_invariant: A useful feature remains localized and descriptively close under the declared viewpoint transformation
-  while retaining spatial coverage.
+teaching_invariant: Predict which results should stay unchanged when descriptor orientation normalization is
+  disabled while the detector and images stay fixed.
 limiting_cases:
-- At zero image rotation, orientation-induced descriptor difference vanishes.
-- As threshold rises, retained feature count cannot increase for fixed responses.
+- This is a fixed-scale synthetic corner detector and normalized intensity descriptor; it makes no SIFT, scale,
+  perspective or general illumination-invariance claim.
+- Zero rotation can hide the orientation fault. Empty matching sets have an unavailable-distance status, and
+  low distance alone does not establish unique correspondence.
 scenarios:
   baseline: &id001
     detector_threshold: 0.12
@@ -48,5 +50,5 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic software evidence only. Browser/container checks are recorded separately.
+  No MATLAB runtime, representative learner, manual screen-reader, hardware, certification or production acceptance.

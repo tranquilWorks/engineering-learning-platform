@@ -7,21 +7,23 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- N=log(1-p)/log(1-w^s)
-- r_i=distance(z_i,model)
-- inlier iff r_i<t
+- displacement_i=target_i-source_i; residual_i=||displacement_i-t_hat||
+- 'consensus(t)={i: residual_i<=threshold}; t_refit=mean(displacement_consensus)'
+- false_acceptance=accepted_true_outliers/true_outlier_count
 signature:
-- field: inlier_ratio
+- field: accepted_fraction
   unit: '1'
-- field: model_error
+- field: translation_error
   unit: px
 - field: false_acceptance
   unit: '1'
-teaching_invariant: Robust correspondence fitting must recover a consensus model from the declared inlier ratio
-  and verify it on residuals not used to hypothesize the model.
+teaching_invariant: Predict why a low average residual over selected correspondences is insufficient without
+  checking support and known synthetic model error.
 limiting_cases:
-- At zero outliers, robust and ordinary least squares agree in the noiseless limit.
-- As the inlier ratio falls, required RANSAC trials grow rapidly.
+- The fitted motion is a two-dimensional translation and the search is exhaustive, not random RANSAC or general
+  epipolar estimation.
+- Zero outliers can hide the selection fault. Coherent wrong clusters, model mismatch and threshold choice
+  can defeat consensus; the synthetic contamination fraction alone does not define a guarantee.
 scenarios:
   baseline: &id001
     outlier_fraction: 0.35
@@ -48,5 +50,5 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic software evidence only. Browser/container checks are recorded separately.
+  No MATLAB runtime, representative learner, manual screen-reader, hardware, certification or production acceptance.

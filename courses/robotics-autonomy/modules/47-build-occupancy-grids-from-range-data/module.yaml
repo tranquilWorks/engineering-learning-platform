@@ -1,10 +1,10 @@
 schema_version: 1
 id: 47-build-occupancy-grids-from-range-data
 number: 47
-title: Build Occupancy Grids from Range Data
-summary: Build a deterministic numerical laboratory to build occupancy grids from range data, expose its governing
-  relation, and diagnose a named counterexample before recovery.
-guiding_question: What assumptions and evidence make build occupancy grids from range data defensible?
+title: Trace Range Beams and Update an Occupancy Grid
+summary: Trace actual range rays and accumulate occupied and free-cell evidence in a finite log-odds grid.
+guiding_question: Why should the endpoint-only fault be described as missing free-space evidence rather than
+  creating false-free cells?
 status: implemented
 tags:
 - robotics-autonomy
@@ -18,7 +18,7 @@ runtime:
 controls:
 - id: hit_probability
   type: slider
-  label: Hit probability
+  label: Inverse-model hit probability
   default: 0.72
   minimum: 0.51
   maximum: 0.98
@@ -41,9 +41,11 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Log-odds mapping must distinguish traversed free cells from terminal occupied cells and avoid treating unobserved
-    space as free.
-  reveal: Use the equations, units, and mechanism plot to test the prediction.
+  text: Predict what an endpoint-only mapper can know about the free cells crossed by a beam, and distinguish
+    unknown space from a false occupied measurement.
+  reveal: Its omitted negative updates leave crossed free cells at the 0.5 prior. They remain unknown; the
+    algorithm has not asserted that occupied cells are free. The metric must describe the posterior that was
+    actually produced.
 - type: controls
   title: Live model controls
 - type: metrics
@@ -64,3 +66,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

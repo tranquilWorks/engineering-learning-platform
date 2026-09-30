@@ -90,3 +90,10 @@ See course-caliber-status.yaml and the exact aggregate evidence.
 Control PR569 authorized Robotics P30-P41. These twelve scoped repairs add real mechanisms, independent calculations and embedded formative checkpoints. Eight named Robotics findings remain (P42-P48/P52), alongside sixteen Vehicle findings. All non-DSP aggregate numerical, curriculum and capstone reviews remain blocked. Completing the named register is not aggregate acceptance. The active batch evidence records the required delivery/gate status.
 
 The Robotics dynamics batch completed full delivery and mandatory sequential gates. Its verified development preview is port 8774; exact image, input hashes, results and remaining acceptance boundaries are in `docs/course-quality/robotics-dynamics-verification-summary.json`. This scoped result does not promote an aggregate course stage.
+
+
+## Robotics perception scope — 2026-09-30
+
+The remaining eight Robotics P42-P48/P52 findings have executed synthetic mechanisms, separate numerical references and embedded formative checkpoints. Zero named Robotics findings remain, alongside sixteen Vehicle findings. All non-DSP aggregate numerical, curriculum and capstone reviews remain blocked. A completed defect register is not aggregate course acceptance. Exact delivery and gate status is retained in the active batch evidence.
+
+The Robotics perception batch completed full delivery and mandatory sequential gates. Its verified development preview is port 8775; exact image, input hashes and counts are in `docs/course-quality/robotics-perception-verification-summary.json`. Twenty named Robotics findings were completed across the two groups. All non-DSP aggregate stages remain blocked.

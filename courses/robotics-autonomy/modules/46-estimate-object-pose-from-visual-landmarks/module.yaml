@@ -1,10 +1,10 @@
 schema_version: 1
 id: 46-estimate-object-pose-from-visual-landmarks
 number: 46
-title: Estimate Object Pose from Visual Landmarks
-summary: Build a deterministic numerical laboratory to estimate object pose from visual landmarks, expose its governing
-  relation, and diagnose a named counterexample before recovery.
-guiding_question: What assumptions and evidence make estimate object pose from visual landmarks defensible?
+title: Solve a Local Six-Degree-of-Freedom Landmark Pose
+summary: Solve a local six-degree-of-freedom pose from projected 3D landmarks with explicit calibration and
+  convergence assumptions.
+guiding_question: Why can a low pixel residual coexist with a biased translation estimate?
 status: implemented
 tags:
 - robotics-autonomy
@@ -18,7 +18,7 @@ runtime:
 controls:
 - id: landmark_noise_px
   type: slider
-  label: Landmark noise
+  label: Deterministic pixel-noise amplitude
   default: 1.2
   minimum: 0.0
   maximum: 8.0
@@ -41,9 +41,11 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Pose estimation must keep the solution on SE(3), use nondegenerate landmarks, and report geometric residuals
-    plus inlier support.
-  reveal: Use the equations, units, and mechanism plot to test the prediction.
+  text: Predict whether more visible landmarks can repair a focal-calibration error, and distinguish residual
+    fit from actual pose accuracy.
+  reveal: Pose can compensate partly for incorrect focal calibration, and noisy data are fitted within the
+    assumed model. Residual consistency is different from agreement with independent metric truth; inspect
+    calibration, geometry and the full transform.
 - type: controls
   title: Live model controls
 - type: metrics
@@ -64,3 +66,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

@@ -1,131 +1,249 @@
 from __future__ import annotations
 
-from typing import Any
-
 import numpy as np
 
-ITEM_NUMBER = 52
-BROKEN_TEXT = (
-    "Broken mode inserts the highest-scoring appearance match without geometric "
-    "verification and gives its contradictory residual full quadratic influence."
-)
-RECOVERY_TEXT = (
-    "Require both the appearance threshold and geometric residual gate, then bound "
-    "the influence of any accepted closure with a robust factor."
-)
 
-
-def _trace(name: str, x: Any, y: Any, x_quantity: str, x_unit: str,
-           y_quantity: str, y_unit: str) -> dict[str, Any]:
+def trace(name, x, y, x_quantity, x_unit, y_quantity, y_unit):
+    x, y = np.asarray(x, float), np.asarray(y, float)
     return {
-        "type": "scattergl", "mode": "lines+markers", "name": name,
-        "x": np.asarray(x, dtype=float), "y": np.asarray(y, dtype=float),
-        "meta": {"x_quantity": x_quantity, "x_unit": x_unit,
-                 "y_quantity": y_quantity, "y_unit": y_unit},
+        "type": "scatter",
+        "mode": "lines+markers" if x.size and np.ptp(x) == 0 else "lines",
+        "name": name,
+        "x": x,
+        "y": y,
+        "meta": {
+            "x_quantity": x_quantity,
+            "x_unit": x_unit,
+            "y_quantity": y_quantity,
+            "y_unit": y_unit,
+        },
     }
 
 
-def _plot(title: str, x_title: str, y_title: str,
-          traces: list[dict[str, Any]]) -> dict[str, Any]:
+def plot(title, x, y, traces):
     return {
         "data": traces,
         "layout": {
             "title": {"text": title, "x": 0.02},
-            "xaxis": {"title": {"text": x_title}},
-            "yaxis": {"title": {"text": y_title}},
-            "legend": {"orientation": "h"},
-            "margin": {"l": 72, "r": 36, "t": 62, "b": 62},
-            "hovermode": "closest", "uirevision": "keep-view",
+            "xaxis": {"title": {"text": x, "standoff": 16}},
+            "yaxis": {"title": {"text": y, "standoff": 16}},
+            "legend": {
+                "orientation": "h",
+                "y": -0.3,
+                "entrywidth": 0.5,
+                "entrywidthmode": "fraction",
+            },
+            "margin": {"l": 72, "r": 25, "t": 65, "b": 115},
+            "uirevision": "keep-view",
         },
         "config": {"responsive": True, "displaylogo": False},
     }
 
 
-def _huber_cost(normalized_residual: float, delta: float = 1.0) -> float:
-    magnitude = abs(normalized_residual)
-    return 0.5 * magnitude**2 if magnitude <= delta else delta * (magnitude - 0.5 * delta)
-
-
-def _model(parameters: dict[str, Any], broken: bool) -> dict[str, Any]:
-    score = float(parameters["descriptor_score"])
-    residual_m = float(parameters["geometric_residual_m"])
-    if broken:
-        score, residual_m = 0.95, 1.8
-
-    appearance_pass = score >= 0.70
-    geometry_pass = residual_m <= 0.30
-    inserted = appearance_pass and (geometry_pass or broken)
-    normalized = residual_m / 0.30
-    geometric_weight = 1.0 if broken else min(1.0, 1.0 / max(abs(normalized), 1.0))
-    closure_weight = score * geometric_weight if inserted else 0.0
-    robust_cost = 0.5 * normalized**2 if broken else _huber_cost(normalized)
-    map_deformation = closure_weight * residual_m * (2.0 if broken else 0.20)
-    signature = [closure_weight, robust_cost, map_deformation]
-
-    candidate_index = np.arange(1.0, 5.0)
-    candidate_scores = np.array([0.32, 0.56, score, 0.44])
-    residual_axis = np.linspace(0.0, 2.0, 181)
-    normalized_axis = residual_axis / 0.30
-    influence_weight = (
-        np.ones_like(residual_axis)
-        if broken
-        else np.minimum(1.0, 1.0 / np.maximum(normalized_axis, 1.0))
+def finish(number, broken, diagnostics, metrics, plots, observation, fault, recovery):
+    diagnostics.update(
+        item_number=number,
+        broken_active=broken,
+        software_only=True,
+        signature=[float(m[2]) for m in metrics],
     )
-
     return {
-        "signature": signature,
-        "sample_count": len(residual_axis),
         "metrics": [
-            ("closure_weight", "Inserted Closure Weight", signature[0], "1"),
-            ("robust_cost", "Normalized Robust Cost", signature[1], "1"),
-            ("map_deformation", "Induced Map Deformation", signature[2], "m"),
+            {
+                "id": key,
+                "label": label,
+                "value": float(value),
+                "unit": unit,
+                "emphasis": "primary" if i == 0 else "normal",
+            }
+            for i, (key, label, value, unit) in enumerate(metrics)
         ],
-        "plots": {
-            "response": _plot(
-                "Appearance candidates are hypotheses, not constraints",
-                "Loop-candidate index (count)",
-                "Descriptor similarity (1)",
-                [
-                    _trace("Candidate score", candidate_index, candidate_scores, "Loop-candidate index", "count", "Descriptor similarity", "1"),
-                    _trace("Appearance threshold", candidate_index, np.full(4, 0.70), "Loop-candidate index", "count", "Descriptor similarity", "1"),
-                ],
-            ),
-            "mechanism": _plot(
-                "Geometric factor influence",
-                "Closure residual (m)",
-                "Robust influence weight (1)",
-                [
-                    _trace("Applied factor weight", residual_axis, influence_weight, "Closure residual", "m", "Robust influence weight", "1"),
-                    _trace("Geometric gate", residual_axis, (residual_axis <= 0.30).astype(float), "Closure residual", "m", "Robust influence weight", "1"),
-                ],
-            ),
+        "plots": plots,
+        "diagnostics": diagnostics,
+        "explanations": {
+            "observation": observation,
+            "broken": fault,
+            "recovery": recovery,
         },
-        "observation": (
-            "Appearance proposes a revisit; independent geometry decides whether it may "
-            "enter the graph, and robust weighting limits the damage of residual mismatch."
+    }
+
+
+def points(name, x, y, xq, xu, yq, yu):
+    item = trace(name, x, y, xq, xu, yq, yu)
+    item["mode"] = "markers"
+    return item
+
+
+def heatmap(name, x, y, z, xq, xu, yq, yu):
+    return {
+        "type": "heatmap",
+        "name": name,
+        "x": np.asarray(x),
+        "y": np.asarray(y),
+        "z": np.asarray(z),
+        "colorscale": "Greys",
+        "showscale": False,
+        "meta": {
+            "x_quantity": xq,
+            "x_unit": xu,
+            "y_quantity": yq,
+            "y_unit": yu,
+            "z_quantity": "Value",
+            "z_unit": "1",
+        },
+    }
+
+
+def huber(x, delta):
+    return 0.5 * x * x if x <= delta else delta * (x - 0.5 * delta)
+
+
+def problem(score, residual):
+    truth = np.array(
+        [
+            [0.0, 0.0],
+            [0.5, 0.0],
+            [1.0, 0.0],
+            [1.0, 0.5],
+            [1.0, 1.0],
+            [0.5, 1.0],
+            [0.0, 1.0],
+            [0.0, 0.5],
+            [0.0, 0.0],
+        ]
+    )
+    odom = np.diff(truth, axis=0) + [0.02, 0.005]
+    baseline = np.vstack([[0.0, 0.0], np.cumsum(odom, axis=0)])
+    closure = baseline[-1] - [residual, 0.0]
+    A = np.eye(8) - np.eye(8, k=-1)
+    C = np.zeros((1, 8))
+    C[0, -1] = 1
+    return truth, odom, baseline, closure, A, C
+
+
+def run(p):
+    score = float(p["descriptor_score"])
+    residual = float(p["geometric_residual_m"])
+    broken = bool(p["broken_mode"])
+    truth, odom, baseline, measurement, A, C = problem(score, residual)
+    innovation = baseline[-1] - measurement
+    inserted = score >= 0.7 and (np.linalg.norm(innovation) <= 0.3 or broken)
+    nodes = baseline.copy()
+    weight = 0.0
+    history = []
+    so = 0.03
+    sc = 0.08
+    delta = 0.05
+    status = "rejected"
+    if inserted:
+        status = "maximum_iterations"
+        for _ in range(100):
+            old = nodes.copy()
+            r = np.linalg.norm(nodes[-1] - measurement)
+            weight = 1.0 if broken or r <= delta else delta / r
+            gain = np.sqrt(score * weight) / sc
+            H = np.vstack([A / so, gain * C])
+            rhs = np.vstack([odom / so, gain * measurement])
+            nodes[1:] = np.linalg.lstsq(H, rhs, rcond=None)[0]
+            history.append(nodes.copy())
+            if broken or np.max(abs(nodes - old)) < 1e-12:
+                status = "solved" if broken else "irls_stationary"
+                break
+        r = np.linalg.norm(nodes[-1] - measurement)
+        weight = 1.0 if broken or r <= delta else delta / r
+    odom_residual = A @ nodes[1:] - odom
+    closure_residual = nodes[-1] - measurement
+    cost = 0.5 * np.sum((odom_residual / so) ** 2)
+    if inserted:
+        cost += score * (
+            0.5 * np.sum((closure_residual / sc) ** 2)
+            if broken
+            else huber(np.linalg.norm(closure_residual) / sc, delta / sc)
+        )
+    displacement = np.linalg.norm(nodes - baseline, axis=1)
+    gradient = A.T @ odom_residual / so**2
+    if inserted:
+        gradient += C.T @ (score * weight * closure_residual[None, :] / sc**2)
+    metrics = [
+        ("closure_influence", "Final closure influence", score * weight, "1"),
+        ("graph_objective", "Optimized factor objective", cost, "1"),
+        ("maximum_map_shift", "Maximum node displacement", displacement.max(), "m"),
+    ]
+    plots = {
+        "response": plot(
+            "Anchored position graph",
+            "World x (m)",
+            "World y (m)",
+            [
+                trace(
+                    "Baseline",
+                    baseline[:, 0],
+                    baseline[:, 1],
+                    "World x",
+                    "m",
+                    "World y",
+                    "m",
+                ),
+                trace(
+                    "Updated", nodes[:, 0], nodes[:, 1], "World x", "m", "World y", "m"
+                ),
+            ],
+        ),
+        "mechanism": plot(
+            "Loop-induced displacement",
+            "Node index (1)",
+            "Displacement (m)",
+            [
+                trace(
+                    "Shift",
+                    np.arange(9),
+                    displacement,
+                    "Node index",
+                    "1",
+                    "Displacement",
+                    "m",
+                )
+            ],
         ),
     }
-
-
-def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
-    return {
-        "metrics": [
-            {"id": key, "label": label, "value": float(value), "unit": unit,
-             "emphasis": "primary" if index == 0 else "normal"}
-            for index, (key, label, value, unit) in enumerate(model["metrics"])
-        ],
-        "plots": model["plots"],
-        "explanations": {"observation": model["observation"], "broken": BROKEN_TEXT,
-                         "recovery": RECOVERY_TEXT},
-        "diagnostics": {
-            "item_number": ITEM_NUMBER, "broken_active": bool(broken),
-            "sample_count": int(model["sample_count"]),
-            "signature": [float(value) for value in model["signature"]],
-            "software_only": True,
+    plots["response"]["layout"]["yaxis"].update(scaleanchor="x", scaleratio=1)
+    plots["mechanism"]["layout"]["yaxis"].update(
+        range=[0, max(0.01, 1.1 * float(displacement.max()))], tickformat=".3f"
+    )
+    status_label = {
+        "rejected": "candidate rejected",
+        "solved": "quadratic graph solved",
+        "irls_stationary": "IRLS changes met the tolerance",
+        "maximum_iterations": "IRLS reached its iteration limit",
+    }[status]
+    return finish(
+        52,
+        broken,
+        {
+            "sample_count": 9,
+            "true_nodes": truth,
+            "odometry": odom,
+            "baseline_nodes": baseline,
+            "optimized_nodes": nodes,
+            "closure_measurement": measurement,
+            "innovation": innovation,
+            "factor_inserted": inserted,
+            "robust_weight": float(weight),
+            "odometry_residuals": odom_residual,
+            "closure_residual": closure_residual,
+            "node_displacements": displacement,
+            "gradient": gradient,
+            "irls_history": history,
+            "solver_status": status,
+            "odometry_sigma": so,
+            "closure_sigma": sc,
+            "huber_delta_m": delta,
         },
-    }
-
-
-def run(parameters: dict[str, Any]) -> dict[str, Any]:
-    broken = bool(parameters["broken_mode"])
-    return _result(_model(parameters, broken), broken)
+        metrics,
+        plots,
+        "An actual anchored translation graph is solved with the accepted loop factor. Candidate status: "
+        + status_label
+        + ". Appearance is externally supplied, and robust influence is not a probability of place identity.",
+        "The fault preserves appearance gating but bypasses geometric rejection and uses quadratic closure influence. Selected score and innovation remain unchanged.",
+        "Restore the 0.30 m geometric gate and Huber factor. Rejected candidates leave the baseline unchanged; limited deformation alone cannot prove a loop is correct.",
+    )

@@ -1,10 +1,11 @@
 schema_version: 1
 id: 42-calibrate-camera-intrinsics-and-lens-distortion
 number: 42
-title: Calibrate Camera Intrinsics and Lens Distortion
-summary: Build a deterministic numerical laboratory to calibrate camera intrinsics and lens distortion, expose its
-  governing relation, and diagnose a named counterexample before recovery.
-guiding_question: What assumptions and evidence make calibrate camera intrinsics and lens distortion defensible?
+title: Fit Camera Intrinsics with Known Calibration Poses
+summary: Fit focal length, principal point and radial distortion from known board poses, then test independent
+  held-out projections.
+guiding_question: Why can a low training error and an apparently sensible focal length still fail to establish
+  a calibrated camera?
 status: implemented
 tags:
 - robotics-autonomy
@@ -26,7 +27,7 @@ controls:
   unit: '1'
 - id: calibration_views
   type: slider
-  label: Calibration views
+  label: Known board poses
   default: 18.0
   minimum: 4.0
   maximum: 60.0
@@ -41,9 +42,11 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Camera calibration is supported by held-out reprojection residuals spanning the image, not by a low fit
-    error on one pose.
-  reveal: Use the equations, units, and mechanism plot to test the prediction.
+  text: Predict whether adding more board views can eliminate held-out bias when the fitted model omits real
+    radial distortion.
+  reveal: An omitted radial term can be absorbed partly into focal length and principal point over the training
+    geometry. Held-out rays, especially away from the optical centre, reveal the wrong spatial dependence;
+    rank and coverage must also be checked.
 - type: controls
   title: Live model controls
 - type: metrics
@@ -64,3 +67,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

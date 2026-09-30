@@ -1,10 +1,10 @@
 schema_version: 1
 id: 43-detect-and-describe-repeatable-image-features
 number: 43
-title: Detect and Describe Repeatable Image Features
-summary: Build a deterministic numerical laboratory to detect and describe repeatable image features, expose its
-  governing relation, and diagnose a named counterexample before recovery.
-guiding_question: What assumptions and evidence make detect and describe repeatable image features defensible?
+title: Detect Corners and Normalize Patch Orientation
+summary: Detect corners in sampled images and compare oriented intensity patches under a controlled image rotation.
+guiding_question: Why should the orientation fault leave geometric repeatability unchanged even when descriptor
+  distances increase?
 status: implemented
 tags:
 - robotics-autonomy
@@ -18,7 +18,7 @@ runtime:
 controls:
 - id: detector_threshold
   type: slider
-  label: Detector threshold
+  label: Relative corner threshold
   default: 0.12
   minimum: 0.01
   maximum: 0.8
@@ -41,9 +41,11 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: A useful feature remains localized and descriptively close under the declared viewpoint transformation while
-    retaining spatial coverage.
-  reveal: Use the equations, units, and mechanism plot to test the prediction.
+  text: Predict which results should stay unchanged when descriptor orientation normalization is disabled while
+    the detector and images stay fixed.
+  reveal: Repeatability is measured from detected positions and known image geometry. The fault changes only
+    how a patch is sampled into a descriptor after detection; it cannot retroactively change those feature
+    centres.
 - type: controls
   title: Live model controls
 - type: metrics
@@ -64,3 +66,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

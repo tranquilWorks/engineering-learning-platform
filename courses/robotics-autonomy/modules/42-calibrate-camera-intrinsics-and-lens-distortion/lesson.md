@@ -1,87 +1,85 @@
-# Calibrate Camera Intrinsics and Lens Distortion
+# Fit Camera Intrinsics with Known Calibration Poses
 
-**Guiding question:** What assumptions and evidence make calibrate camera intrinsics and lens distortion defensible?
 
-Build a deterministic numerical laboratory to calibrate camera intrinsics and lens distortion, expose its governing relation, and diagnose a named counterexample before recovery. This module is a Python-first native design authorized by the reviewed issue-440 competency map. It is not a conversion of the pinned MATLAB-oriented source course, and it remains deterministic software evidence.
-
-## Why this lesson exists
-
-Robotics failures often cross representation boundaries: geometry into velocity, images into pose, estimates into maps, plans into commands, or contact forces into actuator effort. A result is defensible only when those boundaries carry explicit frames, signs, units, timing, constraints, and uncertainty. This lesson therefore connects one design decision to a governing equation, an observable response, a named failure, and an exact recovery.
-
-Before calculating, name the state, input, observation, and verdict. State which quantities are measured, which are modeled, and which are derived. A smooth curve is not evidence that a constraint was respected, an estimator was consistent, a path was collision free, or a contact remained passive.
 
 ## Model, derivation, and conventions
 
-- $$x_d=x(1+k_1 r^2+k_2 r^4)$$
-- $$min sum ||z-pi(K,D,T_i,X)||^2$$
-- $$validate on held-out views$$
+`u=f x+f k1 x(x²+y²)+cx; v=f y+f k1 y(x²+y²)+cy`
 
-Derive the first relation from the physical, geometric, probabilistic, or algorithmic definition. Use the second relation to propagate the decision into a measurable consequence. Use the third as an invariant, feasibility condition, or audit relation. Keep every coordinate frame and sampling instant attached until the final scalar metric. The experiment evaluates these relations directly with bounded NumPy arrays; it does not call a remote solver or hide the mechanism behind a black-box robotics stack.
+`beta=[f,f*k1,cx,cy]; beta_hat=argmin ||A beta-pixels||²`
 
-The three retained signature quantities are:
+`heldout_RMS=sqrt(mean(||predicted_pixel-true_pixel||²))`
 
-- `reprojection_rms` (px)
-- `focal_bias` (%)
-- `edge_residual` (px)
+The board has twelve known points, arranged as four columns and three rows over a 0.9 m by 0.6 m rectangle. Each selected view places that board at a known rotation and translation in front of the camera. Board coordinates and all extrinsic poses are supplied exactly. This is a bounded intrinsic-calibration problem, not a solver that simultaneously discovers board pose, focal length and lens distortion from photographs. Naming that distinction matters because unknown poses introduce additional degrees of freedom and ambiguities.
 
-Carry units through each substitution. Dimensionless ranks, probabilities, ratios, and flags are labeled `1` or `count`; physical displacement, time, force, torque, energy, velocity, and pixel quantities retain their named units. If a sum combines unlike units or a transform maps a vector without a frame convention, stop before interpreting a number.
+The camera uses square pixels, focal length 800 px, principal point [320,240] px and the selected first radial coefficient k1. A transformed board point gives normalized coordinates x=X/Z and y=Y/Z, with r²=x²+y². The lens multiplies both normalized coordinates by 1+k1*r² before focal scaling and principal-point translation. There is no tangential distortion, skew or second radial coefficient. The coordinate values are dimensionless, so k1 is dimensionless; f and principal-point components are in pixels. All constructed calibration points remain in front of the camera.
+
+For these known poses the pixel equations are linear in four coefficients: f, the product f*k1, cx and cy. A horizontal observation supplies the row [x,x*r²,1,0], and its vertical partner supplies [y,y*r²,0,1]. Stacking actual observations creates a 2N by 4 system. Least squares fits those coefficients; k1 is subsequently recovered by dividing the fitted second coefficient by fitted focal length. That division requires nonzero focal length and a full-rank design. The diagnostics retain fitted parameters, rank and conditioning, rather than assuming that a count of views establishes identifiability.
+
+Training observations include small deterministic horizontal and vertical pixel perturbations. They are not independent random samples, and a view-count sweep is not a Monte Carlo confidence experiment. Increasing the count adds actual distinct board poses and rows to the system. The useful question is whether those poses constrain the parameters and reduce prediction error; no fixed inverse-square-root formula assigns the result. The synthetic geometry keeps the radial map monotone across the sampled field even at the most negative allowed coefficient.
+
+Four additional known poses supply forty-eight held-out points. They do not participate in fitting, and their targets use the noiseless synthetic camera. The first metric measures vector reprojection RMS across all forty-eight points. The second measures absolute focal-length bias as a percentage of 800 px. The third repeats the reprojection calculation over the outer quarter of those points by normalized radius. This is an edge-region check on the actual held-out set, not a claim to cover an entire physical sensor. A small training residual alone would miss an omitted distortion term whose bias grows away from the centre.
+
+The fault removes the radial column and fits only common focal length and principal point. It retains the same selected k1, view count and observed pixels. Focal length may partly compensate for unmodeled distortion, which can make an apparently plausible estimate disagree with held-out geometry. At k1=0 the omitted term is physically absent, so the fault can be benign or even fit the deterministic noise differently. With default negative distortion, the full model gives a much smaller held-out residual than the restricted fit. That result follows from actually solving and reprojecting, not from an error penalty assigned to the fault switch.
+
+A simple check uses x=0.2, y=0, k1=-0.18. The radial factor is 0.9928, so the horizontal offset from the principal point is 800*0.2*0.9928=158.848 px. Ignoring distortion predicts 160 px before any fitted compensation. The difference is already 1.152 px for this single point. More data cannot make a physically absent model term appear; the model must first contain the needed dependence.
 
 ## Predict before running
 
-Camera calibration is supported by held-out reprojection residuals spanning the image, not by a low fit error on one pose. Predict the sign and direction of all three signature changes before moving a slider. Identify the equation term responsible and one quantity that should remain invariant. This written prediction is the comparison point; post-hoc description is not the same as a test.
+Predict whether adding more board views can eliminate held-out bias when the fitted model omits real radial distortion. Record the expected direction of change and an invariant before reading the computed result. State a condition under which the fault could be hidden, rather than assuming every faulty setting must look worse.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read the three signature metrics with units.
-2. Inspect the response plot for task-level behavior, then the mechanism plot for the constraint, residual, energy, conditioning, or decision that explains it.
-3. Reproduce one signature quantity from the displayed equations to one or two significant figures.
-4. Check a limiting case before accepting the baseline.
-5. Save the baseline parameters and signature so recovery can be tested exactly.
+Reset controls and disable the named fault. Use Radial distortion k1 = -0.18 1; Known board poses = 18.0 count. Read the response curve, then connect it to the mechanism curve using the governing equations.
+
+Held-out residuals plots Residual (px) against Point index (1). Its series are Residual. Fitted radial model plots Radial factor (1) against Radius (1). Its series are True, Fitted.
+
+The default record is Held-out reprojection RMS: 0.00630801 px; Focal-length bias: 0.00406989 %; Outer-region reprojection RMS: 0.00778727 px. These computed values are a worked example for these settings, not acceptance limits for every experiment. Keep parameter values and units beside the result. A near-zero residual has meaning only in relation to the stated model and numerical precision.
 
 ## Two one-variable sweeps
 
-1. Hold `calibration_views` at `18.0 count` and sweep `radial_k1` from `-0.5` through `-0.18` to `0.3 1`.
-2. Restore `radial_k1` to `-0.18 1` and sweep `calibration_views` from `4.0` through `18.0` to `60.0 count`.
+1. Change k1 while holding the number of views fixed. Compare held-out and outer-region errors in both modes, and include k1=0 to expose the case where removing distortion is physically appropriate.
 
-Change one variable at a time. For each endpoint, record the predicted direction, actual direction, metric delta, and the mechanism-plot feature that supports causality. If the result reverses direction, check for a branch, active constraint, singularity, gate, saturation, or feasibility transition rather than smoothing it away.
+2. Change view count at fixed nonzero distortion. Inspect actual rank, conditioning, fitted focal length and held-out residual; explain why the restricted fit can retain systematic bias despite more rows.
+
+Return to defaults between sweeps. Hold the other control fixed and record both a changing output and an expected invariant. Explain the physical or numerical path from the selected input to the observed response.
 
 ## Intentionally broken case
 
-Broken mode fits a pinhole model to distorted edge points and reuses training views as validation. Broken mode is a falsifying counterexample, not a recommended alternative. Explain which assumption is violated before describing the visual symptom. Then locate the first intermediate quantity that departs from the baseline invariant; downstream task error alone rarely identifies the cause.
+The fit omits the radial-distortion column while the observations retain the selected lens distortion. No control value or measured residual is overwritten.
+
+Run the same parameter values with the fault enabled. Compare complete curves as well as summary metrics. Identify the actual operation that changed and calculate why it affects the measured result. A changed warning label is not numerical evidence.
 
 ## Recovery
 
-Restore the distortion model, diversify board poses, and retain edge-weighted held-out residuals. Recovery is complete only when the original default inputs and diagnostic signature return within the independent-reference tolerance. A different setting that happens to look better is mitigation, not recovery. Preserve the fault, detection, decision, and recovery sequence as separate evidence.
+Restore the full four-coefficient fit using the same observations. Confirm the held-out and outer-region residuals and reconstruct k1 from the fitted coefficient product.
+
+Repeat a saved nominal setting and confirm that its values and curves return. Recovery must restore the governing mechanism and its evidence, not merely clear a warning.
 
 ## Alternative and limiting cases
 
-- At zero distortion, distorted and normalized coordinates coincide.
-- More geometrically diverse views improve conditioning but do not cure wrong correspondences.
-
-Use one limit as a hand calculation and one as a numerical sweep. Limits reveal whether a formula is continuous, singular, or branch-dependent. An undefined limit must be reported as such; clipping it into a convenient finite value changes the model.
+Known board poses and coordinates are exact; this does not perform joint pose/intrinsic calibration, feature extraction or real lens calibration. At zero radial distortion the omitted-column fault may be hidden. Deterministic noise, finite pose coverage, and conditioning limit generalization; more views do not guarantee monotonically smaller error.
 
 ## Independent evidence and MATLAB-style design boundary
 
-The design was reasoned from the displayed equations in the same model-first workflow normally used before a MATLAB/Simulink implementation, but the delivered implementation is Python/NumPy only. Expected signatures are stored by `expansion_reference_cases.py`, which imports no production experiment, consumes no production result, and perturbs no production value. Production signatures are retained separately for baseline, both one-variable sweeps, broken, and exact recovery scenarios.
+The reference independently constructs transformed board coordinates and the regression rows, solves the normal equations, and reprojects separate held-out poses. Production uses a direct least-squares factorization. Full fitted parameters and residual arrays supplement the signature.
 
-Agreement supports only the displayed model, input set, fields, units, and tolerances. No licensed MATLAB runtime was executed, so the evidence makes no MATLAB numerical-parity claim. It also does not establish global optimality, field robustness, physical calibration, hardware timing, safety certification, or production readiness.
+Five retained cases cover baseline, two single-control sweeps, the named fault and recovery. Expected values come from the independent formulation; actual values come from the executable lesson. Absolute and relative comparison tolerances remain 1e-8. Full-state or geometric checks supplement these three-number signatures, which alone cannot establish correctness. MATLAB has not been executed and no MATLAB equivalence is claimed. Browser and container evidence is recorded separately. Agreement between synthetic implementations does not establish empirical model validity.
 
 ## Engineering review checklist
 
-- Verify equation dimensions, coordinate frames, signs, timestamp direction, and branch conventions.
-- Separate feasibility or safety from objective value and visual smoothness.
-- Inspect conditioning, covariance, clearance, saturation, energy, or data age when relevant.
-- Confirm the broken case changes the named mechanism and the recovery restores the baseline signature.
-- State one assumption whose violation would invalidate the result even if every test here passed.
+Reconstruct one displayed quantity from the actual state or geometric arrays. Check coordinate ordering, signs and units before comparing numbers. Explain which assumption each check constrains, and identify a defect that another check could miss. Preserve the baseline, one controlled sweep, fault and recovery as a reproducible evidence sequence. State the model boundary before making a broader engineering recommendation.
 
 ## Common mistakes
 
-- Treating a local or finite-sample result as a global guarantee.
-- Changing both controls and assigning causality to only one.
-- Accepting endpoint checks where swept geometry, intermediate dynamics, or data freshness matter.
-- Confusing a low residual with observability, correct association, feasibility, or physical truth.
-- Claiming learner effectiveness, MATLAB parity, physical HIL, hardware safety, or certification from software fixtures.
+Do not infer correctness from a changing headline alone. Known board poses and coordinates are exact; this does not perform joint pose/intrinsic calibration, feature extraction or real lens calibration.
+
+Do not change both sliders at once and attribute the result to one cause. Separate a model assumption from a measured property, and a finite-horizon observation from a universal guarantee. Floating-point roundoff is not a physical effect; equally, an attractive plot is not a substitute for the governing calculation.
 
 ## Focused check and teach-back
 
-Calculate one baseline signature value, show one dimensional check, predict both sweeps, reproduce the named failure, and demonstrate exact recovery. Then teach the lesson back without starting from the plots: state the convention, derive the governing relationship, explain the invariant, identify the practical failure, and name the evidence boundary. Finish by naming the prerequisite module and the next mapped module that consumes this artifact.
+Why can a low training error and an apparently sensible focal length still fail to establish a calibrated camera?
+
+Answer rationale: An omitted radial term can be absorbed partly into focal length and principal point over the training geometry. Held-out rays, especially away from the optical centre, reveal the wrong spatial dependence; rank and coverage must also be checked.
+
+Use the embedded Course checkpoint to explain your default, sweep, fault and recovery records to a colleague. Include one calculation with units, the causal diagnosis and an explicit untested boundary. This is a self-assessment; no learner score is stored.

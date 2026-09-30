@@ -1,11 +1,12 @@
 # Additional direct-review findings
 
 The wider delivery audit recorded sixty additional lessons beyond the initial
-capstone repair. Thirty-six are now closed within their declared synthetic
-models: twelve in PR55, twelve in the navigation/geometry revision and twelve
-in the Robotics dynamics revision. Twenty-four remain (Controls 0, Robotics 8,
-Vehicle 16). This register is not exhaustive; all three non-DSP aggregate
-course reassessments remain blocked, including Controls with zero listed findings.
+capstone repair. Forty-four are now closed within their declared synthetic
+models: twelve in PR55, twelve in the navigation/geometry revision, twelve in
+the Robotics dynamics revision and eight in the Robotics perception revision.
+Sixteen remain, all Vehicle P01-P16 (Controls 0, Robotics 0, Vehicle 16).
+This register is not exhaustive; all three non-DSP aggregate course reviews
+remain blocked, including courses with zero listed findings.
 
 The last sixteen findings were exposed when restored axis labels made the
 Vehicle P01–P16 mixed-unit signature charts visible during screenshot review.
@@ -14,14 +15,6 @@ lesson-specific checks require repair.
 
 | Course / lesson | Directly inspected gap |
 | --- | --- |
-| robotics-autonomy P42 | Calibration errors are formulas of view count and distortion; no synthetic calibration views are fitted or independently reprojected. |
-| robotics-autonomy P43 | Feature repeatability, descriptor distance and count are formulas of threshold and rotation; no image features or descriptors are computed. |
-| robotics-autonomy P44 | Inlier and false-acceptance metrics are formulas of outlier fraction and threshold; no correspondence consensus model is fitted. |
-| robotics-autonomy P45 | Stereo depth and uncertainty formulas execute, but the round-trip residual is fixed rather than computed from reprojection. |
-| robotics-autonomy P46 | Pose and reprojection errors are formulas of noise and landmark count; no landmark pose solve is executed. |
-| robotics-autonomy P47 | Occupancy and entropy metrics are formulas of beam count and probability rather than ray updates on an occupancy grid. |
-| robotics-autonomy P48 | ICP residual, transform error and iteration count are algebraic surrogates; no point correspondence or registration iteration is executed. |
-| robotics-autonomy P52 | Appearance and geometry gates execute, but map deformation is a fixed-factor residual formula rather than a recomputed graph solution. |
 | vehicle-dynamics P01 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
 | vehicle-dynamics P02 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
 | vehicle-dynamics P03 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
@@ -46,10 +39,10 @@ was screened and its final performance/capstone group inspected directly.
 The earlier DSP fidelity evidence remains retained. Static presence and these
 targeted inspections do not certify every pedagogical claim in all 288 lessons.
 
-The owner-authorized Robotics successor scope is P42-P48/P52 (eight lessons),
-after this revision's verified development merge and a fresh exact-baseline
-contract. Vehicle P01-P16 remains a separate repair scope. Preserve unrelated
-model outputs, source pins and prerequisite identities in every revision.
+The owner-requested twenty Robotics findings are now repaired in two scoped
+groups. Vehicle P01-P16 and the three non-DSP aggregate reassessments remain
+separate work; this revision activates neither. Preserve unrelated models,
+source pins and prerequisite identities in any future revision.
 
 ## Closed by ELP-GNC-SEMANTIC-QUALITY-12
 
@@ -111,3 +104,18 @@ The original findings below are retained. Closure is limited to the executed syn
 | robotics-autonomy P39 | Passivity energy and recovery are formulas of delay and force limit; no delayed work/energy trace is executed. |
 | robotics-autonomy P40 | Swing-up time and balance error are algebraic surrogates; no underactuated dynamics, energy controller or balancing transition is executed. |
 | robotics-autonomy P41 | Pinhole projection executes, but the near-plane violation metric is a fixed mode flag rather than a test of projected point depth. |
+
+## Robotics perception revision: closed findings history
+
+The original findings below are retained. Closure covers the executed synthetic models, independent geometry/solver checks and embedded browser checkpoints. It does not promote aggregate course acceptance.
+
+| Course / lesson | Original inspected gap, now repaired in this scope |
+| --- | --- |
+| robotics-autonomy P42 | Calibration errors are formulas of view count and distortion; no synthetic calibration views are fitted or independently reprojected. |
+| robotics-autonomy P43 | Feature repeatability, descriptor distance and count are formulas of threshold and rotation; no image features or descriptors are computed. |
+| robotics-autonomy P44 | Inlier and false-acceptance metrics are formulas of outlier fraction and threshold; no correspondence consensus model is fitted. |
+| robotics-autonomy P45 | Stereo depth and uncertainty formulas execute, but the round-trip residual is fixed rather than computed from reprojection. |
+| robotics-autonomy P46 | Pose and reprojection errors are formulas of noise and landmark count; no landmark pose solve is executed. |
+| robotics-autonomy P47 | Occupancy and entropy metrics are formulas of beam count and probability rather than ray updates on an occupancy grid. |
+| robotics-autonomy P48 | ICP residual, transform error and iteration count are algebraic surrogates; no point correspondence or registration iteration is executed. |
+| robotics-autonomy P52 | Appearance and geometry gates execute, but map deformation is a fixed-factor residual formula rather than a recomputed graph solution. |
