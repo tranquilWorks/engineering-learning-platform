@@ -1,10 +1,9 @@
 schema_version: 1
 id: 44-reject-outliers-in-visual-correspondences
 number: 44
-title: Reject Outliers in Visual Correspondences
-summary: Build a deterministic numerical laboratory to reject outliers in visual correspondences, expose its governing
-  relation, and diagnose a named counterexample before recovery.
-guiding_question: What assumptions and evidence make reject outliers in visual correspondences defensible?
+title: Fit Translation Consensus from Corrupted Image Matches
+summary: Fit and refit actual translation consensuses while inspecting residual support and false acceptance.
+guiding_question: Why is a large consensus insufficient to prove that the recovered image motion is correct?
 status: implemented
 tags:
 - robotics-autonomy
@@ -26,7 +25,7 @@ controls:
   unit: '1'
 - id: ransac_threshold_px
   type: slider
-  label: RANSAC threshold
+  label: Consensus threshold
   default: 2.0
   minimum: 0.3
   maximum: 8.0
@@ -41,9 +40,11 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Robust correspondence fitting must recover a consensus model from the declared inlier ratio and verify it
-    on residuals not used to hypothesize the model.
-  reveal: Use the equations, units, and mechanism plot to test the prediction.
+  text: Predict why a low average residual over selected correspondences is insufficient without checking support
+    and known synthetic model error.
+  reveal: A wrong but coherent group can be larger than the genuine group, and an overly broad threshold can
+    count incompatible displacements as support. Inspect the model family, residuals and independent truth
+    or validation, not just the accepted fraction.
 - type: controls
   title: Live model controls
 - type: metrics
@@ -64,3 +65,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

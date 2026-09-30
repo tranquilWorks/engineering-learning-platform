@@ -1,100 +1,243 @@
 from __future__ import annotations
 
-from typing import Any
-
 import numpy as np
 
-ITEM_NUMBER = 47
-BROKEN_TEXT = 'Broken mode marks every unreturned beam cell as free, erasing unseen obstacles.'
-RECOVERY_TEXT = 'Restore maximum-range/no-return handling, clamp evidence, and audit entropy plus false-free rate.'
 
-
-def _trace(name: str, x: Any, y: Any, x_quantity: str, x_unit: str,
-           y_quantity: str, y_unit: str) -> dict[str, Any]:
+def trace(name, x, y, x_quantity, x_unit, y_quantity, y_unit):
+    x, y = np.asarray(x, float), np.asarray(y, float)
     return {
-        "type": "scattergl", "mode": "lines", "name": name,
-        "x": np.asarray(x, dtype=float), "y": np.asarray(y, dtype=float),
-        "meta": {"x_quantity": x_quantity, "x_unit": x_unit,
-                 "y_quantity": y_quantity, "y_unit": y_unit},
+        "type": "scatter",
+        "mode": "lines+markers" if x.size and np.ptp(x) == 0 else "lines",
+        "name": name,
+        "x": x,
+        "y": y,
+        "meta": {
+            "x_quantity": x_quantity,
+            "x_unit": x_unit,
+            "y_quantity": y_quantity,
+            "y_unit": y_unit,
+        },
     }
 
 
-def _plot(title: str, x_title: str, y_title: str,
-          traces: list[dict[str, Any]]) -> dict[str, Any]:
+def plot(title, x, y, traces):
     return {
         "data": traces,
         "layout": {
             "title": {"text": title, "x": 0.02},
-            "xaxis": {"title": {"text": x_title}},
-            "yaxis": {"title": {"text": y_title}},
-            "legend": {"orientation": "h"},
-            "margin": {"l": 72, "r": 36, "t": 62, "b": 62},
-            "hovermode": "closest", "uirevision": "keep-view",
+            "xaxis": {"title": {"text": x, "standoff": 16}},
+            "yaxis": {"title": {"text": y, "standoff": 16}},
+            "legend": {
+                "orientation": "h",
+                "y": -0.3,
+                "entrywidth": 0.5,
+                "entrywidthmode": "fraction",
+            },
+            "margin": {"l": 72, "r": 25, "t": 65, "b": 115},
+            "uirevision": "keep-view",
         },
         "config": {"responsive": True, "displaylogo": False},
     }
 
 
-def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
+def finish(number, broken, diagnostics, metrics, plots, observation, fault, recovery):
+    diagnostics.update(
+        item_number=number,
+        broken_active=broken,
+        software_only=True,
+        signature=[float(m[2]) for m in metrics],
+    )
     return {
         "metrics": [
-            {"id": key, "label": label, "value": float(value), "unit": unit,
-              "emphasis": "primary" if index == 0 else "normal"}
-            for index, (key, label, value, unit) in enumerate(model["metrics"])
+            {
+                "id": key,
+                "label": label,
+                "value": float(value),
+                "unit": unit,
+                "emphasis": "primary" if i == 0 else "normal",
+            }
+            for i, (key, label, value, unit) in enumerate(metrics)
         ],
-        "plots": model["plots"],
+        "plots": plots,
+        "diagnostics": diagnostics,
         "explanations": {
-            "observation": model["observation"],
-            "broken": BROKEN_TEXT,
-            "recovery": RECOVERY_TEXT,
-        },
-        "diagnostics": {
-            "item_number": ITEM_NUMBER,
-            "broken_active": bool(broken),
-            "sample_count": int(model["sample_count"]),
-            "signature": [float(value) for value in model["signature"]],
-            "software_only": True,
+            "observation": observation,
+            "broken": fault,
+            "recovery": recovery,
         },
     }
 
-def _model(p: dict[str, Any], broken: bool) -> dict[str, Any]:
-    a = float(p["hit_probability"])
-    b = float(p["beam_count"])
-    if broken:
-        a, b = (0.52, 12.0)
-    x = np.linspace(0.0, 1.0, 181)
-    signature = [float(value) for value in [1/(1+np.exp(-max(0.,b/60)*(a-.5)*4)), max(.0,1-a)*np.log2(max(2.,b))/10, (.35 if broken else max(0.,.08-(a-.5)*.1))]]
-    y1 = np.asarray(1/(1+np.exp(-x*b/60*(a-.5)*4)), dtype=float)
-    y2 = np.asarray(np.full_like(x,.5), dtype=float)
-    z1 = np.asarray((1-a)*np.exp(-b*x/180), dtype=float)
-    z2 = np.asarray(np.zeros_like(x), dtype=float)
-    if y1.ndim == 0:
-        y1 = np.full_like(x, float(y1))
-    if y2.ndim == 0:
-        y2 = np.full_like(x, float(y2))
-    if z1.ndim == 0:
-        z1 = np.full_like(x, float(z1))
-    if z2.ndim == 0:
-        z2 = np.full_like(x, float(z2))
+
+def points(name, x, y, xq, xu, yq, yu):
+    item = trace(name, x, y, xq, xu, yq, yu)
+    item["mode"] = "markers"
+    return item
+
+
+def heatmap(name, x, y, z, xq, xu, yq, yu):
     return {
-        "signature": signature,
-        "sample_count": len(x),
-        "metrics": [("occupied_probability", "Occupied Probability", signature[0], "1"), ("map_entropy", "Map Entropy", signature[1], "bit"), ("false_free_rate", "False Free Rate", signature[2], "1")],
-        "plots": {
-            "response": _plot("Occupancy update along a sensor ray", "Ray fraction (1)", "Occupancy probability (1)", [
-                _trace("Model response", x, y1, "Ray fraction", "1", "Occupancy probability", "1"),
-                _trace("Reference or bound", x, y2, "Ray fraction", "1", "Occupancy probability", "1"),
-            ]),
-            "mechanism": _plot("Map uncertainty reduction", "Observation fraction (1)", "Cell entropy (bit)", [
-                _trace("Governing mechanism", x, z1, "Observation fraction", "1", "Cell entropy", "bit"),
-                _trace("Requirement or reference", x, z2, "Observation fraction", "1", "Cell entropy", "bit"),
-            ]),
+        "type": "heatmap",
+        "name": name,
+        "x": np.asarray(x),
+        "y": np.asarray(y),
+        "z": np.asarray(z),
+        "colorscale": "Greys",
+        "showscale": False,
+        "meta": {
+            "x_quantity": xq,
+            "x_unit": xu,
+            "y_quantity": yq,
+            "y_unit": yu,
+            "z_quantity": "Value",
+            "z_unit": "1",
         },
-        "observation": 'Log-odds mapping must distinguish traversed free cells from terminal occupied cells and avoid treating unobserved space as free.',
     }
 
 
+SIZE = 31
+CELL = 0.1
+LOW = -1.55
+x = np.arange(SIZE) * CELL + LOW + CELL / 2
+X, Y = np.meshgrid(x, x)
+TRUTH = (
+    (abs(X) >= 1.19)
+    | (abs(Y) >= 1.19)
+    | ((X >= 0.34) & (X <= 0.56) & (Y >= -0.21) & (Y <= 0.66))
+    | ((X + 0.55) ** 2 + (Y + 0.4) ** 2 < 0.16**2)
+)
 
-def run(parameters: dict[str, Any]) -> dict[str, Any]:
-    broken = bool(parameters["broken_mode"])
-    return _result(_model(parameters, broken), broken)
+
+def dda(angle):
+    d = np.array([np.cos(angle), np.sin(angle)])
+    cell = np.array([15, 15])
+    step = np.sign(d).astype(int)
+    side = np.array([0.05 / abs(a) if abs(a) > 1e-14 else np.inf for a in d])
+    delta = np.array([CELL / abs(a) if abs(a) > 1e-14 else np.inf for a in d])
+    out = []
+    entry = 0.0
+    for _ in range(100):
+        col, row = cell
+        if not (0 <= col < SIZE and 0 <= row < SIZE) or entry > 1.4:
+            break
+        hit = bool(TRUTH[row, col])
+        out.append((row, col, hit, entry))
+        if hit:
+            break
+        entry = min(side)
+        if abs(side[0] - side[1]) <= 1e-12:
+            cell += step
+            side += delta
+        elif side[0] < side[1]:
+            cell[0] += step[0]
+            side[0] += delta[0]
+        else:
+            cell[1] += step[1]
+            side[1] += delta[1]
+    return out
+
+
+def run(p):
+    strength = float(p["hit_probability"])
+    count = int(p["beam_count"])
+    broken = bool(p["broken_mode"])
+    increment = np.log(strength / (1 - strength))
+    odds = np.zeros((SIZE, SIZE))
+    hit_mask = np.zeros_like(TRUTH)
+    free_seen = np.zeros_like(TRUTH)
+    paths = []
+    angles = 0.013 + np.arange(count) * 2 * np.pi / count
+    for angle in angles:
+        path = dda(angle)
+        paths.append(path)
+        for row, col, hit, entry in path:
+            if hit:
+                odds[row, col] = np.clip(odds[row, col] + increment, -5, 5)
+                hit_mask[row, col] = True
+            else:
+                free_seen[row, col] = True
+                if not broken:
+                    odds[row, col] = np.clip(odds[row, col] - increment, -5, 5)
+    probability = 1 / (1 + np.exp(-odds))
+    entropy = -np.sum(
+        probability * np.log2(probability)
+        + (1 - probability) * np.log2(1 - probability)
+    )
+    missed = np.mean(probability[~TRUTH] >= 0.45)
+    metrics = [
+        (
+            "observed_hit_probability",
+            "Mean probability at observed hits",
+            probability[hit_mask].mean() if hit_mask.any() else 0.0,
+            "1",
+        ),
+        ("map_entropy", "Sum of cell entropies", entropy, "bit"),
+        ("unconfirmed_free_fraction", "Unconfirmed truth-free fraction", missed, "1"),
+    ]
+    row, col = np.nonzero(hit_mask)
+    map_plot = plot(
+        "Occupancy probability",
+        "World x (m)",
+        "World y (m)",
+        [
+            heatmap("Map", x, x, probability, "World x", "m", "World y", "m"),
+            points("Hits", x[col], x[row], "World x", "m", "World y", "m"),
+        ],
+    )
+    map_plot["data"][1]["marker"] = {"color": "#eab308", "size": 4}
+    map_plot["data"][0].update(
+        zmin=0, zmax=1, colorscale=[[0, "#ffffff"], [1, "#000000"]]
+    )
+    plots = {
+        "response": map_plot,
+        "mechanism": plot(
+            "Central grid section",
+            "World x (m)",
+            "Occupancy (1)",
+            [
+                trace(
+                    "Prob.",
+                    x,
+                    probability[15],
+                    "World x",
+                    "m",
+                    "Occupancy probability",
+                    "1",
+                ),
+                trace(
+                    "Truth",
+                    x,
+                    TRUTH[15].astype(float),
+                    "World x",
+                    "m",
+                    "Occupancy",
+                    "1",
+                ),
+            ],
+        ),
+    }
+    plots["response"]["layout"]["yaxis"].update(scaleanchor="x", scaleratio=1)
+    plots["response"]["data"][0]["meta"]["z_quantity"] = "Occupancy probability"
+    return finish(
+        47,
+        broken,
+        {
+            "sample_count": count,
+            "grid_cell_count": SIZE * SIZE,
+            "cell_size": CELL,
+            "cell_centres": x,
+            "truth": TRUTH,
+            "angles": angles,
+            "ray_paths": paths,
+            "log_odds": odds,
+            "probabilities": probability,
+            "hit_mask": hit_mask,
+            "traversed_free_mask": free_seen,
+            "hit_probability_available": bool(hit_mask.any()),
+            "entropy_bits": float(entropy),
+        },
+        metrics,
+        plots,
+        "Each beam traces actual grid cells. Unknown cells retain their 0.5 prior; unconfirmed free fraction includes unobserved and occluded truth-free cells.",
+        "The fault adds occupied endpoints but omits traversed free-space updates. This loses free-space evidence; it does not create false-free cells.",
+        "Restore free-cell updates from the same prior and beams. Repeated rays lower marginal entropy under the simplifying evidence model, without proving independent physical information.",
+    )

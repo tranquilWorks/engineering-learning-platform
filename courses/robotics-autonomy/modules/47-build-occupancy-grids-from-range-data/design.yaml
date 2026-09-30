@@ -7,21 +7,23 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- l_t=l_{t-1}+logit(p(z|m))-l_0
-- p=1/(1+exp(-l))
-- inverse sensor model marks free then occupied
+- log_odds_next=clip(log_odds+inverse_sensor_evidence,-5,5)
+- hit_evidence=log(p_hit/(1-p_hit)); traversed_free_evidence=-hit_evidence
+- entropy=sum(-p*log2(p)-(1-p)*log2(1-p)) over grid cells
 signature:
-- field: occupied_probability
+- field: observed_hit_probability
   unit: '1'
 - field: map_entropy
   unit: bit
-- field: false_free_rate
+- field: unconfirmed_free_fraction
   unit: '1'
-teaching_invariant: Log-odds mapping must distinguish traversed free cells from terminal occupied cells and avoid
-  treating unobserved space as free.
+teaching_invariant: Predict what an endpoint-only mapper can know about the free cells crossed by a beam, and
+  distinguish unknown space from a false occupied measurement.
 limiting_cases:
-- At hit probability one half, a measurement adds no occupancy information.
-- With zero beams, the prior map remains unchanged.
+- Unobserved and occluded cells retain their prior; the unconfirmed-free fraction deliberately includes them
+  and should not be read as a visible-cell false-positive rate.
+- Known sensor pose, deterministic ranges, independent-cell updates and repeated-ray evidence are simplifying
+  assumptions. Marginal entropy reduction does not prove calibrated joint uncertainty.
 scenarios:
   baseline: &id001
     hit_probability: 0.72
@@ -48,5 +50,5 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic software evidence only. Browser/container checks are recorded separately.
+  No MATLAB runtime, representative learner, manual screen-reader, hardware, certification or production acceptance.

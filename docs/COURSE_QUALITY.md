@@ -9,10 +9,23 @@ passed. Its historical evidence retains the exact image and screenshot hashes.
 | --- | ---: | --- |
 | DSP/Radar | 84 | 84 checkpoints, ten cumulative portfolios and aggregate authored/software review verified |
 | Controls/GNC | 68 | P36/P38/P42/P43/P45–P51/P55–P57/P60–P62/P64–P68 repaired within declared models; zero listed findings; aggregate reassessment remains blocked |
-| Robotics/Autonomy | 69 | P25–P41 and P68–P69 repaired within declared models; 8 findings remain blocked |
+| Robotics/Autonomy | 69 | P25–P48, P52 and P68–P69 repaired within declared models; zero listed findings; aggregate reassessment remains blocked |
 | Vehicle Dynamics | 67 | P61–P67 repaired within declared models; P01–P16 presentation findings remain blocked |
 
-## Robotics dynamics revision
+## Robotics perception and mapping revision
+
+Robotics P42-P48/P52 now execute known-pose intrinsic calibration, sampled-image
+corner descriptors, translation consensus, calibrated stereo rays, local pose fitting
+in six degrees of freedom, occupancy ray updates, planar ICP and anchored loop-graph solving.
+Eight authored checkpoints, forty independent comparisons, fifty-two focused tests
+and sixteen selected browser checks passed. Final delivery verified 290 HTTP modules,
+580 desktop/mobile pages, 256 checkpoint checks and 144 real interactions/screenshots.
+All mandatory gates passed sequentially; see the [batch evidence](evidence/ELP-ROBOTICS-PERCEPTION-QUALITY-08-2026-09-30.md).
+
+Sixteen named findings remain (Controls 0, Robotics 0, Vehicle 16). All three
+non-DSP aggregate reassessments stay blocked; the register is not exhaustive.
+
+## Historical Robotics dynamics revision
 
 Robotics P30-P41 now execute force/torque mapping, point-mass dynamics,
 regularized identification, bounded cubic timing, kinematic feedback, computed
@@ -21,7 +34,7 @@ limiting, reaction-wheel swing-up and camera-frame projection. Each includes
 an authored browser checkpoint. Sixty independent comparisons, 62 focused
 physical/preservation tests and selected desktop/mobile checks passed.
 
-The current register has 24 findings: Controls 0, Robotics 8 and Vehicle 16.
+At that revision, the register had 24 findings: Controls 0, Robotics 8 and Vehicle 16.
 All non-DSP aggregate reassessments remain blocked. Final delivery passed 290 HTTP modules, 580 desktop/mobile pages, 240 checkpoint checks,
 128 real interaction sequences, 21 focused browser tests and all 290 host/baked identities.
 Contract, quick and full gates passed sequentially; see the [active batch evidence](evidence/ELP-ROBOTICS-DYNAMICS-QUALITY-12-2026-09-29.md).
@@ -67,7 +80,7 @@ lessons have post-interaction drawn-curve assertions. PR53 records integration. 
 
 The browser's expanded lesson review identifies exactly what was checked.
 This is scoped synthetic-model evidence, not whole-course or learner acceptance.
-The remaining 24 findings are individually embedded and retained in the
+The remaining 16 findings are individually embedded and retained in the
 [additional finding register](course-quality/additional-semantic-findings.md).
 No unlisted lesson is automatically certified. Controls, Robotics and Vehicle aggregate numerical, curriculum and capstone stages
 remain blocked. DSP passes the separate authored/synthetic aggregate review

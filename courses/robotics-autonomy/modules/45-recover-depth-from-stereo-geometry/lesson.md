@@ -1,87 +1,85 @@
-# Recover Depth from Stereo Geometry
+# Triangulate Calibrated Stereo Rays and Propagate Pixel Noise
 
-**Guiding question:** What assumptions and evidence make recover depth from stereo geometry defensible?
 
-Build a deterministic numerical laboratory to recover depth from stereo geometry, expose its governing relation, and diagnose a named counterexample before recovery. This module is a Python-first native design authorized by the reviewed issue-440 competency map. It is not a conversion of the pinned MATLAB-oriented source course, and it remains deterministic software evidence.
-
-## Why this lesson exists
-
-Robotics failures often cross representation boundaries: geometry into velocity, images into pose, estimates into maps, plans into commands, or contact forces into actuator effort. A result is defensible only when those boundaries carry explicit frames, signs, units, timing, constraints, and uncertainty. This lesson therefore connects one design decision to a governing equation, an observable response, a named failure, and an exact recovery.
-
-Before calculating, name the state, input, observation, and verdict. State which quantities are measured, which are modeled, and which are derived. A smooth curve is not evidence that a constraint was respected, an estimator was consistent, a path was collision free, or a contact remained passive.
 
 ## Model, derivation, and conventions
 
-- $$Z=fB/d$$
-- $$sigma_Z=|fB/d^2| sigma_d$$
-- $$rectified matches share image row$$
+`point_hat=midpoint(closest_points_on_calibrated_rays)`
 
-Derive the first relation from the physical, geometric, probabilistic, or algorithmic definition. Use the second relation to propagate the decision into a measurable consequence. Use the third as an invariant, feasibility condition, or audit relation. Keep every coordinate frame and sampling instant attached until the final scalar metric. The experiment evaluates these relations directly with bounded NumPy arrays; it does not call a remote solver or hide the mechanism behind a black-box robotics stack.
+`depth_truth=f*baseline/disparity; f=520 px`
 
-The three retained signature quantities are:
+`Sigma_point=J_pixels*Sigma_pixels*J_pixels^T; sigma_Z=sqrt(Sigma_point[2,2])`
 
-- `depth` (m)
-- `depth_sigma` (m)
-- `rectification_residual` (px)
+The left camera defines the world frame, with its centre at the origin and its positive z axis forward. The right centre is [B,0,0] m, where B is the selected baseline, and the right camera has a known yaw of 0.04 rad. Both use focal length 520 px and a common zero principal-point offset. The selected disparity d defines a true point with depth Z=520*B/d and normalized left direction [0.08,0.04,1]. Because the right camera is rotated, d is the rectified construction disparity, not simply the difference between the two raw observed horizontal coordinates.
 
-Carry units through each substitution. Dimensionless ranks, probabilities, ratios, and flags are labeled `1` or `count`; physical displacement, time, force, torque, energy, velocity, and pixel quantities retain their named units. If a sum combines unlike units or a transform maps a vector without a frame convention, stop before interpreting a number.
+The model projects that true point through both actual camera poses to create four pixel observations. Each pixel pair defines a camera ray. The normal triangulator rotates the right ray into the left/world frame and computes the closest points on the two rays by a three-by-two least-squares solve. Their midpoint is the estimated three-dimensional point. With the exact noiseless observations and correct calibration, the rays intersect up to numerical roundoff. This is an executed geometric reconstruction, not merely reporting the value fB/d that was used to construct the scene.
+
+Broken mode assumes the right camera is parallel to the left and omits its known yaw when interpreting the observed right pixel. The observed pixels themselves do not change. The resulting rays can be skew, so their closest-point midpoint need not lie exactly on either ray. The model reprojects the estimated point through the true cameras and computes the RMS Euclidean pixel discrepancy over the two views. The faulty calibration therefore produces a measured reprojection residual through actual geometry. Assigning a fixed residual whenever a switch is on would miss dependence on the selected baseline and disparity.
+
+The first metric is the estimated world z coordinate in metres. The second is predicted standard deviation of that depth under an explicit observation-noise model. The third is the actual two-view reprojection RMS in pixels for the current deterministic estimate. Noise is not randomly injected into that estimate: uncertainty and realized error are separate quantities. The wrong calibration can even report a smaller predicted uncertainty around a biased depth. That covariance is conditional on its assumed ray model and does not include calibration bias. Each of the four pixel components is assumed independent with standard deviation 0.5/sqrt(2) px, giving 0.5 px disparity standard deviation for an ideal parallel horizontal pair.
+
+The uncertainty calculation differentiates the actual closest-ray least-squares solution with respect to all four observed pixel components. Production differentiates the normal equations analytically, including how each ray changes with its pixels. Multiplying that Jacobian by the declared pixel covariance and its transpose gives a three-dimensional covariance; the square root of its z diagonal entry is the reported depth standard deviation. The independent reference uses a closed dot-product ray solution and complex-step differentiation. Their agreement constrains the uncertainty calculation without turning a first-order approximation into a measured confidence interval.
+
+For parallel cameras, the familiar derivative is dZ/dd=-fB/d², so sigma_Z is approximately fB*sigma_d/d². At B=0.18 m and d=28 px, the construction depth is about 3.343 m. The actual yawed-ray calculation determines its own uncertainty and should be compared with that parallel limiting intuition rather than forced to equal it. Increasing B at fixed selected d moves the synthetic point farther away; both depth and its absolute uncertainty can increase. The common recommendation that a larger baseline improves precision at fixed physical range holds a different variable fixed.
+
+Very small disparity makes depth weakly constrained, and a first-order Gaussian covariance becomes a poor description when noise is not small relative to disparity. The interactive range remains positive and finite, but the farthest cases should still be read as an ill-conditioned measurement geometry. The model excludes calibration uncertainty, correspondence mistakes, occlusion and a real stereo matcher. A small noiseless reprojection error establishes consistency with the assumed cameras; it does not establish accurate metric depth if those camera poses are themselves wrong.
 
 ## Predict before running
 
-Stereo depth is inverse in disparity, so uncertainty and calibration residuals must accompany every long-range estimate. Predict the sign and direction of all three signature changes before moving a slider. Identify the equation term responsible and one quantity that should remain invariant. This written prediction is the comparison point; post-hoc description is not the same as a test.
+Predict how depth and depth uncertainty change when baseline increases while the selected rectified disparity, rather than physical range, is held fixed. Record the expected direction of change and an invariant before reading the computed result. State a condition under which the fault could be hidden, rather than assuming every faulty setting must look worse.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read the three signature metrics with units.
-2. Inspect the response plot for task-level behavior, then the mechanism plot for the constraint, residual, energy, conditioning, or decision that explains it.
-3. Reproduce one signature quantity from the displayed equations to one or two significant figures.
-4. Check a limiting case before accepting the baseline.
-5. Save the baseline parameters and signature so recovery can be tested exactly.
+Reset controls and disable the named fault. Use Stereo baseline = 0.18 m; Rectified construction disparity = 28.0 px. Read the response curve, then connect it to the mechanism curve using the governing equations.
+
+Triangulated depth plots Depth (m) against Disparity (px). Its series are Estimate, True. Pixel-noise uncertainty plots Depth sigma (m) against Disparity (px). Its series are Sigma, Selected.
+
+The default record is Triangulated depth: 3.34286 m; Predicted depth standard deviation: 0.0597086 m; Two-view reprojection RMS: 9.36681e-14 px. These computed values are a worked example for these settings, not acceptance limits for every experiment. Keep parameter values and units beside the result. A near-zero residual has meaning only in relation to the stated model and numerical precision.
 
 ## Two one-variable sweeps
 
-1. Hold `disparity_px` at `28.0 px` and sweep `baseline_m` from `0.03` through `0.18` to `0.8 m`.
-2. Restore `baseline_m` to `0.18 m` and sweep `disparity_px` from `1.0` through `28.0` to `140.0 px`.
+1. Increase baseline while holding selected rectified disparity fixed. Record the resulting change in scene depth and uncertainty, and explain why this is different from comparing two baselines viewing the same fixed-range point.
 
-Change one variable at a time. For each endpoint, record the predicted direction, actual direction, metric delta, and the mechanism-plot feature that supports causality. If the result reverses direction, check for a branch, active constraint, singularity, gate, saturation, or feasibility transition rather than smoothing it away.
+2. Increase disparity at a fixed baseline. Compare estimated depth, predicted uncertainty and reprojection residual, then examine the low-disparity end where first-order uncertainty is least trustworthy.
+
+Return to defaults between sweeps. Hold the other control fixed and record both a changing output and an expected invariant. Explain the physical or numerical path from the selected input to the observed response.
 
 ## Intentionally broken case
 
-Broken mode swaps left/right disparity sign and accepts nonrectified correspondences. Broken mode is a falsifying counterexample, not a recommended alternative. Explain which assumption is violated before describing the visual symptom. Then locate the first intermediate quantity that departs from the baseline invariant; downstream task error alone rarely identifies the cause.
+The triangulator treats the yawed right camera as parallel while preserving its actual observed pixels and the selected geometry. Reprojection is evaluated through the true camera poses.
+
+Run the same parameter values with the fault enabled. Compare complete curves as well as summary metrics. Identify the actual operation that changed and calculate why it affects the measured result. A changed warning label is not numerical evidence.
 
 ## Recovery
 
-Restore positive disparity convention, rectify both images, and propagate disparity uncertainty into depth. Recovery is complete only when the original default inputs and diagnostic signature return within the independent-reference tolerance. A different setting that happens to look better is mitigation, not recovery. Preserve the fault, detection, decision, and recovery sequence as separate evidence.
+Restore the right-camera ray rotation, solve the closest-ray system again and verify both the reconstructed point and actual two-view residual.
+
+Repeat a saved nominal setting and confirm that its values and curves return. Recovery must restore the governing mechanism and its evidence, not merely clear a warning.
 
 ## Alternative and limiting cases
 
-- As disparity tends to zero, depth and depth uncertainty become unbounded.
-- At fixed disparity, doubling baseline doubles inferred depth.
-
-Use one limit as a hand calculation and one as a numerical sweep. Limits reveal whether a formula is continuous, singular, or branch-dependent. An undefined limit must be reported as such; clipping it into a convenient finite value changes the model.
+The deterministic estimate uses noiseless synthetic correspondences; its covariance is a first-order prediction under independent pixel noise, not an observed confidence interval. Positive disparity avoids the infinite-depth singularity but does not make low-disparity geometry well conditioned. Calibration uncertainty, matching errors and occlusion are excluded.
 
 ## Independent evidence and MATLAB-style design boundary
 
-The design was reasoned from the displayed equations in the same model-first workflow normally used before a MATLAB/Simulink implementation, but the delivered implementation is Python/NumPy only. Expected signatures are stored by `expansion_reference_cases.py`, which imports no production experiment, consumes no production result, and perturbs no production value. Production signatures are retained separately for baseline, both one-variable sweeps, broken, and exact recovery scenarios.
+The reference separately projects the scene, normalizes the two directions and solves the dot-product closest-ray equations. Complex-step derivatives of that formulation check the production analytic pixel Jacobian and propagated depth variance.
 
-Agreement supports only the displayed model, input set, fields, units, and tolerances. No licensed MATLAB runtime was executed, so the evidence makes no MATLAB numerical-parity claim. It also does not establish global optimality, field robustness, physical calibration, hardware timing, safety certification, or production readiness.
+Five retained cases cover baseline, two single-control sweeps, the named fault and recovery. Expected values come from the independent formulation; actual values come from the executable lesson. Absolute and relative comparison tolerances remain 1e-8. Full-state or geometric checks supplement these three-number signatures, which alone cannot establish correctness. MATLAB has not been executed and no MATLAB equivalence is claimed. Browser and container evidence is recorded separately. Agreement between synthetic implementations does not establish empirical model validity.
 
 ## Engineering review checklist
 
-- Verify equation dimensions, coordinate frames, signs, timestamp direction, and branch conventions.
-- Separate feasibility or safety from objective value and visual smoothness.
-- Inspect conditioning, covariance, clearance, saturation, energy, or data age when relevant.
-- Confirm the broken case changes the named mechanism and the recovery restores the baseline signature.
-- State one assumption whose violation would invalidate the result even if every test here passed.
+Reconstruct one displayed quantity from the actual state or geometric arrays. Check coordinate ordering, signs and units before comparing numbers. Explain which assumption each check constrains, and identify a defect that another check could miss. Preserve the baseline, one controlled sweep, fault and recovery as a reproducible evidence sequence. State the model boundary before making a broader engineering recommendation.
 
 ## Common mistakes
 
-- Treating a local or finite-sample result as a global guarantee.
-- Changing both controls and assigning causality to only one.
-- Accepting endpoint checks where swept geometry, intermediate dynamics, or data freshness matter.
-- Confusing a low residual with observability, correct association, feasibility, or physical truth.
-- Claiming learner effectiveness, MATLAB parity, physical HIL, hardware safety, or certification from software fixtures.
+Do not infer correctness from a changing headline alone. The deterministic estimate uses noiseless synthetic correspondences; its covariance is a first-order prediction under independent pixel noise, not an observed confidence interval.
+
+Do not change both sliders at once and attribute the result to one cause. Separate a model assumption from a measured property, and a finite-horizon observation from a universal guarantee. Floating-point roundoff is not a physical effect; equally, an attractive plot is not a substitute for the governing calculation.
 
 ## Focused check and teach-back
 
-Calculate one baseline signature value, show one dimensional check, predict both sweeps, reproduce the named failure, and demonstrate exact recovery. Then teach the lesson back without starting from the plots: state the convention, derive the governing relationship, explain the invariant, identify the practical failure, and name the evidence boundary. Finish by naming the prerequisite module and the next mapped module that consumes this artifact.
+Why can increasing baseline increase displayed depth uncertainty in this particular sweep?
+
+Answer rationale: The control holds rectified disparity fixed, so increasing baseline also moves the constructed point farther away. The fixed-range precision benefit of a larger baseline answers a different experiment; the held variable must be stated.
+
+Use the embedded Course checkpoint to explain your default, sweep, fault and recovery records to a colleague. Include one calculation with units, the causal diagnosis and an explicit untested boundary. This is a self-assessment; no learner score is stored.

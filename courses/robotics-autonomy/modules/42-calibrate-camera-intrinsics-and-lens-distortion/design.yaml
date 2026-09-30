@@ -7,21 +7,23 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- x_d=x(1+k_1 r^2+k_2 r^4)
-- min sum ||z-pi(K,D,T_i,X)||^2
-- validate on held-out views
+- u=f x+f k1 x(x²+y²)+cx; v=f y+f k1 y(x²+y²)+cy
+- beta=[f,f*k1,cx,cy]; beta_hat=argmin ||A beta-pixels||²
+- heldout_RMS=sqrt(mean(||predicted_pixel-true_pixel||²))
 signature:
-- field: reprojection_rms
+- field: heldout_reprojection_rms
   unit: px
-- field: focal_bias
+- field: focal_bias_percent
   unit: '%'
-- field: edge_residual
+- field: outer_reprojection_rms
   unit: px
-teaching_invariant: Camera calibration is supported by held-out reprojection residuals spanning the image, not by
-  a low fit error on one pose.
+teaching_invariant: Predict whether adding more board views can eliminate held-out bias when the fitted model
+  omits real radial distortion.
 limiting_cases:
-- At zero distortion, distorted and normalized coordinates coincide.
-- More geometrically diverse views improve conditioning but do not cure wrong correspondences.
+- Known board poses and coordinates are exact; this does not perform joint pose/intrinsic calibration, feature
+  extraction or real lens calibration.
+- At zero radial distortion the omitted-column fault may be hidden. Deterministic noise, finite pose coverage,
+  and conditioning limit generalization; more views do not guarantee monotonically smaller error.
 scenarios:
   baseline: &id001
     radial_k1: -0.18
@@ -48,5 +50,5 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic software evidence only. Browser/container checks are recorded separately.
+  No MATLAB runtime, representative learner, manual screen-reader, hardware, certification or production acceptance.

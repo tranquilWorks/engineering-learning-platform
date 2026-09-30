@@ -248,12 +248,28 @@ def test_robotics_native_plots_retain_domain_quantities_and_units() -> None:
                 assert title not in GENERIC_LABELS
                 assert re.search(r"\([^()]+\)$", title), title
             for trace in plot["data"]:
-                assert set(trace["meta"]) == {
-                    "x_quantity",
-                    "x_unit",
-                    "y_quantity",
-                    "y_unit",
-                }
+                expected_meta = {"x_quantity", "x_unit", "y_quantity", "y_unit"}
+                if trace.get("type") == "heatmap":
+                    assert item["id"] in {"P43", "P47"}
+                    expected_meta |= {"z_quantity", "z_unit"}
+                    assert (
+                        trace["meta"]["z_quantity"]
+                        == {
+                            "P43": "Image intensity",
+                            "P47": "Occupancy probability",
+                        }[item["id"]]
+                    )
+                    assert trace["meta"]["z_unit"] == "1"
+                    assert (
+                        trace["colorscale"]
+                        == {
+                            "P43": [[0, "#000000"], [1, "#ffffff"]],
+                            "P47": [[0, "#ffffff"], [1, "#000000"]],
+                        }[item["id"]]
+                    )
+                    assert np.shape(trace["z"]) == (len(trace["y"]), len(trace["x"]))
+                    assert np.isfinite(trace["z"]).all()
+                assert set(trace["meta"]) == expected_meta
                 assert all(str(value).strip() for value in trace["meta"].values())
 
 
@@ -326,11 +342,17 @@ def test_robotics_perception_teaching_invariants() -> None:
     assert pinhole_only[0] > calibration[0]
     features = signature(43, {"broken_mode": False})
     unnormalized = signature(43, {"broken_mode": True})
-    assert features[0] > unnormalized[0] and features[1] < unnormalized[1]
+    assert features[0] == unnormalized[0] and features[2] == unnormalized[2]
+    assert features[1] < unnormalized[1]
     robust_match = signature(44, {"broken_mode": False})
     least_squares = signature(44, {"broken_mode": True})
     assert robust_match[0] > least_squares[0] and robust_match[1] < least_squares[1]
-    for number in (45, 46, 48):
+    stereo = signature(45, {"broken_mode": False})
+    bad_stereo = signature(45, {"broken_mode": True})
+    assert abs(stereo[0] - 520 * 0.18 / 28) < 1e-8
+    assert abs(bad_stereo[0] - stereo[0]) > 1
+    assert stereo[2] < 1e-8 < bad_stereo[2]
+    for number in (46, 48):
         nominal = signature(number, {"broken_mode": False})
         broken = signature(number, {"broken_mode": True})
         assert nominal[0] < broken[0] and nominal[1] < broken[1]

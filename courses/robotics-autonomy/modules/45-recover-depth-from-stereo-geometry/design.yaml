@@ -7,21 +7,23 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- Z=fB/d
-- sigma_Z=|fB/d^2| sigma_d
-- rectified matches share image row
+- point_hat=midpoint(closest_points_on_calibrated_rays)
+- depth_truth=f*baseline/disparity; f=520 px
+- Sigma_point=J_pixels*Sigma_pixels*J_pixels^T; sigma_Z=sqrt(Sigma_point[2,2])
 signature:
-- field: depth
+- field: estimated_depth
   unit: m
-- field: depth_sigma
+- field: depth_uncertainty
   unit: m
-- field: rectification_residual
+- field: reprojection_rms
   unit: px
-teaching_invariant: Stereo depth is inverse in disparity, so uncertainty and calibration residuals must accompany
-  every long-range estimate.
+teaching_invariant: Predict how depth and depth uncertainty change when baseline increases while the selected
+  rectified disparity, rather than physical range, is held fixed.
 limiting_cases:
-- As disparity tends to zero, depth and depth uncertainty become unbounded.
-- At fixed disparity, doubling baseline doubles inferred depth.
+- The deterministic estimate uses noiseless synthetic correspondences; its covariance is a first-order prediction
+  under independent pixel noise, not an observed confidence interval.
+- Positive disparity avoids the infinite-depth singularity but does not make low-disparity geometry well conditioned.
+  Calibration uncertainty, matching errors and occlusion are excluded.
 scenarios:
   baseline: &id001
     baseline_m: 0.18
@@ -48,5 +50,5 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software evidence only; no MATLAB runtime, learner, browser/accessibility,
-  physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic synthetic software evidence only. Browser/container checks are recorded separately.
+  No MATLAB runtime, representative learner, manual screen-reader, hardware, certification or production acceptance.

@@ -1,11 +1,9 @@
 schema_version: 1
 id: 52-detect-loop-closures-and-reject-false-matches
 number: 52
-title: Detect Loop Closures and Reject False Matches
-summary: Separate appearance-based place proposals from geometric verification, then bound the influence of the accepted
-  closure factor before it can deform the map.
-guiding_question: What independent evidence is required before a visually plausible revisit is allowed to constrain the
-  pose graph?
+title: Gate a Loop Candidate and Optimize an Anchored Position Graph
+summary: Gate a loop candidate and solve an anchored translation graph with robust or quadratic factor influence.
+guiding_question: Why are geometric rejection and a robust loss complementary rather than interchangeable?
 status: implemented
 tags:
 - robotics-autonomy
@@ -19,7 +17,7 @@ runtime:
 controls:
 - id: descriptor_score
   type: slider
-  label: Loop descriptor score
+  label: Candidate appearance score
   default: 0.78
   minimum: 0.0
   maximum: 1.0
@@ -27,7 +25,7 @@ controls:
   unit: '1'
 - id: geometric_residual_m
   type: slider
-  label: Geometric residual
+  label: Baseline loop innovation
   default: 0.12
   minimum: 0.0
   maximum: 2.0
@@ -42,9 +40,11 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: A loop closure enters the graph only after independent appearance and geometric checks, then receives bounded
-    influence.
-  reveal: Use the equations, units, and mechanism plot to test the prediction.
+  text: Predict whether a high appearance score is enough to justify moving a map, and distinguish rejecting
+    a loop from reducing the influence of an accepted loop.
+  reveal: A gate decides whether a factor enters the graph at all; a robust loss controls how an inserted factor
+    influences the fitted states. Neither alone proves place identity, and a high appearance score cannot replace
+    geometric consistency.
 - type: controls
   title: Live model controls
 - type: metrics
@@ -65,3 +65,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

@@ -18,9 +18,10 @@ commands:
   - .venv/bin/ruff check scripts/audit_course_quality.py scripts/container-quality.py apps/api/tests/test_course_delivery_quality.py
     scripts/verify-gnc-quality.py apps/api/tests/test_gnc_quality_revision.py scripts/verify-navigation-geometry-quality.py
     apps/api/tests/test_navigation_geometry_quality.py scripts/verify-robotics-dynamics-quality.py apps/api/tests/test_robotics_dynamics_quality.py
+    scripts/verify-robotics-perception-quality.py apps/api/tests/test_robotics_perception_quality.py
   scope:
   - git diff --check
-  - git diff --name-only e8d94c521a086a93a3b595c035867c19866bbdbd
+  - git diff --name-only f04472f16fc1da00e817d385eaef0a63f3c71b48
   dsp-fidelity-p77-p84:
   - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3
     -B -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py
@@ -49,8 +50,11 @@ commands:
   robotics-dynamics-quality-12:
   - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-robotics-dynamics-quality.py
   - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-robotics-dynamics-quality.py --base-url http://127.0.0.1:8774
-evidence_boundary: Synthetic numerical/browser/container evidence only. Twelve Robotics dynamics lessons passed
-  independent and selected browser verification; 24 registered findings remain (Controls 0, Robotics 8, Vehicle
-  16). All three non-DSP aggregate reassessments stay blocked. Complete delivery and sequential contract, quick
-  and full gates remain required. No representative learner, manual screen-reader, MATLAB, hardware or production
-  acceptance.
+  robotics-perception-quality-08:
+  - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-robotics-perception-quality.py
+  - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-robotics-perception-quality.py --base-url http://127.0.0.1:8775
+evidence_boundary: Synthetic numerical/browser/container evidence only. Eight Robotics perception/mapping lessons
+  passed independent and selected browser checks; sixteen named Vehicle findings remain, with Controls and
+  Robotics at zero named findings. All three non-DSP aggregate reassessments stay blocked. Complete delivery
+  and sequential contract, quick and full gates remain required. No representative learner, manual screen-reader,
+  MATLAB, hardware or production acceptance.

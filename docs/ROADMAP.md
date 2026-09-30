@@ -1,3 +1,15 @@
+# Verified completion of the twenty named Robotics findings — 2026-09-30
+
+The remaining eight Robotics P42-P48/P52 repairs passed under ELP-ROBOTICS-PERCEPTION-QUALITY-08, following the twelve P30-P41 repairs in target PR57 at `f04472f16fc1da00e817d385eaef0a63f3c71b48`. The exact-baseline successor control contract merged at `c26b23f11e8d4dda9d7691b1758f50a227255757` before activation. All twenty requested lessons now contain executed mechanisms, separate numerical references and individual browser-embedded Course checkpoints. The PR records this group's development integration; Portfolio Control closeout binds the exact merge SHA.
+
+Final verification passed: forty independent local and forty baked HTTP comparisons; fifty-two focused geometry/physical/preservation tests including all 64 runtime corners; 290 HTTP modules; 580 desktop/mobile pages; 256 checkpoint checks; twenty cumulative DSP checks; 144 real interaction sequences/screenshots; 21 focused browser tests; 40 Robotics SVG text/legend layout checks; and 290 matching host/baked module identities. Ten plot-grid captures were visually inspected. Mandatory gates passed sequentially (contract: 103 tests in 100.19 seconds; quick: 1534 tests in 1540.79 seconds; full: 1534 tests in 1521.98 seconds). See [batch evidence](evidence/ELP-ROBOTICS-PERCEPTION-QUALITY-08-2026-09-30.md) and the [exact verification summary](course-quality/robotics-perception-verification-summary.json).
+
+**Sixteen named findings remain, all Vehicle P01-P16: Controls 0, Robotics 0, Vehicle 16.** All three non-DSP aggregate numerical, curriculum and capstone reviews remain blocked, including courses with zero named findings. The register is non-exhaustive. This completes the requested Robotics findings, without activating Vehicle work or aggregate acceptance. DSP retains its separate authored/software aggregate review. Inventory remains 288 engineering lessons plus two examples and nine source-only repositories.
+
+Verified read-only nonroot development preview: `http://127.0.0.1:8775`; exact image `sha256:ef29f3b77a8015d22c380cc524168cd656f77b44851aa7829f8f1177878be0fd`. Earlier final previews remain preserved. Hosted checks are recorded separately from mandatory local gates, including retained source-checkout/history failures and billing/spending limitations. Representative learners, manual screen-reader, MATLAB, hardware, concurrent capacity and production validation remain unperformed.
+
+---
+
 # Verified Robotics dynamics revision — 2026-09-30
 
 ELP-ROBOTICS-DYNAMICS-QUALITY-12 repairs existing Robotics P30-P41 with executed models, independent references and twelve individually authored browser-embedded Course checkpoints. Control [PR569](https://github.com/tranquilWorks/portfolio-control/pull/569) merged before implementation at `b072a1b26e8fd608a5519737ea6b67fda0b6edb5`; the exact target baseline is PR56 merge `e8d94c521a086a93a3b595c035867c19866bbdbd`.

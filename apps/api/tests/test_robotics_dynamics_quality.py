@@ -17,6 +17,7 @@ from elp_api.runtime import ExperimentRuntime
 
 ROOT = Path(__file__).resolve().parents[3]
 BASELINE = "e8d94c521a086a93a3b595c035867c19866bbdbd"
+HISTORICAL_HEAD = "f04472f16fc1da00e817d385eaef0a63f3c71b48"
 SELECTED = {"robotics-autonomy": tuple(range(30, 42))}
 CASES = [(course, n) for course, numbers in SELECTED.items() for n in numbers]
 
@@ -41,7 +42,11 @@ def run(n, course="robotics-autonomy", **changes):
 
 
 def test_exact_scope_and_prerequisite_inventory():
-    contract = yaml.safe_load((ROOT / "contracts/active-batch.yaml").read_text())
+    contract = yaml.safe_load(
+        subprocess.check_output(
+            ["git", "show", f"{HISTORICAL_HEAD}:contracts/active-batch.yaml"], cwd=ROOT, text=True
+        )
+    )
     assert contract["batch"]["id"] == "ELP-ROBOTICS-DYNAMICS-QUALITY-12"
     assert contract["sources"]["baseline_commit"] == BASELINE
     assert (
@@ -51,7 +56,7 @@ def test_exact_scope_and_prerequisite_inventory():
         == contract["sources"]["baseline_tree"]
     )
     paths = subprocess.check_output(
-        ["git", "diff", "--name-only", BASELINE, "--", "courses", ".gitmodules"],
+        ["git", "diff", "--name-only", BASELINE, HISTORICAL_HEAD, "--", "courses", ".gitmodules"],
         cwd=ROOT,
         text=True,
     ).splitlines()
@@ -66,7 +71,11 @@ def test_exact_scope_and_prerequisite_inventory():
         before = yaml.safe_load(
             subprocess.check_output(["git", "show", f"{BASELINE}:{path}"], cwd=ROOT, text=True)
         )
-        after = yaml.safe_load((ROOT / path).read_text())
+        after = yaml.safe_load(
+            subprocess.check_output(
+                ["git", "show", f"{HISTORICAL_HEAD}:{path}"], cwd=ROOT, text=True
+            )
+        )
         assert [(m["id"], m["depends_on"], m["competency_ids"]) for m in before["modules"]] == [
             (m["id"], m["depends_on"], m["competency_ids"]) for m in after["modules"]
         ]
@@ -82,7 +91,12 @@ def test_unselected_reference_definitions_origins_and_five_outputs(course, tmp_p
     )
     historical = tmp_path / "reference.py"
     historical.write_text(original)
-    before, after = load(historical), load(path)
+    merged_source = subprocess.check_output(
+        ["git", "show", f"{HISTORICAL_HEAD}:{path.relative_to(ROOT)}"], cwd=ROOT, text=True
+    )
+    merged = tmp_path / "merged.py"
+    merged.write_text(merged_source)
+    before, after = load(historical), load(merged)
 
     def definitions(source):
         return {
@@ -91,7 +105,7 @@ def test_unselected_reference_definitions_origins_and_five_outputs(course, tmp_p
             if isinstance(n, ast.FunctionDef)
         }
 
-    old, new = definitions(original), definitions(path.read_text())
+    old, new = definitions(original), definitions(merged_source)
     for n in range(25, 69 if course == "controls-gnc" else 70):
         if n in SELECTED[course]:
             continue

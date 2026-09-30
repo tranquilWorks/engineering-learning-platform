@@ -111,25 +111,25 @@ def _p41(p: dict[str, Any]) -> list[float]:
     return robotics_dynamics_reference(41, p)["signature"]
 
 def _p42(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[42][_key(p)])
+    return robotics_perception_reference(42, p)["signature"]
 
 def _p43(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[43][_key(p)])
+    return robotics_perception_reference(43, p)["signature"]
 
 def _p44(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[44][_key(p)])
+    return robotics_perception_reference(44, p)["signature"]
 
 def _p45(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[45][_key(p)])
+    return robotics_perception_reference(45, p)["signature"]
 
 def _p46(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[46][_key(p)])
+    return robotics_perception_reference(46, p)["signature"]
 
 def _p47(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[47][_key(p)])
+    return robotics_perception_reference(47, p)["signature"]
 
 def _p48(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[48][_key(p)])
+    return robotics_perception_reference(48, p)["signature"]
 
 _NATIVE_FIXTURES.update({41: {'{"broken_mode":false,"focal_length_px":520.0,"point_depth_m":3.0}': [69.33333333333333, 23.11111111111111, 0.0], '{"broken_mode":false,"focal_length_px":1200.0,"point_depth_m":3.0}': [160.0, 53.333333333333336, 0.0], '{"broken_mode":false,"focal_length_px":520.0,"point_depth_m":12.0}': [17.333333333333332, 1.4444444444444444, 0.0], '{"broken_mode":true,"focal_length_px":520.0,"point_depth_m":3.0}': [1100.0, 2749.9999999999995, 1.0]}, 42: {'{"broken_mode":false,"calibration_views":18.0,"radial_k1":-0.18}': [0.5091168824543143, 0.15, 1.62], '{"broken_mode":false,"calibration_views":18.0,"radial_k1":0.3}': [0.848528137423857, 0.25, 2.7], '{"broken_mode":false,"calibration_views":60.0,"radial_k1":-0.18}': [0.27885480092693404, 0.045, 1.62], '{"broken_mode":true,"calibration_views":18.0,"radial_k1":-0.18}': [4.507913042639576, 4.48, 25.200000000000003]}, 43: {'{"broken_mode":false,"detector_threshold":0.12,"image_rotation_deg":25.0}': [0.8188888888888889, 0.06339273926110492, 281.6], '{"broken_mode":false,"detector_threshold":0.8,"image_rotation_deg":25.0}': [0.1861111111111111, 0.06339273926110492, 63.999999999999986], '{"broken_mode":false,"detector_threshold":0.12,"image_rotation_deg":180.0}': [0.44, 1.8369701987210297e-17, 281.6], '{"broken_mode":true,"detector_threshold":0.12,"image_rotation_deg":25.0}': [0.0875, 0.17364817766693028, 80.0]}, 44: {'{"broken_mode":false,"outlier_fraction":0.35,"ransac_threshold_px":2.0}': [0.6174999999999999, 0.16, 0.055999999999999994], '{"broken_mode":false,"outlier_fraction":0.85,"ransac_threshold_px":2.0}': [0.14250000000000002, 0.16, 0.136], '{"broken_mode":false,"outlier_fraction":0.35,"ransac_threshold_px":8.0}': [0.6174999999999999, 0.64, 0.22399999999999998], '{"broken_mode":true,"outlier_fraction":0.35,"ransac_threshold_px":2.0}': [0.09000000000000002, 24.599999999999998, 0.82]}, 45: {'{"baseline_m":0.18,"broken_mode":false,"disparity_px":28.0}': [3.3428571428571425, 0.0596938775510204, 0.15], '{"baseline_m":0.8,"broken_mode":false,"disparity_px":28.0}': [14.857142857142858, 0.2653061224489796, 0.15], '{"baseline_m":0.18,"broken_mode":false,"disparity_px":140.0}': [0.6685714285714285, 0.002387755102040816, 0.15], '{"baseline_m":0.18,"broken_mode":true,"disparity_px":28.0}': [20.8, 10.4, 3.0]}, 46: {'{"broken_mode":false,"landmark_noise_px":1.2,"visible_landmarks":12.0}': [0.008660254037844387, 0.2424871130596428, 10.8], '{"broken_mode":false,"landmark_noise_px":8.0,"visible_landmarks":12.0}': [0.05773502691896259, 1.6165807537309522, 10.8], '{"broken_mode":false,"landmark_noise_px":1.2,"visible_landmarks":40.0}': [0.004743416490252569, 0.1328156617270719, 36.0], '{"broken_mode":true,"landmark_noise_px":1.2,"visible_landmarks":12.0}': [0.44999999999999996, 15.0, 1.8]}, 47: {'{"beam_count":90.0,"broken_mode":false,"hit_probability":0.72}': [0.7891817065222528, 0.1817718866972309, 0.058], '{"beam_count":90.0,"broken_mode":false,"hit_probability":0.98}': [0.9468488636019362, 0.012983706192659362, 0.032], '{"beam_count":360.0,"broken_mode":false,"hit_probability":0.72}': [0.9949333706665338, 0.23777188669723087, 0.058], '{"beam_count":90.0,"broken_mode":true,"hit_probability":0.72}': [0.5039999146688512, 0.1720782000346155, 0.35]}, 48: {'{"broken_mode":false,"initial_offset_m":0.25,"outlier_fraction":0.12}': [0.07, 0.0296, 14.85], '{"broken_mode":false,"initial_offset_m":1.5,"outlier_fraction":0.12}': [0.16999999999999998, 0.12960000000000002, 46.1], '{"broken_mode":false,"initial_offset_m":0.25,"outlier_fraction":0.7}': [0.215, 0.076, 32.25], '{"broken_mode":true,"initial_offset_m":0.25,"outlier_fraction":0.12}': [0.589, 1.4349999999999998, 83.3]}})
 
@@ -251,21 +251,7 @@ def _p51(p: dict[str, Any]) -> list[float]:
     ]
 
 def _p52(p: dict[str, Any]) -> list[float]:
-    score = float(p["descriptor_score"])
-    residual = float(p["geometric_residual_m"])
-    broken = bool(p["broken_mode"])
-    if broken:
-        score, residual = 0.95, 1.8
-    normalized = residual / 0.30
-    inserted = score >= 0.70 and (residual <= 0.30 or broken)
-    influence = 1.0 if broken else min(1.0, 1.0 / max(abs(normalized), 1.0))
-    weight = score * influence if inserted else 0.0
-    cost = (
-        0.5 * normalized**2
-        if broken
-        else (0.5 * abs(normalized) ** 2 if abs(normalized) <= 1.0 else abs(normalized) - 0.5)
-    )
-    return [weight, cost, weight * residual * (2.0 if broken else 0.20)]
+    return robotics_perception_reference(52, p)["signature"]
 
 def _p53(p: dict[str, Any]) -> list[float]:
     acceleration_sigma = float(p["process_noise"])
@@ -1770,6 +1756,8 @@ def robotics_dynamics_reference(number, parameters):
 _DISPATCH = {66: _p66, 67: _p67, 68: _p68, 69: _p69, 61: _p61, 62: _p62, 63: _p63, 64: _p64, 65: _p65, 58: _p58, 59: _p59, 60: _p60, 54: _p54, 55: _p55, 56: _p56, 57: _p57, 49: _p49, 50: _p50, 51: _p51, 52: _p52, 53: _p53, 41: _p41, 42: _p42, 43: _p43, 44: _p44, 45: _p45, 46: _p46, 47: _p47, 48: _p48, 34: _p34, 35: _p35, 36: _p36, 37: _p37, 38: _p38, 39: _p39, 40: _p40, 25: _p25, 26: _p26, 27: _p27, 28: _p28, 29: _p29, 30: _p30, 31: _p31, 32: _p32, 33: _p33, }
 
 def origin(number: int) -> dict[str, Any]:
+    if number in [42, 43, 44, 45, 46, 47, 48, 52]:
+        return {"kind":"independent-numerical-python","item_id":f"P{number:02d}","independent":True,"imports_production_entrypoint":False,"derived_from_production_output":False,"perturbs_production_output":False,"method":{42: 'independent board components, normal equations and held-out reprojection', 43: 'separate sampled scene, 2D tensor convolution and explicit bilinear descriptors', 44: 'all-pairs displacement consensus and block least-squares refit', 45: 'normalized dot-product ray solution and complex-step uncertainty', 46: 'Euler-coordinate nonlinear least squares and complex-step pixel derivatives', 47: 'ray-cell slab intersections and separately accumulated log odds', 48: 'brute-force nearest neighbours and closed planar-angle rigid fitting', 52: 'anchored-chain compliance and analytic Huber branch solution'}[number]}
     if 30 <= number <= 41:
         return {
             "kind": "independent-numerical-python",
@@ -1805,3 +1793,706 @@ def origin(number: int) -> dict[str, Any]:
 
 def reference_signature(number: int, parameters: dict[str, Any]) -> list[float]:
     return list(_DISPATCH[number](dict(parameters)))
+
+
+# Independent perception and mapping formulations; no production imports.
+from scipy.signal import convolve2d
+from scipy.optimize import least_squares
+
+def _rp42_views(indices):
+    rows = []
+    for j in indices:
+        ax = 0.2 * np.cos(0.8 * j)
+        ay = 0.25 * np.sin(1.3 * j)
+        az = 0.17 * j
+        for by in np.linspace(-0.3, 0.3, 3):
+            for bx in np.linspace(-0.45, 0.45, 4):
+                y = np.cos(ax) * by
+                z = np.sin(ax) * by
+                x2 = np.cos(ay) * bx + np.sin(ay) * z
+                z2 = -np.sin(ay) * bx + np.cos(ay) * z
+                rows.append(
+                    [
+                        np.cos(az) * x2 - np.sin(az) * y + 0.5 * np.sin(2.1 * j),
+                        np.sin(az) * x2 + np.cos(az) * y + 0.3 * np.cos(1.7 * j),
+                        z2 + 2 + 0.2 * np.sin(0.6 * j),
+                    ]
+                )
+    return np.asarray(rows)
+
+def _rp42(p):
+    k = float(p["radial_k1"])
+    n = int(p["calibration_views"])
+    bad = bool(p["broken_mode"])
+    camera = _rp42_views(range(n))
+    A = []
+    pixels = []
+    for index, (X, Y, Z) in enumerate(camera):
+        x, y = X / Z, Y / Z
+        r2 = x * x + y * y
+        j, i = divmod(index, 12)
+        pixels.extend(
+            [
+                800 * x * (1 + k * r2) + 320 + 0.15 * np.sin(1.9 * i + 0.83 * j),
+                800 * y * (1 + k * r2) + 240 + 0.12 * np.cos(1.3 * i + 0.41 * j),
+            ]
+        )
+        A.extend(
+            [[x, 1, 0], [y, 0, 1]] if bad else [[x, x * r2, 1, 0], [y, y * r2, 0, 1]]
+        )
+    A = np.asarray(A)
+    pixels = np.asarray(pixels)
+    beta = np.linalg.solve(A.T @ A, A.T @ pixels)
+    beta = np.r_[beta[0], 0, beta[1:]] if bad else beta
+    holdout = _rp42_views([0.37, 2.81, 8.43, 13.29])
+    normalized = holdout[:, :2] / holdout[:, 2, None]
+    radius2 = np.einsum("ij,ij->i", normalized, normalized)
+    truth = 800 * normalized * (1 + k * radius2[:, None]) + [320, 240]
+    predicted = normalized * (beta[0] + beta[1] * radius2[:, None]) + beta[2:]
+    residual = predicted - truth
+    radius = np.sqrt(radius2)
+    outer = radius >= np.quantile(radius, 0.75)
+    squared = np.sum(residual**2, axis=1)
+    return {
+        "signature": [
+            np.sqrt(squared.mean()),
+            abs(beta[0] - 800) / 8,
+            np.sqrt(squared[outer].mean()),
+        ],
+        "training_camera_points": camera,
+        "observed_pixels": pixels.reshape(-1, 2),
+        "design_matrix": A,
+        "coefficients": beta,
+        "heldout_camera_points": holdout,
+        "heldout_true_pixels": truth,
+        "heldout_predicted_pixels": predicted,
+        "heldout_residuals": residual,
+        "outer_mask": outer,
+    }
+
+def _rp43_image(degrees):
+    theta = np.deg2rad(degrees)
+    yy, xx = np.meshgrid(np.arange(96) - 47.5, np.arange(96) - 47.5, indexing="ij")
+    coordinates = np.stack([xx, yy], axis=-1) @ np.array(
+        [[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]]
+    )
+    answer = np.zeros((96, 96))
+    for k in range(9):
+        center = np.array([24 * (k % 3 - 1), 24 * (k // 3 - 1)])
+        phi = 0.47 * k + 0.2
+        local = (coordinates - center) @ np.array(
+            [[np.cos(phi), -np.sin(phi)], [np.sin(phi), np.cos(phi)]]
+        )
+        u, v = local[..., 0], local[..., 1]
+        gate = (1 + np.tanh(u / 0.8)) * (1 + np.tanh(v / 0.8)) / 4
+        texture = (
+            1
+            + 0.12 * np.cos((0.5 + 0.04 * k) * u)
+            + 0.08 * np.sin((0.7 + 0.03 * k) * v)
+        )
+        answer += (
+            (0.45 + 0.055 * k)
+            * gate
+            * np.exp(-np.sum(local**2, axis=-1) / 50)
+            * texture
+        )
+    return answer
+
+def _rp43_detect(im, threshold):
+    edge = np.pad(im, 1, mode="edge")
+    gx = (edge[1:-1, :-2] - edge[1:-1, 2:]) / 2
+    gy = (edge[:-2, 1:-1] - edge[2:, 1:-1]) / 2
+    k = np.outer([1.0, 4, 6, 4, 1], [1.0, 4, 6, 4, 1]) / 256
+    tensors = [
+        convolve2d(np.pad(a, 2, mode="edge"), k, mode="valid")
+        for a in (gx * gx, gx * gy, gy * gy)
+    ]
+    a, b, c = tensors
+    score = a * c - b * b - 0.04 * (a + c) ** 2
+    score[:8] = score[-8:] = 0
+    score[:, :8] = score[:, -8:] = 0
+    maxima = np.lib.stride_tricks.sliding_window_view(
+        np.pad(score, 3, mode="edge"), (7, 7)
+    ).max(axis=(-1, -2))
+    rows, cols = np.where(
+        (score > 0) & (score >= threshold * score.max()) & (score == maxima)
+    )
+    order = np.lexsort((cols, rows, -score[rows, cols]))
+    points = []
+    for idx in order:
+        q = np.array([rows[idx], cols[idx]])
+        if not points or np.all(np.sum((np.array(points) - q) ** 2, axis=1) > 36):
+            points.append(q)
+    return np.array(points).reshape(-1, 2), score
+
+def _rp43_descriptors(im, points, oriented):
+    descriptors = []
+    angles = []
+    for row, col in points:
+        moment = np.zeros(2)
+        for dr in range(-6, 7):
+            for dc in range(-6, 7):
+                if dr * dr + dc * dc <= 36:
+                    moment += im[row + dr, col + dc] * np.array([dc, dr])
+        angle = np.arctan2(moment[1], moment[0]) if oriented else 0.0
+        values = []
+        for dr in range(-4, 5):
+            for dc in range(-4, 5):
+                x = col + np.cos(angle) * dc - np.sin(angle) * dr
+                y = row + np.sin(angle) * dc + np.cos(angle) * dr
+                ix, iy = int(np.floor(x)), int(np.floor(y))
+                fx, fy = x - ix, y - iy
+                values.append(
+                    (1 - fy) * ((1 - fx) * im[iy, ix] + fx * im[iy, ix + 1])
+                    + fy * ((1 - fx) * im[iy + 1, ix] + fx * im[iy + 1, ix + 1])
+                )
+        v = np.array(values)
+        v -= np.sum(v) / 81
+        v /= max(np.sqrt(v @ v), 1e-15)
+        descriptors.append(v)
+        angles.append(angle)
+    return np.array(descriptors), np.array(angles)
+
+def _rp43(p):
+    degrees = float(p["image_rotation_deg"])
+    threshold = float(p["detector_threshold"])
+    oriented = not bool(p["broken_mode"])
+    base = _rp43_image(0)
+    rotated = _rp43_image(degrees)
+    pa, ra = _rp43_detect(base, threshold)
+    pb, rb = _rp43_detect(rotated, threshold)
+    da, aa = _rp43_descriptors(base, pa, oriented)
+    db, ab = _rp43_descriptors(rotated, pb, oriented)
+    angle = degrees * np.pi / 180
+    c, s = np.cos(angle), np.sin(angle)
+    pairs = []
+    used = set()
+    for i, (row, col) in enumerate(pa):
+        X, Y = col - 47.5, row - 47.5
+        predicted = np.array([s * X + c * Y + 47.5, c * X - s * Y + 47.5])
+        if not len(pb):
+            break
+        distance = np.sum((pb - predicted) ** 2, axis=1)
+        j = int(np.argmin(distance))
+        if distance[j] <= 2.5**2 and j not in used:
+            pairs.append([i, j])
+            used.add(j)
+    distances = np.asarray([np.sqrt(np.sum((da[i] - db[j]) ** 2)) for i, j in pairs])
+    return {
+        "signature": [
+            len(pairs) / max(1, len(pa)),
+            np.mean(distances) if len(distances) else 0.0,
+            len(pb),
+        ],
+        "base_image": base,
+        "rotated_image": rotated,
+        "base_response": ra,
+        "rotated_response": rb,
+        "base_features": pa,
+        "rotated_features": pb,
+        "base_descriptors": da,
+        "rotated_descriptors": db,
+        "base_orientations": aa,
+        "rotated_orientations": ab,
+        "geometric_pairs": np.asarray(pairs).reshape(-1, 2),
+        "descriptor_distances": distances,
+    }
+
+def _rp44(p):
+    fraction = float(p["outlier_fraction"])
+    threshold = float(p["ransac_threshold_px"])
+    bad = bool(p["broken_mode"])
+    j = np.arange(80)
+    source = np.stack([20 + 15 * (j % 10), 30 + 12 * (j // 10)], axis=1)
+    outliers = np.zeros(80, bool)
+    for k in range(int(np.floor(80 * fraction))):
+        outliers[(37 * k) % 80] = True
+    displacement = []
+    for i in j:
+        if outliers[i]:
+            radius = 18 + 6 * np.sin(1.13 * i) ** 2
+            angle = 2.399963229728653 * i
+            displacement.append(
+                [40 + radius * np.cos(angle), 12 + radius * np.sin(angle)]
+            )
+        else:
+            displacement.append(
+                [5 + 0.2 * np.sin(1.73 * i + 0.2), -3 + 0.2 * np.cos(2.21 * i - 0.3)]
+            )
+    target = source + np.array(displacement)
+    delta = target - source
+    if bad:
+        mask = np.ones(80, bool)
+    else:
+        squares = np.einsum("ij,ij->i", delta, delta)
+        distances = np.maximum(
+            0, squares[:, None] + squares[None, :] - 2 * delta @ delta.T
+        )
+        inside = distances <= threshold**2
+        support = inside.sum(axis=1)
+        cost = np.sum(np.where(inside, distances, 0), axis=1)
+        winner = np.lexsort((np.arange(80), cost, -support))[0]
+        mask = inside[winner]
+    for _ in range(20):
+        values = delta[mask]
+        matrix = np.tile(np.eye(2), (len(values), 1))
+        translation = np.linalg.lstsq(matrix, values.ravel(), rcond=None)[0]
+        new = (
+            np.einsum("ij,ij->i", delta - translation, delta - translation)
+            <= threshold**2
+        )
+        if bad or np.array_equal(mask, new):
+            break
+        mask = new
+    residual = np.sqrt(np.sum((delta - translation) ** 2, axis=1))
+    accepted = residual <= threshold
+    return {
+        "signature": [
+            accepted.mean(),
+            np.linalg.norm(translation - [5, -3]),
+            np.count_nonzero(accepted & outliers) / max(1, np.count_nonzero(outliers)),
+        ],
+        "source_pixels": source,
+        "target_pixels": target,
+        "displacements": delta,
+        "true_outliers": outliers,
+        "translation": translation,
+        "residuals": residual,
+        "accepted": accepted,
+    }
+
+def _rp45_ray(obs, baseline, bad):
+    left = np.array([obs[0] / 520, obs[1] / 520, 1.0])
+    raw = np.array([obs[2] / 520, obs[3] / 520, 1.0])
+    c, s = np.cos(0.04), np.sin(0.04)
+    right = (
+        raw
+        if bad
+        else np.array([c * raw[0] + s * raw[2], raw[1], -s * raw[0] + c * raw[2]])
+    )
+    left = left / np.sqrt(sum(left * left))
+    right = right / np.sqrt(sum(right * right))
+    cross = sum(left * right)
+    along_left = baseline * (left[0] - cross * right[0]) / (1 - cross * cross)
+    along_right = baseline * (cross * left[0] - right[0]) / (1 - cross * cross)
+    return (along_left * left + np.array([baseline, 0, 0]) + along_right * right) / 2
+
+def _rp45_observe(baseline, disparity):
+    Z = 520 * baseline / disparity
+    truth = np.array([0.08 * Z, 0.04 * Z, Z])
+    dx = truth[0] - baseline
+    c, s = np.cos(0.04), np.sin(0.04)
+    rx = c * dx - s * Z
+    rz = s * dx + c * Z
+    return np.array([520 * 0.08, 520 * 0.04, 520 * rx / rz, 520 * truth[1] / rz]), truth
+
+def _rp45_evaluate(baseline, disparity, bad):
+    obs, truth = _rp45_observe(baseline, disparity)
+    point = _rp45_ray(obs, baseline, bad)
+    J = np.column_stack(
+        [
+            np.imag(_rp45_ray(obs.astype(complex) + 1e-20j * axis, baseline, bad))
+            / 1e-20
+            for axis in np.eye(4)
+        ]
+    )
+    covariance = (0.5**2 / 2) * (J @ J.T)
+    x, y, z = point
+    c, s = np.cos(0.04), np.sin(0.04)
+    rx = c * (x - baseline) - s * z
+    rz = s * (x - baseline) + c * z
+    reprojection = np.array([[520 * x / z, 520 * y / z], [520 * rx / rz, 520 * y / rz]])
+    rms = np.sqrt(np.mean(np.sum((reprojection - obs.reshape(2, 2)) ** 2, axis=1)))
+    return point, truth, obs.reshape(2, 2), reprojection, J, covariance, rms
+
+def _rp45(p):
+    baseline = float(p["baseline_m"])
+    disparity = float(p["disparity_px"])
+    bad = bool(p["broken_mode"])
+    point, truth, obs, pred, J, cov, rms = _rp45_evaluate(baseline, disparity, bad)
+    sweep = [_rp45_evaluate(baseline, d, bad) for d in np.linspace(1, 140, 101)]
+    return {
+        "signature": [point[2], np.sqrt(cov[2, 2]), rms],
+        "estimated_point": point,
+        "true_point": truth,
+        "observed_pixels": obs,
+        "reprojected_pixels": pred,
+        "pixel_jacobian": J,
+        "point_covariance": cov,
+        "depth_sweep": np.array([r[0][2] for r in sweep]),
+        "uncertainty_sweep": np.array([np.sqrt(r[5][2, 2]) for r in sweep]),
+    }
+
+def _rp46(p):
+    count = int(p["visible_landmarks"])
+    noise = float(p["landmark_noise_px"])
+    focal = 650.0 if p["broken_mode"] else 800.0
+    cloud = []
+    for k in range(40):
+        z = 1 - 2 * (k + 0.5) / 40
+        radial = np.sqrt(1 - z * z)
+        angle = 2.399963229728653 * k
+        cloud.append(
+            [0.55 * radial * np.cos(angle), 0.45 * radial * np.sin(angle), 0.35 * z]
+        )
+    landmarks = np.asarray(cloud)[np.rint(np.linspace(0, 39, count)).astype(int)]
+    vector = np.array([0.18, -0.1, 0.25])
+    theta = np.sqrt(vector @ vector)
+    axis = vector / theta
+    x, y, z = axis
+    cross = np.array([[0.0, -z, y], [z, 0.0, -x], [-y, x, 0.0]])
+    truth_R = np.eye(3) + np.sin(theta) * cross + (1 - np.cos(theta)) * (cross @ cross)
+    truth_t = np.array([0.15, -0.1, 3.2])
+    true_camera = (truth_R @ landmarks.T).T + truth_t
+    observed = 800 * true_camera[:, :2] / true_camera[:, 2, None] + [320, 240]
+    for i in range(count):
+        observed[i] += noise * np.array([np.sin(1.7 * i + 0.3), np.cos(2.3 * i - 0.2)])
+
+    def rotation(a):
+        x, y, z = a
+        cx, sx = np.cos(x), np.sin(x)
+        cy, sy = np.cos(y), np.sin(y)
+        cz, sz = np.cos(z), np.sin(z)
+        return np.array(
+            [
+                [cz * cy, cz * sy * sx - sz * cx, cz * sy * cx + sz * sx],
+                [sz * cy, sz * sy * sx + cz * cx, sz * sy * cx - cz * sx],
+                [-sy, cy * sx, cy * cx],
+            ]
+        )
+
+    def residual(parameters):
+        camera = (rotation(parameters[:3]) @ landmarks.T).T + parameters[3:]
+        u = focal * camera[:, 0] / camera[:, 2] + 320
+        v = focal * camera[:, 1] / camera[:, 2] + 240
+        return np.column_stack([u, v]).ravel() - observed.ravel()
+
+    def derivative(parameters):
+        return np.column_stack(
+            [
+                np.imag(residual(parameters.astype(complex) + 1e-20j * axis)) / 1e-20
+                for axis in np.eye(6)
+            ]
+        )
+
+    solution = least_squares(
+        residual,
+        [0.0, 0.0, 0.0, 0.0, 0.0, 3.0],
+        jac=derivative,
+        x_scale="jac",
+        xtol=1e-14,
+        ftol=1e-14,
+        gtol=1e-14,
+        max_nfev=400,
+    )
+    # A local full Gauss-Newton refinement avoids objective-roundoff termination.
+    # This uses Euler coordinates and independently differentiated pixel equations.
+    parameters = solution.x.copy()
+    for _ in range(30):
+        step = np.linalg.lstsq(
+            derivative(parameters), -residual(parameters), rcond=None
+        )[0]
+        parameters += step
+        if np.linalg.norm(step) < 1e-14:
+            break
+    R = rotation(parameters[:3])
+    t = parameters[3:]
+    camera = (R @ landmarks.T).T + t
+    predicted = focal * camera[:, :2] / camera[:, 2, None] + [320, 240]
+    D = R @ truth_R.T
+    sine = np.linalg.norm([D[2, 1] - D[1, 2], D[0, 2] - D[2, 0], D[1, 0] - D[0, 1]]) / 2
+    angle = np.arctan2(sine, (np.trace(D) - 1) / 2) * 180 / np.pi
+    errors = predicted - observed
+    return {
+        "signature": [
+            np.linalg.norm(t - truth_t),
+            angle,
+            np.sqrt(np.mean(np.sum(errors**2, axis=1))),
+        ],
+        "landmarks": landmarks,
+        "observed_pixels": observed,
+        "true_rotation": truth_R,
+        "true_translation": truth_t,
+        "rotation": R,
+        "translation": t,
+        "camera_points": camera,
+        "predicted_pixels": predicted,
+        "residuals": errors,
+        "reference_optimality": float(solution.optimality),
+        "reference_status": int(solution.status),
+    }
+
+def _rp47_paths(angle, truth):
+    direction = np.array([np.cos(angle), np.sin(angle)])
+    row, col = np.indices((31, 31))
+    lower = np.stack(
+        [-0.1 * 15.5 + col * 0.1, -0.1 * 15.5 + row * 0.1], axis=-1
+    ).reshape(-1, 2)
+    upper = lower + 0.1
+    lows = []
+    highs = []
+    for axis in range(2):
+        if abs(direction[axis]) < 1e-14:
+            inside = (lower[:, axis] < 0) & (upper[:, axis] > 0)
+            lo = np.where(inside, -np.inf, np.inf)
+            hi = np.where(inside, np.inf, -np.inf)
+        else:
+            first = lower[:, axis] / direction[axis]
+            second = upper[:, axis] / direction[axis]
+            lo = np.minimum(first, second)
+            hi = np.maximum(first, second)
+        lows.append(lo)
+        highs.append(hi)
+    entry = np.maximum(np.maximum(lows[0], lows[1]), 0)
+    end = np.minimum(np.minimum(highs[0], highs[1]), 1.4)
+    valid = np.flatnonzero(end > entry + 1e-12)
+    ordered = valid[np.argsort(entry[valid], kind="stable")]
+    path = []
+    for index in ordered:
+        row, col = divmod(int(index), 31)
+        hit = bool(truth[row, col])
+        path.append((row, col, hit, float(entry[index])))
+        if hit:
+            break
+    return path
+
+def _rp47(p):
+    strength = float(p["hit_probability"])
+    count = int(p["beam_count"])
+    bad = bool(p["broken_mode"])
+    centres = np.linspace(-1.5, 1.5, 31)
+    truth = np.zeros((31, 31), bool)
+    for row, y in enumerate(centres):
+        for col, x in enumerate(centres):
+            truth[row, col] = (
+                abs(x) >= 1.19
+                or abs(y) >= 1.19
+                or (0.34 <= x <= 0.56 and -0.21 <= y <= 0.66)
+                or (x + 0.55) ** 2 + (y + 0.4) ** 2 < 0.16**2
+            )
+    odds = np.zeros((31, 31))
+    hit_mask = np.zeros((31, 31), bool)
+    free = np.zeros((31, 31), bool)
+    paths = []
+    evidence = np.log(strength) - np.log1p(-strength)
+    angles = 0.013 + np.arange(count) * 2 * np.pi / count
+    for angle in angles:
+        path = _rp47_paths(angle, truth)
+        paths.append(path)
+        for row, col, hit, entry in path:
+            if hit:
+                hit_mask[row, col] = True
+                odds[row, col] = min(5.0, max(-5.0, odds[row, col] + evidence))
+            else:
+                free[row, col] = True
+                if not bad:
+                    odds[row, col] = min(5.0, max(-5.0, odds[row, col] - evidence))
+    probability = np.exp(odds) / (1 + np.exp(odds))
+    entropy = -np.sum(
+        probability * np.log(probability) + (1 - probability) * np.log1p(-probability)
+    ) / np.log(2)
+    missed = np.count_nonzero((probability >= 0.45) & ~truth) / np.count_nonzero(~truth)
+    return {
+        "signature": [
+            probability[hit_mask].mean() if hit_mask.any() else 0.0,
+            entropy,
+            missed,
+        ],
+        "truth": truth,
+        "cell_centres": centres,
+        "angles": angles,
+        "ray_paths": paths,
+        "log_odds": odds,
+        "probabilities": probability,
+        "hit_mask": hit_mask,
+        "traversed_free_mask": free,
+    }
+
+def _rp48(p):
+    fraction = float(p["outlier_fraction"])
+    offset = float(p["initial_offset_m"])
+    bad = bool(p["broken_mode"])
+    clean = []
+    target = []
+    truth_R = np.array([[np.cos(0.18), -np.sin(0.18)], [np.sin(0.18), np.cos(0.18)]])
+    truth_t = np.array([0.25, -0.12])
+    for i in range(120):
+        angle = i * 2 * np.pi / 120
+        radius = 1 + 0.15 * np.cos(3 * angle) + 0.08 * np.sin(5 * angle)
+        point = np.array(
+            [
+                1.4 * radius * np.cos(angle) + 0.15 * np.cos(2 * angle),
+                0.8 * radius * np.sin(angle) + 0.1 * np.sin(3 * angle),
+            ]
+        )
+        clean.append(point)
+        target.append(
+            truth_R @ point
+            + truth_t
+            + 0.002 * np.array([np.sin(1.37 * i), np.cos(1.73 * i)])
+        )
+    clean, target = np.array(clean), np.array(target)
+    source = clean.copy()
+    outliers = np.zeros(120, bool)
+    for j in range(int(np.floor(120 * fraction))):
+        i = 37 * j % 120
+        outliers[i] = True
+        angle = 2.399963229728653 * i
+        source[i] = [4.5 * np.cos(angle) + 0.2, 4 * np.sin(angle) - 0.3]
+    R = np.eye(2)
+    t = np.array([offset, 0.0])
+    history = []
+    transforms = []
+    masks = []
+    status = "maximum_iterations"
+
+    def nearest(moved):
+        squared = np.sum((moved[:, None, :] - target[None, :, :]) ** 2, axis=2)
+        index = np.argmin(squared, axis=1)
+        return np.sqrt(squared[np.arange(120), index]), index
+
+    for _ in range(30):
+        moved = (R @ source.T).T + t
+        distance, index = nearest(moved)
+        mask = np.ones(120, bool) if bad else distance <= 0.5
+        if np.count_nonzero(mask) < 3:
+            status = "insufficient_matches"
+            break
+        before = moved[mask]
+        after = target[index[mask]]
+        ca = before.mean(axis=0)
+        cb = after.mean(axis=0)
+        A = before - ca
+        B = after - cb
+        angle = np.arctan2(np.sum(A[:, 0] * B[:, 1] - A[:, 1] * B[:, 0]), np.sum(A * B))
+        c, s = np.cos(angle), np.sin(angle)
+        increment = np.array([[c, -s], [s, c]])
+        shift = cb - increment @ ca
+        R, t = increment @ R, increment @ t + shift
+        fresh, _ = nearest((R @ source.T).T + t)
+        objective = np.mean(fresh**2 if bad else np.minimum(fresh**2, 0.25))
+        history.append([objective, np.linalg.norm(shift), abs(angle)])
+        transforms.append(np.column_stack([R, t]))
+        masks.append(mask)
+        if np.linalg.norm(shift) < 1e-9 and abs(angle) < 1e-9:
+            status = "converged"
+            break
+    moved = (R @ source.T).T + t
+    distance, index = nearest(moved)
+    accepted = np.ones(120, bool) if bad else distance <= 0.5
+    error = np.sqrt(
+        np.mean(
+            np.sum(
+                ((R @ clean.T).T + t - ((truth_R @ clean.T).T + truth_t)) ** 2, axis=1
+            )
+        )
+    )
+    rms = np.sqrt(np.mean(distance[accepted] ** 2)) if accepted.any() else 0.0
+    return {
+        "signature": [rms, error, len(history)],
+        "source_points": source,
+        "target_points": target,
+        "clean_source": clean,
+        "true_rotation": truth_R,
+        "true_translation": truth_t,
+        "source_outliers": outliers,
+        "rotation": R,
+        "translation": t,
+        "moved_points": moved,
+        "nearest_indices": index,
+        "distances": distance,
+        "accepted": accepted,
+        "history": np.asarray(history).reshape(-1, 3),
+        "transform_history": transforms,
+        "accepted_history": masks,
+        "solver_status": status,
+    }
+
+def _rp52(p):
+    score = float(p["descriptor_score"])
+    innovation_m = float(p["geometric_residual_m"])
+    bad = bool(p["broken_mode"])
+    truth = np.array(
+        [
+            [0.0, 0.0],
+            [0.5, 0.0],
+            [1.0, 0.0],
+            [1.0, 0.5],
+            [1.0, 1.0],
+            [0.5, 1.0],
+            [0.0, 1.0],
+            [0.0, 0.5],
+            [0.0, 0.0],
+        ]
+    )
+    odometry = np.array(
+        [truth[j + 1] - truth[j] + np.array([0.02, 0.005]) for j in range(8)]
+    )
+    baseline = np.zeros((9, 2))
+    for j in range(8):
+        baseline[j + 1] = baseline[j] + odometry[j]
+    measurement = baseline[-1] - [innovation_m, 0.0]
+    innovation = baseline[-1] - measurement
+    inserted = score >= 0.7 and (np.linalg.norm(innovation) <= 0.3 or bad)
+    stiffness = 1 / (8 * 0.03**2)
+    closure_stiffness = score / 0.08**2
+    shift = 0.0
+    if inserted:
+        shift = -closure_stiffness * innovation_m / (stiffness + closure_stiffness)
+        if not bad and abs(innovation_m + shift) > 0.05:
+            shift = -closure_stiffness * 0.05 / stiffness
+    nodes = baseline.copy()
+    nodes[:, 0] += np.linspace(0, 1, 9) * shift
+    remaining = innovation_m + shift
+    weight = (
+        0.0
+        if not inserted
+        else 1.0
+        if bad or abs(remaining) <= 0.05
+        else 0.05 / abs(remaining)
+    )
+    odom_res = np.diff(nodes, axis=0) - odometry
+    closure_res = nodes[-1] - measurement
+    cost = 0.5 * stiffness * shift * shift
+    if inserted:
+        magnitude = abs(remaining)
+        loss = (
+            0.5 * magnitude * magnitude
+            if bad or magnitude <= 0.05
+            else 0.05 * (magnitude - 0.025)
+        )
+        cost += score * loss / 0.08**2
+    gradient = np.zeros((8, 2))
+    for j in range(8):
+        gradient[j] += odom_res[j] / 0.03**2
+        if j > 0:
+            gradient[j - 1] -= odom_res[j] / 0.03**2
+    if inserted:
+        gradient[-1] += score * weight * closure_res / 0.08**2
+    return {
+        "signature": [score * weight, cost, abs(shift)],
+        "true_nodes": truth,
+        "odometry": odometry,
+        "baseline_nodes": baseline,
+        "optimized_nodes": nodes,
+        "closure_measurement": measurement,
+        "innovation": innovation,
+        "factor_inserted": inserted,
+        "robust_weight": weight,
+        "odometry_residuals": odom_res,
+        "closure_residual": closure_res,
+        "node_displacements": np.linalg.norm(nodes - baseline, axis=1),
+        "gradient": gradient,
+    }
+
+def robotics_perception_reference(number, parameters):
+    return {
+        42: _rp42,
+        43: _rp43,
+        44: _rp44,
+        45: _rp45,
+        46: _rp46,
+        47: _rp47,
+        48: _rp48,
+        52: _rp52,
+    }[number](parameters)

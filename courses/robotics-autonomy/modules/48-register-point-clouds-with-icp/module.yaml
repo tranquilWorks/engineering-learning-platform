@@ -1,10 +1,10 @@
 schema_version: 1
 id: 48-register-point-clouds-with-icp
 number: 48
-title: Register Point Clouds with ICP
-summary: Build a deterministic numerical laboratory to register point clouds with icp, expose its governing relation,
-  and diagnose a named counterexample before recovery.
-guiding_question: What assumptions and evidence make register point clouds with icp defensible?
+title: Iterate Planar Point-Cloud Registration with Outlier Gating
+summary: Iterate planar nearest-neighbour registration and inspect outlier gates, rigid composition and local
+  convergence.
+guiding_question: Why can an ICP run converge with a small residual and still have a wrong transform?
 status: implemented
 tags:
 - robotics-autonomy
@@ -18,7 +18,7 @@ runtime:
 controls:
 - id: initial_offset_m
   type: slider
-  label: Initial translation offset
+  label: Initial horizontal translation
   default: 0.25
   minimum: 0.0
   maximum: 1.5
@@ -26,7 +26,7 @@ controls:
   unit: m
 - id: outlier_fraction
   type: slider
-  label: Point-cloud outliers
+  label: Source clutter fraction
   default: 0.12
   minimum: 0.0
   maximum: 0.7
@@ -41,9 +41,11 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: 'ICP supports only a local registration claim: correspondences, robust weighting, and initialization jointly
-    determine convergence.'
-  reveal: Use the equations, units, and mechanism plot to test the prediction.
+  text: Predict whether a falling nearest-neighbour residual establishes correct registration when initialization
+    is poor or correspondences include clutter.
+  reveal: Nearest-neighbour assignments and rigid fitting optimize a local objective. A wrong correspondence
+    pattern can be self-consistent and produce tiny updates; independent geometry, initialization limits and
+    truth-based evaluation are separate checks.
 - type: controls
   title: Live model controls
 - type: metrics
@@ -64,3 +66,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md
