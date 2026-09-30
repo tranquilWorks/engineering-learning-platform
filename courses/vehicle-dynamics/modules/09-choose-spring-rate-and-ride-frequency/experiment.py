@@ -1,141 +1,363 @@
 from __future__ import annotations
-
 import math
 from typing import Any
 
-PRIMARY = "spring_rate_n_m"
-SECONDARY = "motion_ratio"
-PRIMARY_RANGE = (15000.0, 80000.0)
-SECONDARY_RANGE = (0.6, 1.1)
-FIELDS = [
-    "wheel_rate_n_m",
-    "ride_frequency_hz",
-    "static_deflection_m",
-    "spring_rate_n_m",
-    "motion_ratio",
-    "invalid",
-]
+
+def _linspace(lo, hi, count):
+    return [lo + (hi - lo) * i / (count - 1) for i in range(count)]
 
 
-def _model(a: float, b: float, broken: bool) -> list[float]:
-    spring = a
-    ratio = b
-    sprung = 300.0
-    gravity = 9.81
-    wheel_rate = spring * (ratio if broken else ratio**2)
-    frequency = math.sqrt(wheel_rate / sprung) / (2.0 * math.pi)
-    deflection = sprung * gravity / wheel_rate
-    return [wheel_rate, frequency, deflection, spring, ratio, float(broken)]
+def _trace(name, x, y, xq, xu, yq, yu, mode="lines", color=None):
+    trace = {
+        "type": "scatter",
+        "mode": mode,
+        "name": name,
+        "x": x,
+        "y": y,
+        "meta": {"x_quantity": xq, "x_unit": xu, "y_quantity": yq, "y_unit": yu},
+    }
+    if color:
+        trace["line"] = {"color": color}
+    return trace
 
 
-def _plot(name: str, x: list[float], y: list[float], x_unit: str) -> dict[str, Any]:
-    return {
-        "data": [
-            {"type": "scatter", "mode": "lines+markers", "name": name, "x": x, "y": y}
-        ],
-        "layout": {
-            "title": {"text": "Choose Spring Rate and Ride Frequency"},
-            "xaxis": {"title": x_unit},
-            "yaxis": {"title": "selected response (SI units)"},
-            "uirevision": "keep-view",
+def _wrap_label(text, width=24):
+    lines = []
+    current = ""
+    for word in text.split():
+        if current and len(current) + len(word) + 1 > width:
+            lines.append(current)
+            current = word
+        else:
+            current = (current + " " + word).strip()
+    return "<br>".join(lines + [current])
+
+
+def _plot(title, traces, xq, xu, yq, yu, equal=False):
+    for trace in traces:
+        trace["name"] = _wrap_label(trace["name"], 28)
+    bottom = 105 + len(traces) * 30
+    layout = {
+        "title": {"text": _wrap_label(title), "font": {"size": 13}},
+        "xaxis": {
+            "title": {"text": _wrap_label(f"{xq} ({xu})"), "font": {"size": 11}},
+            "automargin": True,
         },
+        "yaxis": {
+            "title": {"text": _wrap_label(f"{yq} ({yu})"), "font": {"size": 11}},
+            "automargin": True,
+        },
+        "uirevision": "vehicle-quality",
+        "margin": {"l": 78, "r": 24, "t": 62, "b": bottom},
+        "legend": {
+            "orientation": "v",
+            "y": -0.38,
+            "x": 0,
+            "yanchor": "top",
+            "font": {"size": 10},
+        },
+        "height": 310 + bottom,
+    }
+    if equal:
+        layout["yaxis"].update(scaleanchor="x", scaleratio=1)
+    return {
+        "data": traces,
+        "layout": layout,
         "config": {"responsive": True, "displaylogo": False},
     }
 
 
+def _branch_traces(response, prefix=""):
+    traces = []
+    for stable, label in [(True, "Stable branch"), (False, "Formal unstable branch")]:
+        indices = [i for i, flag in enumerate(response["stable"]) if flag == stable]
+        if not indices:
+            continue
+        trace = _trace(
+            prefix + label,
+            [response["x"][i] for i in indices],
+            [response["series"][0][i] for i in indices],
+            response["x_quantity"],
+            response["x_unit"],
+            response["y_quantity"],
+            response["y_unit"],
+        )
+        trace["meta"]["steady_branch_stable"] = stable
+        if not stable:
+            trace["line"] = {"dash": "dash", "color": "#a63d40"}
+        traces.append(trace)
+    return traces
+
+
+def _model(a, b, broken):
+    return _state(a, b, broken)["signature"]
+
+
 def run(parameters: dict[str, Any]) -> dict[str, Any]:
-    primary = float(parameters[PRIMARY])
-    secondary = float(parameters[SECONDARY])
+    a = float(parameters[PRIMARY])
+    b = float(parameters[SECONDARY])
     broken = bool(parameters["broken_mode"])
-    if (
-        not math.isfinite(primary)
-        or not PRIMARY_RANGE[0] <= primary <= PRIMARY_RANGE[1]
-    ):
-        raise ValueError(f"{PRIMARY} outside declared finite range")
-    if (
-        not math.isfinite(secondary)
-        or not SECONDARY_RANGE[0] <= secondary <= SECONDARY_RANGE[1]
-    ):
-        raise ValueError(f"{SECONDARY} outside declared finite range")
-    signature = _model(primary, secondary, broken)
-    if len(signature) != len(FIELDS) or not all(
-        math.isfinite(value) for value in signature
-    ):
-        raise ValueError("model produced an invalid signature")
-    primary_values = [PRIMARY_RANGE[0], 35000.0, PRIMARY_RANGE[1]]
-    secondary_values = [SECONDARY_RANGE[0], 0.9, SECONDARY_RANGE[1]]
-    primary_response = [_model(value, secondary, False)[1] for value in primary_values]
-    secondary_response = [
-        _model(primary, value, False)[1] for value in secondary_values
+    for name, value, bounds in [
+        (PRIMARY, a, PRIMARY_RANGE),
+        (SECONDARY, b, SECONDARY_RANGE),
+    ]:
+        if not math.isfinite(value) or not bounds[0] <= value <= bounds[1]:
+            raise ValueError(f"{name} outside declared finite range")
+    state = _state(a, b, broken)
+    s = state["signature"]
+    nominal = _state(a, b, False)
+    fault = _state(a, b, True)
+    if not all(math.isfinite(v) for v in s):
+        raise ValueError("non-finite model result")
+    response = _response(a, b, broken)
+    xq = response["x_quantity"]
+    xu = response["x_unit"]
+    yq = response["y_quantity"]
+    yu = response["y_unit"]
+    traces = [
+        _trace(name, response["x"], ys, xq, xu, yq, yu)
+        for name, ys in zip(response["names"], response["series"])
     ]
-    failed = _model(primary, secondary, True)
-    recovered = _model(35000.0, 0.9, False)
+    if NUMBER == 4:
+        traces += [
+            _trace(
+                "Applied vector",
+                response["vector_x"],
+                response["vector_y"],
+                xq,
+                xu,
+                yq,
+                yu,
+                "lines+markers",
+            ),
+            _trace(
+                "Requested force",
+                response["requested_x"],
+                response["requested_y"],
+                xq,
+                xu,
+                yq,
+                yu,
+                "markers",
+            ),
+        ]
+    if NUMBER == 8:
+        traces = _branch_traces(response)
+    px = _linspace(*PRIMARY_RANGE, 61)
+    sx = _linspace(*SECONDARY_RANGE, 61)
+    py = [_state(v, b, False)["signature"][P_INDEX] for v in px]
+    sy = [_state(a, v, False)["signature"][S_INDEX] for v in sx]
+    # At the same selected inputs, compare actual curves from the executed fault and nominal model.
+    good = _response(a, b, False)
+    bad = _response(a, b, True)
+    comparison = [
+        _trace("Nominal: " + name, good["x"], ys, xq, xu, yq, yu)
+        for name, ys in zip(good["names"], good["series"])
+    ]
+    comparison += [
+        _trace("Fault: " + name, bad["x"], ys, xq, xu, yq, yu)
+        for name, ys in zip(bad["names"], bad["series"])
+    ]
+    if NUMBER == 4:
+        comparison = [
+            _trace("Friction boundary", good["x"], good["series"][0], xq, xu, yq, yu),
+            _trace(
+                "Projected request",
+                good["vector_x"],
+                good["vector_y"],
+                xq,
+                xu,
+                yq,
+                yu,
+                "lines+markers",
+            ),
+            _trace(
+                "Unprojected request",
+                bad["vector_x"],
+                bad["vector_y"],
+                xq,
+                xu,
+                yq,
+                yu,
+                "lines+markers",
+            ),
+        ]
+    if NUMBER == 8:
+        comparison = _branch_traces(good, "Nominal: ") + _branch_traces(bad, "Fault: ")
+    metrics = [
+        {"id": "input_primary", "label": P_LABEL, "value": a, "unit": P_UNIT},
+        {"id": "input_secondary", "label": S_LABEL, "value": b, "unit": S_UNIT},
+    ]
+    for i, (label, unit, index) in enumerate(METRICS):
+        value = s[index]
+        if (NUMBER == 8 and index == 2 and not state["critical_speed_available"]) or (
+            NUMBER == 10 and index == 4 and not state["time_scale_available"]
+        ):
+            value = "Unavailable"
+        metrics.append(
+            {"id": f"physical_{i}", "label": label, "value": value, "unit": unit}
+        )
+    metrics.append(
+        {
+            "id": "valid",
+            "label": "Declared checks satisfied",
+            "value": not bool(s[-1]),
+            "unit": "boolean",
+        }
+    )
+    if NUMBER == 7:
+        metrics += [
+            {
+                "id": "force_residual",
+                "label": "Force-balance residual",
+                "value": state["force_balance_residual_n"],
+                "unit": "N",
+            },
+            {
+                "id": "moment_residual",
+                "label": "Yaw-moment residual",
+                "value": state["yaw_balance_residual_nm"],
+                "unit": "N·m",
+            },
+        ]
+    changed = (
+        max(
+            abs(x - y)
+            for x, y in zip(nominal["signature"][:-1], fault["signature"][:-1])
+        )
+        > 1e-12
+    )
+    interpretation = f"Wheel rate is {s[0]:.6g} N/m and compression {s[2]:.6g} m. The virtual-work stiffness residual is {state['virtual_work_stiffness_residual_n_m']:.6g} N/m."
     return {
-        "metrics": [
-            {
-                "id": "primary",
-                "label": "Spring rate",
-                "value": primary,
-                "unit": "N/m",
-                "emphasis": "primary",
-            },
-            {
-                "id": "secondary",
-                "label": "Spring-travel / wheel-travel ratio",
-                "value": secondary,
-                "unit": "ratio",
-            },
-            {
-                "id": "valid",
-                "label": "Physical setup valid",
-                "value": not bool(signature[-1]),
-                "unit": "boolean",
-            },
-        ],
+        "metrics": metrics,
         "plots": {
             "response": _plot(
-                "model signature",
-                list(range(len(signature) - 1)),
-                signature[:-1],
-                "signature field index",
+                "Selected physical response",
+                traces,
+                xq,
+                xu,
+                yq,
+                yu,
+                response.get("equal_axes", False),
             ),
-            "primary_sweep": _plot(PRIMARY, primary_values, primary_response, "N/m"),
-            "secondary_sweep": _plot(
-                SECONDARY, secondary_values, secondary_response, "ratio"
-            ),
-            "broken_recovery": {
-                "data": [
-                    {
-                        "type": "bar",
-                        "name": "broken",
-                        "x": FIELDS[:-1],
-                        "y": failed[:-1],
-                    },
-                    {
-                        "type": "bar",
-                        "name": "recovered baseline",
-                        "x": FIELDS[:-1],
-                        "y": recovered[:-1],
-                    },
+            "primary_sweep": _plot(
+                "Vary " + P_LABEL,
+                [
+                    _trace(
+                        "Nominal sweep",
+                        px,
+                        py,
+                        P_LABEL,
+                        P_UNIT,
+                        P_QUANTITY,
+                        P_RESPONSE_UNIT,
+                    )
                 ],
-                "layout": {
-                    "barmode": "group",
-                    "xaxis": {"title": "physical quantity"},
-                    "yaxis": {"title": "SI value"},
-                },
-                "config": {"responsive": True, "displaylogo": False},
-            },
+                P_LABEL,
+                P_UNIT,
+                P_QUANTITY,
+                P_RESPONSE_UNIT,
+            ),
+            "secondary_sweep": _plot(
+                "Vary " + S_LABEL,
+                [
+                    _trace(
+                        "Nominal sweep",
+                        sx,
+                        sy,
+                        S_LABEL,
+                        S_UNIT,
+                        S_QUANTITY,
+                        S_RESPONSE_UNIT,
+                    )
+                ],
+                S_LABEL,
+                S_UNIT,
+                S_QUANTITY,
+                S_RESPONSE_UNIT,
+            ),
+            "broken_recovery": _plot(
+                "Same-input fault comparison",
+                comparison,
+                xq,
+                xu,
+                yq,
+                yu,
+                response.get("equal_axes", False),
+            ),
         },
         "explanations": {
-            "observation": "Wheel rate follows the square of motion ratio, and static load equals wheel rate times static deflection.",
-            "broken": "Broken mode incorrectly omits the squared motion-ratio transformation.",
-            "recovery": "Restore k_w=k_s*i^2 and the baseline spring rate and motion ratio.",
+            "observation": f"{P_LABEL}={a:g} {P_UNIT}; {S_LABEL}={b:g} {S_UNIT}. "
+            + interpretation
+            + " "
+            + LIMIT,
+            "broken": FAULT
+            + ". "
+            + (
+                "The selected inputs expose a numerical difference."
+                if changed
+                else "This input is a benign limit: the two results coincide."
+            ),
+            "recovery": "Disable the fault at the same inputs to restore the declared model. Reset parameters separately to reproduce the worked baseline.",
         },
         "diagnostics": {
-            "item_id": "P09",
-            "signature": signature,
-            "fields": FIELDS,
+            "item_id": f"P{NUMBER:02d}",
+            "signature": s,
             "broken_active": broken,
-            "bounded_points": 3,
+            "physical": state,
+            "response": response,
+            "primary_sweep": {"x": px, "y": py},
+            "secondary_sweep": {"x": sx, "y": sy},
         },
     }
+
+
+NUMBER = 9
+PRIMARY = "spring_rate_n_m"
+SECONDARY = "motion_ratio"
+PRIMARY_RANGE = (15000.0, 80000.0)
+SECONDARY_RANGE = (0.6, 1.1)
+P_LABEL = "Spring Rate"
+S_LABEL = "Motion Ratio"
+P_UNIT = "N/m"
+S_UNIT = "ratio"
+METRICS = [
+    ("Wheel rate", "N/m", 0),
+    ("Ride frequency", "Hz", 1),
+    ("Static compression", "m", 2),
+]
+P_INDEX = 1
+S_INDEX = 1
+P_QUANTITY = "Ride frequency"
+P_RESPONSE_UNIT = "Hz"
+S_QUANTITY = "Ride frequency"
+S_RESPONSE_UNIT = "Hz"
+FAULT = "Use one motion-ratio factor instead of two"
+LIMIT = "Motion ratio is spring displacement divided by wheel displacement."
+
+
+def _state(a, b, broken):
+    wheel = a * (b if broken else b * b)
+    frequency = math.sqrt(wheel / 300.0) / (2 * math.pi)
+    deflection = 300 * 9.81 / wheel
+    residual = wheel - a * b * b
+    s = [wheel, frequency, deflection, a, b, float(abs(residual) > 1e-9)]
+    return dict(
+        signature=s,
+        virtual_work_stiffness_residual_n_m=residual,
+        static_balance_residual_n=wheel * deflection - 300 * 9.81,
+    )
+
+
+def _response(a, b, broken):
+    wheel = _state(a, b, broken)["signature"][0]
+    xs = _linspace(0, 0.20, 61)
+    return dict(
+        x=xs,
+        series=[[wheel * x for x in xs], [300 * 9.81 for x in xs]],
+        names=["Wheel restoring force", "Corner weight"],
+        x_quantity="Wheel compression",
+        x_unit="m",
+        y_quantity="Vertical force",
+        y_unit="N",
+    )

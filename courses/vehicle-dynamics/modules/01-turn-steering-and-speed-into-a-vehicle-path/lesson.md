@@ -1,40 +1,56 @@
-# Turn Steering and Speed into a Vehicle Path
+# Constant-Curvature Paths and Tire-Grip Demand
 
-## Guiding question
+Does doubling speed change the path radius, the yaw rate, or the grip demand?
 
-What physical inputs, observable effects, and failure modes matter when you turn steering and speed into a vehicle path?
+## Physical model
 
-## Physical model, frame, and units
+Use a body frame with forward x, left y and positive counterclockwise yaw. The input is **steering-wheel angle**, not road-wheel angle. Convert degrees to radians, divide by the steering ratio i = 13, and use wheelbase L = 2.57 m:
 
-The vehicle-fixed frame is +x forward, +y left, and positive yaw counter-clockwise from above. Tire forces act on the vehicle. Inputs are `steering_deg` in deg and `speed_mps` in m/s; angle equations convert degrees to radians explicitly.
+δ = (π/180) steering_deg / i; κ = tan(δ)/L; r = Vκ; a_y = Vr = V²κ.
 
-The governing relation is `curvature = tan(steering/ratio)/wheelbase; yaw_rate = speed*curvature; lateral_acceleration = speed*yaw_rate`. The teaching invariant is: **Absolute lateral acceleration cannot exceed mu*g without sliding.** This module has implemented-source comparison provenance. It does not claim MATLAB-runtime equivalence for a source scaffold.
+Curvature κ has units 1/m, yaw rate r has units rad/s, and lateral acceleration has units m/s². The plotted path integrates this constant yaw rate over four seconds: x(t) = sin(rt)/κ and y(t) = [1 − cos(rt)]/κ. At zero curvature the continuous limit is x = Vt, y = 0. Equal horizontal and vertical distance scales preserve the geometry of a turn. No integration of tire slip is hidden behind this curve.
 
-## Predict and sweep one variable at a time
+A separate demand check compares |a_y| with μg = 9.81 m/s². This is a deliberately simple grip budget. Crossing it means the prescribed path cannot be justified by the assumed tire capacity; the plot remains a demanded kinematic path.
 
-First hold `speed_mps` at 15.0 m/s and sweep `steering_deg` through -20.0, 5.0, and 20.0 deg. Restore the baseline, then hold `steering_deg` at 5.0 deg and sweep `speed_mps` through 1.0, 15.0, and 45.0 m/s. Predict sign, monotonicity, and the invariant before running either sweep.
+\[
+\kappa=\frac{\tan\delta}{L},\qquad r=V\kappa,\qquad a_y=V^2\kappa.
+\]
 
-## Named broken behavior and exact recovery
+## Worked baseline
 
-Broken behavior: **Ignoring the friction boundary at high speed.** The invalid flag makes the assumption failure explicit. Recovery: **Reduce steering or speed until |a_y| <= mu*g.** Disable broken mode and restore both default inputs; the deterministic baseline signature must return exactly.
+At 5° steering-wheel angle and 15 m/s, road-wheel angle is 0.00671280 rad. The resulting curvature is 0.00261203 1/m, radius about 382.845 m, yaw rate 0.0391804 rad/s and demand 0.587706 m/s². At the same angle and 30 m/s, curvature stays fixed, yaw rate doubles and demand quadruples to 2.35082 m/s². In four seconds the faster car travels farther along the same circle, so the two visible end points differ even though radius does not.
+
+## Predict and sweep
+
+Before moving a control, write a sign and a trend prediction with units. The two sweep panels always show the **nominal** relationship with the other selected input fixed, even while the fault toggle is active. The response panel follows the selected mode. The comparison panel shows both modes at identical inputs; it is not a time sequence of failure and repair.
+
+1. Hold speed at 15 m/s. Change steering-wheel angle from −20° through 0° to +20°. Predict an odd curvature curve, a straight zero-angle path and mirrored left/right turns. The primary sweep measures curvature, not lateral acceleration.
+2. Restore 5° and vary speed from 1 to 45 m/s. Predict a constant turning radius and quadratic demand. At 45 m/s the nominal demand is about 5.28935 m/s². Read the secondary sweep in m/s² and compare it with the stated grip budget; a rising curve alone does not establish sliding.
+
+## Named broken behavior
+
+The toggle bypasses the 13:1 steering ratio, treating the steering-wheel angle as the road-wheel angle. At the default inputs curvature and yaw rise by approximately thirteenfold, with a slightly different factor because tangent is nonlinear. This is an executed input-conversion error, not an arbitrary multiplier attached to the final acceleration. The comparison shows two actual same-input paths. Even when the faulty path remains below the grip limit, it still fails the declared steering-ratio check. At exactly zero steering both models coincide, so lack of separation there does not prove the conversion correct.
+
+## Exact recovery
+
+Disable the fault without moving either input. Check that the selected response returns to the nominal member of the same-input comparison and explain which governing relation has been restored. Only then use **Reset parameters** to reproduce the worked baseline. Resetting inputs and repairing the model are separate actions; changing both at once prevents a causal comparison.
 
 ## Limits and limiting cases
 
-Kinematic bicycle behavior omits tire compliance and transients. At zero excitation, the associated force, acceleration, yaw, or slip response tends toward zero. At a physical boundary the validity result changes instead of silently presenting infeasible values as valid.
+At zero steer the path is straight and radius is mathematically unbounded; the implementation uses the finite straight-line limit rather than dividing by zero. Steering reversal mirrors the turn. This model omits tire compliance, sideslip, transient steering and body roll. A failed grip check supplies no prediction of the actual sliding trajectory. Positive speeds are required by the controls; extrapolating into reverse motion is outside this lesson.
 
-## Common mistakes and formative checks
+## Common mistakes
 
-- Do not mix degrees and radians, reverse a tire-force convention, or change both controls before assigning causality.
-- Explain every signature field with its units and state the coordinate/sign convention.
-- Derive the expected direction of both sweeps and identify the conserved or bounded quantity.
-- Diagnose the broken assumption, demonstrate exact recovery, and state the model limitation.
+Do not infer equal acceleration from equal curvature. Curvature describes geometry; speed determines the force demand needed to follow it. Do not compare metres, rad/s and m/s² as if they were samples on one response axis.
+
+## Formative checks
+
+At 5° steering, compare 15 and 30 m/s, then repeat at −5°. Record κ, r and a_y with units. Predict which values reverse sign and which ratios remain unchanged. At fixed nonzero steer, activate the ratio fault and explain why passing the grip budget would still be insufficient evidence of a correct steering model.
+
+Check your reasoning: Curvature is unchanged by speed and reverses with steering. Yaw doubles and lateral demand quadruples when speed doubles. All three signed quantities reverse under steering reversal. A sufficient explanation checks both the input conversion and the independent grip budget; it does not call the demanded faulty path a simulated skid.
 
 ## Teach-back checklist
 
-- [ ] I can explain the governing equation and invariant.
-- [ ] I predicted and ran both one-variable sweeps.
-- [ ] I identified the broken behavior and restored the exact baseline.
-- [ ] I can state what this deterministic software-only model does not prove.
+Explain the declared input convention and governing equation before describing the curve. Reproduce the worked calculation with units, account for both one-variable trends, and identify a discriminating fault test. Finish by naming the specific limiting case above and the physical effects omitted by this model. The embedded Course checkpoint asks for evidence and reasoning; no learner score is stored.
 
-This experiment is not measured-vehicle, track, firmware, radio, hardware, HIL, safety, or production evidence.
-
+This is deterministic synthetic teaching evidence, **not measured-vehicle** validation, a MATLAB-runtime comparison, or representative-learner acceptance. The original conversion ledger remains historical. This revision verifies the declared native model and its revised fault independently; it does not claim unchanged full-source equivalence.

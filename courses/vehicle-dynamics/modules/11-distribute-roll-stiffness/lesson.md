@@ -1,57 +1,54 @@
-# Distribute Roll Stiffness
+# Close the Roll-Moment and Axle-Transfer Balance
 
-> **Guiding question:** How does front/rear roll-stiffness distribution allocate lateral load transfer?
+How do total roll stiffness and its front/rear distribution affect different outputs?
 
-## Physical model, frame, and units
+## Physical model
 
-The vehicle-fixed convention is +x forward, +y left, +z upward, and positive yaw counter-clockwise from above. Loads and forces act on the vehicle unless stated otherwise. The independent controls are **Front roll stiffness** (N*m/rad) and **Rear roll stiffness** (N*m/rad). Angles displayed in degrees are converted exactly once before trigonometric use.
+Use lateral acceleration a_y = 7 m/s², mass m = 1320 kg and effective roll arm h = 0.5 m. The imposed roll moment is M = m a_y h = 4620 N·m. For front and rear roll stiffnesses k_f and k_r in N·m/rad, equilibrium is (k_f + k_r)φ = M.
 
-The governing relation is
+Physical axle moments are M_f = k_f φ and M_r = k_r φ. With track t = 1.53 m at both axles, the load shifted from the inner wheel to the outer wheel is ΔF_f = M_f/t and ΔF_r = M_r/t. The resulting outer-minus-inner load difference is twice the shift. This convention avoids an otherwise common factor-of-two error.
 
-`phi=M_roll/(K_phi_f+K_phi_r); DeltaF_f=K_phi_f*phi/t_f; DeltaF_r=K_phi_r*phi/t_r`
+Front moment share is k_f/(k_f + k_r). Total stiffness sets angle; relative stiffness allocates moment. The response plots moment in N·m versus roll angle in degrees, showing the stiffness used by the solver, the physical total stiffness and the imposed moment. The nominal lines coincide because the solver includes both axles.
 
-The teaching invariant is: **Front and rear transfer sum to `M_roll/t`, so their elastic roll moments sum to the applied roll moment.** The implementation is a Python-first native design derived from the reviewed P11 identity and competency. Its source folder was a scaffold; this is not a claim of source or MATLAB-runtime equivalence.
+\[
+\phi=\frac{M}{k_f+k_r},\qquad \Delta F_f=\frac{k_f\phi}{t},\quad \Delta F_r=\frac{k_r\phi}{t}.
+\]
 
-The model applies `M_roll=m*a_y*h` for a 1320 kg vehicle at 7 m/s² lateral acceleration, 0.50 m effective height, and 1.53 m effective track. With one declared track, front plus rear lateral load transfer is exactly `M_roll/t`, while stiffness share decides how much each axle carries. More front share is a handling-balance indicator, not by itself a complete understeer prediction.
+## Worked baseline
 
-## Predict and sweep one variable at a time
+At k_f = 32000 and k_r = 26000 N·m/rad, φ = 4620/58000 = 0.0796552 rad, about 4.564°. Front share is 0.551724. Front and rear load shifts are about 1665.991 and 1353.617 N. Their sum times 1.53 m equals 4620 N·m. The front share exceeds the assumed static front weight fraction 0.53, but this comparison alone is not a complete understeer prediction.
 
-1. Hold `rear_roll_stiffness_n_m_rad` at 26000.0 N*m/rad. Predict the sign, monotonic trend, validity boundary, and invariant, then sweep `front_roll_stiffness_n_m_rad` through 10000.0, 32000.0, and 60000.0 N*m/rad.
-2. Restore `front_roll_stiffness_n_m_rad` to 32000.0 N*m/rad. Hold every other assumption fixed and sweep `rear_roll_stiffness_n_m_rad` through 10000.0, 26000.0, and 60000.0 N*m/rad.
+## Predict and sweep
 
-Changing one physical input at a time distinguishes causality from correlation. The plots expose retained SI quantities rather than a renamed normalized waveform.
+Before moving a control, write a sign and a trend prediction with units. The two sweep panels always show the **nominal** relationship with the other selected input fixed, even while the fault toggle is active. The response panel follows the selected mode. The comparison panel shows both modes at identical inputs; it is not a time sequence of failure and repair.
 
-## Named broken behavior and exact recovery
+1. Hold rear stiffness at 26000 N·m/rad and increase front stiffness from 10000 to 60000. Predict smaller roll angle and larger front moment share. The primary sweep shows angle in radians.
+2. Hold front stiffness at 32000 and increase rear stiffness over its range. Predict smaller roll angle but smaller front share. The secondary sweep displays that dimensionless share. Explain why two changes that both reduce roll can redistribute axle load in opposite directions.
 
-**Broken behavior:** Broken mode gives the rear axle negative roll stiffness and flags the nonphysical allocation. The invalid field is part of the model result, so a finite plot cannot disguise a nonphysical setup.
+## Named broken behavior
 
-**Exact recovery:** Restore positive axle stiffnesses and verify moment conservation. Disable broken mode, restore both defaults, and verify that the deterministic baseline signature returns exactly.
+The toggle omits rear stiffness from the angle solve, using φ = M/k_f. It still evaluates both physical axle moments at that angle. Their sum then exceeds the imposed moment by k_r M/k_f. At defaults the faulty angle is 0.144375 rad and the moment residual is 3753.75 N·m. Positive permitted front stiffness makes this fault nonsingular, so a large residual cannot be dismissed as a numerical division-by-zero artifact.
+
+## Exact recovery
+
+Disable the fault without moving either input. Check that the selected response returns to the nominal member of the same-input comparison and explain which governing relation has been restored. Only then use **Reset parameters** to reproduce the worked baseline. Resetting inputs and repairing the model are separate actions; changing both at once prevents a causal comparison.
 
 ## Limits and limiting cases
 
-The elastic distribution excludes geometric load transfer, roll-center migration, unequal tracks, tire load sensitivity, and transient roll. Scaling both axle stiffnesses together reduces roll angle without changing transfer share; changing only one axle moves the share while total transfer remains fixed. Zero or negative total stiffness is nonphysical and outside the valid setup.
+This quasi-static roll balance uses a fixed effective arm and equal tracks. It omits geometric/unsprung transfer, nonlinear suspension, roll transients, tire load sensitivity and wheel-lift constraints. The original model includes a share-minus-static-front-fraction diagnostic; that is a distribution comparison, not a measured handling verdict. Declared stiffnesses remain positive. A hypothetical zero total stiffness would have no finite static solution under nonzero moment and must not be assigned zero angle.
 
 ## Common mistakes
 
-- Adding axle stiffnesses without first computing the common roll angle.
-- Comparing axle transfer forces without checking their sum and moment residual.
-- Claiming that elastic distribution alone predicts full vehicle balance.
-- Changing two controls simultaneously and attributing the result to one.
-- Treating a steady instructional model as setup, safety, vehicle, or track validation.
+Reducing roll angle is not the same as reducing total lateral load transfer. For fixed imposed moment and equal track, the summed shift is fixed. Do not confuse the inner-to-outer shift with the full wheel-load difference.
 
 ## Formative checks
 
-1. State every input, output, sign, and unit in the governing relation.
-2. Predict both one-variable sweep directions before running them.
-3. Identify the conserved or bounded quantity and verify it numerically.
-4. Name the broken assumption, recover the exact baseline, and state the residual limitation.
+At the defaults verify moment closure and the two axle load shifts. Increase only front stiffness, then only rear stiffness, and compare angle and front share. Activate omission and calculate the extra physical moment. Explain the load-shift factor of two without changing the track definition.
+
+Check your reasoning: Both stiffness increases lower angle, but they move front share in opposite directions. Nominal shifts sum to M/t; omission gives excess moment k_r M/k_f. A complete answer distinguishes stiffness sum, allocation and the shift/difference convention, without claiming a complete understeer model.
 
 ## Teach-back checklist
 
-- [ ] I can answer the guiding question in two or three sentences.
-- [ ] I can derive or explain the governing relation and its units.
-- [ ] I predicted and verified both sweeps.
-- [ ] I diagnosed the named failure and demonstrated exact recovery.
-- [ ] I can state what this deterministic software-only model does not prove.
+Explain the declared input convention and governing equation before describing the curve. Reproduce the worked calculation with units, account for both one-variable trends, and identify a discriminating fault test. Finish by naming the specific limiting case above and the physical effects omitted by this model. The embedded Course checkpoint asks for evidence and reasoning; no learner score is stored.
 
-This module is not measured-vehicle, firmware, radio, bench, track, hardware/HIL, certification, release, or production evidence.
+This is deterministic synthetic teaching evidence, **not measured-vehicle** validation, a MATLAB-runtime comparison, or representative-learner acceptance. The original conversion ledger remains historical. This revision verifies the declared native model and its revised fault independently; it does not claim unchanged full-source equivalence.

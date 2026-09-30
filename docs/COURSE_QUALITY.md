@@ -10,9 +10,15 @@ passed. Its historical evidence retains the exact image and screenshot hashes.
 | DSP/Radar | 84 | 84 checkpoints, ten cumulative portfolios and aggregate authored/software review verified |
 | Controls/GNC | 68 | P36/P38/P42/P43/P45–P51/P55–P57/P60–P62/P64–P68 repaired within declared models; zero listed findings; aggregate reassessment remains blocked |
 | Robotics/Autonomy | 69 | P25–P48, P52 and P68–P69 repaired within declared models; zero listed findings; aggregate reassessment remains blocked |
-| Vehicle Dynamics | 67 | P61–P67 repaired within declared models; P01–P16 presentation findings remain blocked |
+| Vehicle Dynamics | 67 | P01–P12 and P61–P67 repaired within declared models; four P13–P16 findings and aggregate reassessment remain blocked |
 
-## Robotics perception and mapping revision
+## Vehicle foundations revision
+
+Vehicle P01–P12 now display physical response curves, declared units, actual fault/recovery comparisons and twelve authored Course checkpoints. Sixty independent full-mechanism cases, all 96 runtime corners and 24 selected desktop/mobile checks passed; fifteen plot captures were inspected. The P07 steady bicycle model now closes both force and yaw-moment balance. Critical-speed and unstable damping outputs use explicit unavailable semantics.
+
+Four named findings remain, all Vehicle P13–P16. All non-DSP aggregate reviews remain blocked. Final delivery and mandatory sequential gates passed: 290 HTTP modules, 580 browser pages, 280 checkpoint checks, 166 interactions and 168 screenshots. See [batch evidence](evidence/ELP-VEHICLE-FOUNDATIONS-QUALITY-12-2026-09-30.md).
+
+## Historical Robotics perception and mapping revision
 
 Robotics P42-P48/P52 now execute known-pose intrinsic calibration, sampled-image
 corner descriptors, translation consensus, calibrated stereo rays, local pose fitting
@@ -22,7 +28,7 @@ and sixteen selected browser checks passed. Final delivery verified 290 HTTP mod
 580 desktop/mobile pages, 256 checkpoint checks and 144 real interactions/screenshots.
 All mandatory gates passed sequentially; see the [batch evidence](evidence/ELP-ROBOTICS-PERCEPTION-QUALITY-08-2026-09-30.md).
 
-Sixteen named findings remain (Controls 0, Robotics 0, Vehicle 16). All three
+At the Robotics closeout, sixteen named findings remained (Controls 0, Robotics 0, Vehicle 16). All three
 non-DSP aggregate reassessments stay blocked; the register is not exhaustive.
 
 ## Historical Robotics dynamics revision

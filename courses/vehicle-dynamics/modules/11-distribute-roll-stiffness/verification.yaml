@@ -4,23 +4,16 @@
   "provenance": "Python-first native",
   "reference": {
     "path": "../../reference_cases.py",
-    "origin": "separately formulated scalar analytic or bounded numerical oracle",
+    "origin": "One-equation roll solve with physical axle moments",
     "imports_production": false,
     "consumes_production_output": false,
     "tolerance_abs": "1e-10",
-    "fields": [
-      "roll_angle_rad",
-      "front_transfer_n",
-      "rear_transfer_n",
-      "front_share",
-      "moment_residual_n_m",
-      "balance_indicator",
-      "invalid"
-    ]
+    "fields": "ordered signature with per-field units; complete independently calculated physical state and response arrays",
+    "tolerance_rel": "1e-10"
   },
-  "governing_relation": "phi=M_roll/(K_phi_f+K_phi_r); DeltaF_f=K_phi_f*phi/t_f; DeltaF_r=K_phi_r*phi/t_r",
-  "teaching_invariant": "Front and rear transfer sum to M_roll/t, so their elastic roll moments sum to the applied roll moment.",
-  "limitation": "The elastic distribution excludes geometric load transfer, roll-center migration, and tire load sensitivity.",
+  "governing_relation": "One-equation roll solve with physical axle moments",
+  "teaching_invariant": "See lesson Physical model, lesson-specific focused physical identities, and complete independently retained mechanisms.",
+  "limitation": "Load shift is the force transferred from inner to outer wheel; wheel-load difference is twice that shift.",
   "scenarios": [
     {
       "name": "baseline",
@@ -71,9 +64,11 @@
   "unperformed": [
     "MATLAB runtime comparison",
     "learner validation",
-    "browser accessibility",
     "measured vehicle data",
     "firmware/radio/bench/vehicle/track execution",
-    "physical HIL/hardware"
-  ]
+    "physical HIL/hardware",
+    "manual screen-reader review"
+  ],
+  "revision_batch": "ELP-VEHICLE-FOUNDATIONS-QUALITY-12",
+  "historical_conversion": "Original source pins and conversion records remain historical; revised native faults do not claim unchanged full-source equivalence."
 }

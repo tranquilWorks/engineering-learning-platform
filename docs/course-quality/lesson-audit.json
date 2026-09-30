@@ -18880,27 +18880,29 @@
       "course": "vehicle-dynamics",
       "module": "01-turn-steering-and-speed-into-a-vehicle-path",
       "number": 1,
-      "title": "Turn Steering and Speed into a Vehicle Path",
+      "title": "Constant-Curvature Paths and Tire-Grip Demand",
       "path": "courses/vehicle-dynamics/modules/01-turn-steering-and-speed-into-a-vehicle-path",
-      "payload_sha256": "25fa7f5fc551759778e3ab1a40001c465376cafe1b55a06df84534869eb0ec81",
+      "payload_sha256": "ac5823e38cddf0ba703536518ac34d2024405b41d68e3f553637ba03d56e373e",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 387,
+          "word_count": 902,
           "headings": [
-            "Turn Steering and Speed into a Vehicle Path",
-            "Guiding question",
-            "Physical model, frame, and units",
-            "Predict and sweep one variable at a time",
-            "Named broken behavior and exact recovery",
+            "Constant-Curvature Paths and Tire-Grip Demand",
+            "Physical model",
+            "Worked baseline",
+            "Predict and sweep",
+            "Named broken behavior",
+            "Exact recovery",
             "Limits and limiting cases",
-            "Common mistakes and formative checks",
+            "Common mistakes",
+            "Formative checks",
             "Teach-back checklist"
           ]
         },
         "equations": {
           "state": "candidate_text_present",
-          "rendered_math_expected": false
+          "rendered_math_expected": true
         },
         "prediction": {
           "state": "present"
@@ -18908,9 +18910,9 @@
         "controls": {
           "state": "present",
           "labels": [
-            "steering_deg",
-            "speed_mps",
-            "Activate named broken behavior"
+            "Steering-wheel angle",
+            "Speed",
+            "Bypass the 13:1 steering ratio"
           ],
           "units": {
             "steering_deg": "deg",
@@ -18934,6 +18936,8 @@
           "state": "retained_artifacts_require_semantic_review",
           "paths": [
             "courses/vehicle-dynamics/modules/01-turn-steering-and-speed-into-a-vehicle-path/actual.json",
+            "courses/vehicle-dynamics/modules/01-turn-steering-and-speed-into-a-vehicle-path/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/01-turn-steering-and-speed-into-a-vehicle-path/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/01-turn-steering-and-speed-into-a-vehicle-path/expected.json",
             "courses/vehicle-dynamics/modules/01-turn-steering-and-speed-into-a-vehicle-path/verification.yaml"
           ]
@@ -18942,37 +18946,39 @@
           "state": "map_present_requires_semantic_review"
         }
       },
-      "semantic_review": "blocked",
-      "scoped_review": null,
+      "semantic_review": "scoped_model_reviewed",
+      "scoped_review": "Constant-Curvature Paths and Tire-Grip Demand. Trigonometric curvature and independent sinc/half-angle path integration. Full physical state/response arrays and governing identities checked at 1e-10 absolute/relative tolerance. Authored Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and plot-layout checks passed. Kinematics is a demanded path; grip feasibility is a separate check. Aggregate course review remains separate.",
       "assessment_review": null,
-      "known_issue": "The main response chart joins signature quantities with different physical units on one generic SI axis; sweeps also lack a named response/unit. Replace these with physically meaningful curves or separately labeled quantities and specific limiting-case checks.",
+      "known_issue": null,
       "manual_learner_validation": "not_run"
     },
     {
       "course": "vehicle-dynamics",
       "module": "02-relate-acceleration-to-tire-force",
       "number": 2,
-      "title": "Relate Acceleration to Tire Force",
+      "title": "Balance Traction, Road Loads and Acceleration",
       "path": "courses/vehicle-dynamics/modules/02-relate-acceleration-to-tire-force",
-      "payload_sha256": "6678d7965034936e7a1bff6d68db4ca5786c1f434bf7f60f73f81578e72b14e8",
+      "payload_sha256": "3f63fc6c62b569a1407f623870bb2c07dbc4b08ac24f96a300e9b6acf07fafaa",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 383,
+          "word_count": 854,
           "headings": [
-            "Relate Acceleration to Tire Force",
-            "Guiding question",
-            "Physical model, frame, and units",
-            "Predict and sweep one variable at a time",
-            "Named broken behavior and exact recovery",
+            "Balance Traction, Road Loads and Acceleration",
+            "Physical model",
+            "Worked baseline",
+            "Predict and sweep",
+            "Named broken behavior",
+            "Exact recovery",
             "Limits and limiting cases",
-            "Common mistakes and formative checks",
+            "Common mistakes",
+            "Formative checks",
             "Teach-back checklist"
           ]
         },
         "equations": {
           "state": "candidate_text_present",
-          "rendered_math_expected": false
+          "rendered_math_expected": true
         },
         "prediction": {
           "state": "present"
@@ -18980,9 +18986,9 @@
         "controls": {
           "state": "present",
           "labels": [
-            "tractive_force_n",
-            "speed_mps",
-            "Activate named broken behavior"
+            "Tractive Force",
+            "Speed",
+            "Omit rolling resistance and aerodynamic drag"
           ],
           "units": {
             "tractive_force_n": "N",
@@ -19006,6 +19012,8 @@
           "state": "retained_artifacts_require_semantic_review",
           "paths": [
             "courses/vehicle-dynamics/modules/02-relate-acceleration-to-tire-force/actual.json",
+            "courses/vehicle-dynamics/modules/02-relate-acceleration-to-tire-force/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/02-relate-acceleration-to-tire-force/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/02-relate-acceleration-to-tire-force/expected.json",
             "courses/vehicle-dynamics/modules/02-relate-acceleration-to-tire-force/verification.yaml"
           ]
@@ -19014,37 +19022,39 @@
           "state": "map_present_requires_semantic_review"
         }
       },
-      "semantic_review": "blocked",
-      "scoped_review": null,
+      "semantic_review": "scoped_model_reviewed",
+      "scoped_review": "Balance Traction, Road Loads and Acceleration. Signed force vector sum and Newton balance. Full physical state/response arrays and governing identities checked at 1e-10 absolute/relative tolerance. Authored Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and plot-layout checks passed. This is instantaneous force balance at the selected speed, not a start/stop simulation. Aggregate course review remains separate.",
       "assessment_review": null,
-      "known_issue": "The main response chart joins signature quantities with different physical units on one generic SI axis; sweeps also lack a named response/unit. Replace these with physically meaningful curves or separately labeled quantities and specific limiting-case checks.",
+      "known_issue": null,
       "manual_learner_validation": "not_run"
     },
     {
       "course": "vehicle-dynamics",
       "module": "03-see-longitudinal-weight-transfer",
       "number": 3,
-      "title": "See Longitudinal Weight Transfer",
+      "title": "Balance Longitudinal Load Transfer",
       "path": "courses/vehicle-dynamics/modules/03-see-longitudinal-weight-transfer",
-      "payload_sha256": "fafc80b6050dae66be5d1068c042da64c9cfb00d3bce69322f31ee47121129b9",
+      "payload_sha256": "5d42803d5a18f4197415a09e6ce5832cd9b961cbc525e3bc6f7c02178434316d",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 372,
+          "word_count": 826,
           "headings": [
-            "See Longitudinal Weight Transfer",
-            "Guiding question",
-            "Physical model, frame, and units",
-            "Predict and sweep one variable at a time",
-            "Named broken behavior and exact recovery",
+            "Balance Longitudinal Load Transfer",
+            "Physical model",
+            "Worked baseline",
+            "Predict and sweep",
+            "Named broken behavior",
+            "Exact recovery",
             "Limits and limiting cases",
-            "Common mistakes and formative checks",
+            "Common mistakes",
+            "Formative checks",
             "Teach-back checklist"
           ]
         },
         "equations": {
           "state": "candidate_text_present",
-          "rendered_math_expected": false
+          "rendered_math_expected": true
         },
         "prediction": {
           "state": "present"
@@ -19052,9 +19062,9 @@
         "controls": {
           "state": "present",
           "labels": [
-            "acceleration_mps2",
-            "cg_height_m",
-            "Activate named broken behavior"
+            "Longitudinal acceleration",
+            "Centre-of-gravity height",
+            "Ignore the acceleration-induced transfer"
           ],
           "units": {
             "acceleration_mps2": "m/s^2",
@@ -19078,6 +19088,8 @@
           "state": "retained_artifacts_require_semantic_review",
           "paths": [
             "courses/vehicle-dynamics/modules/03-see-longitudinal-weight-transfer/actual.json",
+            "courses/vehicle-dynamics/modules/03-see-longitudinal-weight-transfer/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/03-see-longitudinal-weight-transfer/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/03-see-longitudinal-weight-transfer/expected.json",
             "courses/vehicle-dynamics/modules/03-see-longitudinal-weight-transfer/verification.yaml"
           ]
@@ -19086,37 +19098,39 @@
           "state": "map_present_requires_semantic_review"
         }
       },
-      "semantic_review": "blocked",
-      "scoped_review": null,
+      "semantic_review": "scoped_model_reviewed",
+      "scoped_review": "Balance Longitudinal Load Transfer. Two-by-two reaction and moment balance. Full physical state/response arrays and governing identities checked at 1e-10 absolute/relative tolerance. Authored Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and plot-layout checks passed. Negative predicted normal load means the assumed two-contact equilibrium is infeasible. Aggregate course review remains separate.",
       "assessment_review": null,
-      "known_issue": "The main response chart joins signature quantities with different physical units on one generic SI axis; sweeps also lack a named response/unit. Replace these with physically meaningful curves or separately labeled quantities and specific limiting-case checks.",
+      "known_issue": null,
       "manual_learner_validation": "not_run"
     },
     {
       "course": "vehicle-dynamics",
       "module": "04-use-the-friction-circle",
       "number": 4,
-      "title": "Use the Friction Circle",
+      "title": "Project a Force Request onto the Friction Circle",
       "path": "courses/vehicle-dynamics/modules/04-use-the-friction-circle",
-      "payload_sha256": "3627c0fc87c514a45416c4204f9990383c831fd5b12dbb9daea62aa12eaa5912",
+      "payload_sha256": "91e01369b9e46cfb4b19f97b21aa3ace6d43af6a460db2927b2ddfe35e1966e8",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 365,
+          "word_count": 821,
           "headings": [
-            "Use the Friction Circle",
-            "Guiding question",
-            "Physical model, frame, and units",
-            "Predict and sweep one variable at a time",
-            "Named broken behavior and exact recovery",
+            "Project a Force Request onto the Friction Circle",
+            "Physical model",
+            "Worked baseline",
+            "Predict and sweep",
+            "Named broken behavior",
+            "Exact recovery",
             "Limits and limiting cases",
-            "Common mistakes and formative checks",
+            "Common mistakes",
+            "Formative checks",
             "Teach-back checklist"
           ]
         },
         "equations": {
           "state": "candidate_text_present",
-          "rendered_math_expected": false
+          "rendered_math_expected": true
         },
         "prediction": {
           "state": "present"
@@ -19124,9 +19138,9 @@
         "controls": {
           "state": "present",
           "labels": [
-            "longitudinal_force_n",
-            "lateral_force_n",
-            "Activate named broken behavior"
+            "Longitudinal Force",
+            "Lateral Force",
+            "Bypass the radial force projection"
           ],
           "units": {
             "longitudinal_force_n": "N",
@@ -19150,6 +19164,8 @@
           "state": "retained_artifacts_require_semantic_review",
           "paths": [
             "courses/vehicle-dynamics/modules/04-use-the-friction-circle/actual.json",
+            "courses/vehicle-dynamics/modules/04-use-the-friction-circle/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/04-use-the-friction-circle/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/04-use-the-friction-circle/expected.json",
             "courses/vehicle-dynamics/modules/04-use-the-friction-circle/verification.yaml"
           ]
@@ -19158,37 +19174,39 @@
           "state": "map_present_requires_semantic_review"
         }
       },
-      "semantic_review": "blocked",
-      "scoped_review": null,
+      "semantic_review": "scoped_model_reviewed",
+      "scoped_review": "Project a Force Request onto the Friction Circle. Polar angle and norm projection. Full physical state/response arrays and governing identities checked at 1e-10 absolute/relative tolerance. Authored Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and plot-layout checks passed. Requested and applied utilization are different quantities. Aggregate course review remains separate.",
       "assessment_review": null,
-      "known_issue": "The main response chart joins signature quantities with different physical units on one generic SI axis; sweeps also lack a named response/unit. Replace these with physically meaningful curves or separately labeled quantities and specific limiting-case checks.",
+      "known_issue": null,
       "manual_learner_validation": "not_run"
     },
     {
       "course": "vehicle-dynamics",
       "module": "05-build-slip-ratio-intuition",
       "number": 5,
-      "title": "Build Slip-Ratio Intuition",
+      "title": "Relate Signed Slip Ratio to Tire Force",
       "path": "courses/vehicle-dynamics/modules/05-build-slip-ratio-intuition",
-      "payload_sha256": "113953ce354281345a94ac112a0c364f7a96ca25c4fa2461cbd07ff2071b6f85",
+      "payload_sha256": "bb99f000db51acba935985c5bf0ed4164ba6cbba00e9baf6402e8368701aea02",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 370,
+          "word_count": 808,
           "headings": [
-            "Build Slip-Ratio Intuition",
-            "Guiding question",
-            "Physical model, frame, and units",
-            "Predict and sweep one variable at a time",
-            "Named broken behavior and exact recovery",
+            "Relate Signed Slip Ratio to Tire Force",
+            "Physical model",
+            "Worked baseline",
+            "Predict and sweep",
+            "Named broken behavior",
+            "Exact recovery",
             "Limits and limiting cases",
-            "Common mistakes and formative checks",
+            "Common mistakes",
+            "Formative checks",
             "Teach-back checklist"
           ]
         },
         "equations": {
           "state": "candidate_text_present",
-          "rendered_math_expected": false
+          "rendered_math_expected": true
         },
         "prediction": {
           "state": "present"
@@ -19196,9 +19214,9 @@
         "controls": {
           "state": "present",
           "labels": [
-            "slip_ratio",
-            "normal_load_n",
-            "Activate named broken behavior"
+            "Slip Ratio",
+            "Normal Load",
+            "Reverse the longitudinal tire-force sign"
           ],
           "units": {
             "slip_ratio": "ratio",
@@ -19222,6 +19240,8 @@
           "state": "retained_artifacts_require_semantic_review",
           "paths": [
             "courses/vehicle-dynamics/modules/05-build-slip-ratio-intuition/actual.json",
+            "courses/vehicle-dynamics/modules/05-build-slip-ratio-intuition/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/05-build-slip-ratio-intuition/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/05-build-slip-ratio-intuition/expected.json",
             "courses/vehicle-dynamics/modules/05-build-slip-ratio-intuition/verification.yaml"
           ]
@@ -19230,37 +19250,39 @@
           "state": "map_present_requires_semantic_review"
         }
       },
-      "semantic_review": "blocked",
-      "scoped_review": null,
+      "semantic_review": "scoped_model_reviewed",
+      "scoped_review": "Relate Signed Slip Ratio to Tire Force. Logistic evaluation of signed tire saturation. Full physical state/response arrays and governing identities checked at 1e-10 absolute/relative tolerance. Authored Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and plot-layout checks passed. Positive slip denotes driving; this memoryless law excludes relaxation and thermal state. Aggregate course review remains separate.",
       "assessment_review": null,
-      "known_issue": "The main response chart joins signature quantities with different physical units on one generic SI axis; sweeps also lack a named response/unit. Replace these with physically meaningful curves or separately labeled quantities and specific limiting-case checks.",
+      "known_issue": null,
       "manual_learner_validation": "not_run"
     },
     {
       "course": "vehicle-dynamics",
       "module": "06-build-slip-angle-intuition",
       "number": 6,
-      "title": "Build Slip-Angle Intuition",
+      "title": "Relate Slip-Angle Convention to Lateral Force",
       "path": "courses/vehicle-dynamics/modules/06-build-slip-angle-intuition",
-      "payload_sha256": "b4291cb42cfb16371e899a66a6f7c8fb9fd2e14e0c6ca9337fadf2c7fe6bc9b0",
+      "payload_sha256": "e1fa75012d445d180ff62acaabdde0787c47857015959075cbad40d6a44e4461",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 369,
+          "word_count": 784,
           "headings": [
-            "Build Slip-Angle Intuition",
-            "Guiding question",
-            "Physical model, frame, and units",
-            "Predict and sweep one variable at a time",
-            "Named broken behavior and exact recovery",
+            "Relate Slip-Angle Convention to Lateral Force",
+            "Physical model",
+            "Worked baseline",
+            "Predict and sweep",
+            "Named broken behavior",
+            "Exact recovery",
             "Limits and limiting cases",
-            "Common mistakes and formative checks",
+            "Common mistakes",
+            "Formative checks",
             "Teach-back checklist"
           ]
         },
         "equations": {
           "state": "candidate_text_present",
-          "rendered_math_expected": false
+          "rendered_math_expected": true
         },
         "prediction": {
           "state": "present"
@@ -19268,9 +19290,9 @@
         "controls": {
           "state": "present",
           "labels": [
-            "slip_angle_deg",
-            "normal_load_n",
-            "Activate named broken behavior"
+            "Slip Angle",
+            "Normal Load",
+            "Reverse the lateral tire-force sign"
           ],
           "units": {
             "slip_angle_deg": "deg",
@@ -19294,6 +19316,8 @@
           "state": "retained_artifacts_require_semantic_review",
           "paths": [
             "courses/vehicle-dynamics/modules/06-build-slip-angle-intuition/actual.json",
+            "courses/vehicle-dynamics/modules/06-build-slip-angle-intuition/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/06-build-slip-angle-intuition/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/06-build-slip-angle-intuition/expected.json",
             "courses/vehicle-dynamics/modules/06-build-slip-angle-intuition/verification.yaml"
           ]
@@ -19302,37 +19326,39 @@
           "state": "map_present_requires_semantic_review"
         }
       },
-      "semantic_review": "blocked",
-      "scoped_review": null,
+      "semantic_review": "scoped_model_reviewed",
+      "scoped_review": "Relate Slip-Angle Convention to Lateral Force. Logistic evaluation with opposite slip convention and degree conversion. Full physical state/response arrays and governing identities checked at 1e-10 absolute/relative tolerance. Authored Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and plot-layout checks passed. Here slip is velocity direction minus wheel direction, so restoring force has the opposite sign. Aggregate course review remains separate.",
       "assessment_review": null,
-      "known_issue": "The main response chart joins signature quantities with different physical units on one generic SI axis; sweeps also lack a named response/unit. Replace these with physically meaningful curves or separately labeled quantities and specific limiting-case checks.",
+      "known_issue": null,
       "manual_learner_validation": "not_run"
     },
     {
       "course": "vehicle-dynamics",
       "module": "07-use-the-bicycle-model",
       "number": 7,
-      "title": "Use the Bicycle Model",
+      "title": "Solve and Check Steady Bicycle Equilibrium",
       "path": "courses/vehicle-dynamics/modules/07-use-the-bicycle-model",
-      "payload_sha256": "ca988655aa16bf70bd9b312067a7aad51d3b3557f50b7c62ff293725a1d257e0",
+      "payload_sha256": "65df5761e074103980e573ec58dd2b3ec42be5712c1d2486c28471f91fb48071",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 385,
+          "word_count": 912,
           "headings": [
-            "Use the Bicycle Model",
-            "Guiding question",
-            "Physical model, frame, and units",
-            "Predict and sweep one variable at a time",
-            "Named broken behavior and exact recovery",
+            "Solve and Check Steady Bicycle Equilibrium",
+            "Physical model",
+            "Worked baseline",
+            "Predict and sweep",
+            "Named broken behavior",
+            "Exact recovery",
             "Limits and limiting cases",
-            "Common mistakes and formative checks",
+            "Common mistakes",
+            "Formative checks",
             "Teach-back checklist"
           ]
         },
         "equations": {
-          "state": "review_required",
-          "rendered_math_expected": false
+          "state": "candidate_text_present",
+          "rendered_math_expected": true
         },
         "prediction": {
           "state": "present"
@@ -19340,9 +19366,9 @@
         "controls": {
           "state": "present",
           "labels": [
-            "steering_deg",
-            "speed_mps",
-            "Activate named broken behavior"
+            "Road-wheel steer",
+            "Speed",
+            "Use inconsistent speed factors in the equilibrium matrix"
           ],
           "units": {
             "steering_deg": "deg",
@@ -19366,6 +19392,8 @@
           "state": "retained_artifacts_require_semantic_review",
           "paths": [
             "courses/vehicle-dynamics/modules/07-use-the-bicycle-model/actual.json",
+            "courses/vehicle-dynamics/modules/07-use-the-bicycle-model/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/07-use-the-bicycle-model/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/07-use-the-bicycle-model/expected.json",
             "courses/vehicle-dynamics/modules/07-use-the-bicycle-model/verification.yaml"
           ]
@@ -19374,37 +19402,39 @@
           "state": "map_present_requires_semantic_review"
         }
       },
-      "semantic_review": "blocked",
-      "scoped_review": null,
+      "semantic_review": "scoped_model_reviewed",
+      "scoped_review": "Solve and Check Steady Bicycle Equilibrium. Force/moment shares before tire compatibility; factorized historical fault matrix. Full physical state/response arrays and governing identities checked at 1e-10 absolute/relative tolerance. Authored Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and plot-layout checks passed. Force and moment residuals test equations; small-angle validity separately tests the approximation. Aggregate course review remains separate.",
       "assessment_review": null,
-      "known_issue": "The main response chart joins signature quantities with different physical units on one generic SI axis; sweeps also lack a named response/unit. Replace these with physically meaningful curves or separately labeled quantities and specific limiting-case checks.",
+      "known_issue": null,
       "manual_learner_validation": "not_run"
     },
     {
       "course": "vehicle-dynamics",
       "module": "08-separate-understeer-from-oversteer",
       "number": 8,
-      "title": "Separate Understeer from Oversteer",
+      "title": "Interpret Understeer and Critical-Speed Boundaries",
       "path": "courses/vehicle-dynamics/modules/08-separate-understeer-from-oversteer",
-      "payload_sha256": "d632826b91d492caa63bf0c8789fc2d76d15fbe09284f0a8432dcf8b171faedb",
+      "payload_sha256": "5365d16295a6b8c09e5c20f3f2e2af6512d6bbad0423780002244111c73b5008",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 372,
+          "word_count": 908,
           "headings": [
-            "Separate Understeer from Oversteer",
-            "Guiding question",
-            "Physical model, frame, and units",
-            "Predict and sweep one variable at a time",
-            "Named broken behavior and exact recovery",
+            "Interpret Understeer and Critical-Speed Boundaries",
+            "Physical model",
+            "Worked baseline",
+            "Predict and sweep",
+            "Named broken behavior",
+            "Exact recovery",
             "Limits and limiting cases",
-            "Common mistakes and formative checks",
+            "Common mistakes",
+            "Formative checks",
             "Teach-back checklist"
           ]
         },
         "equations": {
           "state": "candidate_text_present",
-          "rendered_math_expected": false
+          "rendered_math_expected": true
         },
         "prediction": {
           "state": "present"
@@ -19412,9 +19442,9 @@
         "controls": {
           "state": "present",
           "labels": [
-            "front_cornering_stiffness_n_rad",
-            "rear_cornering_stiffness_n_rad",
-            "Activate named broken behavior"
+            "Front Cornering Stiffness",
+            "Rear Cornering Stiffness",
+            "Omit tire compliance from steering demand"
           ],
           "units": {
             "front_cornering_stiffness_n_rad": "N/rad",
@@ -19438,6 +19468,8 @@
           "state": "retained_artifacts_require_semantic_review",
           "paths": [
             "courses/vehicle-dynamics/modules/08-separate-understeer-from-oversteer/actual.json",
+            "courses/vehicle-dynamics/modules/08-separate-understeer-from-oversteer/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/08-separate-understeer-from-oversteer/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/08-separate-understeer-from-oversteer/expected.json",
             "courses/vehicle-dynamics/modules/08-separate-understeer-from-oversteer/verification.yaml"
           ]
@@ -19446,28 +19478,30 @@
           "state": "map_present_requires_semantic_review"
         }
       },
-      "semantic_review": "blocked",
-      "scoped_review": null,
+      "semantic_review": "scoped_model_reviewed",
+      "scoped_review": "Interpret Understeer and Critical-Speed Boundaries. Static axle weights divided by stiffness; critical boundary and stable mask. Full physical state/response arrays and governing identities checked at 1e-10 absolute/relative tolerance. Authored Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and plot-layout checks passed. A formal steady branch at or above oversteer critical speed is not a stable operating point. Aggregate course review remains separate.",
       "assessment_review": null,
-      "known_issue": "The main response chart joins signature quantities with different physical units on one generic SI axis; sweeps also lack a named response/unit. Replace these with physically meaningful curves or separately labeled quantities and specific limiting-case checks.",
+      "known_issue": null,
       "manual_learner_validation": "not_run"
     },
     {
       "course": "vehicle-dynamics",
       "module": "09-choose-spring-rate-and-ride-frequency",
       "number": 9,
-      "title": "Choose Spring Rate and Ride Frequency",
+      "title": "Derive Wheel Rate from Suspension Motion Ratio",
       "path": "courses/vehicle-dynamics/modules/09-choose-spring-rate-and-ride-frequency",
-      "payload_sha256": "cbe36c481eccb61a1967ee0d63a6165eb4a6d909af598ef5d4250dce94bf596f",
+      "payload_sha256": "495bc32510730376c71d06983a8d9147b18b663cdc9d08c39b6e8787db3ecc85",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 562,
+          "word_count": 821,
           "headings": [
-            "Choose Spring Rate and Ride Frequency",
-            "Physical model, frame, and units",
-            "Predict and sweep one variable at a time",
-            "Named broken behavior and exact recovery",
+            "Derive Wheel Rate from Suspension Motion Ratio",
+            "Physical model",
+            "Worked baseline",
+            "Predict and sweep",
+            "Named broken behavior",
+            "Exact recovery",
             "Limits and limiting cases",
             "Common mistakes",
             "Formative checks",
@@ -19476,7 +19510,7 @@
         },
         "equations": {
           "state": "candidate_text_present",
-          "rendered_math_expected": false
+          "rendered_math_expected": true
         },
         "prediction": {
           "state": "present"
@@ -19484,9 +19518,9 @@
         "controls": {
           "state": "present",
           "labels": [
-            "Spring rate",
-            "Spring-travel / wheel-travel ratio",
-            "Activate the named broken behavior"
+            "Spring Rate",
+            "Motion Ratio",
+            "Use one motion-ratio factor instead of two"
           ],
           "units": {
             "spring_rate_n_m": "N/m",
@@ -19510,6 +19544,8 @@
           "state": "retained_artifacts_require_semantic_review",
           "paths": [
             "courses/vehicle-dynamics/modules/09-choose-spring-rate-and-ride-frequency/actual.json",
+            "courses/vehicle-dynamics/modules/09-choose-spring-rate-and-ride-frequency/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/09-choose-spring-rate-and-ride-frequency/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/09-choose-spring-rate-and-ride-frequency/expected.json",
             "courses/vehicle-dynamics/modules/09-choose-spring-rate-and-ride-frequency/verification.yaml"
           ]
@@ -19518,28 +19554,30 @@
           "state": "map_present_requires_semantic_review"
         }
       },
-      "semantic_review": "blocked",
-      "scoped_review": null,
+      "semantic_review": "scoped_model_reviewed",
+      "scoped_review": "Derive Wheel Rate from Suspension Motion Ratio. Unit-displacement virtual work. Full physical state/response arrays and governing identities checked at 1e-10 absolute/relative tolerance. Authored Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and plot-layout checks passed. Motion ratio is spring displacement divided by wheel displacement. Aggregate course review remains separate.",
       "assessment_review": null,
-      "known_issue": "The main response chart joins signature quantities with different physical units on one generic SI axis; sweeps also lack a named response/unit. Replace these with physically meaningful curves or separately labeled quantities and specific limiting-case checks.",
+      "known_issue": null,
       "manual_learner_validation": "not_run"
     },
     {
       "course": "vehicle-dynamics",
       "module": "10-see-damping-change-transient-motion",
       "number": 10,
-      "title": "See Damping Change Transient Motion",
+      "title": "Observe a Second-Order Suspension Transient",
       "path": "courses/vehicle-dynamics/modules/10-see-damping-change-transient-motion",
-      "payload_sha256": "77892940b64caa1e96fd09da6a196041d9fd328a9379753a415d4b318f9d13f7",
+      "payload_sha256": "3c67f91e30d8cdd59467f02bb8e88bbb4f665656b643b137332faf0cd12366a7",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 561,
+          "word_count": 938,
           "headings": [
-            "See Damping Change Transient Motion",
-            "Physical model, frame, and units",
-            "Predict and sweep one variable at a time",
-            "Named broken behavior and exact recovery",
+            "Observe a Second-Order Suspension Transient",
+            "Physical model",
+            "Worked baseline",
+            "Predict and sweep",
+            "Named broken behavior",
+            "Exact recovery",
             "Limits and limiting cases",
             "Common mistakes",
             "Formative checks",
@@ -19548,7 +19586,7 @@
         },
         "equations": {
           "state": "candidate_text_present",
-          "rendered_math_expected": false
+          "rendered_math_expected": true
         },
         "prediction": {
           "state": "present"
@@ -19556,9 +19594,9 @@
         "controls": {
           "state": "present",
           "labels": [
-            "Damper coefficient",
-            "Wheel rate",
-            "Activate the named broken behavior"
+            "Damping",
+            "Spring Rate",
+            "Reverse the viscous damping sign"
           ],
           "units": {
             "damping_n_s_m": "N*s/m",
@@ -19582,6 +19620,8 @@
           "state": "retained_artifacts_require_semantic_review",
           "paths": [
             "courses/vehicle-dynamics/modules/10-see-damping-change-transient-motion/actual.json",
+            "courses/vehicle-dynamics/modules/10-see-damping-change-transient-motion/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/10-see-damping-change-transient-motion/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/10-see-damping-change-transient-motion/expected.json",
             "courses/vehicle-dynamics/modules/10-see-damping-change-transient-motion/verification.yaml"
           ]
@@ -19590,28 +19630,30 @@
           "state": "map_present_requires_semantic_review"
         }
       },
-      "semantic_review": "blocked",
-      "scoped_review": null,
+      "semantic_review": "scoped_model_reviewed",
+      "scoped_review": "Observe a Second-Order Suspension Transient. Independent state-transition matrix exponential and eigenvalues. Full physical state/response arrays and governing identities checked at 1e-10 absolute/relative tolerance. Authored Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and plot-layout checks passed. Four pole time constants is a time-scale estimate, not a measured universal settling time. Aggregate course review remains separate.",
       "assessment_review": null,
-      "known_issue": "The main response chart joins signature quantities with different physical units on one generic SI axis; sweeps also lack a named response/unit. Replace these with physically meaningful curves or separately labeled quantities and specific limiting-case checks.",
+      "known_issue": null,
       "manual_learner_validation": "not_run"
     },
     {
       "course": "vehicle-dynamics",
       "module": "11-distribute-roll-stiffness",
       "number": 11,
-      "title": "Distribute Roll Stiffness",
+      "title": "Close the Roll-Moment and Axle-Transfer Balance",
       "path": "courses/vehicle-dynamics/modules/11-distribute-roll-stiffness",
-      "payload_sha256": "e98cfd7aa029711f1f18dbc513fd43db67cc09f88d76809a93711a37a6341825",
+      "payload_sha256": "b14a0b2b633d20eaa0ba53f29463abb6830191beb7f14bbcadb8c99df009307a",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 581,
+          "word_count": 829,
           "headings": [
-            "Distribute Roll Stiffness",
-            "Physical model, frame, and units",
-            "Predict and sweep one variable at a time",
-            "Named broken behavior and exact recovery",
+            "Close the Roll-Moment and Axle-Transfer Balance",
+            "Physical model",
+            "Worked baseline",
+            "Predict and sweep",
+            "Named broken behavior",
+            "Exact recovery",
             "Limits and limiting cases",
             "Common mistakes",
             "Formative checks",
@@ -19620,7 +19662,7 @@
         },
         "equations": {
           "state": "candidate_text_present",
-          "rendered_math_expected": false
+          "rendered_math_expected": true
         },
         "prediction": {
           "state": "present"
@@ -19628,9 +19670,9 @@
         "controls": {
           "state": "present",
           "labels": [
-            "Front roll stiffness",
-            "Rear roll stiffness",
-            "Activate the named broken behavior"
+            "Front Roll Stiffness",
+            "Rear Roll Stiffness",
+            "Omit rear stiffness from the roll-angle solve"
           ],
           "units": {
             "front_roll_stiffness_n_m_rad": "N*m/rad",
@@ -19654,6 +19696,8 @@
           "state": "retained_artifacts_require_semantic_review",
           "paths": [
             "courses/vehicle-dynamics/modules/11-distribute-roll-stiffness/actual.json",
+            "courses/vehicle-dynamics/modules/11-distribute-roll-stiffness/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/11-distribute-roll-stiffness/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/11-distribute-roll-stiffness/expected.json",
             "courses/vehicle-dynamics/modules/11-distribute-roll-stiffness/verification.yaml"
           ]
@@ -19662,28 +19706,30 @@
           "state": "map_present_requires_semantic_review"
         }
       },
-      "semantic_review": "blocked",
-      "scoped_review": null,
+      "semantic_review": "scoped_model_reviewed",
+      "scoped_review": "Close the Roll-Moment and Axle-Transfer Balance. One-equation roll solve with physical axle moments. Full physical state/response arrays and governing identities checked at 1e-10 absolute/relative tolerance. Authored Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and plot-layout checks passed. Load shift is the force transferred from inner to outer wheel; wheel-load difference is twice that shift. Aggregate course review remains separate.",
       "assessment_review": null,
-      "known_issue": "The main response chart joins signature quantities with different physical units on one generic SI axis; sweeps also lack a named response/unit. Replace these with physically meaningful curves or separately labeled quantities and specific limiting-case checks.",
+      "known_issue": null,
       "manual_learner_validation": "not_run"
     },
     {
       "course": "vehicle-dynamics",
       "module": "12-explore-camber-and-toe-geometry",
       "number": 12,
-      "title": "Explore Camber and Toe Geometry",
+      "title": "Estimate Camber Thrust and Toe Scrub",
       "path": "courses/vehicle-dynamics/modules/12-explore-camber-and-toe-geometry",
-      "payload_sha256": "206a3704c7d9d6acc99583255be80da74c2bcd6b7c47c3539198e801c0e1cbd9",
+      "payload_sha256": "513eee6e68e2cbb1a925a2852a5e4634ccb4059d451712d8cb94024dbdaa5299",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 567,
+          "word_count": 839,
           "headings": [
-            "Explore Camber and Toe Geometry",
-            "Physical model, frame, and units",
-            "Predict and sweep one variable at a time",
-            "Named broken behavior and exact recovery",
+            "Estimate Camber Thrust and Toe Scrub",
+            "Physical model",
+            "Worked baseline",
+            "Predict and sweep",
+            "Named broken behavior",
+            "Exact recovery",
             "Limits and limiting cases",
             "Common mistakes",
             "Formative checks",
@@ -19692,7 +19738,7 @@
         },
         "equations": {
           "state": "candidate_text_present",
-          "rendered_math_expected": false
+          "rendered_math_expected": true
         },
         "prediction": {
           "state": "present"
@@ -19700,9 +19746,9 @@
         "controls": {
           "state": "present",
           "labels": [
-            "Camber angle",
-            "Toe angle",
-            "Activate the named broken behavior"
+            "Camber",
+            "Toe",
+            "Treat degree inputs as radians"
           ],
           "units": {
             "camber_deg": "deg",
@@ -19726,6 +19772,8 @@
           "state": "retained_artifacts_require_semantic_review",
           "paths": [
             "courses/vehicle-dynamics/modules/12-explore-camber-and-toe-geometry/actual.json",
+            "courses/vehicle-dynamics/modules/12-explore-camber-and-toe-geometry/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/12-explore-camber-and-toe-geometry/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/12-explore-camber-and-toe-geometry/expected.json",
             "courses/vehicle-dynamics/modules/12-explore-camber-and-toe-geometry/verification.yaml"
           ]
@@ -19734,10 +19782,10 @@
           "state": "map_present_requires_semantic_review"
         }
       },
-      "semantic_review": "blocked",
-      "scoped_review": null,
+      "semantic_review": "scoped_model_reviewed",
+      "scoped_review": "Estimate Camber Thrust and Toe Scrub. Independent sine/cosine toe ratio and dimensional angle conversion. Full physical state/response arrays and governing identities checked at 1e-10 absolute/relative tolerance. Authored Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and plot-layout checks passed. This is an empirical force/power estimate, not suspension-geometry or tire-temperature simulation. Aggregate course review remains separate.",
       "assessment_review": null,
-      "known_issue": "The main response chart joins signature quantities with different physical units on one generic SI axis; sweeps also lack a named response/unit. Replace these with physically meaningful curves or separately labeled quantities and specific limiting-case checks.",
+      "known_issue": null,
       "manual_learner_validation": "not_run"
     },
     {

@@ -4,15 +4,16 @@
   "provenance": "Python-first native",
   "reference": {
     "path": "../../reference_cases.py",
-    "origin": "separately formulated scalar analytic oracle",
+    "origin": "Two-by-two reaction and moment balance",
     "imports_production": false,
     "consumes_production_output": false,
     "tolerance_abs": "1e-10",
-    "fields": "ordered finite SI signature"
+    "fields": "ordered signature with per-field units; complete independently calculated physical state and response arrays",
+    "tolerance_rel": "1e-10"
   },
-  "governing_relation": "load transfer = mass*acceleration*CG height/wheelbase",
-  "teaching_invariant": "Front plus rear axle load remains mass*g.",
-  "limitation": "Quasi-static pitch omits suspension compliance and pitch inertia.",
+  "governing_relation": "Two-by-two reaction and moment balance",
+  "teaching_invariant": "See lesson Physical model, lesson-specific focused physical identities, and complete independently retained mechanisms.",
+  "limitation": "Negative predicted normal load means the assumed two-contact equilibrium is infeasible.",
   "scenarios": [
     {
       "name": "baseline",
@@ -63,10 +64,11 @@
   "unperformed": [
     "MATLAB runtime comparison",
     "learner validation",
-    "browser accessibility",
     "measured vehicle data",
     "firmware/radio/bench/vehicle/track execution",
-    "physical HIL/hardware"
-  ]
+    "physical HIL/hardware",
+    "manual screen-reader review"
+  ],
+  "revision_batch": "ELP-VEHICLE-FOUNDATIONS-QUALITY-12",
+  "historical_conversion": "Original source pins and conversion records remain historical; revised native faults do not claim unchanged full-source equivalence."
 }
-

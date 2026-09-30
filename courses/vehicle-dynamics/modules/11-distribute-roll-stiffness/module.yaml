@@ -2,9 +2,9 @@
   "schema_version": 1,
   "id": "11-distribute-roll-stiffness",
   "number": 11,
-  "title": "Distribute Roll Stiffness",
-  "summary": "Allocate a conserved lateral load transfer between axles using front and rear elastic roll stiffness.",
-  "guiding_question": "How does front/rear roll-stiffness distribution allocate lateral load transfer?",
+  "title": "Close the Roll-Moment and Axle-Transfer Balance",
+  "summary": "How do total roll stiffness and its front/rear distribution affect different outputs?",
+  "guiding_question": "How do total roll stiffness and its front/rear distribution affect different outputs?",
   "status": "implemented",
   "tags": [
     "vehicle-dynamics",
@@ -21,29 +21,29 @@
     {
       "id": "front_roll_stiffness_n_m_rad",
       "type": "slider",
-      "label": "Front roll stiffness",
+      "label": "Front Roll Stiffness",
       "default": 32000.0,
       "minimum": 10000.0,
       "maximum": 60000.0,
       "step": 2500.0,
       "unit": "N*m/rad",
-      "description": "Change the primary physical input while holding the secondary input fixed."
+      "description": "Select front roll stiffness in N*m/rad; the other input stays fixed."
     },
     {
       "id": "rear_roll_stiffness_n_m_rad",
       "type": "slider",
-      "label": "Rear roll stiffness",
+      "label": "Rear Roll Stiffness",
       "default": 26000.0,
       "minimum": 10000.0,
       "maximum": 60000.0,
       "step": 2500.0,
       "unit": "N*m/rad",
-      "description": "Change the secondary physical input while holding the primary input fixed."
+      "description": "Select rear roll stiffness in N*m/rad; the other input stays fixed."
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Activate the named broken behavior",
+      "label": "Omit rear stiffness from the roll-angle solve",
       "default": false
     }
   ],
@@ -55,8 +55,8 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Predict the sign, trend, conserved quantity, and validity boundary before changing one input.",
-      "reveal": "Use the governing relation, then verify one variable at a time."
+      "text": "How do total roll stiffness and its front/rear distribution affect different outputs?",
+      "reveal": "Both stiffness increases lower angle, but they move front share in opposite directions. Nominal shifts sum to M/t; omission gives excess moment k_r M/k_f. A complete answer distinguishes stiffness sum, allocation and the shift/difference convention, without claiming a complete understeer model."
     },
     {
       "type": "controls",
@@ -72,7 +72,7 @@
     },
     {
       "type": "plot_grid",
-      "title": "One-variable sweeps",
+      "title": "Nominal one-variable sweeps",
       "plots": [
         "primary_sweep",
         "secondary_sweep"
@@ -100,6 +100,11 @@
       "tone": "success",
       "title": "Recovery",
       "source": "recovery"
+    },
+    {
+      "type": "markdown",
+      "title": "Course checkpoint",
+      "source": "assessment.md"
     }
   ]
 }

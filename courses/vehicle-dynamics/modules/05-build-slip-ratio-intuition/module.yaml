@@ -2,9 +2,9 @@
   "schema_version": 1,
   "id": "05-build-slip-ratio-intuition",
   "number": 5,
-  "title": "Build Slip-Ratio Intuition",
-  "summary": "A bounded deterministic vehicle model with two sweeps and named failure/recovery.",
-  "guiding_question": "What physical inputs and limits matter when you build slip-ratio intuition?",
+  "title": "Relate Signed Slip Ratio to Tire Force",
+  "summary": "Why does more normal load increase force capacity without changing the initial slip stiffness here?",
+  "guiding_question": "Why does more normal load increase force capacity without changing the initial slip stiffness here?",
   "status": "implemented",
   "tags": [
     "vehicle-dynamics",
@@ -21,29 +21,29 @@
     {
       "id": "slip_ratio",
       "type": "slider",
-      "label": "slip_ratio",
+      "label": "Slip Ratio",
       "default": 0.08,
       "minimum": -0.3,
       "maximum": 0.3,
       "step": 0.03,
       "unit": "ratio",
-      "description": "Change one physical input while holding the other fixed."
+      "description": "Select slip ratio in ratio; the other input stays fixed."
     },
     {
       "id": "normal_load_n",
       "type": "slider",
-      "label": "normal_load_n",
+      "label": "Normal Load",
       "default": 3600.0,
       "minimum": 1000.0,
       "maximum": 6000.0,
       "step": 250.0,
       "unit": "N",
-      "description": "Change one physical input while holding the other fixed."
+      "description": "Select normal load in N; the other input stays fixed."
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Activate named broken behavior",
+      "label": "Reverse the longitudinal tire-force sign",
       "default": false
     }
   ],
@@ -55,8 +55,8 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Predict sign, trend, and boundary before changing one input.",
-      "reveal": "Use the governing equation, then verify one variable at a time."
+      "text": "Why does more normal load increase force capacity without changing the initial slip stiffness here?",
+      "reveal": "The initial slope is approximately 85000 N per unit slip, whereas the larger-slip points bend toward ±3780 N. The sign-reversed curve remains odd and bounded but violates the declared force/slip sign. Zero slip gives zero force at every allowed load, so a nonzero test is essential."
     },
     {
       "type": "controls",
@@ -72,7 +72,7 @@
     },
     {
       "type": "plot_grid",
-      "title": "One-variable sweeps",
+      "title": "Nominal one-variable sweeps",
       "plots": [
         "primary_sweep",
         "secondary_sweep"
@@ -100,7 +100,11 @@
       "tone": "success",
       "title": "Recovery",
       "source": "recovery"
+    },
+    {
+      "type": "markdown",
+      "title": "Course checkpoint",
+      "source": "assessment.md"
     }
   ]
 }
-

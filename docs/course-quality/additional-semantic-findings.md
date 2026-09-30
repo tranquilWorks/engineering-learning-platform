@@ -1,32 +1,11 @@
 # Additional direct-review findings
 
-The wider delivery audit recorded sixty additional lessons beyond the initial
-capstone repair. Forty-four are now closed within their declared synthetic
-models: twelve in PR55, twelve in the navigation/geometry revision, twelve in
-the Robotics dynamics revision and eight in the Robotics perception revision.
-Sixteen remain, all Vehicle P01-P16 (Controls 0, Robotics 0, Vehicle 16).
-This register is not exhaustive; all three non-DSP aggregate course reviews
-remain blocked, including courses with zero listed findings.
+The wider delivery audit recorded sixty additional lessons beyond the initial capstone repair. Fifty-six now have scoped repairs: twelve Controls, twelve navigation/geometry, twenty Robotics and twelve Vehicle foundations lessons. Four named findings remain, all Vehicle P13–P16 (Controls 0, Robotics 0, Vehicle 4). The register is not exhaustive; all three non-DSP aggregate numerical, curriculum and capstone reassessments remain blocked.
 
-The last sixteen findings were exposed when restored axis labels made the
-Vehicle P01–P16 mixed-unit signature charts visible during screenshot review.
-Their physical models are not all rejected; their dimensional presentation and
-lesson-specific checks require repair.
+The selected Vehicle P01–P12 closures include a corrected P07 force/moment equilibrium, physical response curves with consistent units, meaningful executed faults and individually authored browser checkpoints. The separate numerical/selected-browser evidence precedes these closures. Complete final delivery and mandatory sequential gates subsequently passed; see vehicle-foundations-verification-summary.json.
 
-| Course / lesson | Directly inspected gap |
+| Course / lesson | Remaining directly inspected gap |
 | --- | --- |
-| vehicle-dynamics P01 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
-| vehicle-dynamics P02 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
-| vehicle-dynamics P03 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
-| vehicle-dynamics P04 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
-| vehicle-dynamics P05 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
-| vehicle-dynamics P06 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
-| vehicle-dynamics P07 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
-| vehicle-dynamics P08 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
-| vehicle-dynamics P09 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
-| vehicle-dynamics P10 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
-| vehicle-dynamics P11 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
-| vehicle-dynamics P12 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
 | vehicle-dynamics P13 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
 | vehicle-dynamics P14 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
 | vehicle-dynamics P15 | Main response joins heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
@@ -39,10 +18,7 @@ was screened and its final performance/capstone group inspected directly.
 The earlier DSP fidelity evidence remains retained. Static presence and these
 targeted inspections do not certify every pedagogical claim in all 288 lessons.
 
-The owner-requested twenty Robotics findings are now repaired in two scoped
-groups. Vehicle P01-P16 and the three non-DSP aggregate reassessments remain
-separate work; this revision activates neither. Preserve unrelated models,
-source pins and prerequisite identities in any future revision.
+The twenty Robotics findings are repaired. The owner-authorized Vehicle revision proceeds as twelve plus four: P01–P12 have selected verified closures; P13–P16 follow only after the first verified merge and a fresh exact-baseline contract. All non-DSP aggregate reassessments remain separate and blocked.
 
 ## Closed by ELP-GNC-SEMANTIC-QUALITY-12
 
@@ -119,3 +95,22 @@ The original findings below are retained. Closure covers the executed synthetic 
 | robotics-autonomy P47 | Occupancy and entropy metrics are formulas of beam count and probability rather than ray updates on an occupancy grid. |
 | robotics-autonomy P48 | ICP residual, transform error and iteration count are algebraic surrogates; no point correspondence or registration iteration is executed. |
 | robotics-autonomy P52 | Appearance and geometry gates execute, but map deformation is a fixed-factor residual formula rather than a recomputed graph solution. |
+
+## Closed by ELP-VEHICLE-FOUNDATIONS-QUALITY-12
+
+Each selected lesson now has five independent full-mechanism comparisons, lesson-specific physical checks, all runtime corners, an embedded checkpoint and baked desktop/mobile evidence. P07 additionally fixes the inconsistent speed factors that previously violated both equilibrium equations. Original source/conversion records remain historical; revised native faults do not claim unchanged full-source equivalence.
+
+| Course / lesson | Original finding, now repaired |
+| --- | --- |
+| vehicle-dynamics P01 | Original chart joined heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
+| vehicle-dynamics P02 | Original chart joined heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
+| vehicle-dynamics P03 | Original chart joined heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
+| vehicle-dynamics P04 | Original chart joined heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
+| vehicle-dynamics P05 | Original chart joined heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
+| vehicle-dynamics P06 | Original chart joined heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
+| vehicle-dynamics P07 | Original chart joined heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
+| vehicle-dynamics P08 | Original chart joined heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
+| vehicle-dynamics P09 | Original chart joined heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
+| vehicle-dynamics P10 | Original chart joined heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
+| vehicle-dynamics P11 | Original chart joined heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |
+| vehicle-dynamics P12 | Original chart joined heterogeneous signature values on a generic SI axis; sweep response units and specific limiting checks need revision. |

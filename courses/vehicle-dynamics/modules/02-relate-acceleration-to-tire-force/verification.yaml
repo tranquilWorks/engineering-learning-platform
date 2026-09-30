@@ -1,18 +1,19 @@
 {
   "schema_version": 1,
   "item_id": "P02",
-  "provenance": "implemented-source comparison",
+  "provenance": "source-derived nominal; revised Python-first native fault",
   "reference": {
     "path": "../../reference_cases.py",
-    "origin": "separately formulated scalar analytic oracle",
+    "origin": "Signed force vector sum and Newton balance",
     "imports_production": false,
     "consumes_production_output": false,
     "tolerance_abs": "1e-10",
-    "fields": "ordered finite SI signature"
+    "fields": "ordered signature with per-field units; complete independently calculated physical state and response arrays",
+    "tolerance_rel": "1e-10"
   },
-  "governing_relation": "acceleration = (tractive force - rolling resistance - aerodynamic drag)/mass",
-  "teaching_invariant": "Applied tire force is bounded by mu*m*g and drag grows with speed squared.",
-  "limitation": "The point-mass model omits gearing and rotating inertia.",
+  "governing_relation": "Signed force vector sum and Newton balance",
+  "teaching_invariant": "See lesson Physical model, lesson-specific focused physical identities, and complete independently retained mechanisms.",
+  "limitation": "This is instantaneous force balance at the selected speed, not a start/stop simulation.",
   "scenarios": [
     {
       "name": "baseline",
@@ -63,10 +64,11 @@
   "unperformed": [
     "MATLAB runtime comparison",
     "learner validation",
-    "browser accessibility",
     "measured vehicle data",
     "firmware/radio/bench/vehicle/track execution",
-    "physical HIL/hardware"
-  ]
+    "physical HIL/hardware",
+    "manual screen-reader review"
+  ],
+  "revision_batch": "ELP-VEHICLE-FOUNDATIONS-QUALITY-12",
+  "historical_conversion": "Original source pins and conversion records remain historical; revised native faults do not claim unchanged full-source equivalence."
 }
-

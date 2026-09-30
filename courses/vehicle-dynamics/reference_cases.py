@@ -3,202 +3,56 @@ from __future__ import annotations
 # Independent scalar oracle: imports no production experiment and consumes no production result.
 import math
 
+import numpy as np
+from scipy.linalg import expm
+
 
 def _p01(a: float, b: float, broken: bool) -> list[float]:
-    delta = math.radians(a)
-    speed = b
-    L = 2.57
-    ratio = 13.0
-    mu = 1.0
-    curvature = math.tan(delta / ratio) / L
-    yaw = speed * curvature
-    ay = speed * yaw
-    limit = mu * 9.81
-    if broken:
-        ay *= 1.35
-    return [curvature, yaw, ay, limit, float(abs(ay) > limit)]
+    return _vehicle_reference_state(1, a, b, broken)["signature"]
 
 
 def _p02(a: float, b: float, broken: bool) -> list[float]:
-    request = a
-    speed = b
-    mass = 1320.0
-    mu = 1.0
-    rolling = 0.015 * mass * 9.81
-    drag = 0.5 * 1.225 * 0.31 * 2.0 * speed**2
-    limit = mu * mass * 9.81
-    applied = request if broken else min(request, limit)
-    accel = (applied - rolling - drag) / mass
-    return [applied, rolling, drag, accel, limit, float(request > limit)]
+    return _vehicle_reference_state(2, a, b, broken)["signature"]
 
 
 def _p03(a: float, b: float, broken: bool) -> list[float]:
-    accel = a
-    height = b
-    mass = 1320.0
-    g = 9.81
-    L = 2.57
-    front0 = 0.53 * mass * g
-    transfer = mass * accel * height / L
-    front = front0 - transfer
-    rear = mass * g - front
-    if broken:
-        front -= 0.65 * mass * g
-        rear = mass * g - front
-    return [front, rear, transfer, front + rear, float(min(front, rear) < 0)]
+    return _vehicle_reference_state(3, a, b, broken)["signature"]
 
 
 def _p04(a: float, b: float, broken: bool) -> list[float]:
-    fx = a
-    fy = b
-    capacity = 1.05 * 3600.0
-    use = math.hypot(fx, fy) / capacity
-    scale = 1.0 if broken or use <= 1 else 1 / use
-    return [fx * scale, fy * scale, use, capacity, float(use > 1)]
+    return _vehicle_reference_state(4, a, b, broken)["signature"]
 
 
 def _p05(a: float, b: float, broken: bool) -> list[float]:
-    kappa = a
-    load = b
-    mu = 1.05
-    stiffness = 85000.0
-    force = mu * load * math.tanh(stiffness * kappa / (mu * load))
-    if broken:
-        force = -force
-    return [kappa, force, mu * load, stiffness, float(broken)]
+    return _vehicle_reference_state(5, a, b, broken)["signature"]
 
 
 def _p06(a: float, b: float, broken: bool) -> list[float]:
-    alpha = math.radians(a)
-    load = b
-    mu = 1.05
-    stiffness = 78000.0
-    force = -mu * load * math.tanh(stiffness * alpha / (mu * load))
-    if broken:
-        force = -force
-    return [alpha, force, mu * load, stiffness, float(broken)]
+    return _vehicle_reference_state(6, a, b, broken)["signature"]
 
 
 def _p07(a: float, b: float, broken: bool) -> list[float]:
-    delta = math.radians(a)
-    speed = b
-    mass = 1320.0
-    lf = 1.15
-    lr = 1.42
-    cf = 90000.0
-    cr = 100000.0
-    aa = -(cf + cr) / speed
-    ab = (-lf * cf + lr * cr) / speed - mass * speed
-    ba = -lf * cf + lr * cr
-    bb = -(lf**2 * cf + lr**2 * cr)
-    det = aa * bb - ab * ba
-    q1 = -cf * delta
-    q2 = -lf * cf * delta
-    beta = (q1 * bb - ab * q2) / det
-    yaw = (aa * q2 - q1 * ba) / det
-    af = delta - beta - lf * yaw / speed
-    ar = -beta + lr * yaw / speed
-    invalid = max(abs(af), abs(ar), abs(delta)) > math.radians(8) or broken
-    return [beta, yaw, af, ar, mass * speed * yaw, float(invalid)]
+    return _vehicle_reference_state(7, a, b, broken)["signature"]
 
 
 def _p08(a: float, b: float, broken: bool) -> list[float]:
-    cf = a
-    cr = b
-    mass = 1320.0
-    lf = 1.15
-    lr = 1.42
-    L = lf + lr
-    speed = 25.0
-    k = mass / L * (lr / cf - lf / cr)
-    critical = math.sqrt(-L / k) if k < 0 else 0.0
-    denominator = L + k * speed**2
-    if broken and k < 0:
-        speed = max(speed, critical * 1.05)
-        denominator = L + k * speed**2
-    return [
-        k,
-        math.degrees(k * 9.81),
-        critical,
-        speed,
-        denominator,
-        float(denominator <= 0),
-    ]
+    return _vehicle_reference_state(8, a, b, broken)["signature"]
 
 
 def _p09(a: float, b: float, broken: bool) -> list[float]:
-    sprung_mass = 300.0
-    effective_rate = a * (b if broken else b * b)
-    angular_frequency = (effective_rate / sprung_mass) ** 0.5
-    static_travel = sprung_mass * 9.81 / effective_rate
-    return [
-        effective_rate,
-        angular_frequency / (2.0 * math.pi),
-        static_travel,
-        a,
-        b,
-        float(broken),
-    ]
+    return _vehicle_reference_state(9, a, b, broken)["signature"]
 
 
 def _p10(a: float, b: float, broken: bool) -> list[float]:
-    mass = 300.0
-    coefficient = -a if broken else a
-    natural_rad_s = (b / mass) ** 0.5
-    critical = 2.0 * (b * mass) ** 0.5
-    ratio = coefficient / critical
-    damped_hz = natural_rad_s * max(0.0, 1.0 - ratio * ratio) ** 0.5 / (2.0 * math.pi)
-    if 0.0 < ratio < 1.0:
-        overshoot = math.exp(-math.pi * ratio / (1.0 - ratio * ratio) ** 0.5)
-    else:
-        overshoot = 0.0 if ratio >= 1.0 else 1.0
-    settling = 4.0 / (ratio * natural_rad_s) if ratio > 0.0 else 0.0
-    return [
-        natural_rad_s / (2.0 * math.pi),
-        ratio,
-        damped_hz,
-        overshoot,
-        settling,
-        ratio * natural_rad_s,
-        float(ratio <= 0.0),
-    ]
+    return _vehicle_reference_state(10, a, b, broken)["signature"]
 
 
 def _p11(a: float, b: float, broken: bool) -> list[float]:
-    rear_rate = -b if broken else b
-    applied_moment = 1320.0 * 7.0 * 0.50
-    rate_sum = a + rear_rate
-    roll_angle = applied_moment / rate_sum if abs(rate_sum) > 1e-12 else 0.0
-    front_force_delta = a * roll_angle / 1.53
-    rear_force_delta = rear_rate * roll_angle / 1.53
-    front_moment = front_force_delta * 1.53
-    rear_moment = rear_force_delta * 1.53
-    front_fraction = front_moment / applied_moment
-    return [
-        roll_angle,
-        front_force_delta,
-        rear_force_delta,
-        front_fraction,
-        front_moment + rear_moment - applied_moment,
-        front_fraction - 0.53,
-        float(a <= 0.0 or rear_rate <= 0.0 or rate_sum <= 0.0),
-    ]
+    return _vehicle_reference_state(11, a, b, broken)["signature"]
 
 
 def _p12(a: float, b: float, broken: bool) -> list[float]:
-    gamma = a if broken else a * math.pi / 180.0
-    toe = b if broken else b * math.pi / 180.0
-    lateral_force = -60000.0 * gamma
-    parasitic_force = 3600.0 * abs(math.sin(toe) / math.cos(toe))
-    return [
-        gamma,
-        toe,
-        lateral_force,
-        parasitic_force,
-        parasitic_force * 20.0,
-        toe,
-        float(broken),
-    ]
+    return _vehicle_reference_state(12, a, b, broken)["signature"]
 
 
 def _p13(a: float, b: float, broken: bool) -> list[float]:
@@ -706,3 +560,363 @@ def evaluate(
     item_id: str, primary: float, secondary: float, broken: bool = False
 ) -> list[float]:
     return _MODELS[item_id](float(primary), float(secondary), bool(broken))
+
+
+# Independent full-mechanism formulations for the selected quality revision.
+def _vehicle_reference_state(n, a, b, fault):
+    if n == 1:
+        angle = a * math.pi / (180 * (1 if fault else 13))
+        radius_inverse = math.sin(angle) / (2.57 * math.cos(angle))
+        angular = b * radius_inverse
+        lateral = b**2 * radius_inverse
+        declared = math.sin(a * math.pi / 2340) / (2.57 * math.cos(a * math.pi / 2340))
+        error = radius_inverse - declared
+        s = [
+            radius_inverse,
+            angular,
+            lateral,
+            9.81,
+            float(abs(lateral) > 9.81 or abs(error) > 1e-12),
+        ]
+        return dict(
+            signature=s,
+            road_angle_rad=angle,
+            steering_relation_residual_per_m=error,
+            grip_feasible=abs(lateral) <= 9.81,
+            yaw_identity_residual=lateral - b * angular,
+        )
+    if n == 2:
+        weight = 1320 * 9.81
+        rolling = weight * 0.015
+        aerodynamic = 1.225 * 0.31 * b * b
+        tire = min(a, weight)
+        actual_loads = np.array([tire, -rolling, -aerodynamic])
+        acceleration = float(np.sum(actual_loads[:1] if fault else actual_loads) / 1320)
+        residual = 1320 * acceleration - float(np.sum(actual_loads))
+        return dict(
+            signature=[
+                tire,
+                rolling,
+                aerodynamic,
+                acceleration,
+                weight,
+                float(abs(residual) > 1e-9),
+            ],
+            net_force_n=1320 * acceleration,
+            force_balance_residual_n=residual,
+            requested_force_n=a,
+            traction_limited=a > weight,
+        )
+    if n == 3:
+        weight = 12949.2
+        demand = 1320 * a * b / 2.57
+        shift = 0 if fault else demand
+        # Sum of reactions and pitch moment determine the two loads independently.
+        front, rear = np.linalg.solve(
+            [[1, 1], [0, 2.57]], [weight, 0.47 * weight * 2.57 + shift * 2.57]
+        )
+        residual = (rear - 0.47 * weight) * 2.57 - 1320 * a * b
+        return dict(
+            signature=[
+                float(front),
+                float(rear),
+                demand,
+                float(front + rear),
+                float(min(front, rear) < 0 or abs(residual) > 1e-8),
+            ],
+            applied_transfer_n=shift,
+            pitch_balance_residual_nm=float(residual),
+            weight_balance_residual_n=float(front + rear - weight),
+            contact_feasible=bool(min(front, rear) >= 0),
+        )
+    if n == 4:
+        cap = 3780.0
+        length = float(np.linalg.norm([a, b]))
+        applied = length if fault else min(length, cap)
+        angle = math.atan2(b, a)
+        fx = applied * math.cos(angle)
+        fy = applied * math.sin(angle)
+        if length == 0:
+            fx = fy = 0.0
+        scale = applied / length if length else 1.0
+        return dict(
+            signature=[fx, fy, length / cap, cap, float(applied > cap + 1e-9)],
+            applied_utilization=applied / cap,
+            scale=scale,
+            direction_cross_residual=(fx / cap) * (b / cap) - (fy / cap) * (a / cap),
+            requested_feasible=length <= cap,
+        )
+    if n in (5, 6):
+        slip = a if n == 5 else a * math.pi / 180
+        stiffness = 85000.0 if n == 5 else 78000.0
+        capacity = b * 1.05
+        # Logistic form independently evaluates the saturating constitutive law.
+        z = stiffness * slip / capacity
+        e = math.exp(-2 * abs(z))
+        saturation = math.copysign((1 - e) / (1 + e), z)
+        sign = (1 if n == 5 else -1) * (-1 if fault else 1)
+        force = sign * capacity * saturation
+        invalid = force * slip < -1e-10 if n == 5 else force * slip > 1e-10
+        d = dict(
+            signature=[slip, force, capacity, stiffness, float(invalid)],
+            utilization=abs(force) / capacity,
+            signed_work_indicator=force * slip,
+        )
+        d["initial_slope_n" if n == 5 else "initial_slope_n_per_rad"] = sign * stiffness
+        return d
+    if n == 7:
+        steer = a * math.pi / 180
+        speed = b
+        mass = 1320.0
+        f = 1.15
+        rear_arm = 1.42
+        length = f + rear_arm
+        cf = 90000.0
+        cr = 100000.0
+        if not fault:
+            # Moment balance first fixes axle force shares. Tire compatibility then fixes yaw.
+            yaw = steer / (
+                length / speed + mass * speed / length * (rear_arm / cf - f / cr)
+            )
+            front_force = mass * speed * yaw * rear_arm / length
+            rear_force = mass * speed * yaw * f / length
+            beta = rear_arm * yaw / speed - rear_force / cr
+        else:
+            # Explicit historical fault equations, independently solved by factorization.
+            matrix = np.array(
+                [
+                    [190000 / speed, mass * speed - 38500 / speed],
+                    [-38500, 1.15**2 * 90000 + 1.42**2 * 100000],
+                ]
+            )
+            beta, yaw = np.linalg.solve(matrix, [cf * steer, cf * f * steer])
+        af = steer - beta - f * yaw / speed
+        ar = -beta + rear_arm * yaw / speed
+        front_force = cf * af
+        rear_force = cr * ar
+        force_residual = front_force + rear_force - mass * speed * yaw
+        moment_residual = f * front_force - rear_arm * rear_force
+        small = max(abs(af), abs(ar), abs(steer), abs(beta)) <= 8 * math.pi / 180
+        s = [
+            float(beta),
+            float(yaw),
+            float(af),
+            float(ar),
+            float(mass * speed * yaw),
+            float(not small or max(abs(force_residual), abs(moment_residual)) > 1e-6),
+        ]
+        return dict(
+            signature=s,
+            front_force_n=float(front_force),
+            rear_force_n=float(rear_force),
+            force_balance_residual_n=float(force_residual),
+            yaw_balance_residual_nm=float(moment_residual),
+            small_angle_valid=bool(small),
+        )
+    if n == 8:
+        front_weight = 1320 * 9.81 * 1.42 / 2.57
+        rear_weight = 1320 * 9.81 * 1.15 / 2.57
+        coefficient = (front_weight / a - rear_weight / b) / 9.81
+        available = coefficient < -1e-14
+        critical = math.sqrt(2.57 / -coefficient) if available else 0.0
+        physical = 2.57 + coefficient * 625.0
+        used = 2.57 if fault else physical
+        error = used - physical
+        return dict(
+            signature=[
+                coefficient,
+                coefficient * 9.81 * 180 / math.pi,
+                critical,
+                25.0,
+                used,
+                float(physical <= 0 or abs(error) > 1e-10),
+            ],
+            physical_denominator_m=physical,
+            compliance_residual_m=error,
+            critical_speed_available=available,
+            steady_branch_stable=physical > 0,
+        )
+    if n == 9:
+        # A unit wheel displacement produces spring displacement r and wheel force r*k*r.
+        wheel_force = a * b * (1.0 if fault else b)
+        compression = 2943.0 / wheel_force
+        freq = math.sqrt(wheel_force / 300) / (2 * math.pi)
+        error = wheel_force - a * b * b
+        return dict(
+            signature=[wheel_force, freq, compression, a, b, float(abs(error) > 1e-9)],
+            virtual_work_stiffness_residual_n_m=error,
+            static_balance_residual_n=wheel_force * compression - 2943.0,
+        )
+    if n == 10:
+        c = -a if fault else a
+        mass = 300.0
+        natural = math.sqrt(b / mass)
+        poles = np.linalg.eigvals([[0.0, 1.0], [-b / mass, -c / mass]])
+        decay = c / (2 * mass)
+        damping = decay / natural
+        slow = -float(max(p.real for p in poles)) if decay > 0 else decay
+        damped = float(max(abs(p.imag) for p in poles)) / (2 * math.pi)
+        if abs(decay * decay - b / mass) < 1e-12:
+            slow = decay
+            damped = 0.0
+        over = (
+            math.exp(-math.pi * damping / math.sqrt(1 - damping * damping))
+            if 0 < damping < 1
+            else (0.0 if damping >= 1 else 1.0)
+        )
+        return dict(
+            signature=[
+                natural / (2 * math.pi),
+                damping,
+                damped,
+                over,
+                4 / slow if slow > 0 else 0.0,
+                decay,
+                float(decay <= 0),
+            ],
+            damping_n_s_m=c,
+            slow_decay_rate_per_s=slow,
+            stable=decay > 0,
+            overshoot_available=decay > 0,
+            time_scale_available=decay > 0,
+        )
+    if n == 11:
+        moment = 4620.0
+        angle = float(np.linalg.solve([[a if fault else a + b]], [moment])[0])
+        mf = a * angle
+        mr = b * angle
+        front = mf / 1.53
+        rear = mr / 1.53
+        residual = mf + mr - moment
+        share = mf / moment
+        return dict(
+            signature=[
+                angle,
+                front,
+                rear,
+                share,
+                residual,
+                share - 0.53,
+                float(abs(residual) > 1e-8),
+            ],
+            front_moment_nm=mf,
+            rear_moment_nm=mr,
+            imposed_moment_nm=moment,
+            constitutive_total_nm=(a + b) * angle,
+        )
+    if n == 12:
+        factor = 1 if fault else math.pi / 180
+        gamma = a * factor
+        toe = b * factor
+        thrust = -60000 * gamma
+        scrub = 3600 * abs(math.sin(toe) / math.cos(toe))
+        power = scrub * 20
+        cg = gamma - a * math.pi / 180
+        ct = toe - b * math.pi / 180
+        return dict(
+            signature=[
+                gamma,
+                toe,
+                thrust,
+                scrub,
+                power,
+                toe,
+                float(max(abs(cg), abs(ct)) > 1e-12),
+            ],
+            camber_conversion_residual_rad=cg,
+            toe_conversion_residual_rad=ct,
+            power_identity_residual_w=power - 20 * scrub,
+        )
+    raise ValueError(n)
+
+def _vehicle_reference_response(n, a, b, fault):
+    state = lambda x, y: _vehicle_reference_state(n, x, y, fault)["signature"]
+    if n == 1:
+        times = np.linspace(0, 4, 81)
+        yaw = state(a, b)[1]
+        theta = yaw * times
+        x = b * times * np.sinc(theta / np.pi)
+        y = b * times * (theta / 2) * np.sinc(theta / (2 * np.pi)) ** 2
+        return dict(x=x.tolist(), series=[y.tolist()], time_s=times.tolist())
+    if n == 2:
+        s = state(a, b)
+        return dict(
+            x=["Traction", "Rolling", "Drag", "Model net"],
+            series=[[s[0], -s[1], -s[2], 1320 * s[3]]],
+        )
+    if n == 3:
+        x = np.linspace(-9, 9, 61).tolist()
+        vals = [state(v, b) for v in x]
+        return dict(x=x, series=[[v[0] for v in vals], [v[1] for v in vals]])
+    if n == 4:
+        angles = np.linspace(0, 2 * np.pi, 121)
+        s = state(a, b)
+        return dict(
+            x=(3780 * np.cos(angles)).tolist(),
+            series=[(3780 * np.sin(angles)).tolist()],
+            vector_x=[0.0, s[0]],
+            vector_y=[0.0, s[1]],
+            requested_x=[a],
+            requested_y=[b],
+        )
+    if n in (5, 6, 7, 12):
+        lo, hi, count, index = {
+            5: (-0.3, 0.3, 81, 1),
+            6: (-14, 14, 81, 1),
+            7: (3, 40, 81, 1),
+            12: (-5, 2, 61, 2),
+        }[n]
+        x = np.linspace(lo, hi, count).tolist()
+        vals = [state(a, v)[index] if n == 7 else state(v, b)[index] for v in x]
+        return dict(x=x, series=[vals])
+    if n == 8:
+        k = state(a, b)[0]
+        used = 0 if fault else k
+        x = np.linspace(5, 60, 81)
+        return dict(
+            x=x.tolist(),
+            series=[np.rad2deg(2.57 / x**2 + used).tolist()],
+            stable=(2.57 + k * x * x > 0).tolist(),
+        )
+    if n == 9:
+        x = np.linspace(0, 0.2, 61)
+        wheel = state(a, b)[0]
+        return dict(x=x.tolist(), series=[(x * wheel).tolist(), [2943.0] * len(x)])
+    if n == 10:
+        m = 300.0
+        c = -a if fault else a
+        matrix = np.array([[0.0, 1.0], [-b / m, -c / m]])
+        growth = max(np.linalg.eigvals([[0.0, 1.0], [-b / m, a / m]]).real)
+        times = np.linspace(0, min(8.0, 3 / float(growth)), 121)
+        states = np.array([expm(matrix * t) @ np.array([-0.01, 0.0]) for t in times])
+        x = states[:, 0] + 0.01
+        v = states[:, 1]
+        acc = (b * (0.01 - x) - c * v) / m
+        energy = np.einsum("ij,jk,ik->i", states, np.diag([b, m]), states) / 2
+        return dict(
+            x=times.tolist(),
+            series=[x.tolist()],
+            velocity_m_s=v.tolist(),
+            acceleration_m_s2=acc.tolist(),
+            energy_j=energy.tolist(),
+            energy_rate_w=(-c * v * v).tolist(),
+        )
+    if n == 11:
+        x = np.linspace(0, 12, 61)
+        r = np.deg2rad(x)
+        used = a if fault else a + b
+        return dict(
+            x=x.tolist(),
+            series=[(used * r).tolist(), ((a + b) * r).tolist(), [4620.0] * len(x)],
+        )
+    raise ValueError(n)
+
+def vehicle_foundations_reference(number, primary, secondary, broken=False):
+    return {
+        "physical": _vehicle_reference_state(
+            number, float(primary), float(secondary), bool(broken)
+        ),
+        "response": _vehicle_reference_response(
+            number, float(primary), float(secondary), bool(broken)
+        ),
+    }

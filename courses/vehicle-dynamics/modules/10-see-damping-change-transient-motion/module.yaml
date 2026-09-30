@@ -2,9 +2,9 @@
   "schema_version": 1,
   "id": "10-see-damping-change-transient-motion",
   "number": 10,
-  "title": "See Damping Change Transient Motion",
-  "summary": "Connect wheel rate and damper coefficient to modal frequency, damping ratio, overshoot, decay, and settling time.",
-  "guiding_question": "How does damping ratio change overshoot, decay rate, and settling time?",
+  "title": "Observe a Second-Order Suspension Transient",
+  "summary": "Does more damping always shorten the response, and what changes when damping becomes negative?",
+  "guiding_question": "Does more damping always shorten the response, and what changes when damping becomes negative?",
   "status": "implemented",
   "tags": [
     "vehicle-dynamics",
@@ -21,29 +21,29 @@
     {
       "id": "damping_n_s_m",
       "type": "slider",
-      "label": "Damper coefficient",
+      "label": "Damping",
       "default": 3200.0,
       "minimum": 400.0,
       "maximum": 8000.0,
       "step": 200.0,
       "unit": "N*s/m",
-      "description": "Change the primary physical input while holding the secondary input fixed."
+      "description": "Select damping in N*s/m; the other input stays fixed."
     },
     {
       "id": "spring_rate_n_m",
       "type": "slider",
-      "label": "Wheel rate",
+      "label": "Spring Rate",
       "default": 35000.0,
       "minimum": 15000.0,
       "maximum": 70000.0,
       "step": 2500.0,
       "unit": "N/m",
-      "description": "Change the secondary physical input while holding the primary input fixed."
+      "description": "Select spring rate in N/m; the other input stays fixed."
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Activate the named broken behavior",
+      "label": "Reverse the viscous damping sign",
       "default": false
     }
   ],
@@ -55,8 +55,8 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Predict the sign, trend, conserved quantity, and validity boundary before changing one input.",
-      "reveal": "Use the governing relation, then verify one variable at a time."
+      "text": "Does more damping always shorten the response, and what changes when damping becomes negative?",
+      "reveal": "The three nominal cases are underdamped, critical and overdamped. Positive c dissipates perturbation energy; negative c injects it whenever velocity is nonzero. Four slow-pole time constants describes a decay scale, not a measured tolerance-based settling time, and is unavailable for the unstable model. Full credit requires interpreting the finite time window."
     },
     {
       "type": "controls",
@@ -72,7 +72,7 @@
     },
     {
       "type": "plot_grid",
-      "title": "One-variable sweeps",
+      "title": "Nominal one-variable sweeps",
       "plots": [
         "primary_sweep",
         "secondary_sweep"
@@ -100,6 +100,11 @@
       "tone": "success",
       "title": "Recovery",
       "source": "recovery"
+    },
+    {
+      "type": "markdown",
+      "title": "Course checkpoint",
+      "source": "assessment.md"
     }
   ]
 }

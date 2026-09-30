@@ -2,9 +2,9 @@
   "schema_version": 1,
   "id": "01-turn-steering-and-speed-into-a-vehicle-path",
   "number": 1,
-  "title": "Turn Steering and Speed into a Vehicle Path",
-  "summary": "A bounded deterministic vehicle model with two sweeps and named failure/recovery.",
-  "guiding_question": "What physical inputs and limits matter when you turn steering and speed into a vehicle path?",
+  "title": "Constant-Curvature Paths and Tire-Grip Demand",
+  "summary": "Does doubling speed change the path radius, the yaw rate, or the grip demand?",
+  "guiding_question": "Does doubling speed change the path radius, the yaw rate, or the grip demand?",
   "status": "implemented",
   "tags": [
     "vehicle-dynamics",
@@ -21,29 +21,29 @@
     {
       "id": "steering_deg",
       "type": "slider",
-      "label": "steering_deg",
+      "label": "Steering-wheel angle",
       "default": 5.0,
       "minimum": -20.0,
       "maximum": 20.0,
       "step": 2.0,
       "unit": "deg",
-      "description": "Change one physical input while holding the other fixed."
+      "description": "Select steering-wheel angle in deg; the other input stays fixed."
     },
     {
       "id": "speed_mps",
       "type": "slider",
-      "label": "speed_mps",
+      "label": "Speed",
       "default": 15.0,
       "minimum": 1.0,
       "maximum": 45.0,
       "step": 2.2,
       "unit": "m/s",
-      "description": "Change one physical input while holding the other fixed."
+      "description": "Select speed in m/s; the other input stays fixed."
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Activate named broken behavior",
+      "label": "Bypass the 13:1 steering ratio",
       "default": false
     }
   ],
@@ -55,8 +55,8 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Predict sign, trend, and boundary before changing one input.",
-      "reveal": "Use the governing equation, then verify one variable at a time."
+      "text": "Does doubling speed change the path radius, the yaw rate, or the grip demand?",
+      "reveal": "Curvature is unchanged by speed and reverses with steering. Yaw doubles and lateral demand quadruples when speed doubles. All three signed quantities reverse under steering reversal. A sufficient explanation checks both the input conversion and the independent grip budget; it does not call the demanded faulty path a simulated skid."
     },
     {
       "type": "controls",
@@ -72,7 +72,7 @@
     },
     {
       "type": "plot_grid",
-      "title": "One-variable sweeps",
+      "title": "Nominal one-variable sweeps",
       "plots": [
         "primary_sweep",
         "secondary_sweep"
@@ -100,7 +100,11 @@
       "tone": "success",
       "title": "Recovery",
       "source": "recovery"
+    },
+    {
+      "type": "markdown",
+      "title": "Course checkpoint",
+      "source": "assessment.md"
     }
   ]
 }
-

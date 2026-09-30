@@ -2,9 +2,9 @@
   "schema_version": 1,
   "id": "06-build-slip-angle-intuition",
   "number": 6,
-  "title": "Build Slip-Angle Intuition",
-  "summary": "A bounded deterministic vehicle model with two sweeps and named failure/recovery.",
-  "guiding_question": "What physical inputs and limits matter when you build slip-angle intuition?",
+  "title": "Relate Slip-Angle Convention to Lateral Force",
+  "summary": "Which direction should lateral tire force point under the stated slip-angle convention?",
+  "guiding_question": "Which direction should lateral tire force point under the stated slip-angle convention?",
   "status": "implemented",
   "tags": [
     "vehicle-dynamics",
@@ -21,29 +21,29 @@
     {
       "id": "slip_angle_deg",
       "type": "slider",
-      "label": "slip_angle_deg",
+      "label": "Slip Angle",
       "default": 4.0,
       "minimum": -14.0,
       "maximum": 14.0,
       "step": 1.4,
       "unit": "deg",
-      "description": "Change one physical input while holding the other fixed."
+      "description": "Select slip angle in deg; the other input stays fixed."
     },
     {
       "id": "normal_load_n",
       "type": "slider",
-      "label": "normal_load_n",
+      "label": "Normal Load",
       "default": 3600.0,
       "minimum": 1000.0,
       "maximum": 6000.0,
       "step": 250.0,
       "unit": "N",
-      "description": "Change one physical input while holding the other fixed."
+      "description": "Select normal load in N; the other input stays fixed."
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Activate named broken behavior",
+      "label": "Reverse the lateral tire-force sign",
       "default": false
     }
   ],
@@ -55,8 +55,8 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Predict sign, trend, and boundary before changing one input.",
-      "reveal": "Use the governing equation, then verify one variable at a time."
+      "text": "Which direction should lateral tire force point under the stated slip-angle convention?",
+      "reveal": "Positive velocity-minus-wheel angle demands negative left force. Reversing angle reverses force. The slope is −78000 N/rad, or about −1361.36 N/deg. The opposite convention uses α_new = −α and a positive constitutive sign. Full reasoning includes units and convention, not merely the graph's direction."
     },
     {
       "type": "controls",
@@ -72,7 +72,7 @@
     },
     {
       "type": "plot_grid",
-      "title": "One-variable sweeps",
+      "title": "Nominal one-variable sweeps",
       "plots": [
         "primary_sweep",
         "secondary_sweep"
@@ -100,7 +100,11 @@
       "tone": "success",
       "title": "Recovery",
       "source": "recovery"
+    },
+    {
+      "type": "markdown",
+      "title": "Course checkpoint",
+      "source": "assessment.md"
     }
   ]
 }
-

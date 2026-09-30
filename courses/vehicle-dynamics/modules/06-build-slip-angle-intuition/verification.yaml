@@ -4,15 +4,16 @@
   "provenance": "Python-first native",
   "reference": {
     "path": "../../reference_cases.py",
-    "origin": "separately formulated scalar analytic oracle",
+    "origin": "Logistic evaluation with opposite slip convention and degree conversion",
     "imports_production": false,
     "consumes_production_output": false,
     "tolerance_abs": "1e-10",
-    "fields": "ordered finite SI signature"
+    "fields": "ordered signature with per-field units; complete independently calculated physical state and response arrays",
+    "tolerance_rel": "1e-10"
   },
-  "governing_relation": "Fy = -mu*Fz*tanh(Calpha*alpha/(mu*Fz))",
-  "teaching_invariant": "Force is zero at zero slip angle and opposes positive slip angle.",
-  "limitation": "The curve omits combined slip, camber, and relaxation length.",
+  "governing_relation": "Logistic evaluation with opposite slip convention and degree conversion",
+  "teaching_invariant": "See lesson Physical model, lesson-specific focused physical identities, and complete independently retained mechanisms.",
+  "limitation": "Here slip is velocity direction minus wheel direction, so restoring force has the opposite sign.",
   "scenarios": [
     {
       "name": "baseline",
@@ -63,10 +64,11 @@
   "unperformed": [
     "MATLAB runtime comparison",
     "learner validation",
-    "browser accessibility",
     "measured vehicle data",
     "firmware/radio/bench/vehicle/track execution",
-    "physical HIL/hardware"
-  ]
+    "physical HIL/hardware",
+    "manual screen-reader review"
+  ],
+  "revision_batch": "ELP-VEHICLE-FOUNDATIONS-QUALITY-12",
+  "historical_conversion": "Original source pins and conversion records remain historical; revised native faults do not claim unchanged full-source equivalence."
 }
-

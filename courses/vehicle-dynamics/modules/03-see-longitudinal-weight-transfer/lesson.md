@@ -1,40 +1,56 @@
-# See Longitudinal Weight Transfer
+# Balance Longitudinal Load Transfer
 
-## Guiding question
+Can axle loads add to vehicle weight and still be physically inconsistent?
 
-What physical inputs, observable effects, and failure modes matter when you see longitudinal weight transfer?
+## Physical model
 
-## Physical model, frame, and units
+Let m = 1320 kg, L = 2.57 m and the static front weight fraction be 0.53. Front and rear axle loads at rest are 0.53mg and 0.47mg. Positive longitudinal acceleration shifts normal force rearward through the pitch moment m a_x h:
 
-The vehicle-fixed frame is +x forward, +y left, and positive yaw counter-clockwise from above. Tire forces act on the vehicle. Inputs are `acceleration_mps2` in m/s^2 and `cg_height_m` in m; angle equations convert degrees to radians explicitly.
+ΔF = m a_x h/L; F_zf = 0.53mg − ΔF; F_zr = 0.47mg + ΔF.
 
-The governing relation is `load transfer = mass*acceleration*CG height/wheelbase`. The teaching invariant is: **Front plus rear axle load remains mass*g.** This module has Python-first native provenance. It does not claim MATLAB-runtime equivalence for a source scaffold.
+Two independent balances matter. Vertical balance requires F_zf + F_zr = mg. Pitch balance requires L(0.53mg − F_zf) = m a_x h. Satisfying the first does not imply satisfying the second. The response plots both axle loads in N against acceleration in m/s² at the selected centre-of-gravity height. The displayed transfer is the demanded shift between axles, not extra vehicle weight.
 
-## Predict and sweep one variable at a time
+The front and rear lines have opposite slopes and their sum is constant. Their asymmetry about equal load comes from the chosen static distribution, not from a loss of vertical balance.
 
-First hold `cg_height_m` at 0.5 m and sweep `acceleration_mps2` through -9.0, 4.0, and 9.0 m/s^2. Restore the baseline, then hold `acceleration_mps2` at 4.0 m/s^2 and sweep `cg_height_m` through 0.25, 0.5, and 0.85 m. Predict sign, monotonicity, and the invariant before running either sweep.
+\[
+\Delta F=\frac{ma_xh}{L},\qquad F_{zf}=0.53mg-\Delta F,\quad F_{zr}=0.47mg+\Delta F.
+\]
 
-## Named broken behavior and exact recovery
+## Worked baseline
 
-Broken behavior: **Unloading an axle below zero.** The invalid flag makes the assumption failure explicit. Recovery: **Restore acceleration so both axle loads are nonnegative.** Disable broken mode and restore both default inputs; the deterministic baseline signature must return exactly.
+At 4 m/s² and h = 0.5 m, total weight is 12949.2 N and transfer is 1027.23735 N. The front axle carries 5835.83865 N and the rear 7113.36135 N. Multiplying the transfer by 2.57 m gives 2640 N·m, equal to 1320 × 4 × 0.5. Under −4 m/s² braking, transfer changes sign: the front gains what the rear loses. The static values themselves do not exchange.
+
+## Predict and sweep
+
+Before moving a control, write a sign and a trend prediction with units. The two sweep panels always show the **nominal** relationship with the other selected input fixed, even while the fault toggle is active. The response panel follows the selected mode. The comparison panel shows both modes at identical inputs; it is not a time sequence of failure and repair.
+
+1. Keep h = 0.5 m and sweep acceleration from −9 to +9 m/s². Predict a straight decreasing front-load line and increasing rear-load line. Locate zero acceleration, then check the vertical sum at two unequal acceleration values.
+2. Hold acceleration at +4 m/s² and vary height from 0.25 to 0.85 m. Predict more rearward transfer as height rises. Repeat mentally for braking: the front-load trend with height would reverse. The secondary sweep follows the selected acceleration, so its slope can change sign.
+
+## Named broken behavior
+
+The fault ignores acceleration-induced transfer and returns the two static axle loads. Their sum still equals weight, which makes a total-load-only test misleading. At the defaults, the pitch residual has magnitude 2640 N·m. Both fault response lines become horizontal with acceleration. At zero acceleration, omission is genuinely benign: demanded transfer is zero. Use a nonzero excitation to diagnose the fault.
+
+## Exact recovery
+
+Disable the fault without moving either input. Check that the selected response returns to the nominal member of the same-input comparison and explain which governing relation has been restored. Only then use **Reset parameters** to reproduce the worked baseline. Resetting inputs and repairing the model are separate actions; changing both at once prevents a causal comparison.
 
 ## Limits and limiting cases
 
-Quasi-static pitch omits suspension compliance and pitch inertia. At zero excitation, the associated force, acceleration, yaw, or slip response tends toward zero. At a physical boundary the validity result changes instead of silently presenting infeasible values as valid.
+The calculation is a quasi-static two-contact balance. It neglects pitch acceleration, suspension motion, road slope, aerodynamic moments and unsprung-mass details. A predicted negative axle load means contact assumptions have failed; it is not a realizable downward tire reaction. All declared nominal control corners retain positive loads, so wheel lift is a boundary to derive, not an event observed in this range. Front lift would require a_x = 0.53gL/h.
 
-## Common mistakes and formative checks
+## Common mistakes
 
-- Do not mix degrees and radians, reverse a tire-force convention, or change both controls before assigning causality.
-- Explain every signature field with its units and state the coordinate/sign convention.
-- Derive the expected direction of both sweeps and identify the conserved or bounded quantity.
-- Diagnose the broken assumption, demonstrate exact recovery, and state the model limitation.
+A car does not gain total weight during acceleration. Redistribution changes axle loading while the total remains mg. Checking only the sum can allow an incorrect distribution to pass; moment closure is essential.
+
+## Formative checks
+
+Compare +4 and −4 m/s² at h = 0.5 m. Calculate both axle loads and verify vertical and pitch balance. Activate the fault at +4 m/s². Explain why one balance passes and the other fails, then identify an input at which that fault becomes invisible.
+
+Check your reasoning: The transfer magnitude is 1027.23735 N, reversing with acceleration. Both nominal balances close. Omission preserves total weight but misses the nonzero pitch moment; zero acceleration hides it. Credit requires a signed transfer and a moment in N·m, rather than only a statement that the rear load should increase.
 
 ## Teach-back checklist
 
-- [ ] I can explain the governing equation and invariant.
-- [ ] I predicted and ran both one-variable sweeps.
-- [ ] I identified the broken behavior and restored the exact baseline.
-- [ ] I can state what this deterministic software-only model does not prove.
+Explain the declared input convention and governing equation before describing the curve. Reproduce the worked calculation with units, account for both one-variable trends, and identify a discriminating fault test. Finish by naming the specific limiting case above and the physical effects omitted by this model. The embedded Course checkpoint asks for evidence and reasoning; no learner score is stored.
 
-This experiment is not measured-vehicle, track, firmware, radio, hardware, HIL, safety, or production evidence.
-
+This is deterministic synthetic teaching evidence, **not measured-vehicle** validation, a MATLAB-runtime comparison, or representative-learner acceptance. The original conversion ledger remains historical. This revision verifies the declared native model and its revised fault independently; it does not claim unchanged full-source equivalence.

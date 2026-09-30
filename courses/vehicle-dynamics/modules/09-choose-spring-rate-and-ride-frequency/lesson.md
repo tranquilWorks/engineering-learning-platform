@@ -1,57 +1,54 @@
-# Choose Spring Rate and Ride Frequency
+# Derive Wheel Rate from Suspension Motion Ratio
 
-> **Guiding question:** How do spring rate, motion ratio, and sprung mass set wheel rate and ride frequency?
+Why does the suspension motion ratio enter wheel stiffness twice?
 
-## Physical model, frame, and units
+## Physical model
 
-The vehicle-fixed convention is +x forward, +y left, +z upward, and positive yaw counter-clockwise from above. Loads and forces act on the vehicle unless stated otherwise. The independent controls are **Spring rate** (N/m) and **spring-travel / wheel-travel motion ratio** (dimensionless). A ratio below one means the spring moves less than the wheel.
+Define motion ratio r = spring displacement / wheel displacement. For an ideal lossless linkage, x_s = r x_w. Virtual work gives F_w dx_w = F_s dx_s, so F_w = r F_s. With F_s = k_s x_s, wheel force is F_w = k_s r² x_w, and wheel rate k_w = k_s r².
 
-The governing relation is
+For a 300 kg corner mass, static wheel compression is x_static = mg/k_w and undamped ride frequency is f_n = √(k_w/m)/(2π). Wheel rate has units N/m; compression is in m and frequency is in Hz. The response plots wheel force against wheel displacement, with a horizontal corner-weight line at 2943 N. Their intersection represents the static equilibrium in this simplified corner model.
 
-`k_w = k_s i^2; f_n = (1/(2*pi))*sqrt(k_w/m_s)`
+One ratio factor comes from displacement mapping and one from force mapping. Changing the definition of motion ratio would invert both factors, so the convention must be stated before using any remembered formula.
 
-The teaching invariant is: **Wheel rate follows the square of motion ratio, and static load equals wheel rate times static deflection.** The implementation is a Python-first native design derived from the reviewed P09 identity and competency. Its source folder was a scaffold; this is not a claim of source or MATLAB-runtime equivalence.
+\[
+k_w=k_s r^2,\qquad x_{\mathrm{static}}=\frac{mg}{k_w},\qquad f_n=\frac{1}{2\pi}\sqrt{\frac{k_w}{m}}.
+\]
 
-The bounded quarter-car uses 300 kg of sprung mass and 9.81 m/s² gravity. Because both force and displacement transform through the linkage, motion ratio appears twice: halving the ratio quarters wheel rate rather than halving it.
+## Worked baseline
 
-## Predict and sweep one variable at a time
+At k_s = 35000 N/m and r = 0.9, wheel rate is 28350 N/m. Static wheel compression is 2943/28350 ≈ 0.103810 m and ride frequency is about 1.547 Hz. Spring compression is 0.9 times the wheel compression. The spring's force is larger than wheel force by 1/r, which is consistent with virtual work rather than an unexplained force gain.
 
-1. Hold `motion_ratio` at 0.9 ratio. Predict the sign, monotonic trend, validity boundary, and invariant, then sweep `spring_rate_n_m` through 15000.0, 35000.0, and 80000.0 N/m.
-2. Restore `spring_rate_n_m` to 35000.0 N/m. Hold every other assumption fixed and sweep `motion_ratio` through 0.6, 0.9, and 1.1 ratio.
+## Predict and sweep
 
-Changing one physical input at a time distinguishes causality from correlation. The plots expose retained SI quantities rather than a renamed normalized waveform.
+Before moving a control, write a sign and a trend prediction with units. The two sweep panels always show the **nominal** relationship with the other selected input fixed, even while the fault toggle is active. The response panel follows the selected mode. The comparison panel shows both modes at identical inputs; it is not a time sequence of failure and repair.
 
-## Named broken behavior and exact recovery
+1. Hold r = 0.9 and increase spring rate from 15000 to 80000 N/m. Predict wheel rate proportional to spring rate, static compression inversely proportional to it, and frequency proportional to its square root. The primary sweep displays frequency, not stiffness.
+2. Hold spring rate at 35000 N/m and vary r from 0.6 to 1.1. Predict frequency proportional to positive r, while wheel rate scales as r². Compare r = 0.6 with r = 0.9: the rate ratio is 2.25 and frequency ratio is 1.5.
 
-**Broken behavior:** Broken mode incorrectly omits the squared motion-ratio transformation. The invalid field is part of the model result, so a finite plot cannot disguise a nonphysical setup.
+## Named broken behavior
 
-**Exact recovery:** Restore k_w=k_s*i^2 and the baseline spring rate and motion ratio. Disable broken mode, restore both defaults, and verify that the deterministic baseline signature returns exactly.
+The toggle uses k_s r instead of k_s r², omitting the force-mapping factor. At r = 0.9 it predicts 31500 N/m and too little static compression. The virtual-work residual exposes the incorrect wheel rate even if the faulty rate is then used consistently in its own weight balance. At r = 1 the two formulas coincide and the fault is benign. For r above one the direction of its stiffness bias reverses.
+
+## Exact recovery
+
+Disable the fault without moving either input. Check that the selected response returns to the nominal member of the same-input comparison and explain which governing relation has been restored. Only then use **Reset parameters** to reproduce the worked baseline. Resetting inputs and repairing the model are separate actions; changing both at once prevents a causal comparison.
 
 ## Limits and limiting cases
 
-The quarter-car ride-frequency model omits tire stiffness, unsprung mass, damping, bump stops, and suspension friction. As motion ratio approaches zero, wheel rate and ride frequency approach zero while static deflection diverges, so zero is deliberately outside the control range. Increasing spring rate raises frequency with a square-root trend, not linearly.
+This single sprung corner assumes constant motion ratio, linear spring stiffness and no tire compliance, damping, preload, bump stop or unsprung mass. The undamped natural frequency is not a measured comfort score. The response window ends at 0.2 m; for some soft settings the static intersection lies outside that window, although the metric still reports the formal value. No suspension-travel limit is imposed by the model.
 
 ## Common mistakes
 
-- Reversing the declared spring-travel / wheel-travel ratio.
-- Using `k_w=k_s i` instead of applying the linkage twice.
-- Using total vehicle mass instead of the declared corner sprung mass.
-- Changing two controls simultaneously and attributing the result to one.
-- Treating a steady instructional model as setup, safety, vehicle, or track validation.
+Do not substitute an inverse motion-ratio convention into this formula. Do not assume passing k_w x = mg validates the mapping from k_s to k_w; an incorrect stiffness can satisfy its own static balance.
 
 ## Formative checks
 
-1. State every input, output, sign, and unit in the governing relation.
-2. Predict both one-variable sweep directions before running them.
-3. Identify the conserved or bounded quantity and verify it numerically.
-4. Name the broken assumption, recover the exact baseline, and state the residual limitation.
+At fixed k_s = 35000 N/m, compare r = 0.6, 0.9 and 1.0. Derive wheel rate from displacement and force mapping, then calculate static compression and frequency ratios. Explain why r = 1 is an inadequate diagnostic for the single-factor fault.
+
+Check your reasoning: Wheel rate uses two ratio factors and frequency uses one for positive r. The 0.6-to-0.9 rate ratio is 2.25; frequency ratio is 1.5. Unity hides the missing factor. A strong answer derives virtual work and checks both units and the chosen ratio convention.
 
 ## Teach-back checklist
 
-- [ ] I can answer the guiding question in two or three sentences.
-- [ ] I can derive or explain the governing relation and its units.
-- [ ] I predicted and verified both sweeps.
-- [ ] I diagnosed the named failure and demonstrated exact recovery.
-- [ ] I can state what this deterministic software-only model does not prove.
+Explain the declared input convention and governing equation before describing the curve. Reproduce the worked calculation with units, account for both one-variable trends, and identify a discriminating fault test. Finish by naming the specific limiting case above and the physical effects omitted by this model. The embedded Course checkpoint asks for evidence and reasoning; no learner score is stored.
 
-This module is not measured-vehicle, firmware, radio, bench, track, hardware/HIL, certification, release, or production evidence.
+This is deterministic synthetic teaching evidence, **not measured-vehicle** validation, a MATLAB-runtime comparison, or representative-learner acceptance. The original conversion ledger remains historical. This revision verifies the declared native model and its revised fault independently; it does not claim unchanged full-source equivalence.
