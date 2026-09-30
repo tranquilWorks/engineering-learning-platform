@@ -4,15 +4,16 @@
   "provenance": "Python-first native",
   "reference": {
     "path": "../../reference_cases.py",
-    "origin": "separately formulated scalar analytic oracle",
+    "origin": "Static axle weights divided by stiffness; critical boundary and stable mask",
     "imports_production": false,
     "consumes_production_output": false,
     "tolerance_abs": "1e-10",
-    "fields": "ordered finite SI signature"
+    "fields": "ordered signature with per-field units; complete independently calculated physical state and response arrays",
+    "tolerance_rel": "1e-10"
   },
-  "governing_relation": "K=m/L*(b/Cf-a/Cr); delta=L/R+K*V^2/R",
-  "teaching_invariant": "K>0 understeers; K=0 is neutral; K<0 has finite critical speed.",
-  "limitation": "The steady linear result omits nonlinear saturation.",
+  "governing_relation": "Static axle weights divided by stiffness; critical boundary and stable mask",
+  "teaching_invariant": "See lesson Physical model, lesson-specific focused physical identities, and complete independently retained mechanisms.",
+  "limitation": "A formal steady branch at or above oversteer critical speed is not a stable operating point.",
   "scenarios": [
     {
       "name": "baseline",
@@ -63,10 +64,11 @@
   "unperformed": [
     "MATLAB runtime comparison",
     "learner validation",
-    "browser accessibility",
     "measured vehicle data",
     "firmware/radio/bench/vehicle/track execution",
-    "physical HIL/hardware"
-  ]
+    "physical HIL/hardware",
+    "manual screen-reader review"
+  ],
+  "revision_batch": "ELP-VEHICLE-FOUNDATIONS-QUALITY-12",
+  "historical_conversion": "Original source pins and conversion records remain historical; revised native faults do not claim unchanged full-source equivalence."
 }
-

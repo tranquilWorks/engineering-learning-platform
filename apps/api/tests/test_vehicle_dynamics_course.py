@@ -63,7 +63,7 @@ def test_exact_membership_provenance_evidence_and_digests() -> None:
         expected = json.loads((root / "expected.json").read_text())
         actual = json.loads((root / "actual.json").read_text())
         assert manifest["number"] == number and manifest["status"] == "implemented"
-        provenance = "implemented-source comparison" if number <= 2 else "Python-first native"
+        provenance = "source-derived nominal; revised Python-first native fault" if number <= 2 else "Python-first native"
         assert verification["provenance"] == provenance
         assert not verification["reference"]["imports_production"]
         assert not verification["reference"]["consumes_production_output"]

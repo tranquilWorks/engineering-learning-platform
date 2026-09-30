@@ -2,9 +2,9 @@
   "schema_version": 1,
   "id": "04-use-the-friction-circle",
   "number": 4,
-  "title": "Use the Friction Circle",
-  "summary": "A bounded deterministic vehicle model with two sweeps and named failure/recovery.",
-  "guiding_question": "What physical inputs and limits matter when you use the friction circle?",
+  "title": "Project a Force Request onto the Friction Circle",
+  "summary": "What should happen to both force components when a combined request exceeds tire capacity?",
+  "guiding_question": "What should happen to both force components when a combined request exceeds tire capacity?",
   "status": "implemented",
   "tags": [
     "vehicle-dynamics",
@@ -21,29 +21,29 @@
     {
       "id": "longitudinal_force_n",
       "type": "slider",
-      "label": "longitudinal_force_n",
+      "label": "Longitudinal Force",
       "default": 2800.0,
       "minimum": -6500.0,
       "maximum": 6500.0,
       "step": 650.0,
       "unit": "N",
-      "description": "Change one physical input while holding the other fixed."
+      "description": "Select longitudinal force in N; the other input stays fixed."
     },
     {
       "id": "lateral_force_n",
       "type": "slider",
-      "label": "lateral_force_n",
+      "label": "Lateral Force",
       "default": 3500.0,
       "minimum": -6500.0,
       "maximum": 6500.0,
       "step": 650.0,
       "unit": "N",
-      "description": "Change one physical input while holding the other fixed."
+      "description": "Select lateral force in N; the other input stays fixed."
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Activate named broken behavior",
+      "label": "Bypass the radial force projection",
       "default": false
     }
   ],
@@ -55,8 +55,8 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Predict sign, trend, and boundary before changing one input.",
-      "reveal": "Use the governing equation, then verify one variable at a time."
+      "text": "What should happen to both force components when a combined request exceeds tire capacity?",
+      "reveal": "Only the first request is reduced; the other two have scale one and are benign for the bypass fault. The applied overloaded norm equals 3780 N and direction is preserved. A complete explanation checks a vector invariant and the capacity inequality, including the defined zero-request behavior."
     },
     {
       "type": "controls",
@@ -72,7 +72,7 @@
     },
     {
       "type": "plot_grid",
-      "title": "One-variable sweeps",
+      "title": "Nominal one-variable sweeps",
       "plots": [
         "primary_sweep",
         "secondary_sweep"
@@ -100,7 +100,11 @@
       "tone": "success",
       "title": "Recovery",
       "source": "recovery"
+    },
+    {
+      "type": "markdown",
+      "title": "Course checkpoint",
+      "source": "assessment.md"
     }
   ]
 }
-

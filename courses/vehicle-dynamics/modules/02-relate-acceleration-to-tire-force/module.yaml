@@ -2,9 +2,9 @@
   "schema_version": 1,
   "id": "02-relate-acceleration-to-tire-force",
   "number": 2,
-  "title": "Relate Acceleration to Tire Force",
-  "summary": "A bounded deterministic vehicle model with two sweeps and named failure/recovery.",
-  "guiding_question": "What physical inputs and limits matter when you relate acceleration to tire force?",
+  "title": "Balance Traction, Road Loads and Acceleration",
+  "summary": "How much of the requested traction remains available to accelerate the vehicle?",
+  "guiding_question": "How much of the requested traction remains available to accelerate the vehicle?",
   "status": "implemented",
   "tags": [
     "vehicle-dynamics",
@@ -21,29 +21,29 @@
     {
       "id": "tractive_force_n",
       "type": "slider",
-      "label": "tractive_force_n",
+      "label": "Tractive Force",
       "default": 4200.0,
       "minimum": 0.0,
       "maximum": 9000.0,
       "step": 450.0,
       "unit": "N",
-      "description": "Change one physical input while holding the other fixed."
+      "description": "Select tractive force in N; the other input stays fixed."
     },
     {
       "id": "speed_mps",
       "type": "slider",
-      "label": "speed_mps",
+      "label": "Speed",
       "default": 20.0,
       "minimum": 0.0,
       "maximum": 55.0,
       "step": 2.75,
       "unit": "m/s",
-      "description": "Change one physical input while holding the other fixed."
+      "description": "Select speed in m/s; the other input stays fixed."
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Activate named broken behavior",
+      "label": "Omit rolling resistance and aerodynamic drag",
       "default": false
     }
   ],
@@ -55,8 +55,8 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Predict sign, trend, and boundary before changing one input.",
-      "reveal": "Use the governing equation, then verify one variable at a time."
+      "text": "How much of the requested traction remains available to accelerate the vehicle?",
+      "reveal": "At 20 m/s the balancing request is 346.138 N. Nominal acceleration is zero; omission incorrectly predicts about 0.262226 m/s². At 40 m/s the nominal result becomes negative because drag rises by 455.7 N. A complete response names all three force terms and avoids treating the low-speed approximation as a start/stop simulator."
     },
     {
       "type": "controls",
@@ -72,7 +72,7 @@
     },
     {
       "type": "plot_grid",
-      "title": "One-variable sweeps",
+      "title": "Nominal one-variable sweeps",
       "plots": [
         "primary_sweep",
         "secondary_sweep"
@@ -100,7 +100,11 @@
       "tone": "success",
       "title": "Recovery",
       "source": "recovery"
+    },
+    {
+      "type": "markdown",
+      "title": "Course checkpoint",
+      "source": "assessment.md"
     }
   ]
 }
-

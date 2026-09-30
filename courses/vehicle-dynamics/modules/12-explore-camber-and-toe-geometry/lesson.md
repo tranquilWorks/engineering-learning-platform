@@ -1,57 +1,56 @@
-# Explore Camber and Toe Geometry
+# Estimate Camber Thrust and Toe Scrub
 
-> **Guiding question:** How do camber and toe create distinct lateral-force and scrub effects?
+Which force and power estimates can this simple alignment model support?
 
-## Physical model, frame, and units
+## Physical model
 
-The vehicle-fixed convention is +x forward, +y left, +z upward, and positive yaw counter-clockwise from above. Loads and forces act on the vehicle unless stated otherwise. The independent controls are **Camber angle** (deg) and **Toe angle** (deg). Angles displayed in degrees are converted exactly once before trigonometric use.
+This lesson is deliberately limited to empirical camber thrust and toe scrub. It does not calculate suspension kinematics. Convert input camber γ and toe τ from degrees to radians. With a camber coefficient C_γ = 60000 N/rad, load scale F_z = 3600 N and speed V = 20 m/s:
 
-The governing relation is
+F_camber = −C_γ γ; F_scrub = F_z |tan τ|; P_scrub = V F_scrub.
 
-`F_gamma=-C_gamma*gamma; F_scrub=F_z*|tan(toe)|; P_scrub=F_scrub*V`
+Camber thrust is signed; negative camber gives positive force under the declared convention. Scrub force and power are nonnegative loss magnitudes and are even in toe. Force and power use separate metrics and curves. The response shows signed camber force in N against camber degrees at the selected conversion mode. Toe is an independent input here, so changing toe does not change that response curve.
 
-The teaching invariant is: **Zero camber removes camber thrust and zero toe removes this model's scrub loss.** The implementation is a Python-first native design derived from the reviewed P12 identity and competency. Its source folder was a scaffold; this is not a claim of source or MATLAB-runtime equivalence.
+The power equation has units (m/s)N = W. It estimates dissipative demand but contains no tire thermal mass, heat transfer or temperature state. A large power value cannot be translated into a temperature without another model.
 
-For the representative left wheel, positive camber means the wheel top leans outward and positive toe rotates its heading toward +y. The linear camber stiffness is 60 kN/rad at 3.6 kN vertical load; toe scrub uses the magnitude of `tan(toe)` at 20 m/s, so toe sign changes heading direction but not this simple loss estimate.
+\[
+F_{\mathrm{camber}}=-C_\gamma\gamma,\qquad F_{\mathrm{scrub}}=F_z|\tan\tau|,\qquad P=VF_{\mathrm{scrub}}.
+\]
 
-## Predict and sweep one variable at a time
+## Worked baseline
 
-1. Hold `toe_deg` at 0.1 deg. Predict the sign, monotonic trend, validity boundary, and invariant, then sweep `camber_deg` through -5.0, -2.0, and 2.0 deg.
-2. Restore `camber_deg` to -2.0 deg. Hold every other assumption fixed and sweep `toe_deg` through -0.5, 0.1, and 0.5 deg.
+At camber −2° and toe +0.1°, γ = −0.0349066 rad and τ = 0.00174533 rad. Camber thrust is about +2094.40 N, scrub force 6.28319 N and scrub power 125.664 W. Reversing toe leaves scrub and power unchanged; reversing camber reverses thrust. Zeroing only toe removes scrub power but does not remove camber thrust.
 
-Changing one physical input at a time distinguishes causality from correlation. The plots expose retained SI quantities rather than a renamed normalized waveform.
+## Predict and sweep
 
-## Named broken behavior and exact recovery
+Before moving a control, write a sign and a trend prediction with units. The two sweep panels always show the **nominal** relationship with the other selected input fixed, even while the fault toggle is active. The response panel follows the selected mode. The comparison panel shows both modes at identical inputs; it is not a time sequence of failure and repair.
 
-**Broken behavior:** Broken mode feeds degree values directly to radian trigonometric relations. The invalid field is part of the model result, so a finite plot cannot disguise a nonphysical setup.
+1. Hold toe at +0.1° and vary camber from −5° to +2°. Predict a straight decreasing force curve with slope −60000π/180 ≈ −1047.20 N/deg. Locate its zero crossing and explain why toe power remains unchanged.
+2. Restore camber to −2° and sweep toe from −0.5° through zero to +0.5°. Predict an even, nonnegative scrub-power curve with a minimum at zero. It is approximately proportional to |toe| at these small angles, not signed toe. Read its vertical axis in W rather than N.
 
-**Exact recovery:** Convert both alignment angles to radians exactly once and restore the declared signs. Disable broken mode, restore both defaults, and verify that the deterministic baseline signature returns exactly.
+## Named broken behavior
+
+The toggle treats the degree numbers directly as radians. The default −2° value becomes −2 rad in the constitutive law, producing a false 120000 N camber thrust. The 0.1 toe input becomes 0.1 rad, producing about 361.205 N scrub and 7224.10 W. This executes the conversion fault in both force laws; it does not simply flip a validity flag. With both angles zero, nominal and faulty results coincide. Nonzero angles are needed to test conversion.
+
+## Exact recovery
+
+Disable the fault without moving either input. Check that the selected response returns to the nominal member of the same-input comparison and explain which governing relation has been restored. Only then use **Reset parameters** to reproduce the worked baseline. Resetting inputs and repairing the model are separate actions; changing both at once prevents a causal comparison.
 
 ## Limits and limiting cases
 
-The alignment model is not a complete tire/contact-patch model and excludes slip-angle interaction, compliance steer, pressure, wear, and temperature. Camber thrust changes sign through zero camber, while scrub magnitude is symmetric about zero toe. The small-angle interpretation becomes progressively weaker toward the declared angular limits.
+The camber law is linear, empirical and uncapped. At sufficiently large camber it can predict force beyond a plausible friction limit; no friction-circle enforcement is present in this lesson. Toe scrub is a geometric loss estimate, not a combined-slip tire solution. The model omits suspension travel, compliance steer, contact-patch changes, temperature and tire wear. Even a dimensionally correct output is not measured-vehicle validation.
 
 ## Common mistakes
 
-- Feeding displayed degree values directly into radian relations.
-- Treating signed toe heading and unsigned scrub loss as the same output.
-- Generalizing this single-wheel linear relation into a complete tire model.
-- Changing two controls simultaneously and attributing the result to one.
-- Treating a steady instructional model as setup, safety, vehicle, or track validation.
+Do not infer a full camber curve through suspension travel from two static alignment inputs. Do not report watts as heat in joules or as temperature. Squaring a small angle would change this model's intended near-zero |toe| dependence.
 
 ## Formative checks
 
-1. State every input, output, sign, and unit in the governing relation.
-2. Predict both one-variable sweep directions before running them.
-3. Identify the conserved or bounded quantity and verify it numerically.
-4. Name the broken assumption, recover the exact baseline, and state the residual limitation.
+Compare camber ±2° with toe ±0.1°, then set one angle at a time to zero. Record force and power units and parity. Activate the degree/radian fault at the defaults and explain why its camber-force ratio differs from its scrub-power ratio.
+
+Check your reasoning: Camber force is odd in camber; toe scrub and power are even in toe. The camber error factor is exactly 180/π because that law is linear, whereas tan makes the scrub ratio nonlinear. A complete response separates the two mechanisms and declines to infer temperature or full suspension geometry from these estimates.
 
 ## Teach-back checklist
 
-- [ ] I can answer the guiding question in two or three sentences.
-- [ ] I can derive or explain the governing relation and its units.
-- [ ] I predicted and verified both sweeps.
-- [ ] I diagnosed the named failure and demonstrated exact recovery.
-- [ ] I can state what this deterministic software-only model does not prove.
+Explain the declared input convention and governing equation before describing the curve. Reproduce the worked calculation with units, account for both one-variable trends, and identify a discriminating fault test. Finish by naming the specific limiting case above and the physical effects omitted by this model. The embedded Course checkpoint asks for evidence and reasoning; no learner score is stored.
 
-This module is not measured-vehicle, firmware, radio, bench, track, hardware/HIL, certification, release, or production evidence.
+This is deterministic synthetic teaching evidence, **not measured-vehicle** validation, a MATLAB-runtime comparison, or representative-learner acceptance. The original conversion ledger remains historical. This revision verifies the declared native model and its revised fault independently; it does not claim unchanged full-source equivalence.

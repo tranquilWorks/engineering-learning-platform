@@ -79,7 +79,7 @@ test('numeric menu defaults survive JavaScript serialization', async ({ page }) 
   await expect(page.locator('.runtime-error')).toHaveCount(0);
 });
 test('content review notes remain distinct from execution failures', async ({ page }) => {
-  await page.goto('/courses/vehicle-dynamics/modules/01-turn-steering-and-speed-into-a-vehicle-path');
+  await page.goto('/courses/vehicle-dynamics/modules/13-map-engine-torque-through-gearing');
   await expect(page.getByRole('note')).toContainText('Under revision');
   await expect(page.locator('.js-plotly-plot')).toHaveCount(4);
   await expect(page.locator('.runtime-error')).toHaveCount(0);
@@ -406,6 +406,35 @@ test('zero-angle and zero-gain limits retain visible plotted points', async ({ p
     const result=await (await response).json();
     expect(result.diagnostics[key].every((v:number)=>v===0)).toBe(true);
     await expect.poll(()=>page.locator('.js-plotly-plot').evaluateAll(nodes=>nodes.filter(n=>n.querySelector('.scatterlayer .trace .point')).length)).toBe(2);
+    await expect(page.locator('.runtime-error')).toHaveCount(0);
+  }
+});
+
+
+test('Vehicle bicycle balance and damping availability are exposed in the actual lesson', async ({ page }) => {
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({width, height:1000});
+    await page.goto('/courses/vehicle-dynamics/modules/07-use-the-bicycle-model');
+    await expect(page.locator('.compute-status:visible').first()).toContainText('Experiment synchronized');
+    await expect(page.locator('.metric').filter({hasText:'Force-balance residual'})).toContainText('N');
+    const checkpoint = page.getByRole('navigation',{name:'Lesson sections'}).getByRole('link',{name:'Course checkpoint',exact:true});
+    await checkpoint.click();
+    await expect(page.getByRole('heading',{name:'Course checkpoint',exact:true})).toBeInViewport();
+    await expect(page.getByText('P07 evidence task',{exact:true})).toBeVisible();
+    const controls=page.locator('.control-panel:visible');
+    const toggle=controls.locator('input[type=checkbox]').last();
+    const response=page.waitForResponse(r=>r.url().endsWith('/run') && r.request().method()==='POST');
+    await toggle.check();
+    const bad=await (await response).json();
+    expect(Math.abs(bad.diagnostics.physical.force_balance_residual_n)).toBeGreaterThan(59000);
+    expect(Math.abs(bad.diagnostics.physical.yaw_balance_residual_nm)).toBeGreaterThan(17000);
+    const recovered=page.waitForResponse(r=>r.url().endsWith('/run') && r.request().method()==='POST');
+    await toggle.uncheck();
+    expect(Math.abs((await (await recovered).json()).diagnostics.physical.force_balance_residual_n)).toBeLessThan(1e-10);
+    await page.goto('/courses/vehicle-dynamics/modules/10-see-damping-change-transient-motion');
+    await expect(page.locator('.compute-status:visible').first()).toContainText('Experiment synchronized');
+    await page.locator('.control-panel:visible input[type=checkbox]').last().check();
+    await expect(page.locator('.metric').filter({hasText:'Four slow-pole time constants'})).toContainText('Unavailable');
     await expect(page.locator('.runtime-error')).toHaveCount(0);
   }
 });

@@ -2,9 +2,9 @@
   "schema_version": 1,
   "id": "12-explore-camber-and-toe-geometry",
   "number": 12,
-  "title": "Explore Camber and Toe Geometry",
-  "summary": "Separate signed camber thrust from toe-induced scrub force, heading change, and power loss.",
-  "guiding_question": "How do camber and toe create distinct lateral-force and scrub effects?",
+  "title": "Estimate Camber Thrust and Toe Scrub",
+  "summary": "Which force and power estimates can this simple alignment model support?",
+  "guiding_question": "Which force and power estimates can this simple alignment model support?",
   "status": "implemented",
   "tags": [
     "vehicle-dynamics",
@@ -21,29 +21,29 @@
     {
       "id": "camber_deg",
       "type": "slider",
-      "label": "Camber angle",
+      "label": "Camber",
       "default": -2.0,
       "minimum": -5.0,
       "maximum": 2.0,
       "step": 0.25,
       "unit": "deg",
-      "description": "Change the primary physical input while holding the secondary input fixed."
+      "description": "Select camber in deg; the other input stays fixed."
     },
     {
       "id": "toe_deg",
       "type": "slider",
-      "label": "Toe angle",
+      "label": "Toe",
       "default": 0.1,
       "minimum": -0.5,
       "maximum": 0.5,
       "step": 0.05,
       "unit": "deg",
-      "description": "Change the secondary physical input while holding the primary input fixed."
+      "description": "Select toe in deg; the other input stays fixed."
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Activate the named broken behavior",
+      "label": "Treat degree inputs as radians",
       "default": false
     }
   ],
@@ -55,8 +55,8 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Predict the sign, trend, conserved quantity, and validity boundary before changing one input.",
-      "reveal": "Use the governing relation, then verify one variable at a time."
+      "text": "Which force and power estimates can this simple alignment model support?",
+      "reveal": "Camber force is odd in camber; toe scrub and power are even in toe. The camber error factor is exactly 180/π because that law is linear, whereas tan makes the scrub ratio nonlinear. A complete response separates the two mechanisms and declines to infer temperature or full suspension geometry from these estimates."
     },
     {
       "type": "controls",
@@ -72,7 +72,7 @@
     },
     {
       "type": "plot_grid",
-      "title": "One-variable sweeps",
+      "title": "Nominal one-variable sweeps",
       "plots": [
         "primary_sweep",
         "secondary_sweep"
@@ -100,6 +100,11 @@
       "tone": "success",
       "title": "Recovery",
       "source": "recovery"
+    },
+    {
+      "type": "markdown",
+      "title": "Course checkpoint",
+      "source": "assessment.md"
     }
   ]
 }

@@ -2,9 +2,9 @@
   "schema_version": 1,
   "id": "09-choose-spring-rate-and-ride-frequency",
   "number": 9,
-  "title": "Choose Spring Rate and Ride Frequency",
-  "summary": "Relate spring rate and suspension motion ratio to wheel rate, static deflection, and quarter-car ride frequency.",
-  "guiding_question": "How do spring rate, motion ratio, and sprung mass set wheel rate and ride frequency?",
+  "title": "Derive Wheel Rate from Suspension Motion Ratio",
+  "summary": "Why does the suspension motion ratio enter wheel stiffness twice?",
+  "guiding_question": "Why does the suspension motion ratio enter wheel stiffness twice?",
   "status": "implemented",
   "tags": [
     "vehicle-dynamics",
@@ -21,29 +21,29 @@
     {
       "id": "spring_rate_n_m",
       "type": "slider",
-      "label": "Spring rate",
+      "label": "Spring Rate",
       "default": 35000.0,
       "minimum": 15000.0,
       "maximum": 80000.0,
       "step": 2500.0,
       "unit": "N/m",
-      "description": "Change the primary physical input while holding the secondary input fixed."
+      "description": "Select spring rate in N/m; the other input stays fixed."
     },
     {
       "id": "motion_ratio",
       "type": "slider",
-      "label": "Spring-travel / wheel-travel ratio",
+      "label": "Motion Ratio",
       "default": 0.9,
       "minimum": 0.6,
       "maximum": 1.1,
       "step": 0.025,
       "unit": "ratio",
-      "description": "Change the secondary physical input while holding the primary input fixed."
+      "description": "Select motion ratio in ratio; the other input stays fixed."
     },
     {
       "id": "broken_mode",
       "type": "toggle",
-      "label": "Activate the named broken behavior",
+      "label": "Use one motion-ratio factor instead of two",
       "default": false
     }
   ],
@@ -55,8 +55,8 @@
     {
       "type": "prediction",
       "title": "Predict before running",
-      "text": "Predict the sign, trend, conserved quantity, and validity boundary before changing one input.",
-      "reveal": "Use the governing relation, then verify one variable at a time."
+      "text": "Why does the suspension motion ratio enter wheel stiffness twice?",
+      "reveal": "Wheel rate uses two ratio factors and frequency uses one for positive r. The 0.6-to-0.9 rate ratio is 2.25; frequency ratio is 1.5. Unity hides the missing factor. A strong answer derives virtual work and checks both units and the chosen ratio convention."
     },
     {
       "type": "controls",
@@ -72,7 +72,7 @@
     },
     {
       "type": "plot_grid",
-      "title": "One-variable sweeps",
+      "title": "Nominal one-variable sweeps",
       "plots": [
         "primary_sweep",
         "secondary_sweep"
@@ -100,6 +100,11 @@
       "tone": "success",
       "title": "Recovery",
       "source": "recovery"
+    },
+    {
+      "type": "markdown",
+      "title": "Course checkpoint",
+      "source": "assessment.md"
     }
   ]
 }

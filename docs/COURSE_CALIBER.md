@@ -97,3 +97,10 @@ The Robotics dynamics batch completed full delivery and mandatory sequential gat
 The remaining eight Robotics P42-P48/P52 findings have executed synthetic mechanisms, separate numerical references and embedded formative checkpoints. Zero named Robotics findings remain, alongside sixteen Vehicle findings. All non-DSP aggregate numerical, curriculum and capstone reviews remain blocked. A completed defect register is not aggregate course acceptance. Exact delivery and gate status is retained in the active batch evidence.
 
 The Robotics perception batch completed full delivery and mandatory sequential gates. Its verified development preview is port 8775; exact image, input hashes and counts are in `docs/course-quality/robotics-perception-verification-summary.json`. Twenty named Robotics findings were completed across the two groups. All non-DSP aggregate stages remain blocked.
+
+
+## Vehicle foundations scope — 2026-09-30
+
+Vehicle P01–P12 have individually authored explanations and embedded checkpoints, corrected dimensional plots and independently checked physical mechanisms. Four named Vehicle P13–P16 findings remain; Controls and Robotics have zero named findings. All non-DSP aggregate numerical, curriculum and capstone stages remain blocked. Original source/conversion evidence remains historical; revised native faults do not claim full-source equivalence. Complete delivery and mandatory gate status is retained in the active batch evidence.
+
+The Vehicle foundations revision completed full read-only delivery and mandatory sequential gates. Port 8776 is the verified development preview; exact image, frozen-input hashes and result counts are retained in `docs/course-quality/vehicle-foundations-verification-summary.json`. Four Vehicle findings and all non-DSP aggregate reviews remain open.

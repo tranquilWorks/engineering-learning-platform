@@ -1,44 +1,45 @@
 schema_version: 1
 batch:
-  id: ELP-ROBOTICS-PERCEPTION-QUALITY-08
-  title: Repair eight Robotics perception and mapping findings
-  goal: Complete the owner-authorized remaining Robotics P42-P48/P52 findings with executed perception/mapping
-    mechanisms, independent calculations and embedded lesson checkpoints, plus bounded predecessor normalization
-    and static-summary wording polish without numerical changes.
+  id: ELP-VEHICLE-FOUNDATIONS-QUALITY-12
+  title: Repair twelve Vehicle motion, tire and chassis lesson findings
+  goal: Complete the first twelve of the owner-authorized sixteen Vehicle findings with dimensionally correct
+    plots, corrected physical models, separate numerical references and individual browser-embedded checkpoints.
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
   - products/engineering-learning-platform/COURSE_CALIBER.md
-  - Owner authorized all twenty Robotics findings and normal verified development merges; twelve dynamics lessons
-    have merged, and this is the remaining eight-lesson group.
-  - 'Target remaining register: Robotics P42-P48 and P52.'
+  - Owner explicitly approved repairing Vehicle P01-P12 then P13-P16, with standing verified development-merge
+    authorization.
+  - Target additional-semantic-findings register and direct P07 force/moment-balance failure at default inputs.
   milestone: products/engineering-learning-platform/roadmap.yaml#ELP-M3
-  baseline_commit: f04472f16fc1da00e817d385eaef0a63f3c71b48
-  baseline_tree: df3b63e993c4d488b2a280868c29a3e220523e11
+  baseline_commit: 607c716993be14e7b782897ab054a7f8478f5dc0
+  baseline_tree: fb4226161d8df721b42f28f1ed2913310b76a9b0
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_baseline: a504947dfc6d129aa1303add20ee53ba21c1cf88
-  control_plane_path: products/engineering-learning-platform/batches/ELP-ROBOTICS-PERCEPTION-QUALITY-08.yaml
+  control_plane_baseline: 14d624e25e7038fae18d4ab0af5122d4577c4564
+  control_plane_path: products/engineering-learning-platform/batches/ELP-VEHICLE-FOUNDATIONS-QUALITY-12.yaml
   target_repository: tranquilWorks/engineering-learning-platform
-  predecessor_pr: 57
+  predecessor_pr: 58
 dependencies:
-- ELP-ROBOTICS-DYNAMICS-QUALITY-12
+- ELP-ROBOTICS-PERCEPTION-QUALITY-08
 scope:
   allowed_paths:
-  - courses/robotics-autonomy/modules/42-*/**
-  - courses/robotics-autonomy/modules/43-*/**
-  - courses/robotics-autonomy/modules/44-*/**
-  - courses/robotics-autonomy/modules/45-*/**
-  - courses/robotics-autonomy/modules/46-*/**
-  - courses/robotics-autonomy/modules/47-*/**
-  - courses/robotics-autonomy/modules/48-*/**
-  - courses/robotics-autonomy/modules/52-*/**
-  - courses/robotics-autonomy/expansion_reference_cases.py
-  - courses/robotics-autonomy/competency-map.yaml
-  - courses/robotics-autonomy/expansion-map.yaml
+  - courses/vehicle-dynamics/modules/01-*/**
+  - courses/vehicle-dynamics/modules/02-*/**
+  - courses/vehicle-dynamics/modules/03-*/**
+  - courses/vehicle-dynamics/modules/04-*/**
+  - courses/vehicle-dynamics/modules/05-*/**
+  - courses/vehicle-dynamics/modules/06-*/**
+  - courses/vehicle-dynamics/modules/07-*/**
+  - courses/vehicle-dynamics/modules/08-*/**
+  - courses/vehicle-dynamics/modules/09-*/**
+  - courses/vehicle-dynamics/modules/10-*/**
+  - courses/vehicle-dynamics/modules/11-*/**
+  - courses/vehicle-dynamics/modules/12-*/**
+  - courses/vehicle-dynamics/reference_cases.py
+  - courses/vehicle-dynamics/coverage.yaml
+  - apps/api/tests/test_vehicle_foundations_quality.py
+  - apps/api/tests/test_vehicle_dynamics_course.py
   - apps/api/tests/test_robotics_perception_quality.py
-  - apps/api/tests/test_robotics_dynamics_quality.py
-  - apps/api/tests/test_robotics_expansion.py
-  - apps/api/tests/test_capstone_quality_revision.py
   - apps/api/tests/test_dsp_aggregate_quality.py
   - apps/api/tests/test_dsp_fidelity_remediation*.py
   - apps/api/tests/test_course_caliber_status.py
@@ -46,7 +47,7 @@ scope:
   - apps/web/src/lesson-quality.json
   - scripts/audit_course_quality.py
   - scripts/browser-quality.mjs
-  - scripts/verify-robotics-perception-quality.py
+  - scripts/verify-vehicle-foundations-quality.py
   - scripts/verify-course-delivery.sh
   - tests/browser/delivery.spec.ts
   - contracts/active-batch.yaml
@@ -59,27 +60,21 @@ scope:
   - docs/CURRENT_STATE.md
   - docs/HANDOFF.md
   - docs/ROADMAP.md
-  - docs/evidence/ELP-ROBOTICS-PERCEPTION-QUALITY-08-*
-  - courses/robotics-autonomy/modules/31-derive-manipulator-inertia-coriolis-and-gravity-terms/experiment.py
-  - courses/robotics-autonomy/modules/31-derive-manipulator-inertia-coriolis-and-gravity-terms/lesson.md
-  - courses/robotics-autonomy/modules/31-derive-manipulator-inertia-coriolis-and-gravity-terms/module.yaml
-  - courses/robotics-autonomy/modules/32-compute-inverse-dynamics-and-identify-robot-parameters/module.yaml
-  - courses/robotics-autonomy/modules/34-compare-joint-space-and-task-space-tracking/module.yaml
-  - courses/robotics-autonomy/modules/36-control-motion-in-operational-space/module.yaml
-  - courses/robotics-autonomy/modules/37-compare-impedance-and-admittance-control/module.yaml
-  - courses/robotics-autonomy/modules/40-swing-up-and-balance-an-underactuated-robot/module.yaml
-  - courses/robotics-autonomy/modules/41-project-3d-points-with-a-pinhole-camera/module.yaml
+  - docs/evidence/ELP-VEHICLE-FOUNDATIONS-QUALITY-12-*
   forbidden_paths:
   - courses/*-learning/**
   - courses/dsp-radar/**
   - courses/controls-gnc/**
-  - courses/vehicle-dynamics/**
+  - courses/robotics-autonomy/**
   - courses/demo-radar/**
   - courses/platform-showcase/**
   - courses/*/course.yaml
   - courses/*/source-map.yaml
   - courses/*/fidelity-map.yaml
   - courses/*/fixtures/**
+  - courses/vehicle-dynamics/competency-map.yaml
+  - courses/vehicle-dynamics/conversion-manifest.yaml
+  - courses/vehicle-dynamics/expansion*
   - .gitmodules
   - apps/api/src/**
   - apps/web/src/components/**
@@ -87,89 +82,86 @@ scope:
   - .github/**
   - products/**
 acceptance:
-- Activate only after this control contract merges, from exact target PR57 merge f04472f16fc1da00e817d385eaef0a63f3c71b48
-  and tree df3b63e993c4d488b2a280868c29a3e220523e11. Repair exactly existing Robotics P42-P48/P52. Preserve
-  all290 identities, source pins, prerequisite graph, unselected module payloads and unselected reference definitions/origins/five-case
-  outputs, including the completed P25-P41 and capstone repairs, except the explicitly bounded P31 wording
-  and six static-summary clarifications below.
-- 'Clarify only P31 wording in experiment.py explanations, lesson.md and module.yaml summary: its existing
-  defect is ||S+S^T|| with S=Mdot-2C, twice the conventional symmetric-part norm. Do not change its numerical
-  program, arrays, control values, metrics, signatures or retained evidence. Add a preservation check proving
-  that only the declared strings and explanatory prose changed; the prior live62 checks remain intact.'
-- Replace only static module.yaml summary fields in P32/P34/P36/P37/P40/P41 with parameter-independent lesson
-  overviews so baseline rank, conditioning, settling, capture or visibility results are not mistaken for the
-  selected run. Preserve every other manifest field and all numerical payloads; retain the dynamic interpretation
-  panels and add a preservation check.
-- P42 must generate actual synthetic calibration views, fit declared intrinsic/distortion parameters and reproject
-  independent held-out points. A known-extrinsic calibration subproblem is permitted if explicitly bounded.
-  Report actual parameter error, regressor conditioning/rank and held-out residuals. The missing-distortion
-  fault preserves selected controls and may be benign at zero distortion; do not claim full joint intrinsic/extrinsic
-  calibration without executing it.
-- P43 must sample actual synthetic images, compute a corner/feature response, threshold and suppress candidates,
-  and derive descriptors from pixel patches with an executed orientation treatment. Compute geometric repeatability
-  and descriptor distances from detected features. An orientation-normalization fault need not change geometric
-  detection repeatability or count. Retain zero-rotation and unavailable-match cases honestly; do not claim
-  SIFT, scale or general viewpoint invariance from a fixed-scale patch lab.
-- P44 must fit an actual correspondence consensus model and refit selected inliers, comparing an executed nonrobust
-  fit. A declared translation-only exhaustive hypothesis problem is permitted; distinguish it from random RANSAC
-  confidence or general epipolar geometry. Measure actual residual masks, parameter error and false acceptance
-  against synthetic truth. Preserve selected outlier fraction/threshold and expose failed consensus at difficult
-  settings rather than assign success.
-- P45 must construct calibrated stereo observations, triangulate actual rays and reproject the resulting point
-  through the declared cameras. A wrong rectification/pose assumption must create a measured residual rather
-  than a fixed mode flag. Derive uncertainty from declared observation noise and the executed triangulation
-  Jacobian; keep physical units, positive-depth assumptions and singular/low-disparity limits explicit.
-- P46 must solve a declared rigid pose from actual synthetic 3D landmark projections with selected noise and
-  visible count, retaining the fitted transform and pixel residuals. Full six-DOF pose is the intended scope;
-  any narrower family requires explicit lesson/title boundaries and review before closure. The initializer,
-  positive-depth branch, Jacobian/rank, local convergence and calibration assumptions must be disclosed. The
-  fault changes an actual estimation assumption while preserving selected noise/count; no assigned error formula.
-- P47 must trace actual range beams through a declared occupancy grid and accumulate free/occupied evidence
-  with a specified inverse sensor model. Compute cell probabilities, entropy and truth-based error/coverage
-  from that grid. An endpoint-only fault leaves traversed free space unknown, so report missed free-space evidence
-  rather than falsely claim invented false-free cells. Preserve unobserved priors, ray corner-tie conventions
-  and correlation/confidence boundaries.
-- P48 must execute repeated nearest correspondences and rigid transformation updates with actual stopping/insufficient-match
-  status. A planar SE(2) cloud is permitted with explicit scope; do not imply general 3D or global convergence.
-  Outlier filtering or a composition fault must operate on actual correspondences. Retain transform, objective/correspondence
-  history, actual iteration count and local-minimum outcomes. Do not mix rotation and translation in an undimensioned
-  pose-error metric.
-- P52 must preserve selected appearance/geometric controls in both modes, construct an actual anchored graph
-  and solve it again with accepted loop factors. Compute final factor influence, objective and map displacement
-  from optimized states. Geometric rejection and robust influence must be executed; a translation-only graph
-  is permitted if declared. Independently verify the anchor, residuals, stationarity and zero/rejected-factor
-  limits. No fixed-factor deformation surrogate.
-- Author eight substantial portable lessons and embedded Course checkpoints with equations/units, worked examples,
-  predictions, two one-variable sweeps, causal faults/recovery, limits and reasoning rubrics. Preserve existing
-  lesson identities/control ranges and inventory; accurately narrow labels where needed. Render real mechanism
-  arrays with readable desktop/mobile axes, legends and zero-span behavior; avoid magnifying numerical roundoff
-  into physical claims.
-- Retain five independently formulated scenarios per selected lesson at unchanged1e-8 absolute/relative tolerance.
-  Expected evidence comes only from separate references and actual evidence only from production. Test full
-  arrays/geometry/solutions and physical or statistical invariants beyond three-number summaries. Execute all64
-  control corners through the unchanged three-second runtime, with meaningful degenerate/failure limits.
-- Anchor the prior Robotics dynamics scope/reference guards to its exact PR56-to-merged-revision trees while
-  preserving all62 live checks. Add a new current-baseline preservation guard. Update only obsolete selected
-  surrogate invariants and successor-contract bindings; no weakened tolerance, runtime, source protection or
-  unrelated numerical checks.
-- Close only selected findings after independent numerical and selected baked browser checks pass. Final read-only
-  nonroot delivery must verify all290 HTTP modules, all580 desktop/mobile pages, all existing plus eight new
-  checkpoints, all revised control/fault/recovery/reset/drawn-plot sequences, actual plot-text clipping/overlap
-  checks, all290 host/baked identities and40 independent HTTP comparisons. Then run contract, quick and full
-  sequentially. Hosted CI remains separately reported/nonmandatory.
-- 'After verified closure retain16 named findings: Controls0, Robotics0, Vehicle16. Keep all three non-DSP
-  aggregate numerical/curriculum/capstone reassessments blocked, including courses with zero named findings.
-  The defect register is non-exhaustive. Preserve DSP authored/software aggregate acceptance. No representative
-  learner, manual screen-reader, MATLAB, hardware, production or concurrent-capacity claims.'
-- Publish exact reviewable evidence and perform an eligible normal exact-head development merge under standing
-  owner authorization, then reconcile Portfolio Control. This completes the requested twenty Robotics findings.
-  Do not activate Vehicle repairs, inventory expansion or course-wide aggregate acceptance. Preserve historical
-  local/hosted discrepancies and billing limits without changing account/workflow/protection settings.
+- Activate only after this control contract merges, from target PR58 merge 607c716993be14e7b782897ab054a7f8478f5dc0,
+  tree fb4226161d8df721b42f28f1ed2913310b76a9b0. Repair exactly existing Vehicle P01-P12. Preserve 290 identities,
+  all source pins and prerequisite/competency graph, all unselected module bytes and P13-P24 reference definitions
+  and retained outputs; preserve every earlier course repair.
+- Replace generic SI signature charts with actual physical relationships and consistently dimensioned traces.
+  Every trace declares its quantity/unit and every axis names its variable/unit. Keep unlike quantities separate;
+  show status or explicit unavailable semantics at singular/invalid cases rather than invent finite physical
+  results. Preserve the four existing output identifiers and controls/ranges; improve labels and accurately
+  narrow titles where necessary.
+- 'P01: plot the actual constant-curvature path and check yaw=V*kappa and ay=V*yaw. Distinguish demanded kinematics
+  from grip-feasible motion. Replace the arbitrary lateral-acceleration multiplier with a declared actual modeling
+  fault such as bypassing steering ratio. Preserve the correct nominal relation and show zero-steer/sign/speed
+  limits.'
+- 'P02: expose applied traction, rolling resistance, drag and net acceleration with Newton balance. Existing
+  0..9000 N requests never reach the declared traction limit, so replace the inert saturation-bypass fault
+  with an executed omission of road loads. Explain the constant rolling-resistance low-speed approximation,
+  including zero speed; do not claim stopped-vehicle dynamics.'
+- 'P03: show axle normal loads and longitudinal moment balance, including load sum, acceleration-sign reversal
+  and wheel-lift limits. An injected CG/load-distribution error must have a measured balance residual; do not
+  label negative contact loads physically achievable.'
+- 'P04-P06: execute radial friction-circle projection and signed saturating longitudinal/lateral tire laws.
+  Show force-plane geometry and force-slip curves with explicit conventions. Check zero slip, odd symmetry,
+  initial slope, force capacity, projection direction and limit cases. Faults alter the actual projection or
+  sign convention; zero excitation may make a fault benign.'
+- 'P07: correct the inconsistent speed factors in the steady bicycle equations. Compute sideslip, yaw, both
+  axle slips and forces; directly verify Fy_front+Fy_rear=m*V*r and lf*Fy_front-lr*Fy_rear=0. Use a separately
+  derived reference, preferably solving force/moment balance before tire compatibility. A fault may reproduce
+  the old inconsistent equations with explicit residuals; preserve selected steering/speed, and distinguish
+  small-angle validity from equilibrium correctness.'
+- 'P08: show understeer coefficient and the actual speed-dependent steering relation with units; distinguish
+  understeer, neutral steer, oversteer and the critical-speed boundary. Do not present zero as a physical critical
+  speed for understeer. Replace a default-benign mode flag with an executed omission of the tire-compliance
+  term, retaining genuinely benign neutral limits and honest near-singular/unstable interpretation.'
+- 'P09: derive wheel rate from the stated displacement motion ratio and virtual work; verify static deflection,
+  ride frequency and ratio-squared scaling. Compare an executed single-ratio fault using the same controls.'
+- 'P10: render a true bounded second-order transient from its ODE/state transition. Cover underdamped, critical,
+  overdamped and negative-damping behavior; correctly label pole/time-scale approximations and unavailable
+  settling rather than claiming a universal four-over-zeta-omega settling time. Independently verify response
+  and dynamics across regimes.'
+- 'P11: show roll angle, axle transfer and moment closure from physical roll stiffness. Handle singular/negative
+  effective stiffness honestly or use a nonsingular but measurable omission fault. Check total moment, load-transfer
+  convention and stiffness-distribution limits; do not silently return zero angle as a solution of a singular
+  balance.'
+- 'P12: bound the lesson to the executed camber-thrust/toe-scrub model, with angle conversion, force and power
+  units, sign conventions, zero-angle limits and a real degree/radian fault. Do not imply full suspension kinematics
+  from a linear empirical thrust approximation.'
+- Author twelve substantial lesson-specific portable explanations and embedded Course checkpoints with equations/units,
+  worked calculations, predictions, two one-variable sweeps, causal fault/recovery, limits and reasoning rubrics.
+  Avoid repeated generic prose. Match live explanations and chart interpretation to selected controls. Preserve
+  inventory and graph; original conversion/source evidence stays historical rather than implying unchanged
+  source equivalence for revised native faults.
+- Retain five independently formulated cases per lesson at the existing 1e-10 absolute/relative tolerance and
+  three-second runtime. Expected evidence must never import production or consume its output; compare full
+  mechanisms/arrays and independent physical identities beyond scalar signatures. Run all 96 runtime-control
+  corners, including zero/critical/degenerate limits where appropriate. Update only selected expected/actual/verification
+  evidence and selected coverage records/digests; original source pins, mappings, fixtures and unselected coverage
+  fields remain unchanged.
+- Anchor the preceding Robotics perception scope/reference preservation guards to their exact historical PR57-to-PR58
+  trees while preserving all live numerical and prior prose-preservation checks. Add current-baseline Vehicle
+  preservation guards. Update only obsolete selected assertions and active-contract bindings; no tolerance,
+  runtime or source-protection weakening.
+- Close the twelve selected findings only after independent and selected baked browser checks pass. Final read-only
+  nonroot delivery verifies 290 HTTP modules, 580 desktop/mobile pages, all existing plus twelve checkpoints,
+  all revised control/fault/recovery/reset and drawn-plot sequences, actual SVG text/legend layout checks,
+  290 matching host/baked identities and sixty independent HTTP comparisons. Inspect lesson plot grids on mobile
+  and representative desktop pages. Then run mandatory contract, quick and full gates sequentially. Hosted
+  CI remains separately reported/nonmandatory.
+- 'After verified closure retain four named findings: Controls 0, Robotics 0, Vehicle 4 (P13-P16). All three
+  non-DSP aggregate numerical/curriculum/capstone reassessments remain blocked, including zero-finding courses.
+  Preserve DSP aggregate disposition. No representative-learner, manual-screen-reader, MATLAB, measured vehicle,
+  hardware, concurrent-capacity or production claims.'
+- Publish exact evidence and complete a normal exact-head development merge under standing owner authorization,
+  then reconcile Portfolio Control. Continue the already-authorized P13-P16 group only after this verified
+  merge and a fresh exact-baseline successor contract. Do not expand inventory or activate aggregate acceptance.
+  Preserve hosted/local discrepancies and account limits without changing workflows, protections or billing.
 validation:
   local:
-  - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_robotics_perception_quality.py
-    apps/api/tests/test_robotics_expansion.py
-  - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-robotics-perception-quality.py
+  - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_vehicle_foundations_quality.py
+    apps/api/tests/test_vehicle_dynamics_course.py
+  - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-vehicle-foundations-quality.py
   - npm run typecheck
   - npm run build
   - npm run test:web
@@ -181,29 +173,28 @@ validation:
   - ./scripts/agent-verify.sh full
   - git diff --check
   focused_tests_to_add:
-  - Separate numerical/geometry formulations and full-solution/array comparisons.
-  - All64 runtime control corners, positive-depth/rank/convergence/unknown-cell/rejected-closure limits.
-  - Exact preservation, eight embedded checkpoints, actual browser plots with readable units and labels.
+  - Independent solutions, full dimensional curves and physical invariants for each lesson.
+  - All 96 runtime corners; zero-slip/steering, force/moment balance, grip, critical and damping regimes.
+  - Exact unselected preservation, twelve embedded checkpoints and real readable browser plots.
   required_ci:
   - Hosted CI nonmandatory under retained owner direction; all named local gates mandatory.
 risk:
   class: high
   hazards:
-  - Correlated synthetic image or geometry implementations hiding incorrect mechanisms.
-  - Overclaiming calibration, feature invariance, pose uniqueness or global registration/SLAM from a bounded
-    example.
-  - Host runtime/storage constraints undermining reproducible verification.
+  - Copied reference equations masking incorrect physics.
+  - Misleading dimensions, unavailable/singular values or empirical-model claims.
+  - Host storage/resource contention disrupting long verification.
   stop_conditions:
   - Need to change source pins, public schemas, generic runtime or unrelated lesson payloads.
   - Independent numerical or browser/container validation cannot be made credible.
   - Need learner personal data, actual vehicle/hardware or production access.
 rollback:
-  strategy: Revert this isolated group to target PR57 baseline and restore original findings; no schema or
-    persisted-data migration.
+  strategy: Revert this isolated group to target PR58 merge and rebuild the prior image; no schema or persisted-data
+    migration.
 evidence:
   output:
-  - docs/evidence/ELP-ROBOTICS-PERCEPTION-QUALITY-08-*.md
-  - docs/course-quality/robotics-perception-quality-revision.json
+  - docs/evidence/ELP-VEHICLE-FOUNDATIONS-QUALITY-12-*.md
+  - docs/course-quality/vehicle-foundations-quality-revision.json
   - docs/course-quality/lesson-audit.json
   - docs/COURSE_QUALITY.md
   claim_boundary: Deterministic synthetic numerical/browser/container evidence only. No representative learner,
