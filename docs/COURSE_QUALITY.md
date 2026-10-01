@@ -1,8 +1,8 @@
-# Revised-course quality position — 2026-09-30
+# Revised-course quality position — 2026-10-01
 
 All 288 native engineering lessons and two examples are embedded in Engineering
 Learning. Nine of the thirteen pinned source repositories remain source-only.
-Delivery PR52 is merged: all 290 container HTTP and 580 desktop/mobile page checks
+Initial delivery PR52 is merged: all 290 container HTTP and 580 desktop/mobile page checks
 passed. Its historical evidence retains the exact image and screenshot hashes.
 
 | Curriculum | Native lessons | Current content position |
@@ -11,6 +11,8 @@ passed. Its historical evidence retains the exact image and screenshot hashes.
 | Controls/GNC | 68 | P36/P38/P42/P43/P45–P51/P55–P57/P60–P62/P64–P68 repaired within declared models; zero listed findings; aggregate reassessment remains blocked |
 | Robotics/Autonomy | 69 | P25–P48, P52 and P68–P69 repaired within declared models; zero listed findings; aggregate reassessment remains blocked |
 | Vehicle Dynamics | 67 | P01–P16 and P61–P67 repaired within declared models; zero listed findings; aggregate reassessment remains blocked |
+
+The implementation is merged in [PR60](https://github.com/tranquilWorks/engineering-learning-platform/pull/60) at `f58533582a617cf48741aa5349f26f5954e21d95`; [Portfolio Control PR588](https://github.com/tranquilWorks/portfolio-control/pull/588) closes it at `4fa6f144c2b2358308889232468ac88e0b27298a`. Both merge trees match their reviewed commits. The agreed implementation batches are ready for [human review](HANDOFF.md#human-review-entry-point); aggregate acceptance remains open.
 
 ## Final Vehicle powertrain, braking and aero revision
 
@@ -155,7 +157,7 @@ one at a time while inspecting pages in parallel; it changes neither request
 parameters nor server responses or runtime deadlines. Concurrent-user capacity
 is not certified by the delivery sweep.
 
-## Verified delivery result
+## Historical initial delivery result
 
 The baked image passed all 290 default HTTP/repeat/recovery checks and all
 580 Chromium desktop/mobile page checks, with no serious or critical automatic
@@ -194,11 +196,10 @@ DSP plot has drawn SVG or image evidence. Exact image: `sha256:53892d096feb4f23c
 This passes authored curriculum and retained synthetic model review. The P84
 pulsed chain does not execute the separate array/FMCW/imaging/passive branches,
 and selected first-scan controls do not alter its fixed baseline tracking sequence.
-The 60 other lesson findings and all human/physical/production acceptance limits
-remain. Historical item conversion claims are retained as provenance; current
+At that DSP closeout, 60 other lesson findings remained. Those findings are now closed by the later scoped revisions; human/physical/production acceptance limits remain. Historical item conversion claims are retained as provenance; current
 aggregate browser evidence is recorded separately rather than rewriting them.
 
-## Next twelve Controls model repairs
+## Completed twelve Controls model repairs
 
 ELP-GNC-SEMANTIC-QUALITY-12 repairs P36/P38/P42/P43/P45–P51/P55 and adds twelve
 individually authored Course checkpoints. These execute state feedback, CARE LQR,

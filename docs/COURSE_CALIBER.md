@@ -8,8 +8,8 @@ or learner outcomes.
 
 The authoritative machine-readable projection is
 [`course-caliber-status.yaml`](course-caliber-status.yaml). It implements
-Portfolio Control standard `ELP-COURSE-CALIBER-1` with the navigation/geometry revision contract at merged control
-revision `15f2c1537b2be9710143d03ffbc182574de51376`. DSP retains its separate
+Portfolio Control standard `ELP-COURSE-CALIBER-1` with the final Vehicle revision closed by control
+PR588 at `4fa6f144c2b2358308889232468ac88e0b27298a`. DSP retains its separate
 aggregate evidence from control revision `7b2e3c1e425b196b400856a714f699f2e225a83a`.
 
 ## Six separately evidenced stages
@@ -55,56 +55,45 @@ import the production entrypoint, derive values from production output, or
 perturb production output. Those artifacts may be useful regression fixtures,
 but they are not independent correctness oracles.
 
-## Current disposition (2026-09-29)
+## Current disposition (2026-10-01)
 
-| Course | Native interactive lessons | Required follow-up |
+| Course | Native interactive lessons | Current review position |
 | --- | ---: | --- |
 | DSP/Radar | 84 | Authored/software aggregate review passed: 84 checkpoints, ten cumulative portfolios and 417 independent comparisons; learner validation not_run |
-| Controls/GNC | 68 | Zero listed findings; 22 lessons have scoped repairs; aggregate reassessment remains pending |
-| Robotics/Autonomy | 69 | 20 remaining affected lessons; P25–P29 and two capstones have scoped repairs |
-| Vehicle Dynamics | 67 | 16 remaining affected lessons: P01–P16 mixed-unit charts; P61–P67 have scoped numerical/physical repairs |
+| Controls/GNC | 68 | Zero named findings; 22 scoped repairs complete; aggregate numerical, curriculum and capstone reassessment remains open |
+| Robotics/Autonomy | 69 | Zero named findings; 27 scoped repairs complete, including the twenty requested dynamics/perception findings; aggregate reassessment remains open |
+| Vehicle Dynamics | 67 | Zero named findings; P01–P16 and P61–P67 scoped repairs complete; aggregate reassessment remains open |
 
-Controls, Robotics and Vehicle aggregate numerical, curriculum and capstone
-statuses remain blocked. DSP passes its separate authored/synthetic reassessment. Prior maps, references and tests are retained;
-the newly demonstrated defects override earlier passed labels. Learner
-validation is `not_run` for every course. Browser/container acceptance is a
-separate delivery check and cannot promote educational maturity.
+All 72 named findings are closed within their retained model and evidence boundaries. Implementation and Portfolio Control closeout are merged. All 290 modules passed HTTP checks and all 580 desktop/mobile pages passed in the final image. See [the quality board](COURSE_QUALITY.md) and [human review handoff](HANDOFF.md#human-review-entry-point).
 
-See [the per-lesson quality board](COURSE_QUALITY.md) for the initial twelve-lesson
-semantic revision group, exact findings and delivery evidence. Nine other
-pinned repositories remain source-only. No MATLAB runtime, physical hardware,
-measured vehicle/track, representative learner or production claim is made.
+Controls, Robotics and Vehicle aggregate numerical, curriculum and capstone statuses remain blocked until their separate course-level reassessments are evidenced. Zero named findings is not exhaustive acceptance and these reviews may identify further implementation work. Learner validation and manual screen-reader review have not run for any course. DSP retains its separate authored/synthetic aggregate disposition.
 
-The wider direct review records 72 affected lessons, including 60 outside the
-initial twelve-lesson repair. Finishing that group alone cannot close Controls,
-Robotics or Vehicle aggregate maturity. See the per-lesson additional finding register.
+Nine other pinned repositories remain source-only. MATLAB runtime, measured vehicle/track, hardware, concurrent capacity and production validation are not claimed. No inventory expansion or maturity promotion is included in this closeout.
 
-The separate DSP aggregate review closes its declared authored curriculum and
-synthetic numerical/pulsed-capstone scope. Controls, Robotics and Vehicle remain
-blocked: 36 named findings remain in Robotics/Vehicle, and Controls requires a separate aggregate reassessment despite zero listed findings. No course has representative-learner validation.
-See course-caliber-status.yaml and the exact aggregate evidence.
+## Historical revision evidence
 
+The dated records below retain the finding counts at each earlier closeout. The current counts are zero for Controls, Robotics and Vehicle.
 
-## Robotics dynamics scope — 2026-09-29
+### Robotics dynamics scope — 2026-09-29
 
 Control PR569 authorized Robotics P30-P41. These twelve scoped repairs add real mechanisms, independent calculations and embedded formative checkpoints. Eight named Robotics findings remain (P42-P48/P52), alongside sixteen Vehicle findings. All non-DSP aggregate numerical, curriculum and capstone reviews remain blocked. Completing the named register is not aggregate acceptance. The active batch evidence records the required delivery/gate status.
 
 The Robotics dynamics batch completed full delivery and mandatory sequential gates. Its verified development preview is port 8774; exact image, input hashes, results and remaining acceptance boundaries are in `docs/course-quality/robotics-dynamics-verification-summary.json`. This scoped result does not promote an aggregate course stage.
 
 
-## Robotics perception scope — 2026-09-30
+### Robotics perception scope — 2026-09-30
 
 The remaining eight Robotics P42-P48/P52 findings have executed synthetic mechanisms, separate numerical references and embedded formative checkpoints. Zero named Robotics findings remain, alongside sixteen Vehicle findings. All non-DSP aggregate numerical, curriculum and capstone reviews remain blocked. A completed defect register is not aggregate course acceptance. Exact delivery and gate status is retained in the active batch evidence.
 
 The Robotics perception batch completed full delivery and mandatory sequential gates. Its verified development preview is port 8775; exact image, input hashes and counts are in `docs/course-quality/robotics-perception-verification-summary.json`. Twenty named Robotics findings were completed across the two groups. All non-DSP aggregate stages remain blocked.
 
 
-## Vehicle foundations scope — 2026-09-30
+### Vehicle foundations scope — 2026-09-30
 
 Vehicle P01–P12 have individually authored explanations and embedded checkpoints, corrected dimensional plots and independently checked physical mechanisms. Four named Vehicle P13–P16 findings remain; Controls and Robotics have zero named findings. All non-DSP aggregate numerical, curriculum and capstone stages remain blocked. Original source/conversion evidence remains historical; revised native faults do not claim full-source equivalence. Complete delivery and mandatory gate status is retained in the active batch evidence.
 
 The Vehicle foundations revision completed full read-only delivery and mandatory sequential gates. Port 8776 is the verified development preview; exact image, frozen-input hashes and result counts are retained in `docs/course-quality/vehicle-foundations-verification-summary.json`. Four Vehicle findings and all non-DSP aggregate reviews remain open.
 
-## Final Vehicle selected revision
+### Final Vehicle selected revision
 
 P13–P16 have independent numerical and selected baked browser evidence, individual lessons and embedded checkpoints. The named register is now Controls 0, Robotics 0, Vehicle 0. All three non-DSP aggregate reviews remain blocked. Full delivery and mandatory sequential gates passed; port 8777 is the verified preview. Exact results are retained in docs/course-quality/vehicle-driveline-verification-summary.json. No learner, physical or production acceptance is implied.
