@@ -1,15 +1,33 @@
-# Verified final Vehicle revision — 2026-09-30
+# Revision closeout and review handoff — 2026-10-01
 
-Vehicle P13–P16 now have corrected physical models, dimensioned plots, substantial individual lessons and browser-embedded Course checkpoints. This completes all sixteen findings in the owner-authorized twelve-plus-four Vehicle revision under ELP-VEHICLE-DRIVELINE-QUALITY-04. The exact baseline is target PR59 merge `1a0041bd24de1168c03ff2bf2a656a6061cac0e3`; control contract PR584 merged at `24be9b00abf25b29b861241ef0e3204948ea9078` before activation. The development PR records integration; Portfolio Control closeout binds the final merge SHA.
+Vehicle P13–P16 now have corrected physical models, dimensioned plots, substantial individual lessons and browser-embedded Course checkpoints. This completes all sixteen findings in the owner-authorized twelve-plus-four Vehicle revision under ELP-VEHICLE-DRIVELINE-QUALITY-04. The exact baseline is target PR59 merge `1a0041bd24de1168c03ff2bf2a656a6061cac0e3`; control contract PR584 merged at `24be9b00abf25b29b861241ef0e3204948ea9078` before activation. The implementation is merged in [PR60](https://github.com/tranquilWorks/engineering-learning-platform/pull/60) at `f58533582a617cf48741aa5349f26f5954e21d95`; [Portfolio Control PR588](https://github.com/tranquilWorks/portfolio-control/pull/588) closes it at `4fa6f144c2b2358308889232468ac88e0b27298a`. Both merge trees match their reviewed commits.
 
 Twenty independent local and twenty baked HTTP full-mechanism comparisons passed at unchanged 1e-10 absolute/relative tolerance. The 106 focused/regression tests include all 32 new runtime corners and preserved foundation physics. Twenty-nine closure and active-contract regressions passed. Final delivery passed 290 HTTP modules, 580 desktop/mobile pages, 288 checkpoint checks, twenty cumulative DSP checks, 174 real control/fault/recovery/reset sequences, 176 screenshots, 72 SVG text/legend layout checks and all 290 host/baked identities. Thirteen web tests and 23 focused browser tests passed, including actual-control crossover/redline/unavailable classifications. Eight plot captures were visually inspected. Mandatory gates passed sequentially (contract: 103 tests in 116.81 seconds; quick: 1612 tests in 1657.60 seconds; full: 1612 tests in 1594.55 seconds). See [batch evidence](evidence/ELP-VEHICLE-DRIVELINE-QUALITY-04-2026-09-30.md) and [exact verification summary](course-quality/vehicle-driveline-verification-summary.json).
 
-**Zero named findings remain: Controls 0, Robotics 0, Vehicle 0.** All three non-DSP aggregate numerical, curriculum and capstone reassessments remain blocked; the targeted register is not exhaustive course acceptance. DSP retains its separate authored/software aggregate disposition. Complete the normal verified development merge and Portfolio Control closeout; no other backlog or aggregate acceptance work is activated. Inventory remains 288 engineering lessons plus two examples, with nine pinned source-only repositories.
+**Zero named findings remain: Controls 0, Robotics 0, Vehicle 0.** All three non-DSP aggregate numerical, curriculum and capstone reassessments remain blocked; the targeted register is not exhaustive course acceptance. DSP retains its separate authored/software aggregate disposition. The agreed repair batches are complete and published. Course-level numerical, curriculum and capstone acceptance remains a separate review; it may identify further work. Inventory remains 288 engineering lessons plus two examples, with nine pinned source-only repositories.
 
 Verified read-only nonroot development preview: `http://127.0.0.1:8777`; image `sha256:a1e97af00da778bbb271e557d6dae6c3355c43c7f19867224cd78299da644985`. Earlier final previews remain preserved. Hosted CI is separately reported and nonmandatory under owner direction; required local gates passed. Representative learners, manual screen-reader, MATLAB, measured vehicle, hardware, concurrent capacity and production validation remain unperformed.
 
+
+The owner reconfirmed on 2026-10-01 that CI/CD does not block this development closeout. Hosted PR60 finished with frontend passed, backend failed and container skipped; the control hosted job did not start because of its recorded account restriction. These hosted outcomes remain separate from the successful mandatory local verification. No workflow or protection was changed.
+
+## Human review entry point
+
+Open [Engineering Learning](http://127.0.0.1:8777). All 288 native engineering lessons and two examples are available in the verified container. The browser's Lesson review and evidence disclosure identifies each lesson's actual review scope. The [quality board](COURSE_QUALITY.md), [finding history](course-quality/additional-semantic-findings.md) and [final verification summary](course-quality/vehicle-driveline-verification-summary.json) retain the supporting records.
+
+| Review | Evidence to inspect | Decision still needed |
+| --- | --- | --- |
+| Course-level technical and curriculum review | Each course's competency map, individual lessons, independent numerical evidence and integrated capstones; review all nine dimensions in [the caliber gate](COURSE_CALIBER.md) | Accept or record specific new findings for Controls, Robotics and Vehicle; their aggregate stages remain blocked until this review is evidenced |
+| Learner usability and learning | Predictions, control sweeps, explanations, Course checkpoints and cumulative reasoning tasks with representative learners | Record actual comprehension and usability outcomes; no study has run |
+| Manual accessibility | Keyboard navigation, equations, plots, tables and checkpoints with a screen reader | Record manual results separately from the passed automated browser checks |
+
+For a quick review of the last group, open Vehicle P13–P16. P13 distinguishes torque curtailment from power loss; P14's 2.09 to 2.08 ratio setting produces the verified near-redline crossover; P15 exposes a heat-budget fault; P16 separates aerodynamic axle contributions from total wheel loads. Toggle each fault, recover, reset and complete its checkpoint.
+
+Record new findings with course/module, inputs, observed behavior, expected reasoning and evidence. Completion of the named repair register does not establish that these remaining reviews will find no additional work. Nine source-only repositories, physical validation and production deployment remain outside this delivered revision.
+
 ---
 
+<!-- Historical snapshots below retain the status at their recorded dates. -->
 # Verified Vehicle foundations revision — 2026-09-30
 
 Vehicle P01–P12 now have corrected physical models and dimensioned plots, twelve substantial individual lessons and twelve browser-embedded Course checkpoints. This completes the first group of the owner-authorized twelve-plus-four Vehicle revision under ELP-VEHICLE-FOUNDATIONS-QUALITY-12. The exact baseline is target PR58 merge `607c716993be14e7b782897ab054a7f8478f5dc0`; control contract PR580 merged at `604c55bfa992cbdb6884f8257cb052cf4b1c7714` before activation. The development PR records integration; Portfolio Control closeout binds the final merge SHA.
