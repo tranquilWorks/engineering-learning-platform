@@ -533,6 +533,51 @@ Examples:
 - A digital systems lesson may explain FPGA architecture, then hand off to FPGA Data Path for implementation depth.
 - A systems lesson may explain HIL/HWIL roles, then hand off to the Embedded RT/HIL and HWIL Systems tracks for execution depth.
 
+### Breadth-course time box and learner pace
+
+The breadth layer is intentionally designed for a **single-weekend learning session**, not a semester-equivalent workload disguised as a short course.
+
+Planning targets:
+
+- **2–6 learner hours per breadth course**, with approximately **4 hours as the default design point**;
+- normally **12–20 concise modules**, with the module count driven by the competency map rather than padding;
+- approximately **8–15 minutes of active learner time per ordinary module**;
+- approximately **20–30 minutes for a final systems-engineer challenge**;
+- no required multi-week homework, long derivation sets, literature reviews, memorization-heavy exams or specialist implementation projects;
+- a learner should normally be able to start and finish one breadth course over one weekend, even if they split it across two sittings.
+
+Across the currently scoped 56 breadth courses, this implies roughly **112–336 learner hours total**, with a central planning estimate near **224 hours**. At a pace of about one course per weekend, the complete breadth layer is intentionally a roughly **one-year to fourteen-month journey**, not another four-year degree program.
+
+The time box is a curriculum constraint, not merely an estimate. If a proposed breadth course cannot credibly teach its recognition/reasoning outcomes inside the 2–6 hour envelope, authors should first:
+
+1. remove specialist derivations or repetitive calculation practice;
+2. replace procedural math with visual, dimensional or computational intuition;
+3. merge duplicated concepts;
+4. move implementation-level material to an existing depth course or an explicit future depth handoff;
+5. split the domain only when it contains genuinely distinct systems-level competencies that cannot be understood coherently as one survey.
+
+Rare exceptions above six hours require explicit competency-map justification. "The university version takes a semester" is not sufficient justification: the breadth course is intentionally teaching a different level of mastery.
+
+The learner outcome after a weekend is **domain literacy and first-principles orientation**, not professional qualification. The learner should be able to say, for example, "I understand what metacentric stability means, how moving the center of gravity affects a ship, what a righting-arm curve tells me, and what evidence I would need next" without being expected to perform a naval architect's complete stability analysis.
+
+### End-of-course systems-engineer challenge
+
+Every breadth course should end with one short, unfamiliar scenario that forces the learner to synthesize the course rather than repeat isolated lesson facts. Target duration is **20–30 minutes**.
+
+The challenge should ask the learner to do several of the following:
+
+- identify the governing domains and physical laws;
+- sketch the important energy, force, material, information or heat flows;
+- identify the quantities and units that matter;
+- make one or more order-of-magnitude estimates;
+- interpret a provided plot, schematic, measurement set or operating envelope;
+- identify plausible failure modes and eliminate at least one tempting but incorrect explanation;
+- choose the next useful measurement or experiment;
+- identify an unsafe assumption or stop-work condition;
+- state which neighboring discipline or depth track should take over next.
+
+These are reasoning exercises, not miniature professional certification problems. A Marine Engineering challenge might present a vessel with a changed cargo configuration, persistent roll and speed-dependent propeller vibration; the learner would reason across stability, encounter frequency, propulsion/cavitation and measurement choices without being asked to produce a class-approved stability booklet.
+
 ### Breadth-course learning contract
 
 Every breadth course should satisfy the following learning outcomes.
@@ -552,7 +597,7 @@ A learner who completes a course should be able to:
 
 ### Lesson format
 
-Planning target: normally 12–20 substantial lessons per breadth course. This is a target range, not a quota; final counts MUST come from a reviewed competency-to-module map under the existing Course Caliber rules.
+Planning target: normally 12–20 substantial lessons per breadth course and 2–6 total learner hours including the final challenge. This is a target range, not a quota; final counts MUST come from a reviewed competency-to-module map under the existing Course Caliber rules. A module should usually be short enough to complete in roughly 8–15 active minutes; several pages of readable material are acceptable when they remain concise and skimmable.
 
 A typical lesson should contain:
 
@@ -568,6 +613,8 @@ A typical lesson should contain:
 - an explicit cross-course handoff where deeper treatment already exists.
 
 The breadth layer should prefer dimensional reasoning, graphs, geometry, ratios, conservation laws and qualitative differential-equation behavior over algebraic grind. Calculus, differential equations, tensors, complex numbers and statistics may appear whenever they clarify the physics, but a learner should be able to complete the survey without becoming fluent at symbolic manipulation.
+
+A breadth lesson should not expand merely because the source discipline normally assigns substantial homework. Worked mathematics exists to reveal behavior, scales and tradeoffs. Repetitive symbolic practice, long proofs, software implementation drills and professional design workflows belong in depth curricula or optional enrichment. The governing question is whether the learner can **recognize, reason, estimate, diagnose and communicate**, not whether they can reproduce a textbook problem set.
 
 ### Suggested interaction vocabulary
 
@@ -2082,7 +2129,9 @@ The breadth program is complete only when the taxonomy coverage matrix shows eve
 - covered by a reviewed breadth course at the recognition/reasoning level; or
 - explicitly owned by an existing depth curriculum with a working handoff.
 
-The desired learner outcome is not "I can derive every equation." It is:
+The desired learner outcome is not "I can derive every equation." Nor is breadth-course completion intended to certify professional design competence. The product-level pacing target is that a motivated learner can complete roughly one breadth course per weekend and traverse the full 56-course breadth map in about a year, give or take.
+
+The desired outcome is:
 
 > I can look at an unfamiliar engineered system, recognize the physics and disciplines involved, reason about the dominant quantities and constraints, ask useful questions, make defensible first-order estimates, interpret evidence, avoid obvious category errors, and know what depth is required next.
 
