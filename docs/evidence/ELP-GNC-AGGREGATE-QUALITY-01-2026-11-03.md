@@ -30,7 +30,8 @@ All 68 lessons have individually authored referenced Course checkpoints. The
 nineteen earlier checkpoint texts are preserved. Twenty-two cumulative portfolios
 contain concrete tasks, linked labs, diagnosis/recovery and four-criterion rubrics.
 The competency graph has reciprocal module/assessment bindings, unchanged
-prerequisite edges and actual current titles. Referenced Markdown participates in
+prerequisite edges and actual current titles. The baseline target outcomes remain
+unchanged: partial component descriptions do not narrow the requested curriculum. Referenced Markdown participates in
 the real catalog digest. Only source-bound conversion target identities are
 reconciled; original conversion provenance and numerical claims are preserved.
 

@@ -15,12 +15,10 @@ scope:
   - Model, identify, linearize, realize, and validate dynamic plants with explicit operating domains and uncertainty.
   - Design and assess classical, multivariable, state-space, optimal, nonlinear, constrained, robust, adaptive,
     and digital feedback.
-  - Build and compare scalar stochastic filters, an EKF measurement update, an unscented transform, RTS smoothing,
-    frame rotations, one-axis inertial/error-state examples and synthetic pseudorange solving; identify their
-    full-system handoffs.
+  - Build and monitor stochastic, nonlinear, smoothed, inertial, GNSS, and error-state navigation estimates.
   - Generate waypoint, path, pursuit, proportional-navigation, terminal, and actuator-aware guidance commands.
-  - Connect identification/control/estimation in a scalar stress capstone, planar navigation/LOS/freshness
-    in a survey capstone, and event timing/drop/watchdog evidence in a software-HIL capstone.
+  - Integrate identification, control, estimation, navigation, guidance, constraints, monitoring, timing, faults,
+    and recovery in three cumulative capstones.
   exclusions:
   - Detailed aerodynamic derivative identification, propulsion, flexible-body, and vehicle-specific flight
     dynamics belong to Flight Dynamics.
@@ -357,8 +355,8 @@ competencies:
   - GNC-F53
   - GNC-F61
 - id: NONLINEAR-ESTIMATION
-  outcome: Compare a scalar EKF measurement update, Gaussian unscented-transform component and scalar RTS smoother;
-    hand recursive full UKF, particle and multiple-model depth to named adjacent courses.
+  outcome: Compare EKF, UKF, and smoothing approximations while handing particle and multiple-model methods
+    to named adjacent lessons.
   prerequisite_ids:
   - STOCHASTIC-ESTIMATION
   - MODEL-LINEARIZATION
@@ -385,8 +383,8 @@ competencies:
   - GNC-F57
   - GNC-F58
 - id: INERTIAL-NAVIGATION
-  outcome: Quantify one-axis IMU bias propagation, synthetic position/clock solving, a one-axis error-state
-    filter and calibration observability. Full strapdown and coupled GNSS/INS mechanization are excluded.
+  outcome: Model IMU errors, propagate strapdown states, solve GNSS measurements, fuse aiding with an error-state
+    filter, and assess observability.
   prerequisite_ids:
   - NAV-FRAMES-ATTITUDE
   - NONLINEAR-ESTIMATION
@@ -405,8 +403,8 @@ competencies:
   - GNC-F61
   - GNC-F67
 - id: NAV-INTEGRITY
-  outcome: Detect and exclude synthetic range faults and monitor freshness/recovery. Distinguish residual thresholds
-    from certified protection levels.
+  outcome: Monitor navigation consistency, protection levels, measurement faults, exclusion, and recovery without
+    claiming certified integrity.
   prerequisite_ids:
   - INERTIAL-NAVIGATION
   - STOCHASTIC-ESTIMATION
@@ -464,8 +462,8 @@ competencies:
   - GNC-F68
   - GNC-F33
 - id: INTEGRATED-GNC
-  outcome: Connect declared scalar identification/control/estimation, planar survey navigation/guidance/constraints,
-    and software packet/watchdog requirements in three bounded capstones.
+  outcome: Reuse earlier artifacts to integrate identification, control, estimation, navigation, guidance,
+    constraints, uncertainty, monitoring, timing, faults, and recovery.
   prerequisite_ids:
   - ROBUST-ADAPTIVE
   - INERTIAL-NAVIGATION

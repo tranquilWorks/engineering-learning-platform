@@ -110,6 +110,10 @@ def test_exact_curriculum_identity_assessments_and_bidirectional_competency_bind
 def test_prerequisites_remain_exact_and_acyclic_and_capstones_name_their_actual_scope():
     mapping = read(COURSE / "competency-map.yaml")
     old = yaml.safe_load(historical(COURSE / "competency-map.yaml"))
+    assert mapping["scope"]["outcomes"] == old["scope"]["outcomes"]
+    assert {c["id"]: c["outcome"] for c in mapping["competencies"]} == {
+        c["id"]: c["outcome"] for c in old["competencies"]
+    }
     graph = {m["id"]: m["depends_on"] for m in mapping["modules"]}
     assert graph == {m["id"]: m["depends_on"] for m in old["modules"]}
     visited = set()

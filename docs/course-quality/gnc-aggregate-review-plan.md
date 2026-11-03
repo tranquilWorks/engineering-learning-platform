@@ -46,8 +46,9 @@ claims. All learner results remain `not_recorded`.
 
 The broader navigation lessons remain useful component studies. P54 is one EKF
 measurement update, P55 is an unscented transform, P59 is one-axis drift and P61
-is a one-axis error-state filter. Their curriculum outcomes now say this rather
-than claiming complete algorithms that do not run.
+is a one-axis error-state filter. Their module and capstone descriptions now name the implemented components.
+The original broader target outcomes remain unchanged; the open-gap register
+records what still has to be implemented.
 
 ## Required closeout
 
