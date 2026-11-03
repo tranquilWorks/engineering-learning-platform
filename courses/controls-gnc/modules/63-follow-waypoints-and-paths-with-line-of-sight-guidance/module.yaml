@@ -1,10 +1,10 @@
 schema_version: 1
 id: 63-follow-waypoints-and-paths-with-line-of-sight-guidance
 number: 63
-title: Follow Waypoints and Paths with Line-of-Sight Guidance
-summary: Apply line-of-sight path guidance to a straight segment and connect lookahead to heading command and exponential
-  cross-track decay.
-guiding_question: How do lookahead and speed set cross-track convergence without commanding impossible curvature?
+title: Follow a Straight Path with Nonlinear Line-of-Sight Guidance
+summary: Apply line-of-sight path guidance to a straight segment and connect lookahead to heading command and
+  exponential cross-track decay.
+guiding_question: When does local exponential LOS intuition agree with the actual nonlinear cross-track trajectory?
 status: implemented
 tags:
 - controls-gnc
@@ -41,10 +41,10 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Positive lookahead produces bounded heading commands and exponential local cross-track convergence for forward
-    speed.
-  reveal: Restore the frame/sign convention, select lookahead from curvature authority, and verify waypoint switching
-    separately.
+  text: Positive lookahead produces bounded heading commands and exponential local cross-track convergence
+    for forward speed.
+  reveal: Restore the frame/sign convention, select lookahead from curvature authority, and verify waypoint
+    switching separately.
 - type: controls
   title: Design controls
 - type: metrics
@@ -65,3 +65,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

@@ -92,7 +92,7 @@ def test_gnc_native_designs_are_schema_valid_and_semantically_distinct() -> None
 def test_gnc_native_reference_has_no_production_execution_path() -> None:
     path = COURSE_ROOT / "expansion_reference_cases.py"
     tree = ast.parse(path.read_text())
-    allowed_imports = {"json", "typing", "numpy", "__future__", "scipy"}
+    allowed_imports = {"json", "math", "typing", "numpy", "__future__", "scipy"}
     forbidden_calls = {"eval", "exec", "compile", "__import__", "run", "import_module"}
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
@@ -282,7 +282,7 @@ def test_gnc_estimation_and_smoothing_teaching_invariants() -> None:
         return runtime.run("controls-gnc", module_id, supplied).diagnostics["signature"]
 
     covariance = signature(52, {"broken_mode": False})
-    invalid_covariance = signature(52, {"broken_mode": True})
+    invalid_covariance = signature(52, {"broken_mode": True, "process_noise_density": 1.0, "propagation_interval_s": 3.0})
     assert covariance[0] > 1
     assert covariance[1] > 0
     assert invalid_covariance[0] < 0
@@ -342,14 +342,18 @@ def test_gnc_navigation_teaching_invariants() -> None:
     assert alignment[0] > 0
     assert math.isfinite(alignment[1])
     assert unobservable_alignment[0] == 0
-    assert unobservable_alignment[1] > alignment[1]
-    assert unobservable_alignment[2] > alignment[2]
+    assert 0 == unobservable_alignment[1] < alignment[1]  # reciprocal condition: zero means singular
+    singular = runtime.run("controls-gnc", NATIVE[58-25]["folder"].split("/")[-1], {"broken_mode": True})
+    assert singular.diagnostics["rank"] == 1
+    assert singular.diagnostics["covariance"] is None
+    assert next(m for m in singular.metrics if m.id == "bias_standard_deviation").value is None
 
     inertial = signature(59, {"broken_mode": False})
     inertial_broken = signature(59, {"broken_mode": True})
     assert inertial[2] < inertial[1]
-    assert inertial_broken[0] > inertial[0]
-    assert inertial_broken[1] > inertial[1]
+    assert inertial_broken[0] == inertial[0]  # same bias and duration
+    assert inertial_broken[1] == inertial[1]
+    assert inertial_broken[2] == inertial_broken[1] > inertial[2]
 
     gnss = signature(60, {"broken_mode": False})
     poor_geometry = signature(60, {"broken_mode": True})

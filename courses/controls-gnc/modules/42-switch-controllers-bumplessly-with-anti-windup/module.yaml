@@ -2,8 +2,8 @@ schema_version: 1
 id: 42-switch-controllers-bumplessly-with-anti-windup
 number: 42
 title: Switch Controllers Bumplessly with Anti-Windup
-summary: Switch a saturated PI loop from manual to automatic, track the actuator for bumpless initialization, and
-  compare back-calculation recovery with windup.
+summary: Switch a saturated PI loop from manual to automatic, track the actuator for bumpless initialization,
+  and compare back-calculation recovery with windup.
 guiding_question: How can a controller switch modes without a command jump and recover cleanly from saturation?
 status: implemented
 tags:
@@ -44,7 +44,8 @@ blocks:
   text: Can a saturated actuator hide a requested-command jump? Compare the applied switch bump with the integral
     and requested-command histories.
   reveal: Only u is clipped; z is controller memory and can be much larger. Inspect recovery-observed and ensure
-    all later samples stay inside the stated band. A censored lower bound cannot be presented as a successful recovery.
+    all later samples stay inside the stated band. A censored lower bound cannot be presented as a successful
+    recovery.
 - type: controls
   title: Design controls
 - type: metrics
@@ -68,3 +69,6 @@ blocks:
 - type: markdown
   title: Course checkpoint
   source: assessment.md
+- type: markdown
+  title: Cumulative portfolio A-DIGITAL
+  source: portfolio-a-digital.md

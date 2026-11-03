@@ -2,65 +2,53 @@
 
 **Guiding question:** How does a Lyapunov sublevel set become a defensible local region-of-attraction certificate?
 
-Evaluate V=x²/2 for xdot=-x+mu*x³, find where Vdot is negative, and reject a sublevel that crosses the unstable boundary. This is a Python-first native design derived from the reviewed competency map. It is not presented as a conversion of the pinned MATLAB source and it stays inside deterministic software simulation.
-
-## Why this lesson exists
-
-The numerical result is not the objective by itself. The objective is to connect a design decision to a governing relation, an observable consequence, a failure mechanism, and a recovery check. Record the assumptions before interpreting any curve.
+This Python-first lab executes the bounded mechanism described below. Historical source/conversion records are retained separately.
 
 ## Model and equations
 
-$$\text{V=x^2/2}$$
-$$\text{V_dot=-x^2+mu*x^4}$$
-$$\text{|x|<1/sqrt(mu)}$$
+$$\dot x=-a x+b x^3,\quad V=x^2/2$$
 
-Carry units through the model. A pole or zero is reported in inverse seconds, angular frequency in radians per second, phase in degrees or radians as labeled, and dimensionless ratios as `1`. The experiment evaluates the displayed equations directly; it does not call a black-box synthesis toolbox.
+$$\dot V=-a x^2+b x^4=-x^2(a-bx^2)$$
 
-## Predict before running
+$$r<1/\sqrt{b}\quad (a=1)$$
 
-A claimed sublevel is certified only when V is positive and Vdot is strictly negative everywhere except the origin. State which output should move first and which quantity should remain invariant before changing a control.
+## Worked example
+
+At r=0.7 and b=0.8, the decay margin is 1-0.8(0.7)^2=0.608 /s and boundary Vdot=-0.29792 /s. At the same inputs with reversed damping, Vdot=0.68208 /s. Both signs come from the executed vector field, not a hard-coded pass flag.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read all three signature metrics.
-2. Inspect the response plot for the external behavior, then the mechanism plot for the governing internal relation.
-3. Check the units and limiting cases before accepting a stability, equivalence, or performance statement.
-4. Save the baseline, change one variable only, and explain the direction of change from the equations.
+Write your prediction before running. Reset, inspect both plots and the internal state/geometry in the numerical evidence, then calculate the worked example independently. Separate reported metrics from the actual history or matrix that produces them.
 
 ## Two one-variable sweeps
 
-1. Hold `cubic_coefficient` at `0.8 1` and sweep `sublevel_radius` from `0.1` through `0.7` to `1.4 1`.
-2. Restore `sublevel_radius` to `0.7 1` and sweep `cubic_coefficient` from `0.2` through `0.8` to `1.5 1`.
+1. From reset defaults, change only `sublevel_radius` to `1.4`. Predict from the displayed relation; record both plots and dimensioned metrics, then restore the baseline.
 
-Do not tune both at once until you can attribute each metric change to one term in the equations. The retained evidence uses one endpoint from each sweep in addition to the baseline.
+2. From reset defaults, change only `cubic_coefficient` to `1.5`. Predict from the displayed relation; record both plots and dimensioned metrics, then restore the baseline.
 
 ## Intentionally broken case
 
-Broken mode selects a sublevel outside the analytical decay region, making boundary Vdot positive. Broken mode is a named counterexample, not an alternative design recommendation.
+Reverse the linear damping sign in the actual cubic vector field while retaining the selected radius and cubic coefficient. Compare the same selected inputs. A changed sign or gate must act on the stated equation, not swap in unrelated scenario values.
 
 ## Recovery
 
-Shrink the sublevel below 1/sqrt(mu) and report it as a sufficient local certificate, not the exact global basin. The recovery case restores the exact baseline inputs so the evidence can prove that the failure is reversible rather than merely different.
+Restore negative linear feedback and choose a strict sublevel inside the nominal equilibrium boundary. Verify recovery matches the original baseline rather than a newly tuned scenario.
 
 ## Limiting cases and invariants
 
-- At the origin V and Vdot are zero.
-- At |x|=1/sqrt(mu), Vdot reaches zero and strict decay is lost.
-
-Teaching invariant: A claimed sublevel is certified only when V is positive and Vdot is strictly negative everywhere except the origin.
+The origin has Vdot=0 and is excluded from the strict inequality. At r=1/sqrt(b), the boundary is another equilibrium; equality is not asymptotic decay. The plotted domain extends beyond the selected sublevel to make its limitation visible.
 
 ## Independent evidence
 
-Expected signatures are produced by `expansion_reference_cases.py`, which imports no production experiment and consumes no production result. Production signatures are retained separately. Each baseline, two sweeps, broken case, and recovery case records fields, units, tolerances, measured error, and the named invariant. Agreement supports only these equations and scenarios; it is not MATLAB execution, broad robust certification, or physical validation.
+`expansion_reference_cases.py` independently evaluates this lesson's signature and full mechanism. References use a polynomial derivative, integrated covariance equation, information-form posterior, SVD geometry, closed-form bias integrals or an implicit nonlinear LOS solution as applicable. They import no production experiment and consume no production result. Five retained cases include baseline, two one-variable sweeps, fault and recovery. Unchanged absolute/relative tolerances remain 1e-8. Additional off-grid, degenerate and mechanism-array checks are required by the aggregate review.
 
 ## Common mistakes
 
-- Reading a plotted shape without checking its sign convention, units, or contour/path definition.
-- Treating a local, frequency-limited, or nominal result as a global guarantee.
-- Changing both design controls and then assigning causality to one of them.
-- Confusing a recovery that looks better with a recovery that restores the baseline invariant.
-- Claiming source equivalence, physical hardware evidence, or learner effectiveness from this software-only lab.
+- Treating a finite placeholder or clipped square root as valid uncertainty.
+- Claiming global or full-system behavior from the bounded model.
+- Comparing a fault at different inputs and attributing the difference solely to the fault.
+- Reading only a pass flag rather than its governing calculation and physical units.
 
 ## Teach-back
 
-Derive one signature quantity from the displayed equations, explain what the broken case violates, and name one result that this lab cannot establish. Then describe how the two sweeps separate sensitivity to `sublevel_radius` from sensitivity to `cubic_coefficient`.
+Reproduce the worked calculation, explain each sweep causally, show the measured fault and recovery, and state the model boundary in your own words. The Course checkpoint adds the cumulative evidence link. No learner result is recorded by authoring this material.

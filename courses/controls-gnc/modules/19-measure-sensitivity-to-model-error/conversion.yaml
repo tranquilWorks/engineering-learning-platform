@@ -26,17 +26,19 @@ item:
   - path: modules/19-measure-sensitivity-to-model-error/model.m
     sha256: 9d1246e2dfc957f23fb287b8594f9199cfb1f08168693cf6fda9c4ef11787091
 target:
-  content_digest: 7f217af546a90c7e934afc0acf0afca65de9bd04d1e4b06428f9d7058e17fafa
+  content_digest: 774dd64a387933659445f8dac4c7757607604f7ba2d82551063d06a319168a67
   files:
-  - path: modules/19-measure-sensitivity-to-model-error/module.yaml
-    sha256: 5983f235d9cfb76081cdeaca722980145c21551975f50eaf2ccef683fdd72e4a
-  - path: modules/19-measure-sensitivity-to-model-error/lesson.md
-    sha256: f64e7c1aebd80a1e02ef0a6caa647c856e1cb23dd4a18777164c8775b4092b7d
+  - path: modules/19-measure-sensitivity-to-model-error/assessment.md
+    sha256: 86d0fde893d75dd66a86494bbf78b4a50007a968bbb52179478b4c80073b4f24
   - path: modules/19-measure-sensitivity-to-model-error/experiment.py
     sha256: c363001229833be4297aa0688da02e33a15b87936c10509b3a25da23e80185d6
+  - path: modules/19-measure-sensitivity-to-model-error/lesson.md
+    sha256: f64e7c1aebd80a1e02ef0a6caa647c856e1cb23dd4a18777164c8775b4092b7d
+  - path: modules/19-measure-sensitivity-to-model-error/module.yaml
+    sha256: 56f0f96f7ae63947c992bb350310d99cd87f9a1df2176212211d5274568977ac
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you measure Sensitivity to Model
-    Error?
+  guiding_question: What inputs, observable effects, and failure modes matter when you measure Sensitivity
+    to Model Error?
   physical_model: Measure how actuator gain and drag mismatch change closed-loop speed tracking.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
@@ -81,7 +83,7 @@ content:
       unit: s
     - role: y
       label: Commanded acceleration
-      unit: m/s²
+      unit: "m/s\xB2"
     - role: y
       label: Speed prediction gap
       unit: m/s
@@ -92,8 +94,8 @@ content:
     - 0.5
     - 1.0
     - 1.5
-    expected_observation: Lower actuator gain and higher drag should both increase tracking error, but through different
-      mechanisms.
+    expected_observation: Lower actuator gain and higher drag should both increase tracking error, but through
+      different mechanisms.
   - control: drag_ratio
     values:
     - 0.5
@@ -264,8 +266,8 @@ python_source_equivalence:
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
-    constitute MATLAB runtime parity.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do
+    not constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:

@@ -1,48 +1,38 @@
 schema_version: 1
 batch:
-  id: ELP-VEHICLE-DRIVELINE-QUALITY-04
-  title: Repair final four Vehicle powertrain, braking and aerodynamics findings
-  goal: Complete the already-authorized P13-P16 successor with physical force/power/energy curves, honest shift
-    decisions, separate numerical references and individual browser-embedded lessons/checkpoints.
+  id: ELP-GNC-AGGREGATE-QUALITY-01
+  title: Complete Controls/GNC numerical, curriculum and capstone review
+  goal: Bring the 68 native Controls/GNC lessons to the DSP authored/software standard, repairing newly found
+    mechanism and reference gaps before aggregate acceptance.
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
+  - 'Owner 2026-11-03: begin Controls and bring it over the finish line at DSP depth.'
   - products/engineering-learning-platform/COURSE_CALIBER.md
-  - Owner explicitly approved Vehicle P01-P12 then P13-P16 and normal verified development merges.
-  - Four remaining target findings; direct review identifies P13 traction-curtailment accounting and P14 redline
-    fallback falsely described as a force crossover.
   milestone: products/engineering-learning-platform/roadmap.yaml#ELP-M3
-  baseline_commit: 1a0041bd24de1168c03ff2bf2a656a6061cac0e3
-  baseline_tree: 919ff80d75145f951c26fd4b5c26f3053ca12ac1
+  baseline_commit: abe7c49cea2a649354f20ad19dbe8a2e6c78540a
+  baseline_tree: c206f43301d8b2a6fc587331dd879f25da280d21
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_baseline: 73fcb60205801dab0e99f610f952a4b4102786bd
-  control_plane_path: products/engineering-learning-platform/batches/ELP-VEHICLE-DRIVELINE-QUALITY-04.yaml
+  control_plane_baseline: 7e6f8693279411b4feaf33a7d9f6924fb1e55330
+  control_plane_path: products/engineering-learning-platform/batches/ELP-GNC-AGGREGATE-QUALITY-01.yaml
   target_repository: tranquilWorks/engineering-learning-platform
-  predecessor_pr: 59
+  predecessor_pr: 61
 dependencies:
-- ELP-VEHICLE-FOUNDATIONS-QUALITY-12
+- ELP-VEHICLE-DRIVELINE-QUALITY-04
 scope:
   allowed_paths:
-  - courses/vehicle-dynamics/modules/13-*/**
-  - courses/vehicle-dynamics/modules/14-*/**
-  - courses/vehicle-dynamics/modules/15-*/**
-  - courses/vehicle-dynamics/modules/16-*/**
-  - courses/vehicle-dynamics/reference_cases.py
-  - courses/vehicle-dynamics/coverage.yaml
-  - apps/api/tests/test_vehicle_driveline_quality.py
-  - apps/api/tests/test_vehicle_foundations_quality.py
-  - apps/api/tests/test_vehicle_dynamics_course.py
-  - apps/api/tests/test_dsp_aggregate_quality.py
-  - apps/api/tests/test_dsp_fidelity_remediation*.py
+  - courses/controls-gnc/**
+  - apps/api/tests/test_gnc*.py
+  - apps/api/tests/test_*quality*.py
   - apps/api/tests/test_course_caliber_status.py
-  - apps/api/tests/test_course_delivery_quality.py
-  - apps/web/src/lesson-quality.json
-  - apps/web/tests/lesson-quality.test.mjs
+  - apps/api/tests/test_navigation_geometry_quality.py
+  - apps/api/tests/test_vehicle_*quality.py
+  - scripts/*gnc*
   - scripts/audit_course_quality.py
   - scripts/browser-quality.mjs
-  - scripts/verify-vehicle-driveline-quality.py
   - scripts/verify-course-delivery.sh
-  - tests/browser/delivery.spec.ts
+  - tests/browser/*
+  - apps/web/src/lesson-quality.json
   - contracts/active-batch.yaml
   - contracts/repo-profile.yaml
   - contracts/verification.yaml
@@ -52,115 +42,66 @@ scope:
   - docs/course-quality/**
   - docs/CURRENT_STATE.md
   - docs/HANDOFF.md
-  - docs/ROADMAP.md
-  - docs/evidence/ELP-VEHICLE-DRIVELINE-QUALITY-04-*
+  - docs/evidence/ELP-GNC-AGGREGATE-QUALITY-01-*
+  - playwright.config.ts
+  - apps/api/tests/test_dsp_aggregate_quality.py
+  - apps/api/tests/test_dsp_fidelity_remediation_p65_p76.py
+  - apps/api/tests/test_dsp_fidelity_remediation_p77_p84.py
   forbidden_paths:
   - courses/*-learning/**
   - courses/dsp-radar/**
-  - courses/controls-gnc/**
   - courses/robotics-autonomy/**
+  - courses/vehicle-dynamics/**
   - courses/demo-radar/**
   - courses/platform-showcase/**
-  - courses/*/course.yaml
-  - courses/*/source-map.yaml
-  - courses/*/fidelity-map.yaml
-  - courses/*/fixtures/**
-  - courses/vehicle-dynamics/competency-map.yaml
-  - courses/vehicle-dynamics/conversion-manifest.yaml
-  - courses/vehicle-dynamics/expansion*
+  - courses/controls-gnc/course.yaml
+  - courses/controls-gnc/source-map.yaml
+  - courses/controls-gnc/fidelity-map.yaml
+  - courses/controls-gnc/conversion-manifest.yaml
   - .gitmodules
   - apps/api/src/**
   - apps/web/src/components/**
   - packages/**
   - .github/**
-  - products/**
 acceptance:
-- Activate only after this fresh control contract merges, from target PR59 merge 1a0041bd24de1168c03ff2bf2a656a6061cac0e3,
-  tree 919ff80d75145f951c26fd4b5c26f3053ca12ac1, after the verified twelve-lesson group and its control closeout.
-  Repair exactly existing Vehicle P13-P16. Preserve all 290 identities, all unselected module bytes, source
-  pins, competency/prerequisite graph, and P01-P12/P17-P24 reference definitions and retained outputs, including
-  all prior independent foundation helpers. No inventory expansion.
-- 'Replace mixed-dimensional signature charts with actual force, speed, energy or power relationships. Every
-  axis and trace declares its quantity and units. Preserve four output identifiers, control IDs/types/ranges/defaults
-  and three-second runtime. The sole step refinement is P14: change both slider steps from 0.05 to 0.001 so
-  its existing three-decimal defaults and a near-unity crossover can be selected; preserve every other control
-  step. Use explicit unavailable or formal-counterfactual semantics for invalid conditions. Same-input fault/recovery
-  comparisons must execute the declared mechanisms.'
-- 'P13: model the engine-to-wheel gearing relation, requested/applied force, traction cap, engine speed and
-  delivered torque/power. Distinguish traction-driven curtailment of requested torque from drivetrain dissipation;
-  enforce delivered-power balance rather than silently treating curtailed requested power as wheel power or
-  unexplained loss. An executed efficiency-omission fault can retain the cap while violating the declared 90%
-  power budget. Explain that gear mapping alone is not engine/redline feasibility or tire-slip dynamics.'
-- 'P14: compare current and next-gear wheel-force curves using post-shift RPM from the actual ratio. Distinguish
-  force crossover, redline-limited decision and invalid equal/ascending ratios; never claim a crossover merely
-  because the fallback returns redline. Use a resolved crossing and an independent analytic/piecewise reference,
-  including a near-unity valid ratio that crosses below redline. A fault may omit the RPM drop in the next-gear
-  torque lookup while retaining kinematic post-shift RPM. Exercise the reachable refined-slider pair 2.09 to
-  2.08 in the actual browser, where the crossover is about 7399.34147 RPM. Report invalid decisions as unavailable
-  and label formal comparison curves honestly. No shift-duration, real-engine calibration or optimal-lap-time
-  claim.'
-- 'P15: execute a constant-force stopping trajectory with tire-force cap, longitudinal load transfer, kinetic-energy/work
-  closure and a declared rotor/other heat partition. Separate force, distance, time, energy and temperature-rise
-  units. A meaningful default-visible heat-allocation fault may double count rotor heat while leaving the stopping
-  path unchanged; expose its measured heat-budget residual and same-input temperature comparison. Verify cap
-  onset, force-work, load moments, energy-rate and heat partition, and explain omitted cooling/brake-bias/transients.'
-- "P16: execute empirical drag/downforce coefficients, front/rear aerodynamic allocation, normal-load capacity\
-  \ and drag-power demand. Show force curves in N and power separately in W. Verify V\xB2 force and V\xB3 power\
-  \ scaling, coefficient/wing trends and force allocation. If retaining drag-sign and out-of-range-share faults,\
-  \ compute their actual drag power and axle aerodynamic contributions, distinguish negative aero contribution\
-  \ from negative total wheel load, and explain the declared allocation convention. No measured aero, tire-load-sensitivity\
-  \ or complete handling claim."
-- Author four substantial unique portable lessons and browser-embedded Course checkpoints with equations/units,
-  worked examples, predictions, two one-variable sweeps, causal failure/recovery, limits and reasoning rubrics.
-  Keep static summaries parameter-independent and live explanations tied to actual inputs. Preserve historical
-  conversion/source records without implying unchanged source equivalence for native revisions.
-- Retain five independently formulated cases per lesson with full physical state and response arrays at unchanged
-  1e-10 absolute and relative tolerance. Expected generation must neither import production nor consume its
-  output. All 32 runtime corners must pass, plus discriminating physical identities, cap/shift boundaries and
-  degenerate limits. Update only selected coverage digests and selected evidence; preserve original conversion
-  batch records and all unselected coverage fields.
-- Anchor the preceding Vehicle foundation scope/reference guards to the exact historical PR58-to-predecessor
-  trees, retaining all live foundation physics, retained evidence, browser and prior Robotics checks. Add current-baseline
-  unselected-preservation guards. Update only obsolete selected assertions and active-contract bindings; do
-  not weaken tolerance, runtime or source-protection gates.
-- "Close the four findings only after independent and selected baked browser checks pass. With no named real-lesson\
-  \ findings left, update the real-page disclosure regression to verify scoped review without a stale Under\
-  \ revision note. Preserve the unchanged LessonQuality component\u2019s issue-note behavior through a focused\
-  \ test fixture in apps/web/tests/lesson-quality.test.mjs, without adding a fake issue to a real course or\
-  \ modifying generic production UI."
-- Final read-only nonroot delivery verifies 290 HTTP modules,580 desktop/mobile pages, all existing plus four
-  checkpoints, every revised control/fault/recovery/reset and drawn-plot sequence, actual SVG text/legend layout
-  checks,290 matching host/baked identities and twenty independent HTTP comparisons. Inspect all four mobile
-  plot sets and representative desktops. Run mandatory contract, quick and full gates sequentially. Hosted
-  CI remains separately reported/nonmandatory.
-- After selected verified closure, the named register is Controls 0, Robotics 0, Vehicle 0. Explicitly retain
-  all three non-DSP aggregate numerical/curriculum/capstone reviews as blocked; a non-exhaustive defect register
-  is not course acceptance. Preserve DSP aggregate disposition and all inventory/source boundaries. No representative-learner,
-  manual-screen-reader, MATLAB, measured-vehicle, hardware, concurrent-capacity or production claims.
-- Publish exact evidence, complete a normal exact-head development merge under standing owner authorization,
-  and reconcile Portfolio Control to finish all sixteen owner-requested Vehicle findings. Do not activate aggregate
-  acceptance or other work. Preserve hosted/local discrepancies and account limits without changing workflows,
-  protections or billing.
+- Owner request authorizes scoped development implementation. Publish this new contract in Portfolio Control;
+  retain exact target baseline and all other course bytes/source pins. No inventory expansion or breadth roadmap
+  activation.
+- Audit all 68 numerical mechanisms and independent evidence. Replace native signature lookup fixtures with
+  independently formulated references. Repair any claimed mechanisms found to be absent or inconsistent, retaining
+  runtime limits/control identities and documenting changed native numerical evidence separately from historical
+  conversions.
+- Provide 68 individually authored browser-embedded formative assessments with actual controls, two sweeps,
+  equations/units, worked reasoning, fault/recovery and limits. Preserve existing checkpoints and extend missing
+  scopes without erasing prior reviewed prose.
+- Bind all actual native identities, competencies, acyclic prerequisites, cumulative portfolios and three capstones.
+  Capstone integration claims must describe executed models, not broader absent algorithms. No authentic full
+  GNSS/INS or physical HIL claim from simplified capstones.
+- Freshly replay five independently originated scenarios for every lesson, retaining unchanged tolerances and
+  original oracle provenance; verify physical invariants, selected full arrays, off-grid and degenerate cases.
+  Reconcile referenced markdown content identities via actual catalog.
+- Exercise all Controls lessons and checkpoints through real desktop/mobile browser and HTTP entry points,
+  control/fault/recovery/reset and drawn plots. Run required contract/quick/full gates sequentially and distinguish
+  host verification from baked read-only nonroot Docker delivery.
+- Promote only evidence-supported software numerical/curriculum/capstone stages. Keep learner, manual screen-reader,
+  MATLAB, hardware, production and concurrent capacity not run. Preserve DSP disposition and Robotics/Vehicle
+  aggregate blocks.
+- Publish exact evidence and reviewable development PR. Merge only after required verification; preserve failures
+  and environment blockers without weakening assertions or claiming a completed acceptance gate.
 validation:
   local:
-  - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_vehicle_driveline_quality.py
-    apps/api/tests/test_vehicle_dynamics_course.py apps/api/tests/test_vehicle_foundations_quality.py
-  - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-vehicle-driveline-quality.py
-  - npm run typecheck
-  - npm run build
+  - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_gnc_aggregate_quality.py
+  - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-gnc-assessments.py
   - npm run test:web
   - npm run test:browser
-  - PYTHONPATH=apps/api/src .venv/bin/python scripts/audit_course_quality.py
-  - ./scripts/verify-course-delivery.sh
   - ./scripts/agent-verify.sh contract
   - ./scripts/agent-verify.sh quick
   - ./scripts/agent-verify.sh full
+  - ./scripts/verify-course-delivery.sh
   - git diff --check
   focused_tests_to_add:
-  - Independent delivered-power, gear-force root, stop energy/heat and aerodynamic balance checks.
-  - All 32 runtime corners, crossover/redline/invalid ratios, traction cap and physical limit cases.
-  - Exact unselected preservation, four checkpoints and readable actual browser plots; retained issue-note
-    UI behavior via test fixture.
+  - Independent full mechanisms, live assessment bindings, exact unchanged source/course preservation, singular
+    and off-grid inputs, capstone stage/requirement evidence.
   required_ci:
   - Hosted CI nonmandatory under retained owner direction; all named local gates mandatory.
 risk:
@@ -170,17 +111,15 @@ risk:
   - Misleading dimensions, unavailable/singular values or empirical-model claims.
   - Host storage/resource contention disrupting long verification.
   stop_conditions:
-  - Need to change source pins, public schemas, generic runtime or unrelated lesson payloads.
-  - Independent numerical or browser/container validation cannot be made credible.
-  - Need learner personal data, actual vehicle/hardware or production access.
+  - Need generic runtime/schema/source pin or other course changes.
+  - Cannot establish credible numerical/browser evidence.
+  - Need physical hardware, learner data or production access.
 rollback:
-  strategy: Revert this isolated group to target PR59 merge and rebuild the prior image; no schema or persisted-data
-    migration.
+  strategy: Revert the isolated Controls revision to PR61; no schema or learner-data migration.
 evidence:
   output:
-  - docs/evidence/ELP-VEHICLE-DRIVELINE-QUALITY-04-*.md
-  - docs/course-quality/vehicle-driveline-quality-revision.json
-  - docs/course-quality/lesson-audit.json
-  - docs/COURSE_QUALITY.md
-  claim_boundary: Deterministic synthetic numerical/browser/container evidence only. No representative learner,
-    manual screen-reader, MATLAB, measured vehicle, hardware or production acceptance.
+  - docs/evidence/ELP-GNC-AGGREGATE-QUALITY-01-2026-11-03.md
+  - docs/course-quality/gnc-aggregate-review.json
+  - courses/controls-gnc/assessment-map.json
+  claim_boundary: Authored curriculum and independently verified synthetic software only; host and baked-container
+    levels are separate. No learner, MATLAB, hardware or production claim.

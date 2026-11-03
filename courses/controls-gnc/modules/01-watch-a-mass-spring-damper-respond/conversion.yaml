@@ -26,14 +26,16 @@ item:
   - path: modules/01-watch-a-mass-spring-damper-respond/model.m
     sha256: d820c6e74cf73aafb66220a5ac89873f575fd9a80983a21a0ccb7cedb5b329a8
 target:
-  content_digest: 5d581bce4a5f6e939e4e8d5247be1c99024a5c08ee88c0a03c2934499f55f3e7
+  content_digest: 9c2391b2324fed39b152172f38922a801a0afb180c1053f40ec53f30ee578769
   files:
-  - path: modules/01-watch-a-mass-spring-damper-respond/module.yaml
-    sha256: e94c069d7e7b59cf68f645171ba837576d5637015eb2dfb04560a0976f876322
-  - path: modules/01-watch-a-mass-spring-damper-respond/lesson.md
-    sha256: 1507f2149eb2afc031e0246e5e6c4b283e7eea96f8928d4b7187c12392f6418d
+  - path: modules/01-watch-a-mass-spring-damper-respond/assessment.md
+    sha256: 7a1bb3a5f676df508e43fef8e438e1b9e89032e74c9229878b39551b3693112f
   - path: modules/01-watch-a-mass-spring-damper-respond/experiment.py
     sha256: 42c6d3fccdaa412c200360817cefce6909b0c30b2ccb8b4498d454ce3efb509a
+  - path: modules/01-watch-a-mass-spring-damper-respond/lesson.md
+    sha256: 1507f2149eb2afc031e0246e5e6c4b283e7eea96f8928d4b7187c12392f6418d
+  - path: modules/01-watch-a-mass-spring-damper-respond/module.yaml
+    sha256: 37124bc9fa2cc9b1483f3845bd2edc6e18bbb9b5a37ad7d6d5d7aa0d9a4d3cc1
 content:
   guiding_question: How do mass, stiffness, and damping determine visible motion?
   physical_model: Relate inertia, energy storage, and dissipation to a forced mechanical response.
@@ -62,7 +64,7 @@ content:
   plot_sequence:
   - source_figure: Pinned MATLAB source intent mapped to platform response view
     target_plot_key: response
-    title: Mass–spring–damper displacement
+    title: "Mass\u2013spring\u2013damper displacement"
     axes:
     - role: x
       label: Time
@@ -103,8 +105,8 @@ content:
     expected_observation: Relate inertia, energy storage, and dissipation to a forced mechanical response.
   broken_case:
     trigger: Enable broken_mode.
-    failure: The broken case uses an explicit integration step too large for the fastest mode, so numerical energy
-      grows even though the physical system is damped.
+    failure: The broken case uses an explicit integration step too large for the fastest mode, so numerical
+      energy grows even though the physical system is damped.
     recovery: Disable the broken case to restore a time step that resolves the natural period.
     expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
   common_mistakes:
@@ -274,8 +276,8 @@ python_source_equivalence:
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
-    constitute MATLAB runtime parity.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do
+    not constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:

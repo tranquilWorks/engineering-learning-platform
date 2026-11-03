@@ -2,9 +2,10 @@ schema_version: 1
 id: 49-control-a-constrained-plant-with-model-predictive-control
 number: 49
 title: Control a Constrained Plant with Model-Predictive Control
-summary: Solve a scalar constrained move analytically, compare unconstrained and clipped actions, and measure one-step
-  residual cost.
-guiding_question: How does receding-horizon optimization expose feasibility, active constraints, and horizon tradeoffs?
+summary: Solve a scalar constrained move analytically, compare unconstrained and clipped actions, and measure
+  one-step residual cost.
+guiding_question: How does receding-horizon optimization expose feasibility, active constraints, and horizon
+  tradeoffs?
 status: implemented
 tags:
 - controls-gnc
@@ -42,9 +43,9 @@ blocks:
 - type: prediction
   title: Predict before running
   text: Does increasing the horizon necessarily change the first move when the actuator is already saturated?
-  reveal: Inspect the whole optimized plan, its terminal state, objective and KKT residual. Saturation can pin the
-    first move while later moves change. General coupled constraints require solving the constrained objective,
-    not clipping an unconstrained command.
+  reveal: Inspect the whole optimized plan, its terminal state, objective and KKT residual. Saturation can
+    pin the first move while later moves change. General coupled constraints require solving the constrained
+    objective, not clipping an unconstrained command.
 - type: controls
   title: Design controls
 - type: metrics
@@ -68,3 +69,6 @@ blocks:
 - type: markdown
   title: Course checkpoint
   source: assessment.md
+- type: markdown
+  title: Cumulative portfolio A-OPTIMAL
+  source: portfolio-a-optimal.md

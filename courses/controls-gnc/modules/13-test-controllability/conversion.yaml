@@ -26,14 +26,16 @@ item:
   - path: modules/13-test-controllability/model.m
     sha256: 1e6cbdfb5f99db26b29cdc1a2dd7715636cce34263bf6a485db3289ed83f1da0
 target:
-  content_digest: 9a47edf852a246c94ba32aa91701c809b6b53de086de88929e9422649eb9ad02
+  content_digest: 5790325c5c7d562dea9caf89c7add4f874a675d1de2ed365e1c45d0431d67686
   files:
-  - path: modules/13-test-controllability/module.yaml
-    sha256: d392c5ce4f1318558d9751acca52eb5748c7c41163a812bf6a21b1063cc2a8f6
-  - path: modules/13-test-controllability/lesson.md
-    sha256: 9f1b885c535f5b215d40f5225d2a54c001d885c3933c4f88b6842c6a4a7eb7ac
+  - path: modules/13-test-controllability/assessment.md
+    sha256: a01e2c89a7023e385ccde8d38897966600487cde3dda2e4c661987f3c8529553
   - path: modules/13-test-controllability/experiment.py
     sha256: b3cd2ede8792232b8365cdba26a3f4f36463a227ac8eaa2fea888aa526181136
+  - path: modules/13-test-controllability/lesson.md
+    sha256: 9f1b885c535f5b215d40f5225d2a54c001d885c3933c4f88b6842c6a4a7eb7ac
+  - path: modules/13-test-controllability/module.yaml
+    sha256: bada5bf10ed72740d4e36a1fc25d2eda9eeebf122fa88b596db9c88a49832cbd
 content:
   guiding_question: What inputs, observable effects, and failure modes matter when you test Controllability?
   physical_model: Use rank and reachability energy to distinguish weak from missing control authority.
@@ -83,7 +85,7 @@ content:
       unit: state/input
     - role: y
       label: Gramian eigenvalue
-      unit: state²/input²
+      unit: "state\xB2/input\xB2"
     interpretation: controllability rank drops from two to one
   sweeps:
   - control: input_gain
@@ -126,7 +128,7 @@ python_source_equivalence:
   inputs:
   - name: input_gain
     value: 1.0
-    unit: (m/s²)/cmd
+    unit: "(m/s\xB2)/cmd"
   - name: coupling
     value: 1.0
     unit: ratio
@@ -262,8 +264,8 @@ python_source_equivalence:
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
-    constitute MATLAB runtime parity.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do
+    not constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:

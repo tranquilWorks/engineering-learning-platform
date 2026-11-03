@@ -1,10 +1,11 @@
 schema_version: 1
 id: 59-propagate-strapdown-inertial-navigation-and-imu-error
 number: 59
-title: Propagate Strapdown Inertial Navigation and IMU Error
-summary: Integrate a declared body-axis bias, compare analytic error growth, and show the effect of a bias correction.
-guiding_question: How does a constant accelerometer bias grow into velocity and position error during strapdown
-  propagation?
+title: Propagate One-Axis Inertial Bias Errors
+summary: Integrate a declared body-axis bias, compare analytic error growth, and show the effect of a bias
+  correction.
+guiding_question: How do prescribed accelerometer bias and its correction accumulate into velocity and position
+  error?
 status: implemented
 tags:
 - controls-gnc
@@ -41,8 +42,8 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Under constant uncorrected bias, velocity error grows linearly and position error quadratically with coast
-    time.
+  text: Under constant uncorrected bias, velocity error grows linearly and position error quadratically with
+    coast time.
   reveal: Estimate and subtract bias, reapply gravity/frame conventions, and compare propagation to the analytic
     limiting case.
 - type: controls
@@ -65,3 +66,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

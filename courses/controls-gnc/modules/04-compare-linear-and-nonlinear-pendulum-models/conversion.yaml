@@ -26,14 +26,16 @@ item:
   - path: modules/04-compare-linear-and-nonlinear-pendulum-models/model.m
     sha256: 90b101c9c04fed852f4cac88c0c0eb5b91f37d53181b1860b42f28414fc31c1d
 target:
-  content_digest: baaacfa1b25f6ee3314bf110b0d3ec21ce7d49c3dcc97cc3e28138b24a489eff
+  content_digest: 0319e37237486c8ea24eaefa7ad399eb0a219366c703a5c613129ad28b757a58
   files:
-  - path: modules/04-compare-linear-and-nonlinear-pendulum-models/module.yaml
-    sha256: a76a4780ffcef3dfda3d20db364ef78e7b46c1187e62581be6c82dd8b2494866
-  - path: modules/04-compare-linear-and-nonlinear-pendulum-models/lesson.md
-    sha256: e34ee067b72824b8e255ab628abacb051f61b1cf1fac98317fed8b6b73bb9e2f
+  - path: modules/04-compare-linear-and-nonlinear-pendulum-models/assessment.md
+    sha256: 4e80699944502c725f1921a0da0351a14fada2dede5ff4041af64029aa6659f6
   - path: modules/04-compare-linear-and-nonlinear-pendulum-models/experiment.py
     sha256: f4733c06b3dc465114f830e508d2dce3900c1ddf83f9a70014bbd672d5648b72
+  - path: modules/04-compare-linear-and-nonlinear-pendulum-models/lesson.md
+    sha256: e34ee067b72824b8e255ab628abacb051f61b1cf1fac98317fed8b6b73bb9e2f
+  - path: modules/04-compare-linear-and-nonlinear-pendulum-models/module.yaml
+    sha256: 36ccf6829807e67a907be7f4e52f7f805c57f06b399205fa8ce286f7a9530231
 content:
   guiding_question: What inputs, observable effects, and failure modes matter when you compare Linear and Nonlinear
     Pendulum Models?
@@ -95,13 +97,15 @@ content:
     - 5.0
     - 30.0
     - 100.0
-    expected_observation: Large release angles should lengthen the nonlinear period relative to the linear prediction.
+    expected_observation: Large release angles should lengthen the nonlinear period relative to the linear
+      prediction.
   - control: length_m
     values:
     - 0.5
     - 1.0
     - 2.0
-    expected_observation: Expose when the small-angle pendulum approximation stops representing the nonlinear plant.
+    expected_observation: Expose when the small-angle pendulum approximation stops representing the nonlinear
+      plant.
   broken_case:
     trigger: Enable broken_mode.
     failure: The broken case forces a 120 degree release while interpreting the small-angle trace as truth.
@@ -266,8 +270,8 @@ python_source_equivalence:
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
-    constitute MATLAB runtime parity.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do
+    not constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:

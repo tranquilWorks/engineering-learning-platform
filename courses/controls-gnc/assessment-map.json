@@ -1,0 +1,2187 @@
+{
+  "schema_version": 1,
+  "course_id": "controls-gnc",
+  "baseline": "abe7c49cea2a649354f20ad19dbe8a2e6c78540a",
+  "formative_count": 68,
+  "cumulative_count": 22,
+  "retained_independent_case_count": 340,
+  "lessons": [
+    {
+      "id": "GNC-F01",
+      "number": 1,
+      "module_id": "01-watch-a-mass-spring-damper-respond",
+      "competency_id": "MODEL-LINEARIZATION",
+      "competency_ids": [
+        "MODEL-LINEARIZATION"
+      ],
+      "domain_id": "A-MODELING",
+      "assessment_file": "modules/01-watch-a-mass-spring-damper-respond/assessment.md",
+      "task": "Predict how doubling stiffness changes static displacement and ringing while mass and damping stay fixed.",
+      "expected_reasoning": "Static displacement follows F/k; natural frequency follows sqrt(k/m), while damping ratio changes with both k and m. Separate integration-driven energy growth from physical forced response.",
+      "claim_limit": "Linear spring and viscous damping do not model friction, yielding or nonlinear stops.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F02",
+      "number": 2,
+      "module_id": "02-build-intuition-for-integrators-and-first-order-systems",
+      "competency_id": "MODEL-LINEARIZATION",
+      "competency_ids": [
+        "MODEL-LINEARIZATION",
+        "MODEL-REALIZATION"
+      ],
+      "domain_id": "A-MODELING",
+      "assessment_file": "modules/02-build-intuition-for-integrators-and-first-order-systems/assessment.md",
+      "task": "Distinguish a bounded first-order step response from the unbounded integral of the same constant input.",
+      "expected_reasoning": "The first-order response approaches its DC gain over its time constant; an integrator accumulates area. A slower pole changes approach time rather than converting the equilibrium into a ramp.",
+      "claim_limit": "Finite-time traces cannot establish a limit without the differential equation.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F03",
+      "number": 3,
+      "module_id": "03-relate-poles-to-visible-motion",
+      "competency_id": "MODEL-REALIZATION",
+      "competency_ids": [
+        "MODEL-REALIZATION",
+        "CLASSICAL-SPECS"
+      ],
+      "domain_id": "A-MODELING",
+      "assessment_file": "modules/03-relate-poles-to-visible-motion/assessment.md",
+      "task": "Connect visible decay and oscillation to the real and imaginary parts of the displayed poles.",
+      "expected_reasoning": "A negative real part sets exponential decay; conjugate imaginary parts set angular frequency. The same endpoint can occur at different oscillation phases, so use the history and pole locations together.",
+      "claim_limit": "Linear modal predictions do not establish nonlinear global stability.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F04",
+      "number": 4,
+      "module_id": "04-compare-linear-and-nonlinear-pendulum-models",
+      "competency_id": "MODEL-LINEARIZATION",
+      "competency_ids": [
+        "MODEL-LINEARIZATION",
+        "NONLINEAR-STABILITY"
+      ],
+      "domain_id": "A-MODELING",
+      "assessment_file": "modules/04-compare-linear-and-nonlinear-pendulum-models/assessment.md",
+      "task": "Identify when a small-angle pendulum ceases to predict the nonlinear motion accurately.",
+      "expected_reasoning": "The sine law and its tangent coincide only locally. Larger initial angles change restoring torque and period; agreement near the equilibrium is insufficient at large excursions.",
+      "claim_limit": "The undriven ideal pendulum omits friction and actuator dynamics.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F05",
+      "number": 5,
+      "module_id": "05-close-a-loop-with-proportional-control",
+      "competency_id": "CLASSICAL-SPECS",
+      "competency_ids": [
+        "CLASSICAL-SPECS",
+        "CLASSICAL-STABILITY"
+      ],
+      "domain_id": "A-CLASSICAL",
+      "assessment_file": "modules/05-close-a-loop-with-proportional-control/assessment.md",
+      "task": "Explain how proportional gain moves response speed and residual tracking error in the actual loop.",
+      "expected_reasoning": "Closing the loop changes the denominator as well as the reference response. A smaller steady error can coexist with larger transient effort, and incorrect feedback sign can destabilize the state.",
+      "claim_limit": "A nominal proportional loop is not an integral servo or robust performance proof.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F06",
+      "number": 6,
+      "module_id": "06-tune-a-pid-by-observing-each-term",
+      "competency_id": "CLASSICAL-SPECS",
+      "competency_ids": [
+        "CLASSICAL-SPECS"
+      ],
+      "domain_id": "A-CLASSICAL",
+      "assessment_file": "modules/06-tune-a-pid-by-observing-each-term/assessment.md",
+      "task": "Show which PID term changes initial effort, accumulated bias and damping without tuning all gains together.",
+      "expected_reasoning": "Integral action accumulates error and derivative action responds to the modeled rate. A transient improvement must be interpreted alongside actuator demand; increasing every gain obscures the causal mechanism.",
+      "claim_limit": "The lab's ideal derivative is not a noise-qualified implementation.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F07",
+      "number": 7,
+      "module_id": "07-see-stability-margin-in-time-and-frequency",
+      "competency_id": "CLASSICAL-STABILITY",
+      "competency_ids": [
+        "CLASSICAL-STABILITY",
+        "LOOP-SHAPING"
+      ],
+      "domain_id": "A-CLASSICAL",
+      "assessment_file": "modules/07-see-stability-margin-in-time-and-frequency/assessment.md",
+      "task": "Reconcile a time-response oscillation with the loop margin and actuator-lag change.",
+      "expected_reasoning": "Added lag changes phase near crossover and can reduce stability margin even if low-frequency gain improves tracking. A positive gain margin alone does not summarize every crossover or delay effect.",
+      "claim_limit": "Finite frequency sampling is not exhaustive robust stability certification.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F08",
+      "number": 8,
+      "module_id": "08-reject-a-disturbance-with-feedback",
+      "competency_id": "CLASSICAL-SPECS",
+      "competency_ids": [
+        "CLASSICAL-SPECS",
+        "LOOP-SHAPING"
+      ],
+      "domain_id": "A-CLASSICAL",
+      "assessment_file": "modules/08-reject-a-disturbance-with-feedback/assessment.md",
+      "task": "Compare feedback disturbance rejection at zero frequency and at a higher disturbance frequency.",
+      "expected_reasoning": "The closed-loop sensitivity attenuates some disturbances but its attenuation varies with frequency. Identify the disturbance injection point before equating an output change to the loop gain.",
+      "claim_limit": "The modeled injection and sensor paths determine which sensitivity function applies.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F09",
+      "number": 9,
+      "module_id": "09-discretize-a-continuous-controller",
+      "competency_id": "DIGITAL-IMPLEMENTATION",
+      "competency_ids": [
+        "DIGITAL-IMPLEMENTATION"
+      ],
+      "domain_id": "A-DIGITAL",
+      "assessment_file": "modules/09-discretize-a-continuous-controller/assessment.md",
+      "task": "Predict how controller sample period changes a discrete integral update and the actual closed-loop path.",
+      "expected_reasoning": "Integral accumulation includes the sample interval; omitting or misapplying it changes the effective gain. Compare identical physical time spans rather than equal sample counts only.",
+      "claim_limit": "A software discretization does not establish target timing or quantization performance.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F10",
+      "number": 10,
+      "module_id": "10-expose-delay-and-sampling-limits",
+      "competency_id": "DIGITAL-IMPLEMENTATION",
+      "competency_ids": [
+        "DIGITAL-IMPLEMENTATION"
+      ],
+      "domain_id": "A-DIGITAL",
+      "assessment_file": "modules/10-expose-delay-and-sampling-limits/assessment.md",
+      "task": "Separate sample-and-hold delay from a fractional transport delay in the plotted response.",
+      "expected_reasoning": "Time delay adds frequency-dependent phase; a fast sample rate does not remove an independent transport delay. Interpret failure using the actual delayed path instead of nominal continuous poles.",
+      "claim_limit": "The retained delay model is an approximation with a fixed execution convention.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F11",
+      "number": 11,
+      "module_id": "11-drive-an-actuator-into-saturation",
+      "competency_id": "DIGITAL-IMPLEMENTATION",
+      "competency_ids": [
+        "DIGITAL-IMPLEMENTATION",
+        "SAFETY-CONSTRAINTS"
+      ],
+      "domain_id": "A-DIGITAL",
+      "assessment_file": "modules/11-drive-an-actuator-into-saturation/assessment.md",
+      "task": "Determine when a requested command is feasible and trace the plant driven by its applied value.",
+      "expected_reasoning": "The actuator limit bounds applied command rather than requested command. Tracking can fail despite nominally stable poles if sufficient control authority is unavailable.",
+      "claim_limit": "Static clipping omits actuator rate, heating and mechanical dynamics.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F12",
+      "number": 12,
+      "module_id": "12-recover-from-integrator-windup",
+      "competency_id": "DIGITAL-IMPLEMENTATION",
+      "competency_ids": [
+        "DIGITAL-IMPLEMENTATION",
+        "SAFETY-CONSTRAINTS"
+      ],
+      "domain_id": "A-DIGITAL",
+      "assessment_file": "modules/12-recover-from-integrator-windup/assessment.md",
+      "task": "Explain why reducing the demand after saturation does not immediately erase stored integral state.",
+      "expected_reasoning": "The integrator retains its history during saturation; anti-windup feeds back the request/applied discrepancy. Recovery should compare the same demand duration and limit, not a more favorable test.",
+      "claim_limit": "An anti-windup example does not guarantee every reference can be tracked.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F13",
+      "number": 13,
+      "module_id": "13-test-controllability",
+      "competency_id": "MODEL-REALIZATION",
+      "competency_ids": [
+        "MODEL-REALIZATION",
+        "MULTIVARIABLE-CONTROL",
+        "STATE-REALIZATION",
+        "STATE-FEEDBACK"
+      ],
+      "domain_id": "A-MODELING",
+      "assessment_file": "modules/13-test-controllability/assessment.md",
+      "task": "Use a zero input gain or coupling limit to distinguish controllability rank from control effort.",
+      "expected_reasoning": "The span of B, AB and higher powers identifies reachable directions. A barely nonzero coupling can preserve rank yet make reaching a state poorly conditioned and expensive.",
+      "claim_limit": "Binary rank alone does not quantify numerical conditioning or bounded-input reachability.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F14",
+      "number": 14,
+      "module_id": "14-test-observability",
+      "competency_id": "MODEL-REALIZATION",
+      "competency_ids": [
+        "MODEL-REALIZATION",
+        "MULTIVARIABLE-CONTROL",
+        "STATE-REALIZATION"
+      ],
+      "domain_id": "A-MODELING",
+      "assessment_file": "modules/14-test-observability/assessment.md",
+      "task": "Explain why a longer observation window cannot restore a fundamentally missing measured direction.",
+      "expected_reasoning": "Observability involves C, CA and the state dynamics. Longer data may improve an existing weak direction, but identical or absent sensitivities retain a null space.",
+      "claim_limit": "A nominal rank test is not noise-qualified estimation accuracy.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F15",
+      "number": 15,
+      "module_id": "15-build-a-state-observer",
+      "competency_id": "STATE-REALIZATION",
+      "competency_ids": [
+        "STATE-REALIZATION",
+        "OPTIMAL-ESTIMATION"
+      ],
+      "domain_id": "A-STATE",
+      "assessment_file": "modules/15-build-a-state-observer/assessment.md",
+      "task": "Balance observer pole speed against a fixed sensor bias and explain the actual error trace.",
+      "expected_reasoning": "Stable observer error poles govern transient convergence when the model and measurement are valid. A persistent sensor bias is a forced error; faster poles do not make a biased measurement true.",
+      "claim_limit": "The deterministic observer is not an optimal stochastic filter.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F16",
+      "number": 16,
+      "module_id": "16-fuse-noisy-sensors-with-a-kalman-filter",
+      "competency_id": "OPTIMAL-ESTIMATION",
+      "competency_ids": [
+        "OPTIMAL-ESTIMATION",
+        "STOCHASTIC-ESTIMATION"
+      ],
+      "domain_id": "A-OPTIMAL-EST",
+      "assessment_file": "modules/16-fuse-noisy-sensors-with-a-kalman-filter/assessment.md",
+      "task": "Predict what happens when assumed measurement noise disagrees with the retained noisy sensor stream.",
+      "expected_reasoning": "Kalman gain balances propagated covariance against assumed measurement covariance. Smaller reported P can mean overconfidence rather than smaller actual error, so inspect innovations and truth error separately.",
+      "claim_limit": "A deterministic example does not establish probabilistic confidence coverage.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F17",
+      "number": 17,
+      "module_id": "17-balance-state-error-and-control-effort-with-lqr",
+      "competency_id": "STATE-FEEDBACK",
+      "competency_ids": [
+        "STATE-FEEDBACK",
+        "OPTIMAL-ESTIMATION",
+        "OPTIMAL-CONTROL"
+      ],
+      "domain_id": "A-STATE",
+      "assessment_file": "modules/17-balance-state-error-and-control-effort-with-lqr/assessment.md",
+      "task": "Compare state-error and control-effort weights while recording both state history and applied control.",
+      "expected_reasoning": "The LQR objective trades state cost against input cost; larger state weight generally changes gains and effort. It does not impose hard actuator constraints unless those constraints are modeled separately.",
+      "claim_limit": "Nominal unconstrained LQR is not a saturation or robust guarantee.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F18",
+      "number": 18,
+      "module_id": "18-use-feedforward-and-feedback-together",
+      "competency_id": "STATE-FEEDBACK",
+      "competency_ids": [
+        "STATE-FEEDBACK",
+        "OPTIMAL-CONTROL"
+      ],
+      "domain_id": "A-STATE",
+      "assessment_file": "modules/18-use-feedforward-and-feedback-together/assessment.md",
+      "task": "Show how feedforward changes nominal tracking while feedback reacts to disturbances and mismatch.",
+      "expected_reasoning": "Feedforward uses the reference and model to anticipate required effort; feedback corrects measured error. A perfect nominal trace with feedforward alone does not prove rejection of model error.",
+      "claim_limit": "The feedforward model and reference smoothness bound the claim.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F19",
+      "number": 19,
+      "module_id": "19-measure-sensitivity-to-model-error",
+      "competency_id": "LOOP-SHAPING",
+      "competency_ids": [
+        "LOOP-SHAPING",
+        "ROBUST-ADAPTIVE"
+      ],
+      "domain_id": "A-LOOP",
+      "assessment_file": "modules/19-measure-sensitivity-to-model-error/assessment.md",
+      "task": "Predict the effect of actual actuator gain and drag mismatch without redesigning the nominal controller.",
+      "expected_reasoning": "Model error changes the physical loop while the nominal design remains fixed. Compare gain and drag sweeps independently; a robust claim must name the tested uncertainty family and performance measure.",
+      "claim_limit": "A sampled two-parameter family is not all possible plant uncertainty.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F20",
+      "number": 20,
+      "module_id": "20-compare-nominal-and-robust-designs",
+      "competency_id": "ROBUST-ADAPTIVE",
+      "competency_ids": [
+        "ROBUST-ADAPTIVE"
+      ],
+      "domain_id": "A-ROBUST",
+      "assessment_file": "modules/20-compare-nominal-and-robust-designs/assessment.md",
+      "task": "Choose between nominal and robust designs using their observed uncertainty/effort tradeoff.",
+      "expected_reasoning": "A conservative design can sacrifice nominal speed to maintain acceptable response under a declared mismatch. Compare both at the same physical plant and include effort or tracking penalties.",
+      "claim_limit": "No untested uncertainty set or universal robust certificate is implied.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F21",
+      "number": 21,
+      "module_id": "21-generate-a-feasible-trajectory",
+      "competency_id": "SAFETY-CONSTRAINTS",
+      "competency_ids": [
+        "SAFETY-CONSTRAINTS",
+        "GUIDANCE-DESIGN"
+      ],
+      "domain_id": "A-CONSTRAINTS",
+      "assessment_file": "modules/21-generate-a-feasible-trajectory/assessment.md",
+      "task": "Check whether changing distance or move duration violates the generated trajectory's limits.",
+      "expected_reasoning": "Time scaling changes velocity and acceleration at different powers of duration. A geometrically smooth reference may still demand infeasible actuator authority; check each derivative with its units.",
+      "claim_limit": "Reference feasibility is not guaranteed closed-loop tracking.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F22",
+      "number": 22,
+      "module_id": "22-implement-proportional-navigation",
+      "competency_id": "GUIDANCE-DESIGN",
+      "competency_ids": [
+        "GUIDANCE-DESIGN"
+      ],
+      "domain_id": "A-GUIDANCE",
+      "assessment_file": "modules/22-implement-proportional-navigation/assessment.md",
+      "task": "Explain the signs and dimensions of the bounded proportional-navigation teaching example.",
+      "expected_reasoning": "The modeled acceleration uses a navigation constant, closing speed and line-of-sight rate. State the closing/angle conventions before interpreting a miss distance or saturation event.",
+      "claim_limit": "This is a bounded synthetic guidance-method illustration, not operational system validation.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F23",
+      "number": 23,
+      "module_id": "23-model-sensor-and-actuator-dynamics",
+      "competency_id": "DIGITAL-IMPLEMENTATION",
+      "competency_ids": [
+        "DIGITAL-IMPLEMENTATION",
+        "ACTUATION-REALTIME"
+      ],
+      "domain_id": "A-DIGITAL",
+      "assessment_file": "modules/23-model-sensor-and-actuator-dynamics/assessment.md",
+      "task": "Trace how a sensor lag and actuator lag alter the measured and applied paths separately.",
+      "expected_reasoning": "The controller acts on delayed measurement and drives a lagged actuator. Their phase and amplitude effects occur at different loop locations, so matching time constants does not make them interchangeable.",
+      "claim_limit": "The linear lag model omits real sensor faults and actuator constraints beyond its scope.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F24",
+      "number": 24,
+      "module_id": "24-close-the-loop-through-a-hardware-in-the-loop-plant",
+      "competency_id": "ACTUATION-REALTIME",
+      "competency_ids": [
+        "ACTUATION-REALTIME"
+      ],
+      "domain_id": "A-REALTIME",
+      "assessment_file": "modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/assessment.md",
+      "task": "Calculate which timing and latency assumptions the software HIL example actually exercises.",
+      "expected_reasoning": "A controller period and one-way latency affect command arrival and sample age. A simulated plant loop can validate its timing model and recovery logic while leaving real buses and devices entirely untested.",
+      "claim_limit": "This is software simulation, not physical HIL or a real-time scheduler measurement.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F25",
+      "number": 25,
+      "module_id": "25-linearize-a-nonlinear-plant-around-an-operating-point",
+      "competency_id": "MODEL-LINEARIZATION",
+      "competency_ids": [
+        "MODEL-LINEARIZATION"
+      ],
+      "domain_id": "A-MODELING",
+      "assessment_file": "modules/25-linearize-a-nonlinear-plant-around-an-operating-point/assessment.md",
+      "task": "Compare operating-point residual and tangent-model error when changing angle and perturbation independently.",
+      "expected_reasoning": "An equilibrium must first balance gravity torque. The Jacobian describes a local perturbation after that balance; a small Taylor error cannot excuse linearizing around an unbalanced state.",
+      "claim_limit": "The approximation is local and excludes large-angle dynamic equivalence.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F26",
+      "number": 26,
+      "module_id": "26-reduce-block-diagrams-and-convert-system-realizations",
+      "competency_id": "MODEL-REALIZATION",
+      "competency_ids": [
+        "MODEL-REALIZATION"
+      ],
+      "domain_id": "A-MODELING",
+      "assessment_file": "modules/26-reduce-block-diagrams-and-convert-system-realizations/assessment.md",
+      "task": "Distinguish equivalent state/transfer realizations from an invalid near pole-zero cancellation.",
+      "expected_reasoning": "A coordinate realization preserves the full transfer relation. Dropping a nearly cancelled mode changes the model unless exact cancellation and the relevant input/output assumptions hold.",
+      "claim_limit": "Input/output cancellation does not establish every internal state is harmless.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F27",
+      "number": 27,
+      "module_id": "27-predict-transients-and-steady-state-error-from-system-type",
+      "competency_id": "CLASSICAL-SPECS",
+      "competency_ids": [
+        "CLASSICAL-SPECS"
+      ],
+      "domain_id": "A-CLASSICAL",
+      "assessment_file": "modules/27-predict-transients-and-steady-state-error-from-system-type/assessment.md",
+      "task": "Relate damping and natural frequency to overshoot, settling estimates and system-type error.",
+      "expected_reasoning": "Damping changes the decay envelope and ringing; natural frequency scales time. A four-time-constant rule is an estimate, and an unstable response has no legitimate settling-time certification.",
+      "claim_limit": "The displayed second-order model is not a universal transient specification.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F28",
+      "number": 28,
+      "module_id": "28-trace-a-root-locus-and-select-feedback-gain",
+      "competency_id": "CLASSICAL-STABILITY",
+      "competency_ids": [
+        "CLASSICAL-STABILITY"
+      ],
+      "domain_id": "A-CLASSICAL",
+      "assessment_file": "modules/28-trace-a-root-locus-and-select-feedback-gain/assessment.md",
+      "task": "Select a gain from root locations rather than choosing the fastest-looking finite response.",
+      "expected_reasoning": "Closed-loop roots determine nominal linear stability; a root crossing into the right half-plane invalidates a stable design claim even if a short trace is initially small.",
+      "claim_limit": "Dominant-pole approximations omit non-dominant modes and actuator constraints.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F29",
+      "number": 29,
+      "module_id": "29-apply-the-nyquist-stability-criterion",
+      "competency_id": "CLASSICAL-STABILITY",
+      "competency_ids": [
+        "CLASSICAL-STABILITY"
+      ],
+      "domain_id": "A-CLASSICAL",
+      "assessment_file": "modules/29-apply-the-nyquist-stability-criterion/assessment.md",
+      "task": "Count open-loop unstable poles before interpreting a Nyquist winding around minus one.",
+      "expected_reasoning": "The relation between winding and closed-loop unstable poles depends on the declared contour convention. Verify polynomial pole counting as a separate check; a visually small loop is insufficient.",
+      "claim_limit": "A finite sampled contour can miss critical behavior, especially near imaginary-axis crossings.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F30",
+      "number": 30,
+      "module_id": "30-shape-sensitivity-with-bode-loop-design",
+      "competency_id": "LOOP-SHAPING",
+      "competency_ids": [
+        "LOOP-SHAPING"
+      ],
+      "domain_id": "A-LOOP",
+      "assessment_file": "modules/30-shape-sensitivity-with-bode-loop-design/assessment.md",
+      "task": "Measure sensitivity, complementary sensitivity and effort together while shaping the loop.",
+      "expected_reasoning": "For negative feedback S+T=1. Improving disturbance rejection in one frequency region can increase noise or effort elsewhere; an incorrect feedback denominator breaks the identity.",
+      "claim_limit": "Peak values are over the declared sampled frequency band.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F31",
+      "number": 31,
+      "module_id": "31-design-lead-and-lag-compensation",
+      "competency_id": "LOOP-SHAPING",
+      "competency_ids": [
+        "LOOP-SHAPING"
+      ],
+      "domain_id": "A-LOOP",
+      "assessment_file": "modules/31-design-lead-and-lag-compensation/assessment.md",
+      "task": "Explain why a lead stage adds phase while a lag stage changes low-frequency gain differently.",
+      "expected_reasoning": "Lead and lag are identified by their pole-zero ordering, not a component name. Swapping the lead pole and zero reverses the phase effect; compare the same frequencies and scaling.",
+      "claim_limit": "An isolated compensator plot does not certify the full closed loop.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F32",
+      "number": 32,
+      "module_id": "32-place-a-notch-filter-and-reference-prefilter",
+      "competency_id": "LOOP-SHAPING",
+      "competency_ids": [
+        "LOOP-SHAPING"
+      ],
+      "domain_id": "A-LOOP",
+      "assessment_file": "modules/32-place-a-notch-filter-and-reference-prefilter/assessment.md",
+      "task": "Place the notch relative to the actual resonance and distinguish it from a reference prefilter.",
+      "expected_reasoning": "A notch reduces loop transmission near its chosen center, while a prefilter changes reference content. Mistuning the notch can leave the physical resonance exposed even if reference motion looks smoother.",
+      "claim_limit": "The fixed resonance model omits uncertainty and changing structural modes.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F33",
+      "number": 33,
+      "module_id": "33-measure-mimo-interaction-zeros-and-decoupling",
+      "competency_id": "MULTIVARIABLE-CONTROL",
+      "competency_ids": [
+        "MULTIVARIABLE-CONTROL",
+        "ACTUATION-REALTIME"
+      ],
+      "domain_id": "A-MIMO",
+      "assessment_file": "modules/33-measure-mimo-interaction-zeros-and-decoupling/assessment.md",
+      "task": "Compare static decoupling, relative gain and dynamic singular values before choosing channel pairing.",
+      "expected_reasoning": "A DC inverse can reduce static cross coupling without cancelling dynamic interaction at every frequency. Regularization trades inversion sensitivity against a residual; transmission zeros constrain the attainable behavior.",
+      "claim_limit": "This two-input/two-output example is not full control allocation or MIMO robust synthesis.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F34",
+      "number": 34,
+      "module_id": "34-propagate-state-modes-and-diagnose-numerical-conditioning",
+      "competency_id": "STATE-REALIZATION",
+      "competency_ids": [
+        "STATE-REALIZATION",
+        "MODEL-REALIZATION"
+      ],
+      "domain_id": "A-STATE",
+      "assessment_file": "modules/34-propagate-state-modes-and-diagnose-numerical-conditioning/assessment.md",
+      "task": "Hold both decay rates fixed and change the angle between the eigenvectors.",
+      "expected_reasoning": "Eigenvalues remain stable while nearly parallel eigenvectors amplify coordinate sensitivity and transient cancellation. A tiny reconstruction error is not proof that the modal basis is well conditioned.",
+      "claim_limit": "Roundoff reconstruction residual is not a physical state error bound.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F35",
+      "number": 35,
+      "module_id": "35-compare-discretization-methods-and-aliasing",
+      "competency_id": "DIGITAL-IMPLEMENTATION",
+      "competency_ids": [
+        "DIGITAL-IMPLEMENTATION"
+      ],
+      "domain_id": "A-DIGITAL",
+      "assessment_file": "modules/35-compare-discretization-methods-and-aliasing/assessment.md",
+      "task": "Compare exact ZOH, Euler pole mapping and alias-equivalent sampled tones at the same sample interval.",
+      "expected_reasoning": "The exact scalar pole is exp(aT), whereas Euler uses 1+aT. A stable continuous pole can map to an unstable Euler pole; sampled sinusoidal frequency is ambiguous modulo sampling frequency.",
+      "claim_limit": "The retained lab compares a scalar pole and tone, not a full sampled-data loop.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F36",
+      "number": 36,
+      "module_id": "36-place-state-feedback-poles-and-track-references",
+      "competency_id": "STATE-FEEDBACK",
+      "competency_ids": [
+        "STATE-FEEDBACK"
+      ],
+      "domain_id": "A-STATE",
+      "assessment_file": "modules/36-place-state-feedback-poles-and-track-references/assessment.md",
+      "task": "Separate state-feedback pole placement from reference prefilter scaling in the actual two-state trajectory.",
+      "expected_reasoning": "Both position and velocity terms contribute acceleration. Changing only the prefilter moves the equilibrium without moving closed-loop poles, so tracking error and pole stability are different tests.",
+      "claim_limit": "A finite endpoint does not equal the analytic final value automatically.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F37",
+      "number": 37,
+      "module_id": "37-augment-an-integral-servo-and-limit-commands",
+      "competency_id": "STATE-FEEDBACK",
+      "competency_ids": [
+        "STATE-FEEDBACK",
+        "DIGITAL-IMPLEMENTATION",
+        "SAFETY-CONSTRAINTS"
+      ],
+      "domain_id": "A-STATE",
+      "assessment_file": "modules/37-augment-an-integral-servo-and-limit-commands/assessment.md",
+      "task": "Compare integral load rejection with the requested and limited command at identical authority.",
+      "expected_reasoning": "Integral action can reject a feasible constant load while command saturation prevents impossible equilibria. Track the integral state as well as position; a stable unsaturated design is not enough.",
+      "claim_limit": "The normalized first-order servo is not a complete second-order mechanical plant.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F38",
+      "number": 38,
+      "module_id": "38-combine-lqr-and-an-observer-with-the-separation-principle",
+      "competency_id": "OPTIMAL-ESTIMATION",
+      "competency_ids": [
+        "OPTIMAL-ESTIMATION"
+      ],
+      "domain_id": "A-OPTIMAL-EST",
+      "assessment_file": "modules/38-combine-lqr-and-an-observer-with-the-separation-principle/assessment.md",
+      "task": "Verify controller and observer modes in the augmented system rather than looking only at controller poles.",
+      "expected_reasoning": "The separation principle joins regulator and estimator modes under its assumptions. An unstable observer can spoil the actual estimated-state feedback trajectory despite stable regulator modes.",
+      "claim_limit": "This nominal linear result excludes saturation and model mismatch.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F39",
+      "number": 39,
+      "module_id": "39-solve-finite-horizon-and-time-varying-lqr",
+      "competency_id": "OPTIMAL-CONTROL",
+      "competency_ids": [
+        "OPTIMAL-CONTROL"
+      ],
+      "domain_id": "A-OPTIMAL",
+      "assessment_file": "modules/39-solve-finite-horizon-and-time-varying-lqr/assessment.md",
+      "task": "Explain why a terminal Riccati boundary must be propagated backward in time.",
+      "expected_reasoning": "The finite-horizon value at the end is prescribed. Starting that value at the beginning solves a different boundary problem; compare the terminal metric and time-varying gain schedule.",
+      "claim_limit": "The lab uses a declared finite-difference Riccati scheme, not an exact continuous optimizer or full state-cost rollout.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F40",
+      "number": 40,
+      "module_id": "40-quantify-quantization-and-sampling-jitter",
+      "competency_id": "DIGITAL-IMPLEMENTATION",
+      "competency_ids": [
+        "DIGITAL-IMPLEMENTATION"
+      ],
+      "domain_id": "A-DIGITAL",
+      "assessment_file": "modules/40-quantify-quantization-and-sampling-jitter/assessment.md",
+      "task": "Increase converter bits while keeping sampling jitter fixed and explain any error floor.",
+      "expected_reasoning": "Quantization error shrinks with code spacing, but timing error depends on waveform slope and jitter. Separate the two error traces before assigning combined SNR improvement to resolution.",
+      "claim_limit": "The deterministic jitter and quantizer do not model every ADC error mechanism.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F41",
+      "number": 41,
+      "module_id": "41-cross-rate-transitions-and-execution-delay",
+      "competency_id": "DIGITAL-IMPLEMENTATION",
+      "competency_ids": [
+        "DIGITAL-IMPLEMENTATION",
+        "ACTUATION-REALTIME"
+      ],
+      "domain_id": "A-DIGITAL",
+      "assessment_file": "modules/41-cross-rate-transitions-and-execution-delay/assessment.md",
+      "task": "Explain the difference between slow-rate hold error, execution delay and timestamp-derived age.",
+      "expected_reasoning": "A held sample accumulates age within its rate period; transport/execution delay adds another contribution. A nominal phase-lag number alone does not prove data freshness for every tick.",
+      "claim_limit": "Fixed software index timing is not measured operating-system scheduling.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F42",
+      "number": 42,
+      "module_id": "42-switch-controllers-bumplessly-with-anti-windup",
+      "competency_id": "DIGITAL-IMPLEMENTATION",
+      "competency_ids": [
+        "DIGITAL-IMPLEMENTATION"
+      ],
+      "domain_id": "A-DIGITAL",
+      "assessment_file": "modules/42-switch-controllers-bumplessly-with-anti-windup/assessment.md",
+      "task": "Predict the command jump when switching from manual to automatic control and explain the recovery criterion.",
+      "expected_reasoning": "Bumpless transfer initializes integral state to match the existing command. Anti-windup then uses the actual saturation discrepancy; a recovery beyond the finite observation window is censored, not an observed success.",
+      "claim_limit": "A censored recovery is a lower bound on time, not an exact settling measurement.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F43",
+      "number": 43,
+      "module_id": "43-use-phase-portraits-to-separate-local-and-global-stability",
+      "competency_id": "NONLINEAR-STABILITY",
+      "competency_ids": [
+        "NONLINEAR-STABILITY"
+      ],
+      "domain_id": "A-NONLINEAR",
+      "assessment_file": "modules/43-use-phase-portraits-to-separate-local-and-global-stability/assessment.md",
+      "task": "Distinguish local damping stability, a phase-portrait orbit and global energy behavior.",
+      "expected_reasoning": "The double-well potential has several equilibria. Reversing damping changes energy flow and local stability; distance from one well at a single oscillation phase is not a valid stability ranking.",
+      "claim_limit": "A finite simulated orbit is not a global Lyapunov proof.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F44",
+      "number": 44,
+      "module_id": "44-certify-decay-with-lyapunov-functions-and-regions-of-attraction",
+      "competency_id": "NONLINEAR-STABILITY",
+      "competency_ids": [
+        "NONLINEAR-STABILITY"
+      ],
+      "domain_id": "A-NONLINEAR",
+      "assessment_file": "modules/44-certify-decay-with-lyapunov-functions-and-regions-of-attraction/assessment.md",
+      "task": "Test the selected Lyapunov sublevel using the actual vector field and its boundary derivative.",
+      "expected_reasoning": "For V=x squared/2 and xdot=-x+b*x cubed, Vdot=-x squared+b*x fourth. Strict negativity requires a sublevel inside the nonzero equilibria, with the origin excluded from the strict test.",
+      "claim_limit": "Equality at the boundary does not certify asymptotic convergence.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F45",
+      "number": 45,
+      "module_id": "45-enforce-safety-with-a-control-barrier-filter",
+      "competency_id": "SAFETY-CONSTRAINTS",
+      "competency_ids": [
+        "SAFETY-CONSTRAINTS"
+      ],
+      "domain_id": "A-CONSTRAINTS",
+      "assessment_file": "modules/45-enforce-safety-with-a-control-barrier-filter/assessment.md",
+      "task": "Compare a barrier condition evaluated along the actual state trajectory with the nominal command.",
+      "expected_reasoning": "A safety filter must recompute its constraint at each evolving state. Check feasibility and realized barrier margin rather than assuming a projected command guarantees all future motion.",
+      "claim_limit": "The finite sampled barrier model does not certify arbitrary continuous or delayed plants.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F46",
+      "number": 46,
+      "module_id": "46-schedule-gains-across-operating-points",
+      "competency_id": "NONLINEAR-CONTROL",
+      "competency_ids": [
+        "NONLINEAR-CONTROL",
+        "ROBUST-ADAPTIVE"
+      ],
+      "domain_id": "A-NONLINEAR",
+      "assessment_file": "modules/46-schedule-gains-across-operating-points/assessment.md",
+      "task": "Measure gain interpolation error against the underlying schedule at an intermediate operating point.",
+      "expected_reasoning": "A table and interpolation rule produce an approximation. Sparse sampling can hide error between knots; matching a few endpoint gains does not establish uniform performance over the operating range.",
+      "claim_limit": "The specified schedule is not a universal gain-scheduling stability proof.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F47",
+      "number": 47,
+      "module_id": "47-cancel-nonlinearities-with-feedback-linearization",
+      "competency_id": "NONLINEAR-CONTROL",
+      "competency_ids": [
+        "NONLINEAR-CONTROL"
+      ],
+      "domain_id": "A-NONLINEAR",
+      "assessment_file": "modules/47-cancel-nonlinearities-with-feedback-linearization/assessment.md",
+      "task": "Explain an actual departure event when feedback cancellation uses a mismatched nonlinear model.",
+      "expected_reasoning": "Cancellation leaves residual dynamics whose sign can change stability or produce finite escape. Report the event and finite validity interval rather than extending a plotted solution past departure.",
+      "claim_limit": "Feedback linearization relies on the modeled input map and valid operating domain.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F48",
+      "number": 48,
+      "module_id": "48-bound-structured-uncertainty-and-robust-performance",
+      "competency_id": "ROBUST-ADAPTIVE",
+      "competency_ids": [
+        "ROBUST-ADAPTIVE"
+      ],
+      "domain_id": "A-ROBUST",
+      "assessment_file": "modules/48-bound-structured-uncertainty-and-robust-performance/assessment.md",
+      "task": "Compare worst sampled sensitivity over the declared uncertainty interval with the nominal response.",
+      "expected_reasoning": "Robust performance names an uncertainty set and a performance quantity. Dimensionless normalized margins must not mix incompatible units; a sample grid is evidence for that grid, not an exact all-frequency theorem.",
+      "claim_limit": "Finite grids do not establish structured singular-value certification.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F49",
+      "number": 49,
+      "module_id": "49-control-a-constrained-plant-with-model-predictive-control",
+      "competency_id": "SAFETY-CONSTRAINTS",
+      "competency_ids": [
+        "SAFETY-CONSTRAINTS",
+        "OPTIMAL-CONTROL"
+      ],
+      "domain_id": "A-CONSTRAINTS",
+      "assessment_file": "modules/49-control-a-constrained-plant-with-model-predictive-control/assessment.md",
+      "task": "Check applied receding-horizon commands against both optimization feasibility and actual state constraints.",
+      "expected_reasoning": "MPC repeatedly solves a constrained horizon problem. A decreasing objective does not excuse an infeasible input or state, and finite horizon plus a fallback is not automatically a stability proof.",
+      "claim_limit": "This bounded scalar optimizer is not a general nonlinear MPC implementation.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F50",
+      "number": 50,
+      "module_id": "50-identify-and-validate-a-dynamic-model-from-excitation-data",
+      "competency_id": "SYSTEM-IDENTIFICATION",
+      "competency_ids": [
+        "SYSTEM-IDENTIFICATION"
+      ],
+      "domain_id": "A-IDENTIFICATION",
+      "assessment_file": "modules/50-identify-and-validate-a-dynamic-model-from-excitation-data/assessment.md",
+      "task": "Show why rich excitation and held-out validation are separate requirements for identification.",
+      "expected_reasoning": "A low fitting residual can arise from uninformative data or overfitting. Rank and excitation establish identifiability; independent free-run validation checks whether the fitted dynamics predict new behavior.",
+      "claim_limit": "Noise-free low-order ARX identification does not establish real plant accuracy.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F51",
+      "number": 51,
+      "module_id": "51-adapt-a-parameter-estimate-online",
+      "competency_id": "SYSTEM-IDENTIFICATION",
+      "competency_ids": [
+        "SYSTEM-IDENTIFICATION",
+        "ROBUST-ADAPTIVE"
+      ],
+      "domain_id": "A-IDENTIFICATION",
+      "assessment_file": "modules/51-adapt-a-parameter-estimate-online/assessment.md",
+      "task": "Relate recursive least squares estimates and covariance to an independently weighted batch fit.",
+      "expected_reasoning": "Each RLS update uses a gain and covariance recursion. Forgetting changes the data weights; small covariance without sufficient excitation is not trustworthy certainty about the true parameters.",
+      "claim_limit": "The retained model and excitation family limit the adaptation claim.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F52",
+      "number": 52,
+      "module_id": "52-build-stochastic-process-models-and-interpret-covariance",
+      "competency_id": "STOCHASTIC-ESTIMATION",
+      "competency_ids": [
+        "STOCHASTIC-ESTIMATION"
+      ],
+      "domain_id": "A-STOCHASTIC",
+      "assessment_file": "modules/52-build-stochastic-process-models-and-interpret-covariance/assessment.md",
+      "task": "Distinguish zero-mean state prediction from covariance growth under a random walk.",
+      "expected_reasoning": "Positive process noise adds qT to initial variance. The mean can remain unchanged while uncertainty grows; subtracting noise can produce an invalid covariance even if a clipped plot stays finite.",
+      "claim_limit": "The experiment is scalar covariance propagation, not a general vector stochastic process.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F53",
+      "number": 53,
+      "module_id": "53-monitor-innovations-nis-nees-and-measurement-gates",
+      "competency_id": "STOCHASTIC-ESTIMATION",
+      "competency_ids": [
+        "STOCHASTIC-ESTIMATION"
+      ],
+      "domain_id": "A-STOCHASTIC",
+      "assessment_file": "modules/53-monitor-innovations-nis-nees-and-measurement-gates/assessment.md",
+      "task": "Compare NIS before a gated update and NEES after it using the retained truth trajectory.",
+      "expected_reasoning": "NIS divides squared innovation by S; NEES divides posterior truth error by P. Bypassing the gate changes the posterior path at the same injection; independent-trial consistency cannot be inferred from deterministic time samples.",
+      "claim_limit": "NEES needs truth and deterministic samples do not validate chi-square coverage.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F54",
+      "number": 54,
+      "module_id": "54-estimate-nonlinear-state-with-an-extended-kalman-filter",
+      "competency_id": "NONLINEAR-ESTIMATION",
+      "competency_ids": [
+        "NONLINEAR-ESTIMATION"
+      ],
+      "domain_id": "A-NONLINEAR-EST",
+      "assessment_file": "modules/54-estimate-nonlinear-state-with-an-extended-kalman-filter/assessment.md",
+      "task": "Calculate the actual EKF state update and nonlinear residual from the selected prior.",
+      "expected_reasoning": "Linearize the measurement at the prior, compute innovation and gain, and update both state and covariance. A zero Jacobian loses first-order information; prior variance is not the nonlinear Taylor residual.",
+      "claim_limit": "This single scalar update does not resolve the global sign ambiguity of squared observations.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F55",
+      "number": 55,
+      "module_id": "55-transform-uncertainty-with-an-unscented-kalman-filter",
+      "competency_id": "NONLINEAR-ESTIMATION",
+      "competency_ids": [
+        "NONLINEAR-ESTIMATION"
+      ],
+      "domain_id": "A-NONLINEAR-EST",
+      "assessment_file": "modules/55-transform-uncertainty-with-an-unscented-kalman-filter/assessment.md",
+      "task": "Explain the difference between sigma-point mean weights and covariance correction for a squared Gaussian transform.",
+      "expected_reasoning": "The squared zero-mean Gaussian has mean sigma squared and variance twice sigma fourth. A missing covariance correction can preserve the mean while corrupting variance; the two weight sums have different roles.",
+      "claim_limit": "This is an unscented transform component, not a recursive UKF.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F56",
+      "number": 56,
+      "module_id": "56-recover-a-trajectory-with-rauch-tung-striebel-smoothing",
+      "competency_id": "NONLINEAR-ESTIMATION",
+      "competency_ids": [
+        "NONLINEAR-ESTIMATION"
+      ],
+      "domain_id": "A-NONLINEAR-EST",
+      "assessment_file": "modules/56-recover-a-trajectory-with-rauch-tung-striebel-smoothing/assessment.md",
+      "task": "Explain why later measurements can reduce an earlier state's uncertainty in an RTS smoother.",
+      "expected_reasoning": "A smoother conditions on future data through a backward gain while a filter conditions only on data available at the time. Compare full conditional covariance, not an arbitrary fixed percentage improvement.",
+      "claim_limit": "The retained scalar random-walk example is not a general navigation smoother.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F57",
+      "number": 57,
+      "module_id": "57-transform-frames-quaternions-and-sensor-alignment",
+      "competency_id": "NAV-FRAMES-ATTITUDE",
+      "competency_ids": [
+        "NAV-FRAMES-ATTITUDE"
+      ],
+      "domain_id": "A-NAV-FRAMES",
+      "assessment_file": "modules/57-transform-frames-quaternions-and-sensor-alignment/assessment.md",
+      "task": "Check quaternion normalization, vector calibration and round-trip frame consistency separately.",
+      "expected_reasoning": "A valid rotation preserves norm and orthogonality. Scaling quaternion components without normalization corrupts the rotation; a plausible vector endpoint alone cannot verify the full frame transformation.",
+      "claim_limit": "One composed rotation does not establish full attitude-estimation accuracy.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F58",
+      "number": 58,
+      "module_id": "58-analyze-navigation-observability-and-alignment-calibration",
+      "competency_id": "NAV-FRAMES-ATTITUDE",
+      "competency_ids": [
+        "NAV-FRAMES-ATTITUDE",
+        "INERTIAL-NAVIGATION"
+      ],
+      "domain_id": "A-NAV-FRAMES",
+      "assessment_file": "modules/58-analyze-navigation-observability-and-alignment-calibration/assessment.md",
+      "task": "Build the actual two-column calibration regressor and decide whether separate bias uncertainty is available.",
+      "expected_reasoning": "Information is Y-transpose R-inverse Y. Identical columns have rank one regardless of noise scale; with diverse headings use singular values and the inverse information covariance to quantify sensitivity.",
+      "claim_limit": "This normalized two-parameter geometry is not full inertial alignment.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F59",
+      "number": 59,
+      "module_id": "59-propagate-strapdown-inertial-navigation-and-imu-error",
+      "competency_id": "INERTIAL-NAVIGATION",
+      "competency_ids": [
+        "INERTIAL-NAVIGATION"
+      ],
+      "domain_id": "A-NAVIGATION",
+      "assessment_file": "modules/59-propagate-strapdown-inertial-navigation-and-imu-error/assessment.md",
+      "task": "Compare prescribed accelerometer-bias correction over the same coast interval and inspect plotted endpoints.",
+      "expected_reasoning": "Velocity error is bias times time and position error is half bias times time squared. A five-percent residual bias produces five-percent position error; omitting correction leaves the full drift.",
+      "claim_limit": "The model has fixed attitude and does not execute full strapdown navigation.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F60",
+      "number": 60,
+      "module_id": "60-solve-a-gnss-pseudorange-navigation-fix",
+      "competency_id": "INERTIAL-NAVIGATION",
+      "competency_ids": [
+        "INERTIAL-NAVIGATION"
+      ],
+      "domain_id": "A-NAVIGATION",
+      "assessment_file": "modules/60-solve-a-gnss-pseudorange-navigation-fix/assessment.md",
+      "task": "Separate position and clock error in a nonlinear synthetic pseudorange solution.",
+      "expected_reasoning": "Each range measurement contains geometry and a common clock term. Omitting that term forces the solver to absorb timing error into position; residual size alone does not identify the error source.",
+      "claim_limit": "Synthetic geometry and deterministic noise are not real GNSS qualification.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F61",
+      "number": 61,
+      "module_id": "61-fuse-gnss-and-ins-with-an-error-state-kalman-filter",
+      "competency_id": "INERTIAL-NAVIGATION",
+      "competency_ids": [
+        "INERTIAL-NAVIGATION",
+        "STOCHASTIC-ESTIMATION"
+      ],
+      "domain_id": "A-NAVIGATION",
+      "assessment_file": "modules/61-fuse-gnss-and-ins-with-an-error-state-kalman-filter/assessment.md",
+      "task": "Trace prior covariance, state-error injection and covariance reset in the actual one-axis filter.",
+      "expected_reasoning": "An error estimate must be injected into the nominal state as well as propagated in covariance. A shrinking covariance with an uncorrected nominal error is overconfidence, not successful navigation.",
+      "claim_limit": "This one-axis formulation does not implement a complete inertial ESKF.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F62",
+      "number": 62,
+      "module_id": "62-monitor-navigation-integrity-and-exclude-faulty-measurements",
+      "competency_id": "NAV-INTEGRITY",
+      "competency_ids": [
+        "NAV-INTEGRITY"
+      ],
+      "domain_id": "A-INTEGRITY",
+      "assessment_file": "modules/62-monitor-navigation-integrity-and-exclude-faulty-measurements/assessment.md",
+      "task": "Compare actual residual-based detection and exclusion with the refitted solution and alarm threshold.",
+      "expected_reasoning": "Redundancy permits inconsistency detection under stated geometry. Excluding a suspect row changes the fitted position and residual structure; distinguish a synthetic threshold from a certified protection level.",
+      "claim_limit": "No aviation integrity or protection-level certification is supported.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F63",
+      "number": 63,
+      "module_id": "63-follow-waypoints-and-paths-with-line-of-sight-guidance",
+      "competency_id": "GUIDANCE-DESIGN",
+      "competency_ids": [
+        "GUIDANCE-DESIGN"
+      ],
+      "domain_id": "A-GUIDANCE",
+      "assessment_file": "modules/63-follow-waypoints-and-paths-with-line-of-sight-guidance/assessment.md",
+      "task": "Predict the initial LOS heading and compare nonlinear cross-track evolution with its local approximation.",
+      "expected_reasoning": "The actual heading is minus atan(y/L); lateral speed is V times its sine. Exponential decay is valid only for small y/L, and reversing the sign causes growing error with a changing peak heading.",
+      "claim_limit": "The lab follows a straight path with instantaneous heading tracking, not a full waypoint controller.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F64",
+      "number": 64,
+      "module_id": "64-compare-pursuit-laws-and-proportional-navigation-variants",
+      "competency_id": "GUIDANCE-DESIGN",
+      "competency_ids": [
+        "GUIDANCE-DESIGN"
+      ],
+      "domain_id": "A-GUIDANCE",
+      "assessment_file": "modules/64-compare-pursuit-laws-and-proportional-navigation-variants/assessment.md",
+      "task": "Explain the different moving-beacon guidance paths using the actual relative geometry.",
+      "expected_reasoning": "Closing speed, line-of-sight rate and turning geometry govern the trajectory. Compare bounded civilian synthetic paths under the same initial conditions rather than treating a smaller endpoint distance as universal superiority.",
+      "claim_limit": "These synthetic beacon comparisons do not validate an operational pursuit system.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F65",
+      "number": 65,
+      "module_id": "65-enforce-terminal-and-actuator-aware-guidance-constraints",
+      "competency_id": "GUIDANCE-DESIGN",
+      "competency_ids": [
+        "GUIDANCE-DESIGN",
+        "SAFETY-CONSTRAINTS"
+      ],
+      "domain_id": "A-GUIDANCE",
+      "assessment_file": "modules/65-enforce-terminal-and-actuator-aware-guidance-constraints/assessment.md",
+      "task": "Compare a bounded terminal objective with its actual optimized controls and residual.",
+      "expected_reasoning": "A finite control horizon trades terminal error against limits. If the desired terminal state is infeasible, report the residual and active bounds rather than silently declaring success from solver convergence.",
+      "claim_limit": "This bounded teaching problem is not a complete autonomous planner.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F66",
+      "number": 66,
+      "module_id": "66-capstone-identify-control-estimate-and-stress-a-plant",
+      "competency_id": "INTEGRATED-GNC",
+      "competency_ids": [
+        "INTEGRATED-GNC",
+        "SYSTEM-IDENTIFICATION",
+        "ROBUST-ADAPTIVE",
+        "OPTIMAL-ESTIMATION"
+      ],
+      "domain_id": "A-CAP-ID",
+      "assessment_file": "modules/66-capstone-identify-control-estimate-and-stress-a-plant/assessment.md",
+      "task": "Trace excitation, identified model, redesigned controller and estimator into the held-out stress histories.",
+      "expected_reasoning": "Identification rank must support both fitted coefficients. Stress changes the physical model while the design and estimator use the identified model; each requirement derives from recorded state, covariance or control evidence.",
+      "claim_limit": "A scalar synthetic identification/control/estimation loop is not full vehicle dynamics or robust certification.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F67",
+      "number": 67,
+      "module_id": "67-capstone-navigate-guide-and-constrain-an-autonomous-survey",
+      "competency_id": "INTEGRATED-GNC",
+      "competency_ids": [
+        "INTEGRATED-GNC",
+        "INERTIAL-NAVIGATION",
+        "NAV-INTEGRITY",
+        "GUIDANCE-DESIGN",
+        "SAFETY-CONSTRAINTS"
+      ],
+      "domain_id": "A-CAP-ID",
+      "assessment_file": "modules/67-capstone-navigate-guide-and-constrain-an-autonomous-survey/assessment.md",
+      "task": "Reconcile actual survey position, estimated position, turn limits and stale-navigation hold events.",
+      "expected_reasoning": "The planar survey applies LOS guidance and a bounded turn command to a simplified navigation estimate. GNSS age can trigger a hold even if cross-track error is small; inspect each requirement and the executed path.",
+      "claim_limit": "The capstone uses simplified planar position aiding, not raw pseudoranges or full GNSS/INS mechanization.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "GNC-F68",
+      "number": 68,
+      "module_id": "68-capstone-verify-a-faulted-software-hil-gnc-loop",
+      "competency_id": "INTEGRATED-GNC",
+      "competency_ids": [
+        "INTEGRATED-GNC",
+        "ACTUATION-REALTIME",
+        "NAV-INTEGRITY",
+        "ROBUST-ADAPTIVE"
+      ],
+      "domain_id": "A-CAP-ID",
+      "assessment_file": "modules/68-capstone-verify-a-faulted-software-hil-gnc-loop/assessment.md",
+      "task": "Trace each software-HIL verdict to delivered packet timing, dropped commands and expired actuator state.",
+      "expected_reasoning": "A watchdog must suppress actual applied output when a command expires. Distinguish late delivered packets from dropped source commands, and track the proportional-loop equilibrium rather than assuming unity tracking.",
+      "claim_limit": "Software event simulation does not measure real buses, operating-system deadlines or physical actuators.",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "retained_cases": [
+        "baseline",
+        "sweep_1",
+        "sweep_2",
+        "broken",
+        "recovery"
+      ],
+      "learner_result": "not_recorded"
+    }
+  ],
+  "domains": [
+    {
+      "id": "A-MODELING",
+      "module_id": "34-propagate-state-modes-and-diagnose-numerical-conditioning",
+      "numbers": [
+        1,
+        2,
+        3,
+        4,
+        13,
+        14,
+        25,
+        26,
+        34
+      ],
+      "assessment_file": "modules/34-propagate-state-modes-and-diagnose-numerical-conditioning/portfolio-a-modeling.md",
+      "competency_ids": [
+        "MODEL-LINEARIZATION",
+        "MODEL-REALIZATION"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-CLASSICAL",
+      "module_id": "29-apply-the-nyquist-stability-criterion",
+      "numbers": [
+        3,
+        5,
+        6,
+        7,
+        8,
+        27,
+        28,
+        29
+      ],
+      "assessment_file": "modules/29-apply-the-nyquist-stability-criterion/portfolio-a-classical.md",
+      "competency_ids": [
+        "CLASSICAL-SPECS",
+        "CLASSICAL-STABILITY"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-LOOP",
+      "module_id": "32-place-a-notch-filter-and-reference-prefilter",
+      "numbers": [
+        7,
+        8,
+        19,
+        30,
+        31,
+        32
+      ],
+      "assessment_file": "modules/32-place-a-notch-filter-and-reference-prefilter/portfolio-a-loop.md",
+      "competency_ids": [
+        "LOOP-SHAPING"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-MIMO",
+      "module_id": "33-measure-mimo-interaction-zeros-and-decoupling",
+      "numbers": [
+        13,
+        14,
+        33
+      ],
+      "assessment_file": "modules/33-measure-mimo-interaction-zeros-and-decoupling/portfolio-a-mimo.md",
+      "competency_ids": [
+        "MULTIVARIABLE-CONTROL"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-STATE",
+      "module_id": "37-augment-an-integral-servo-and-limit-commands",
+      "numbers": [
+        13,
+        14,
+        15,
+        17,
+        18,
+        34,
+        36,
+        37
+      ],
+      "assessment_file": "modules/37-augment-an-integral-servo-and-limit-commands/portfolio-a-state.md",
+      "competency_ids": [
+        "STATE-REALIZATION",
+        "STATE-FEEDBACK",
+        "MODEL-REALIZATION"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-OPTIMAL-EST",
+      "module_id": "66-capstone-identify-control-estimate-and-stress-a-plant",
+      "numbers": [
+        15,
+        16,
+        17,
+        38,
+        66
+      ],
+      "assessment_file": "modules/66-capstone-identify-control-estimate-and-stress-a-plant/portfolio-a-optimal-est.md",
+      "competency_ids": [
+        "OPTIMAL-ESTIMATION"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-OPTIMAL",
+      "module_id": "49-control-a-constrained-plant-with-model-predictive-control",
+      "numbers": [
+        17,
+        18,
+        39,
+        49
+      ],
+      "assessment_file": "modules/49-control-a-constrained-plant-with-model-predictive-control/portfolio-a-optimal.md",
+      "competency_ids": [
+        "OPTIMAL-CONTROL"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-DIGITAL",
+      "module_id": "42-switch-controllers-bumplessly-with-anti-windup",
+      "numbers": [
+        9,
+        10,
+        11,
+        12,
+        23,
+        35,
+        37,
+        40,
+        41,
+        42
+      ],
+      "assessment_file": "modules/42-switch-controllers-bumplessly-with-anti-windup/portfolio-a-digital.md",
+      "competency_ids": [
+        "DIGITAL-IMPLEMENTATION"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-NONLINEAR",
+      "module_id": "47-cancel-nonlinearities-with-feedback-linearization",
+      "numbers": [
+        4,
+        43,
+        44,
+        46,
+        47
+      ],
+      "assessment_file": "modules/47-cancel-nonlinearities-with-feedback-linearization/portfolio-a-nonlinear.md",
+      "competency_ids": [
+        "NONLINEAR-STABILITY",
+        "NONLINEAR-CONTROL"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-CONSTRAINTS",
+      "module_id": "67-capstone-navigate-guide-and-constrain-an-autonomous-survey",
+      "numbers": [
+        11,
+        12,
+        21,
+        37,
+        45,
+        49,
+        65,
+        67
+      ],
+      "assessment_file": "modules/67-capstone-navigate-guide-and-constrain-an-autonomous-survey/portfolio-a-constraints.md",
+      "competency_ids": [
+        "SAFETY-CONSTRAINTS"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-ROBUST",
+      "module_id": "68-capstone-verify-a-faulted-software-hil-gnc-loop",
+      "numbers": [
+        19,
+        20,
+        46,
+        48,
+        51,
+        66,
+        68
+      ],
+      "assessment_file": "modules/68-capstone-verify-a-faulted-software-hil-gnc-loop/portfolio-a-robust.md",
+      "competency_ids": [
+        "ROBUST-ADAPTIVE"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-IDENTIFICATION",
+      "module_id": "66-capstone-identify-control-estimate-and-stress-a-plant",
+      "numbers": [
+        50,
+        51,
+        66
+      ],
+      "assessment_file": "modules/66-capstone-identify-control-estimate-and-stress-a-plant/portfolio-a-identification.md",
+      "competency_ids": [
+        "SYSTEM-IDENTIFICATION"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-STOCHASTIC",
+      "module_id": "61-fuse-gnss-and-ins-with-an-error-state-kalman-filter",
+      "numbers": [
+        16,
+        52,
+        53,
+        61
+      ],
+      "assessment_file": "modules/61-fuse-gnss-and-ins-with-an-error-state-kalman-filter/portfolio-a-stochastic.md",
+      "competency_ids": [
+        "STOCHASTIC-ESTIMATION"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-NONLINEAR-EST",
+      "module_id": "56-recover-a-trajectory-with-rauch-tung-striebel-smoothing",
+      "numbers": [
+        54,
+        55,
+        56
+      ],
+      "assessment_file": "modules/56-recover-a-trajectory-with-rauch-tung-striebel-smoothing/portfolio-a-nonlinear-est.md",
+      "competency_ids": [
+        "NONLINEAR-ESTIMATION"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-NAV-FRAMES",
+      "module_id": "58-analyze-navigation-observability-and-alignment-calibration",
+      "numbers": [
+        57,
+        58
+      ],
+      "assessment_file": "modules/58-analyze-navigation-observability-and-alignment-calibration/portfolio-a-nav-frames.md",
+      "competency_ids": [
+        "NAV-FRAMES-ATTITUDE"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-NAVIGATION",
+      "module_id": "67-capstone-navigate-guide-and-constrain-an-autonomous-survey",
+      "numbers": [
+        58,
+        59,
+        60,
+        61,
+        67
+      ],
+      "assessment_file": "modules/67-capstone-navigate-guide-and-constrain-an-autonomous-survey/portfolio-a-navigation.md",
+      "competency_ids": [
+        "INERTIAL-NAVIGATION"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-INTEGRITY",
+      "module_id": "68-capstone-verify-a-faulted-software-hil-gnc-loop",
+      "numbers": [
+        62,
+        67,
+        68
+      ],
+      "assessment_file": "modules/68-capstone-verify-a-faulted-software-hil-gnc-loop/portfolio-a-integrity.md",
+      "competency_ids": [
+        "NAV-INTEGRITY"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-GUIDANCE",
+      "module_id": "67-capstone-navigate-guide-and-constrain-an-autonomous-survey",
+      "numbers": [
+        21,
+        22,
+        63,
+        64,
+        65,
+        67
+      ],
+      "assessment_file": "modules/67-capstone-navigate-guide-and-constrain-an-autonomous-survey/portfolio-a-guidance.md",
+      "competency_ids": [
+        "GUIDANCE-DESIGN"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-REALTIME",
+      "module_id": "68-capstone-verify-a-faulted-software-hil-gnc-loop",
+      "numbers": [
+        23,
+        24,
+        33,
+        41,
+        68
+      ],
+      "assessment_file": "modules/68-capstone-verify-a-faulted-software-hil-gnc-loop/portfolio-a-realtime.md",
+      "competency_ids": [
+        "ACTUATION-REALTIME"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-CAP-ID",
+      "module_id": "66-capstone-identify-control-estimate-and-stress-a-plant",
+      "numbers": [
+        66
+      ],
+      "assessment_file": "modules/66-capstone-identify-control-estimate-and-stress-a-plant/portfolio-a-cap-id.md",
+      "competency_ids": [
+        "INTEGRATED-GNC",
+        "SYSTEM-IDENTIFICATION",
+        "ROBUST-ADAPTIVE",
+        "OPTIMAL-ESTIMATION"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-CAP-NAV",
+      "module_id": "67-capstone-navigate-guide-and-constrain-an-autonomous-survey",
+      "numbers": [
+        67
+      ],
+      "assessment_file": "modules/67-capstone-navigate-guide-and-constrain-an-autonomous-survey/portfolio-a-cap-nav.md",
+      "competency_ids": [
+        "INTEGRATED-GNC",
+        "INERTIAL-NAVIGATION",
+        "NAV-INTEGRITY",
+        "GUIDANCE-DESIGN",
+        "SAFETY-CONSTRAINTS"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-CAP-HIL",
+      "module_id": "68-capstone-verify-a-faulted-software-hil-gnc-loop",
+      "numbers": [
+        68
+      ],
+      "assessment_file": "modules/68-capstone-verify-a-faulted-software-hil-gnc-loop/portfolio-a-cap-hil.md",
+      "competency_ids": [
+        "INTEGRATED-GNC",
+        "ACTUATION-REALTIME",
+        "NAV-INTEGRITY",
+        "ROBUST-ADAPTIVE"
+      ],
+      "learner_result": "not_recorded"
+    }
+  ],
+  "claim_boundary": "Authored synthetic-software scope only; no learner completion, physical HIL, full strapdown/GNSS-INS, MATLAB or production acceptance."
+}

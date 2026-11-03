@@ -26,17 +26,19 @@ item:
   - path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/model.m
     sha256: 4179689c7da9893c2cd9436192d064687e980c995163734385e1844db830052b
 target:
-  content_digest: 4445a318f94601511562ef69d95c0465dbe96b2753457ac94203c4a4d8f1ec8f
+  content_digest: 90a174f26788b2cb750f5d78ad7ec48342aef90ee863dd962e56ee42fa6ac263
   files:
-  - path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/module.yaml
-    sha256: dc00515cdab713c810151546aa361eb4518b34ea312d426504ccddbe6d56b1d9
-  - path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/lesson.md
-    sha256: f5c506fca4200bef307f19b426b3e7428053ac4b50406cce0d2bc859e076c7cd
+  - path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/assessment.md
+    sha256: 34b44ff6a7083e9182cecd13e5280d058acc2e4077b5bcb3629eabce8b8cc651
   - path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/experiment.py
     sha256: a64e35db96416d96deac44abec3e668332150f0d2fd3e16b1009cf51fae84e75
+  - path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/lesson.md
+    sha256: f5c506fca4200bef307f19b426b3e7428053ac4b50406cce0d2bc859e076c7cd
+  - path: modules/16-fuse-noisy-sensors-with-a-kalman-filter/module.yaml
+    sha256: 8383367cef01b8f267d96108f57d43bddd3d67c6ec5ac2b79d8e66b6f0bc7623
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you fuse Noisy Sensors with a
-    Kalman Filter?
+  guiding_question: What inputs, observable effects, and failure modes matter when you fuse Noisy Sensors with
+    a Kalman Filter?
   physical_model: Fuse noisy position samples with a deterministic constant-velocity Kalman filter.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
@@ -92,8 +94,8 @@ content:
     - 0.15
     - 0.35
     - 0.8
-    expected_observation: Assuming noisier measurements should smooth the estimate but slow its response to real
-      motion changes.
+    expected_observation: Assuming noisier measurements should smooth the estimate but slow its response to
+      real motion changes.
   - control: assumed_process_noise_m_s2
     values:
     - 0.02
@@ -131,7 +133,7 @@ python_source_equivalence:
     unit: m
   - name: assumed_process_noise_m_s2
     value: 0.08
-    unit: m/s²
+    unit: "m/s\xB2"
   - name: broken_mode
     value: false
     unit: flag
@@ -264,8 +266,8 @@ python_source_equivalence:
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
-    constitute MATLAB runtime parity.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do
+    not constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:

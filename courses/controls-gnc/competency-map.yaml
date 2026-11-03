@@ -3,7 +3,7 @@ course:
   id: controls-gnc
   title: Controls, State Estimation, Guidance, and Navigation Laboratory
   authority: tranquilWorks/portfolio-control#439
-  baseline: 88e8f7407ce516a16e9397318c38902a78c11070
+  baseline: abe7c49cea2a649354f20ad19dbe8a2e6c78540a
 scope:
   target_learners:
   - Engineers or graduate students with calculus, differential equations, linear algebra, probability fundamentals,
@@ -15,33 +15,39 @@ scope:
   - Model, identify, linearize, realize, and validate dynamic plants with explicit operating domains and uncertainty.
   - Design and assess classical, multivariable, state-space, optimal, nonlinear, constrained, robust, adaptive,
     and digital feedback.
-  - Build and monitor stochastic, nonlinear, smoothed, inertial, GNSS, and error-state navigation estimates.
+  - Build and compare scalar stochastic filters, an EKF measurement update, an unscented transform, RTS smoothing,
+    frame rotations, one-axis inertial/error-state examples and synthetic pseudorange solving; identify their
+    full-system handoffs.
   - Generate waypoint, path, pursuit, proportional-navigation, terminal, and actuator-aware guidance commands.
-  - Integrate identification, control, estimation, navigation, guidance, constraints, monitoring, timing, faults,
-    and recovery in three cumulative capstones.
+  - Connect identification/control/estimation in a scalar stress capstone, planar navigation/LOS/freshness
+    in a survey capstone, and event timing/drop/watchdog evidence in a software-HIL capstone.
   exclusions:
-  - Detailed aerodynamic derivative identification, propulsion, flexible-body, and vehicle-specific flight dynamics
-    belong to Flight Dynamics.
-  - Optimization algorithm derivation beyond the bounded quadratic programs used by MPC belongs to Numerical Optimization.
-  - Advanced stochastic-process proofs, Allan-variance characterization, and particle-method theory belong to Statistics
-    and Estimation or the named Robotics handoff.
-  - Physical HIL, flight test, certification, production deployment, MATLAB runtime equivalence, accessibility validation,
-    and learner-effectiveness validation are not claimed.
+  - Detailed aerodynamic derivative identification, propulsion, flexible-body, and vehicle-specific flight
+    dynamics belong to Flight Dynamics.
+  - Optimization algorithm derivation beyond the bounded quadratic programs used by MPC belongs to Numerical
+    Optimization.
+  - Advanced stochastic-process proofs, Allan-variance characterization, and particle-method theory belong
+    to Statistics and Estimation or the named Robotics handoff.
+  - Physical HIL, flight test, certification, production deployment, MATLAB runtime equivalence, accessibility
+    validation, and learner-effectiveness validation are not claimed.
   - The navigation capstone is a non-weapon autonomous survey mission; P22 and P64 remain bounded guidance-method
     lessons, not system-use endorsements.
   cross_course_handoffs:
-  - 'flight-dynamics-learning: aerodynamic, propulsion, trim, stability-derivative, and six-degree-of-freedom depth.'
+  - 'flight-dynamics-learning: aerodynamic, propulsion, trim, stability-derivative, and six-degree-of-freedom
+    depth.'
   - 'stats-estimation-learning: stochastic-process, covariance, identification, and advanced Bayesian depth.'
-  - 'numerical-optimization-learning: solver derivations, conditioning, convexity, and nonlinear optimization depth.'
+  - 'numerical-optimization-learning: solver derivations, conditioning, convexity, and nonlinear optimization
+    depth.'
   - 'embedded-rt-hil-learning and hwil-systems-learning: target timing, buses, benches, physical I/O, and qualification.'
   - 'reliability-fdir-learning: fault trees, coverage, redundancy policy, and certification evidence.'
-  - 'robotics-autonomy-learning P15 and DSP/Radar P60: particle-filter and interacting-multiple-model worked implementations;
-    Controls/GNC retains EKF, UKF, RTS, consistency, and the selection tradeoff.'
+  - 'robotics-autonomy-learning P15 and DSP/Radar P60: particle-filter and interacting-multiple-model worked
+    implementations; Controls/GNC retains EKF, UKF, RTS, consistency, and the selection tradeoff.'
   - 'robotics-autonomy-learning and vehicle-dynamics-learning: SLAM, mission autonomy, manipulation, and ground-vehicle-specific
     dynamics/control.'
 competencies:
 - id: MODEL-LINEARIZATION
-  outcome: Formulate physical nonlinear models, solve operating points, linearize them, and validate the local approximation.
+  outcome: Formulate physical nonlinear models, solve operating points, linearize them, and validate the local
+    approximation.
   prerequisite_ids: []
   module_ids:
   - P01
@@ -50,6 +56,10 @@ competencies:
   - P25
   assessment_ids:
   - A-MODELING
+  - GNC-F01
+  - GNC-F02
+  - GNC-F04
+  - GNC-F25
 - id: MODEL-REALIZATION
   outcome: Move consistently among differential equations, transfer functions, block diagrams, state realizations,
     modes, and state transitions.
@@ -65,9 +75,15 @@ competencies:
   assessment_ids:
   - A-MODELING
   - A-STATE
+  - GNC-F02
+  - GNC-F03
+  - GNC-F13
+  - GNC-F14
+  - GNC-F26
+  - GNC-F34
 - id: CLASSICAL-SPECS
-  outcome: Relate poles, damping, system type, transient specifications, steady-state error, disturbances, and control
-    effort.
+  outcome: Relate poles, damping, system type, transient specifications, steady-state error, disturbances,
+    and control effort.
   prerequisite_ids:
   - MODEL-REALIZATION
   module_ids:
@@ -78,8 +94,14 @@ competencies:
   - P27
   assessment_ids:
   - A-CLASSICAL
+  - GNC-F03
+  - GNC-F05
+  - GNC-F06
+  - GNC-F08
+  - GNC-F27
 - id: CLASSICAL-STABILITY
-  outcome: Assess closed-loop stability with characteristic equations, root locus, margins, and the Nyquist criterion.
+  outcome: Assess closed-loop stability with characteristic equations, root locus, margins, and the Nyquist
+    criterion.
   prerequisite_ids:
   - CLASSICAL-SPECS
   module_ids:
@@ -89,9 +111,13 @@ competencies:
   - P29
   assessment_ids:
   - A-CLASSICAL
+  - GNC-F05
+  - GNC-F07
+  - GNC-F28
+  - GNC-F29
 - id: LOOP-SHAPING
-  outcome: Shape sensitivity, complementary sensitivity, disturbance rejection, noise, control effort, and reference
-    response with Bode, lead, lag, notch, and prefilter design.
+  outcome: Shape sensitivity, complementary sensitivity, disturbance rejection, noise, control effort, and
+    reference response with Bode, lead, lag, notch, and prefilter design.
   prerequisite_ids:
   - CLASSICAL-STABILITY
   module_ids:
@@ -103,6 +129,12 @@ competencies:
   - P32
   assessment_ids:
   - A-LOOP
+  - GNC-F07
+  - GNC-F08
+  - GNC-F19
+  - GNC-F30
+  - GNC-F31
+  - GNC-F32
 - id: MULTIVARIABLE-CONTROL
   outcome: Reason about multivariable interactions, transmission zeros, relative gain, decoupling, and allocation
     residuals.
@@ -114,6 +146,9 @@ competencies:
   - P33
   assessment_ids:
   - A-MIMO
+  - GNC-F13
+  - GNC-F14
+  - GNC-F33
 - id: STATE-REALIZATION
   outcome: Propagate and condition state-space models using modal structure and state-transition methods.
   prerequisite_ids:
@@ -125,6 +160,10 @@ competencies:
   - P34
   assessment_ids:
   - A-STATE
+  - GNC-F13
+  - GNC-F14
+  - GNC-F15
+  - GNC-F34
 - id: STATE-FEEDBACK
   outcome: Design pole placement, reference tracking, integral augmentation, and command limiting with declared
     controllability conditions.
@@ -139,6 +178,11 @@ competencies:
   - P37
   assessment_ids:
   - A-STATE
+  - GNC-F13
+  - GNC-F17
+  - GNC-F18
+  - GNC-F36
+  - GNC-F37
 - id: OPTIMAL-ESTIMATION
   outcome: Combine state-feedback and observer designs using the separation principle and LQG assumptions.
   prerequisite_ids:
@@ -152,8 +196,15 @@ competencies:
   - P66
   assessment_ids:
   - A-OPTIMAL-EST
+  - GNC-F15
+  - GNC-F16
+  - GNC-F17
+  - GNC-F38
+  - GNC-F66
+  - A-CAP-ID
 - id: OPTIMAL-CONTROL
-  outcome: Trade tracking and effort in infinite-, finite-, and time-varying-horizon optimal and constrained control.
+  outcome: Trade tracking and effort in infinite-, finite-, and time-varying-horizon optimal and constrained
+    control.
   prerequisite_ids:
   - STATE-FEEDBACK
   module_ids:
@@ -163,9 +214,13 @@ competencies:
   - P49
   assessment_ids:
   - A-OPTIMAL
+  - GNC-F17
+  - GNC-F18
+  - GNC-F39
+  - GNC-F49
 - id: DIGITAL-IMPLEMENTATION
-  outcome: Choose discretizations and manage aliasing, quantization, jitter, delay, rate transitions, bumpless transfer,
-    limits, and anti-windup.
+  outcome: Choose discretizations and manage aliasing, quantization, jitter, delay, rate transitions, bumpless
+    transfer, limits, and anti-windup.
   prerequisite_ids:
   - CLASSICAL-STABILITY
   - STATE-REALIZATION
@@ -182,6 +237,16 @@ competencies:
   - P42
   assessment_ids:
   - A-DIGITAL
+  - GNC-F09
+  - GNC-F10
+  - GNC-F11
+  - GNC-F12
+  - GNC-F23
+  - GNC-F35
+  - GNC-F37
+  - GNC-F40
+  - GNC-F41
+  - GNC-F42
 - id: NONLINEAR-STABILITY
   outcome: Use phase portraits, equilibria, local/global distinctions, Lyapunov functions, and regions of attraction
     to reason about nonlinear stability.
@@ -193,6 +258,9 @@ competencies:
   - P44
   assessment_ids:
   - A-NONLINEAR
+  - GNC-F04
+  - GNC-F43
+  - GNC-F44
 - id: NONLINEAR-CONTROL
   outcome: Apply and limit gain scheduling and feedback linearization across nonlinear operating regions.
   prerequisite_ids:
@@ -203,6 +271,8 @@ competencies:
   - P47
   assessment_ids:
   - A-NONLINEAR
+  - GNC-F46
+  - GNC-F47
 - id: SAFETY-CONSTRAINTS
   outcome: Enforce actuator, state, safety-barrier, prediction, and terminal constraints with explicit feasibility
     and recovery behavior.
@@ -221,9 +291,17 @@ competencies:
   assessment_ids:
   - A-CONSTRAINTS
   - A-CAP-NAV
+  - GNC-F11
+  - GNC-F12
+  - GNC-F21
+  - GNC-F45
+  - GNC-F49
+  - GNC-F65
+  - GNC-F67
+  - GNC-F37
 - id: ROBUST-ADAPTIVE
-  outcome: State structured uncertainty sets, bound robust stability/performance, schedule designs, and adapt parameters
-    without claiming certification.
+  outcome: State structured uncertainty sets, bound robust stability/performance, schedule designs, and adapt
+    parameters without claiming certification.
   prerequisite_ids:
   - LOOP-SHAPING
   - NONLINEAR-CONTROL
@@ -239,9 +317,16 @@ competencies:
   - A-ROBUST
   - A-CAP-ID
   - A-CAP-HIL
+  - GNC-F19
+  - GNC-F20
+  - GNC-F46
+  - GNC-F48
+  - GNC-F51
+  - GNC-F66
+  - GNC-F68
 - id: SYSTEM-IDENTIFICATION
-  outcome: Design excitation, estimate dynamic parameters, separate training and validation data, and update parameters
-    online.
+  outcome: Design excitation, estimate dynamic parameters, separate training and validation data, and update
+    parameters online.
   prerequisite_ids:
   - MODEL-LINEARIZATION
   - STOCHASTIC-ESTIMATION
@@ -252,9 +337,12 @@ competencies:
   assessment_ids:
   - A-IDENTIFICATION
   - A-CAP-ID
+  - GNC-F50
+  - GNC-F51
+  - GNC-F66
 - id: STOCHASTIC-ESTIMATION
-  outcome: Construct stochastic process and measurement models and interpret covariance, innovations, NIS, NEES,
-    gates, and outliers.
+  outcome: Construct stochastic process and measurement models and interpret covariance, innovations, NIS,
+    NEES, gates, and outliers.
   prerequisite_ids:
   - STATE-REALIZATION
   module_ids:
@@ -264,9 +352,13 @@ competencies:
   - P61
   assessment_ids:
   - A-STOCHASTIC
+  - GNC-F16
+  - GNC-F52
+  - GNC-F53
+  - GNC-F61
 - id: NONLINEAR-ESTIMATION
-  outcome: Compare EKF, UKF, and smoothing approximations while handing particle and multiple-model methods to named
-    adjacent lessons.
+  outcome: Compare a scalar EKF measurement update, Gaussian unscented-transform component and scalar RTS smoother;
+    hand recursive full UKF, particle and multiple-model depth to named adjacent courses.
   prerequisite_ids:
   - STOCHASTIC-ESTIMATION
   - MODEL-LINEARIZATION
@@ -276,9 +368,12 @@ competencies:
   - P56
   assessment_ids:
   - A-NONLINEAR-EST
+  - GNC-F54
+  - GNC-F55
+  - GNC-F56
 - id: NAV-FRAMES-ATTITUDE
-  outcome: Transform position, velocity, attitude, and covariance consistently among aligned and misaligned navigation,
-    body, and sensor frames.
+  outcome: Transform position, velocity, attitude, and covariance consistently among aligned and misaligned
+    navigation, body, and sensor frames.
   prerequisite_ids:
   - MODEL-LINEARIZATION
   - STOCHASTIC-ESTIMATION
@@ -287,9 +382,11 @@ competencies:
   - P58
   assessment_ids:
   - A-NAV-FRAMES
+  - GNC-F57
+  - GNC-F58
 - id: INERTIAL-NAVIGATION
-  outcome: Model IMU errors, propagate strapdown states, solve GNSS measurements, fuse aiding with an error-state
-    filter, and assess observability.
+  outcome: Quantify one-axis IMU bias propagation, synthetic position/clock solving, a one-axis error-state
+    filter and calibration observability. Full strapdown and coupled GNSS/INS mechanization are excluded.
   prerequisite_ids:
   - NAV-FRAMES-ATTITUDE
   - NONLINEAR-ESTIMATION
@@ -302,9 +399,14 @@ competencies:
   assessment_ids:
   - A-NAVIGATION
   - A-CAP-NAV
+  - GNC-F58
+  - GNC-F59
+  - GNC-F60
+  - GNC-F61
+  - GNC-F67
 - id: NAV-INTEGRITY
-  outcome: Monitor navigation consistency, protection levels, measurement faults, exclusion, and recovery without
-    claiming certified integrity.
+  outcome: Detect and exclude synthetic range faults and monitor freshness/recovery. Distinguish residual thresholds
+    from certified protection levels.
   prerequisite_ids:
   - INERTIAL-NAVIGATION
   - STOCHASTIC-ESTIMATION
@@ -316,9 +418,12 @@ competencies:
   - A-INTEGRITY
   - A-CAP-NAV
   - A-CAP-HIL
+  - GNC-F62
+  - GNC-F67
+  - GNC-F68
 - id: GUIDANCE-DESIGN
-  outcome: Generate feasible waypoint, path, pursuit, proportional-navigation, terminal, and actuator-aware guidance
-    commands.
+  outcome: Generate feasible waypoint, path, pursuit, proportional-navigation, terminal, and actuator-aware
+    guidance commands.
   prerequisite_ids:
   - CLASSICAL-SPECS
   - NAV-FRAMES-ATTITUDE
@@ -332,6 +437,12 @@ competencies:
   assessment_ids:
   - A-GUIDANCE
   - A-CAP-NAV
+  - GNC-F21
+  - GNC-F22
+  - GNC-F63
+  - GNC-F64
+  - GNC-F65
+  - GNC-F67
 - id: ACTUATION-REALTIME
   outcome: Model sensor, actuator, timing, multirate, allocation, watchdog, and software-HIL consequences while
     handing hardware implementation to adjacent courses.
@@ -347,9 +458,14 @@ competencies:
   assessment_ids:
   - A-REALTIME
   - A-CAP-HIL
+  - GNC-F23
+  - GNC-F24
+  - GNC-F41
+  - GNC-F68
+  - GNC-F33
 - id: INTEGRATED-GNC
-  outcome: Reuse earlier artifacts to integrate identification, control, estimation, navigation, guidance, constraints,
-    uncertainty, monitoring, timing, faults, and recovery.
+  outcome: Connect declared scalar identification/control/estimation, planar survey navigation/guidance/constraints,
+    and software packet/watchdog requirements in three bounded capstones.
   prerequisite_ids:
   - ROBUST-ADAPTIVE
   - INERTIAL-NAVIGATION
@@ -364,16 +480,19 @@ competencies:
   - A-CAP-ID
   - A-CAP-NAV
   - A-CAP-HIL
+  - GNC-F66
+  - GNC-F67
+  - GNC-F68
 modules:
 - id: P01
   title: Watch a Mass-Spring-Damper Respond
-  competency_ids:
+  competency_ids: &id001
   - MODEL-LINEARIZATION
   depends_on: []
   lesson_kind: foundation
 - id: P02
   title: Build Intuition for Integrators and First-Order Systems
-  competency_ids:
+  competency_ids: &id002
   - MODEL-LINEARIZATION
   - MODEL-REALIZATION
   depends_on:
@@ -381,7 +500,7 @@ modules:
   lesson_kind: foundation
 - id: P03
   title: Relate Poles to Visible Motion
-  competency_ids:
+  competency_ids: &id003
   - MODEL-REALIZATION
   - CLASSICAL-SPECS
   depends_on:
@@ -389,7 +508,7 @@ modules:
   lesson_kind: foundation
 - id: P04
   title: Compare Linear and Nonlinear Pendulum Models
-  competency_ids:
+  competency_ids: &id004
   - MODEL-LINEARIZATION
   - NONLINEAR-STABILITY
   depends_on:
@@ -397,7 +516,7 @@ modules:
   lesson_kind: foundation
 - id: P05
   title: Close a Loop with Proportional Control
-  competency_ids:
+  competency_ids: &id005
   - CLASSICAL-SPECS
   - CLASSICAL-STABILITY
   depends_on:
@@ -405,14 +524,14 @@ modules:
   lesson_kind: laboratory
 - id: P06
   title: Tune a PID by Observing Each Term
-  competency_ids:
+  competency_ids: &id006
   - CLASSICAL-SPECS
   depends_on:
   - P05
   lesson_kind: laboratory
 - id: P07
   title: See Stability Margin in Time and Frequency
-  competency_ids:
+  competency_ids: &id007
   - CLASSICAL-STABILITY
   - LOOP-SHAPING
   depends_on:
@@ -420,7 +539,7 @@ modules:
   lesson_kind: laboratory
 - id: P08
   title: Reject a Disturbance with Feedback
-  competency_ids:
+  competency_ids: &id008
   - CLASSICAL-SPECS
   - LOOP-SHAPING
   depends_on:
@@ -428,21 +547,21 @@ modules:
   lesson_kind: laboratory
 - id: P09
   title: Discretize a Continuous Controller
-  competency_ids:
+  competency_ids: &id009
   - DIGITAL-IMPLEMENTATION
   depends_on:
   - P08
   lesson_kind: laboratory
 - id: P10
   title: Expose Delay and Sampling Limits
-  competency_ids:
+  competency_ids: &id010
   - DIGITAL-IMPLEMENTATION
   depends_on:
   - P09
   lesson_kind: laboratory
 - id: P11
   title: Drive an Actuator into Saturation
-  competency_ids:
+  competency_ids: &id011
   - DIGITAL-IMPLEMENTATION
   - SAFETY-CONSTRAINTS
   depends_on:
@@ -450,7 +569,7 @@ modules:
   lesson_kind: laboratory
 - id: P12
   title: Recover from Integrator Windup
-  competency_ids:
+  competency_ids: &id012
   - DIGITAL-IMPLEMENTATION
   - SAFETY-CONSTRAINTS
   depends_on:
@@ -458,7 +577,7 @@ modules:
   lesson_kind: laboratory
 - id: P13
   title: Test Controllability
-  competency_ids:
+  competency_ids: &id013
   - MODEL-REALIZATION
   - MULTIVARIABLE-CONTROL
   - STATE-REALIZATION
@@ -468,7 +587,7 @@ modules:
   lesson_kind: laboratory
 - id: P14
   title: Test Observability
-  competency_ids:
+  competency_ids: &id014
   - MODEL-REALIZATION
   - MULTIVARIABLE-CONTROL
   - STATE-REALIZATION
@@ -477,7 +596,7 @@ modules:
   lesson_kind: laboratory
 - id: P15
   title: Build a State Observer
-  competency_ids:
+  competency_ids: &id015
   - STATE-REALIZATION
   - OPTIMAL-ESTIMATION
   depends_on:
@@ -485,7 +604,7 @@ modules:
   lesson_kind: laboratory
 - id: P16
   title: Fuse Noisy Sensors with a Kalman Filter
-  competency_ids:
+  competency_ids: &id016
   - OPTIMAL-ESTIMATION
   - STOCHASTIC-ESTIMATION
   depends_on:
@@ -493,7 +612,7 @@ modules:
   lesson_kind: laboratory
 - id: P17
   title: Balance State Error and Control Effort with LQR
-  competency_ids:
+  competency_ids: &id017
   - STATE-FEEDBACK
   - OPTIMAL-ESTIMATION
   - OPTIMAL-CONTROL
@@ -502,7 +621,7 @@ modules:
   lesson_kind: laboratory
 - id: P18
   title: Use Feedforward and Feedback Together
-  competency_ids:
+  competency_ids: &id018
   - STATE-FEEDBACK
   - OPTIMAL-CONTROL
   depends_on:
@@ -510,7 +629,7 @@ modules:
   lesson_kind: laboratory
 - id: P19
   title: Measure Sensitivity to Model Error
-  competency_ids:
+  competency_ids: &id019
   - LOOP-SHAPING
   - ROBUST-ADAPTIVE
   depends_on:
@@ -518,14 +637,14 @@ modules:
   lesson_kind: laboratory
 - id: P20
   title: Compare Nominal and Robust Designs
-  competency_ids:
+  competency_ids: &id020
   - ROBUST-ADAPTIVE
   depends_on:
   - P19
   lesson_kind: laboratory
 - id: P21
   title: Generate a Feasible Trajectory
-  competency_ids:
+  competency_ids: &id021
   - SAFETY-CONSTRAINTS
   - GUIDANCE-DESIGN
   depends_on:
@@ -533,14 +652,14 @@ modules:
   lesson_kind: laboratory
 - id: P22
   title: Implement Proportional Navigation
-  competency_ids:
+  competency_ids: &id022
   - GUIDANCE-DESIGN
   depends_on:
   - P21
   lesson_kind: laboratory
 - id: P23
   title: Model Sensor and Actuator Dynamics
-  competency_ids:
+  competency_ids: &id023
   - DIGITAL-IMPLEMENTATION
   - ACTUATION-REALTIME
   depends_on:
@@ -548,14 +667,14 @@ modules:
   lesson_kind: laboratory
 - id: P24
   title: Close the Loop Through a Hardware-in-the-Loop Plant
-  competency_ids:
+  competency_ids: &id024
   - ACTUATION-REALTIME
   depends_on:
   - P23
   lesson_kind: laboratory
 - id: P25
   title: Linearize a Nonlinear Plant Around an Operating Point
-  competency_ids:
+  competency_ids: &id025
   - MODEL-LINEARIZATION
   depends_on:
   - P04
@@ -563,7 +682,7 @@ modules:
   lesson_kind: laboratory
 - id: P26
   title: Reduce Block Diagrams and Convert System Realizations
-  competency_ids:
+  competency_ids: &id026
   - MODEL-REALIZATION
   depends_on:
   - P02
@@ -572,7 +691,7 @@ modules:
   lesson_kind: laboratory
 - id: P27
   title: Predict Transients and Steady-State Error from System Type
-  competency_ids:
+  competency_ids: &id027
   - CLASSICAL-SPECS
   depends_on:
   - P03
@@ -581,7 +700,7 @@ modules:
   lesson_kind: laboratory
 - id: P28
   title: Trace a Root Locus and Select Feedback Gain
-  competency_ids:
+  competency_ids: &id028
   - CLASSICAL-STABILITY
   depends_on:
   - P05
@@ -590,7 +709,7 @@ modules:
   lesson_kind: laboratory
 - id: P29
   title: Apply the Nyquist Stability Criterion
-  competency_ids:
+  competency_ids: &id029
   - CLASSICAL-STABILITY
   depends_on:
   - P07
@@ -598,7 +717,7 @@ modules:
   lesson_kind: laboratory
 - id: P30
   title: Shape Sensitivity with Bode Loop Design
-  competency_ids:
+  competency_ids: &id030
   - LOOP-SHAPING
   depends_on:
   - P07
@@ -608,7 +727,7 @@ modules:
   lesson_kind: laboratory
 - id: P31
   title: Design Lead and Lag Compensation
-  competency_ids:
+  competency_ids: &id031
   - LOOP-SHAPING
   depends_on:
   - P27
@@ -616,7 +735,7 @@ modules:
   lesson_kind: laboratory
 - id: P32
   title: Place a Notch Filter and Reference Prefilter
-  competency_ids:
+  competency_ids: &id032
   - LOOP-SHAPING
   depends_on:
   - P30
@@ -624,8 +743,9 @@ modules:
   lesson_kind: laboratory
 - id: P33
   title: Measure MIMO Interaction, Zeros, and Decoupling
-  competency_ids:
+  competency_ids: &id033
   - MULTIVARIABLE-CONTROL
+  - ACTUATION-REALTIME
   depends_on:
   - P13
   - P14
@@ -633,8 +753,9 @@ modules:
   lesson_kind: integration
 - id: P34
   title: Propagate State Modes and Diagnose Numerical Conditioning
-  competency_ids:
+  competency_ids: &id034
   - STATE-REALIZATION
+  - MODEL-REALIZATION
   depends_on:
   - P13
   - P14
@@ -642,7 +763,7 @@ modules:
   lesson_kind: laboratory
 - id: P35
   title: Compare Discretization Methods and Aliasing
-  competency_ids:
+  competency_ids: &id035
   - DIGITAL-IMPLEMENTATION
   depends_on:
   - P09
@@ -651,7 +772,7 @@ modules:
   lesson_kind: laboratory
 - id: P36
   title: Place State-Feedback Poles and Track References
-  competency_ids:
+  competency_ids: &id036
   - STATE-FEEDBACK
   depends_on:
   - P13
@@ -660,9 +781,10 @@ modules:
   lesson_kind: laboratory
 - id: P37
   title: Augment an Integral Servo and Limit Commands
-  competency_ids:
+  competency_ids: &id037
   - STATE-FEEDBACK
   - DIGITAL-IMPLEMENTATION
+  - SAFETY-CONSTRAINTS
   depends_on:
   - P11
   - P12
@@ -670,7 +792,7 @@ modules:
   lesson_kind: laboratory
 - id: P38
   title: Combine LQR and an Observer with the Separation Principle
-  competency_ids:
+  competency_ids: &id038
   - OPTIMAL-ESTIMATION
   depends_on:
   - P15
@@ -680,7 +802,7 @@ modules:
   lesson_kind: integration
 - id: P39
   title: Solve Finite-Horizon and Time-Varying LQR
-  competency_ids:
+  competency_ids: &id039
   - OPTIMAL-CONTROL
   depends_on:
   - P17
@@ -689,7 +811,7 @@ modules:
   lesson_kind: laboratory
 - id: P40
   title: Quantify Quantization and Sampling Jitter
-  competency_ids:
+  competency_ids: &id040
   - DIGITAL-IMPLEMENTATION
   depends_on:
   - P09
@@ -698,7 +820,7 @@ modules:
   lesson_kind: laboratory
 - id: P41
   title: Cross Rate Transitions and Execution Delay
-  competency_ids:
+  competency_ids: &id041
   - DIGITAL-IMPLEMENTATION
   - ACTUATION-REALTIME
   depends_on:
@@ -709,7 +831,7 @@ modules:
   lesson_kind: laboratory
 - id: P42
   title: Switch Controllers Bumplessly with Anti-Windup
-  competency_ids:
+  competency_ids: &id042
   - DIGITAL-IMPLEMENTATION
   depends_on:
   - P12
@@ -718,7 +840,7 @@ modules:
   lesson_kind: integration
 - id: P43
   title: Use Phase Portraits to Separate Local and Global Stability
-  competency_ids:
+  competency_ids: &id043
   - NONLINEAR-STABILITY
   depends_on:
   - P04
@@ -726,14 +848,14 @@ modules:
   lesson_kind: laboratory
 - id: P44
   title: Certify Decay with Lyapunov Functions and Regions of Attraction
-  competency_ids:
+  competency_ids: &id044
   - NONLINEAR-STABILITY
   depends_on:
   - P43
   lesson_kind: laboratory
 - id: P45
   title: Enforce Safety with a Control Barrier Filter
-  competency_ids:
+  competency_ids: &id045
   - SAFETY-CONSTRAINTS
   depends_on:
   - P11
@@ -741,7 +863,7 @@ modules:
   lesson_kind: laboratory
 - id: P46
   title: Schedule Gains Across Operating Points
-  competency_ids:
+  competency_ids: &id046
   - NONLINEAR-CONTROL
   - ROBUST-ADAPTIVE
   depends_on:
@@ -751,7 +873,7 @@ modules:
   lesson_kind: laboratory
 - id: P47
   title: Cancel Nonlinearities with Feedback Linearization
-  competency_ids:
+  competency_ids: &id047
   - NONLINEAR-CONTROL
   depends_on:
   - P25
@@ -759,7 +881,7 @@ modules:
   lesson_kind: laboratory
 - id: P48
   title: Bound Structured Uncertainty and Robust Performance
-  competency_ids:
+  competency_ids: &id048
   - ROBUST-ADAPTIVE
   depends_on:
   - P19
@@ -769,7 +891,7 @@ modules:
   lesson_kind: laboratory
 - id: P49
   title: Control a Constrained Plant with Model-Predictive Control
-  competency_ids:
+  competency_ids: &id049
   - SAFETY-CONSTRAINTS
   - OPTIMAL-CONTROL
   depends_on:
@@ -780,7 +902,7 @@ modules:
   lesson_kind: integration
 - id: P50
   title: Identify and Validate a Dynamic Model from Excitation Data
-  competency_ids:
+  competency_ids: &id050
   - SYSTEM-IDENTIFICATION
   depends_on:
   - P02
@@ -789,7 +911,7 @@ modules:
   lesson_kind: laboratory
 - id: P51
   title: Adapt a Parameter Estimate Online
-  competency_ids:
+  competency_ids: &id051
   - SYSTEM-IDENTIFICATION
   - ROBUST-ADAPTIVE
   depends_on:
@@ -799,7 +921,7 @@ modules:
   lesson_kind: integration
 - id: P52
   title: Build Stochastic Process Models and Interpret Covariance
-  competency_ids:
+  competency_ids: &id052
   - STOCHASTIC-ESTIMATION
   depends_on:
   - P16
@@ -807,7 +929,7 @@ modules:
   lesson_kind: laboratory
 - id: P53
   title: Monitor Innovations, NIS, NEES, and Measurement Gates
-  competency_ids:
+  competency_ids: &id053
   - STOCHASTIC-ESTIMATION
   depends_on:
   - P16
@@ -815,7 +937,7 @@ modules:
   lesson_kind: laboratory
 - id: P54
   title: Estimate Nonlinear State with an Extended Kalman Filter
-  competency_ids:
+  competency_ids: &id054
   - NONLINEAR-ESTIMATION
   depends_on:
   - P25
@@ -823,14 +945,14 @@ modules:
   lesson_kind: laboratory
 - id: P55
   title: Transform Gaussian Uncertainty with Sigma Points
-  competency_ids:
+  competency_ids: &id055
   - NONLINEAR-ESTIMATION
   depends_on:
   - P54
   lesson_kind: laboratory
 - id: P56
   title: Recover a Trajectory with RTS Smoothing
-  competency_ids:
+  competency_ids: &id056
   - NONLINEAR-ESTIMATION
   depends_on:
   - P52
@@ -838,7 +960,7 @@ modules:
   lesson_kind: integration
 - id: P57
   title: Compose Quaternions and Calibrate Sensor Vectors
-  competency_ids:
+  competency_ids: &id057
   - NAV-FRAMES-ATTITUDE
   depends_on:
   - P04
@@ -847,7 +969,7 @@ modules:
   lesson_kind: laboratory
 - id: P58
   title: Analyze Navigation Observability and Alignment Calibration
-  competency_ids:
+  competency_ids: &id058
   - NAV-FRAMES-ATTITUDE
   - INERTIAL-NAVIGATION
   depends_on:
@@ -856,8 +978,8 @@ modules:
   - P57
   lesson_kind: laboratory
 - id: P59
-  title: Propagate Strapdown Inertial Navigation and IMU Error
-  competency_ids:
+  title: Propagate One-Axis Inertial Bias Errors
+  competency_ids: &id059
   - INERTIAL-NAVIGATION
   depends_on:
   - P10
@@ -866,7 +988,7 @@ modules:
   lesson_kind: laboratory
 - id: P60
   title: Solve Position and Clock from Synthetic Pseudoranges
-  competency_ids:
+  competency_ids: &id060
   - INERTIAL-NAVIGATION
   depends_on:
   - P14
@@ -875,7 +997,7 @@ modules:
   lesson_kind: laboratory
 - id: P61
   title: Inject and Reset a One-Axis Navigation Error State
-  competency_ids:
+  competency_ids: &id061
   - INERTIAL-NAVIGATION
   - STOCHASTIC-ESTIMATION
   depends_on:
@@ -886,7 +1008,7 @@ modules:
   lesson_kind: integration
 - id: P62
   title: Detect and Exclude a Synthetic Range Fault
-  competency_ids:
+  competency_ids: &id062
   - NAV-INTEGRITY
   depends_on:
   - P53
@@ -894,8 +1016,8 @@ modules:
   - P61
   lesson_kind: integration
 - id: P63
-  title: Follow Waypoints and Paths with Line-of-Sight Guidance
-  competency_ids:
+  title: Follow a Straight Path with Nonlinear Line-of-Sight Guidance
+  competency_ids: &id063
   - GUIDANCE-DESIGN
   depends_on:
   - P21
@@ -903,7 +1025,7 @@ modules:
   lesson_kind: laboratory
 - id: P64
   title: Compare Civilian Moving-Beacon Guidance Trajectories
-  competency_ids:
+  competency_ids: &id064
   - GUIDANCE-DESIGN
   depends_on:
   - P22
@@ -911,7 +1033,7 @@ modules:
   lesson_kind: laboratory
 - id: P65
   title: Solve a Bounded Terminal Guidance Objective
-  competency_ids:
+  competency_ids: &id065
   - GUIDANCE-DESIGN
   - SAFETY-CONSTRAINTS
   depends_on:
@@ -922,7 +1044,7 @@ modules:
   lesson_kind: integration
 - id: P66
   title: 'Capstone: Identify, Control, Estimate, and Stress a Plant'
-  competency_ids:
+  competency_ids: &id066
   - INTEGRATED-GNC
   - SYSTEM-IDENTIFICATION
   - ROBUST-ADAPTIVE
@@ -935,7 +1057,7 @@ modules:
   lesson_kind: capstone
 - id: P67
   title: 'Capstone: Navigate, Guide, and Constrain an Autonomous Survey'
-  competency_ids:
+  competency_ids: &id067
   - INTEGRATED-GNC
   - INERTIAL-NAVIGATION
   - NAV-INTEGRITY
@@ -950,7 +1072,7 @@ modules:
   lesson_kind: capstone
 - id: P68
   title: 'Capstone: Verify a Faulted Software-HIL GNC Loop'
-  competency_ids:
+  competency_ids: &id068
   - INTEGRATED-GNC
   - ACTUATION-REALTIME
   - NAV-INTEGRITY
@@ -970,102 +1092,120 @@ assessments:
   competency_ids:
   - MODEL-LINEARIZATION
   - MODEL-REALIZATION
-  evidence: Operating-point residuals, Jacobian checks, transfer/state equivalence, block reduction, and local-model
-    error.
+  evidence: 'modules/34-propagate-state-modes-and-diagnose-numerical-conditioning/portfolio-a-modeling.md:
+    four concrete tasks and a four-criterion rubric; learner_result=not_recorded.'
 - id: A-CLASSICAL
   type: cumulative
   competency_ids:
   - CLASSICAL-SPECS
   - CLASSICAL-STABILITY
-  evidence: Transient, system-type, root-locus, margin, Nyquist encirclement, and stability criteria.
+  evidence: 'modules/29-apply-the-nyquist-stability-criterion/portfolio-a-classical.md: four concrete tasks
+    and a four-criterion rubric; learner_result=not_recorded.'
 - id: A-LOOP
   type: cumulative
   competency_ids:
   - LOOP-SHAPING
-  evidence: Sensitivity, noise, disturbance, effort, Bode, lead/lag, notch, and prefilter tradeoffs.
+  evidence: 'modules/32-place-a-notch-filter-and-reference-prefilter/portfolio-a-loop.md: four concrete tasks
+    and a four-criterion rubric; learner_result=not_recorded.'
 - id: A-MIMO
   type: cumulative
   competency_ids:
   - MULTIVARIABLE-CONTROL
-  evidence: Interaction, zero, relative-gain, decoupling, and allocation-residual checks.
+  evidence: 'modules/33-measure-mimo-interaction-zeros-and-decoupling/portfolio-a-mimo.md: four concrete tasks
+    and a four-criterion rubric; learner_result=not_recorded.'
 - id: A-STATE
   type: cumulative
   competency_ids:
   - STATE-REALIZATION
   - STATE-FEEDBACK
-  evidence: Mode, transition, conditioning, controllability, pole-placement, servo, and limiting checks.
+  - MODEL-REALIZATION
+  evidence: 'modules/37-augment-an-integral-servo-and-limit-commands/portfolio-a-state.md: four concrete tasks
+    and a four-criterion rubric; learner_result=not_recorded.'
 - id: A-OPTIMAL-EST
   type: cumulative
   competency_ids:
   - OPTIMAL-ESTIMATION
-  evidence: Separate controller/estimator Riccati, separation-principle, LQG stability, and covariance checks.
+  evidence: 'modules/66-capstone-identify-control-estimate-and-stress-a-plant/portfolio-a-optimal-est.md: four
+    concrete tasks and a four-criterion rubric; learner_result=not_recorded.'
 - id: A-OPTIMAL
   type: cumulative
   competency_ids:
   - OPTIMAL-CONTROL
-  evidence: Infinite/finite/time-varying horizon objectives, terminal cost, constraint, and effort checks.
+  evidence: 'modules/49-control-a-constrained-plant-with-model-predictive-control/portfolio-a-optimal.md: four
+    concrete tasks and a four-criterion rubric; learner_result=not_recorded.'
 - id: A-DIGITAL
   type: cumulative
   competency_ids:
   - DIGITAL-IMPLEMENTATION
-  evidence: Discretization, aliasing, quantization, jitter, delay, multirate, switching, limiting, and recovery
-    checks.
+  evidence: 'modules/42-switch-controllers-bumplessly-with-anti-windup/portfolio-a-digital.md: four concrete
+    tasks and a four-criterion rubric; learner_result=not_recorded.'
 - id: A-NONLINEAR
   type: cumulative
   competency_ids:
   - NONLINEAR-STABILITY
   - NONLINEAR-CONTROL
-  evidence: Phase-plane, local/global, Lyapunov, attraction, scheduling, and feedback-linearization criteria.
+  evidence: 'modules/47-cancel-nonlinearities-with-feedback-linearization/portfolio-a-nonlinear.md: four concrete
+    tasks and a four-criterion rubric; learner_result=not_recorded.'
 - id: A-CONSTRAINTS
   type: cumulative
   competency_ids:
   - SAFETY-CONSTRAINTS
-  evidence: Barrier, feasibility, prediction, state/input limit, terminal, and fallback checks.
+  evidence: 'modules/67-capstone-navigate-guide-and-constrain-an-autonomous-survey/portfolio-a-constraints.md:
+    four concrete tasks and a four-criterion rubric; learner_result=not_recorded.'
 - id: A-ROBUST
   type: cumulative
   competency_ids:
   - ROBUST-ADAPTIVE
-  evidence: Declared structured-uncertainty, robust bound, schedule, adaptation, and counterexample checks.
+  evidence: 'modules/68-capstone-verify-a-faulted-software-hil-gnc-loop/portfolio-a-robust.md: four concrete
+    tasks and a four-criterion rubric; learner_result=not_recorded.'
 - id: A-IDENTIFICATION
   type: cumulative
   competency_ids:
   - SYSTEM-IDENTIFICATION
-  evidence: Excitation richness, parameter confidence, held-out residual, mismatch, and online convergence checks.
+  evidence: 'modules/66-capstone-identify-control-estimate-and-stress-a-plant/portfolio-a-identification.md:
+    four concrete tasks and a four-criterion rubric; learner_result=not_recorded.'
 - id: A-STOCHASTIC
   type: cumulative
   competency_ids:
   - STOCHASTIC-ESTIMATION
-  evidence: Covariance, innovation whiteness, NIS, NEES, gate, and outlier-recovery checks.
+  evidence: 'modules/61-fuse-gnss-and-ins-with-an-error-state-kalman-filter/portfolio-a-stochastic.md: four
+    concrete tasks and a four-criterion rubric; learner_result=not_recorded.'
 - id: A-NONLINEAR-EST
   type: cumulative
   competency_ids:
   - NONLINEAR-ESTIMATION
-  evidence: EKF Jacobian, UKF sigma-point, smoother consistency, and declared cross-course handoff checks.
+  evidence: 'modules/56-recover-a-trajectory-with-rauch-tung-striebel-smoothing/portfolio-a-nonlinear-est.md:
+    four concrete tasks and a four-criterion rubric; learner_result=not_recorded.'
 - id: A-NAV-FRAMES
   type: cumulative
   competency_ids:
   - NAV-FRAMES-ATTITUDE
-  evidence: Round-trip frame, handedness, quaternion norm/sign, alignment, covariance, and observability checks.
+  evidence: 'modules/58-analyze-navigation-observability-and-alignment-calibration/portfolio-a-nav-frames.md:
+    four concrete tasks and a four-criterion rubric; learner_result=not_recorded.'
 - id: A-NAVIGATION
   type: cumulative
   competency_ids:
   - INERTIAL-NAVIGATION
-  evidence: IMU error growth, mechanization, pseudorange geometry, ESKF consistency, bias, and observability checks.
+  evidence: 'modules/67-capstone-navigate-guide-and-constrain-an-autonomous-survey/portfolio-a-navigation.md:
+    four concrete tasks and a four-criterion rubric; learner_result=not_recorded.'
 - id: A-INTEGRITY
   type: cumulative
   competency_ids:
   - NAV-INTEGRITY
-  evidence: Protection-level, fault-detection, exclusion, availability, recovery, and non-certification boundaries.
+  evidence: 'modules/68-capstone-verify-a-faulted-software-hil-gnc-loop/portfolio-a-integrity.md: four concrete
+    tasks and a four-criterion rubric; learner_result=not_recorded.'
 - id: A-GUIDANCE
   type: cumulative
   competency_ids:
   - GUIDANCE-DESIGN
-  evidence: Cross-track, pursuit geometry, PN convention, terminal, actuator, feasibility, and miss criteria.
+  evidence: 'modules/67-capstone-navigate-guide-and-constrain-an-autonomous-survey/portfolio-a-guidance.md:
+    four concrete tasks and a four-criterion rubric; learner_result=not_recorded.'
 - id: A-REALTIME
   type: cumulative
   competency_ids:
   - ACTUATION-REALTIME
-  evidence: Sensor/actuator, rate, delay, watchdog, allocation, timestamp, and software-HIL evidence.
+  evidence: 'modules/68-capstone-verify-a-faulted-software-hil-gnc-loop/portfolio-a-realtime.md: four concrete
+    tasks and a four-criterion rubric; learner_result=not_recorded.'
 - id: A-CAP-ID
   type: capstone
   competency_ids:
@@ -1073,8 +1213,9 @@ assessments:
   - SYSTEM-IDENTIFICATION
   - ROBUST-ADAPTIVE
   - OPTIMAL-ESTIMATION
-  evidence: Reuse identification data/model, controller, estimator, and uncertainty artifacts in one independently
-    scored closed loop.
+  evidence: 'modules/66-capstone-identify-control-estimate-and-stress-a-plant/portfolio-a-cap-id.md: four concrete
+    tasks and a four-criterion rubric; learner_result=not_recorded. Scalar identification, design, estimation
+    and stress only.'
 - id: A-CAP-NAV
   type: capstone
   competency_ids:
@@ -1083,7 +1224,9 @@ assessments:
   - NAV-INTEGRITY
   - GUIDANCE-DESIGN
   - SAFETY-CONSTRAINTS
-  evidence: Reuse navigation, integrity, guidance, and constraint artifacts in an autonomous survey mission.
+  evidence: 'modules/67-capstone-navigate-guide-and-constrain-an-autonomous-survey/portfolio-a-cap-nav.md:
+    four concrete tasks and a four-criterion rubric; learner_result=not_recorded. Planar position aiding, LOS
+    and freshness hold only.'
 - id: A-CAP-HIL
   type: capstone
   competency_ids:
@@ -1091,8 +1234,281 @@ assessments:
   - ACTUATION-REALTIME
   - NAV-INTEGRITY
   - ROBUST-ADAPTIVE
-  evidence: Trace requirements to timing, injected faults, pass/fail evidence, recovery, and explicit physical-validation
-    gaps.
+  evidence: 'modules/68-capstone-verify-a-faulted-software-hil-gnc-loop/portfolio-a-cap-hil.md: four concrete
+    tasks and a four-criterion rubric; learner_result=not_recorded. Simulated packet queue, proportional loop
+    and watchdog only.'
+- id: GNC-F01
+  type: formative
+  competency_ids: *id001
+  evidence: modules/01-watch-a-mass-spring-damper-respond/assessment.md
+- id: GNC-F02
+  type: formative
+  competency_ids: *id002
+  evidence: modules/02-build-intuition-for-integrators-and-first-order-systems/assessment.md
+- id: GNC-F03
+  type: formative
+  competency_ids: *id003
+  evidence: modules/03-relate-poles-to-visible-motion/assessment.md
+- id: GNC-F04
+  type: formative
+  competency_ids: *id004
+  evidence: modules/04-compare-linear-and-nonlinear-pendulum-models/assessment.md
+- id: GNC-F05
+  type: formative
+  competency_ids: *id005
+  evidence: modules/05-close-a-loop-with-proportional-control/assessment.md
+- id: GNC-F06
+  type: formative
+  competency_ids: *id006
+  evidence: modules/06-tune-a-pid-by-observing-each-term/assessment.md
+- id: GNC-F07
+  type: formative
+  competency_ids: *id007
+  evidence: modules/07-see-stability-margin-in-time-and-frequency/assessment.md
+- id: GNC-F08
+  type: formative
+  competency_ids: *id008
+  evidence: modules/08-reject-a-disturbance-with-feedback/assessment.md
+- id: GNC-F09
+  type: formative
+  competency_ids: *id009
+  evidence: modules/09-discretize-a-continuous-controller/assessment.md
+- id: GNC-F10
+  type: formative
+  competency_ids: *id010
+  evidence: modules/10-expose-delay-and-sampling-limits/assessment.md
+- id: GNC-F11
+  type: formative
+  competency_ids: *id011
+  evidence: modules/11-drive-an-actuator-into-saturation/assessment.md
+- id: GNC-F12
+  type: formative
+  competency_ids: *id012
+  evidence: modules/12-recover-from-integrator-windup/assessment.md
+- id: GNC-F13
+  type: formative
+  competency_ids: *id013
+  evidence: modules/13-test-controllability/assessment.md
+- id: GNC-F14
+  type: formative
+  competency_ids: *id014
+  evidence: modules/14-test-observability/assessment.md
+- id: GNC-F15
+  type: formative
+  competency_ids: *id015
+  evidence: modules/15-build-a-state-observer/assessment.md
+- id: GNC-F16
+  type: formative
+  competency_ids: *id016
+  evidence: modules/16-fuse-noisy-sensors-with-a-kalman-filter/assessment.md
+- id: GNC-F17
+  type: formative
+  competency_ids: *id017
+  evidence: modules/17-balance-state-error-and-control-effort-with-lqr/assessment.md
+- id: GNC-F18
+  type: formative
+  competency_ids: *id018
+  evidence: modules/18-use-feedforward-and-feedback-together/assessment.md
+- id: GNC-F19
+  type: formative
+  competency_ids: *id019
+  evidence: modules/19-measure-sensitivity-to-model-error/assessment.md
+- id: GNC-F20
+  type: formative
+  competency_ids: *id020
+  evidence: modules/20-compare-nominal-and-robust-designs/assessment.md
+- id: GNC-F21
+  type: formative
+  competency_ids: *id021
+  evidence: modules/21-generate-a-feasible-trajectory/assessment.md
+- id: GNC-F22
+  type: formative
+  competency_ids: *id022
+  evidence: modules/22-implement-proportional-navigation/assessment.md
+- id: GNC-F23
+  type: formative
+  competency_ids: *id023
+  evidence: modules/23-model-sensor-and-actuator-dynamics/assessment.md
+- id: GNC-F24
+  type: formative
+  competency_ids: *id024
+  evidence: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/assessment.md
+- id: GNC-F25
+  type: formative
+  competency_ids: *id025
+  evidence: modules/25-linearize-a-nonlinear-plant-around-an-operating-point/assessment.md
+- id: GNC-F26
+  type: formative
+  competency_ids: *id026
+  evidence: modules/26-reduce-block-diagrams-and-convert-system-realizations/assessment.md
+- id: GNC-F27
+  type: formative
+  competency_ids: *id027
+  evidence: modules/27-predict-transients-and-steady-state-error-from-system-type/assessment.md
+- id: GNC-F28
+  type: formative
+  competency_ids: *id028
+  evidence: modules/28-trace-a-root-locus-and-select-feedback-gain/assessment.md
+- id: GNC-F29
+  type: formative
+  competency_ids: *id029
+  evidence: modules/29-apply-the-nyquist-stability-criterion/assessment.md
+- id: GNC-F30
+  type: formative
+  competency_ids: *id030
+  evidence: modules/30-shape-sensitivity-with-bode-loop-design/assessment.md
+- id: GNC-F31
+  type: formative
+  competency_ids: *id031
+  evidence: modules/31-design-lead-and-lag-compensation/assessment.md
+- id: GNC-F32
+  type: formative
+  competency_ids: *id032
+  evidence: modules/32-place-a-notch-filter-and-reference-prefilter/assessment.md
+- id: GNC-F33
+  type: formative
+  competency_ids: *id033
+  evidence: modules/33-measure-mimo-interaction-zeros-and-decoupling/assessment.md
+- id: GNC-F34
+  type: formative
+  competency_ids: *id034
+  evidence: modules/34-propagate-state-modes-and-diagnose-numerical-conditioning/assessment.md
+- id: GNC-F35
+  type: formative
+  competency_ids: *id035
+  evidence: modules/35-compare-discretization-methods-and-aliasing/assessment.md
+- id: GNC-F36
+  type: formative
+  competency_ids: *id036
+  evidence: modules/36-place-state-feedback-poles-and-track-references/assessment.md
+- id: GNC-F37
+  type: formative
+  competency_ids: *id037
+  evidence: modules/37-augment-an-integral-servo-and-limit-commands/assessment.md
+- id: GNC-F38
+  type: formative
+  competency_ids: *id038
+  evidence: modules/38-combine-lqr-and-an-observer-with-the-separation-principle/assessment.md
+- id: GNC-F39
+  type: formative
+  competency_ids: *id039
+  evidence: modules/39-solve-finite-horizon-and-time-varying-lqr/assessment.md
+- id: GNC-F40
+  type: formative
+  competency_ids: *id040
+  evidence: modules/40-quantify-quantization-and-sampling-jitter/assessment.md
+- id: GNC-F41
+  type: formative
+  competency_ids: *id041
+  evidence: modules/41-cross-rate-transitions-and-execution-delay/assessment.md
+- id: GNC-F42
+  type: formative
+  competency_ids: *id042
+  evidence: modules/42-switch-controllers-bumplessly-with-anti-windup/assessment.md
+- id: GNC-F43
+  type: formative
+  competency_ids: *id043
+  evidence: modules/43-use-phase-portraits-to-separate-local-and-global-stability/assessment.md
+- id: GNC-F44
+  type: formative
+  competency_ids: *id044
+  evidence: modules/44-certify-decay-with-lyapunov-functions-and-regions-of-attraction/assessment.md
+- id: GNC-F45
+  type: formative
+  competency_ids: *id045
+  evidence: modules/45-enforce-safety-with-a-control-barrier-filter/assessment.md
+- id: GNC-F46
+  type: formative
+  competency_ids: *id046
+  evidence: modules/46-schedule-gains-across-operating-points/assessment.md
+- id: GNC-F47
+  type: formative
+  competency_ids: *id047
+  evidence: modules/47-cancel-nonlinearities-with-feedback-linearization/assessment.md
+- id: GNC-F48
+  type: formative
+  competency_ids: *id048
+  evidence: modules/48-bound-structured-uncertainty-and-robust-performance/assessment.md
+- id: GNC-F49
+  type: formative
+  competency_ids: *id049
+  evidence: modules/49-control-a-constrained-plant-with-model-predictive-control/assessment.md
+- id: GNC-F50
+  type: formative
+  competency_ids: *id050
+  evidence: modules/50-identify-and-validate-a-dynamic-model-from-excitation-data/assessment.md
+- id: GNC-F51
+  type: formative
+  competency_ids: *id051
+  evidence: modules/51-adapt-a-parameter-estimate-online/assessment.md
+- id: GNC-F52
+  type: formative
+  competency_ids: *id052
+  evidence: modules/52-build-stochastic-process-models-and-interpret-covariance/assessment.md
+- id: GNC-F53
+  type: formative
+  competency_ids: *id053
+  evidence: modules/53-monitor-innovations-nis-nees-and-measurement-gates/assessment.md
+- id: GNC-F54
+  type: formative
+  competency_ids: *id054
+  evidence: modules/54-estimate-nonlinear-state-with-an-extended-kalman-filter/assessment.md
+- id: GNC-F55
+  type: formative
+  competency_ids: *id055
+  evidence: modules/55-transform-uncertainty-with-an-unscented-kalman-filter/assessment.md
+- id: GNC-F56
+  type: formative
+  competency_ids: *id056
+  evidence: modules/56-recover-a-trajectory-with-rauch-tung-striebel-smoothing/assessment.md
+- id: GNC-F57
+  type: formative
+  competency_ids: *id057
+  evidence: modules/57-transform-frames-quaternions-and-sensor-alignment/assessment.md
+- id: GNC-F58
+  type: formative
+  competency_ids: *id058
+  evidence: modules/58-analyze-navigation-observability-and-alignment-calibration/assessment.md
+- id: GNC-F59
+  type: formative
+  competency_ids: *id059
+  evidence: modules/59-propagate-strapdown-inertial-navigation-and-imu-error/assessment.md
+- id: GNC-F60
+  type: formative
+  competency_ids: *id060
+  evidence: modules/60-solve-a-gnss-pseudorange-navigation-fix/assessment.md
+- id: GNC-F61
+  type: formative
+  competency_ids: *id061
+  evidence: modules/61-fuse-gnss-and-ins-with-an-error-state-kalman-filter/assessment.md
+- id: GNC-F62
+  type: formative
+  competency_ids: *id062
+  evidence: modules/62-monitor-navigation-integrity-and-exclude-faulty-measurements/assessment.md
+- id: GNC-F63
+  type: formative
+  competency_ids: *id063
+  evidence: modules/63-follow-waypoints-and-paths-with-line-of-sight-guidance/assessment.md
+- id: GNC-F64
+  type: formative
+  competency_ids: *id064
+  evidence: modules/64-compare-pursuit-laws-and-proportional-navigation-variants/assessment.md
+- id: GNC-F65
+  type: formative
+  competency_ids: *id065
+  evidence: modules/65-enforce-terminal-and-actuator-aware-guidance-constraints/assessment.md
+- id: GNC-F66
+  type: formative
+  competency_ids: *id066
+  evidence: modules/66-capstone-identify-control-estimate-and-stress-a-plant/assessment.md
+- id: GNC-F67
+  type: formative
+  competency_ids: *id067
+  evidence: modules/67-capstone-navigate-guide-and-constrain-an-autonomous-survey/assessment.md
+- id: GNC-F68
+  type: formative
+  competency_ids: *id068
+  evidence: modules/68-capstone-verify-a-faulted-software-hil-gnc-loop/assessment.md
 capstones:
 - id: CAP-ID-CONTROL
   module_ids:
@@ -1102,8 +1518,9 @@ capstones:
   - SYSTEM-IDENTIFICATION
   - ROBUST-ADAPTIVE
   - OPTIMAL-ESTIMATION
-  integration_claim: P66 reuses excitation and validation data to identify a plant, close controller and estimator
-    loops, and independently stress the result against held-out uncertainty.
+  integration_claim: P66 fits a scalar discrete plant from excitation data, redesigns a state feedback/prefilter
+    and scalar estimator, and checks held-out uncertainty/noise histories. It does not execute full vehicle
+    dynamics or certify an uncertainty continuum.
 - id: CAP-NAV-GUIDANCE
   module_ids:
   - P67
@@ -1113,8 +1530,9 @@ capstones:
   - NAV-INTEGRITY
   - GUIDANCE-DESIGN
   - SAFETY-CONSTRAINTS
-  integration_claim: P67 reuses GNSS/INS, integrity, line-of-sight guidance, and constrained-control artifacts in
-    a non-weapon autonomous survey mission with measurable path and safety criteria.
+  integration_claim: P67 integrates a planar survey vehicle, simplified inertial/position aiding, LOS waypoints,
+    turn clipping and a navigation-freshness hold. It does not import P60 pseudorange solving, P61 full covariance
+    state or full GNSS/INS mechanization.
 - id: CAP-SOFTWARE-HIL
   module_ids:
   - P68
@@ -1123,8 +1541,9 @@ capstones:
   - ACTUATION-REALTIME
   - NAV-INTEGRITY
   - ROBUST-ADAPTIVE
-  integration_claim: P68 traces software-only HIL requirements through multirate timing, transport, injected sensor
-    and actuator faults, pass/fail evidence, recovery, and an explicit physical-validation gap.
+  integration_claim: P68 simulates queued packet delivery/drop, applied proportional control and an expired-command
+    watchdog. Requirement verdicts use actual event/state histories; this is software HIL, not real hardware
+    timing.
 evidence_plan:
 - claim_id: CLAIM-P01-P24
   origin: alternative_algorithm
@@ -1137,8 +1556,8 @@ evidence_plan:
 - claim_id: CLAIM-P25
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Linearize a Nonlinear Plant Around an Operating Point, with baseline, two
-    sweeps, broken, and recovery scenarios.
+  method: Independent formulation for Linearize a Nonlinear Plant Around an Operating Point, with baseline,
+    two sweeps, broken, and recovery scenarios.
   tolerance: Scale-aware absolute/relative tolerance declared in the module design record.
   imports_production_entrypoint: false
   derived_from_production_output: false
@@ -1146,8 +1565,8 @@ evidence_plan:
 - claim_id: CLAIM-P26
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Reduce Block Diagrams and Convert System Realizations, with baseline, two
-    sweeps, broken, and recovery scenarios.
+  method: Independent formulation for Reduce Block Diagrams and Convert System Realizations, with baseline,
+    two sweeps, broken, and recovery scenarios.
   tolerance: Scale-aware absolute/relative tolerance declared in the module design record.
   imports_production_entrypoint: false
   derived_from_production_output: false
@@ -1164,8 +1583,8 @@ evidence_plan:
 - claim_id: CLAIM-P28
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Trace a Root Locus and Select Feedback Gain, with baseline, two sweeps, broken,
-    and recovery scenarios.
+  method: Independent formulation for Trace a Root Locus and Select Feedback Gain, with baseline, two sweeps,
+    broken, and recovery scenarios.
   tolerance: Scale-aware absolute/relative tolerance declared in the module design record.
   imports_production_entrypoint: false
   derived_from_production_output: false
@@ -1191,8 +1610,8 @@ evidence_plan:
 - claim_id: CLAIM-P31
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Design Lead and Lag Compensation, with baseline, two sweeps, broken, and recovery
-    scenarios.
+  method: Independent formulation for Design Lead and Lag Compensation, with baseline, two sweeps, broken,
+    and recovery scenarios.
   tolerance: Scale-aware absolute/relative tolerance declared in the module design record.
   imports_production_entrypoint: false
   derived_from_production_output: false
@@ -1200,8 +1619,8 @@ evidence_plan:
 - claim_id: CLAIM-P32
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Place a Notch Filter and Reference Prefilter, with baseline, two sweeps, broken,
-    and recovery scenarios.
+  method: Independent formulation for Place a Notch Filter and Reference Prefilter, with baseline, two sweeps,
+    broken, and recovery scenarios.
   tolerance: Scale-aware absolute/relative tolerance declared in the module design record.
   imports_production_entrypoint: false
   derived_from_production_output: false
@@ -1227,8 +1646,8 @@ evidence_plan:
 - claim_id: CLAIM-P35
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Compare Discretization Methods and Aliasing, with baseline, two sweeps, broken,
-    and recovery scenarios.
+  method: Independent formulation for Compare Discretization Methods and Aliasing, with baseline, two sweeps,
+    broken, and recovery scenarios.
   tolerance: Scale-aware absolute/relative tolerance declared in the module design record.
   imports_production_entrypoint: false
   derived_from_production_output: false
@@ -1245,8 +1664,8 @@ evidence_plan:
 - claim_id: CLAIM-P37
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Augment an Integral Servo and Limit Commands, with baseline, two sweeps, broken,
-    and recovery scenarios.
+  method: Independent formulation for Augment an Integral Servo and Limit Commands, with baseline, two sweeps,
+    broken, and recovery scenarios.
   tolerance: Scale-aware absolute/relative tolerance declared in the module design record.
   imports_production_entrypoint: false
   derived_from_production_output: false
@@ -1263,8 +1682,8 @@ evidence_plan:
 - claim_id: CLAIM-P39
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Solve Finite-Horizon and Time-Varying LQR, with baseline, two sweeps, broken,
-    and recovery scenarios.
+  method: Independent formulation for Solve Finite-Horizon and Time-Varying LQR, with baseline, two sweeps,
+    broken, and recovery scenarios.
   tolerance: Scale-aware absolute/relative tolerance declared in the module design record.
   imports_production_entrypoint: false
   derived_from_production_output: false
@@ -1272,8 +1691,8 @@ evidence_plan:
 - claim_id: CLAIM-P40
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Quantify Quantization and Sampling Jitter, with baseline, two sweeps, broken,
-    and recovery scenarios.
+  method: Independent formulation for Quantify Quantization and Sampling Jitter, with baseline, two sweeps,
+    broken, and recovery scenarios.
   tolerance: Scale-aware absolute/relative tolerance declared in the module design record.
   imports_production_entrypoint: false
   derived_from_production_output: false
@@ -1281,8 +1700,8 @@ evidence_plan:
 - claim_id: CLAIM-P41
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Cross Rate Transitions and Execution Delay, with baseline, two sweeps, broken,
-    and recovery scenarios.
+  method: Independent formulation for Cross Rate Transitions and Execution Delay, with baseline, two sweeps,
+    broken, and recovery scenarios.
   tolerance: Scale-aware absolute/relative tolerance declared in the module design record.
   imports_production_entrypoint: false
   derived_from_production_output: false
@@ -1308,8 +1727,8 @@ evidence_plan:
 - claim_id: CLAIM-P44
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Certify Decay with Lyapunov Functions and Regions of Attraction, with baseline,
-    two sweeps, broken, and recovery scenarios.
+  method: Independent formulation for Certify Decay with Lyapunov Functions and Regions of Attraction, with
+    baseline, two sweeps, broken, and recovery scenarios.
   tolerance: Scale-aware absolute/relative tolerance declared in the module design record.
   imports_production_entrypoint: false
   derived_from_production_output: false
@@ -1317,8 +1736,8 @@ evidence_plan:
 - claim_id: CLAIM-P45
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Enforce Safety with a Control Barrier Filter, with baseline, two sweeps, broken,
-    and recovery scenarios.
+  method: Independent formulation for Enforce Safety with a Control Barrier Filter, with baseline, two sweeps,
+    broken, and recovery scenarios.
   tolerance: Scale-aware absolute/relative tolerance declared in the module design record.
   imports_production_entrypoint: false
   derived_from_production_output: false
@@ -1335,8 +1754,8 @@ evidence_plan:
 - claim_id: CLAIM-P47
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Cancel Nonlinearities with Feedback Linearization, with baseline, two sweeps,
-    broken, and recovery scenarios.
+  method: Independent formulation for Cancel Nonlinearities with Feedback Linearization, with baseline, two
+    sweeps, broken, and recovery scenarios.
   tolerance: Scale-aware absolute/relative tolerance declared in the module design record.
   imports_production_entrypoint: false
   derived_from_production_output: false
@@ -1344,8 +1763,8 @@ evidence_plan:
 - claim_id: CLAIM-P48
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Bound Structured Uncertainty and Robust Performance, with baseline, two sweeps,
-    broken, and recovery scenarios.
+  method: Independent formulation for Bound Structured Uncertainty and Robust Performance, with baseline, two
+    sweeps, broken, and recovery scenarios.
   tolerance: Scale-aware absolute/relative tolerance declared in the module design record.
   imports_production_entrypoint: false
   derived_from_production_output: false
@@ -1371,8 +1790,8 @@ evidence_plan:
 - claim_id: CLAIM-P51
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Adapt a Parameter Estimate Online, with baseline, two sweeps, broken, and
-    recovery scenarios.
+  method: Independent formulation for Adapt a Parameter Estimate Online, with baseline, two sweeps, broken,
+    and recovery scenarios.
   tolerance: Scale-aware absolute/relative tolerance declared in the module design record.
   imports_production_entrypoint: false
   derived_from_production_output: false
@@ -1380,8 +1799,8 @@ evidence_plan:
 - claim_id: CLAIM-P52
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Build Stochastic Process Models and Interpret Covariance, with baseline, two
-    sweeps, broken, and recovery scenarios.
+  method: Independent formulation for Build Stochastic Process Models and Interpret Covariance, with baseline,
+    two sweeps, broken, and recovery scenarios.
   tolerance: Scale-aware absolute/relative tolerance declared in the module design record.
   imports_production_entrypoint: false
   derived_from_production_output: false
@@ -1389,8 +1808,8 @@ evidence_plan:
 - claim_id: CLAIM-P53
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Monitor Innovations, NIS, NEES, and Measurement Gates, with baseline, two
-    sweeps, broken, and recovery scenarios.
+  method: Independent formulation for Monitor Innovations, NIS, NEES, and Measurement Gates, with baseline,
+    two sweeps, broken, and recovery scenarios.
   tolerance: Scale-aware absolute/relative tolerance declared in the module design record.
   imports_production_entrypoint: false
   derived_from_production_output: false
@@ -1398,8 +1817,8 @@ evidence_plan:
 - claim_id: CLAIM-P54
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Estimate Nonlinear State with an Extended Kalman Filter, with baseline, two
-    sweeps, broken, and recovery scenarios.
+  method: Independent formulation for Estimate Nonlinear State with an Extended Kalman Filter, with baseline,
+    two sweeps, broken, and recovery scenarios.
   tolerance: Scale-aware absolute/relative tolerance declared in the module design record.
   imports_production_entrypoint: false
   derived_from_production_output: false
@@ -1416,8 +1835,8 @@ evidence_plan:
 - claim_id: CLAIM-P56
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Recover a Trajectory with Rauch-Tung-Striebel Smoothing, with baseline, two
-    sweeps, broken, and recovery scenarios.
+  method: Independent formulation for Recover a Trajectory with Rauch-Tung-Striebel Smoothing, with baseline,
+    two sweeps, broken, and recovery scenarios.
   tolerance: Scale-aware absolute/relative tolerance declared in the module design record.
   imports_production_entrypoint: false
   derived_from_production_output: false
@@ -1425,8 +1844,8 @@ evidence_plan:
 - claim_id: CLAIM-P57
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Transform Frames, Quaternions, and Sensor Alignment, with baseline, two sweeps,
-    broken, and recovery scenarios.
+  method: Independent formulation for Transform Frames, Quaternions, and Sensor Alignment, with baseline, two
+    sweeps, broken, and recovery scenarios.
   tolerance: Scale-aware absolute/relative tolerance declared in the module design record.
   imports_production_entrypoint: false
   derived_from_production_output: false
@@ -1443,8 +1862,8 @@ evidence_plan:
 - claim_id: CLAIM-P59
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Propagate Strapdown Inertial Navigation and IMU Error, with baseline, two
-    sweeps, broken, and recovery scenarios.
+  method: Independent formulation for Propagate Strapdown Inertial Navigation and IMU Error, with baseline,
+    two sweeps, broken, and recovery scenarios.
   tolerance: Scale-aware absolute/relative tolerance declared in the module design record.
   imports_production_entrypoint: false
   derived_from_production_output: false
@@ -1461,8 +1880,8 @@ evidence_plan:
 - claim_id: CLAIM-P61
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Fuse GNSS and INS with an Error-State Kalman Filter, with baseline, two sweeps,
-    broken, and recovery scenarios.
+  method: Independent formulation for Fuse GNSS and INS with an Error-State Kalman Filter, with baseline, two
+    sweeps, broken, and recovery scenarios.
   tolerance: Scale-aware absolute/relative tolerance declared in the module design record.
   imports_production_entrypoint: false
   derived_from_production_output: false
@@ -1479,8 +1898,8 @@ evidence_plan:
 - claim_id: CLAIM-P63
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Follow Waypoints and Paths with Line-of-Sight Guidance, with baseline, two
-    sweeps, broken, and recovery scenarios.
+  method: Independent formulation for Follow Waypoints and Paths with Line-of-Sight Guidance, with baseline,
+    two sweeps, broken, and recovery scenarios.
   tolerance: Scale-aware absolute/relative tolerance declared in the module design record.
   imports_production_entrypoint: false
   derived_from_production_output: false
@@ -1497,8 +1916,8 @@ evidence_plan:
 - claim_id: CLAIM-P65
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Enforce Terminal and Actuator-Aware Guidance Constraints, with baseline, two
-    sweeps, broken, and recovery scenarios.
+  method: Independent formulation for Enforce Terminal and Actuator-Aware Guidance Constraints, with baseline,
+    two sweeps, broken, and recovery scenarios.
   tolerance: Scale-aware absolute/relative tolerance declared in the module design record.
   imports_production_entrypoint: false
   derived_from_production_output: false
@@ -1515,8 +1934,8 @@ evidence_plan:
 - claim_id: CLAIM-P67
   origin: separately_formulated_numerical
   independent: true
-  method: 'Independent formulation for Capstone: Navigate, Guide, and Constrain an Autonomous Survey, with baseline,
-    two sweeps, broken, and recovery scenarios.'
+  method: 'Independent formulation for Capstone: Navigate, Guide, and Constrain an Autonomous Survey, with
+    baseline, two sweeps, broken, and recovery scenarios.'
   tolerance: Scale-aware absolute/relative tolerance declared in the module design record.
   imports_production_entrypoint: false
   derived_from_production_output: false
@@ -1524,8 +1943,8 @@ evidence_plan:
 - claim_id: CLAIM-P68
   origin: separately_formulated_numerical
   independent: true
-  method: 'Independent formulation for Capstone: Verify a Faulted Software-HIL GNC Loop, with baseline, two sweeps,
-    broken, and recovery scenarios.'
+  method: 'Independent formulation for Capstone: Verify a Faulted Software-HIL GNC Loop, with baseline, two
+    sweeps, broken, and recovery scenarios.'
   tolerance: Scale-aware absolute/relative tolerance declared in the module design record.
   imports_production_entrypoint: false
   derived_from_production_output: false
@@ -1568,8 +1987,8 @@ batch_plan:
   - P49
   - P50
   - P51
-  coherence: Build nonlinear stability/control, safety barriers, robust bounds, MPC, system identification, and
-    online adaptation as one prerequisite chain.
+  coherence: Build nonlinear stability/control, safety barriers, robust bounds, MPC, system identification,
+    and online adaptation as one prerequisite chain.
 - id: ELP-GNC-STOCHASTIC-EST-P52-P56
   module_ids:
   - P52
@@ -1606,7 +2025,7 @@ batch_plan:
 count_derivation:
   planned_module_count: 68
   source: len(modules)
-  rationale: The existing 24 source-bound modules cover the introductory arc. Forty-four additions are the smallest
-    set that gives every issue-439 competency an executable lesson or explicit handoff, preserves prerequisite separation
-    among seven coherent batches, and supplies three genuinely cumulative capstones without absorbing depth assigned
-    to adjacent courses.
+  rationale: The existing 24 source-bound modules cover the introductory arc. Forty-four additions are the
+    smallest set that gives every issue-439 competency an executable lesson or explicit handoff, preserves
+    prerequisite separation among seven coherent batches, and supplies three genuinely cumulative capstones
+    without absorbing depth assigned to adjacent courses.

@@ -6,9 +6,140 @@ production value. Relations are transcribed independently from the reviewed desi
 from __future__ import annotations
 
 import json
+import math
+from scipy.optimize import brentq
 from typing import Any
 
 import numpy as np
+
+
+METHODS = {
+    34: "Two normalized eigenvectors: analytic half-angle condition and exact modal identity",
+    35: "Discrete phase wrapping and scalar pole-map identities",
+    37: "Piecewise affine servo state transition with an explicit saturation partition",
+    39: "Terminal-boundary finite-difference Riccati recurrence in reverse-time coordinates",
+    40: "Direct sampled error inner products and explicit integer code selection",
+    41: "Timestamp/index algebra for held samples and execution age",
+    44: "Polynomial Lyapunov derivative and boundary factorization",
+    52: "Integrated scalar covariance differential equation",
+    53: "Information-form scalar posterior; rejected updates preserve the prior",
+    54: "Complete the square in the linearized Gaussian likelihood",
+    58: "SVD information singular values and covariance in the right-singular basis",
+    59: "Closed-form constant-bias velocity and position integrals",
+    63: "Implicit separated nonlinear LOS solution and geometric along-track relation",
+}
+
+
+def aggregate_signature(number, p):
+    broken = bool(p["broken_mode"])
+    if number == 34:
+        angle = math.radians(.5 if broken else p["eigenvector_angle_deg"])
+        condition = math.sqrt((1+abs(math.cos(angle)))/(1-abs(math.cos(angle))))
+        return [-min(p["slow_mode_per_s"], 4.), condition, 0.]
+    if number == 35:
+        h = .6 if broken else p["sample_period_s"]
+        phase = 2*math.pi*p["input_frequency_hz"]*h
+        alias = abs(math.atan2(math.sin(phase), math.cos(phase)))/(2*math.pi*h)
+        return [0., abs(1-3*h-math.exp(-3*h)), alias]
+    if number == 37:
+        gain = 0. if broken else p["integral_gain_per_s"]
+        bound = p["command_limit_m_s2"]
+        state = np.zeros(2); positions = []; commands = []
+        for tick in range(1399):
+            positions.append(state[0])
+            request = np.array([-2-.01*gain, gain]) @ state + 2+.01*gain
+            command = min(bound, max(-bound, request))
+            commands.append(command)
+            state = np.array([[.99,0],[-.01,1.]]) @ state + [.01*(command-.6), .01]
+        positions.append(state[0]); commands.append(commands[-1])
+        return [abs(1-np.mean(positions[-100:])), max(abs(np.array(commands))), np.mean(abs(np.array(commands))>=bound-1e-9)]
+    if number == 39:
+        dt=p["horizon_s"]/499; value=p["terminal_weight"]; values=[value]
+        # The lab intentionally evaluates this finite-difference scheme, not an
+        # exact continuous Riccati solution. Its wrong-boundary fault is retained.
+        for j in range(499):
+            index=j if broken else 499-j
+            a=.25*math.sin(2*math.pi*index/499)
+            slope=value*value-2*a*value-1
+            value=float(np.clip(value+(dt if broken else -dt)*slope,-50,50))
+            values.append(value)
+        return [values[0] if broken else values[-1], values[-1] if broken else values[0], max(abs(np.array(values)))]
+    if number == 40:
+        bits=3 if broken else round(p["converter_bits"]); jitter=.45 if broken else p["jitter_fraction"]
+        original=[]; digitized=[]; timed=[]
+        for tick in range(300):
+            original.append(math.sin(2*math.pi*17*tick/100))
+            timed.append(math.sin(2*math.pi*17*(tick+jitter*math.sin(2*math.pi*tick/37))/100))
+            code=round(timed[-1]*(2**bits-1)/2)
+            digitized.append(min(1,max(-1,code*2/(2**bits-1))))
+        o=np.array(original); d=np.array(digitized); t=np.array(timed)
+        return [np.linalg.norm(d-t)/math.sqrt(300),np.linalg.norm(t-o)/math.sqrt(300),10*math.log10((o@o)/max((d-o)@(d-o),3e-28))]
+    if number == 41:
+        ratio=20 if broken else round(p["rate_ratio"]); delay=.08 if broken else p["execution_delay_ms"]/1000
+        n=np.arange(800); ideal=np.sin(2*math.pi*.7*n*.01)
+        held=np.sin(2*math.pi*.7*(n//ratio)*ratio*.01)
+        return [np.linalg.norm(held-ideal)/math.sqrt(800),252*delay,float(max(n%ratio)*.01+delay+(ratio*.01 if broken else 0))]
+    return aggregate_mechanism(number,p)["signature"]
+
+
+def aggregate_mechanism(number, p):
+    broken=bool(p["broken_mode"])
+    if number == 44:
+        r=p["sublevel_radius"]; b=p["cubic_coefficient"]; a=-1 if broken else 1
+        x=np.linspace(-max(1.4*r,1.2/math.sqrt(b)), max(1.4*r,1.2/math.sqrt(b)),241)
+        return {"signature":[a-b*r*r, b*r**4-a*r*r,1/math.sqrt(b)],"state":x,"vector_field":b*x**3-a*x,"vdot":b*x**4-a*x*x}
+    if number == 52:
+        t=np.linspace(0,p["propagation_interval_s"],241)
+        v=1+(-1 if broken else 1)*p["process_noise_density"]*t
+        return {"signature":[v[-1],v[-1],math.sqrt(max(0,v[-1]))],"time":t,"variance":v}
+    if number == 53:
+        mean=0.; var=1.; rows=[]
+        for tick in range(40):
+            truth=.2*math.sin(.3*tick); prior=var+.02; S=prior+.25
+            z=truth+.3*math.cos(.71*tick) if tick!=20 else mean+p["outlier_sigma"]*math.sqrt(S)
+            innovation=z-mean; nis=innovation*innovation/S
+            accepted=broken or nis<=p["nis_gate"]
+            if accepted:
+                var=1/(1/prior+4); mean=var*(mean/prior+4*z)
+            else: var=prior
+            rows.append([truth,z,mean,var,nis,(mean-truth)**2/var,float(accepted),S,innovation])
+        rows=np.array(rows); n=rows[20,4]
+        return {"signature":[n,max(n-p["nis_gate"],0),rows[20,6]],"filter_history":rows}
+    if number == 54:
+        mu=p["linearization_state"]; P=p["prior_standard_deviation"]**2
+        H=0. if broken else 2*mu
+        # z~=H*x + (h(mu)-H*mu) + noise, R=1.
+        v=P/(1+H*H*P)
+        posterior=v*(mu/P+H*(2.25-mu*mu+H*mu)) if P else mu
+        innovation=2.25-mu*mu
+        residual=posterior**2-mu*mu-H*(posterior-mu)
+        return {"signature":[H,v,abs(residual)],"posterior_state":posterior,"posterior_variance":v,"H":H,"S":1+H*H*P,"K":v*H,"innovation":innovation,"signed_linearization_residual":residual}
+    if number == 58:
+        span=0 if broken else p["maneuver_span_deg"]; noise=p["measurement_noise"]
+        headings=np.array([math.radians(-span/2+span*j/40) for j in range(41)])
+        Y=np.array([[math.cos(h),1.] for h in headings])
+        _,s,vh=np.linalg.svd(Y/noise,full_matrices=False)
+        rank=int(s[-1]>s[0]*max(Y.shape)*np.finfo(float).eps)
+        full=rank==1
+        covariance=vh.T@np.diag(1/s**2)@vh if full else None
+        return {"signature":[float(np.prod(s)**2) if full else 0.,(s[-1]/s[0])**2 if full else 0.,math.sqrt(covariance[1,1]) if full else 0.],"information":(Y/noise).T@(Y/noise),"regressor":Y,"rank":2 if full else 1,"covariance":covariance}
+    if number == 59:
+        b=p["accelerometer_bias_m_s2"]; T=p["coast_duration_s"]; t=np.linspace(0,T,241); residual=b*(1 if broken else .05)
+        return {"signature":[b*T,b*T*T/2,residual*T*T/2],"time":t,"velocity":b*t,"position":b*t*t/2,"corrected_velocity":residual*t,"corrected_position":residual*t*t/2}
+    if number == 63:
+        L=p["lookahead_distance_m"]; V=p["vehicle_speed_m_s"]; sign=1 if broken else -1
+        t=np.linspace(0,12,241)
+        def primitive(log_ratio):
+            y=10*math.exp(log_ratio); s=math.hypot(L,y)
+            return s+L*(math.log(10)+log_ratio-math.log(L+s))
+        origin=primitive(0); zs=[0.]
+        for moment in t[1:]:
+            target=origin+sign*V*moment
+            z=brentq(lambda v:primitive(v)-target,-700,math.log(1+V*12/10)+1,xtol=1e-13)
+            zs.append(z)
+        z=np.array(zs); y=10*np.exp(z); x=sign*L*z; heading=sign*np.arctan(y/L)
+        return {"signature":[-sign*V/L,y[-1],np.max(abs(np.rad2deg(heading)))],"time":t,"path":np.column_stack([x,y]),"heading_rad":heading}
+    raise ValueError(number)
 
 
 def _p25(p: dict[str, Any]) -> list[float]:
@@ -63,19 +194,19 @@ def _key(p: dict[str, Any]) -> str:
 
 _NATIVE_FIXTURES: dict[int, dict[str, list[float]]] = {}
 
-def _p34(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[34][_key(p)])
+def _p34(p):
+    return aggregate_signature(34, p)
 
-def _p35(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[35][_key(p)])
+def _p35(p):
+    return aggregate_signature(35, p)
 
 def _p36(p):
     slow=float(p['dominant_pole_per_s']); fast=slow*float(p['pole_ratio'])
     position=slow*fast
     return [0.,abs(1-1/position) if p['broken_mode'] else 0.,position,slow+fast]
 
-def _p37(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[37][_key(p)])
+def _p37(p):
+    return aggregate_signature(37, p)
 
 def _p38(p):
     # Analytic double-integrator CARE: p12=bw^2, p22=sqrt(3)*bw.
@@ -83,14 +214,14 @@ def _p38(p):
     observer=(3+np.sqrt(17))*ow/2 if p['broken_mode'] else -ow
     return [-np.sqrt(3)*bw/2,observer,0.,0.]
 
-def _p39(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[39][_key(p)])
+def _p39(p):
+    return aggregate_signature(39, p)
 
-def _p40(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[40][_key(p)])
+def _p40(p):
+    return aggregate_signature(40, p)
 
-def _p41(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[41][_key(p)])
+def _p41(p):
+    return aggregate_signature(41, p)
 
 def _p42(p):
     # Independent piecewise-affine sampled state transition, with saturation regions.
@@ -125,8 +256,8 @@ def _p43(p):
     abscissa=(-damping+np.sqrt(complex(damping*damping-8))).real/2
     return [(final-initial)/6,min(abs(x-1),abs(x+1)),abscissa]
 
-def _p44(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[44][_key(p)])
+def _p44(p):
+    return aggregate_signature(44, p)
 
 def _p45(p):
     a=float(p['barrier_gain_per_s']); v=float(p['nominal_closing_speed']); step=.01
@@ -211,14 +342,14 @@ def _p51(p):
 
 _NATIVE_FIXTURES.update({44: {'{"broken_mode":false,"cubic_coefficient":0.8,"sublevel_radius":0.7}': [0.6080000000000001, -0.29791999999999996, 1.118033988749895], '{"broken_mode":false,"cubic_coefficient":0.8,"sublevel_radius":1.4}': [-0.5679999999999998, 1.1132799999999998, 1.118033988749895], '{"broken_mode":false,"cubic_coefficient":1.5,"sublevel_radius":0.7}': [0.2650000000000001, -0.12985000000000002, 0.8164965809277261], '{"broken_mode":true,"cubic_coefficient":0.8,"sublevel_radius":0.7}': [-0.4580000000000002, 0.8347050000000009, 1.118033988749895]}})
 
-def _p52(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[52][_key(p)])
+def _p52(p):
+    return aggregate_signature(52, p)
 
-def _p53(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[53][_key(p)])
+def _p53(p):
+    return aggregate_signature(53, p)
 
-def _p54(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[54][_key(p)])
+def _p54(p):
+    return aggregate_signature(54, p)
 
 def _p55(p):
     sigma=float(p['state_standard_deviation']); alpha=float(p['sigma_spread'])
@@ -244,11 +375,11 @@ def _p57(p):
     used=np.eye(3)+scale**2*(true-np.eye(3))
     return [abs(scale-1),np.linalg.norm(used.T@used-np.eye(3)),np.linalg.norm(used@(Ra.T@body)-Ry@body)]
 
-def _p58(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[58][_key(p)])
+def _p58(p):
+    return aggregate_signature(58, p)
 
-def _p59(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[59][_key(p)])
+def _p59(p):
+    return aggregate_signature(59, p)
 
 def _p60(p):
     d,y,observe=_nav_reference_data(float(p['geometry_dilution']),float(p['pseudorange_noise_m']))
@@ -285,8 +416,8 @@ def _p62(p):
 
 _NATIVE_FIXTURES.update({57: {'{"broken_mode":false,"sensor_misalignment_deg":3.0,"yaw_angle_deg":35.0}': [0.0, 0.0, 0.052335956242943835], '{"broken_mode":false,"sensor_misalignment_deg":3.0,"yaw_angle_deg":180.0}': [0.0, 0.0, 0.052335956242943835], '{"broken_mode":false,"sensor_misalignment_deg":20.0,"yaw_angle_deg":35.0}': [0.0, 0.0, 0.3420201433256687], '{"broken_mode":true,"sensor_misalignment_deg":3.0,"yaw_angle_deg":35.0}': [0.2, 0.44, 1.2588190451025207]}, 58: {'{"broken_mode":false,"maneuver_span_deg":60.0,"measurement_noise":0.05}': [299.9999999999999, 2.9999940000120007, 0.05773502691896258], '{"broken_mode":false,"maneuver_span_deg":180.0,"measurement_noise":0.05}': [5.9990391306474294e-30, 2000000.0, 50000.00000000001], '{"broken_mode":false,"maneuver_span_deg":60.0,"measurement_noise":0.3}': [8.333333333333332, 2.9999940000120007, 0.34641016151377546], '{"broken_mode":true,"maneuver_span_deg":60.0,"measurement_noise":0.05}': [0.0, 1000000000.0, 50000.00000000001]}, 59: {'{"accelerometer_bias_m_s2":0.03,"broken_mode":false,"coast_duration_s":30.0}': [0.8999999999999999, 13.499999999999998, 0.6749999999999999], '{"accelerometer_bias_m_s2":0.2,"broken_mode":false,"coast_duration_s":30.0}': [6.0, 90.0, 4.500000000000001], '{"accelerometer_bias_m_s2":0.03,"broken_mode":false,"coast_duration_s":120.0}': [3.5999999999999996, 215.99999999999997, 10.799999999999999], '{"accelerometer_bias_m_s2":0.03,"broken_mode":true,"coast_duration_s":30.0}': [14.4, 648.0, 324.0]}, 60: {'{"broken_mode":false,"geometry_dilution":2.2,"pseudorange_noise_m":2.0}': [4.4, 2.2, 1.0], '{"broken_mode":false,"geometry_dilution":2.2,"pseudorange_noise_m":10.0}': [22.0, 11.0, 5.0], '{"broken_mode":false,"geometry_dilution":12.0,"pseudorange_noise_m":2.0}': [24.0, 12.0, 1.0], '{"broken_mode":true,"geometry_dilution":2.2,"pseudorange_noise_m":2.0}': [50.0, 25.0, 1.0]}, 61: {'{"bias_random_walk":0.01,"broken_mode":false,"gnss_interval_s":1.0}': [0.505, 0.17675, 0.001], '{"bias_random_walk":0.01,"broken_mode":false,"gnss_interval_s":10.0}': [1.0, 0.35, 0.1], '{"bias_random_walk":0.08,"broken_mode":false,"gnss_interval_s":1.0}': [0.54, 0.189, 0.008], '{"bias_random_walk":0.01,"broken_mode":true,"gnss_interval_s":1.0}': [4.5, 1.575, 12.0]}, 62: {'{"broken_mode":false,"fault_magnitude_m":18.0,"integrity_threshold":5.0}': [6.0, 12.5, 2.6999999999999997], '{"broken_mode":false,"fault_magnitude_m":60.0,"integrity_threshold":5.0}': [20.0, 12.5, 9.0], '{"broken_mode":false,"fault_magnitude_m":18.0,"integrity_threshold":10.0}': [6.0, 25.0, 18.0], '{"broken_mode":true,"fault_magnitude_m":18.0,"integrity_threshold":5.0}': [20.0, 12.5, 60.0]}})
 
-def _p63(p: dict[str, Any]) -> list[float]:
-    return list(_NATIVE_FIXTURES[63][_key(p)])
+def _p63(p):
+    return aggregate_signature(63, p)
 
 def _p64(p):
     from scipy.integrate import solve_ivp
@@ -524,7 +655,7 @@ def _nav_reference_fit(directions, values, observe, rows, clock=True):
 _DISPATCH = {66: _p66, 67: _p67, 68: _p68, 63: _p63, 64: _p64, 65: _p65, 57: _p57, 58: _p58, 59: _p59, 60: _p60, 61: _p61, 62: _p62, 52: _p52, 53: _p53, 54: _p54, 55: _p55, 56: _p56, 43: _p43, 44: _p44, 45: _p45, 46: _p46, 47: _p47, 48: _p48, 49: _p49, 50: _p50, 51: _p51, 34: _p34, 35: _p35, 36: _p36, 37: _p37, 38: _p38, 39: _p39, 40: _p40, 41: _p41, 42: _p42, 25: _p25, 26: _p26, 27: _p27, 28: _p28, 29: _p29, 30: _p30, 31: _p31, 32: _p32, 33: _p33}
 
 def origin(number: int) -> dict[str, Any]:
-    revised = {36,38,42,43,45,46,47,48,49,50,51,55,56,57,60,61,62,64,65}
+    revised = {34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65}
     kind = (
         "independent-scalar-replay"
         if number >= 66

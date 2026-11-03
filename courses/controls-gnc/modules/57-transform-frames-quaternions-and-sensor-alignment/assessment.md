@@ -20,3 +20,33 @@ World sensor vector plots World y component (1) against World x component (1). I
 No. The scalar quaternion can have norm 1.2 while its vector part is zero; the assumed-unit matrix formula still yields identity. Inspect the quaternion norm and declare the formula precondition.
 
 A complete answer includes the calculation or geometric construction, an observed comparison with units, fault/recovery evidence and the stated limitation. This is a self-assessment; no learner score is stored.
+
+
+---
+
+## P57 course checkpoint
+
+**Predict and calculate.** Check quaternion normalization, vector calibration and round-trip frame consistency separately.
+
+Use `q=[w,x,y,z]; q_world_sensor=q_world_body ⊗ q_body_sensor; q_normalized=q/||q||; R(q)^T R(q)=I for unit q; v_world=R(q_world_sensor)v_sensor` with the conventions in the lesson. Work one baseline value by hand before running. The live controls are **Yaw angle**, **Sensor misalignment**.
+
+**Collect evidence.** Save the default result, then perform the lesson's two one-variable sweeps separately. Record exact parameters, units, the `response` and `mechanism` plots, and the quantity that discriminates your prediction. Explain what stayed invariant as well as what changed.
+
+**Fault and recovery.** Enable **Enable the intentionally broken case** at the same inputs. Explain which governing term is changed or omitted, show its effect on the actual trajectory, matrix or criterion, then disable it and use **Reset parameters**. Confirm recovery reproduces the baseline rather than merely a more favorable number.
+
+### Expected reasoning
+
+A valid rotation preserves norm and orthogonality. Scaling quaternion components without normalization corrupts the rotation; a plausible vector endpoint alone cannot verify the full frame transformation.
+
+### Model boundary
+
+One composed rotation does not establish full attitude-estimation accuracy.
+
+### Reasoning rubric
+
+1. State the model, units, sign convention and independently worked value.
+2. Explain both sweeps using this lesson's governing relation and recorded evidence.
+3. Diagnose the actual fault mechanism and exact-input recovery.
+4. Defend the stated boundary and link this result to the cumulative portfolio **A-NAV-FRAMES**.
+
+This is authored self-assessment guidance. No learner completion, score or effectiveness result has been recorded.

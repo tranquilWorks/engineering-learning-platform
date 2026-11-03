@@ -26,19 +26,21 @@ item:
   - path: modules/20-compare-nominal-and-robust-designs/model.m
     sha256: e5a16705f1f2c1c911eeb79f16b49be03e3633dd6b4efd96814e116e3e1118a2
 target:
-  content_digest: d7094bf3534878424892bab4575c79b238b465a1418752b10d8a1d53b4eed24a
+  content_digest: d8547834284cea2af1552b23e37400a7b71ee5895edbe3c60c4c3058096766be
   files:
-  - path: modules/20-compare-nominal-and-robust-designs/module.yaml
-    sha256: 954e42eacb55b2eb7adf57dfc970aa7294344bacce62c99c449f9be6750dcba8
-  - path: modules/20-compare-nominal-and-robust-designs/lesson.md
-    sha256: 17749887f92fcaa003dc27eb29e4f4432612ebfb700120380578f6a77e4e77f3
+  - path: modules/20-compare-nominal-and-robust-designs/assessment.md
+    sha256: 601237242df16c006f8e2c705862330b771487479cc68f9b613b049d2704e61b
   - path: modules/20-compare-nominal-and-robust-designs/experiment.py
     sha256: b3aebfbbf0175351304a4d543e8f5b25f749a74857a3e2e57c74832ee9c5fc3c
+  - path: modules/20-compare-nominal-and-robust-designs/lesson.md
+    sha256: 17749887f92fcaa003dc27eb29e4f4432612ebfb700120380578f6a77e4e77f3
+  - path: modules/20-compare-nominal-and-robust-designs/module.yaml
+    sha256: d89a5cf99df3e0ef45368a8fbf3aa1770d1df4905701fc127c3c38ae83ffdb4f
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you compare Nominal and Robust
-    Designs?
-  physical_model: Compare exactly two preselected proportional gains on a scalar uncertain speed plant; no robust
-    synthesis or certification is claimed.
+  guiding_question: What inputs, observable effects, and failure modes matter when you compare Nominal and
+    Robust Designs?
+  physical_model: Compare exactly two preselected proportional gains on a scalar uncertain speed plant; no
+    robust synthesis or certification is claimed.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
   - Evaluate the deterministic Python model.
@@ -48,7 +50,8 @@ content:
   - latex: \dot v=-a v+b u,\quad u_K=K(r-v),\;K\in\{2,4\}
     meaning: Both displayed designs are fixed proportional gains evaluated at the selected positive plant point.
   - latex: J_K=\int_0^{12}[(r-v_K)^2+0.05u_K^2]dt
-    meaning: The finite-horizon objective compares tracking and effort at one point; it is not a worst-case certificate.
+    meaning: The finite-horizon objective compares tracking and effort at one point; it is not a worst-case
+      certificate.
   equation_order: before_toolbox_shortcuts
   deterministic_data:
     seed: 1601
@@ -82,7 +85,7 @@ content:
       unit: s
     - role: y
       label: Commanded acceleration
-      unit: m/s²
+      unit: "m/s\xB2"
     interpretation: both preselected gains become positive-feedback failures
   sweeps:
   - control: actuator_gain_ratio
@@ -103,8 +106,8 @@ content:
     trigger: Enable broken_mode.
     failure: Broken mode reverses actuator polarity, outside the declared positive gain/drag family; both fixed-gain
       loops then have the wrong feedback direction.
-    recovery: Disable broken_mode to restore positive actuator polarity. The module remains a two-fixed-gain comparison,
-      not a robust synthesis.
+    recovery: Disable broken_mode to restore positive actuator polarity. The module remains a two-fixed-gain
+      comparison, not a robust synthesis.
     expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
   common_mistakes:
   - Changing more than one lever before explaining the first delta.
@@ -265,8 +268,8 @@ python_source_equivalence:
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
-    constitute MATLAB runtime parity.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do
+    not constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:

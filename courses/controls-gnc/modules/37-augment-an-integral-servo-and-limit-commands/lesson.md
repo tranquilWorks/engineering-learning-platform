@@ -64,3 +64,10 @@ Expected signatures are produced by `expansion_reference_cases.py`, which import
 ## Teach-back
 
 Derive one signature quantity from the displayed equations, explain what the broken case violates, and name one result that this lab cannot establish. Then describe how the two sweeps separate sensitivity to `integral_gain_per_s` from sensitivity to `command_limit_m_s2`.
+
+
+## Dimensional scope correction
+
+This retained first-order model uses normalized state x with dx/dt=-x+u+d. Thus u and d are normalized drive rates (1/s), not acceleration. The stable control ID `command_limit_m_s2` is retained for compatibility; its visible label and unit state the actual model. This is an integral servo demonstration, not a second-order physical position plant.
+
+The integral state z has units of seconds for normalized error. Consequently k_p=2 /s and k_i has units 1/s^2; its legacy parameter ID is retained while the visible unit is corrected.

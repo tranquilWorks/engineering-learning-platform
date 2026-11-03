@@ -26,16 +26,19 @@ item:
   - path: modules/22-implement-proportional-navigation/model.m
     sha256: 643e4474b87f7f669c0eaa9a6f637b9119fc8e0f90e4c545cb6e5fb40bed305a
 target:
-  content_digest: ce5cf4260ca62e66c66ecae34d6bf2a267015edc3e51a68d1cbb085b7a78a59f
+  content_digest: d36949375fe676fc6c429d87a9d245463e370cec4ed2e3a6dc9723be3820ca9d
   files:
-  - path: modules/22-implement-proportional-navigation/module.yaml
-    sha256: 53899722c455e794236c56d9b97032c3e2b3f26a5ca06ad7ada01d2282134e2a
-  - path: modules/22-implement-proportional-navigation/lesson.md
-    sha256: 067c293a9155df12f72f65bc2e6f2b4e40e0b64fb8bc0e1915197ec6c07abfda
+  - path: modules/22-implement-proportional-navigation/assessment.md
+    sha256: 9f473c9ffa1b950361dcb726ebb035b4ab431992b68dc6c769482def53ebf13b
   - path: modules/22-implement-proportional-navigation/experiment.py
     sha256: 90ff9ad594ae2b50e1615ed80e8ca8508f704aca8e4fe8c77cb490e044a5dc80
+  - path: modules/22-implement-proportional-navigation/lesson.md
+    sha256: 067c293a9155df12f72f65bc2e6f2b4e40e0b64fb8bc0e1915197ec6c07abfda
+  - path: modules/22-implement-proportional-navigation/module.yaml
+    sha256: fd27fa79c7177da3008f4814ae254b29bdc67da3f33b919eac959203da4df93c
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you implement Proportional Navigation?
+  guiding_question: What inputs, observable effects, and failure modes matter when you implement Proportional
+    Navigation?
   physical_model: Observe proportional navigation geometry, acceleration authority, and miss distance.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
@@ -83,7 +86,7 @@ content:
       unit: s
     - role: y
       label: Lateral acceleration
-      unit: m/s²
+      unit: "m/s\xB2"
     interpretation: the acceleration clips and the modeled engagement misses
   sweeps:
   - control: navigation_constant
@@ -91,8 +94,8 @@ content:
     - 2.0
     - 3.0
     - 5.0
-    expected_observation: Insufficient lateral acceleration should leave a finite miss even with a reasonable navigation
-      constant.
+    expected_observation: Insufficient lateral acceleration should leave a finite miss even with a reasonable
+      navigation constant.
   - control: maximum_acceleration_m_s2
     values:
     - 20.0
@@ -101,8 +104,9 @@ content:
     expected_observation: Observe proportional navigation geometry, acceleration authority, and miss distance.
   broken_case:
     trigger: Enable broken_mode.
-    failure: The broken case limits lateral acceleration to 5 m/s², preventing intercept in the modeled engagement.
-    recovery: Disable the broken case and restore the 80 m/s² authority used by the baseline.
+    failure: "The broken case limits lateral acceleration to 5 m/s\xB2, preventing intercept in the modeled\
+      \ engagement."
+    recovery: "Disable the broken case and restore the 80 m/s\xB2 authority used by the baseline."
     expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
   common_mistakes:
   - Changing more than one lever before explaining the first delta.
@@ -130,7 +134,7 @@ python_source_equivalence:
     unit: ratio
   - name: maximum_acceleration_m_s2
     value: 80.0
-    unit: m/s²
+    unit: "m/s\xB2"
   - name: broken_mode
     value: false
     unit: flag
@@ -263,8 +267,8 @@ python_source_equivalence:
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
-    constitute MATLAB runtime parity.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do
+    not constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:

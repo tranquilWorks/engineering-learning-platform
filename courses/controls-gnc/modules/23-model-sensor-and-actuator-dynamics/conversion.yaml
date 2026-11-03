@@ -26,14 +26,16 @@ item:
   - path: modules/23-model-sensor-and-actuator-dynamics/model.m
     sha256: c0703e13c7caefeb864983be924427e806996ea08aa57bcf1e1d8530fade18a2
 target:
-  content_digest: b1bbcfc9e64f110ae439eea0c64e33038d7ed42c7abd1709c2f4715860c2e0aa
+  content_digest: 12662bacd68cfbde3dc74758e16d6eb5f56cf429312902727b990077edb442a6
   files:
-  - path: modules/23-model-sensor-and-actuator-dynamics/module.yaml
-    sha256: eee122d100c08ea7d051c58544ea5cfb854fffa579bf002a6682bd99324680ec
-  - path: modules/23-model-sensor-and-actuator-dynamics/lesson.md
-    sha256: f60df94ea8a65cb07c87e362ac0b2188f8ca939f3b5413acee271629d6e48373
+  - path: modules/23-model-sensor-and-actuator-dynamics/assessment.md
+    sha256: 973fb612dff99ed0c76cd65d358dcbf0e71f3e6765724924cc5b66042ce090f0
   - path: modules/23-model-sensor-and-actuator-dynamics/experiment.py
     sha256: 3f2edba2c6384712ee6d0e95456d9cf204beb8af7930eb008158e5943bbda258
+  - path: modules/23-model-sensor-and-actuator-dynamics/lesson.md
+    sha256: f60df94ea8a65cb07c87e362ac0b2188f8ca939f3b5413acee271629d6e48373
+  - path: modules/23-model-sensor-and-actuator-dynamics/module.yaml
+    sha256: 87a8708d1132e59c057d2e1a32b48dd0cbfac4137b7639c31befa8d39558745d
 content:
   guiding_question: What inputs, observable effects, and failure modes matter when you model Sensor and Actuator
     Dynamics?
@@ -70,7 +72,7 @@ content:
       unit: s
     - role: y
       label: Acceleration
-      unit: m/s²
+      unit: "m/s\xB2"
     interpretation: positive first-order time constants create finite cascaded lag
   - source_figure: Pinned MATLAB source intent mapped to platform mechanism view
     target_plot_key: mechanism
@@ -81,7 +83,7 @@ content:
       unit: s
     - role: y
       label: Acceleration error
-      unit: m/s²
+      unit: "m/s\xB2"
     interpretation: the measured acceleration cannot follow rapid command reversals
   sweeps:
   - control: actuator_time_constant_s
@@ -89,7 +91,8 @@ content:
     - 0.05
     - 0.2
     - 0.8
-    expected_observation: When command reversals are faster than either bandwidth, measured output should lag twice.
+    expected_observation: When command reversals are faster than either bandwidth, measured output should lag
+      twice.
   - control: sensor_time_constant_s
     values:
     - 0.05
@@ -98,7 +101,8 @@ content:
     expected_observation: Separate actuator lag, sensor lag, clipping, and bias in one command chain.
   broken_case:
     trigger: Enable broken_mode.
-    failure: The broken case combines slow actuator/sensor dynamics with a command that reverses every 0.1 s.
+    failure: The broken case combines slow actuator/sensor dynamics with a command that reverses every 0.1
+      s.
     recovery: Disable the broken case and slow the command or increase component bandwidth.
     expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
   common_mistakes:
@@ -260,8 +264,8 @@ python_source_equivalence:
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
-    constitute MATLAB runtime parity.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do
+    not constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:

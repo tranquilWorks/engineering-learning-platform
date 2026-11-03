@@ -5,22 +5,39 @@ from typing import Any
 import numpy as np
 
 ITEM_NUMBER = 54
-BROKEN_TEXT = 'Broken mode freezes the Jacobian at zero, so the filter ignores the nonlinear measurement.'
-RECOVERY_TEXT = 'Move to an observable linearization or use an estimator that represents the nonlinear transform, then recheck innovation consistency.'
+BROKEN_TEXT = "Freeze the measurement Jacobian at zero while preserving prior state, prior uncertainty and the measurement."
+RECOVERY_TEXT = "Restore H=2*xhat, then compare the same prior and measurement; discuss a nonlinear alternative at a truly zero prior."
 
 
-def _trace(name: str, x: Any, y: Any, x_quantity: str, x_unit: str,
-           y_quantity: str, y_unit: str, *, mode: str = "lines") -> dict[str, Any]:
+def _trace(
+    name: str,
+    x: Any,
+    y: Any,
+    x_quantity: str,
+    x_unit: str,
+    y_quantity: str,
+    y_unit: str,
+    *,
+    mode: str = "lines",
+) -> dict[str, Any]:
     return {
-        "type": "scattergl", "mode": mode, "name": name,
-        "x": np.asarray(x, dtype=float), "y": np.asarray(y, dtype=float),
-        "meta": {"x_quantity": x_quantity, "x_unit": x_unit,
-                 "y_quantity": y_quantity, "y_unit": y_unit},
+        "type": "scattergl",
+        "mode": mode,
+        "name": name,
+        "x": np.asarray(x, dtype=float),
+        "y": np.asarray(y, dtype=float),
+        "meta": {
+            "x_quantity": x_quantity,
+            "x_unit": x_unit,
+            "y_quantity": y_quantity,
+            "y_unit": y_unit,
+        },
     }
 
 
-def _plot(title: str, x_title: str, y_title: str,
-          traces: list[dict[str, Any]]) -> dict[str, Any]:
+def _plot(
+    title: str, x_title: str, y_title: str, traces: list[dict[str, Any]]
+) -> dict[str, Any]:
     return {
         "data": traces,
         "layout": {
@@ -29,7 +46,8 @@ def _plot(title: str, x_title: str, y_title: str,
             "yaxis": {"title": {"text": y_title}},
             "legend": {"orientation": "h"},
             "margin": {"l": 72, "r": 36, "t": 62, "b": 62},
-            "hovermode": "closest", "uirevision": "keep-view",
+            "hovermode": "closest",
+            "uirevision": "keep-view",
         },
         "config": {"responsive": True, "displaylogo": False},
     }
@@ -38,8 +56,13 @@ def _plot(title: str, x_title: str, y_title: str,
 def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
     return {
         "metrics": [
-            {"id": key, "label": label, "value": float(value), "unit": unit,
-              "emphasis": "primary" if index == 0 else "normal"}
+            {
+                "id": key,
+                "label": label,
+                "value": float(value),
+                "unit": unit,
+                "emphasis": "primary" if index == 0 else "normal",
+            }
             for index, (key, label, value, unit) in enumerate(model["metrics"])
         ],
         "plots": model["plots"],
@@ -52,25 +75,99 @@ def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
             "item_number": ITEM_NUMBER,
             "broken_active": bool(broken),
             "signature": [float(value) for value in model["signature"]],
+            **model.get("history", {}),
         },
     }
 
-def _model(p: dict[str, Any], broken: bool) -> dict[str, Any]:
-    a=float(p["prior_standard_deviation"]); b=float(p["linearization_state"])
-    if broken: a=0.5; b=0.0
-    x=np.linspace(0.,10.,240)
-    signature=[float(0. if broken else 2*b),float(a*a/(1+(0 if broken else 2*b)**2*a*a)),float(a*a)]
-    y1=np.asarray(x*x,dtype=float); y2=np.asarray((b+(x-b))*2*b-b*b,dtype=float)
-    z1=np.asarray(np.full_like(x,a*a),dtype=float); z2=np.asarray(np.full_like(x,a*a/(1+(0 if broken else 2*b)**2*a*a)),dtype=float)
-    if y1.ndim==0: y1=np.full_like(x,float(y1))
-    if y2.ndim==0: y2=np.full_like(x,float(y2))
-    if z1.ndim==0: z1=np.full_like(x,float(z1))
-    if z2.ndim==0: z2=np.full_like(x,float(z2))
-    return {"signature":signature,"metrics":[("measurement_jacobian", "Measurement Jacobian", signature[0], "1"),("posterior_variance", "Posterior Variance", signature[1], "1"),("linearization_residual", "Linearization Residual", signature[2], "1")],"plots":{
-      "response":_plot("Nonlinear measurement and EKF tangent","State (1)","Measurement (1)",[_trace("Nominal/filtered",x,y1,"State","1","Measurement","1"),_trace("Reference/boundary",x,y2,"State","1","Measurement","1")]),
-      "mechanism":_plot("Prior and posterior variance","Update index (step)","Variance (1)",[_trace("Mechanism",x,z1,"Update index","step","Variance","1"),_trace("Requirement/reference",x,z2,"Update index","step","Variance","1")])},
-      "observation":"An EKF update uses the local Jacobian; at xhat=0 the quadratic measurement has zero first-order sensitivity despite nonzero global information."}
 
+def _model(p, broken):
+    sigma = float(p["prior_standard_deviation"])
+    prior = float(p["linearization_state"])
+    variance = sigma * sigma
+    measurement = 2.25
+    H = 0.0 if broken else 2 * prior
+    S = H * H * variance + 1.0
+    gain = variance * H / S
+    innovation = measurement - prior * prior
+    posterior = prior + gain * innovation
+    P = (1 - gain * H) ** 2 * variance + gain * gain
+    residual = posterior**2 - (prior**2 + H * (posterior - prior))
+    x = np.linspace(min(-0.5, prior - 2 * sigma), max(2.5, prior + 2 * sigma), 241)
+    return {
+        "signature": [H, P, abs(residual)],
+        "metrics": [
+            ("measurement_jacobian", "Applied measurement Jacobian", H, "1"),
+            ("posterior_variance", "Joseph posterior variance", P, "1"),
+            (
+                "linearization_residual",
+                "Actual post-update linearization residual",
+                abs(residual),
+                "1",
+            ),
+            ("posterior_state", "Updated state", posterior, "1"),
+            ("innovation", "Measurement innovation", innovation, "1"),
+        ],
+        "history": {
+            "prior_state": prior,
+            "prior_variance": variance,
+            "measurement": measurement,
+            "H": H,
+            "S": S,
+            "K": gain,
+            "posterior_state": posterior,
+            "posterior_variance": P,
+            "innovation": innovation,
+            "signed_linearization_residual": residual,
+        },
+        "plots": {
+            "response": _plot(
+                "Measurement and tangent",
+                "State (1)",
+                "Measurement (1)",
+                [
+                    _trace(
+                        "h(x)=x squared", x, x * x, "State", "1", "Measurement", "1"
+                    ),
+                    _trace(
+                        "Applied local model",
+                        x,
+                        prior * prior + H * (x - prior),
+                        "State",
+                        "1",
+                        "Measurement",
+                        "1",
+                    ),
+                    _trace(
+                        "Observed z",
+                        x,
+                        np.full_like(x, measurement),
+                        "State",
+                        "1",
+                        "Measurement",
+                        "1",
+                    ),
+                ],
+            ),
+            "mechanism": _plot(
+                "Prior and posterior uncertainty",
+                "Estimate stage (step)",
+                "Variance (1)",
+                [
+                    _trace(
+                        "Covariance",
+                        [0, 1],
+                        [variance, P],
+                        "Estimate stage",
+                        "step",
+                        "Variance",
+                        "1",
+                        mode="lines+markers",
+                    )
+                ],
+            ),
+        },
+        "observation": f"z=2.25, innovation={innovation:.5g}, K={gain:.5g}, x+={posterior:.5g}, P+={P:.5g}. The actual nonlinear residual is {residual:.5g}, not the prior variance. Fault mode freezes H=0 at unchanged prior/noise. This single scalar update cannot resolve the global +/- ambiguity of a squared measurement.",
+    }
 
 
 def run(parameters: dict[str, Any]) -> dict[str, Any]:

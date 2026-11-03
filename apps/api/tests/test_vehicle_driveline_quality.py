@@ -18,6 +18,7 @@ from elp_api.runtime import ExperimentRuntime
 
 ROOT = Path(__file__).resolve().parents[3]
 BASELINE = "1a0041bd24de1168c03ff2bf2a656a6061cac0e3"
+HISTORICAL_HEAD = "f58533582a617cf48741aa5349f26f5954e21d95"
 COURSE = ROOT / "courses/vehicle-dynamics"
 
 
@@ -52,7 +53,7 @@ def physical(n, **changes):
 
 
 def test_exact_scope_controls_source_pins_and_historical_coverage():
-    contract = yaml.safe_load((ROOT / "contracts/active-batch.yaml").read_text())
+    contract = yaml.safe_load(subprocess.check_output(["git", "show", f"{HISTORICAL_HEAD}:contracts/active-batch.yaml"], cwd=ROOT))
     assert contract["batch"]["id"] == "ELP-VEHICLE-DRIVELINE-QUALITY-04"
     assert contract["sources"]["baseline_commit"] == BASELINE
     assert (
@@ -66,7 +67,7 @@ def test_exact_scope_controls_source_pins_and_historical_coverage():
         "courses/vehicle-dynamics/coverage.yaml",
     ]
     changed = subprocess.check_output(
-        ["git", "diff", "--name-only", BASELINE, "--", "courses", ".gitmodules"],
+        ["git", "diff", "--name-only", BASELINE, HISTORICAL_HEAD, "--", "courses", ".gitmodules"],
         cwd=ROOT,
         text=True,
     ).splitlines()
@@ -90,7 +91,7 @@ def test_exact_scope_controls_source_pins_and_historical_coverage():
         if mode == "160000" or any(fnmatch.fnmatch(path, rule) for rule in allowed):
             continue
         assert (ROOT / path).is_file(), path
-        assert (ROOT / path).read_bytes() == original(path), path
+        assert subprocess.check_output(["git", "show", f"{HISTORICAL_HEAD}:{path}"], cwd=ROOT) == original(path), path
     before = json.loads(original("courses/vehicle-dynamics/coverage.yaml"))
     after = json.loads((COURSE / "coverage.yaml").read_text())
     for n, (a, b) in enumerate(zip(before["items"], after["items"], strict=True), 1):

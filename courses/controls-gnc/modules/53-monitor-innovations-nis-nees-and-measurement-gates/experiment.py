@@ -5,22 +5,39 @@ from typing import Any
 import numpy as np
 
 ITEM_NUMBER = 53
-BROKEN_TEXT = 'Broken mode accepts the measurement regardless of a gate exceedance.'
-RECOVERY_TEXT = 'Restore innovation gating, log the rejection, and diagnose the model rather than silently shrinking covariance.'
+BROKEN_TEXT = "Bypass the innovation gate while retaining the identical injected innovation at update 20."
+RECOVERY_TEXT = "Restore gating, reset, and verify the original measurement is rejected when its NIS exceeds the selected threshold."
 
 
-def _trace(name: str, x: Any, y: Any, x_quantity: str, x_unit: str,
-           y_quantity: str, y_unit: str, *, mode: str = "lines") -> dict[str, Any]:
+def _trace(
+    name: str,
+    x: Any,
+    y: Any,
+    x_quantity: str,
+    x_unit: str,
+    y_quantity: str,
+    y_unit: str,
+    *,
+    mode: str = "lines",
+) -> dict[str, Any]:
     return {
-        "type": "scattergl", "mode": mode, "name": name,
-        "x": np.asarray(x, dtype=float), "y": np.asarray(y, dtype=float),
-        "meta": {"x_quantity": x_quantity, "x_unit": x_unit,
-                 "y_quantity": y_quantity, "y_unit": y_unit},
+        "type": "scattergl",
+        "mode": mode,
+        "name": name,
+        "x": np.asarray(x, dtype=float),
+        "y": np.asarray(y, dtype=float),
+        "meta": {
+            "x_quantity": x_quantity,
+            "x_unit": x_unit,
+            "y_quantity": y_quantity,
+            "y_unit": y_unit,
+        },
     }
 
 
-def _plot(title: str, x_title: str, y_title: str,
-          traces: list[dict[str, Any]]) -> dict[str, Any]:
+def _plot(
+    title: str, x_title: str, y_title: str, traces: list[dict[str, Any]]
+) -> dict[str, Any]:
     return {
         "data": traces,
         "layout": {
@@ -29,7 +46,8 @@ def _plot(title: str, x_title: str, y_title: str,
             "yaxis": {"title": {"text": y_title}},
             "legend": {"orientation": "h"},
             "margin": {"l": 72, "r": 36, "t": 62, "b": 62},
-            "hovermode": "closest", "uirevision": "keep-view",
+            "hovermode": "closest",
+            "uirevision": "keep-view",
         },
         "config": {"responsive": True, "displaylogo": False},
     }
@@ -38,8 +56,13 @@ def _plot(title: str, x_title: str, y_title: str,
 def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
     return {
         "metrics": [
-            {"id": key, "label": label, "value": float(value), "unit": unit,
-              "emphasis": "primary" if index == 0 else "normal"}
+            {
+                "id": key,
+                "label": label,
+                "value": float(value),
+                "unit": unit,
+                "emphasis": "primary" if index == 0 else "normal",
+            }
             for index, (key, label, value, unit) in enumerate(model["metrics"])
         ],
         "plots": model["plots"],
@@ -52,25 +75,146 @@ def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
             "item_number": ITEM_NUMBER,
             "broken_active": bool(broken),
             "signature": [float(value) for value in model["signature"]],
+            **model.get("history", {}),
         },
     }
 
-def _model(p: dict[str, Any], broken: bool) -> dict[str, Any]:
-    a=float(p["nis_gate"]); b=float(p["outlier_sigma"])
-    if broken: a=1.0; b=8.0
-    x=np.linspace(0.,10.,240)
-    signature=[float(b*b),float(max(b*b-a,0)),float(1. if broken else float(b*b<=a))]
-    y1=np.asarray(x*x,dtype=float); y2=np.asarray(np.full_like(x,a),dtype=float)
-    z1=np.asarray((x*x<=a).astype(float),dtype=float); z2=np.asarray(np.ones_like(x) if broken else (x*x<=a).astype(float),dtype=float)
-    if y1.ndim==0: y1=np.full_like(x,float(y1))
-    if y2.ndim==0: y2=np.full_like(x,float(y2))
-    if z1.ndim==0: z1=np.full_like(x,float(z1))
-    if z2.ndim==0: z2=np.full_like(x,float(z2))
-    return {"signature":signature,"metrics":[("normalized_innovation_squared", "Normalized Innovation Squared", signature[0], "1"),("gate_exceedance", "Gate Exceedance", signature[1], "1"),("accepted_outlier", "Accepted Outlier", signature[2], "bool")],"plots":{
-      "response":_plot("Innovation consistency statistic","Innovation magnitude (sigma)","NIS (1)",[_trace("Nominal/filtered",x,y1,"Innovation magnitude","sigma","NIS","1"),_trace("Reference/boundary",x,y2,"Innovation magnitude","sigma","NIS","1")]),
-      "mechanism":_plot("Measurement gate decision","Innovation magnitude (sigma)","Accepted flag (bool)",[_trace("Mechanism",x,z1,"Innovation magnitude","sigma","Accepted flag","bool"),_trace("Requirement/reference",x,z2,"Innovation magnitude","sigma","Accepted flag","bool")])},
-      "observation":"A measurement is accepted only when its NIS is inside the declared gate; NEES/NIS interpretation requires the corresponding covariance model."}
 
+def _model(p, broken):
+    gate = float(p["nis_gate"])
+    magnitude = float(p["outlier_sigma"])
+    estimate = 0.0
+    covariance = 1.0
+    rows = []
+    for k in range(40):
+        truth = 0.2 * np.sin(0.3 * k)
+        prior = covariance + 0.02
+        innovation_variance = prior + 0.25
+        measurement = truth + 0.3 * np.cos(0.71 * k)
+        if k == 20:
+            measurement = estimate + magnitude * np.sqrt(innovation_variance)
+        innovation = measurement - estimate
+        nis = innovation**2 / innovation_variance
+        accept = broken or nis <= gate
+        gain = prior / innovation_variance if accept else 0.0
+        estimate += gain * innovation
+        covariance = (1 - gain) ** 2 * prior + gain**2 * 0.25
+        nees = (estimate - truth) ** 2 / covariance
+        rows.append(
+            [
+                truth,
+                measurement,
+                estimate,
+                covariance,
+                nis,
+                nees,
+                float(accept),
+                innovation_variance,
+                innovation,
+            ]
+        )
+    h = np.asarray(rows)
+    nis = float(h[20, 4])
+    return {
+        "signature": [nis, max(nis - gate, 0), h[20, 6]],
+        "metrics": [
+            ("normalized_innovation_squared", "Injected measurement NIS", nis, "1"),
+            ("gate_exceedance", "NIS exceedance", max(nis - gate, 0), "1"),
+            ("accepted_outlier", "Injected measurement accepted", h[20, 6], "bool"),
+            (
+                "mean_nees",
+                "Mean posterior NEES (deterministic example)",
+                np.mean(h[:, 5]),
+                "1",
+            ),
+        ],
+        "history": {
+            "filter_history": h,
+            "columns": [
+                "truth",
+                "measurement",
+                "estimate",
+                "P",
+                "NIS",
+                "NEES",
+                "accepted",
+                "S",
+                "innovation",
+            ],
+            "outlier_index": 20,
+        },
+        "plots": {
+            "response": _plot(
+                "Gated state estimate",
+                "Update index (step)",
+                "Normalized state (1)",
+                [
+                    _trace(
+                        "Truth",
+                        np.arange(40),
+                        h[:, 0],
+                        "Update index",
+                        "step",
+                        "State",
+                        "1",
+                    ),
+                    _trace(
+                        "Measurement",
+                        np.arange(40),
+                        h[:, 1],
+                        "Update index",
+                        "step",
+                        "State",
+                        "1",
+                    ),
+                    _trace(
+                        "Estimate",
+                        np.arange(40),
+                        h[:, 2],
+                        "Update index",
+                        "step",
+                        "State",
+                        "1",
+                    ),
+                ],
+            ),
+            "mechanism": _plot(
+                "NIS and posterior NEES",
+                "Update index (step)",
+                "Squared normalized error (1)",
+                [
+                    _trace(
+                        "NIS",
+                        np.arange(40),
+                        h[:, 4],
+                        "Update index",
+                        "step",
+                        "NIS",
+                        "1",
+                    ),
+                    _trace(
+                        "Posterior NEES",
+                        np.arange(40),
+                        h[:, 5],
+                        "Update index",
+                        "step",
+                        "NEES",
+                        "1",
+                    ),
+                    _trace(
+                        "NIS gate",
+                        np.arange(40),
+                        np.full(40, gate),
+                        "Update index",
+                        "step",
+                        "NIS gate",
+                        "1",
+                    ),
+                ],
+            ),
+        },
+        "observation": "NIS normalizes the innovation by its predicted variance BEFORE the update; NEES normalizes posterior truth error by posterior P. The same injected innovation is gated or forcibly accepted. Deterministic time samples are not an independent chi-square consistency study.",
+    }
 
 
 def run(parameters: dict[str, Any]) -> dict[str, Any]:

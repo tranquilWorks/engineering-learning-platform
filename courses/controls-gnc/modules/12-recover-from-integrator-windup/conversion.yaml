@@ -26,16 +26,19 @@ item:
   - path: modules/12-recover-from-integrator-windup/model.m
     sha256: 42bbda3356206c8d8991def6f5ffd9f50e1d4818be4679b59ac661de63cb6265
 target:
-  content_digest: 945de391c73635b08e3579ebd4c69e99be555da1c030da28dcc60bd2d71c8fb4
+  content_digest: d14d2ddbc86e53e0991939be8fd67f2dfd5d2a0801fe435eded4a81ca3f960a7
   files:
-  - path: modules/12-recover-from-integrator-windup/module.yaml
-    sha256: 6fda5808030c9f659d1159e2b8250d4ef376b8f154b3d6f99864eaaf4d6e8c5c
-  - path: modules/12-recover-from-integrator-windup/lesson.md
-    sha256: 79a6c2176a14280dd08a5a3899f2fa50a5a34ed59419b3761eaf9e6d7f3d3bb1
+  - path: modules/12-recover-from-integrator-windup/assessment.md
+    sha256: 3eaf527b41b027d770424a0e145dd67ed13a62c68180bb5788f3918acb59ee76
   - path: modules/12-recover-from-integrator-windup/experiment.py
     sha256: d6ebeeb180a0e76e8b1a623dfd0f8b656fb730e81ed8e8e7720503ed6ec236a0
+  - path: modules/12-recover-from-integrator-windup/lesson.md
+    sha256: 79a6c2176a14280dd08a5a3899f2fa50a5a34ed59419b3761eaf9e6d7f3d3bb1
+  - path: modules/12-recover-from-integrator-windup/module.yaml
+    sha256: d92f434c94b1b55a751425f902325747af65fa80852b4ac5a68df9e6af8a101e
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you recover from Integrator Windup?
+  guiding_question: What inputs, observable effects, and failure modes matter when you recover from Integrator
+    Windup?
   physical_model: Compare PI recovery with and without correctly signed back-calculation.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
@@ -83,7 +86,7 @@ content:
       unit: ratio
     - role: y
       label: Integral state
-      unit: ratio·s
+      unit: "ratio\xB7s"
     interpretation: the integral state grows and post-demand recovery degrades
   sweeps:
   - control: anti_windup_gain
@@ -262,8 +265,8 @@ python_source_equivalence:
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
-    constitute MATLAB runtime parity.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do
+    not constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:

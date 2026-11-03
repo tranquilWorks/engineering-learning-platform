@@ -7,9 +7,9 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- V=x^2/2
-- V_dot=-x^2+mu*x^4
-- '|x|<1/sqrt(mu)'
+- \dot x=-a x+b x^3,\quad V=x^2/2
+- \dot V=-a x^2+b x^4=-x^2(a-bx^2)
+- r<1/\sqrt{b}\quad (a=1)
 signature:
 - field: minimum_decay_margin
   unit: 1/s
@@ -17,11 +17,14 @@ signature:
   unit: 1/s
 - field: roa_radius
   unit: '1'
-teaching_invariant: A claimed sublevel is certified only when V is positive and Vdot is strictly negative everywhere
-  except the origin.
+teaching_invariant: The origin has Vdot=0 and is excluded from the strict inequality. At r=1/sqrt(b), the boundary
+  is another equilibrium; equality is not asymptotic decay. The plotted domain extends beyond the selected
+  sublevel to make its limitation visible.
 limiting_cases:
-- At the origin V and Vdot are zero.
-- At |x|=1/sqrt(mu), Vdot reaches zero and strict decay is lost.
+- The origin has Vdot=0 and is excluded from the strict inequality. At r=1/sqrt(b), the boundary is another
+  equilibrium; equality is not asymptotic decay. The plotted domain extends beyond the selected sublevel to
+  make its limitation visible.
+- At b*r^2=1 nominal strict boundary decay vanishes.
 scenarios:
   baseline: &id001
     sublevel_radius: 0.7

@@ -26,19 +26,21 @@ item:
   - path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/model.m
     sha256: 2bdd4440ad12ed616c77e91dc71461ee4f3aeb9a5d40bd01d7ece9dd385cdf11
 target:
-  content_digest: d050c9f9969c389e50b202d76f7f1a700651247e7998f2c6b13092bb987cacd5
+  content_digest: 4047ecb881994450b6bf306e74179490ecbbb2ca40f0adf3825e08993a6eb237
   files:
-  - path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/module.yaml
-    sha256: cb9d6ada5132d2cc26d7ddce51814437c53684e91aaf381ee91899a872e2bf13
-  - path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/lesson.md
-    sha256: 30ec4dff4666699c6c5b05aa542ae4444a0cafe83ed86aa20585a4cbaf16256b
+  - path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/assessment.md
+    sha256: 7e2a55c371e84c586669a9a68115f04be4d492bafe408c8e2293eb17ba4ae224
   - path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/experiment.py
     sha256: de30b1431089dbd81be892be3383b6932849b75f4271afce6626dbca7e52dfbc
+  - path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/lesson.md
+    sha256: 30ec4dff4666699c6c5b05aa542ae4444a0cafe83ed86aa20585a4cbaf16256b
+  - path: modules/24-close-the-loop-through-a-hardware-in-the-loop-plant/module.yaml
+    sha256: cb0b6b3a122467c607474c1fba1a21742dcce5a7e3fb45413ddb00b1661b7c7b
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you close the Loop Through a
-    Hardware-in-the-Loop Plant?
-  physical_model: A software-only two-way timestamped packet loop around an exact damped virtual mass, with deterministic
-    drops and watchdog fail-zero.
+  guiding_question: What inputs, observable effects, and failure modes matter when you close the Loop Through
+    a Hardware-in-the-Loop Plant?
+  physical_model: A software-only two-way timestamped packet loop around an exact damped virtual mass, with
+    deterministic drops and watchdog fail-zero.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
   - Evaluate the deterministic Python model.
@@ -95,21 +97,21 @@ content:
     - 0.02
     - 0.05
     - 0.15
-    expected_observation: A longer controller period reduces release count and holds delivered measurements and
-      forces longer while the 0.01 s plant tick stays fixed.
+    expected_observation: A longer controller period reduces release count and holds delivered measurements
+      and forces longer while the 0.01 s plant tick stays fixed.
   - control: one_way_latency_s
     values:
     - 0.0
     - 0.01
     - 0.06
-    expected_observation: More one-way latency raises measurement and command source age before its downstream effect
-      appears in position.
+    expected_observation: More one-way latency raises measurement and command source age before its downstream
+      effect appears in position.
   broken_case:
     trigger: Enable broken_mode.
     failure: The broken case drops every second command with a 0.1 s controller period, 0.04 s one-way latency,
       and 0.12 s watchdog.
-    recovery: Disable broken_mode to restore the selected clocks, retain every command, and return to the 0.2 s
-      watchdog. No physical HIL is claimed.
+    recovery: Disable broken_mode to restore the selected clocks, retain every command, and return to the 0.2
+      s watchdog. No physical HIL is claimed.
     expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
   common_mistakes:
   - Changing more than one lever before explaining the first delta.
@@ -270,8 +272,8 @@ python_source_equivalence:
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
-    constitute MATLAB runtime parity.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do
+    not constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:

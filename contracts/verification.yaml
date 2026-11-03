@@ -22,10 +22,10 @@ commands:
     apps/api/tests/test_vehicle_foundations_quality.py scripts/verify-vehicle-driveline-quality.py apps/api/tests/test_vehicle_driveline_quality.py
   scope:
   - git diff --check
-  - git diff --name-only 1a0041bd24de1168c03ff2bf2a656a6061cac0e3
+  - git diff --name-only abe7c49cea2a649354f20ad19dbe8a2e6c78540a
   dsp-fidelity-p77-p84:
-  - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3 -B
-    -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py
+  - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3
+    -B -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py
     apps/api/tests/test_dsp_fidelity_remediation_p21_p28.py apps/api/tests/test_dsp_fidelity_remediation_p29_p40.py
     apps/api/tests/test_dsp_fidelity_remediation_p41_p52.py apps/api/tests/test_dsp_fidelity_remediation_p53_p64.py
     apps/api/tests/test_dsp_fidelity_remediation_p65_p76.py apps/api/tests/test_dsp_fidelity_remediation_p77_p84.py
@@ -36,8 +36,8 @@ commands:
   - PYTHONPATH=apps/api/src .venv/bin/python scripts/audit_course_quality.py
   - ./scripts/verify-course-delivery.sh
   semantic-quality-12:
-  - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_capstone_quality_revision.py apps/api/tests/test_gnc_expansion.py
-    apps/api/tests/test_robotics_expansion.py apps/api/tests/test_vehicle_dynamics_expansion.py
+  - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_capstone_quality_revision.py
+    apps/api/tests/test_gnc_expansion.py apps/api/tests/test_robotics_expansion.py apps/api/tests/test_vehicle_dynamics_expansion.py
   dsp-aggregate-quality:
   - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_dsp_aggregate_quality.py
   - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-dsp-assessments.py
@@ -55,14 +55,18 @@ commands:
   - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-robotics-perception-quality.py
   - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-robotics-perception-quality.py --base-url http://127.0.0.1:8775
   vehicle-foundations-quality-12:
-  - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_vehicle_foundations_quality.py apps/api/tests/test_vehicle_dynamics_course.py
+  - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_vehicle_foundations_quality.py
+    apps/api/tests/test_vehicle_dynamics_course.py
   - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-vehicle-foundations-quality.py
   - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-vehicle-foundations-quality.py --base-url http://127.0.0.1:8776
   vehicle-driveline-quality-04:
-  - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_vehicle_driveline_quality.py apps/api/tests/test_vehicle_dynamics_course.py
-    apps/api/tests/test_vehicle_foundations_quality.py
+  - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_vehicle_driveline_quality.py
+    apps/api/tests/test_vehicle_dynamics_course.py apps/api/tests/test_vehicle_foundations_quality.py
   - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-vehicle-driveline-quality.py
   - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-vehicle-driveline-quality.py --base-url http://127.0.0.1:8777
-evidence_boundary: Synthetic numerical/browser/container evidence only. Active scope Vehicle P13–P16; selected findings
-  close only after independent and baked browser checks. All non-DSP aggregate holds remain blocked even with zero
-  named findings. No learner, manual screen-reader, MATLAB, hardware or production acceptance.
+  gnc-aggregate-quality:
+  - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-gnc-assessments.py
+  - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_gnc_aggregate_quality.py
+  - ./scripts/verify-gnc-host.sh
+evidence_boundary: Controls aggregate implementation and host verification; baked read-only nonroot Docker
+  delivery is a separate required gate. No learner, manual screen-reader, MATLAB, hardware or production acceptance.

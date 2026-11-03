@@ -2,65 +2,53 @@
 
 **Guiding question:** When is a first-order measurement linearization informative enough for an EKF update?
 
-Update a scalar state through z=x², track the Jacobian and posterior covariance, and expose the unobservable zero-Jacobian initialization. This is a Python-first native design derived from the reviewed competency map. It is not presented as a conversion of the pinned MATLAB source and it stays inside deterministic software simulation.
-
-## Why this lesson exists
-
-The numerical result is not the objective by itself. The objective is to connect a design decision to a governing relation, an observable consequence, a failure mechanism, and a recovery check. Record the assumptions before interpreting any curve.
+This Python-first lab executes the bounded mechanism described below. Historical source/conversion records are retained separately.
 
 ## Model and equations
 
-$$\text{h(x)=x^2}$$
-$$\text{H=2*xhat}$$
-$$\text{K=P H/(H^2 P+R)}$$
+$$h(x)=x^2,\quad H=2\hat x^-,\quad \nu=z-h(\hat x^-)$$
 
-Carry units through the model. A pole or zero is reported in inverse seconds, angular frequency in radians per second, phase in degrees or radians as labeled, and dimensionless ratios as `1`. The experiment evaluates the displayed equations directly; it does not call a black-box synthesis toolbox.
+$$K=P^-H/(H^2P^-+R),\quad \hat x^+=\hat x^-+K\nu$$
 
-## Predict before running
+$$P^+=(1-KH)^2P^-+K^2R$$
 
-An EKF update uses the local Jacobian; at xhat=0 the quadratic measurement has zero first-order sensitivity despite nonzero global information. State which output should move first and which quantity should remain invariant before changing a control.
+## Worked example
+
+At xhat=1 and sigma=0.5, P=0.25, H=2, S=2, K=0.25 and innovation=1.25. Thus xplus=1.3125 and Pplus=0.125. The true nonlinear-minus-linearized residual is (0.3125)^2=0.09765625; the old prior variance 0.25 is not that residual.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read all three signature metrics.
-2. Inspect the response plot for the external behavior, then the mechanism plot for the governing internal relation.
-3. Check the units and limiting cases before accepting a stability, equivalence, or performance statement.
-4. Save the baseline, change one variable only, and explain the direction of change from the equations.
+Write your prediction before running. Reset, inspect both plots and the internal state/geometry in the numerical evidence, then calculate the worked example independently. Separate reported metrics from the actual history or matrix that produces them.
 
 ## Two one-variable sweeps
 
-1. Hold `linearization_state` at `1.0 1` and sweep `prior_standard_deviation` from `0.05` through `0.5` to `2.0 1`.
-2. Restore `prior_standard_deviation` to `0.5 1` and sweep `linearization_state` from `0.0` through `1.0` to `3.0 1`.
+1. From reset defaults, change only `prior_standard_deviation` to `2.0`. Predict from the displayed relation; record both plots and dimensioned metrics, then restore the baseline.
 
-Do not tune both at once until you can attribute each metric change to one term in the equations. The retained evidence uses one endpoint from each sweep in addition to the baseline.
+2. From reset defaults, change only `linearization_state` to `3.0`. Predict from the displayed relation; record both plots and dimensioned metrics, then restore the baseline.
 
 ## Intentionally broken case
 
-Broken mode freezes the Jacobian at zero, so the filter ignores the nonlinear measurement. Broken mode is a named counterexample, not an alternative design recommendation.
+Freeze the measurement Jacobian at zero while preserving prior state, prior uncertainty and the measurement. Compare the same selected inputs. A changed sign or gate must act on the stated equation, not swap in unrelated scenario values.
 
 ## Recovery
 
-Move to an observable linearization or use an estimator that represents the nonlinear transform, then recheck innovation consistency. The recovery case restores the exact baseline inputs so the evidence can prove that the failure is reversible rather than merely different.
+Restore H=2*xhat, then compare the same prior and measurement; discuss a nonlinear alternative at a truly zero prior. Verify recovery matches the original baseline rather than a newly tuned scenario.
 
 ## Limiting cases and invariants
 
-- At xhat=0 the first-order Jacobian is zero.
-- As prior variance tends to zero, the measurement gain tends to zero.
-
-Teaching invariant: An EKF update uses the local Jacobian; at xhat=0 the quadratic measurement has zero first-order sensitivity despite nonzero global information.
+This is one scalar measurement update with fixed z=2.25 and R=1 in normalized units, not a complete time-recursive EKF. A squared observation has a global sign ambiguity. A zero Jacobian at the true linearization point is a real first-order information loss, not a software fault.
 
 ## Independent evidence
 
-Expected signatures are produced by `expansion_reference_cases.py`, which imports no production experiment and consumes no production result. Production signatures are retained separately. Each baseline, two sweeps, broken case, and recovery case records fields, units, tolerances, measured error, and the named invariant. Agreement supports only these equations and scenarios; it is not MATLAB execution, broad robust certification, or physical validation.
+`expansion_reference_cases.py` independently evaluates this lesson's signature and full mechanism. References use a polynomial derivative, integrated covariance equation, information-form posterior, SVD geometry, closed-form bias integrals or an implicit nonlinear LOS solution as applicable. They import no production experiment and consume no production result. Five retained cases include baseline, two one-variable sweeps, fault and recovery. Unchanged absolute/relative tolerances remain 1e-8. Additional off-grid, degenerate and mechanism-array checks are required by the aggregate review.
 
 ## Common mistakes
 
-- Reading a plotted shape without checking its sign convention, units, or contour/path definition.
-- Treating a local, frequency-limited, or nominal result as a global guarantee.
-- Changing both design controls and then assigning causality to one of them.
-- Confusing a recovery that looks better with a recovery that restores the baseline invariant.
-- Claiming source equivalence, physical hardware evidence, or learner effectiveness from this software-only lab.
+- Treating a finite placeholder or clipped square root as valid uncertainty.
+- Claiming global or full-system behavior from the bounded model.
+- Comparing a fault at different inputs and attributing the difference solely to the fault.
+- Reading only a pass flag rather than its governing calculation and physical units.
 
 ## Teach-back
 
-Derive one signature quantity from the displayed equations, explain what the broken case violates, and name one result that this lab cannot establish. Then describe how the two sweeps separate sensitivity to `prior_standard_deviation` from sensitivity to `linearization_state`.
+Reproduce the worked calculation, explain each sweep causally, show the measured fault and recovery, and state the model boundary in your own words. The Course checkpoint adds the cumulative evidence link. No learner result is recorded by authoring this material.

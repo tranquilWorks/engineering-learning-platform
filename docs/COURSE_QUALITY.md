@@ -1,3 +1,25 @@
+# Controls/GNC completion revision — in review, 2026-11-03
+
+The isolated Controls revision adds eight mechanism/unit repairs, thirteen
+calculated independent-reference entrypoints, 68 embedded checkpoints and 22
+cumulative portfolios. Host runtime/API/browser evidence is recorded in
+[evidence](evidence/ELP-GNC-AGGREGATE-QUALITY-01-2026-11-03.md) and
+[the review plan](course-quality/gnc-aggregate-review-plan.md).
+
+**Controls is not yet accepted as complete.** Recursive nonlinear-filter and
+full strapdown/coupled GNSS-INS outcomes remain open in
+[the gap register](course-quality/gnc-aggregate-open-gaps.json). The required final
+read-only nonroot baked Docker verification is not run in this environment.
+Component descriptions, authored checkpoints and host evidence do not close
+those gaps. Keep aggregate numerical/curriculum/capstone maturity blocked.
+
+The next implementation work addresses the two registered algorithm/integration
+gaps, preserving independent references and all other courses, followed by final
+repository and baked-container acceptance. Learner, manual accessibility, MATLAB,
+hardware and production validation remain separate.
+
+---
+
 # Revised-course quality position — 2026-10-01
 
 All 288 native engineering lessons and two examples are embedded in Engineering

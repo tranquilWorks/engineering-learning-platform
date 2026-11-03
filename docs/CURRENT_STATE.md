@@ -1,3 +1,25 @@
+# Controls/GNC completion revision — in review, 2026-11-03
+
+The isolated Controls revision adds eight mechanism/unit repairs, thirteen
+calculated independent-reference entrypoints, 68 embedded checkpoints and 22
+cumulative portfolios. Host runtime/API/browser evidence is recorded in
+[evidence](evidence/ELP-GNC-AGGREGATE-QUALITY-01-2026-11-03.md) and
+[the review plan](course-quality/gnc-aggregate-review-plan.md).
+
+**Controls is not yet accepted as complete.** Recursive nonlinear-filter and
+full strapdown/coupled GNSS-INS outcomes remain open in
+[the gap register](course-quality/gnc-aggregate-open-gaps.json). The required final
+read-only nonroot baked Docker verification is not run in this environment.
+Component descriptions, authored checkpoints and host evidence do not close
+those gaps. Keep aggregate numerical/curriculum/capstone maturity blocked.
+
+The next implementation work addresses the two registered algorithm/integration
+gaps, preserving independent references and all other courses, followed by final
+repository and baked-container acceptance. Learner, manual accessibility, MATLAB,
+hardware and production validation remain separate.
+
+---
+
 # Revision closeout and review handoff — 2026-10-01
 
 Vehicle P13–P16 now have corrected physical models, dimensioned plots, substantial individual lessons and browser-embedded Course checkpoints. This completes all sixteen findings in the owner-authorized twelve-plus-four Vehicle revision under ELP-VEHICLE-DRIVELINE-QUALITY-04. The exact baseline is target PR59 merge `1a0041bd24de1168c03ff2bf2a656a6061cac0e3`; control contract PR584 merged at `24be9b00abf25b29b861241ef0e3204948ea9078` before activation. The implementation is merged in [PR60](https://github.com/tranquilWorks/engineering-learning-platform/pull/60) at `f58533582a617cf48741aa5349f26f5954e21d95`; [Portfolio Control PR588](https://github.com/tranquilWorks/portfolio-control/pull/588) closes it at `4fa6f144c2b2358308889232468ac88e0b27298a`. Both merge trees match their reviewed commits.

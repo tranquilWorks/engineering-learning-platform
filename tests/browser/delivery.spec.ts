@@ -196,7 +196,7 @@ test('repaired bounded plots keep drawn SVG curves after failure and reset', asy
 });
 
 test('existing WebGL lesson draws unchanged curves when WebGL is disabled', async ({ baseURL }) => {
-  const browser = await chromium.launch({ args: ['--disable-webgl'] });
+  const browser = await chromium.launch({ executablePath: process.env.ELP_CHROMIUM_EXECUTABLE, args: ['--disable-webgl'] });
   try {
     const page = await browser.newPage();
     const response = page.waitForResponse(r => r.url().endsWith('/run') && r.request().method() === 'POST');
