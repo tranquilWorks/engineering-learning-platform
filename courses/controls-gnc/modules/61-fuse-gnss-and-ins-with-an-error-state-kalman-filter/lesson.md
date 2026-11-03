@@ -1,3 +1,5 @@
+> The component study below is retained. The new **Integrated navigation** section and additional plots extend it to the complete sequence.
+
 # Inject and Reset a One-Axis Navigation Error State
 
 

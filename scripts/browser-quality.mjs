@@ -17,7 +17,7 @@ const saveReport = () => {
 const selected = process.env.ELP_BROWSER_COURSE;
 const selectedModule = process.env.ELP_BROWSER_MODULE;
 const gncRepairs = process.env.ELP_BROWSER_GNC_REPAIRS === '1';
-const gncRepairNumbers = [37,44,52,53,54,58,59,63];
+const gncRepairNumbers = [37,44,52,53,54,55,58,59,61,63,67];
 const vehicleDrivelineBatch = process.env.ELP_BROWSER_VEHICLE_DRIVELINE_BATCH === '1';
 const isVehicleDriveline = (course, module) => course.id === 'vehicle-dynamics' && module.number >= 13 && module.number <= 16;
 const vehicleFoundationsBatch = process.env.ELP_BROWSER_VEHICLE_FOUNDATIONS_BATCH === '1';
@@ -89,7 +89,7 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
           });
           return failures;
         }));
-        if ((course.id === 'controls-gnc' && [37,44,52,53,54,58,59,63].includes(module.number)) || isVehicleDriveline(course,module) || isVehicleFoundations(course,module) || (course.id === 'robotics-autonomy' && ((module.number >= 30 && module.number <= 48) || module.number === 52))) {
+        if ((course.id === 'controls-gnc' && [37,44,52,53,54,55,58,59,61,63,67].includes(module.number)) || isVehicleDriveline(course,module) || isVehicleFoundations(course,module) || (course.id === 'robotics-autonomy' && ((module.number >= 30 && module.number <= 48) || module.number === 52))) {
           row.plot_text_layout_errors = await page.locator('.js-plotly-plot').evaluateAll(nodes => nodes.flatMap((node, index) => {
             const failures = [], bounds = node.querySelector('svg.main-svg').getBoundingClientRect();
             const outside = (r, b) => r.left < b.left - 2 || r.right > b.right + 2 || r.top < b.top - 2 || r.bottom > b.bottom + 2;
@@ -154,6 +154,33 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
           const content = await heading.locator('..').textContent();
           if (!content.includes(`P${String(module.number).padStart(2,'0')} course checkpoint`) || !content.includes('Expected reasoning') || !content.includes('No learner completion')) throw new Error('Missing Controls checkpoint, reasoning or learner boundary');
           row.checkpoint = true; row.checkpoint_in_viewport = true;
+          if ([54,55,59,61,67].includes(module.number)) {
+            const section = module.number < 59 ? 'Recursive integration' : 'Integrated navigation';
+            await page.getByRole('navigation', {name:'Lesson sections'}).getByRole('link', {name:section,exact:true}).click();
+            await expect(page.getByRole('heading',{name:section,exact:true})).toBeInViewport();
+            row.integrated_section = true;
+            row.integrated_drawn_plots = await page.locator('.plot-grid-section').nth(1).locator('.js-plotly-plot').evaluateAll(nodes => nodes.filter(node => node.querySelector('.scatterlayer .trace path') || node.querySelector('canvas')).length);
+            if (row.integrated_drawn_plots !== (module.number === 67 ? 3 : 2)) throw new Error('Integrated mechanism plot missing');
+            const file = `${out}/integration-${module.number}-${viewport}.png`;
+            await page.locator('.plot-grid-section').nth(1).screenshot({path:file});
+            screenshots.push({path:file,sha256:crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
+            const panels = page.locator('.plot-grid-section').nth(1).locator('.plot-panel');
+            for (let panelIndex=0; panelIndex<await panels.count(); panelIndex++) {
+              const panel = panels.nth(panelIndex);
+              await panel.evaluate(node => window.scrollBy(0,node.getBoundingClientRect().top-140));
+              const panelFile = `${out}/integration-${module.number}-${viewport}-plot-${panelIndex}.png`;
+              await panel.screenshot({path:panelFile});
+              screenshots.push({path:panelFile,sha256:crypto.createHash('sha256').update(fs.readFileSync(panelFile)).digest('hex')});
+            }
+            const evidenceTable = page.locator('.table-panel').filter({has:page.getByRole('heading',{name:'Selected integration evidence',exact:true})});
+            if (await evidenceTable.locator('tbody tr').count() < 7) throw new Error('Selected integrated evidence table missing');
+            row.integration_evidence_table = true;
+            if (module.number === 67) {
+              await expect(page.getByText('FUSED-NAV',{exact:true})).toBeVisible();
+              row.integrated_requirements = true;
+            }
+          }
+
           row.controls_portfolios = [];
           for (const block of doc.module.blocks.filter(b => b.type === 'markdown' && b.title?.startsWith('Cumulative portfolio '))) {
             const nav = page.getByRole('navigation', {name:'Lesson sections'}).getByRole('link', {name:block.title,exact:true});

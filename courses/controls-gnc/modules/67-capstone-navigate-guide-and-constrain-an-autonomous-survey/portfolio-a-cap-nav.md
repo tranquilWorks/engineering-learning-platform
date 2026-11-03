@@ -30,3 +30,8 @@ A complete portfolio meets all four criteria. Revise incomplete evidence; no agg
 ### Labs and individual reasoning targets
 
 - [P67: Capstone: Navigate, Guide, and Constrain an Autonomous Survey](/courses/controls-gnc/modules/67-capstone-navigate-guide-and-constrain-an-autonomous-survey): The planar survey applies LOS guidance and a bounded turn command to a simplified navigation estimate. GNSS age can trigger a hold even if cross-track error is small; inspect each requirement and the executed path.
+
+
+## Integrated-sequence extension
+
+Complete the integrated assessment in this lesson as well as the component tasks above. For each stage, retain the actual state, innovation, covariance or command history, identify its upstream input and downstream effect, and explain a failed case. Compare nominal, both control sweeps, fault and exact recovery. Use the four-criterion rubric above; do not substitute correct labels for an executed recurrence or frame transformation.

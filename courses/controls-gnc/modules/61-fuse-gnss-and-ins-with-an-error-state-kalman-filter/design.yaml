@@ -8,7 +8,7 @@ provenance:
   matlab_runtime: not_run
 governing_equations:
 - delta=[position error, velocity error, accelerometer bias error]
-- F=[[1,dt,-dt²/2],[0,1,-dt],[0,0,1]]; Pminus=F P F^T+Q
+- "F=[[1,dt,-dt\xB2/2],[0,1,-dt],[0,0,1]]; Pminus=F P F^T+Q"
 - K=Pminus H^T/(H Pminus H^T+R); nominal+=K innovation; delta_reset=0
 - Pplus=(I-KH)Pminus(I-KH)^T+K R K^T
 signature:
@@ -18,8 +18,8 @@ signature:
   unit: m
 - field: terminal_error
   unit: m
-teaching_invariant: Predict what happens if covariance is updated but the nominal navigation state never receives
-  the correction.
+teaching_invariant: The historical component signature is preserved. The additional integrated sequence,
+  equations, assumptions and independent full-history reference are specified in integration.md.
 limiting_cases:
 - The terminal sigma can fall while actual error remains large in the fault.
 - Additive reset leaves covariance coordinates unchanged.
@@ -50,5 +50,6 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic synthetic software evidence only. Browser/container checks are separately recorded.
-  No MATLAB runtime, representative learner, manual screen-reader, hardware, certification or production acceptance.
+claim_boundary: Deterministic synthetic software evidence only. Browser/container checks are separately
+  recorded. No MATLAB runtime, representative learner, manual screen-reader, hardware, certification or
+  production acceptance.

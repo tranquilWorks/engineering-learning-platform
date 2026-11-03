@@ -53,7 +53,11 @@ def physical(n, **changes):
 
 
 def test_exact_scope_controls_source_pins_and_historical_coverage():
-    contract = yaml.safe_load(subprocess.check_output(["git", "show", f"{HISTORICAL_HEAD}:contracts/active-batch.yaml"], cwd=ROOT))
+    contract = yaml.safe_load(
+        subprocess.check_output(
+            ["git", "show", f"{HISTORICAL_HEAD}:contracts/active-batch.yaml"], cwd=ROOT
+        )
+    )
     assert contract["batch"]["id"] == "ELP-VEHICLE-DRIVELINE-QUALITY-04"
     assert contract["sources"]["baseline_commit"] == BASELINE
     assert (
@@ -91,7 +95,9 @@ def test_exact_scope_controls_source_pins_and_historical_coverage():
         if mode == "160000" or any(fnmatch.fnmatch(path, rule) for rule in allowed):
             continue
         assert (ROOT / path).is_file(), path
-        assert subprocess.check_output(["git", "show", f"{HISTORICAL_HEAD}:{path}"], cwd=ROOT) == original(path), path
+        assert subprocess.check_output(
+            ["git", "show", f"{HISTORICAL_HEAD}:{path}"], cwd=ROOT
+        ) == original(path), path
     before = json.loads(original("courses/vehicle-dynamics/coverage.yaml"))
     after = json.loads((COURSE / "coverage.yaml").read_text())
     for n, (a, b) in enumerate(zip(before["items"], after["items"], strict=True), 1):

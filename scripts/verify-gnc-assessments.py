@@ -59,6 +59,8 @@ def replay(base_url=None):
     catalog = CourseCatalog([ROOT / "courses"])
     runtime = ExperimentRuntime(catalog)
     comparisons, bindings, mechanisms = [], [], []
+    integrations = []
+    integration_reference = load(COURSE / "recursive_navigation_references.py")
     for checkpoint in registry["lessons"]:
         number, module_id = checkpoint["number"], checkpoint["module_id"]
         folder = COURSE / "modules" / module_id
@@ -114,6 +116,87 @@ def replay(base_url=None):
                     ).hexdigest(),
                 }
             )
+            if number in (54, 55, 59, 61, 67):
+                if number in (54, 55):
+                    method = "EKF" if number == 54 else "UKF"
+                    expected_history = integration_reference.recursive(
+                        parameters[
+                            "prior_standard_deviation"
+                            if number == 54
+                            else "state_standard_deviation"
+                        ],
+                        parameters["linearization_state"] if number == 54 else 1.0,
+                        parameters["sigma_spread"] if number == 55 else 0.7,
+                        method,
+                        parameters["broken_mode"],
+                    )
+                    actual_history = np.asarray(
+                        result["diagnostics"]["recursive_history"]
+                    )
+                    budget = 2e-10
+                    np.testing.assert_allclose(
+                        actual_history, expected_history, rtol=budget, atol=budget
+                    )
+                    error = float(np.max(abs(actual_history - expected_history)))
+                    covariance_error = None
+                else:
+                    arguments = {
+                        "mode": {59: "coast", 61: "fusion", 67: "survey"}[number],
+                        "broken": parameters["broken_mode"],
+                    }
+                    if number == 59:
+                        arguments.update(
+                            duration=parameters["coast_duration_s"],
+                            bias=parameters["accelerometer_bias_m_s2"],
+                        )
+                    elif number == 61:
+                        arguments.update(
+                            interval=parameters["gnss_interval_s"],
+                            walk=parameters["bias_random_walk"],
+                        )
+                    else:
+                        arguments.update(
+                            dropout=parameters["gnss_dropout_s"],
+                            turn_limit=parameters["turn_rate_limit_deg_s"],
+                        )
+                    expected_history, expected_covariance = (
+                        integration_reference.navigation(**arguments)
+                    )
+                    actual_history = np.asarray(
+                        result["diagnostics"]["navigation_history"]
+                    )
+                    for actual_row, expected_row in zip(
+                        actual_history, expected_history
+                    ):
+                        if actual_row[13:17] @ expected_row[13:17] < 0:
+                            expected_row[13:17] *= -1
+                    budget = 2e-7
+                    np.testing.assert_allclose(
+                        actual_history, expected_history, rtol=budget, atol=budget
+                    )
+                    actual_covariance = np.asarray(
+                        result["diagnostics"]["navigation_covariances"]
+                    )
+                    np.testing.assert_allclose(
+                        actual_covariance, expected_covariance, rtol=budget, atol=budget
+                    )
+                    error = float(np.max(abs(actual_history - expected_history)))
+                    covariance_error = float(
+                        np.max(abs(actual_covariance - expected_covariance))
+                    )
+                integrations.append(
+                    {
+                        "number": number,
+                        "scenario": scenario,
+                        "status": "passed",
+                        "history_shape": list(actual_history.shape),
+                        "maximum_absolute_history_error": error,
+                        "maximum_absolute_covariance_error": covariance_error,
+                        "absolute_tolerance": budget,
+                        "relative_tolerance": budget,
+                        "origin": "recursive_navigation_references.py: analytic scalar measurement moments / information conditioning / DCM propagation / separate GNSS solve",
+                    }
+                )
             if number in (44, 52, 53, 54, 58, 59, 63):
                 full = native.aggregate_mechanism(number, parameters)
                 keys = []
@@ -151,6 +234,7 @@ def replay(base_url=None):
             f"P{number:02}: five independent comparisons and checkpoint binding passed",
             flush=True,
         )
+    assert len(integrations) == 25
     assert len(comparisons) == 340 and len(bindings) == 68 and len(mechanisms) == 35
     return {
         "batch": "ELP-GNC-AGGREGATE-QUALITY-01",
@@ -162,6 +246,10 @@ def replay(base_url=None):
         "comparisons": comparisons,
         "bindings": bindings,
         "full_mechanism_comparisons": mechanisms,
+        "recursive_integration_comparisons": integrations,
+        "integration_reference_sha256": hashlib.sha256(
+            (COURSE / "recursive_navigation_references.py").read_bytes()
+        ).hexdigest(),
         "formative_count": 68,
         "cumulative_count": 22,
         "learner_validation": "not_run",
@@ -187,5 +275,5 @@ if __name__ == "__main__":
     arguments.output.parent.mkdir(parents=True, exist_ok=True)
     arguments.output.write_text(json.dumps(report, indent=2) + "\n")
     print(
-        "340 fresh independent comparisons, 35 full mechanisms and 68 identity bindings passed"
+        "340 fresh independent comparisons, 35 component mechanisms, 25 recursive integrations and 68 identity bindings passed"
     )

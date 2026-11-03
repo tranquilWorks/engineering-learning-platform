@@ -35,3 +35,8 @@ A complete portfolio meets all four criteria. Revise incomplete evidence; no agg
 - [P64: Compare Civilian Moving-Beacon Guidance Trajectories](/courses/controls-gnc/modules/64-compare-pursuit-laws-and-proportional-navigation-variants): Closing speed, line-of-sight rate and turning geometry govern the trajectory. Compare bounded civilian synthetic paths under the same initial conditions rather than treating a smaller endpoint distance as universal superiority.
 - [P65: Solve a Bounded Terminal Guidance Objective](/courses/controls-gnc/modules/65-enforce-terminal-and-actuator-aware-guidance-constraints): A finite control horizon trades terminal error against limits. If the desired terminal state is infeasible, report the residual and active bounds rather than silently declaring success from solver convergence.
 - [P67: Capstone: Navigate, Guide, and Constrain an Autonomous Survey](/courses/controls-gnc/modules/67-capstone-navigate-guide-and-constrain-an-autonomous-survey): The planar survey applies LOS guidance and a bounded turn command to a simplified navigation estimate. GNSS age can trigger a hold even if cross-track error is small; inspect each requirement and the executed path.
+
+
+## Integrated-sequence extension
+
+Complete the integrated assessment in this lesson as well as the component tasks above. For each stage, retain the actual state, innovation, covariance or command history, identify its upstream input and downstream effect, and explain a failed case. Compare nominal, both control sweeps, fault and exact recovery. Use the four-criterion rubric above; do not substitute correct labels for an executed recurrence or frame transformation.

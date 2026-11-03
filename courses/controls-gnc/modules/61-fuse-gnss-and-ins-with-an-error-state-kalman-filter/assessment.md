@@ -50,3 +50,8 @@ This one-axis formulation does not implement a complete inertial ESKF.
 4. Defend the stated boundary and link this result to the cumulative portfolio **A-NAVIGATION**.
 
 This is authored self-assessment guidance. No learner completion, score or effectiveness result has been recorded.
+
+
+## Extended integration evidence
+
+Read the **Integrated navigation** section and complete its prediction, two sweeps, numerical reconstruction, fault and recovery tasks. Keep the original component evidence above, then explain how the integrated sequence changes the scope. Record actual histories and units; a screenshot without the recurrence or frame reasoning is insufficient. No learner completion is recorded automatically.

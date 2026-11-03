@@ -2,8 +2,7 @@ schema_version: 1
 id: 54-estimate-nonlinear-state-with-an-extended-kalman-filter
 number: 54
 title: Estimate Nonlinear State with an Extended Kalman Filter
-summary: "Update a scalar state through z=x\xB2, track the Jacobian and posterior covariance, and expose the\
-  \ unobservable zero-Jacobian initialization."
+summary: Compare a scalar EKF measurement update with a complete nonlinear prediction/update sequence.
 guiding_question: When is a first-order measurement linearization informative enough for an EKF update?
 status: implemented
 tags:
@@ -41,8 +40,8 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: An EKF update uses the local Jacobian; at xhat=0 the quadratic measurement has zero first-order sensitivity
-    despite nonzero global information.
+  text: An EKF update uses the local Jacobian; at xhat=0 the quadratic measurement has zero first-order
+    sensitivity despite nonzero global information.
   reveal: Move to an observable linearization or use an estimator that represents the nonlinear transform,
     then recheck innovation consistency.
 - type: controls
@@ -57,6 +56,11 @@ blocks:
   tone: info
   title: Current interpretation
   source: observation
+- type: plot_grid
+  title: Recursive estimation
+  plots:
+  - recursive_state
+  - recursive_error
 - type: callout
   tone: warning
   title: Broken-case interpretation
@@ -68,3 +72,9 @@ blocks:
 - type: markdown
   title: Course checkpoint
   source: assessment.md
+- type: markdown
+  title: Recursive integration
+  source: integration.md
+- type: table
+  title: Selected integration evidence
+  table: integration_evidence

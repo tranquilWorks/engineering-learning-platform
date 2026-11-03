@@ -33,3 +33,8 @@ A complete portfolio meets all four criteria. Revise incomplete evidence; no agg
 - [P52: Build Stochastic Process Models and Interpret Covariance](/courses/controls-gnc/modules/52-build-stochastic-process-models-and-interpret-covariance): Positive process noise adds qT to initial variance. The mean can remain unchanged while uncertainty grows; subtracting noise can produce an invalid covariance even if a clipped plot stays finite.
 - [P53: Monitor Innovations, NIS, NEES, and Measurement Gates](/courses/controls-gnc/modules/53-monitor-innovations-nis-nees-and-measurement-gates): NIS divides squared innovation by S; NEES divides posterior truth error by P. Bypassing the gate changes the posterior path at the same injection; independent-trial consistency cannot be inferred from deterministic time samples.
 - [P61: Inject and Reset a One-Axis Navigation Error State](/courses/controls-gnc/modules/61-fuse-gnss-and-ins-with-an-error-state-kalman-filter): An error estimate must be injected into the nominal state as well as propagated in covariance. A shrinking covariance with an uncorrected nominal error is overconfidence, not successful navigation.
+
+
+## Integrated-sequence extension
+
+Complete the integrated assessment in this lesson as well as the component tasks above. For each stage, retain the actual state, innovation, covariance or command history, identify its upstream input and downstream effect, and explain a failed case. Compare nominal, both control sweeps, fault and exact recovery. Use the four-criterion rubric above; do not substitute correct labels for an executed recurrence or frame transformation.

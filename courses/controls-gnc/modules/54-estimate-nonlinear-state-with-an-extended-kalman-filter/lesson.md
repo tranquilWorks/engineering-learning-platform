@@ -1,3 +1,5 @@
+> The component study below is retained. The new **Recursive integration** section and additional plots extend it to the complete sequence.
+
 # Estimate Nonlinear State with an Extended Kalman Filter
 
 **Guiding question:** When is a first-order measurement linearization informative enough for an EKF update?

@@ -1,3 +1,5 @@
+> The component study below is retained. The new **Integrated navigation** section and additional plots extend it to the complete sequence.
+
 # Propagate One-Axis Inertial Bias Errors
 
 **Guiding question:** How do prescribed accelerometer bias and its correction accumulate into velocity and position error?

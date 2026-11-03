@@ -148,7 +148,17 @@ def test_gnc_native_plots_use_quantity_specific_axes_and_units() -> None:
         root = COURSE_ROOT / item["folder"]
         module_id = _yaml(root / "module.yaml")["id"]
         result = runtime.run("controls-gnc", module_id, {}).model_dump(mode="json")
-        assert set(result["plots"]) == {"response", "mechanism"}
+        number = int(item["id"][1:])
+        added = (
+            {"recursive_state", "recursive_error"}
+            if number in (54, 55)
+            else {"navigation_error", "navigation_attitude"}
+            if number in (59, 61, 67)
+            else set()
+        )
+        if number == 67:
+            added.add("integrated_path")
+        assert set(result["plots"]) == {"response", "mechanism"} | added
         for plot in result["plots"].values():
             for axis in ("xaxis", "yaxis"):
                 title = plot["layout"][axis]["title"]["text"]
@@ -282,7 +292,9 @@ def test_gnc_estimation_and_smoothing_teaching_invariants() -> None:
         return runtime.run("controls-gnc", module_id, supplied).diagnostics["signature"]
 
     covariance = signature(52, {"broken_mode": False})
-    invalid_covariance = signature(52, {"broken_mode": True, "process_noise_density": 1.0, "propagation_interval_s": 3.0})
+    invalid_covariance = signature(
+        52, {"broken_mode": True, "process_noise_density": 1.0, "propagation_interval_s": 3.0}
+    )
     assert covariance[0] > 1
     assert covariance[1] > 0
     assert invalid_covariance[0] < 0
@@ -342,8 +354,12 @@ def test_gnc_navigation_teaching_invariants() -> None:
     assert alignment[0] > 0
     assert math.isfinite(alignment[1])
     assert unobservable_alignment[0] == 0
-    assert 0 == unobservable_alignment[1] < alignment[1]  # reciprocal condition: zero means singular
-    singular = runtime.run("controls-gnc", NATIVE[58-25]["folder"].split("/")[-1], {"broken_mode": True})
+    assert (
+        0 == unobservable_alignment[1] < alignment[1]
+    )  # reciprocal condition: zero means singular
+    singular = runtime.run(
+        "controls-gnc", NATIVE[58 - 25]["folder"].split("/")[-1], {"broken_mode": True}
+    )
     assert singular.diagnostics["rank"] == 1
     assert singular.diagnostics["covariance"] is None
     assert next(m for m in singular.metrics if m.id == "bias_standard_deviation").value is None

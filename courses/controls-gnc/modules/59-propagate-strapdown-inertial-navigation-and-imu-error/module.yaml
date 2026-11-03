@@ -1,11 +1,10 @@
 schema_version: 1
 id: 59-propagate-strapdown-inertial-navigation-and-imu-error
 number: 59
-title: Propagate One-Axis Inertial Bias Errors
-summary: Integrate a declared body-axis bias, compare analytic error growth, and show the effect of a bias
-  correction.
-guiding_question: How do prescribed accelerometer bias and its correction accumulate into velocity and position
-  error?
+title: Propagate Strapdown Navigation and IMU Bias Errors
+summary: Compare analytic one-axis bias drift with 3D quaternion strapdown mechanization and gravity compensation.
+guiding_question: How do prescribed accelerometer bias and its correction accumulate into velocity and
+  position error?
 status: implemented
 tags:
 - controls-gnc
@@ -42,10 +41,10 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Under constant uncorrected bias, velocity error grows linearly and position error quadratically with
-    coast time.
-  reveal: Estimate and subtract bias, reapply gravity/frame conventions, and compare propagation to the analytic
-    limiting case.
+  text: Under constant uncorrected bias, velocity error grows linearly and position error quadratically
+    with coast time.
+  reveal: Estimate and subtract bias, reapply gravity/frame conventions, and compare propagation to the
+    analytic limiting case.
 - type: controls
   title: Design controls
 - type: metrics
@@ -58,6 +57,11 @@ blocks:
   tone: info
   title: Current interpretation
   source: observation
+- type: plot_grid
+  title: Three-dimensional navigation
+  plots:
+  - navigation_error
+  - navigation_attitude
 - type: callout
   tone: warning
   title: Broken-case interpretation
@@ -69,3 +73,9 @@ blocks:
 - type: markdown
   title: Course checkpoint
   source: assessment.md
+- type: markdown
+  title: Integrated navigation
+  source: integration.md
+- type: table
+  title: Selected integration evidence
+  table: integration_evidence
