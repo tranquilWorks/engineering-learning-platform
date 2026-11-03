@@ -291,4 +291,24 @@ def test_open_curriculum_gaps_cannot_be_closed_by_renaming_component_lessons():
             controls["maturity"][stage]["status"] == "blocked"
             for stage in ("numerically_verified", "curriculum_covered", "capstone_integrated")
         )
+    assert all(g["status"] in {"open", "closed_synthetic"} for g in gaps["gaps"])
+    if all(g["status"] == "closed_synthetic" for g in gaps["gaps"]):
+        import hashlib
+
+        report = read(ROOT / "docs/course-quality/gnc-aggregate-http.json")
+        comparisons = report["recursive_integration_comparisons"]
+        assert len(comparisons) == 25
+        assert {row["number"] for row in comparisons} == {54, 55, 59, 61, 67}
+        assert all(row["status"] == "passed" for row in comparisons)
+        assert (
+            report["integration_reference_sha256"]
+            == hashlib.sha256(
+                (COURSE / "recursive_navigation_references.py").read_bytes()
+            ).hexdigest()
+        )
+        catalog = CourseCatalog([ROOT / "courses"])
+        for binding in report["bindings"]:
+            _, record = catalog.module_record("controls-gnc", binding["module_id"])
+            assert binding["content_digest"] == record.revision.content_digest
+        assert all(g.get("evidence") for g in gaps["gaps"])
     assert controls["maturity"]["learner_validated"]["status"] == "not_run"
