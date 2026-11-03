@@ -110,3 +110,24 @@ acceptance is claimed.
 
 Rollback is a revert of this isolated revision to PR61. There is no schema or
 learner-data migration.
+
+## Final clean-checkout verification
+
+The frozen implementation `504d46bd31a2dfc029b454ba61599537d2efcd32` passed
+`./scripts/agent-verify.sh full`: 1,638 tests, three warnings, 1,023.18 seconds
+for pytest; schema/deterministic validation of all 290 interactive modules,
+frontend typecheck and production build also passed. The final process exited 0.
+The subsequent independent replay exited 0 with 340 comparisons, 35 full
+mechanisms and all 68 identity bindings. All 244 frozen input hashes and 13
+source pins were checked after verification. See the machine-readable
+[verification summary](../course-quality/gnc-aggregate-verification-summary.json)
+and [frozen manifest](../course-quality/gnc-aggregate-frozen-inputs.json).
+
+The first completed quick run had 1,637 passes and one stale DSP active-contract
+assertion failure. That binding was corrected, four focused checks passed, and
+the final full run above reran all 1,638 tests successfully. The original scratch
+workspace was pruned during an earlier full run; its completion was not observed
+and is not claimed. All committed implementation and browser evidence survived,
+and verification was repeated in a clean checkout with pinned dependencies.
+
+These results do not close the two course gaps or replace the unrun Docker gate.

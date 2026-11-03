@@ -1,5 +1,10 @@
 # Controls/GNC completion revision — in review, 2026-11-03
 
+
+Final clean-checkout verification passed all **1,638 tests**, schema/catalog
+checks, frontend typecheck/build, and 340 independent comparisons with 35 full
+mechanism checks. See [verification summary](course-quality/gnc-aggregate-verification-summary.json).
+
 The isolated Controls revision adds eight mechanism/unit repairs, thirteen
 calculated independent-reference entrypoints, 68 embedded checkpoints and 22
 cumulative portfolios. Host runtime/API/browser evidence is recorded in
