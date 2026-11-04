@@ -1,0 +1,416 @@
+[
+  {
+    "number": 1,
+    "task": "Predict straight motion, a left arc and pure spin from wheel speeds.",
+    "expected_reasoning": "The mean rim speed sets translation while the difference divided by track width sets yaw; world displacement must rotate with heading.",
+    "claim_limit": "No lateral slip or wheel-radius calibration error is estimated."
+  },
+  {
+    "number": 2,
+    "task": "Compose two planar frame changes and reverse their order.",
+    "expected_reasoning": "Translation rotates with its parent frame; use the inverse transform for a round trip, not a negated translation in the wrong frame.",
+    "claim_limit": "A valid inverse does not prove the transform represents a calibrated sensor."
+  },
+  {
+    "number": 3,
+    "task": "Predict the endpoint with the elbow straight and then folded.",
+    "expected_reasoning": "Ordered rotations produce a sum of link vectors; equal links can cancel at a folded elbow although joint angles remain finite.",
+    "claim_limit": "Planar rigid links omit compliance and joint offsets."
+  },
+  {
+    "number": 4,
+    "task": "Explain why an unreachable target must be rejected before clipping the cosine.",
+    "expected_reasoning": "The annular workspace has both inner and outer boundaries; elbow branches can share an endpoint while differing in joint configuration.",
+    "claim_limit": "A small algebraic residual does not establish collision-free motion."
+  },
+  {
+    "number": 5,
+    "task": "Predict current and speed when gear ratio changes under load.",
+    "expected_reasoning": "Back EMF couples speed to current; gearing changes reflected inertia and output torque rather than creating mechanical power.",
+    "claim_limit": "The motor model does not qualify thermal limits or gearbox backlash."
+  },
+  {
+    "number": 6,
+    "task": "Separate speed tracking, saturation and integral windup.",
+    "expected_reasoning": "Accumulated error can demand unavailable voltage; recovery depends on the stored integral as well as the present speed error.",
+    "claim_limit": "A deterministic speed step is not a robustness certificate for every load."
+  },
+  {
+    "number": 7,
+    "task": "Compute endpoint velocity and acceleration for the displayed trajectory.",
+    "expected_reasoning": "Differentiate the interpolation polynomial and check endpoints, extrema and physical units; sample spacing alone does not guarantee smooth motion.",
+    "claim_limit": "A smooth reference can exceed actuator acceleration or torque limits."
+  },
+  {
+    "number": 8,
+    "task": "Predict contact displacement when stiffness changes with fixed force.",
+    "expected_reasoning": "Impedance sets a force-motion relationship; environment stiffness participates in the coupled dynamics and damping dissipates energy.",
+    "claim_limit": "Stable sampled plots do not prove passivity against every environment."
+  },
+  {
+    "number": 9,
+    "task": "Estimate encoder resolution and the speed ripple caused by quantization.",
+    "expected_reasoning": "Position increments are discrete counts; differentiation divides quantization error by sample time and can amplify it.",
+    "claim_limit": "Higher sampling alone cannot create additional encoder resolution."
+  },
+  {
+    "number": 10,
+    "task": "Predict position drift from a constant accelerometer bias.",
+    "expected_reasoning": "Velocity bias grows linearly and position bias quadratically with coast time; angular and translational errors have different units.",
+    "claim_limit": "This one-axis drift study does not execute full inertial navigation."
+  },
+  {
+    "number": 11,
+    "task": "Separate a range-sensor blind zone from random-looking measurement variation.",
+    "expected_reasoning": "Compare true distance, bias, saturation and invalid-return rules before summarizing residuals; an invalid return is not a physical zero range.",
+    "claim_limit": "Synthetic perturbations do not identify a real sensor noise distribution."
+  },
+  {
+    "number": 12,
+    "task": "Recover a sensor transform and check a held-out point.",
+    "expected_reasoning": "Rigid calibration must preserve distances and orientation; fit rotation and translation jointly and evaluate points outside the fit set.",
+    "claim_limit": "Collinear or poorly spread observations can conceal calibration ambiguity."
+  },
+  {
+    "number": 13,
+    "task": "Compare exact planar arc integration with a straight-line approximation.",
+    "expected_reasoning": "Encoder increments determine both heading and displacement; rotation during a sample changes the world-frame endpoint.",
+    "claim_limit": "Agreement under no-slip motion does not estimate wheel slip."
+  },
+  {
+    "number": 14,
+    "task": "Trace a wheel/absolute-position observation through EKF prediction and correction.",
+    "expected_reasoning": "The motion Jacobian propagates pose covariance; an innovation changes state through its gain and must also update covariance.",
+    "claim_limit": "Small error in one deterministic trajectory is not statistical consistency."
+  },
+  {
+    "number": 15,
+    "task": "Explain particle weights, effective sample size and resampling diversity.",
+    "expected_reasoning": "Bayes weights favor compatible poses, normalization preserves probability mass, and resampling trades weight degeneracy for duplicate hypotheses.",
+    "claim_limit": "A concentrated particle set can converge to a wrong mode."
+  },
+  {
+    "number": 16,
+    "task": "Identify the unknown landmark and the global translation gauge.",
+    "expected_reasoning": "Odometry constrains differences; landmark observations couple pose and map variables; one absolute anchor removes the common translation ambiguity.",
+    "claim_limit": "The linear one-dimensional graph does not establish nonlinear planar SLAM."
+  },
+  {
+    "number": 17,
+    "task": "Predict whether changing a heuristic preserves shortest-path optimality.",
+    "expected_reasoning": "An admissible estimate changes search order without overestimating remaining cost; obstacle occupancy determines feasibility independently.",
+    "claim_limit": "Finite grid resolution can hide passages or inflate obstacles."
+  },
+  {
+    "number": 18,
+    "task": "Explain why node collision checks do not certify sampled-tree edges.",
+    "expected_reasoning": "A valid connection must clear the entire segment; a tree path must follow actual parent links back to the start.",
+    "claim_limit": "Finite sampling offers neither guaranteed success nor a universal optimality bound."
+  },
+  {
+    "number": 19,
+    "task": "Predict a moving-obstacle conflict using synchronized relative motion.",
+    "expected_reasoning": "Evaluate robot and obstacle positions at the same future time and include stopping or waiting as an executed action.",
+    "claim_limit": "A finite candidate set can miss a feasible avoidance maneuver."
+  },
+  {
+    "number": 20,
+    "task": "Reconstruct a behavior-tree tick from child status and traversal order.",
+    "expected_reasoning": "Sequence and fallback nodes propagate running, success and failure differently; trace which children actually execute.",
+    "claim_limit": "A diagram without tick semantics cannot establish recovery behavior."
+  },
+  {
+    "number": 21,
+    "task": "Show which guard permits a mission-state transition.",
+    "expected_reasoning": "State, event and guard jointly determine the next action; a recovery transition must preserve or explicitly reset its evidence.",
+    "claim_limit": "A finite mission model does not enumerate every field failure."
+  },
+  {
+    "number": 22,
+    "task": "Compute a deadline miss from release, execution and response time.",
+    "expected_reasoning": "Interference and blocking affect completion time; utilization alone does not prove every job meets its deadline.",
+    "claim_limit": "A simulated schedule is not a real operating-system latency measurement."
+  },
+  {
+    "number": 23,
+    "task": "Distinguish detection time from achieving a safe state.",
+    "expected_reasoning": "A monitor must observe a relevant fault, decide within its threshold and cause a bounded fallback; inspect the actual state after the alarm.",
+    "claim_limit": "Passing injected faults is not safety certification or complete fault coverage."
+  },
+  {
+    "number": 24,
+    "task": "Follow a delayed command through a watchdog and virtual plant.",
+    "expected_reasoning": "Source age determines command validity; fail-zero behavior and plant response must be visible after packet loss.",
+    "claim_limit": "Software-only HIL methodology is not physical HIL evidence."
+  },
+  {
+    "number": 25,
+    "task": "Check both radial constraint residual and tangent-velocity projection.",
+    "expected_reasoning": "The constraint Jacobian removes the radial velocity component; instantaneous tangency does not guarantee finite-step collision freedom.",
+    "claim_limit": "The circle example is a configuration-space slice, not general manifold planning."
+  },
+  {
+    "number": 26,
+    "task": "Compare rigid pose composition with elementwise matrix interpolation.",
+    "expected_reasoning": "Proper rotations preserve orthogonality and determinant one; translation and rotation composition generally do not commute.",
+    "claim_limit": "A valid SE(3) matrix does not establish a correct sensor-frame convention."
+  },
+  {
+    "number": 27,
+    "task": "Preserve mechanical power while changing twist and wrench frames.",
+    "expected_reasoning": "Angular and linear velocity transform together with the lever-arm term; the dual wrench map preserves their scalar power product.",
+    "claim_limit": "Omitting translation can remain hidden when force or angular velocity is zero."
+  },
+  {
+    "number": 28,
+    "task": "Predict Jacobian rank near a straight or folded elbow.",
+    "expected_reasoning": "Singular values measure local directional mobility; finite perturbations of forward kinematics check derivative signs and link contributions.",
+    "claim_limit": "A nonsingular instantaneous Jacobian does not ensure global reachability."
+  },
+  {
+    "number": 29,
+    "task": "Separate desired task velocity from secondary null-space motion.",
+    "expected_reasoning": "The projector should suppress the secondary task-space contribution; damping alters the primary inverse and its residual.",
+    "claim_limit": "Large finite integration steps can invalidate an instantaneous null-space argument."
+  },
+  {
+    "number": 30,
+    "task": "Derive joint torques from a specified end-effector wrench.",
+    "expected_reasoning": "Virtual work equates task and joint power, giving a Jacobian-transpose mapping with explicit force and moment units.",
+    "claim_limit": "A static torque map does not include inertia, friction or saturation."
+  },
+  {
+    "number": 31,
+    "task": "Check inertia symmetry, positive energy and the Coriolis skew identity.",
+    "expected_reasoning": "Kinetic energy defines inertia; configuration derivatives produce coupling terms, while gravity is the potential gradient.",
+    "claim_limit": "A positive inertia matrix alone does not validate every dynamic term."
+  },
+  {
+    "number": 32,
+    "task": "Separate parameter fitting from held-out torque prediction.",
+    "expected_reasoning": "Excitation determines regressor rank; fit residual and parameter error must be checked separately on new motion.",
+    "claim_limit": "Low residual on an unexciting trajectory does not identify unique parameters."
+  },
+  {
+    "number": 33,
+    "task": "Find the trajectory duration required by both speed and acceleration limits.",
+    "expected_reasoning": "Time scaling changes first derivatives inversely with duration and second derivatives inversely with duration squared.",
+    "claim_limit": "A sample-only extrema check may miss between-sample limit violations."
+  },
+  {
+    "number": 34,
+    "task": "Compare joint-space tracking with task-space error under the same plant.",
+    "expected_reasoning": "Joint errors map through geometry; task commands need a consistent Jacobian and can demand large rates near singularity.",
+    "claim_limit": "A task-space path is not automatically actuator-feasible."
+  },
+  {
+    "number": 35,
+    "task": "Explain the effect of payload mismatch on computed-torque compensation.",
+    "expected_reasoning": "Model cancellation uses inertia, coupling and gravity; feedback corrects residual error only within available effort.",
+    "claim_limit": "Nominal cancellation is not robust to arbitrary model mismatch."
+  },
+  {
+    "number": 36,
+    "task": "Compute operational-space inertia and diagnose singular directions.",
+    "expected_reasoning": "The task inertia depends on both the Jacobian and joint inertia; null directions require explicit treatment rather than an unstable inverse.",
+    "claim_limit": "The bounded example is not whole-body contact planning."
+  },
+  {
+    "number": 37,
+    "task": "Compare impedance and admittance under the same environment stiffness.",
+    "expected_reasoning": "Impedance maps motion error to force; admittance integrates measured force into motion; interface choice changes closed-loop dynamics.",
+    "claim_limit": "Stable behavior in one environment does not guarantee passive interaction."
+  },
+  {
+    "number": 38,
+    "task": "Separate tangential motion control from normal contact-force control.",
+    "expected_reasoning": "Projection must respect the surface frame, and unilateral contact prevents tensile wall force when separation occurs.",
+    "claim_limit": "A fixed planar surface omits changing contact normals and frictional slip."
+  },
+  {
+    "number": 39,
+    "task": "Audit the energy tank when saturation and delayed commands occur.",
+    "expected_reasoning": "Applied work, not requested work, must be charged to the tank; a nonnegative energy record requires actual command limiting.",
+    "claim_limit": "A discrete tank model is not a physical passivity certificate."
+  },
+  {
+    "number": 40,
+    "task": "Explain the energy-shaping and balance-control switching condition.",
+    "expected_reasoning": "The unactuated link receives energy through coupled dynamics; switching depends on angle and rate, not merely elapsed time.",
+    "claim_limit": "A successful nominal swing-up is not a global stabilizing guarantee."
+  },
+  {
+    "number": 41,
+    "task": "Predict pixel motion from depth and camera pose.",
+    "expected_reasoning": "Perspective division follows the camera frame; points behind or too near the image plane require explicit handling.",
+    "claim_limit": "A pinhole model excludes lens distortion and rolling shutter."
+  },
+  {
+    "number": 42,
+    "task": "Compare calibration fit error with held-out reprojection error.",
+    "expected_reasoning": "Intrinsics and distortion must explain multiple board views; pose diversity matters more than repeating one view.",
+    "claim_limit": "Synthetic board calibration does not validate a physical camera."
+  },
+  {
+    "number": 43,
+    "task": "Explain why detected corners are not yet reliable correspondences.",
+    "expected_reasoning": "Local gradient structure determines feature strength; descriptors require consistent sampling and a matching rule.",
+    "claim_limit": "Repeatability on a generated scene is not invariance to every viewpoint."
+  },
+  {
+    "number": 44,
+    "task": "Reject outliers before refitting a geometric correspondence model.",
+    "expected_reasoning": "Consensus counts compatible observations; a refit must use the selected inliers rather than all original matches.",
+    "claim_limit": "A high inlier fraction can still support the wrong geometric model."
+  },
+  {
+    "number": 45,
+    "task": "Predict depth uncertainty as disparity approaches zero.",
+    "expected_reasoning": "Triangulation couples baseline, focal scale and disparity; far-range depth becomes sensitive even when pixel residuals stay small.",
+    "claim_limit": "A finite depth estimate does not prove positive depth in both cameras."
+  },
+  {
+    "number": 46,
+    "task": "Recover object pose from landmarks and check projection consistency.",
+    "expected_reasoning": "Pose changes both rotation and translation of each 3D point; reprojection and cheirality distinguish plausible solutions.",
+    "claim_limit": "Known correspondences and an initialized solver do not solve unrestricted object detection."
+  },
+  {
+    "number": 47,
+    "task": "Explain free-space and occupied updates along a range ray.",
+    "expected_reasoning": "Only traversed cells receive free evidence and the endpoint receives occupied evidence; log odds accumulate bounded belief.",
+    "claim_limit": "Repeated correlated scans do not provide independent probability evidence."
+  },
+  {
+    "number": 48,
+    "task": "Separate nearest-neighbor association from rigid-transform fitting.",
+    "expected_reasoning": "ICP alternates correspondences and pose updates; residual reduction depends on initialization and overlap.",
+    "claim_limit": "A small local residual does not prove global registration correctness."
+  },
+  {
+    "number": 49,
+    "task": "Predict which state direction becomes unobservable without excitation.",
+    "expected_reasoning": "The stacked whitened measurement rows determine rank; sample rate cannot recover a state absent from every row.",
+    "claim_limit": "A numerical rank threshold is not a universal sensor-design criterion."
+  },
+  {
+    "number": 50,
+    "task": "Separate gating from robust weighting of accepted residuals.",
+    "expected_reasoning": "Mahalanobis distance tests compatibility; a Huber influence bound limits an accepted outlier without changing its units.",
+    "claim_limit": "Two labeled candidates do not demonstrate general combinatorial association."
+  },
+  {
+    "number": 51,
+    "task": "Show how an unknown landmark changes the nonlinear graph state.",
+    "expected_reasoning": "Robot position, heading and landmark coordinates are optimized jointly; relative observations leave three planar gauge freedoms without an anchor.",
+    "claim_limit": "Known correspondences and a single initialized circuit omit loop discovery and global SLAM."
+  },
+  {
+    "number": 52,
+    "task": "Explain why a plausible false loop can deform an entire map.",
+    "expected_reasoning": "A robust loss limits the loop's influence while odometry and the anchor resist deformation; inspect distributed map error.",
+    "claim_limit": "Robust optimization does not make arbitrary false correspondences harmless."
+  },
+  {
+    "number": 53,
+    "task": "Distinguish a backward smoother from a causal filter with smaller error bars.",
+    "expected_reasoning": "Future measurements affect past states through the smoothing gain; held-out observations audit errors separately from fitting.",
+    "claim_limit": "One deterministic trajectory cannot establish probabilistic covariance coverage."
+  },
+  {
+    "number": 54,
+    "task": "Trace a changed edge through incremental search state.",
+    "expected_reasoning": "Reusable cost-to-come and one-step lookahead values must be made consistent after a map change; compare with a cold search.",
+    "claim_limit": "Weighted heuristics and tie rules affect expansion counts and optimality claims."
+  },
+  {
+    "number": 55,
+    "task": "Explain when a roadmap query fails despite many samples.",
+    "expected_reasoning": "Free nodes need collision-checked connections; connection radius and graph reachability matter independently of sample count.",
+    "claim_limit": "A missing path in a finite roadmap does not prove geometric impossibility."
+  },
+  {
+    "number": 56,
+    "task": "Verify that rewiring updates descendant costs as well as a parent pointer.",
+    "expected_reasoning": "A better connection changes the entire subtree's accumulated cost; the final path must follow the revised ancestry.",
+    "claim_limit": "A finite deterministic sample sequence is not an asymptotic optimality demonstration."
+  },
+  {
+    "number": 57,
+    "task": "Check swept clearance after removing intermediate waypoints.",
+    "expected_reasoning": "A shortcut can cross an inflated obstacle even when its endpoints are free; re-evaluate the full segment after smoothing.",
+    "claim_limit": "Circular planar obstacles do not represent arbitrary articulated collision geometry."
+  },
+  {
+    "number": 58,
+    "task": "Separate objective reduction from feasibility restoration.",
+    "expected_reasoning": "A smoother path can violate obstacle constraints; inspect every segment and retain fixed endpoints during updates.",
+    "claim_limit": "Local constrained optimization does not prove global path optimality."
+  },
+  {
+    "number": 59,
+    "task": "Reconstruct position and velocity from every bounded acceleration action.",
+    "expected_reasoning": "A kinodynamic state includes velocity; reaching the target at nonzero speed is a different goal from terminal rest.",
+    "claim_limit": "A finite lattice can fail to represent a feasible continuous trajectory."
+  },
+  {
+    "number": 60,
+    "task": "Explain why a short prediction horizon changes avoidance decisions.",
+    "expected_reasoning": "The selected acceleration is applied to the plant and the horizon is recomputed; a frozen-obstacle prediction uses the wrong future state.",
+    "claim_limit": "Finite sampled predictions do not automatically certify between-sample clearance."
+  },
+  {
+    "number": 61,
+    "task": "Distinguish force closure from supporting one selected external load.",
+    "expected_reasoning": "Positive combinations of friction-cone wrenches must span all wrench directions for closure; one feasible load is weaker evidence.",
+    "claim_limit": "Unbounded contact effort is not a grasp with finite actuator limits."
+  },
+  {
+    "number": 62,
+    "task": "Trace observation, approach, grasp verification, transfer and release.",
+    "expected_reasoning": "Every task transition must follow measured geometric or contact evidence; endpoint reachability alone cannot prove placement.",
+    "claim_limit": "Planar kinematic execution omits full gripper and object-contact dynamics."
+  },
+  {
+    "number": 63,
+    "task": "Compare base travel with arm dexterity for one target.",
+    "expected_reasoning": "Moving the base changes relative target coordinates and arm conditioning; a weighted objective trades travel against singularity avoidance.",
+    "claim_limit": "A configuration choice does not establish nonholonomic base trajectory feasibility."
+  },
+  {
+    "number": 64,
+    "task": "Demonstrate recovery after a motion edge becomes infeasible.",
+    "expected_reasoning": "The symbolic plan must use geometric feasibility and retain the actual execution state when selecting an alternative.",
+    "claim_limit": "Exhausting all alternatives must report failure rather than invent success."
+  },
+  {
+    "number": 65,
+    "task": "Check vertex and edge-swap conflicts in a reservation schedule.",
+    "expected_reasoning": "Robots can collide by sharing a cell or swapping cells during one step; waits and delayed starts remain part of the schedule.",
+    "claim_limit": "Discrete reservations do not certify continuous physical separation."
+  },
+  {
+    "number": 66,
+    "task": "Trace one encoder value through units, frames and timestamp contracts.",
+    "expected_reasoning": "Correct forward kinematics can still consume mis-scaled angles or stale data; check interface validity separately from inverse consistency.",
+    "claim_limit": "Self-inverse transform residuals alone cannot detect every frame mistake."
+  },
+  {
+    "number": 67,
+    "task": "Measure recovery latency from the actual accepted event sequence.",
+    "expected_reasoning": "Source time and arrival time serve different roles; stale rejection, gap detection and fresh-state recovery must be observable.",
+    "claim_limit": "A synthetic replay is not middleware or clock-synchronization qualification."
+  },
+  {
+    "number": 68,
+    "task": "Connect a sensor observation to map, state estimate, route and executed motion.",
+    "expected_reasoning": "Map and estimator outputs must feed planning and control; assess freshness, swept clearance, goal progress and recovery separately.",
+    "claim_limit": "A bounded deterministic mission does not establish field autonomy or safety certification."
+  },
+  {
+    "number": 69,
+    "task": "Connect visual pose, arm motion, grasp force and object placement.",
+    "expected_reasoning": "A grasp verdict must depend on executed arm/contact behavior and the object's final state; unrelated successful components do not prove integration.",
+    "claim_limit": "Synthetic planar manipulation is not hardware or general 3D manipulation qualification."
+  }
+]

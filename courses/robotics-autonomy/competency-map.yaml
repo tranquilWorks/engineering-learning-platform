@@ -6,45 +6,46 @@ course:
   baseline: ce2c130fd25571913f427d5ae3ad5d6c1b64e585
 scope:
   target_learners:
-  - Engineers or graduate students with calculus, linear algebra, differential equations, probability fundamentals,
-    feedback basics, and Python literacy.
+  - Engineers or graduate students with calculus, linear algebra, differential equations, probability
+    fundamentals, feedback basics, and Python literacy.
   prerequisites:
   - Vectors, matrices, eigenvalues, numerical integration, gradients, probability distributions, and elementary
     feedback.
-  - Ability to read Python and interpret trajectories, images, maps, covariance, timing, and force/motion plots.
+  - Ability to read Python and interpret trajectories, images, maps, covariance, timing, and force/motion
+    plots.
   outcomes:
-  - Represent mobile and articulated robots with explicit configuration, frame, twist, wrench, kinematic, dynamic,
-    and actuation conventions.
-  - Design and diagnose joint, task, inverse-dynamics, operational-space, impedance, admittance, force, and
-    underactuated controllers.
+  - Represent mobile and articulated robots with explicit configuration, frame, twist, wrench, kinematic,
+    dynamic, and actuation conventions.
+  - Design and diagnose joint, task, inverse-dynamics, operational-space, impedance, admittance, force,
+    and underactuated controllers.
   - Build camera/range perception, calibration, state-estimation, registration, factor-graph SLAM, loop-closure,
     and map-audit pipelines.
-  - Plan and replan geometric, sampling-based, optimized, kinodynamic, task-and-motion, manipulation, and multi-agent
-    behavior with bounded fallback.
-  - Integrate perception, estimation, planning, control, timing, safety, logging, replay, faults, and recovery
-    in two cumulative software capstones.
+  - Plan and replan geometric, sampling-based, optimized, kinodynamic, task-and-motion, manipulation,
+    and multi-agent behavior with bounded fallback.
+  - Integrate perception, estimation, planning, control, timing, safety, logging, replay, faults, and
+    recovery in two cumulative software capstones.
   exclusions:
-  - General feedback, state-space, optimal-control, navigation-filter, and guidance theory belongs to Controls/GNC;
-    Robotics applies those tools to robot embodiments and autonomy stacks.
+  - General feedback, state-space, optimal-control, navigation-filter, and guidance theory belongs to
+    Controls/GNC; Robotics applies those tools to robot embodiments and autonomy stacks.
   - Deep learning architectures, training infrastructure, dataset governance, and foundation-model robotics
     are outside this classical, deterministic computational boundary.
-  - Detailed vehicle tire/aero dynamics belongs to Vehicle Dynamics; detailed circuit/power electronics belongs
-    to Power Electronics and Embedded Systems.
-  - Production ROS 2 middleware administration, DDS security, cloud fleet operations, and vendor driver qualification
-    are interface handoffs rather than claimed competencies.
+  - Detailed vehicle tire/aero dynamics belongs to Vehicle Dynamics; detailed circuit/power electronics
+    belongs to Power Electronics and Embedded Systems.
+  - Production ROS 2 middleware administration, DDS security, cloud fleet operations, and vendor driver
+    qualification are interface handoffs rather than claimed competencies.
   - Physical HIL, hardware operation, safety certification, production deployment, MATLAB runtime equivalence,
     accessibility validation, and learner-effectiveness validation are not claimed.
   cross_course_handoffs:
-  - 'controls-gnc-learning: general stability, loop shaping, state feedback, optimal control, stochastic estimation,
-    navigation, and guidance foundations.'
+  - 'controls-gnc-learning: general stability, loop shaping, state feedback, optimal control, stochastic
+    estimation, navigation, and guidance foundations.'
   - 'dsp-radar-learning: sampled signals, spectral analysis, detection, estimation, arrays, radar propagation,
     and sensor-signal depth.'
   - 'vehicle-dynamics-learning: tire, road-load, handling, ride, braking, powertrain, and ground-vehicle-specific
     control depth.'
   - 'embedded-rt-hil-learning and hwil-systems-learning: target scheduling, buses, drivers, benches, physical
     I/O, and qualification.'
-  - 'computer-vision/deep-learning curricula: learning-based perception, training, dataset shift, and model
-    lifecycle beyond the classical vision pipeline here.'
+  - 'computer-vision/deep-learning curricula: learning-based perception, training, dataset shift, and
+    model lifecycle beyond the classical vision pipeline here.'
 competencies:
 - id: MOBILE-KINEMATICS
   outcome: Model nonholonomic mobile robots, integrate odometry, and coordinate base motion with higher-level
@@ -56,9 +57,12 @@ competencies:
   - P63
   assessment_ids:
   - A-GEOMETRY
+  - ROB-F01
+  - ROB-F13
+  - ROB-F63
 - id: RIGID-BODY-GEOMETRY
-  outcome: Represent configurations, rotations, poses, twists, screws, wrenches, constraints, and frame changes
-    without convention errors.
+  outcome: Represent configurations, rotations, poses, twists, screws, wrenches, constraints, and frame
+    changes without convention errors.
   prerequisite_ids: []
   module_ids:
   - P02
@@ -68,6 +72,11 @@ competencies:
   - P27
   assessment_ids:
   - A-GEOMETRY
+  - ROB-F02
+  - ROB-F12
+  - ROB-F25
+  - ROB-F26
+  - ROB-F27
 - id: MANIPULATOR-KINEMATICS
   outcome: Solve forward, inverse, differential, redundant, and singular manipulator kinematics with explicit
     branch and conditioning checks.
@@ -81,6 +90,11 @@ competencies:
   - P34
   assessment_ids:
   - A-KINEMATICS
+  - ROB-F03
+  - ROB-F04
+  - ROB-F28
+  - ROB-F29
+  - ROB-F34
 - id: ROBOT-DYNAMICS
   outcome: Derive and evaluate manipulator inertia, velocity coupling, gravity, statics, inverse dynamics,
     identification, and underactuated energy behavior.
@@ -97,9 +111,16 @@ competencies:
   - P40
   assessment_ids:
   - A-DYNAMICS
+  - ROB-F30
+  - ROB-F31
+  - ROB-F32
+  - ROB-F33
+  - ROB-F35
+  - ROB-F36
+  - ROB-F40
 - id: ACTUATION-JOINT-CONTROL
-  outcome: Model electromechanical actuation and close joint-, task-, computed-torque-, and underactuated feedback
-    loops within limits.
+  outcome: Model electromechanical actuation and close joint-, task-, computed-torque-, and underactuated
+    feedback loops within limits.
   prerequisite_ids:
   - ROBOT-DYNAMICS
   module_ids:
@@ -111,6 +132,12 @@ competencies:
   - P40
   assessment_ids:
   - A-CONTROL
+  - ROB-F05
+  - ROB-F06
+  - ROB-F34
+  - ROB-F35
+  - ROB-F36
+  - ROB-F40
 - id: PHYSICAL-INTERACTION
   outcome: Reason about impedance, admittance, contact, force control, passivity, delay, saturation, grasping,
     and safe energy exchange.
@@ -127,6 +154,12 @@ competencies:
   assessment_ids:
   - A-CONTROL
   - A-CAP-MANIP
+  - ROB-F08
+  - ROB-F37
+  - ROB-F38
+  - ROB-F39
+  - ROB-F61
+  - ROB-F69
 - id: SENSOR-MODELING-CALIBRATION
   outcome: Model encoders, inertial and range sensors, timing, noise, bias, and intrinsic/extrinsic calibration
     with observable residuals.
@@ -140,9 +173,14 @@ competencies:
   - P42
   assessment_ids:
   - A-PERCEPTION
+  - ROB-F09
+  - ROB-F10
+  - ROB-F11
+  - ROB-F12
+  - ROB-F42
 - id: VISION-PERCEPTION
-  outcome: Form images, calibrate cameras, detect and match features, reject outliers, recover depth, and estimate
-    object pose.
+  outcome: Form images, calibrate cameras, detect and match features, reject outliers, recover depth,
+    and estimate object pose.
   prerequisite_ids:
   - SENSOR-MODELING-CALIBRATION
   - RIGID-BODY-GEOMETRY
@@ -156,9 +194,16 @@ competencies:
   - P62
   assessment_ids:
   - A-PERCEPTION
+  - ROB-F41
+  - ROB-F42
+  - ROB-F43
+  - ROB-F44
+  - ROB-F45
+  - ROB-F46
+  - ROB-F62
 - id: RANGE-PERCEPTION
-  outcome: Convert noisy range returns into occupancy and registered geometry with declared sensor and correspondence
-    assumptions.
+  outcome: Convert noisy range returns into occupancy and registered geometry with declared sensor and
+    correspondence assumptions.
   prerequisite_ids:
   - SENSOR-MODELING-CALIBRATION
   module_ids:
@@ -167,6 +212,9 @@ competencies:
   - P48
   assessment_ids:
   - A-PERCEPTION
+  - ROB-F11
+  - ROB-F47
+  - ROB-F48
 - id: STATE-ESTIMATION
   outcome: Propagate and update probabilistic robot state while diagnosing nonlinear, sampled, multi-rate,
     gating, and observability limits.
@@ -182,9 +230,16 @@ competencies:
   - P53
   assessment_ids:
   - A-ESTIMATION
+  - ROB-F10
+  - ROB-F13
+  - ROB-F14
+  - ROB-F15
+  - ROB-F49
+  - ROB-F50
+  - ROB-F53
 - id: SLAM-MAPPING
-  outcome: Build, optimize, close, smooth, and audit maps and trajectories using range/visual constraints and
-    robust graph methods.
+  outcome: Build, optimize, close, smooth, and audit maps and trajectories using range/visual constraints
+    and robust graph methods.
   prerequisite_ids:
   - STATE-ESTIMATION
   - RANGE-PERCEPTION
@@ -200,6 +255,14 @@ competencies:
   assessment_ids:
   - A-SLAM
   - A-CAP-MOBILE
+  - ROB-F16
+  - ROB-F47
+  - ROB-F48
+  - ROB-F50
+  - ROB-F51
+  - ROB-F52
+  - ROB-F53
+  - ROB-F68
 - id: GLOBAL-MOTION-PLANNING
   outcome: Search, sample, improve, smooth, time-scale, and optimize collision-free global paths and trajectories.
   prerequisite_ids:
@@ -216,9 +279,18 @@ competencies:
   - P58
   assessment_ids:
   - A-PLANNING
+  - ROB-F07
+  - ROB-F17
+  - ROB-F18
+  - ROB-F33
+  - ROB-F54
+  - ROB-F55
+  - ROB-F56
+  - ROB-F57
+  - ROB-F58
 - id: LOCAL-KINODYNAMIC-PLANNING
-  outcome: Respect motion dynamics and moving obstacles in local prediction, avoidance, replanning, and fallback
-    behavior.
+  outcome: Respect motion dynamics and moving obstacles in local prediction, avoidance, replanning, and
+    fallback behavior.
   prerequisite_ids:
   - GLOBAL-MOTION-PLANNING
   - ROBOT-DYNAMICS
@@ -230,6 +302,10 @@ competencies:
   assessment_ids:
   - A-PLANNING
   - A-CAP-MOBILE
+  - ROB-F19
+  - ROB-F59
+  - ROB-F60
+  - ROB-F68
 - id: TASK-AUTONOMY
   outcome: Compose behaviors, missions, task-and-motion decisions, multi-agent coordination, failure detection,
     and recovery.
@@ -242,9 +318,13 @@ competencies:
   - P65
   assessment_ids:
   - A-AUTONOMY
+  - ROB-F20
+  - ROB-F21
+  - ROB-F64
+  - ROB-F65
 - id: MANIPULATION
-  outcome: Assess grasp mechanics and integrate perception, kinematics, planning, contact, and control for
-    robot manipulation.
+  outcome: Assess grasp mechanics and integrate perception, kinematics, planning, contact, and control
+    for robot manipulation.
   prerequisite_ids:
   - MANIPULATOR-KINEMATICS
   - PHYSICAL-INTERACTION
@@ -259,6 +339,12 @@ competencies:
   assessment_ids:
   - A-MANIPULATION
   - A-CAP-MANIP
+  - ROB-F46
+  - ROB-F61
+  - ROB-F62
+  - ROB-F63
+  - ROB-F64
+  - ROB-F69
 - id: REALTIME-SAFETY
   outcome: Budget timing, monitor hazards and stale data, constrain unsafe actions, preserve bounded fallback,
     and retain evidence.
@@ -273,6 +359,13 @@ competencies:
   - P67
   assessment_ids:
   - A-SAFETY
+  - ROB-F22
+  - ROB-F23
+  - ROB-F24
+  - ROB-F39
+  - ROB-F60
+  - ROB-F65
+  - ROB-F67
 - id: SYSTEM-INTEGRATION
   outcome: Integrate models, frames, interfaces, logs, replay, diagnostics, estimation, planning, control,
     faults, and recovery in cumulative systems.
@@ -288,6 +381,11 @@ competencies:
   assessment_ids:
   - A-CAP-MOBILE
   - A-CAP-MANIP
+  - ROB-F24
+  - ROB-F66
+  - ROB-F67
+  - ROB-F68
+  - ROB-F69
 modules:
 - id: P01
   title: Drive a Differential Robot with Wheel Speeds
@@ -888,8 +986,8 @@ assessments:
   type: cumulative
   competency_ids:
   - MANIPULATOR-KINEMATICS
-  evidence: Forward/inverse residuals, branch choices, Jacobian finite differences, singular values, and null-space
-    invariants.
+  evidence: Forward/inverse residuals, branch choices, Jacobian finite differences, singular values, and
+    null-space invariants.
 - id: A-DYNAMICS
   type: cumulative
   competency_ids:
@@ -901,8 +999,8 @@ assessments:
   competency_ids:
   - ACTUATION-JOINT-CONTROL
   - PHYSICAL-INTERACTION
-  evidence: Tracking, effort, gravity, interaction energy, force error, passivity, delay, saturation, and recovery
-    checks.
+  evidence: Tracking, effort, gravity, interaction energy, force error, passivity, delay, saturation,
+    and recovery checks.
 - id: A-PERCEPTION
   type: cumulative
   competency_ids:
@@ -933,7 +1031,8 @@ assessments:
   type: cumulative
   competency_ids:
   - TASK-AUTONOMY
-  evidence: Behavior, state, task-and-motion, multi-agent contract, failure propagation, and recovery evidence.
+  evidence: Behavior, state, task-and-motion, multi-agent contract, failure propagation, and recovery
+    evidence.
 - id: A-MANIPULATION
   type: cumulative
   competency_ids:
@@ -952,8 +1051,8 @@ assessments:
   - SYSTEM-INTEGRATION
   - SLAM-MAPPING
   - LOCAL-KINODYNAMIC-PLANNING
-  evidence: Reused perception, mapping, localization, replanning, local avoidance, monitoring, replay, and
-    recovery artifacts.
+  evidence: Reused perception, mapping, localization, replanning, local avoidance, monitoring, replay,
+    and recovery artifacts.
 - id: A-CAP-MANIP
   type: capstone
   competency_ids:
@@ -961,6 +1060,382 @@ assessments:
   - MANIPULATION
   - PHYSICAL-INTERACTION
   evidence: Reused camera, pose, grasp, kinematics, dynamics, contact, control, timing, and recovery artifacts.
+- id: ROB-F01
+  type: formative
+  competency_ids:
+  - MOBILE-KINEMATICS
+  evidence: 'Predict straight motion, a left arc and pure spin from wheel speeds. Evidence: modules/01-drive-a-differential-robot-with-wheel-speeds/assessment.md'
+- id: ROB-F02
+  type: formative
+  competency_ids:
+  - RIGID-BODY-GEOMETRY
+  evidence: 'Compose two planar frame changes and reverse their order. Evidence: modules/02-transform-coordinates-between-frames/assessment.md'
+- id: ROB-F03
+  type: formative
+  competency_ids:
+  - MANIPULATOR-KINEMATICS
+  evidence: 'Predict the endpoint with the elbow straight and then folded. Evidence: modules/03-compute-arm-forward-kinematics/assessment.md'
+- id: ROB-F04
+  type: formative
+  competency_ids:
+  - MANIPULATOR-KINEMATICS
+  evidence: 'Explain why an unreachable target must be rejected before clipping the cosine. Evidence:
+    modules/04-solve-inverse-kinematics/assessment.md'
+- id: ROB-F05
+  type: formative
+  competency_ids:
+  - ACTUATION-JOINT-CONTROL
+  evidence: 'Predict current and speed when gear ratio changes under load. Evidence: modules/05-model-a-dc-motor-and-geartrain/assessment.md'
+- id: ROB-F06
+  type: formative
+  competency_ids:
+  - ACTUATION-JOINT-CONTROL
+  evidence: 'Separate speed tracking, saturation and integral windup. Evidence: modules/06-close-a-wheel-speed-loop/assessment.md'
+- id: ROB-F07
+  type: formative
+  competency_ids:
+  - GLOBAL-MOTION-PLANNING
+  evidence: 'Compute endpoint velocity and acceleration for the displayed trajectory. Evidence: modules/07-generate-a-smooth-trajectory/assessment.md'
+- id: ROB-F08
+  type: formative
+  competency_ids:
+  - PHYSICAL-INTERACTION
+  evidence: 'Predict contact displacement when stiffness changes with fixed force. Evidence: modules/08-control-contact-with-impedance/assessment.md'
+- id: ROB-F09
+  type: formative
+  competency_ids:
+  - SENSOR-MODELING-CALIBRATION
+  evidence: 'Estimate encoder resolution and the speed ripple caused by quantization. Evidence: modules/09-measure-motion-with-encoders/assessment.md'
+- id: ROB-F10
+  type: formative
+  competency_ids:
+  - SENSOR-MODELING-CALIBRATION
+  - STATE-ESTIMATION
+  evidence: 'Predict position drift from a constant accelerometer bias. Evidence: modules/10-integrate-an-imu-and-observe-drift/assessment.md'
+- id: ROB-F11
+  type: formative
+  competency_ids:
+  - SENSOR-MODELING-CALIBRATION
+  - RANGE-PERCEPTION
+  evidence: 'Separate a range-sensor blind zone from random-looking measurement variation. Evidence: modules/11-build-a-range-sensor-model/assessment.md'
+- id: ROB-F12
+  type: formative
+  competency_ids:
+  - RIGID-BODY-GEOMETRY
+  - SENSOR-MODELING-CALIBRATION
+  evidence: 'Recover a sensor transform and check a held-out point. Evidence: modules/12-calibrate-sensor-extrinsics/assessment.md'
+- id: ROB-F13
+  type: formative
+  competency_ids:
+  - MOBILE-KINEMATICS
+  - STATE-ESTIMATION
+  evidence: 'Compare exact planar arc integration with a straight-line approximation. Evidence: modules/13-integrate-wheel-odometry/assessment.md'
+- id: ROB-F14
+  type: formative
+  competency_ids:
+  - STATE-ESTIMATION
+  evidence: 'Trace a wheel/absolute-position observation through EKF prediction and correction. Evidence:
+    modules/14-fuse-sensors-with-an-ekf/assessment.md'
+- id: ROB-F15
+  type: formative
+  competency_ids:
+  - STATE-ESTIMATION
+  evidence: 'Explain particle weights, effective sample size and resampling diversity. Evidence: modules/15-localize-with-a-particle-filter/assessment.md'
+- id: ROB-F16
+  type: formative
+  competency_ids:
+  - SLAM-MAPPING
+  evidence: 'Identify the unknown landmark and the global translation gauge. Evidence: modules/16-build-a-small-slam-problem/assessment.md'
+- id: ROB-F17
+  type: formative
+  competency_ids:
+  - GLOBAL-MOTION-PLANNING
+  evidence: 'Predict whether changing a heuristic preserves shortest-path optimality. Evidence: modules/17-search-a-grid-with-a-star/assessment.md'
+- id: ROB-F18
+  type: formative
+  competency_ids:
+  - GLOBAL-MOTION-PLANNING
+  evidence: 'Explain why node collision checks do not certify sampled-tree edges. Evidence: modules/18-plan-with-random-samples/assessment.md'
+- id: ROB-F19
+  type: formative
+  competency_ids:
+  - LOCAL-KINODYNAMIC-PLANNING
+  evidence: 'Predict a moving-obstacle conflict using synchronized relative motion. Evidence: modules/19-avoid-moving-obstacles/assessment.md'
+- id: ROB-F20
+  type: formative
+  competency_ids:
+  - TASK-AUTONOMY
+  evidence: 'Reconstruct a behavior-tree tick from child status and traversal order. Evidence: modules/20-coordinate-actions-with-a-behavior-tree/assessment.md'
+- id: ROB-F21
+  type: formative
+  competency_ids:
+  - TASK-AUTONOMY
+  evidence: 'Show which guard permits a mission-state transition. Evidence: modules/21-execute-a-mission-state-machine/assessment.md'
+- id: ROB-F22
+  type: formative
+  competency_ids:
+  - REALTIME-SAFETY
+  evidence: 'Compute a deadline miss from release, execution and response time. Evidence: modules/22-meet-real-time-perception-and-control-deadlines/assessment.md'
+- id: ROB-F23
+  type: formative
+  competency_ids:
+  - REALTIME-SAFETY
+  evidence: 'Distinguish detection time from achieving a safe state. Evidence: modules/23-design-safety-monitors/assessment.md'
+- id: ROB-F24
+  type: formative
+  competency_ids:
+  - REALTIME-SAFETY
+  - SYSTEM-INTEGRATION
+  evidence: 'Follow a delayed command through a watchdog and virtual plant. Evidence: modules/24-validate-autonomy-in-hil/assessment.md'
+- id: ROB-F25
+  type: formative
+  competency_ids:
+  - RIGID-BODY-GEOMETRY
+  evidence: 'Check both radial constraint residual and tangent-velocity projection. Evidence: modules/25-represent-configuration-spaces-and-holonomic-constraints/assessment.md'
+- id: ROB-F26
+  type: formative
+  competency_ids:
+  - RIGID-BODY-GEOMETRY
+  evidence: 'Compare rigid pose composition with elementwise matrix interpolation. Evidence: modules/26-compose-rotations-and-poses-on-so-3-and-se-3/assessment.md'
+- id: ROB-F27
+  type: formative
+  competency_ids:
+  - RIGID-BODY-GEOMETRY
+  evidence: 'Preserve mechanical power while changing twist and wrench frames. Evidence: modules/27-map-twists-screws-and-wrenches-with-adjoint-transforms/assessment.md'
+- id: ROB-F28
+  type: formative
+  competency_ids:
+  - MANIPULATOR-KINEMATICS
+  evidence: 'Predict Jacobian rank near a straight or folded elbow. Evidence: modules/28-build-spatial-jacobians-and-diagnose-singularities/assessment.md'
+- id: ROB-F29
+  type: formative
+  competency_ids:
+  - MANIPULATOR-KINEMATICS
+  evidence: 'Separate desired task velocity from secondary null-space motion. Evidence: modules/29-resolve-redundancy-with-null-space-motion/assessment.md'
+- id: ROB-F30
+  type: formative
+  competency_ids:
+  - ROBOT-DYNAMICS
+  evidence: 'Derive joint torques from a specified end-effector wrench. Evidence: modules/30-map-end-effector-wrenches-to-joint-torques/assessment.md'
+- id: ROB-F31
+  type: formative
+  competency_ids:
+  - ROBOT-DYNAMICS
+  evidence: 'Check inertia symmetry, positive energy and the Coriolis skew identity. Evidence: modules/31-derive-manipulator-inertia-coriolis-and-gravity-terms/assessment.md'
+- id: ROB-F32
+  type: formative
+  competency_ids:
+  - ROBOT-DYNAMICS
+  evidence: 'Separate parameter fitting from held-out torque prediction. Evidence: modules/32-compute-inverse-dynamics-and-identify-robot-parameters/assessment.md'
+- id: ROB-F33
+  type: formative
+  competency_ids:
+  - ROBOT-DYNAMICS
+  - GLOBAL-MOTION-PLANNING
+  evidence: 'Find the trajectory duration required by both speed and acceleration limits. Evidence: modules/33-time-scale-multi-joint-trajectories-within-limits/assessment.md'
+- id: ROB-F34
+  type: formative
+  competency_ids:
+  - MANIPULATOR-KINEMATICS
+  - ACTUATION-JOINT-CONTROL
+  evidence: 'Compare joint-space tracking with task-space error under the same plant. Evidence: modules/34-compare-joint-space-and-task-space-tracking/assessment.md'
+- id: ROB-F35
+  type: formative
+  competency_ids:
+  - ROBOT-DYNAMICS
+  - ACTUATION-JOINT-CONTROL
+  evidence: 'Explain the effect of payload mismatch on computed-torque compensation. Evidence: modules/35-apply-computed-torque-and-gravity-compensation/assessment.md'
+- id: ROB-F36
+  type: formative
+  competency_ids:
+  - ROBOT-DYNAMICS
+  - ACTUATION-JOINT-CONTROL
+  evidence: 'Compute operational-space inertia and diagnose singular directions. Evidence: modules/36-control-motion-in-operational-space/assessment.md'
+- id: ROB-F37
+  type: formative
+  competency_ids:
+  - PHYSICAL-INTERACTION
+  evidence: 'Compare impedance and admittance under the same environment stiffness. Evidence: modules/37-compare-impedance-and-admittance-control/assessment.md'
+- id: ROB-F38
+  type: formative
+  competency_ids:
+  - PHYSICAL-INTERACTION
+  evidence: 'Separate tangential motion control from normal contact-force control. Evidence: modules/38-regulate-hybrid-motion-and-contact-force/assessment.md'
+- id: ROB-F39
+  type: formative
+  competency_ids:
+  - PHYSICAL-INTERACTION
+  - REALTIME-SAFETY
+  evidence: 'Audit the energy tank when saturation and delayed commands occur. Evidence: modules/39-preserve-passivity-under-saturation-and-delay/assessment.md'
+- id: ROB-F40
+  type: formative
+  competency_ids:
+  - ROBOT-DYNAMICS
+  - ACTUATION-JOINT-CONTROL
+  evidence: 'Explain the energy-shaping and balance-control switching condition. Evidence: modules/40-swing-up-and-balance-an-underactuated-robot/assessment.md'
+- id: ROB-F41
+  type: formative
+  competency_ids:
+  - VISION-PERCEPTION
+  evidence: 'Predict pixel motion from depth and camera pose. Evidence: modules/41-project-3d-points-with-a-pinhole-camera/assessment.md'
+- id: ROB-F42
+  type: formative
+  competency_ids:
+  - SENSOR-MODELING-CALIBRATION
+  - VISION-PERCEPTION
+  evidence: 'Compare calibration fit error with held-out reprojection error. Evidence: modules/42-calibrate-camera-intrinsics-and-lens-distortion/assessment.md'
+- id: ROB-F43
+  type: formative
+  competency_ids:
+  - VISION-PERCEPTION
+  evidence: 'Explain why detected corners are not yet reliable correspondences. Evidence: modules/43-detect-and-describe-repeatable-image-features/assessment.md'
+- id: ROB-F44
+  type: formative
+  competency_ids:
+  - VISION-PERCEPTION
+  evidence: 'Reject outliers before refitting a geometric correspondence model. Evidence: modules/44-reject-outliers-in-visual-correspondences/assessment.md'
+- id: ROB-F45
+  type: formative
+  competency_ids:
+  - VISION-PERCEPTION
+  evidence: 'Predict depth uncertainty as disparity approaches zero. Evidence: modules/45-recover-depth-from-stereo-geometry/assessment.md'
+- id: ROB-F46
+  type: formative
+  competency_ids:
+  - VISION-PERCEPTION
+  - MANIPULATION
+  evidence: 'Recover object pose from landmarks and check projection consistency. Evidence: modules/46-estimate-object-pose-from-visual-landmarks/assessment.md'
+- id: ROB-F47
+  type: formative
+  competency_ids:
+  - RANGE-PERCEPTION
+  - SLAM-MAPPING
+  evidence: 'Explain free-space and occupied updates along a range ray. Evidence: modules/47-build-occupancy-grids-from-range-data/assessment.md'
+- id: ROB-F48
+  type: formative
+  competency_ids:
+  - RANGE-PERCEPTION
+  - SLAM-MAPPING
+  evidence: 'Separate nearest-neighbor association from rigid-transform fitting. Evidence: modules/48-register-point-clouds-with-icp/assessment.md'
+- id: ROB-F49
+  type: formative
+  competency_ids:
+  - STATE-ESTIMATION
+  evidence: 'Predict which state direction becomes unobservable without excitation. Evidence: modules/49-test-observability-in-multi-rate-sensor-fusion/assessment.md'
+- id: ROB-F50
+  type: formative
+  competency_ids:
+  - STATE-ESTIMATION
+  - SLAM-MAPPING
+  evidence: 'Separate gating from robust weighting of accepted residuals. Evidence: modules/50-associate-measurements-with-gating-and-robust-losses/assessment.md'
+- id: ROB-F51
+  type: formative
+  competency_ids:
+  - SLAM-MAPPING
+  evidence: 'Show how an unknown landmark changes the nonlinear graph state. Evidence: modules/51-solve-nonlinear-factor-graph-slam/assessment.md'
+- id: ROB-F52
+  type: formative
+  competency_ids:
+  - SLAM-MAPPING
+  evidence: 'Explain why a plausible false loop can deform an entire map. Evidence: modules/52-detect-loop-closures-and-reject-false-matches/assessment.md'
+- id: ROB-F53
+  type: formative
+  competency_ids:
+  - STATE-ESTIMATION
+  - SLAM-MAPPING
+  evidence: 'Distinguish a backward smoother from a causal filter with smaller error bars. Evidence: modules/53-smooth-trajectories-and-audit-map-consistency/assessment.md'
+- id: ROB-F54
+  type: formative
+  competency_ids:
+  - GLOBAL-MOTION-PLANNING
+  evidence: 'Trace a changed edge through incremental search state. Evidence: modules/54-replan-efficiently-with-incremental-graph-search/assessment.md'
+- id: ROB-F55
+  type: formative
+  competency_ids:
+  - GLOBAL-MOTION-PLANNING
+  evidence: 'Explain when a roadmap query fails despite many samples. Evidence: modules/55-build-and-query-a-probabilistic-roadmap/assessment.md'
+- id: ROB-F56
+  type: formative
+  competency_ids:
+  - GLOBAL-MOTION-PLANNING
+  evidence: 'Verify that rewiring updates descendant costs as well as a parent pointer. Evidence: modules/56-improve-sampled-paths-with-rrt-star/assessment.md'
+- id: ROB-F57
+  type: formative
+  competency_ids:
+  - GLOBAL-MOTION-PLANNING
+  evidence: 'Check swept clearance after removing intermediate waypoints. Evidence: modules/57-check-collision-geometry-and-smooth-paths/assessment.md'
+- id: ROB-F58
+  type: formative
+  competency_ids:
+  - GLOBAL-MOTION-PLANNING
+  evidence: 'Separate objective reduction from feasibility restoration. Evidence: modules/58-optimize-a-trajectory-through-obstacle-constraints/assessment.md'
+- id: ROB-F59
+  type: formative
+  competency_ids:
+  - LOCAL-KINODYNAMIC-PLANNING
+  evidence: 'Reconstruct position and velocity from every bounded acceleration action. Evidence: modules/59-plan-dynamically-feasible-kinodynamic-motion/assessment.md'
+- id: ROB-F60
+  type: formative
+  competency_ids:
+  - LOCAL-KINODYNAMIC-PLANNING
+  - REALTIME-SAFETY
+  evidence: 'Explain why a short prediction horizon changes avoidance decisions. Evidence: modules/60-avoid-dynamic-obstacles-with-local-predictive-control/assessment.md'
+- id: ROB-F61
+  type: formative
+  competency_ids:
+  - PHYSICAL-INTERACTION
+  - MANIPULATION
+  evidence: 'Distinguish force closure from supporting one selected external load. Evidence: modules/61-evaluate-grasp-contacts-and-force-closure/assessment.md'
+- id: ROB-F62
+  type: formative
+  competency_ids:
+  - VISION-PERCEPTION
+  - MANIPULATION
+  evidence: 'Trace observation, approach, grasp verification, transfer and release. Evidence: modules/62-execute-perception-guided-pick-and-place/assessment.md'
+- id: ROB-F63
+  type: formative
+  competency_ids:
+  - MOBILE-KINEMATICS
+  - MANIPULATION
+  evidence: 'Compare base travel with arm dexterity for one target. Evidence: modules/63-coordinate-a-mobile-manipulator/assessment.md'
+- id: ROB-F64
+  type: formative
+  competency_ids:
+  - TASK-AUTONOMY
+  - MANIPULATION
+  evidence: 'Demonstrate recovery after a motion edge becomes infeasible. Evidence: modules/64-plan-tasks-and-motions-with-recovery/assessment.md'
+- id: ROB-F65
+  type: formative
+  competency_ids:
+  - TASK-AUTONOMY
+  - REALTIME-SAFETY
+  evidence: 'Check vertex and edge-swap conflicts in a reservation schedule. Evidence: modules/65-coordinate-multiple-robots-with-assurance-boundaries/assessment.md'
+- id: ROB-F66
+  type: formative
+  competency_ids:
+  - SYSTEM-INTEGRATION
+  evidence: 'Trace one encoder value through units, frames and timestamp contracts. Evidence: modules/66-integrate-robot-models-frames-and-interfaces/assessment.md'
+- id: ROB-F67
+  type: formative
+  competency_ids:
+  - REALTIME-SAFETY
+  - SYSTEM-INTEGRATION
+  evidence: 'Measure recovery latency from the actual accepted event sequence. Evidence: modules/67-replay-diagnose-and-recover-a-timed-robot-system/assessment.md'
+- id: ROB-F68
+  type: formative
+  competency_ids:
+  - SLAM-MAPPING
+  - LOCAL-KINODYNAMIC-PLANNING
+  - SYSTEM-INTEGRATION
+  evidence: 'Connect a sensor observation to map, state estimate, route and executed motion. Evidence:
+    modules/68-capstone-navigate-and-replan-with-perception/assessment.md'
+- id: ROB-F69
+  type: formative
+  competency_ids:
+  - PHYSICAL-INTERACTION
+  - MANIPULATION
+  - SYSTEM-INTEGRATION
+  evidence: 'Connect visual pose, arm motion, grasp force and object placement. Evidence: modules/69-capstone-perceive-grasp-and-control-a-two-link-robot/assessment.md'
 capstones:
 - id: CAP-MOBILE-AUTONOMY
   module_ids:
@@ -984,24 +1459,25 @@ capstones:
   - ROBOT-DYNAMICS
   - PHYSICAL-INTERACTION
   - REALTIME-SAFETY
-  integration_claim: P69 reuses camera calibration and pose, grasp analysis, two-link dynamics, planning, contact
-    control, timing monitors, and fault recovery on an ODRI/QDD/moteus-inspired software model with pen, vacuum,
-    and gripper tool cases.
+  integration_claim: P69 reuses camera calibration and pose, grasp analysis, two-link dynamics, planning,
+    contact control, timing monitors, and fault recovery on an ODRI/QDD/moteus-inspired software model
+    with pen, vacuum, and gripper tool cases.
 evidence_plan:
 - claim_id: CLAIM-P01-P24-DEPTH
   origin: alternative_algorithm
   independent: true
   method: Retain the source-bound independent references and scenario evidence while adding reviewed derivations,
     conventions, limiting comparisons, practical failures, formative checks, and cross-course boundaries.
-  tolerance: Per-module absolute and scale-aware relative tolerances retained in the source conversion records.
+  tolerance: Per-module absolute and scale-aware relative tolerances retained in the source conversion
+    records.
   imports_production_entrypoint: false
   derived_from_production_output: false
   perturbs_production_output: false
 - claim_id: CLAIM-P25
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Represent Configuration Spaces and Holonomic Constraints, covering baseline,
-    two one-variable sweeps, broken, recovery, and limiting scenarios.
+  method: Independent formulation for Represent Configuration Spaces and Holonomic Constraints, covering
+    baseline, two one-variable sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1010,8 +1486,8 @@ evidence_plan:
 - claim_id: CLAIM-P26
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Compose Rotations and Poses on SO(3) and SE(3), covering baseline, two
-    one-variable sweeps, broken, recovery, and limiting scenarios.
+  method: Independent formulation for Compose Rotations and Poses on SO(3) and SE(3), covering baseline,
+    two one-variable sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1020,8 +1496,8 @@ evidence_plan:
 - claim_id: CLAIM-P27
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Map Twists, Screws, and Wrenches with Adjoint Transforms, covering baseline,
-    two one-variable sweeps, broken, recovery, and limiting scenarios.
+  method: Independent formulation for Map Twists, Screws, and Wrenches with Adjoint Transforms, covering
+    baseline, two one-variable sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1040,8 +1516,8 @@ evidence_plan:
 - claim_id: CLAIM-P29
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Resolve Redundancy with Null-Space Motion, covering baseline, two one-variable
-    sweeps, broken, recovery, and limiting scenarios.
+  method: Independent formulation for Resolve Redundancy with Null-Space Motion, covering baseline, two
+    one-variable sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1050,8 +1526,8 @@ evidence_plan:
 - claim_id: CLAIM-P30
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Map End-Effector Wrenches to Joint Torques, covering baseline, two one-variable
-    sweeps, broken, recovery, and limiting scenarios.
+  method: Independent formulation for Map End-Effector Wrenches to Joint Torques, covering baseline, two
+    one-variable sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1060,8 +1536,8 @@ evidence_plan:
 - claim_id: CLAIM-P31
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Derive Manipulator Inertia, Coriolis, and Gravity Terms, covering baseline,
-    two one-variable sweeps, broken, recovery, and limiting scenarios.
+  method: Independent formulation for Derive Manipulator Inertia, Coriolis, and Gravity Terms, covering
+    baseline, two one-variable sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1070,8 +1546,8 @@ evidence_plan:
 - claim_id: CLAIM-P32
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Compute Inverse Dynamics and Identify Robot Parameters, covering baseline,
-    two one-variable sweeps, broken, recovery, and limiting scenarios.
+  method: Independent formulation for Compute Inverse Dynamics and Identify Robot Parameters, covering
+    baseline, two one-variable sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1090,8 +1566,8 @@ evidence_plan:
 - claim_id: CLAIM-P34
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Compare Joint-Space and Task-Space Tracking, covering baseline, two one-variable
-    sweeps, broken, recovery, and limiting scenarios.
+  method: Independent formulation for Compare Joint-Space and Task-Space Tracking, covering baseline,
+    two one-variable sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1100,8 +1576,8 @@ evidence_plan:
 - claim_id: CLAIM-P35
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Apply Computed Torque and Gravity Compensation, covering baseline, two
-    one-variable sweeps, broken, recovery, and limiting scenarios.
+  method: Independent formulation for Apply Computed Torque and Gravity Compensation, covering baseline,
+    two one-variable sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1120,8 +1596,8 @@ evidence_plan:
 - claim_id: CLAIM-P37
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Compare Impedance and Admittance Control, covering baseline, two one-variable
-    sweeps, broken, recovery, and limiting scenarios.
+  method: Independent formulation for Compare Impedance and Admittance Control, covering baseline, two
+    one-variable sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1130,8 +1606,8 @@ evidence_plan:
 - claim_id: CLAIM-P38
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Regulate Hybrid Motion and Contact Force, covering baseline, two one-variable
-    sweeps, broken, recovery, and limiting scenarios.
+  method: Independent formulation for Regulate Hybrid Motion and Contact Force, covering baseline, two
+    one-variable sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1140,8 +1616,8 @@ evidence_plan:
 - claim_id: CLAIM-P39
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Preserve Passivity under Saturation and Delay, covering baseline, two
-    one-variable sweeps, broken, recovery, and limiting scenarios.
+  method: Independent formulation for Preserve Passivity under Saturation and Delay, covering baseline,
+    two one-variable sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1150,8 +1626,8 @@ evidence_plan:
 - claim_id: CLAIM-P40
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Swing Up and Balance an Underactuated Robot, covering baseline, two one-variable
-    sweeps, broken, recovery, and limiting scenarios.
+  method: Independent formulation for Swing Up and Balance an Underactuated Robot, covering baseline,
+    two one-variable sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1160,8 +1636,8 @@ evidence_plan:
 - claim_id: CLAIM-P41
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Project 3D Points with a Pinhole Camera, covering baseline, two one-variable
-    sweeps, broken, recovery, and limiting scenarios.
+  method: Independent formulation for Project 3D Points with a Pinhole Camera, covering baseline, two
+    one-variable sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1170,8 +1646,8 @@ evidence_plan:
 - claim_id: CLAIM-P42
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Calibrate Camera Intrinsics and Lens Distortion, covering baseline, two
-    one-variable sweeps, broken, recovery, and limiting scenarios.
+  method: Independent formulation for Calibrate Camera Intrinsics and Lens Distortion, covering baseline,
+    two one-variable sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1180,8 +1656,8 @@ evidence_plan:
 - claim_id: CLAIM-P43
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Detect and Describe Repeatable Image Features, covering baseline, two
-    one-variable sweeps, broken, recovery, and limiting scenarios.
+  method: Independent formulation for Detect and Describe Repeatable Image Features, covering baseline,
+    two one-variable sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1190,8 +1666,8 @@ evidence_plan:
 - claim_id: CLAIM-P44
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Reject Outliers in Visual Correspondences, covering baseline, two one-variable
-    sweeps, broken, recovery, and limiting scenarios.
+  method: Independent formulation for Reject Outliers in Visual Correspondences, covering baseline, two
+    one-variable sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1210,8 +1686,8 @@ evidence_plan:
 - claim_id: CLAIM-P46
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Estimate Object Pose from Visual Landmarks, covering baseline, two one-variable
-    sweeps, broken, recovery, and limiting scenarios.
+  method: Independent formulation for Estimate Object Pose from Visual Landmarks, covering baseline, two
+    one-variable sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1230,8 +1706,8 @@ evidence_plan:
 - claim_id: CLAIM-P48
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Register Point Clouds with ICP, covering baseline, two one-variable sweeps,
-    broken, recovery, and limiting scenarios.
+  method: Independent formulation for Register Point Clouds with ICP, covering baseline, two one-variable
+    sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1240,8 +1716,8 @@ evidence_plan:
 - claim_id: CLAIM-P49
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Test Observability in Multi-Rate Sensor Fusion, covering baseline, two
-    one-variable sweeps, broken, recovery, and limiting scenarios.
+  method: Independent formulation for Test Observability in Multi-Rate Sensor Fusion, covering baseline,
+    two one-variable sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1270,8 +1746,8 @@ evidence_plan:
 - claim_id: CLAIM-P52
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Detect Loop Closures and Reject False Matches, covering baseline, two
-    one-variable sweeps, broken, recovery, and limiting scenarios.
+  method: Independent formulation for Detect Loop Closures and Reject False Matches, covering baseline,
+    two one-variable sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1280,8 +1756,8 @@ evidence_plan:
 - claim_id: CLAIM-P53
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Smooth Trajectories and Audit Map Consistency, covering baseline, two
-    one-variable sweeps, broken, recovery, and limiting scenarios.
+  method: Independent formulation for Smooth Trajectories and Audit Map Consistency, covering baseline,
+    two one-variable sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1300,8 +1776,8 @@ evidence_plan:
 - claim_id: CLAIM-P55
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Build and Query a Probabilistic Roadmap, covering baseline, two one-variable
-    sweeps, broken, recovery, and limiting scenarios.
+  method: Independent formulation for Build and Query a Probabilistic Roadmap, covering baseline, two
+    one-variable sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1320,8 +1796,8 @@ evidence_plan:
 - claim_id: CLAIM-P57
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Check Collision Geometry and Smooth Paths, covering baseline, two one-variable
-    sweeps, broken, recovery, and limiting scenarios.
+  method: Independent formulation for Check Collision Geometry and Smooth Paths, covering baseline, two
+    one-variable sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1340,8 +1816,8 @@ evidence_plan:
 - claim_id: CLAIM-P59
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Plan Dynamically Feasible Kinodynamic Motion, covering baseline, two
-    one-variable sweeps, broken, recovery, and limiting scenarios.
+  method: Independent formulation for Plan Dynamically Feasible Kinodynamic Motion, covering baseline,
+    two one-variable sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1350,8 +1826,8 @@ evidence_plan:
 - claim_id: CLAIM-P60
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Avoid Dynamic Obstacles with Local Predictive Control, covering baseline,
-    two one-variable sweeps, broken, recovery, and limiting scenarios.
+  method: Independent formulation for Avoid Dynamic Obstacles with Local Predictive Control, covering
+    baseline, two one-variable sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1360,8 +1836,8 @@ evidence_plan:
 - claim_id: CLAIM-P61
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Evaluate Grasp Contacts and Force Closure, covering baseline, two one-variable
-    sweeps, broken, recovery, and limiting scenarios.
+  method: Independent formulation for Evaluate Grasp Contacts and Force Closure, covering baseline, two
+    one-variable sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1370,8 +1846,8 @@ evidence_plan:
 - claim_id: CLAIM-P62
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Execute Perception-Guided Pick and Place, covering baseline, two one-variable
-    sweeps, broken, recovery, and limiting scenarios.
+  method: Independent formulation for Execute Perception-Guided Pick and Place, covering baseline, two
+    one-variable sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1410,8 +1886,8 @@ evidence_plan:
 - claim_id: CLAIM-P66
   origin: separately_formulated_numerical
   independent: true
-  method: Independent formulation for Integrate Robot Models, Frames, and Interfaces, covering baseline, two
-    one-variable sweeps, broken, recovery, and limiting scenarios.
+  method: Independent formulation for Integrate Robot Models, Frames, and Interfaces, covering baseline,
+    two one-variable sweeps, broken, recovery, and limiting scenarios.
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1430,8 +1906,8 @@ evidence_plan:
 - claim_id: CLAIM-P68
   origin: separately_formulated_numerical
   independent: true
-  method: 'Independent formulation for Capstone: Navigate and Replan with Perception, covering baseline, two
-    one-variable sweeps, broken, recovery, and limiting scenarios.'
+  method: 'Independent formulation for Capstone: Navigate and Replan with Perception, covering baseline,
+    two one-variable sweeps, broken, recovery, and limiting scenarios.'
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1440,8 +1916,8 @@ evidence_plan:
 - claim_id: CLAIM-P69
   origin: separately_formulated_numerical
   independent: true
-  method: 'Independent formulation for Capstone: Perceive, Grasp, and Control a Two-Link Robot, covering baseline,
-    two one-variable sweeps, broken, recovery, and limiting scenarios.'
+  method: 'Independent formulation for Capstone: Perceive, Grasp, and Control a Two-Link Robot, covering
+    baseline, two one-variable sweeps, broken, recovery, and limiting scenarios.'
   tolerance: Scale-aware absolute and relative tolerance declared in the native design and retained scenario
     record.
   imports_production_entrypoint: false
@@ -1458,8 +1934,8 @@ batch_plan:
   - P06
   - P07
   - P08
-  coherence: Deepen the existing mobile, frame, arm, actuation, trajectory, and interaction foundation with
-    explicit derivations and boundaries.
+  coherence: Deepen the existing mobile, frame, arm, actuation, trajectory, and interaction foundation
+    with explicit derivations and boundaries.
 - id: ELP-ROB-DEPTH-P09-P16
   module_ids:
   - P09
@@ -1494,8 +1970,8 @@ batch_plan:
   - P31
   - P32
   - P33
-  coherence: Build configuration-space, Lie-group, screw, Jacobian, statics, dynamics, identification, and
-    time-scaling prerequisites.
+  coherence: Build configuration-space, Lie-group, screw, Jacobian, statics, dynamics, identification,
+    and time-scaling prerequisites.
 - id: ELP-ROB-CONTROL-INTERACTION-P34-P40
   module_ids:
   - P34
@@ -1505,8 +1981,8 @@ batch_plan:
   - P38
   - P39
   - P40
-  coherence: Build joint/task, computed-torque, operational-space, impedance/admittance, hybrid force, passivity,
-    and underactuated control.
+  coherence: Build joint/task, computed-torque, operational-space, impedance/admittance, hybrid force,
+    passivity, and underactuated control.
 - id: ELP-ROB-PERCEPTION-P41-P48
   module_ids:
   - P41
@@ -1517,8 +1993,8 @@ batch_plan:
   - P46
   - P47
   - P48
-  coherence: Build camera formation/calibration, features, robust matching, stereo, pose, occupancy, and point-cloud
-    registration.
+  coherence: Build camera formation/calibration, features, robust matching, stereo, pose, occupancy, and
+    point-cloud registration.
 - id: ELP-ROB-SLAM-P49-P53
   module_ids:
   - P49
@@ -1536,8 +2012,8 @@ batch_plan:
   - P58
   - P59
   - P60
-  coherence: Build incremental, roadmap, asymptotically improving, collision/smoothing, optimization, kinodynamic,
-    and predictive local planning.
+  coherence: Build incremental, roadmap, asymptotically improving, collision/smoothing, optimization,
+    kinodynamic, and predictive local planning.
 - id: ELP-ROB-MANIPULATION-P61-P65
   module_ids:
   - P61
@@ -1553,12 +2029,13 @@ batch_plan:
   - P67
   - P68
   - P69
-  coherence: Integrate robot interfaces, replay/diagnostics, and two cumulative capstones spanning mobile autonomy
-    and two-link manipulation.
+  coherence: Integrate robot interfaces, replay/diagnostics, and two cumulative capstones spanning mobile
+    autonomy and two-link manipulation.
 count_derivation:
   planned_module_count: 69
   source: len(modules)
-  rationale: The retained 24-item source-bound arc is deepened in place. Forty-five additions are the smallest
-    reviewed set that gives every issue-440 competency a distinct executable model, preserves prerequisite
-    separation across seven coherent expansion batches, and provides both mobile-autonomy and manipulation
-    capstones. The result is intentionally not normalized to DSP/Radar's 84 or Controls/GNC's 68.
+  rationale: The retained 24-item source-bound arc is deepened in place. Forty-five additions are the
+    smallest reviewed set that gives every issue-440 competency a distinct executable model, preserves
+    prerequisite separation across seven coherent expansion batches, and provides both mobile-autonomy
+    and manipulation capstones. The result is intentionally not normalized to DSP/Radar's 84 or Controls/GNC's
+    68.

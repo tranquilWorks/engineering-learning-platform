@@ -2,8 +2,10 @@ schema_version: 1
 id: 21-execute-a-mission-state-machine
 number: 21
 title: Execute a Mission State Machine
-summary: Execute explicit mission transitions with timeout and global fault-to-safe guards, then expose an unsafe missing transition.
-guiding_question: What inputs, observable effects, and failure modes matter when you execute a Mission State Machine?
+summary: Execute explicit mission transitions with timeout and global fault-to-safe guards, then expose
+  an unsafe missing transition.
+guiding_question: What inputs, observable effects, and failure modes matter when you execute a Mission
+  State Machine?
 status: implemented
 tags:
 - robotics-autonomy
@@ -55,7 +57,8 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: A global fault guard must preempt every nonterminal mission state before local success transitions are considered.
+  text: A global fault guard must preempt every nonterminal mission state before local success transitions
+    are considered.
   reveal: Route the injected fault to SAFE from every active state and record transition timing.
 - type: controls
   title: Live mission-state controls
@@ -77,3 +80,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

@@ -1,22 +1,34 @@
-## P36 evidence task
+# P36 course checkpoint
 
-Why is J times secondary torque equal to zero the wrong condition for preserving task acceleration?
+## Predict and derive
 
-Before running: Predict whether a torque in the Euclidean null space of J necessarily produces zero task acceleration.
+Compute operational-space inertia and diagnose singular directions.
 
-Collect a default record, one single-control sweep, the named fault and recovery. Record the parameter values, plotted quantities and units so another learner can reproduce the comparison.
+Use the governing relations below and state the frame, sign convention and units before substituting numbers. Derive a baseline or limiting prediction and identify which plotted quantity could disprove it.
 
-Resulting task acceleration plots Acceleration (m/s²) against Torque fraction (1). Its series are Actual x, Actual y. Directional task inertia plots Inertia (kg) against Task direction (rad). Its series are Inertia.
+- `Lambda=(J M^-1 J^T)^-1; Jbar=M^-1 J^T Lambda`
+- `N_tau=I-J^T Jbar^T; tau_secondary=N_tau tau_raw`
+- `xddot=J M^-1(tau_primary+tau_secondary)`
 
-### Reasoning rubric
+## Controlled comparison
 
-- Model: reconstruct a displayed value using `Lambda=(J M^-1 J^T)^-1; Jbar=M^-1 J^T Lambda` and the actual state or geometry.
-- Evidence: Increase link mass scale at fixed geometry. The operational inertia scales with mass. The same raw secondary torque has less acceleration effect as mass grows, while correct primary compensation still requests the selected task acceleration.
-- Diagnosis: The fault projects secondary torque with a Euclidean velocity-null projector. It preserves the raw torque, physical inertia and primary task command, then computes the resulting acceleration.
-- Recovery and scope: Restore the dynamically consistent torque projector and compare acceleration with and without the secondary torque. Check J M inverse tau_secondary directly. State this boundary: At zero secondary fraction both modes reduce to the same primary task command. This is a local zero-velocity calculation with exact gravity compensation. A moving task requires Jdot*qdot, updated geometry and an actual trajectory controller.
+- `task_inertia_kg`: 2.0 → 8.0. Hold the other controls at baseline and explain the mechanism before executing.
+- `jacobian_condition`: 5.0 → 30.0. Hold the other controls at baseline and explain the mechanism before executing.
 
-### Check your explanation
+Record the parameter values, prediction and observed change for each comparison. If a quantity does not change, explain whether it is an invariant, an inactive parameter in this regime, or evidence of a defect.
 
-Torque is converted to joint acceleration through M inverse. At zero velocity the task effect is J M inverse tau_secondary, so a torque projector must cancel that quantity. The Euclidean null condition applies directly to joint velocity, not arbitrary torque.
+## Diagnose and recover
 
-A complete explanation contains a calculation, an observed comparison with units, the executed fault and a reproduced recovery. Name a setting that can hide the fault and a claim requiring evidence outside this model. This is a self-assessment; no learner score is stored.
+Enable the named failure with the numeric controls unchanged. Identify the first violated assumption from the actual trace or event evidence, rather than only the mode label. Restore healthy mode and verify deterministic return to the same baseline. Keep the failing trace beside the recovered trace.
+
+## Expected reasoning
+
+The task inertia depends on both the Jacobian and joint inertia; null directions require explicit treatment rather than an unstable inverse.
+
+A complete answer connects a numerical value to the governing relation, distinguishes the controlled comparisons, and explains the fault and recovery through an observable mechanism. An unexplained success metric is insufficient evidence.
+
+## Limits and handoff
+
+The bounded example is not whole-body contact planning.
+
+Competency links: ROBOT-DYNAMICS, ACTUATION-JOINT-CONTROL. Carry the prediction, two comparisons, failure diagnosis and recovery evidence into the linked cumulative portfolio. No learner completion or score is inferred by the software; this is an authored assessment for a learner or reviewer to perform.

@@ -2,9 +2,10 @@ schema_version: 1
 id: 29-resolve-redundancy-with-null-space-motion
 number: 29
 title: Separate Damped Task Motion from Exact Null-Space Motion
-summary: A damped primary inverse and an exact Moore-Penrose null projector have different roles. Normal secondary
-  posture velocity has negligible task leakage; bypassing the projector changes the actual task velocity. This
-  is an instantaneous calculation at one configuration, not integrated motion or a joint-limit guarantee.
+summary: A damped primary inverse and an exact Moore-Penrose null projector have different roles. Normal
+  secondary posture velocity has negligible task leakage; bypassing the projector changes the actual task
+  velocity. This is an instantaneous calculation at one configuration, not integrated motion or a joint-limit
+  guarantee.
 guiding_question: Why can the total task residual be nonzero while secondary leakage is essentially zero?
 status: implemented
 tags:
@@ -42,8 +43,8 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Predict whether primary damping requires secondary posture motion to leak into the task when an exact
-    null projector is used.
+  text: Predict whether primary damping requires secondary posture motion to leak into the task when an
+    exact null projector is used.
   reveal: The damped primary inverse trades tracking accuracy against joint speed. An exact null projector
     preserves that primary task velocity when posture motion is added; it does not undo the original damping
     residual.

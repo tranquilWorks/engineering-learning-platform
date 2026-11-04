@@ -1,0 +1,1509 @@
+{
+  "schema_version": 1,
+  "course_id": "robotics-autonomy",
+  "baseline": "185e966242c889d3f030bab6016139777fcf0f17",
+  "formative_count": 69,
+  "cumulative_count": 13,
+  "lessons": [
+    {
+      "number": 1,
+      "task": "Predict straight motion, a left arc and pure spin from wheel speeds.",
+      "expected_reasoning": "The mean rim speed sets translation while the difference divided by track width sets yaw; world displacement must rotate with heading.",
+      "claim_limit": "No lateral slip or wheel-radius calibration error is estimated.",
+      "id": "ROB-F01",
+      "module_id": "01-drive-a-differential-robot-with-wheel-speeds",
+      "competency_ids": [
+        "MOBILE-KINEMATICS"
+      ],
+      "assessment_file": "modules/01-drive-a-differential-robot-with-wheel-speeds/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 2,
+      "task": "Compose two planar frame changes and reverse their order.",
+      "expected_reasoning": "Translation rotates with its parent frame; use the inverse transform for a round trip, not a negated translation in the wrong frame.",
+      "claim_limit": "A valid inverse does not prove the transform represents a calibrated sensor.",
+      "id": "ROB-F02",
+      "module_id": "02-transform-coordinates-between-frames",
+      "competency_ids": [
+        "RIGID-BODY-GEOMETRY"
+      ],
+      "assessment_file": "modules/02-transform-coordinates-between-frames/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 3,
+      "task": "Predict the endpoint with the elbow straight and then folded.",
+      "expected_reasoning": "Ordered rotations produce a sum of link vectors; equal links can cancel at a folded elbow although joint angles remain finite.",
+      "claim_limit": "Planar rigid links omit compliance and joint offsets.",
+      "id": "ROB-F03",
+      "module_id": "03-compute-arm-forward-kinematics",
+      "competency_ids": [
+        "MANIPULATOR-KINEMATICS"
+      ],
+      "assessment_file": "modules/03-compute-arm-forward-kinematics/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 4,
+      "task": "Explain why an unreachable target must be rejected before clipping the cosine.",
+      "expected_reasoning": "The annular workspace has both inner and outer boundaries; elbow branches can share an endpoint while differing in joint configuration.",
+      "claim_limit": "A small algebraic residual does not establish collision-free motion.",
+      "id": "ROB-F04",
+      "module_id": "04-solve-inverse-kinematics",
+      "competency_ids": [
+        "MANIPULATOR-KINEMATICS"
+      ],
+      "assessment_file": "modules/04-solve-inverse-kinematics/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 5,
+      "task": "Predict current and speed when gear ratio changes under load.",
+      "expected_reasoning": "Back EMF couples speed to current; gearing changes reflected inertia and output torque rather than creating mechanical power.",
+      "claim_limit": "The motor model does not qualify thermal limits or gearbox backlash.",
+      "id": "ROB-F05",
+      "module_id": "05-model-a-dc-motor-and-geartrain",
+      "competency_ids": [
+        "ACTUATION-JOINT-CONTROL"
+      ],
+      "assessment_file": "modules/05-model-a-dc-motor-and-geartrain/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 6,
+      "task": "Separate speed tracking, saturation and integral windup.",
+      "expected_reasoning": "Accumulated error can demand unavailable voltage; recovery depends on the stored integral as well as the present speed error.",
+      "claim_limit": "A deterministic speed step is not a robustness certificate for every load.",
+      "id": "ROB-F06",
+      "module_id": "06-close-a-wheel-speed-loop",
+      "competency_ids": [
+        "ACTUATION-JOINT-CONTROL"
+      ],
+      "assessment_file": "modules/06-close-a-wheel-speed-loop/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 7,
+      "task": "Compute endpoint velocity and acceleration for the displayed trajectory.",
+      "expected_reasoning": "Differentiate the interpolation polynomial and check endpoints, extrema and physical units; sample spacing alone does not guarantee smooth motion.",
+      "claim_limit": "A smooth reference can exceed actuator acceleration or torque limits.",
+      "id": "ROB-F07",
+      "module_id": "07-generate-a-smooth-trajectory",
+      "competency_ids": [
+        "GLOBAL-MOTION-PLANNING"
+      ],
+      "assessment_file": "modules/07-generate-a-smooth-trajectory/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 8,
+      "task": "Predict contact displacement when stiffness changes with fixed force.",
+      "expected_reasoning": "Impedance sets a force-motion relationship; environment stiffness participates in the coupled dynamics and damping dissipates energy.",
+      "claim_limit": "Stable sampled plots do not prove passivity against every environment.",
+      "id": "ROB-F08",
+      "module_id": "08-control-contact-with-impedance",
+      "competency_ids": [
+        "PHYSICAL-INTERACTION"
+      ],
+      "assessment_file": "modules/08-control-contact-with-impedance/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 9,
+      "task": "Estimate encoder resolution and the speed ripple caused by quantization.",
+      "expected_reasoning": "Position increments are discrete counts; differentiation divides quantization error by sample time and can amplify it.",
+      "claim_limit": "Higher sampling alone cannot create additional encoder resolution.",
+      "id": "ROB-F09",
+      "module_id": "09-measure-motion-with-encoders",
+      "competency_ids": [
+        "SENSOR-MODELING-CALIBRATION"
+      ],
+      "assessment_file": "modules/09-measure-motion-with-encoders/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 10,
+      "task": "Predict position drift from a constant accelerometer bias.",
+      "expected_reasoning": "Velocity bias grows linearly and position bias quadratically with coast time; angular and translational errors have different units.",
+      "claim_limit": "This one-axis drift study does not execute full inertial navigation.",
+      "id": "ROB-F10",
+      "module_id": "10-integrate-an-imu-and-observe-drift",
+      "competency_ids": [
+        "SENSOR-MODELING-CALIBRATION",
+        "STATE-ESTIMATION"
+      ],
+      "assessment_file": "modules/10-integrate-an-imu-and-observe-drift/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 11,
+      "task": "Separate a range-sensor blind zone from random-looking measurement variation.",
+      "expected_reasoning": "Compare true distance, bias, saturation and invalid-return rules before summarizing residuals; an invalid return is not a physical zero range.",
+      "claim_limit": "Synthetic perturbations do not identify a real sensor noise distribution.",
+      "id": "ROB-F11",
+      "module_id": "11-build-a-range-sensor-model",
+      "competency_ids": [
+        "SENSOR-MODELING-CALIBRATION",
+        "RANGE-PERCEPTION"
+      ],
+      "assessment_file": "modules/11-build-a-range-sensor-model/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 12,
+      "task": "Recover a sensor transform and check a held-out point.",
+      "expected_reasoning": "Rigid calibration must preserve distances and orientation; fit rotation and translation jointly and evaluate points outside the fit set.",
+      "claim_limit": "Collinear or poorly spread observations can conceal calibration ambiguity.",
+      "id": "ROB-F12",
+      "module_id": "12-calibrate-sensor-extrinsics",
+      "competency_ids": [
+        "RIGID-BODY-GEOMETRY",
+        "SENSOR-MODELING-CALIBRATION"
+      ],
+      "assessment_file": "modules/12-calibrate-sensor-extrinsics/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 13,
+      "task": "Compare exact planar arc integration with a straight-line approximation.",
+      "expected_reasoning": "Encoder increments determine both heading and displacement; rotation during a sample changes the world-frame endpoint.",
+      "claim_limit": "Agreement under no-slip motion does not estimate wheel slip.",
+      "id": "ROB-F13",
+      "module_id": "13-integrate-wheel-odometry",
+      "competency_ids": [
+        "MOBILE-KINEMATICS",
+        "STATE-ESTIMATION"
+      ],
+      "assessment_file": "modules/13-integrate-wheel-odometry/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 14,
+      "task": "Trace a wheel/absolute-position observation through EKF prediction and correction.",
+      "expected_reasoning": "The motion Jacobian propagates pose covariance; an innovation changes state through its gain and must also update covariance.",
+      "claim_limit": "Small error in one deterministic trajectory is not statistical consistency.",
+      "id": "ROB-F14",
+      "module_id": "14-fuse-sensors-with-an-ekf",
+      "competency_ids": [
+        "STATE-ESTIMATION"
+      ],
+      "assessment_file": "modules/14-fuse-sensors-with-an-ekf/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 15,
+      "task": "Explain particle weights, effective sample size and resampling diversity.",
+      "expected_reasoning": "Bayes weights favor compatible poses, normalization preserves probability mass, and resampling trades weight degeneracy for duplicate hypotheses.",
+      "claim_limit": "A concentrated particle set can converge to a wrong mode.",
+      "id": "ROB-F15",
+      "module_id": "15-localize-with-a-particle-filter",
+      "competency_ids": [
+        "STATE-ESTIMATION"
+      ],
+      "assessment_file": "modules/15-localize-with-a-particle-filter/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 16,
+      "task": "Identify the unknown landmark and the global translation gauge.",
+      "expected_reasoning": "Odometry constrains differences; landmark observations couple pose and map variables; one absolute anchor removes the common translation ambiguity.",
+      "claim_limit": "The linear one-dimensional graph does not establish nonlinear planar SLAM.",
+      "id": "ROB-F16",
+      "module_id": "16-build-a-small-slam-problem",
+      "competency_ids": [
+        "SLAM-MAPPING"
+      ],
+      "assessment_file": "modules/16-build-a-small-slam-problem/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 17,
+      "task": "Predict whether changing a heuristic preserves shortest-path optimality.",
+      "expected_reasoning": "An admissible estimate changes search order without overestimating remaining cost; obstacle occupancy determines feasibility independently.",
+      "claim_limit": "Finite grid resolution can hide passages or inflate obstacles.",
+      "id": "ROB-F17",
+      "module_id": "17-search-a-grid-with-a-star",
+      "competency_ids": [
+        "GLOBAL-MOTION-PLANNING"
+      ],
+      "assessment_file": "modules/17-search-a-grid-with-a-star/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 18,
+      "task": "Explain why node collision checks do not certify sampled-tree edges.",
+      "expected_reasoning": "A valid connection must clear the entire segment; a tree path must follow actual parent links back to the start.",
+      "claim_limit": "Finite sampling offers neither guaranteed success nor a universal optimality bound.",
+      "id": "ROB-F18",
+      "module_id": "18-plan-with-random-samples",
+      "competency_ids": [
+        "GLOBAL-MOTION-PLANNING"
+      ],
+      "assessment_file": "modules/18-plan-with-random-samples/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 19,
+      "task": "Predict a moving-obstacle conflict using synchronized relative motion.",
+      "expected_reasoning": "Evaluate robot and obstacle positions at the same future time and include stopping or waiting as an executed action.",
+      "claim_limit": "A finite candidate set can miss a feasible avoidance maneuver.",
+      "id": "ROB-F19",
+      "module_id": "19-avoid-moving-obstacles",
+      "competency_ids": [
+        "LOCAL-KINODYNAMIC-PLANNING"
+      ],
+      "assessment_file": "modules/19-avoid-moving-obstacles/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 20,
+      "task": "Reconstruct a behavior-tree tick from child status and traversal order.",
+      "expected_reasoning": "Sequence and fallback nodes propagate running, success and failure differently; trace which children actually execute.",
+      "claim_limit": "A diagram without tick semantics cannot establish recovery behavior.",
+      "id": "ROB-F20",
+      "module_id": "20-coordinate-actions-with-a-behavior-tree",
+      "competency_ids": [
+        "TASK-AUTONOMY"
+      ],
+      "assessment_file": "modules/20-coordinate-actions-with-a-behavior-tree/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 21,
+      "task": "Show which guard permits a mission-state transition.",
+      "expected_reasoning": "State, event and guard jointly determine the next action; a recovery transition must preserve or explicitly reset its evidence.",
+      "claim_limit": "A finite mission model does not enumerate every field failure.",
+      "id": "ROB-F21",
+      "module_id": "21-execute-a-mission-state-machine",
+      "competency_ids": [
+        "TASK-AUTONOMY"
+      ],
+      "assessment_file": "modules/21-execute-a-mission-state-machine/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 22,
+      "task": "Compute a deadline miss from release, execution and response time.",
+      "expected_reasoning": "Interference and blocking affect completion time; utilization alone does not prove every job meets its deadline.",
+      "claim_limit": "A simulated schedule is not a real operating-system latency measurement.",
+      "id": "ROB-F22",
+      "module_id": "22-meet-real-time-perception-and-control-deadlines",
+      "competency_ids": [
+        "REALTIME-SAFETY"
+      ],
+      "assessment_file": "modules/22-meet-real-time-perception-and-control-deadlines/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 23,
+      "task": "Distinguish detection time from achieving a safe state.",
+      "expected_reasoning": "A monitor must observe a relevant fault, decide within its threshold and cause a bounded fallback; inspect the actual state after the alarm.",
+      "claim_limit": "Passing injected faults is not safety certification or complete fault coverage.",
+      "id": "ROB-F23",
+      "module_id": "23-design-safety-monitors",
+      "competency_ids": [
+        "REALTIME-SAFETY"
+      ],
+      "assessment_file": "modules/23-design-safety-monitors/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 24,
+      "task": "Follow a delayed command through a watchdog and virtual plant.",
+      "expected_reasoning": "Source age determines command validity; fail-zero behavior and plant response must be visible after packet loss.",
+      "claim_limit": "Software-only HIL methodology is not physical HIL evidence.",
+      "id": "ROB-F24",
+      "module_id": "24-validate-autonomy-in-hil",
+      "competency_ids": [
+        "REALTIME-SAFETY",
+        "SYSTEM-INTEGRATION"
+      ],
+      "assessment_file": "modules/24-validate-autonomy-in-hil/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 25,
+      "task": "Check both radial constraint residual and tangent-velocity projection.",
+      "expected_reasoning": "The constraint Jacobian removes the radial velocity component; instantaneous tangency does not guarantee finite-step collision freedom.",
+      "claim_limit": "The circle example is a configuration-space slice, not general manifold planning.",
+      "id": "ROB-F25",
+      "module_id": "25-represent-configuration-spaces-and-holonomic-constraints",
+      "competency_ids": [
+        "RIGID-BODY-GEOMETRY"
+      ],
+      "assessment_file": "modules/25-represent-configuration-spaces-and-holonomic-constraints/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 26,
+      "task": "Compare rigid pose composition with elementwise matrix interpolation.",
+      "expected_reasoning": "Proper rotations preserve orthogonality and determinant one; translation and rotation composition generally do not commute.",
+      "claim_limit": "A valid SE(3) matrix does not establish a correct sensor-frame convention.",
+      "id": "ROB-F26",
+      "module_id": "26-compose-rotations-and-poses-on-so-3-and-se-3",
+      "competency_ids": [
+        "RIGID-BODY-GEOMETRY"
+      ],
+      "assessment_file": "modules/26-compose-rotations-and-poses-on-so-3-and-se-3/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 27,
+      "task": "Preserve mechanical power while changing twist and wrench frames.",
+      "expected_reasoning": "Angular and linear velocity transform together with the lever-arm term; the dual wrench map preserves their scalar power product.",
+      "claim_limit": "Omitting translation can remain hidden when force or angular velocity is zero.",
+      "id": "ROB-F27",
+      "module_id": "27-map-twists-screws-and-wrenches-with-adjoint-transforms",
+      "competency_ids": [
+        "RIGID-BODY-GEOMETRY"
+      ],
+      "assessment_file": "modules/27-map-twists-screws-and-wrenches-with-adjoint-transforms/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 28,
+      "task": "Predict Jacobian rank near a straight or folded elbow.",
+      "expected_reasoning": "Singular values measure local directional mobility; finite perturbations of forward kinematics check derivative signs and link contributions.",
+      "claim_limit": "A nonsingular instantaneous Jacobian does not ensure global reachability.",
+      "id": "ROB-F28",
+      "module_id": "28-build-spatial-jacobians-and-diagnose-singularities",
+      "competency_ids": [
+        "MANIPULATOR-KINEMATICS"
+      ],
+      "assessment_file": "modules/28-build-spatial-jacobians-and-diagnose-singularities/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 29,
+      "task": "Separate desired task velocity from secondary null-space motion.",
+      "expected_reasoning": "The projector should suppress the secondary task-space contribution; damping alters the primary inverse and its residual.",
+      "claim_limit": "Large finite integration steps can invalidate an instantaneous null-space argument.",
+      "id": "ROB-F29",
+      "module_id": "29-resolve-redundancy-with-null-space-motion",
+      "competency_ids": [
+        "MANIPULATOR-KINEMATICS"
+      ],
+      "assessment_file": "modules/29-resolve-redundancy-with-null-space-motion/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 30,
+      "task": "Derive joint torques from a specified end-effector wrench.",
+      "expected_reasoning": "Virtual work equates task and joint power, giving a Jacobian-transpose mapping with explicit force and moment units.",
+      "claim_limit": "A static torque map does not include inertia, friction or saturation.",
+      "id": "ROB-F30",
+      "module_id": "30-map-end-effector-wrenches-to-joint-torques",
+      "competency_ids": [
+        "ROBOT-DYNAMICS"
+      ],
+      "assessment_file": "modules/30-map-end-effector-wrenches-to-joint-torques/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 31,
+      "task": "Check inertia symmetry, positive energy and the Coriolis skew identity.",
+      "expected_reasoning": "Kinetic energy defines inertia; configuration derivatives produce coupling terms, while gravity is the potential gradient.",
+      "claim_limit": "A positive inertia matrix alone does not validate every dynamic term.",
+      "id": "ROB-F31",
+      "module_id": "31-derive-manipulator-inertia-coriolis-and-gravity-terms",
+      "competency_ids": [
+        "ROBOT-DYNAMICS"
+      ],
+      "assessment_file": "modules/31-derive-manipulator-inertia-coriolis-and-gravity-terms/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 32,
+      "task": "Separate parameter fitting from held-out torque prediction.",
+      "expected_reasoning": "Excitation determines regressor rank; fit residual and parameter error must be checked separately on new motion.",
+      "claim_limit": "Low residual on an unexciting trajectory does not identify unique parameters.",
+      "id": "ROB-F32",
+      "module_id": "32-compute-inverse-dynamics-and-identify-robot-parameters",
+      "competency_ids": [
+        "ROBOT-DYNAMICS"
+      ],
+      "assessment_file": "modules/32-compute-inverse-dynamics-and-identify-robot-parameters/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 33,
+      "task": "Find the trajectory duration required by both speed and acceleration limits.",
+      "expected_reasoning": "Time scaling changes first derivatives inversely with duration and second derivatives inversely with duration squared.",
+      "claim_limit": "A sample-only extrema check may miss between-sample limit violations.",
+      "id": "ROB-F33",
+      "module_id": "33-time-scale-multi-joint-trajectories-within-limits",
+      "competency_ids": [
+        "ROBOT-DYNAMICS",
+        "GLOBAL-MOTION-PLANNING"
+      ],
+      "assessment_file": "modules/33-time-scale-multi-joint-trajectories-within-limits/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 34,
+      "task": "Compare joint-space tracking with task-space error under the same plant.",
+      "expected_reasoning": "Joint errors map through geometry; task commands need a consistent Jacobian and can demand large rates near singularity.",
+      "claim_limit": "A task-space path is not automatically actuator-feasible.",
+      "id": "ROB-F34",
+      "module_id": "34-compare-joint-space-and-task-space-tracking",
+      "competency_ids": [
+        "MANIPULATOR-KINEMATICS",
+        "ACTUATION-JOINT-CONTROL"
+      ],
+      "assessment_file": "modules/34-compare-joint-space-and-task-space-tracking/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 35,
+      "task": "Explain the effect of payload mismatch on computed-torque compensation.",
+      "expected_reasoning": "Model cancellation uses inertia, coupling and gravity; feedback corrects residual error only within available effort.",
+      "claim_limit": "Nominal cancellation is not robust to arbitrary model mismatch.",
+      "id": "ROB-F35",
+      "module_id": "35-apply-computed-torque-and-gravity-compensation",
+      "competency_ids": [
+        "ROBOT-DYNAMICS",
+        "ACTUATION-JOINT-CONTROL"
+      ],
+      "assessment_file": "modules/35-apply-computed-torque-and-gravity-compensation/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 36,
+      "task": "Compute operational-space inertia and diagnose singular directions.",
+      "expected_reasoning": "The task inertia depends on both the Jacobian and joint inertia; null directions require explicit treatment rather than an unstable inverse.",
+      "claim_limit": "The bounded example is not whole-body contact planning.",
+      "id": "ROB-F36",
+      "module_id": "36-control-motion-in-operational-space",
+      "competency_ids": [
+        "ROBOT-DYNAMICS",
+        "ACTUATION-JOINT-CONTROL"
+      ],
+      "assessment_file": "modules/36-control-motion-in-operational-space/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 37,
+      "task": "Compare impedance and admittance under the same environment stiffness.",
+      "expected_reasoning": "Impedance maps motion error to force; admittance integrates measured force into motion; interface choice changes closed-loop dynamics.",
+      "claim_limit": "Stable behavior in one environment does not guarantee passive interaction.",
+      "id": "ROB-F37",
+      "module_id": "37-compare-impedance-and-admittance-control",
+      "competency_ids": [
+        "PHYSICAL-INTERACTION"
+      ],
+      "assessment_file": "modules/37-compare-impedance-and-admittance-control/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 38,
+      "task": "Separate tangential motion control from normal contact-force control.",
+      "expected_reasoning": "Projection must respect the surface frame, and unilateral contact prevents tensile wall force when separation occurs.",
+      "claim_limit": "A fixed planar surface omits changing contact normals and frictional slip.",
+      "id": "ROB-F38",
+      "module_id": "38-regulate-hybrid-motion-and-contact-force",
+      "competency_ids": [
+        "PHYSICAL-INTERACTION"
+      ],
+      "assessment_file": "modules/38-regulate-hybrid-motion-and-contact-force/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 39,
+      "task": "Audit the energy tank when saturation and delayed commands occur.",
+      "expected_reasoning": "Applied work, not requested work, must be charged to the tank; a nonnegative energy record requires actual command limiting.",
+      "claim_limit": "A discrete tank model is not a physical passivity certificate.",
+      "id": "ROB-F39",
+      "module_id": "39-preserve-passivity-under-saturation-and-delay",
+      "competency_ids": [
+        "PHYSICAL-INTERACTION",
+        "REALTIME-SAFETY"
+      ],
+      "assessment_file": "modules/39-preserve-passivity-under-saturation-and-delay/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 40,
+      "task": "Explain the energy-shaping and balance-control switching condition.",
+      "expected_reasoning": "The unactuated link receives energy through coupled dynamics; switching depends on angle and rate, not merely elapsed time.",
+      "claim_limit": "A successful nominal swing-up is not a global stabilizing guarantee.",
+      "id": "ROB-F40",
+      "module_id": "40-swing-up-and-balance-an-underactuated-robot",
+      "competency_ids": [
+        "ROBOT-DYNAMICS",
+        "ACTUATION-JOINT-CONTROL"
+      ],
+      "assessment_file": "modules/40-swing-up-and-balance-an-underactuated-robot/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 41,
+      "task": "Predict pixel motion from depth and camera pose.",
+      "expected_reasoning": "Perspective division follows the camera frame; points behind or too near the image plane require explicit handling.",
+      "claim_limit": "A pinhole model excludes lens distortion and rolling shutter.",
+      "id": "ROB-F41",
+      "module_id": "41-project-3d-points-with-a-pinhole-camera",
+      "competency_ids": [
+        "VISION-PERCEPTION"
+      ],
+      "assessment_file": "modules/41-project-3d-points-with-a-pinhole-camera/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 42,
+      "task": "Compare calibration fit error with held-out reprojection error.",
+      "expected_reasoning": "Intrinsics and distortion must explain multiple board views; pose diversity matters more than repeating one view.",
+      "claim_limit": "Synthetic board calibration does not validate a physical camera.",
+      "id": "ROB-F42",
+      "module_id": "42-calibrate-camera-intrinsics-and-lens-distortion",
+      "competency_ids": [
+        "SENSOR-MODELING-CALIBRATION",
+        "VISION-PERCEPTION"
+      ],
+      "assessment_file": "modules/42-calibrate-camera-intrinsics-and-lens-distortion/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 43,
+      "task": "Explain why detected corners are not yet reliable correspondences.",
+      "expected_reasoning": "Local gradient structure determines feature strength; descriptors require consistent sampling and a matching rule.",
+      "claim_limit": "Repeatability on a generated scene is not invariance to every viewpoint.",
+      "id": "ROB-F43",
+      "module_id": "43-detect-and-describe-repeatable-image-features",
+      "competency_ids": [
+        "VISION-PERCEPTION"
+      ],
+      "assessment_file": "modules/43-detect-and-describe-repeatable-image-features/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 44,
+      "task": "Reject outliers before refitting a geometric correspondence model.",
+      "expected_reasoning": "Consensus counts compatible observations; a refit must use the selected inliers rather than all original matches.",
+      "claim_limit": "A high inlier fraction can still support the wrong geometric model.",
+      "id": "ROB-F44",
+      "module_id": "44-reject-outliers-in-visual-correspondences",
+      "competency_ids": [
+        "VISION-PERCEPTION"
+      ],
+      "assessment_file": "modules/44-reject-outliers-in-visual-correspondences/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 45,
+      "task": "Predict depth uncertainty as disparity approaches zero.",
+      "expected_reasoning": "Triangulation couples baseline, focal scale and disparity; far-range depth becomes sensitive even when pixel residuals stay small.",
+      "claim_limit": "A finite depth estimate does not prove positive depth in both cameras.",
+      "id": "ROB-F45",
+      "module_id": "45-recover-depth-from-stereo-geometry",
+      "competency_ids": [
+        "VISION-PERCEPTION"
+      ],
+      "assessment_file": "modules/45-recover-depth-from-stereo-geometry/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 46,
+      "task": "Recover object pose from landmarks and check projection consistency.",
+      "expected_reasoning": "Pose changes both rotation and translation of each 3D point; reprojection and cheirality distinguish plausible solutions.",
+      "claim_limit": "Known correspondences and an initialized solver do not solve unrestricted object detection.",
+      "id": "ROB-F46",
+      "module_id": "46-estimate-object-pose-from-visual-landmarks",
+      "competency_ids": [
+        "VISION-PERCEPTION",
+        "MANIPULATION"
+      ],
+      "assessment_file": "modules/46-estimate-object-pose-from-visual-landmarks/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 47,
+      "task": "Explain free-space and occupied updates along a range ray.",
+      "expected_reasoning": "Only traversed cells receive free evidence and the endpoint receives occupied evidence; log odds accumulate bounded belief.",
+      "claim_limit": "Repeated correlated scans do not provide independent probability evidence.",
+      "id": "ROB-F47",
+      "module_id": "47-build-occupancy-grids-from-range-data",
+      "competency_ids": [
+        "RANGE-PERCEPTION",
+        "SLAM-MAPPING"
+      ],
+      "assessment_file": "modules/47-build-occupancy-grids-from-range-data/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 48,
+      "task": "Separate nearest-neighbor association from rigid-transform fitting.",
+      "expected_reasoning": "ICP alternates correspondences and pose updates; residual reduction depends on initialization and overlap.",
+      "claim_limit": "A small local residual does not prove global registration correctness.",
+      "id": "ROB-F48",
+      "module_id": "48-register-point-clouds-with-icp",
+      "competency_ids": [
+        "RANGE-PERCEPTION",
+        "SLAM-MAPPING"
+      ],
+      "assessment_file": "modules/48-register-point-clouds-with-icp/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 49,
+      "task": "Predict which state direction becomes unobservable without excitation.",
+      "expected_reasoning": "The stacked whitened measurement rows determine rank; sample rate cannot recover a state absent from every row.",
+      "claim_limit": "A numerical rank threshold is not a universal sensor-design criterion.",
+      "id": "ROB-F49",
+      "module_id": "49-test-observability-in-multi-rate-sensor-fusion",
+      "competency_ids": [
+        "STATE-ESTIMATION"
+      ],
+      "assessment_file": "modules/49-test-observability-in-multi-rate-sensor-fusion/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 50,
+      "task": "Separate gating from robust weighting of accepted residuals.",
+      "expected_reasoning": "Mahalanobis distance tests compatibility; a Huber influence bound limits an accepted outlier without changing its units.",
+      "claim_limit": "Two labeled candidates do not demonstrate general combinatorial association.",
+      "id": "ROB-F50",
+      "module_id": "50-associate-measurements-with-gating-and-robust-losses",
+      "competency_ids": [
+        "STATE-ESTIMATION",
+        "SLAM-MAPPING"
+      ],
+      "assessment_file": "modules/50-associate-measurements-with-gating-and-robust-losses/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 51,
+      "task": "Show how an unknown landmark changes the nonlinear graph state.",
+      "expected_reasoning": "Robot position, heading and landmark coordinates are optimized jointly; relative observations leave three planar gauge freedoms without an anchor.",
+      "claim_limit": "Known correspondences and a single initialized circuit omit loop discovery and global SLAM.",
+      "id": "ROB-F51",
+      "module_id": "51-solve-nonlinear-factor-graph-slam",
+      "competency_ids": [
+        "SLAM-MAPPING"
+      ],
+      "assessment_file": "modules/51-solve-nonlinear-factor-graph-slam/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism",
+        "joint_map",
+        "joint_convergence"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 52,
+      "task": "Explain why a plausible false loop can deform an entire map.",
+      "expected_reasoning": "A robust loss limits the loop's influence while odometry and the anchor resist deformation; inspect distributed map error.",
+      "claim_limit": "Robust optimization does not make arbitrary false correspondences harmless.",
+      "id": "ROB-F52",
+      "module_id": "52-detect-loop-closures-and-reject-false-matches",
+      "competency_ids": [
+        "SLAM-MAPPING"
+      ],
+      "assessment_file": "modules/52-detect-loop-closures-and-reject-false-matches/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 53,
+      "task": "Distinguish a backward smoother from a causal filter with smaller error bars.",
+      "expected_reasoning": "Future measurements affect past states through the smoothing gain; held-out observations audit errors separately from fitting.",
+      "claim_limit": "One deterministic trajectory cannot establish probabilistic covariance coverage.",
+      "id": "ROB-F53",
+      "module_id": "53-smooth-trajectories-and-audit-map-consistency",
+      "competency_ids": [
+        "STATE-ESTIMATION",
+        "SLAM-MAPPING"
+      ],
+      "assessment_file": "modules/53-smooth-trajectories-and-audit-map-consistency/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 54,
+      "task": "Trace a changed edge through incremental search state.",
+      "expected_reasoning": "Reusable cost-to-come and one-step lookahead values must be made consistent after a map change; compare with a cold search.",
+      "claim_limit": "Weighted heuristics and tie rules affect expansion counts and optimality claims.",
+      "id": "ROB-F54",
+      "module_id": "54-replan-efficiently-with-incremental-graph-search",
+      "competency_ids": [
+        "GLOBAL-MOTION-PLANNING"
+      ],
+      "assessment_file": "modules/54-replan-efficiently-with-incremental-graph-search/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 55,
+      "task": "Explain when a roadmap query fails despite many samples.",
+      "expected_reasoning": "Free nodes need collision-checked connections; connection radius and graph reachability matter independently of sample count.",
+      "claim_limit": "A missing path in a finite roadmap does not prove geometric impossibility.",
+      "id": "ROB-F55",
+      "module_id": "55-build-and-query-a-probabilistic-roadmap",
+      "competency_ids": [
+        "GLOBAL-MOTION-PLANNING"
+      ],
+      "assessment_file": "modules/55-build-and-query-a-probabilistic-roadmap/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 56,
+      "task": "Verify that rewiring updates descendant costs as well as a parent pointer.",
+      "expected_reasoning": "A better connection changes the entire subtree's accumulated cost; the final path must follow the revised ancestry.",
+      "claim_limit": "A finite deterministic sample sequence is not an asymptotic optimality demonstration.",
+      "id": "ROB-F56",
+      "module_id": "56-improve-sampled-paths-with-rrt-star",
+      "competency_ids": [
+        "GLOBAL-MOTION-PLANNING"
+      ],
+      "assessment_file": "modules/56-improve-sampled-paths-with-rrt-star/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 57,
+      "task": "Check swept clearance after removing intermediate waypoints.",
+      "expected_reasoning": "A shortcut can cross an inflated obstacle even when its endpoints are free; re-evaluate the full segment after smoothing.",
+      "claim_limit": "Circular planar obstacles do not represent arbitrary articulated collision geometry.",
+      "id": "ROB-F57",
+      "module_id": "57-check-collision-geometry-and-smooth-paths",
+      "competency_ids": [
+        "GLOBAL-MOTION-PLANNING"
+      ],
+      "assessment_file": "modules/57-check-collision-geometry-and-smooth-paths/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 58,
+      "task": "Separate objective reduction from feasibility restoration.",
+      "expected_reasoning": "A smoother path can violate obstacle constraints; inspect every segment and retain fixed endpoints during updates.",
+      "claim_limit": "Local constrained optimization does not prove global path optimality.",
+      "id": "ROB-F58",
+      "module_id": "58-optimize-a-trajectory-through-obstacle-constraints",
+      "competency_ids": [
+        "GLOBAL-MOTION-PLANNING"
+      ],
+      "assessment_file": "modules/58-optimize-a-trajectory-through-obstacle-constraints/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 59,
+      "task": "Reconstruct position and velocity from every bounded acceleration action.",
+      "expected_reasoning": "A kinodynamic state includes velocity; reaching the target at nonzero speed is a different goal from terminal rest.",
+      "claim_limit": "A finite lattice can fail to represent a feasible continuous trajectory.",
+      "id": "ROB-F59",
+      "module_id": "59-plan-dynamically-feasible-kinodynamic-motion",
+      "competency_ids": [
+        "LOCAL-KINODYNAMIC-PLANNING"
+      ],
+      "assessment_file": "modules/59-plan-dynamically-feasible-kinodynamic-motion/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 60,
+      "task": "Explain why a short prediction horizon changes avoidance decisions.",
+      "expected_reasoning": "The selected acceleration is applied to the plant and the horizon is recomputed; a frozen-obstacle prediction uses the wrong future state.",
+      "claim_limit": "Finite sampled predictions do not automatically certify between-sample clearance.",
+      "id": "ROB-F60",
+      "module_id": "60-avoid-dynamic-obstacles-with-local-predictive-control",
+      "competency_ids": [
+        "LOCAL-KINODYNAMIC-PLANNING",
+        "REALTIME-SAFETY"
+      ],
+      "assessment_file": "modules/60-avoid-dynamic-obstacles-with-local-predictive-control/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 61,
+      "task": "Distinguish force closure from supporting one selected external load.",
+      "expected_reasoning": "Positive combinations of friction-cone wrenches must span all wrench directions for closure; one feasible load is weaker evidence.",
+      "claim_limit": "Unbounded contact effort is not a grasp with finite actuator limits.",
+      "id": "ROB-F61",
+      "module_id": "61-evaluate-grasp-contacts-and-force-closure",
+      "competency_ids": [
+        "PHYSICAL-INTERACTION",
+        "MANIPULATION"
+      ],
+      "assessment_file": "modules/61-evaluate-grasp-contacts-and-force-closure/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 62,
+      "task": "Trace observation, approach, grasp verification, transfer and release.",
+      "expected_reasoning": "Every task transition must follow measured geometric or contact evidence; endpoint reachability alone cannot prove placement.",
+      "claim_limit": "Planar kinematic execution omits full gripper and object-contact dynamics.",
+      "id": "ROB-F62",
+      "module_id": "62-execute-perception-guided-pick-and-place",
+      "competency_ids": [
+        "VISION-PERCEPTION",
+        "MANIPULATION"
+      ],
+      "assessment_file": "modules/62-execute-perception-guided-pick-and-place/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 63,
+      "task": "Compare base travel with arm dexterity for one target.",
+      "expected_reasoning": "Moving the base changes relative target coordinates and arm conditioning; a weighted objective trades travel against singularity avoidance.",
+      "claim_limit": "A configuration choice does not establish nonholonomic base trajectory feasibility.",
+      "id": "ROB-F63",
+      "module_id": "63-coordinate-a-mobile-manipulator",
+      "competency_ids": [
+        "MOBILE-KINEMATICS",
+        "MANIPULATION"
+      ],
+      "assessment_file": "modules/63-coordinate-a-mobile-manipulator/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 64,
+      "task": "Demonstrate recovery after a motion edge becomes infeasible.",
+      "expected_reasoning": "The symbolic plan must use geometric feasibility and retain the actual execution state when selecting an alternative.",
+      "claim_limit": "Exhausting all alternatives must report failure rather than invent success.",
+      "id": "ROB-F64",
+      "module_id": "64-plan-tasks-and-motions-with-recovery",
+      "competency_ids": [
+        "TASK-AUTONOMY",
+        "MANIPULATION"
+      ],
+      "assessment_file": "modules/64-plan-tasks-and-motions-with-recovery/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 65,
+      "task": "Check vertex and edge-swap conflicts in a reservation schedule.",
+      "expected_reasoning": "Robots can collide by sharing a cell or swapping cells during one step; waits and delayed starts remain part of the schedule.",
+      "claim_limit": "Discrete reservations do not certify continuous physical separation.",
+      "id": "ROB-F65",
+      "module_id": "65-coordinate-multiple-robots-with-assurance-boundaries",
+      "competency_ids": [
+        "TASK-AUTONOMY",
+        "REALTIME-SAFETY"
+      ],
+      "assessment_file": "modules/65-coordinate-multiple-robots-with-assurance-boundaries/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 66,
+      "task": "Trace one encoder value through units, frames and timestamp contracts.",
+      "expected_reasoning": "Correct forward kinematics can still consume mis-scaled angles or stale data; check interface validity separately from inverse consistency.",
+      "claim_limit": "Self-inverse transform residuals alone cannot detect every frame mistake.",
+      "id": "ROB-F66",
+      "module_id": "66-integrate-robot-models-frames-and-interfaces",
+      "competency_ids": [
+        "SYSTEM-INTEGRATION"
+      ],
+      "assessment_file": "modules/66-integrate-robot-models-frames-and-interfaces/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 67,
+      "task": "Measure recovery latency from the actual accepted event sequence.",
+      "expected_reasoning": "Source time and arrival time serve different roles; stale rejection, gap detection and fresh-state recovery must be observable.",
+      "claim_limit": "A synthetic replay is not middleware or clock-synchronization qualification.",
+      "id": "ROB-F67",
+      "module_id": "67-replay-diagnose-and-recover-a-timed-robot-system",
+      "competency_ids": [
+        "REALTIME-SAFETY",
+        "SYSTEM-INTEGRATION"
+      ],
+      "assessment_file": "modules/67-replay-diagnose-and-recover-a-timed-robot-system/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 68,
+      "task": "Connect a sensor observation to map, state estimate, route and executed motion.",
+      "expected_reasoning": "Map and estimator outputs must feed planning and control; assess freshness, swept clearance, goal progress and recovery separately.",
+      "claim_limit": "A bounded deterministic mission does not establish field autonomy or safety certification.",
+      "id": "ROB-F68",
+      "module_id": "68-capstone-navigate-and-replan-with-perception",
+      "competency_ids": [
+        "SLAM-MAPPING",
+        "LOCAL-KINODYNAMIC-PLANNING",
+        "SYSTEM-INTEGRATION"
+      ],
+      "assessment_file": "modules/68-capstone-navigate-and-replan-with-perception/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    },
+    {
+      "number": 69,
+      "task": "Connect visual pose, arm motion, grasp force and object placement.",
+      "expected_reasoning": "A grasp verdict must depend on executed arm/contact behavior and the object's final state; unrelated successful components do not prove integration.",
+      "claim_limit": "Synthetic planar manipulation is not hardware or general 3D manipulation qualification.",
+      "id": "ROB-F69",
+      "module_id": "69-capstone-perceive-grasp-and-control-a-two-link-robot",
+      "competency_ids": [
+        "PHYSICAL-INTERACTION",
+        "MANIPULATION",
+        "SYSTEM-INTEGRATION"
+      ],
+      "assessment_file": "modules/69-capstone-perceive-grasp-and-control-a-two-link-robot/assessment.md",
+      "plot_keys": [
+        "response",
+        "mechanism"
+      ],
+      "learner_result": "not_recorded"
+    }
+  ],
+  "portfolios": [
+    {
+      "id": "A-GEOMETRY",
+      "type": "cumulative",
+      "competency_ids": [
+        "RIGID-BODY-GEOMETRY",
+        "MOBILE-KINEMATICS"
+      ],
+      "evidence": "Frame round trips, group closure, adjoint duality, constraint residuals, and convention checks.",
+      "anchor_number": 63,
+      "module_ids": [
+        "01-drive-a-differential-robot-with-wheel-speeds",
+        "02-transform-coordinates-between-frames",
+        "12-calibrate-sensor-extrinsics",
+        "13-integrate-wheel-odometry",
+        "25-represent-configuration-spaces-and-holonomic-constraints",
+        "26-compose-rotations-and-poses-on-so-3-and-se-3",
+        "27-map-twists-screws-and-wrenches-with-adjoint-transforms",
+        "63-coordinate-a-mobile-manipulator"
+      ],
+      "assessment_file": "modules/63-coordinate-a-mobile-manipulator/portfolio-a-geometry.md",
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-KINEMATICS",
+      "type": "cumulative",
+      "competency_ids": [
+        "MANIPULATOR-KINEMATICS"
+      ],
+      "evidence": "Forward/inverse residuals, branch choices, Jacobian finite differences, singular values, and null-space invariants.",
+      "anchor_number": 34,
+      "module_ids": [
+        "03-compute-arm-forward-kinematics",
+        "04-solve-inverse-kinematics",
+        "28-build-spatial-jacobians-and-diagnose-singularities",
+        "29-resolve-redundancy-with-null-space-motion",
+        "34-compare-joint-space-and-task-space-tracking"
+      ],
+      "assessment_file": "modules/34-compare-joint-space-and-task-space-tracking/portfolio-a-kinematics.md",
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-DYNAMICS",
+      "type": "cumulative",
+      "competency_ids": [
+        "ROBOT-DYNAMICS"
+      ],
+      "evidence": "Energy, symmetry, skew-property, statics, inverse-dynamics residual, identification, and underactuation checks.",
+      "anchor_number": 40,
+      "module_ids": [
+        "30-map-end-effector-wrenches-to-joint-torques",
+        "31-derive-manipulator-inertia-coriolis-and-gravity-terms",
+        "32-compute-inverse-dynamics-and-identify-robot-parameters",
+        "33-time-scale-multi-joint-trajectories-within-limits",
+        "35-apply-computed-torque-and-gravity-compensation",
+        "36-control-motion-in-operational-space",
+        "40-swing-up-and-balance-an-underactuated-robot"
+      ],
+      "assessment_file": "modules/40-swing-up-and-balance-an-underactuated-robot/portfolio-a-dynamics.md",
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-CONTROL",
+      "type": "cumulative",
+      "competency_ids": [
+        "ACTUATION-JOINT-CONTROL",
+        "PHYSICAL-INTERACTION"
+      ],
+      "evidence": "Tracking, effort, gravity, interaction energy, force error, passivity, delay, saturation, and recovery checks.",
+      "anchor_number": 69,
+      "module_ids": [
+        "05-model-a-dc-motor-and-geartrain",
+        "06-close-a-wheel-speed-loop",
+        "08-control-contact-with-impedance",
+        "34-compare-joint-space-and-task-space-tracking",
+        "35-apply-computed-torque-and-gravity-compensation",
+        "36-control-motion-in-operational-space",
+        "37-compare-impedance-and-admittance-control",
+        "38-regulate-hybrid-motion-and-contact-force",
+        "39-preserve-passivity-under-saturation-and-delay",
+        "40-swing-up-and-balance-an-underactuated-robot",
+        "61-evaluate-grasp-contacts-and-force-closure",
+        "69-capstone-perceive-grasp-and-control-a-two-link-robot"
+      ],
+      "assessment_file": "modules/69-capstone-perceive-grasp-and-control-a-two-link-robot/portfolio-a-control.md",
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-PERCEPTION",
+      "type": "cumulative",
+      "competency_ids": [
+        "VISION-PERCEPTION",
+        "RANGE-PERCEPTION",
+        "SENSOR-MODELING-CALIBRATION"
+      ],
+      "evidence": "Projection, reprojection, distortion, repeatability, inlier, depth, pose, occupancy, and registration residuals.",
+      "anchor_number": 62,
+      "module_ids": [
+        "09-measure-motion-with-encoders",
+        "10-integrate-an-imu-and-observe-drift",
+        "11-build-a-range-sensor-model",
+        "12-calibrate-sensor-extrinsics",
+        "41-project-3d-points-with-a-pinhole-camera",
+        "42-calibrate-camera-intrinsics-and-lens-distortion",
+        "43-detect-and-describe-repeatable-image-features",
+        "44-reject-outliers-in-visual-correspondences",
+        "45-recover-depth-from-stereo-geometry",
+        "46-estimate-object-pose-from-visual-landmarks",
+        "47-build-occupancy-grids-from-range-data",
+        "48-register-point-clouds-with-icp",
+        "62-execute-perception-guided-pick-and-place"
+      ],
+      "assessment_file": "modules/62-execute-perception-guided-pick-and-place/portfolio-a-perception.md",
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-ESTIMATION",
+      "type": "cumulative",
+      "competency_ids": [
+        "STATE-ESTIMATION"
+      ],
+      "evidence": "Covariance, innovation, gate, particle, observability, multi-rate, and consistency evidence.",
+      "anchor_number": 53,
+      "module_ids": [
+        "10-integrate-an-imu-and-observe-drift",
+        "13-integrate-wheel-odometry",
+        "14-fuse-sensors-with-an-ekf",
+        "15-localize-with-a-particle-filter",
+        "49-test-observability-in-multi-rate-sensor-fusion",
+        "50-associate-measurements-with-gating-and-robust-losses",
+        "53-smooth-trajectories-and-audit-map-consistency"
+      ],
+      "assessment_file": "modules/53-smooth-trajectories-and-audit-map-consistency/portfolio-a-estimation.md",
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-SLAM",
+      "type": "cumulative",
+      "competency_ids": [
+        "SLAM-MAPPING"
+      ],
+      "evidence": "Factor residual, gauge handling, robust loop closure, smoothing, map consistency, and held-out alignment checks.",
+      "anchor_number": 68,
+      "module_ids": [
+        "16-build-a-small-slam-problem",
+        "47-build-occupancy-grids-from-range-data",
+        "48-register-point-clouds-with-icp",
+        "50-associate-measurements-with-gating-and-robust-losses",
+        "51-solve-nonlinear-factor-graph-slam",
+        "52-detect-loop-closures-and-reject-false-matches",
+        "53-smooth-trajectories-and-audit-map-consistency",
+        "68-capstone-navigate-and-replan-with-perception"
+      ],
+      "assessment_file": "modules/68-capstone-navigate-and-replan-with-perception/portfolio-a-slam.md",
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-PLANNING",
+      "type": "cumulative",
+      "competency_ids": [
+        "GLOBAL-MOTION-PLANNING",
+        "LOCAL-KINODYNAMIC-PLANNING"
+      ],
+      "evidence": "Completeness boundary, collision clearance, cost improvement, dynamic feasibility, prediction, and fallback checks.",
+      "anchor_number": 68,
+      "module_ids": [
+        "07-generate-a-smooth-trajectory",
+        "17-search-a-grid-with-a-star",
+        "18-plan-with-random-samples",
+        "19-avoid-moving-obstacles",
+        "33-time-scale-multi-joint-trajectories-within-limits",
+        "54-replan-efficiently-with-incremental-graph-search",
+        "55-build-and-query-a-probabilistic-roadmap",
+        "56-improve-sampled-paths-with-rrt-star",
+        "57-check-collision-geometry-and-smooth-paths",
+        "58-optimize-a-trajectory-through-obstacle-constraints",
+        "59-plan-dynamically-feasible-kinodynamic-motion",
+        "60-avoid-dynamic-obstacles-with-local-predictive-control",
+        "68-capstone-navigate-and-replan-with-perception"
+      ],
+      "assessment_file": "modules/68-capstone-navigate-and-replan-with-perception/portfolio-a-planning.md",
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-AUTONOMY",
+      "type": "cumulative",
+      "competency_ids": [
+        "TASK-AUTONOMY"
+      ],
+      "evidence": "Behavior, state, task-and-motion, multi-agent contract, failure propagation, and recovery evidence.",
+      "anchor_number": 65,
+      "module_ids": [
+        "20-coordinate-actions-with-a-behavior-tree",
+        "21-execute-a-mission-state-machine",
+        "64-plan-tasks-and-motions-with-recovery",
+        "65-coordinate-multiple-robots-with-assurance-boundaries"
+      ],
+      "assessment_file": "modules/65-coordinate-multiple-robots-with-assurance-boundaries/portfolio-a-autonomy.md",
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-MANIPULATION",
+      "type": "cumulative",
+      "competency_ids": [
+        "MANIPULATION"
+      ],
+      "evidence": "Force closure, pose uncertainty, reachability, collision, contact, grasp, placement, and recovery evidence.",
+      "anchor_number": 69,
+      "module_ids": [
+        "46-estimate-object-pose-from-visual-landmarks",
+        "61-evaluate-grasp-contacts-and-force-closure",
+        "62-execute-perception-guided-pick-and-place",
+        "63-coordinate-a-mobile-manipulator",
+        "64-plan-tasks-and-motions-with-recovery",
+        "69-capstone-perceive-grasp-and-control-a-two-link-robot"
+      ],
+      "assessment_file": "modules/69-capstone-perceive-grasp-and-control-a-two-link-robot/portfolio-a-manipulation.md",
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-SAFETY",
+      "type": "cumulative",
+      "competency_ids": [
+        "REALTIME-SAFETY"
+      ],
+      "evidence": "Timing, data age, monitor coverage, bounded fallback, fault injection, pass/fail, and non-certification boundaries.",
+      "anchor_number": 67,
+      "module_ids": [
+        "22-meet-real-time-perception-and-control-deadlines",
+        "23-design-safety-monitors",
+        "24-validate-autonomy-in-hil",
+        "39-preserve-passivity-under-saturation-and-delay",
+        "60-avoid-dynamic-obstacles-with-local-predictive-control",
+        "65-coordinate-multiple-robots-with-assurance-boundaries",
+        "67-replay-diagnose-and-recover-a-timed-robot-system"
+      ],
+      "assessment_file": "modules/67-replay-diagnose-and-recover-a-timed-robot-system/portfolio-a-safety.md",
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-CAP-MOBILE",
+      "type": "capstone",
+      "competency_ids": [
+        "SYSTEM-INTEGRATION",
+        "SLAM-MAPPING",
+        "LOCAL-KINODYNAMIC-PLANNING"
+      ],
+      "evidence": "Reused perception, mapping, localization, replanning, local avoidance, monitoring, replay, and recovery artifacts.",
+      "anchor_number": 68,
+      "module_ids": [
+        "16-build-a-small-slam-problem",
+        "19-avoid-moving-obstacles",
+        "24-validate-autonomy-in-hil",
+        "47-build-occupancy-grids-from-range-data",
+        "48-register-point-clouds-with-icp",
+        "50-associate-measurements-with-gating-and-robust-losses",
+        "51-solve-nonlinear-factor-graph-slam",
+        "52-detect-loop-closures-and-reject-false-matches",
+        "53-smooth-trajectories-and-audit-map-consistency",
+        "59-plan-dynamically-feasible-kinodynamic-motion",
+        "60-avoid-dynamic-obstacles-with-local-predictive-control",
+        "66-integrate-robot-models-frames-and-interfaces",
+        "67-replay-diagnose-and-recover-a-timed-robot-system",
+        "68-capstone-navigate-and-replan-with-perception"
+      ],
+      "assessment_file": "modules/68-capstone-navigate-and-replan-with-perception/portfolio-a-cap-mobile.md",
+      "learner_result": "not_recorded"
+    },
+    {
+      "id": "A-CAP-MANIP",
+      "type": "capstone",
+      "competency_ids": [
+        "SYSTEM-INTEGRATION",
+        "MANIPULATION",
+        "PHYSICAL-INTERACTION"
+      ],
+      "evidence": "Reused camera, pose, grasp, kinematics, dynamics, contact, control, timing, and recovery artifacts.",
+      "anchor_number": 69,
+      "module_ids": [
+        "08-control-contact-with-impedance",
+        "24-validate-autonomy-in-hil",
+        "37-compare-impedance-and-admittance-control",
+        "38-regulate-hybrid-motion-and-contact-force",
+        "39-preserve-passivity-under-saturation-and-delay",
+        "46-estimate-object-pose-from-visual-landmarks",
+        "61-evaluate-grasp-contacts-and-force-closure",
+        "62-execute-perception-guided-pick-and-place",
+        "63-coordinate-a-mobile-manipulator",
+        "64-plan-tasks-and-motions-with-recovery",
+        "66-integrate-robot-models-frames-and-interfaces",
+        "67-replay-diagnose-and-recover-a-timed-robot-system",
+        "69-capstone-perceive-grasp-and-control-a-two-link-robot"
+      ],
+      "assessment_file": "modules/69-capstone-perceive-grasp-and-control-a-two-link-robot/portfolio-a-cap-manip.md",
+      "learner_result": "not_recorded"
+    }
+  ]
+}

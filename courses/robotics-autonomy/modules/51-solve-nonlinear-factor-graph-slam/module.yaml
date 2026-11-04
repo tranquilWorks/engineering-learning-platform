@@ -2,9 +2,10 @@ schema_version: 1
 id: 51-solve-nonlinear-factor-graph-slam
 number: 51
 title: Solve Nonlinear Factor-Graph SLAM
-summary: Optimize a two-dimensional pose graph with odometry, loop, prior, and nonlinear landmark-range factors while
-  exposing gauge freedom and relinearization behavior.
-guiding_question: What must be fixed, relinearized, and audited before a low factor residual can support a SLAM claim?
+summary: Optimize a two-dimensional pose graph with odometry, loop, prior, and nonlinear landmark-range
+  factors while exposing gauge freedom and relinearization behavior.
+guiding_question: What must be fixed, relinearized, and audited before a low factor residual can support
+  a SLAM claim?
 status: implemented
 tags:
 - robotics-autonomy
@@ -41,8 +42,8 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Nonlinear SLAM requires explicit gauge fixing, iterated relinearization, and residual checks beyond a single
-    normal-equation solve.
+  text: Nonlinear SLAM requires explicit gauge fixing, iterated relinearization, and residual checks beyond
+    a single normal-equation solve.
   reveal: Use the equations, units, and mechanism plot to test the prediction.
 - type: controls
   title: Live model controls
@@ -64,3 +65,14 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Joint pose and map estimation
+  source: integration.md
+- type: plot_grid
+  title: Joint SLAM evidence
+  plots:
+  - joint_map
+  - joint_convergence
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md
