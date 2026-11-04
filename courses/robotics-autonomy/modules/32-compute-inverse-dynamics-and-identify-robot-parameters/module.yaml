@@ -2,8 +2,8 @@ schema_version: 1
 id: 32-compute-inverse-dynamics-and-identify-robot-parameters
 number: 32
 title: Identify Payload and Damping from Synthetic Joint Torque
-summary: Fit payload and damping from actual excitation and torque data, then test the identified model on
-  a separate held-out motion. Distinguish regressor rank from regularized conditioning.
+summary: Fit payload and damping from actual excitation and torque data, then test the identified model
+  on a separate held-out motion. Distinguish regressor rank from regularized conditioning.
 guiding_question: How can a rank-deficient experiment return a finite condition number and a unique fit?
 status: implemented
 tags:
@@ -43,8 +43,8 @@ blocks:
   title: Predict before running
   text: Predict which parameter becomes unobservable when training measurements use a stationary joint.
   reveal: The reported condition belongs to the regularized augmented system. Its prior supplies a numerical
-    constraint on damping, but stationary training supplies no damping information. A dynamic held-out residual
-    exposes that distinction.
+    constraint on damping, but stationary training supplies no damping information. A dynamic held-out
+    residual exposes that distinction.
 - type: controls
   title: Live model controls
 - type: metrics

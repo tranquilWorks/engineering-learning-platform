@@ -136,6 +136,13 @@ def test_signature_dimensions_scenarios_and_visible_verdicts(course, number):
         assert signature_metrics[-1]["id"] == "navigation_terminal_error"
         assert signature_metrics[-1]["unit"] == "m"
         signature_metrics = signature_metrics[:-1]
+    if course == "robotics-autonomy" and number in (68, 69):
+        expected_extra = {
+            68: [("tracked_goal_error", "m"), ("tracked_clearance", "m"), ("estimate_rmse", "m")],
+            69: [("executed_placement_error", "m"), ("executed_task_success", "boolean")],
+        }[number]
+        assert [(m["id"], m["unit"]) for m in signature_metrics[3:]] == expected_extra
+        signature_metrics = signature_metrics[:3]
     assert [m["unit"] for m in signature_metrics] == [s["unit"] for s in design["signature"]]
     if "requirements" in response["diagnostics"]:
         assert any(b.get("table") == "requirements" for b in manifest["blocks"])

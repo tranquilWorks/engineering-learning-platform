@@ -2,11 +2,17 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 export ELP_BROWSER_URL="${ELP_BROWSER_URL:-http://127.0.0.1:8767}"
-export ELP_CONTAINER_NAME="${ELP_CONTAINER_NAME:-elp-gnc-quality}"
-export ELP_IMAGE_TAG="${ELP_IMAGE_TAG:-elp-gnc-quality:20261103}"
-export ELP_BROWSER_COURSE=controls-gnc
-export ELP_BROWSER_REPORT="${ELP_BROWSER_REPORT:-docs/course-quality/gnc-aggregate-baked-browser.json}"
-export ELP_BROWSER_SCREENSHOT_DIR="${ELP_BROWSER_SCREENSHOT_DIR:-.state/gnc-baked-captures}"
+elp_delivery_course="${ELP_DELIVERY_COURSE:-robotics-autonomy}"
+case "$elp_delivery_course" in
+  robotics-autonomy) elp_delivery_prefix=robotics ;;
+  controls-gnc) elp_delivery_prefix=gnc ;;
+  *) echo "Unsupported delivery course: $elp_delivery_course" >&2; exit 2 ;;
+esac
+export ELP_CONTAINER_NAME="${ELP_CONTAINER_NAME:-elp-$elp_delivery_prefix-quality}"
+export ELP_IMAGE_TAG="${ELP_IMAGE_TAG:-elp-$elp_delivery_prefix-quality:20261104}"
+export ELP_BROWSER_COURSE="$elp_delivery_course"
+export ELP_BROWSER_REPORT="${ELP_BROWSER_REPORT:-docs/course-quality/$elp_delivery_prefix-aggregate-baked-browser.json}"
+export ELP_BROWSER_SCREENSHOT_DIR="${ELP_BROWSER_SCREENSHOT_DIR:-.state/$elp_delivery_prefix-baked-captures}"
 command -v docker >/dev/null || { echo "BLOCKED: Docker CLI/daemon required for baked delivery; host checks do not replace it." >&2; exit 2; }
 export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
 # Existing named containers are never replaced by this verifier.
@@ -42,4 +48,4 @@ npm run test:browser
 PYTHONPATH=apps/api/src .venv/bin/python scripts/container-quality.py
 node scripts/browser-quality.mjs
 
-PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-gnc-assessments.py --base-url "$ELP_BROWSER_URL" --output docs/course-quality/gnc-aggregate-baked-http.json
+PYTHONPATH=apps/api/src .venv/bin/python "scripts/verify-$elp_delivery_prefix-assessments.py" --base-url "$ELP_BROWSER_URL" --output "docs/course-quality/$elp_delivery_prefix-aggregate-baked-http.json"

@@ -15,26 +15,58 @@ RECOVERY_TEXT = (
 )
 
 
-def _trace(name: str, x: Any, y: Any, x_quantity: str, x_unit: str,
-           y_quantity: str, y_unit: str) -> dict[str, Any]:
-    return {"type": "scattergl", "mode": "lines+markers", "name": name,
-            "x": np.asarray(x, dtype=float), "y": np.asarray(y, dtype=float),
-            "meta": {"x_quantity": x_quantity, "x_unit": x_unit,
-                     "y_quantity": y_quantity, "y_unit": y_unit}}
+def _trace(
+    name: str,
+    x: Any,
+    y: Any,
+    x_quantity: str,
+    x_unit: str,
+    y_quantity: str,
+    y_unit: str,
+) -> dict[str, Any]:
+    return {
+        "type": "scattergl",
+        "mode": "lines+markers",
+        "name": name,
+        "x": np.asarray(x, dtype=float),
+        "y": np.asarray(y, dtype=float),
+        "meta": {
+            "x_quantity": x_quantity,
+            "x_unit": x_unit,
+            "y_quantity": y_quantity,
+            "y_unit": y_unit,
+        },
+    }
 
 
-def _plot(title: str, x_title: str, y_title: str,
-          traces: list[dict[str, Any]]) -> dict[str, Any]:
-    return {"data": traces, "layout": {"title": {"text": title, "x": 0.02},
-            "xaxis": {"title": {"text": x_title}}, "yaxis": {"title": {"text": y_title}},
-            "legend": {"orientation": "h"}, "margin": {"l": 72, "r": 36, "t": 62, "b": 62},
-            "hovermode": "closest", "uirevision": "keep-view"},
-            "config": {"responsive": True, "displaylogo": False}}
+def _plot(
+    title: str, x_title: str, y_title: str, traces: list[dict[str, Any]]
+) -> dict[str, Any]:
+    return {
+        "data": traces,
+        "layout": {
+            "title": {"text": title, "x": 0.02},
+            "xaxis": {"title": {"text": x_title}},
+            "yaxis": {"title": {"text": y_title}},
+            "legend": {"orientation": "h"},
+            "margin": {"l": 72, "r": 36, "t": 62, "b": 62},
+            "hovermode": "closest",
+            "uirevision": "keep-view",
+        },
+        "config": {"responsive": True, "displaylogo": False},
+    }
 
 
-def _candidate_cost(x: float, y: float, lateral_speed: float, obstacle_y: float,
-                    obstacle_speed: float, acceleration: float, horizon: int,
-                    broken: bool) -> float:
+def _candidate_cost(
+    x: float,
+    y: float,
+    lateral_speed: float,
+    obstacle_y: float,
+    obstacle_speed: float,
+    acceleration: float,
+    horizon: int,
+    broken: bool,
+) -> float:
     dt, forward_speed, safety = 0.2, 1.25, 0.9
     predicted_y, predicted_speed = y, lateral_speed
     cost = 0.0
@@ -52,7 +84,9 @@ def _candidate_cost(x: float, y: float, lateral_speed: float, obstacle_y: float,
     return cost
 
 
-def _simulate(horizon: int, obstacle_speed: float, broken: bool) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+def _simulate(
+    horizon: int, obstacle_speed: float, broken: bool
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     dt, forward_speed = 0.2, 1.25
     x, y, lateral_speed = 0.0, 0.0, 0.0
     obstacle_y = -2.0
@@ -63,10 +97,23 @@ def _simulate(horizon: int, obstacle_speed: float, broken: bool) -> tuple[np.nda
     effective_horizon = 1 if broken else horizon
     for _ in range(40):
         candidates = (-1.2, -0.6, 0.0, 0.6, 1.2)
-        acceleration = min(candidates, key=lambda action: (
-            _candidate_cost(x, y, lateral_speed, obstacle_y, obstacle_speed,
-                            action, effective_horizon, broken), abs(action), action
-        ))
+        acceleration = min(
+            candidates,
+            key=lambda action: (
+                _candidate_cost(
+                    x,
+                    y,
+                    lateral_speed,
+                    obstacle_y,
+                    obstacle_speed,
+                    action,
+                    effective_horizon,
+                    broken,
+                ),
+                abs(action),
+                action,
+            ),
+        )
         lateral_speed = float(np.clip(lateral_speed + acceleration * dt, -1.1, 1.1))
         x += forward_speed * dt
         y += lateral_speed * dt
@@ -75,7 +122,12 @@ def _simulate(horizon: int, obstacle_speed: float, broken: bool) -> tuple[np.nda
         obstacle.append([5.0, obstacle_y])
         separation.append(float(np.hypot(x - 5.0, y - obstacle_y)))
         controls.append(acceleration)
-    return np.asarray(robot), np.asarray(obstacle), np.asarray(separation), np.asarray(controls)
+    return (
+        np.asarray(robot),
+        np.asarray(obstacle),
+        np.asarray(separation),
+        np.asarray(controls),
+    )
 
 
 def _model(parameters: dict[str, Any], broken: bool) -> dict[str, Any]:
@@ -88,31 +140,146 @@ def _model(parameters: dict[str, Any], broken: bool) -> dict[str, Any]:
     path_length = float(np.sum(np.linalg.norm(robot[1:] - robot[:-1], axis=1)))
     signature = [min_separation, float(violations), path_length]
     time_s = np.arange(len(separation)) * 0.2
-    return {"signature": signature, "sample_count": len(time_s),
-            "metrics": [("minimum_dynamic_separation", "Minimum Dynamic Separation", signature[0], "m"),
-                        ("safety_violation_steps", "Safety-Violation Steps", signature[1], "count"),
-                        ("executed_path_length", "Executed Path Length", signature[2], "m")],
-            "plots": {"response": _plot("Receding-horizon avoidance trajectory", "Workspace x position (m)", "Workspace y position (m)", [
-                _trace("Robot", robot[:, 0], robot[:, 1], "Workspace x position", "m", "Workspace y position", "m"),
-                _trace("Moving obstacle", obstacle[:, 0], obstacle[:, 1], "Workspace x position", "m", "Workspace y position", "m"),
-            ]), "mechanism": _plot("Predicted-separation safety audit", "Elapsed time (s)", "Robot-obstacle separation (m)", [
-                _trace("Executed separation", time_s, separation, "Elapsed time", "s", "Robot-obstacle separation", "m"),
-                _trace("Safety radius", time_s, np.full_like(time_s, safety), "Elapsed time", "s", "Robot-obstacle separation", "m"),
-            ])},
-            "observation": (f"The controller applied {len(controls)} bounded first actions. Safety depends on "
-                            "predicting where the obstacle will be, not only measuring where it is now.")}
+    return {
+        "signature": signature,
+        "sample_count": len(time_s),
+        "metrics": [
+            (
+                "minimum_dynamic_separation",
+                "Minimum Sampled Dynamic Separation",
+                signature[0],
+                "m",
+            ),
+            ("safety_violation_steps", "Safety-Violation Steps", signature[1], "count"),
+            ("executed_path_length", "Executed Path Length", signature[2], "m"),
+        ],
+        "plots": {
+            "response": _plot(
+                "Receding-horizon avoidance trajectory",
+                "Workspace x position (m)",
+                "Workspace y position (m)",
+                [
+                    _trace(
+                        "Robot",
+                        robot[:, 0],
+                        robot[:, 1],
+                        "Workspace x position",
+                        "m",
+                        "Workspace y position",
+                        "m",
+                    ),
+                    _trace(
+                        "Moving obstacle",
+                        obstacle[:, 0],
+                        obstacle[:, 1],
+                        "Workspace x position",
+                        "m",
+                        "Workspace y position",
+                        "m",
+                    ),
+                ],
+            ),
+            "mechanism": _plot(
+                "Predicted-separation safety audit",
+                "Elapsed time (s)",
+                "Robot-obstacle separation (m)",
+                [
+                    _trace(
+                        "Executed separation",
+                        time_s,
+                        separation,
+                        "Elapsed time",
+                        "s",
+                        "Robot-obstacle separation",
+                        "m",
+                    ),
+                    _trace(
+                        "Safety radius",
+                        time_s,
+                        np.full_like(time_s, safety),
+                        "Elapsed time",
+                        "s",
+                        "Robot-obstacle separation",
+                        "m",
+                    ),
+                ],
+            ),
+        },
+        "observation": (
+            f"The controller applied {len(controls)} bounded first actions. Safety depends on "
+            "predicting where the obstacle will be, not only measuring where it is now."
+        ),
+    }
 
 
 def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
-    return {"metrics": [{"id": key, "label": label, "value": float(value), "unit": unit,
-            "emphasis": "primary" if index == 0 else "normal"}
-            for index, (key, label, value, unit) in enumerate(model["metrics"])], "plots": model["plots"],
-            "explanations": {"observation": model["observation"], "broken": BROKEN_TEXT, "recovery": RECOVERY_TEXT},
-            "diagnostics": {"item_number": ITEM_NUMBER, "broken_active": bool(broken),
-            "sample_count": int(model["sample_count"]), "signature": [float(value) for value in model["signature"]],
-            "software_only": True}}
+    return {
+        "metrics": [
+            {
+                "id": key,
+                "label": label,
+                "value": float(value),
+                "unit": unit,
+                "emphasis": "primary" if index == 0 else "normal",
+            }
+            for index, (key, label, value, unit) in enumerate(model["metrics"])
+        ],
+        "plots": model["plots"],
+        "explanations": {
+            "observation": model["observation"],
+            "broken": BROKEN_TEXT,
+            "recovery": RECOVERY_TEXT,
+        },
+        "diagnostics": {
+            "item_number": ITEM_NUMBER,
+            "broken_active": bool(broken),
+            "sample_count": int(model["sample_count"]),
+            "signature": [float(value) for value in model["signature"]],
+            "software_only": True,
+        },
+    }
 
 
 def run(parameters: dict[str, Any]) -> dict[str, Any]:
     broken = bool(parameters["broken_mode"])
-    return _result(_model(parameters, broken), broken)
+    result = _result(_model(parameters, broken), broken)
+    robot, obstacle, _, _ = _simulate(
+        round(float(parameters["prediction_horizon_steps"])),
+        float(parameters["obstacle_speed_m_s"]),
+        broken,
+    )
+    relative = robot - obstacle
+    delta = np.diff(relative, axis=0)
+    tau = np.clip(
+        -np.einsum("ij,ij->i", relative[:-1], delta)
+        / np.maximum(np.einsum("ij,ij->i", delta, delta), 1e-15),
+        0,
+        1,
+    )
+    separation = np.linalg.norm(relative[:-1] + tau[:, None] * delta, axis=1)
+    result["diagnostics"]["continuous_intervals"] = {
+        "fraction": tau,
+        "minimum_separation_m": separation,
+    }
+    result["metrics"].append(
+        {
+            "id": "continuous_clearance",
+            "label": "Continuous interpolated separation",
+            "value": float(separation.min()),
+            "unit": "m",
+        }
+    )
+    result["tables"] = {
+        "continuous_clearance": {
+            "columns": ["Interval start (s)", "Closest fraction", "Separation (m)"],
+            "rows": [
+                {
+                    "Interval start (s)": 0.2 * i,
+                    "Closest fraction": float(tau[i]),
+                    "Separation (m)": float(separation[i]),
+                }
+                for i in range(len(tau))
+            ],
+        }
+    }
+    return result

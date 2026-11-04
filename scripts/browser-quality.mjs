@@ -146,7 +146,7 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
           row.checkpoint_in_viewport = true;
           row.checkpoint = true;
         }
-        if (course.id === 'controls-gnc') {
+        if (['controls-gnc','robotics-autonomy'].includes(course.id)) {
           const jump = page.getByRole('navigation', {name:'Lesson sections'}).getByRole('link', {name:'Course checkpoint', exact:true});
           await jump.click();
           const heading = page.getByRole('heading', {name:'Course checkpoint', exact:true});
@@ -154,7 +154,7 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
           const content = await heading.locator('..').textContent();
           if (!content.includes(`P${String(module.number).padStart(2,'0')} course checkpoint`) || !content.includes('Expected reasoning') || !content.includes('No learner completion')) throw new Error('Missing Controls checkpoint, reasoning or learner boundary');
           row.checkpoint = true; row.checkpoint_in_viewport = true;
-          if ([54,55,59,61,67].includes(module.number)) {
+          if (course.id === 'controls-gnc' && [54,55,59,61,67].includes(module.number)) {
             const section = module.number < 59 ? 'Recursive integration' : 'Integrated navigation';
             await page.getByRole('navigation', {name:'Lesson sections'}).getByRole('link', {name:section,exact:true}).click();
             await expect(page.getByRole('heading',{name:section,exact:true})).toBeInViewport();
@@ -181,7 +181,25 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
             }
           }
 
+          if (course.id === 'robotics-autonomy' && [51,62,68,69].includes(module.number)) {
+            const labels = {51:'Joint pose and map estimation',62:'Executed manipulation',68:'Estimated and tracked navigation',69:'Executed manipulation'};
+            const title = labels[module.number];
+            await page.getByRole('navigation',{name:'Lesson sections'}).getByRole('link',{name:title,exact:true}).click();
+            await expect(page.getByRole('heading',{name:title,exact:true})).toBeInViewport();
+            row.integrated_section = true;
+            const grid = page.locator('.plot-grid-section').nth(1);
+            row.integrated_drawn_plots = await grid.locator('.js-plotly-plot').evaluateAll(nodes => nodes.filter(node => node.querySelector('.scatterlayer .trace path') || node.querySelector('canvas')).length);
+            if (row.integrated_drawn_plots !== 2) throw new Error('Robotics integrated plot missing');
+            const panels = grid.locator('.plot-panel');
+            for (let i=0; i<await panels.count(); i++) {
+              const file = `${out}/robotics-integration-${module.number}-${viewport}-${i}.png`;
+              await panels.nth(i).screenshot({path:file});
+              screenshots.push({path:file,sha256:crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
+            }
+          }
+
           row.controls_portfolios = [];
+          if (course.id === 'robotics-autonomy') row.robotics_portfolios = [];
           for (const block of doc.module.blocks.filter(b => b.type === 'markdown' && b.title?.startsWith('Cumulative portfolio '))) {
             const nav = page.getByRole('navigation', {name:'Lesson sections'}).getByRole('link', {name:block.title,exact:true});
             await nav.click();
@@ -190,6 +208,7 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
             const body = await h.locator('..').textContent();
             if (!body.includes('Four-criterion rubric') || !body.includes('Diagnose and recover')) throw new Error('Missing cumulative tasks/rubric');
             row.controls_portfolios.push(block.title);
+            if (course.id === 'robotics-autonomy') row.robotics_portfolios.push(block.title);
           }
         }
         row.status = 'passed';
@@ -198,7 +217,7 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
           await page.screenshot({ path: file });
           screenshots.push({ path: file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex') });
         }
-        if (course.id === 'controls-gnc' || module === course.modules[0] || isRevised(course, module) || isCumulative(course, module)) {
+        if (['controls-gnc','robotics-autonomy'].includes(course.id) || module === course.modules[0] || isRevised(course, module) || isCumulative(course, module)) {
           const controls = page.locator('.control-panel:visible');
           const before = await page.locator('.metric').allTextContents();
           const choice = controls.locator('select').first();

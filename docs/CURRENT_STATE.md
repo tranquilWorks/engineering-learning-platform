@@ -1,3 +1,15 @@
+# Robotics/Autonomy — authored/software aggregate accepted (2026-11-04)
+
+All 69 existing Robotics lessons now have distinct formative checkpoints and 13 cumulative portfolios; 25 prior evidence tasks are preserved verbatim. The review closes all nine course-caliber dimensions within the documented synthetic scope. Joint pose/map SLAM, actual one-to-one association, holdout-safe smoothing, bounded planning failure, measured timing recovery, tracked mobile navigation and guarded object placement have independently checked mechanisms.
+
+Verification passed: 103 contract tests, 1733 quick tests, 1733 full tests; 345 independently calculated runtime cases and 345 real HTTP replays; 138 current-content desktop/mobile views and interactions, 26 portfolio visits, 13 web tests and 23 browser regressions. Four integrated plot views were rechecked on both viewports after visual corrections. See [review](course-quality/robotics-aggregate-review.json), [exact evidence](course-quality/robotics-aggregate-verification-summary.json) and [batch closeout](evidence/ELP-ROB-AGGREGATE-QUALITY-01-2026-11-04.md).
+
+Implementation: [PR64](https://github.com/tranquilWorks/engineering-learning-platform/pull/64). Contract: [Control PR635](https://github.com/tranquilWorks/portfolio-control/pull/635). Source pins, original conversion artifacts and all other course content are preserved. DSP/Controls dispositions remain accepted; Vehicle aggregate remains blocked. Docker delivery is explicitly owner-deferred. Learner, manual screen-reader, MATLAB, hardware and production validation remain not_run.
+
+Historical closeout notes below retain their original dates; the current machine-readable disposition is `course-caliber-status.yaml`.
+
+---
+
 # Controls/GNC — content accepted at DSP authored/software rigor (2026-11-03)
 
 The owner authorized content-only completion, push and merge, with Docker delivery

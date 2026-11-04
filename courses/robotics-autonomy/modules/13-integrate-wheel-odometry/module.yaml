@@ -2,7 +2,8 @@ schema_version: 1
 id: 13-integrate-wheel-odometry
 number: 13
 title: Integrate Wheel Odometry
-summary: Convert quantized wheel increments into an SE(2) trajectory and expose drift from slip and a first-order integration shortcut.
+summary: Convert quantized wheel increments into an SE(2) trajectory and expose drift from slip and a
+  first-order integration shortcut.
 guiding_question: What inputs, observable effects, and failure modes matter when you integrate Wheel Odometry?
 status: implemented
 tags:
@@ -63,8 +64,10 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Quantized wheel increments can be integrated exactly as local SE(2) twists, but unmeasured ground slip still produces accumulating pose error.
-  reveal: Apply each twist about its midpoint and separate encoder quantization from wheel-to-ground model error.
+  text: Quantized wheel increments can be integrated exactly as local SE(2) twists, but unmeasured ground
+    slip still produces accumulating pose error.
+  reveal: Apply each twist about its midpoint and separate encoder quantization from wheel-to-ground model
+    error.
 - type: controls
   title: Live odometry controls
 - type: metrics
@@ -85,3 +88,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

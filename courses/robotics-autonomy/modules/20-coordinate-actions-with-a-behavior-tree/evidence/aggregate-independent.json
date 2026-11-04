@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "item_id": "P20",
+  "origin": "Independent closed-form behavior-tree tick schedule with explicit retry and terminal-state counts.",
+  "tolerance": {
+    "absolute": 1e-09,
+    "relative": 1e-09
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "navigate_ticks": 5,
+        "grasp_failures": 2,
+        "retry_limit": 3,
+        "mission_ticks": 20,
+        "broken_mode": false
+      },
+      "signature": [
+        3.0,
+        11.0,
+        3.0,
+        3.0,
+        1.0
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "navigate_ticks": 10,
+        "grasp_failures": 2,
+        "retry_limit": 3,
+        "mission_ticks": 20,
+        "broken_mode": false
+      },
+      "signature": [
+        3.0,
+        16.0,
+        3.0,
+        3.0,
+        1.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "navigate_ticks": 5,
+        "grasp_failures": 2,
+        "retry_limit": 6,
+        "mission_ticks": 20,
+        "broken_mode": false
+      },
+      "signature": [
+        3.0,
+        11.0,
+        3.0,
+        3.0,
+        1.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "navigate_ticks": 5,
+        "grasp_failures": 2,
+        "retry_limit": 3,
+        "mission_ticks": 20,
+        "broken_mode": true
+      },
+      "signature": [
+        0.0,
+        20.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "navigate_ticks": 5,
+        "grasp_failures": 2,
+        "retry_limit": 3,
+        "mission_ticks": 20,
+        "broken_mode": false
+      },
+      "signature": [
+        3.0,
+        11.0,
+        3.0,
+        3.0,
+        1.0
+      ]
+    }
+  }
+}

@@ -2,10 +2,11 @@ schema_version: 1
 id: 35-apply-computed-torque-and-gravity-compensation
 number: 35
 title: Integrate Computed Torque with Gravity Error and Saturation
-summary: The plant integrates coupled inertia, Coriolis and gravity dynamics. Selected model error scales the
-  controller model; actual torques saturate at ±20 N·m. Nominal error dynamics apply only without mismatch
-  or saturation.
-guiding_question: Why can exact parameters still fail to produce the nominal critically damped tracking error?
+summary: "The plant integrates coupled inertia, Coriolis and gravity dynamics. Selected model error scales\
+  \ the controller model; actual torques saturate at \xB120 N\xB7m. Nominal error dynamics apply only\
+  \ without mismatch or saturation."
+guiding_question: Why can exact parameters still fail to produce the nominal critically damped tracking
+  error?
 status: implemented
 tags:
 - robotics-autonomy
@@ -42,11 +43,11 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Predict why increasing feedback bandwidth may not reduce tracking error when requested torques exceed
-    actuator limits.
-  reveal: The derivation assumes the requested torque reaches the plant. Clipping changes that input and leaves
-    an uncompensated acceleration. Compare requested and applied torque along the actual trajectory before
-    applying the linear error equation.
+  text: Predict why increasing feedback bandwidth may not reduce tracking error when requested torques
+    exceed actuator limits.
+  reveal: The derivation assumes the requested torque reaches the plant. Clipping changes that input and
+    leaves an uncompensated acceleration. Compare requested and applied torque along the actual trajectory
+    before applying the linear error equation.
 - type: controls
   title: Live model controls
 - type: metrics

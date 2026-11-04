@@ -360,8 +360,18 @@ def test_active_contract_ledger_and_prior_source_prefix():
     )
     assert raw[118814:].lstrip().startswith(b"# P53-P64 independent references.")
     contract = yaml.safe_load((ROOT / "contracts/active-batch.yaml").read_text())
-    assert contract["batch"]["id"] == "ELP-GNC-AGGREGATE-QUALITY-01"
-    assert "ELP-VEHICLE-DRIVELINE-QUALITY-04" in contract["dependencies"]
+    approved_successors = {
+        "ELP-GNC-AGGREGATE-QUALITY-01": "abe7c49cea2a649354f20ad19dbe8a2e6c78540a",
+        "ELP-ROB-AGGREGATE-QUALITY-01": "185e966242c889d3f030bab6016139777fcf0f17",
+    }
+    assert contract["batch"]["id"] in approved_successors
+    assert contract["sources"]["baseline_commit"] == approved_successors[contract["batch"]["id"]]
+    predecessor = (
+        "ELP-GNC-AGGREGATE-QUALITY-01"
+        if contract["batch"]["id"] == "ELP-ROB-AGGREGATE-QUALITY-01"
+        else "ELP-VEHICLE-DRIVELINE-QUALITY-04"
+    )
+    assert predecessor in contract["dependencies"]
     ledger = yaml.safe_load((COURSE / "remediation-map.yaml").read_text())
     prior = ledger["scope"]["repaired_in_prior_batches"]
     assert "ELP-DSP-FIDELITY-P53-P64" in prior["batch_ids"]

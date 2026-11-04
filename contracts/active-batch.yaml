@@ -1,33 +1,34 @@
 schema_version: 1
 batch:
-  id: ELP-GNC-AGGREGATE-QUALITY-01
-  title: Complete Controls/GNC numerical, curriculum and capstone review
-  goal: Bring the 68 native Controls/GNC lessons to the DSP authored/software standard, repairing newly found
-    mechanism and reference gaps before aggregate acceptance.
+  id: ELP-ROB-AGGREGATE-QUALITY-01
+  title: Complete Robotics content qualification at DSP and Controls rigor
+  goal: Audit all 69 existing Robotics lessons from foundations through both capstones; repair missing
+    mechanisms and independent evidence, complete individual and cumulative assessment, and qualify authored/synthetic
+    content.
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
-  - 'Owner 2026-11-03: begin Controls and bring it over the finish line at DSP depth.'
-  - products/engineering-learning-platform/COURSE_CALIBER.md
+  - 'Owner 2026-11-04: do the same with Robotics, starting from the beginning, flesh out and qualify to
+    the extent of DSP and Controls.'
+  - 'Owner continuation: content-only qualification, push and merge; Docker delivery deferred, no physical/learner
+    validation inferred.'
   milestone: products/engineering-learning-platform/roadmap.yaml#ELP-M3
-  baseline_commit: abe7c49cea2a649354f20ad19dbe8a2e6c78540a
-  baseline_tree: c206f43301d8b2a6fc587331dd879f25da280d21
+  baseline_commit: 185e966242c889d3f030bab6016139777fcf0f17
+  baseline_tree: ef26d1b2806b7433cfcd98059c069786f0e145fe
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_baseline: 7e6f8693279411b4feaf33a7d9f6924fb1e55330
-  control_plane_path: products/engineering-learning-platform/batches/ELP-GNC-AGGREGATE-QUALITY-01.yaml
+  control_plane_baseline: f274f505a4bb6c99d7fd20ce7eb11e3f9b9697de
+  control_plane_path: products/engineering-learning-platform/batches/ELP-ROB-AGGREGATE-QUALITY-01.yaml
   target_repository: tranquilWorks/engineering-learning-platform
-  predecessor_pr: 61
+  predecessor_pr: 63
 dependencies:
-- ELP-VEHICLE-DRIVELINE-QUALITY-04
+- ELP-GNC-AGGREGATE-QUALITY-01
 scope:
   allowed_paths:
-  - courses/controls-gnc/**
-  - apps/api/tests/test_gnc*.py
+  - courses/robotics-autonomy/**
+  - apps/api/tests/test_robotics*.py
   - apps/api/tests/test_*quality*.py
   - apps/api/tests/test_course_caliber_status.py
-  - apps/api/tests/test_navigation_geometry_quality.py
-  - apps/api/tests/test_vehicle_*quality.py
-  - scripts/*gnc*
+  - scripts/*robotics*
   - scripts/audit_course_quality.py
   - scripts/browser-quality.mjs
   - scripts/verify-course-delivery.sh
@@ -42,60 +43,62 @@ scope:
   - docs/course-quality/**
   - docs/CURRENT_STATE.md
   - docs/HANDOFF.md
-  - docs/evidence/ELP-GNC-AGGREGATE-QUALITY-01-*
+  - docs/evidence/ELP-ROB-AGGREGATE-QUALITY-01-*
   - playwright.config.ts
-  - apps/api/tests/test_dsp_aggregate_quality.py
+  - apps/api/tests/test_dsp_fidelity_remediation_p53_p64.py
   - apps/api/tests/test_dsp_fidelity_remediation_p65_p76.py
   - apps/api/tests/test_dsp_fidelity_remediation_p77_p84.py
-  - apps/api/tests/test_dsp_fidelity_remediation_p53_p64.py
   forbidden_paths:
   - courses/*-learning/**
   - courses/dsp-radar/**
-  - courses/robotics-autonomy/**
+  - courses/controls-gnc/**
   - courses/vehicle-dynamics/**
   - courses/demo-radar/**
   - courses/platform-showcase/**
-  - courses/controls-gnc/course.yaml
-  - courses/controls-gnc/source-map.yaml
-  - courses/controls-gnc/fidelity-map.yaml
-  - courses/controls-gnc/conversion-manifest.yaml
+  - courses/robotics-autonomy/course.yaml
+  - courses/robotics-autonomy/source-map.yaml
+  - courses/robotics-autonomy/fidelity-map.yaml
+  - courses/robotics-autonomy/conversion-manifest.yaml
   - .gitmodules
   - apps/api/src/**
   - apps/web/src/components/**
   - packages/**
   - .github/**
 acceptance:
-- Owner request authorizes scoped development implementation. Publish this new contract in Portfolio Control;
-  retain exact target baseline and all other course bytes/source pins. No inventory expansion or breadth roadmap
-  activation.
-- Audit all 68 numerical mechanisms and independent evidence. Replace native signature lookup fixtures with
-  independently formulated references. Repair any claimed mechanisms found to be absent or inconsistent, retaining
-  runtime limits/control identities and documenting changed native numerical evidence separately from historical
-  conversions.
-- Provide 68 individually authored browser-embedded formative assessments with actual controls, two sweeps,
-  equations/units, worked reasoning, fault/recovery and limits. Preserve existing checkpoints and extend missing
-  scopes without erasing prior reviewed prose.
-- Bind all actual native identities, competencies, acyclic prerequisites, cumulative portfolios and three capstones.
-  Capstone integration claims must describe executed models, not broader absent algorithms. No authentic full
-  GNSS/INS or physical HIL claim from simplified capstones.
-- Freshly replay five independently originated scenarios for every lesson, retaining unchanged tolerances and
-  original oracle provenance; verify physical invariants, selected full arrays, off-grid and degenerate cases.
-  Reconcile referenced markdown content identities via actual catalog.
-- Exercise all Controls lessons and checkpoints through real desktop/mobile browser and HTTP entry points,
-  control/fault/recovery/reset and drawn plots. Run required contract/quick/full gates sequentially and distinguish
-  host verification from baked read-only nonroot Docker delivery.
-- Promote only evidence-supported software numerical/curriculum/capstone stages. Keep learner, manual screen-reader,
-  MATLAB, hardware, production and concurrent capacity not run. Preserve DSP disposition and Robotics/Vehicle
-  aggregate blocks.
-- Publish exact evidence and reviewable development PR. Merge only after required verification; preserve failures
-  and environment blockers without weakening assertions or claiming a completed acceptance gate.
-- 'Owner 2026-11-03: content-only completion at DSP authored/software rigor; Docker delivery is deferred
-  and does not block this content acceptance or the explicitly authorized push and merge. No container,
-  learner, hardware or production pass is inferred.'
+- Owner authorizes this scoped continuation and content-only merge. Publish the matching Control contract,
+  preserve all other course bytes and source pins. No arbitrary inventory expansion.
+- Audit all 69 numerical mechanisms and independent evidence. Replace native signature lookup fixtures
+  with independently formulated references. Repair any claimed mechanisms found to be absent or inconsistent,
+  retaining runtime limits/control identities and documenting changed native numerical evidence separately
+  from historical conversions.
+- Provide 69 individually authored browser-embedded formative assessments with actual controls, two sweeps,
+  equations/units, worked reasoning, fault/recovery and limits. Preserve existing checkpoints and extend
+  missing scopes without erasing prior reviewed prose.
+- Bind all actual native identities, competencies, acyclic prerequisites, cumulative portfolios and two
+  capstones. Capstone integration claims must describe executed models, not broader absent algorithms.
+  No authentic full SLAM/manipulation or physical HIL claim from simplified capstones.
+- Freshly replay five independently originated scenarios for every lesson, retaining unchanged tolerances
+  and original oracle provenance; verify physical invariants, selected full arrays, off-grid and degenerate
+  cases. Reconcile referenced markdown content identities via actual catalog.
+- Exercise all Robotics lessons and checkpoints through real desktop/mobile browser and HTTP entry points,
+  control/fault/recovery/reset and drawn plots. Run required contract/quick/full gates sequentially and
+  distinguish host verification from baked read-only nonroot Docker delivery.
+- Promote only evidence-supported software numerical/curriculum/capstone stages. Keep learner, manual
+  screen-reader, MATLAB, hardware, production and concurrent capacity not run. Preserve DSP and Controls
+  dispositions and Vehicle aggregate blocks.
+- Publish exact evidence and reviewable development PR. Merge only after required verification; preserve
+  failures and environment blockers without weakening assertions or claiming a completed acceptance gate.
+- 'Owner continuation from accepted Controls: content-only review at DSP authored/software rigor, push
+  and merge after evidence. Docker delivery is deferred and must remain not_run until performed; learner,
+  MATLAB, hardware and production remain separate.'
+- Update only the active-contract assertions in three historical DSP fidelity test files to recognize
+  this succeeding approved batch; preserve every DSP source-prefix, oracle, numerical and learner-boundary
+  assertion. Historical Robotics conversion manifest/schema remain immutable; validate added referenced
+  assessment files through a separate compatible assessment verification schema.
 validation:
   local:
-  - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_gnc_aggregate_quality.py
-  - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-gnc-assessments.py
+  - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_robotics_aggregate_quality.py
+  - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-robotics-assessments.py
   - npm run test:web
   - npm run test:browser
   - ./scripts/agent-verify.sh contract
@@ -103,11 +106,13 @@ validation:
   - ./scripts/agent-verify.sh full
   - ./scripts/verify-course-delivery.sh
   - git diff --check
+  - ./scripts/verify-robotics-host.sh
   focused_tests_to_add:
-  - Independent full mechanisms, live assessment bindings, exact unchanged source/course preservation, singular
-    and off-grid inputs, capstone stage/requirement evidence.
+  - Independent full mechanisms, live assessment bindings, exact unchanged source/course preservation,
+    singular and off-grid inputs, capstone stage/requirement evidence.
   required_ci:
-  - Hosted CI nonmandatory under retained owner direction; named local gates remain required except baked Docker delivery explicitly deferred by the owner for this content-only merge.
+  - Hosted CI nonmandatory under retained owner direction; named local gates remain required except baked
+    Docker delivery explicitly deferred by the owner for this content-only merge.
 risk:
   class: high
   hazards:
@@ -119,11 +124,11 @@ risk:
   - Cannot establish credible numerical/browser evidence.
   - Need physical hardware, learner data or production access.
 rollback:
-  strategy: Revert the isolated Controls revision to PR61; no schema or learner-data migration.
+  strategy: Revert isolated Robotics revision to PR63; no schema or learner-data migration.
 evidence:
   output:
-  - docs/evidence/ELP-GNC-AGGREGATE-QUALITY-01-2026-11-03.md
-  - docs/course-quality/gnc-aggregate-review.json
-  - courses/controls-gnc/assessment-map.json
-  claim_boundary: Authored curriculum and independently verified synthetic software only; host and baked-container
-    levels are separate. No learner, MATLAB, hardware or production claim.
+  - docs/evidence/ELP-ROB-AGGREGATE-QUALITY-01-2026-11-04.md
+  - docs/course-quality/robotics-aggregate-review.json
+  - courses/robotics-autonomy/assessment-map.json
+  claim_boundary: Authored curriculum and independently verified synthetic software; no Docker, learner,
+    MATLAB, hardware or production claim from host evidence.

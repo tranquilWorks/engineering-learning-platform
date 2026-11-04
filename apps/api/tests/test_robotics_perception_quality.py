@@ -641,6 +641,10 @@ def test_prior_static_overview_polish_preserves_every_other_manifest_field():
                 text=True,
             )
         )
-        after = yaml.safe_load(path.read_text())
+        after = yaml.safe_load(
+            subprocess.check_output(
+                ["git", "show", f"{HISTORICAL_HEAD}:{path.relative_to(ROOT)}"], cwd=ROOT, text=True
+            )
+        )
         assert before.pop("summary") != after.pop("summary")
         assert before == after

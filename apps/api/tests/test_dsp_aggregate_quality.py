@@ -239,8 +239,14 @@ def test_software_assessment_acceptance_does_not_promote_other_curricula_or_lear
     for course in status["course_reviews"]:
         assert course["maturity"]["learner_validated"]["status"] == "not_run"
         if course["course_id"] != "dsp-radar":
+            # Later independently approved course reviews do not invalidate DSP.
+            accepted = course["course_id"] == "controls-gnc"
+            if course["course_id"] == "robotics-autonomy":
+                robotics = read(ROOT / "docs/course-quality/robotics-aggregate-review.json")
+                accepted = robotics["status"] == "passed"
+            expected = "passed" if accepted else "blocked"
             assert all(
-                course["maturity"][stage]["status"] == "blocked"
+                course["maturity"][stage]["status"] == expected
                 for stage in ["numerically_verified", "curriculum_covered", "capstone_integrated"]
             )
     audit = read(ROOT / "docs/course-quality/lesson-audit.json")

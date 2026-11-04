@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "item_id": "P34",
+  "origin": {
+    "kind": "independent-numerical-python",
+    "item_id": "P34",
+    "independent": true,
+    "imports_production_entrypoint": false,
+    "derived_from_production_output": false,
+    "perturbs_production_output": false,
+    "method": "complex-step Jacobian, explicit inverse and RK45"
+  },
+  "tolerance": {
+    "absolute": 1e-08,
+    "relative": 1e-08
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "jacobian_condition": 4.0,
+        "joint_gain_per_s": 3.0,
+        "broken_mode": false
+      },
+      "signature": [
+        1.7102051614922868e-06,
+        1.3178277091734649e-06,
+        0.4760953717563781
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "jacobian_condition": 40.0,
+        "joint_gain_per_s": 3.0,
+        "broken_mode": false
+      },
+      "signature": [
+        2.6747567190001567e-06,
+        1.3559799314371312e-06,
+        0.3732433948028034
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "jacobian_condition": 4.0,
+        "joint_gain_per_s": 10.0,
+        "broken_mode": false
+      },
+      "signature": [
+        1.2412670766236366e-16,
+        1.6653345369377348e-16,
+        1.5869845725212604
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "jacobian_condition": 4.0,
+        "joint_gain_per_s": 3.0,
+        "broken_mode": true
+      },
+      "signature": [
+        0.08225620422974471,
+        0.019644037942796146,
+        1.0224370076515803
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "jacobian_condition": 4.0,
+        "joint_gain_per_s": 3.0,
+        "broken_mode": false
+      },
+      "signature": [
+        1.7102051614922868e-06,
+        1.3178277091734649e-06,
+        0.4760953717563781
+      ]
+    }
+  }
+}

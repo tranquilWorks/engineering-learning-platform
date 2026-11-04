@@ -148,6 +148,12 @@ def test_no_source_model_other_course_or_generic_runtime_mutation():
         "packages",
         ".github",
     ]
+    active = yaml.safe_load((ROOT / "contracts/active-batch.yaml").read_text())
+    if active["batch"]["id"] == "ELP-ROB-AGGREGATE-QUALITY-01":
+        # The succeeding approved batch may edit Robotics. Its own preservation
+        # test pins every other course, including all Controls bytes, to PR63.
+        assert active["sources"]["baseline_commit"] == "185e966242c889d3f030bab6016139777fcf0f17"
+        paths.remove("courses/robotics-autonomy")
     assert not subprocess.check_output(["git", "diff", BASELINE, "--", *paths], cwd=ROOT)
     for number in range(1, 25):
         for name in (

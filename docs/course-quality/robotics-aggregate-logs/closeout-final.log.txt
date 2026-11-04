@@ -1,0 +1,8 @@
+COMMAND .venv/bin/python -m pytest -q apps/api/tests/test_course_caliber_status.py apps/api/tests/test_course_delivery_quality.py apps/api/tests/test_robotics_aggregate_quality.py apps/api/tests/test_dsp_aggregate_quality.py::test_software_assessment_acceptance_does_not_promote_other_curricula_or_learners
+.....................                                                    [100%]
+21 passed in 8.02s
+COMMAND .venv/bin/ruff check apps/api/tests/test_course_caliber_status.py apps/api/tests/test_robotics_aggregate_quality.py apps/api/tests/test_robotics_aggregate_mechanisms.py scripts/verify-robotics-assessments.py scripts/verify-robotics-browser-bindings.py
+All checks passed!
+COMMAND .venv/bin/python .state/robotics/check-closeout.py
+Closeout integrity passed: exact evidence hashes, approved scope, 69 lesson identities, nine dimensions, and unchanged other-course status.
+COMMAND git diff --check

@@ -2,9 +2,10 @@ schema_version: 1
 id: 36-control-motion-in-operational-space
 number: 36
 title: Compute Operational Inertia and Dynamically Consistent Torque
-summary: Derive operational inertia and a dynamically consistent null torque from actual arm geometry and joint
-  inertia. Inspect local task acceleration and leakage under exact gravity compensation.
-guiding_question: Why is J times secondary torque equal to zero the wrong condition for preserving task acceleration?
+summary: Derive operational inertia and a dynamically consistent null torque from actual arm geometry
+  and joint inertia. Inspect local task acceleration and leakage under exact gravity compensation.
+guiding_question: Why is J times secondary torque equal to zero the wrong condition for preserving task
+  acceleration?
 status: implemented
 tags:
 - robotics-autonomy
@@ -42,9 +43,9 @@ blocks:
 - type: prediction
   title: Predict before running
   text: Predict whether a torque in the Euclidean null space of J necessarily produces zero task acceleration.
-  reveal: Torque is converted to joint acceleration through M inverse. At zero velocity the task effect is
-    J M inverse tau_secondary, so a torque projector must cancel that quantity. The Euclidean null condition
-    applies directly to joint velocity, not arbitrary torque.
+  reveal: Torque is converted to joint acceleration through M inverse. At zero velocity the task effect
+    is J M inverse tau_secondary, so a torque projector must cancel that quantity. The Euclidean null
+    condition applies directly to joint velocity, not arbitrary torque.
 - type: controls
   title: Live model controls
 - type: metrics

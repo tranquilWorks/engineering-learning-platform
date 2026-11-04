@@ -2,9 +2,9 @@ schema_version: 1
 id: 26-compose-rotations-and-poses-on-so-3-and-se-3
 number: 26
 title: Compose Rigid Transforms and Diagnose Invalid Rotation Blends
-summary: A and B are explicitly composed homogeneous transforms applied to one 3D point; the chart shows its
-  x/y projection. Linear interpolation of rotation matrices leaves SO(3) between valid endpoints. Composition-order
-  difference is expected and is not itself a numerical error.
+summary: A and B are explicitly composed homogeneous transforms applied to one 3D point; the chart shows
+  its x/y projection. Linear interpolation of rotation matrices leaves SO(3) between valid endpoints.
+  Composition-order difference is expected and is not itself a numerical error.
 guiding_question: Why can the final broken matrix pass both rotation checks while the lesson still reports
   a nonzero maximum defect?
 status: implemented
@@ -43,9 +43,10 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Predict whether two valid rotation endpoints make every linear matrix blend between them a valid rotation.
-  reveal: The blend equals the valid endpoint rotation at f=1. Interior blends generally leave SO(3); the metric
-    deliberately measures the maximum over the executed interpolation, not just its last sample.
+  text: Predict whether two valid rotation endpoints make every linear matrix blend between them a valid
+    rotation.
+  reveal: The blend equals the valid endpoint rotation at f=1. Interior blends generally leave SO(3);
+    the metric deliberately measures the maximum over the executed interpolation, not just its last sample.
 - type: controls
   title: Live model controls
 - type: metrics
