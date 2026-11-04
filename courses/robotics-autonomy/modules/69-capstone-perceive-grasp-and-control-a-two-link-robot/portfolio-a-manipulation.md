@@ -1,4 +1,4 @@
-# Cumulative portfolio A-MANIPULATION
+# A-MANIPULATION integration evidence
 
 Integrate these existing lessons: P46, P61, P62, P63, P64, P69.
 
@@ -19,6 +19,10 @@ Use P64: Demonstrate recovery after a motion edge becomes infeasible. The symbol
 ## Integrate and defend the boundary
 
 Use P69: Connect visual pose, arm motion, grasp force and object placement. A grasp verdict must depend on executed arm/contact behavior and the object's final state; unrelated successful components do not prove integration. Connect this result to at least one other listed lesson, identifying the exact quantity, units and assumption transferred across their interface.
+
+## Required integration artifact
+
+Carry an estimated object pose through IK, actual joint dynamics, geometric capture, friction support, attachment offset, transfer and release. Derive the two-jaw support threshold μ = 0.220725 at 10 N per jaw for the 0.45 kg object. Compare a missed grasp with insufficient support and verify that neither carries the object. During successful transfer, check that object position equals actual endpoint plus the captured offset; after release it remains on the ideal support while the arm retreats. Relate this bounded support test to the broader force-closure lesson without equating them. Discuss omitted finger geometry, slip, contact impulses and collision checking before making a hardware claim.
 
 ## Four-criterion rubric
 

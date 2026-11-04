@@ -1,0 +1,1417 @@
+{
+  "batch": "ELP-ROB-AGGREGATE-QUALITY-01",
+  "baseline": "185e966242c889d3f030bab6016139777fcf0f17",
+  "status": "in_progress",
+  "scope": "69 existing Robotics lessons; no source/submodule/inventory changes",
+  "lessons": [
+    {
+      "number": 1,
+      "module_id": "01-drive-a-differential-robot-with-wheel-speeds",
+      "competency_ids": [
+        "MOBILE-KINEMATICS"
+      ],
+      "mechanism_review": "Source-design independent reference and preserved P01-P24 conversion provenance.",
+      "expected_reasoning": "The mean rim speed sets translation while the difference divided by track width sets yaw; world displacement must rotate with heading.",
+      "claim_limit": "No lateral slip or wheel-radius calibration error is estimated.",
+      "independent_basis": "Pinned MATLAB model.m equations evaluated independently in closed form.",
+      "evidence": "modules/01-drive-a-differential-robot-with-wheel-speeds/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/01-drive-a-differential-robot-with-wheel-speeds/assessment.md",
+      "portfolios": [
+        "A-GEOMETRY"
+      ],
+      "lesson_word_count": 1417,
+      "entrypoint_sha256": "a3894301602dc91394768222cfe74032302adfd6cca22ed95ca629893bb70f6f",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 2,
+      "module_id": "02-transform-coordinates-between-frames",
+      "competency_ids": [
+        "RIGID-BODY-GEOMETRY"
+      ],
+      "mechanism_review": "Source-design independent reference and preserved P01-P24 conversion provenance.",
+      "expected_reasoning": "Translation rotates with its parent frame; use the inverse transform for a round trip, not a negated translation in the wrong frame.",
+      "claim_limit": "A valid inverse does not prove the transform represents a calibrated sensor.",
+      "independent_basis": "Independent SE(2) matrix calculation and round-trip invariant.",
+      "evidence": "modules/02-transform-coordinates-between-frames/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/02-transform-coordinates-between-frames/assessment.md",
+      "portfolios": [
+        "A-GEOMETRY"
+      ],
+      "lesson_word_count": 1407,
+      "entrypoint_sha256": "90103367bea9e2da35c3b145133ded797a5d97667506cf856cba2f28863885a2",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 3,
+      "module_id": "03-compute-arm-forward-kinematics",
+      "competency_ids": [
+        "MANIPULATOR-KINEMATICS"
+      ],
+      "mechanism_review": "Source-design independent reference and preserved P01-P24 conversion provenance.",
+      "expected_reasoning": "Ordered rotations produce a sum of link vectors; equal links can cancel at a folded elbow although joint angles remain finite.",
+      "claim_limit": "Planar rigid links omit compliance and joint offsets.",
+      "independent_basis": "Independent closed-form planar forward-kinematics calculation.",
+      "evidence": "modules/03-compute-arm-forward-kinematics/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/03-compute-arm-forward-kinematics/assessment.md",
+      "portfolios": [
+        "A-KINEMATICS"
+      ],
+      "lesson_word_count": 1387,
+      "entrypoint_sha256": "567a3ce1a31eba016599243320ff0f41d69aae7750d3cb333148989dd3978ec1",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 4,
+      "module_id": "04-solve-inverse-kinematics",
+      "competency_ids": [
+        "MANIPULATOR-KINEMATICS"
+      ],
+      "mechanism_review": "Source-design independent reference and preserved P01-P24 conversion provenance.",
+      "expected_reasoning": "The annular workspace has both inner and outer boundaries; elbow branches can share an endpoint while differing in joint configuration.",
+      "claim_limit": "A small algebraic residual does not establish collision-free motion.",
+      "independent_basis": "Independent law-of-cosines solution checked by forward kinematics.",
+      "evidence": "modules/04-solve-inverse-kinematics/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/04-solve-inverse-kinematics/assessment.md",
+      "portfolios": [
+        "A-KINEMATICS"
+      ],
+      "lesson_word_count": 1394,
+      "entrypoint_sha256": "e4dee6d58bd3fff747f4f1c7b62924628ef2cebc4fc544fc4eba956ec16efc03",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 5,
+      "module_id": "05-model-a-dc-motor-and-geartrain",
+      "competency_ids": [
+        "ACTUATION-JOINT-CONTROL"
+      ],
+      "mechanism_review": "Source-design independent reference and preserved P01-P24 conversion provenance.",
+      "expected_reasoning": "Back EMF couples speed to current; gearing changes reflected inertia and output torque rather than creating mechanical power.",
+      "claim_limit": "The motor model does not qualify thermal limits or gearbox backlash.",
+      "independent_basis": "Independent continuous-time eigensolution and analytic steady balance.",
+      "evidence": "modules/05-model-a-dc-motor-and-geartrain/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/05-model-a-dc-motor-and-geartrain/assessment.md",
+      "portfolios": [
+        "A-CONTROL"
+      ],
+      "lesson_word_count": 1429,
+      "entrypoint_sha256": "cc17ada75da61d6f5b88de0bd5b892d9ee13e1f0b8556e2e7542b2886b0d3c00",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 6,
+      "module_id": "06-close-a-wheel-speed-loop",
+      "competency_ids": [
+        "ACTUATION-JOINT-CONTROL"
+      ],
+      "mechanism_review": "Source-design independent reference and preserved P01-P24 conversion provenance.",
+      "expected_reasoning": "Accumulated error can demand unavailable voltage; recovery depends on the stored integral as well as the present speed error.",
+      "claim_limit": "A deterministic speed step is not a robustness certificate for every load.",
+      "independent_basis": "Separately formulated sampled PI and saturated-plant recurrence.",
+      "evidence": "modules/06-close-a-wheel-speed-loop/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/06-close-a-wheel-speed-loop/assessment.md",
+      "portfolios": [
+        "A-CONTROL"
+      ],
+      "lesson_word_count": 1433,
+      "entrypoint_sha256": "0d763394c7b5f764c521ee17cac6ec5b677abd9bb8fee278424a6e0ab4c82666",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 7,
+      "module_id": "07-generate-a-smooth-trajectory",
+      "competency_ids": [
+        "GLOBAL-MOTION-PLANNING"
+      ],
+      "mechanism_review": "Source-design independent reference and preserved P01-P24 conversion provenance.",
+      "expected_reasoning": "Differentiate the interpolation polynomial and check endpoints, extrema and physical units; sample spacing alone does not guarantee smooth motion.",
+      "claim_limit": "A smooth reference can exceed actuator acceleration or torque limits.",
+      "independent_basis": "Independent symbolic polynomial derivative evaluation.",
+      "evidence": "modules/07-generate-a-smooth-trajectory/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/07-generate-a-smooth-trajectory/assessment.md",
+      "portfolios": [
+        "A-PLANNING"
+      ],
+      "lesson_word_count": 1387,
+      "entrypoint_sha256": "a6847dce897949843db8aa144cd0daeeefea7be843c012d065cf6b13dbd35ec7",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 8,
+      "module_id": "08-control-contact-with-impedance",
+      "competency_ids": [
+        "PHYSICAL-INTERACTION"
+      ],
+      "mechanism_review": "Source-design independent reference and preserved P01-P24 conversion provenance.",
+      "expected_reasoning": "Impedance sets a force-motion relationship; environment stiffness participates in the coupled dynamics and damping dissipates energy.",
+      "claim_limit": "Stable sampled plots do not prove passivity against every environment.",
+      "independent_basis": "Independent continuous-time eigensolution and static force balance.",
+      "evidence": "modules/08-control-contact-with-impedance/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/08-control-contact-with-impedance/assessment.md",
+      "portfolios": [
+        "A-CONTROL",
+        "A-CAP-MANIP"
+      ],
+      "lesson_word_count": 1412,
+      "entrypoint_sha256": "cbe56e5273104aca3edb3af732858b1dc8e7b5074da4cc9c1b401725f3bf1365",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 9,
+      "module_id": "09-measure-motion-with-encoders",
+      "competency_ids": [
+        "SENSOR-MODELING-CALIBRATION"
+      ],
+      "mechanism_review": "Source-design independent reference and preserved P01-P24 conversion provenance.",
+      "expected_reasoning": "Position increments are discrete counts; differentiation divides quantization error by sample time and can amplify it.",
+      "claim_limit": "Higher sampling alone cannot create additional encoder resolution.",
+      "independent_basis": "Independent integer count equation and analytic quantization bound.",
+      "evidence": "modules/09-measure-motion-with-encoders/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/09-measure-motion-with-encoders/assessment.md",
+      "portfolios": [
+        "A-PERCEPTION"
+      ],
+      "lesson_word_count": 1398,
+      "entrypoint_sha256": "4a148ccf481f890aee6f338410ed515d6998f38c7471ff2bd9f8e1a07ae46b1e",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 10,
+      "module_id": "10-integrate-an-imu-and-observe-drift",
+      "competency_ids": [
+        "SENSOR-MODELING-CALIBRATION",
+        "STATE-ESTIMATION"
+      ],
+      "mechanism_review": "Source-design independent reference and preserved P01-P24 conversion provenance.",
+      "expected_reasoning": "Velocity bias grows linearly and position bias quadratically with coast time; angular and translational errors have different units.",
+      "claim_limit": "This one-axis drift study does not execute full inertial navigation.",
+      "independent_basis": "Independent closed-form constant-bias integration.",
+      "evidence": "modules/10-integrate-an-imu-and-observe-drift/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/10-integrate-an-imu-and-observe-drift/assessment.md",
+      "portfolios": [
+        "A-PERCEPTION",
+        "A-ESTIMATION"
+      ],
+      "lesson_word_count": 1423,
+      "entrypoint_sha256": "fd6acc1a686fff81c6f90292894e69c0aa4bf359b33d57cffaaa110b01a52536",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 11,
+      "module_id": "11-build-a-range-sensor-model",
+      "competency_ids": [
+        "SENSOR-MODELING-CALIBRATION",
+        "RANGE-PERCEPTION"
+      ],
+      "mechanism_review": "Source-design independent reference and preserved P01-P24 conversion provenance.",
+      "expected_reasoning": "Compare true distance, bias, saturation and invalid-return rules before summarizing residuals; an invalid return is not a physical zero range.",
+      "claim_limit": "Synthetic perturbations do not identify a real sensor noise distribution.",
+      "independent_basis": "Closed-form ray-plane intersection with an independently normalized deterministic noise sequence.",
+      "evidence": "modules/11-build-a-range-sensor-model/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/11-build-a-range-sensor-model/assessment.md",
+      "portfolios": [
+        "A-PERCEPTION"
+      ],
+      "lesson_word_count": 1412,
+      "entrypoint_sha256": "d39d8ddf53318b95bd4442a90dc2ae627ebba758529ced57b8eb92932948e9ba",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 12,
+      "module_id": "12-calibrate-sensor-extrinsics",
+      "competency_ids": [
+        "RIGID-BODY-GEOMETRY",
+        "SENSOR-MODELING-CALIBRATION"
+      ],
+      "mechanism_review": "Source-design independent reference and preserved P01-P24 conversion provenance.",
+      "expected_reasoning": "Rigid calibration must preserve distances and orientation; fit rotation and translation jointly and evaluate points outside the fit set.",
+      "claim_limit": "Collinear or poorly spread observations can conceal calibration ambiguity.",
+      "independent_basis": "Closed-form planar Procrustes angle and centroid solution, independent of the production SVD fit.",
+      "evidence": "modules/12-calibrate-sensor-extrinsics/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/12-calibrate-sensor-extrinsics/assessment.md",
+      "portfolios": [
+        "A-GEOMETRY",
+        "A-PERCEPTION"
+      ],
+      "lesson_word_count": 1340,
+      "entrypoint_sha256": "8325c2bee83d60cc66804c0525a3ac57f9602c2f10b9e741f974891c52fbf822",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 13,
+      "module_id": "13-integrate-wheel-odometry",
+      "competency_ids": [
+        "MOBILE-KINEMATICS",
+        "STATE-ESTIMATION"
+      ],
+      "mechanism_review": "Source-design independent reference and preserved P01-P24 conversion provenance.",
+      "expected_reasoning": "Encoder increments determine both heading and displacement; rotation during a sample changes the world-frame endpoint.",
+      "claim_limit": "Agreement under no-slip motion does not estimate wheel slip.",
+      "independent_basis": "Separately formulated SE(2) exponential composition of quantized wheel increments.",
+      "evidence": "modules/13-integrate-wheel-odometry/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/13-integrate-wheel-odometry/assessment.md",
+      "portfolios": [
+        "A-GEOMETRY",
+        "A-ESTIMATION"
+      ],
+      "lesson_word_count": 1324,
+      "entrypoint_sha256": "ac1c7d8955c9e528a0850930d5931caf7edb88a85cf13dde49613d19207a0fab",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 14,
+      "module_id": "14-fuse-sensors-with-an-ekf",
+      "competency_ids": [
+        "STATE-ESTIMATION"
+      ],
+      "mechanism_review": "Source-design independent reference and preserved P01-P24 conversion provenance.",
+      "expected_reasoning": "The motion Jacobian propagates pose covariance; an innovation changes state through its gain and must also update covariance.",
+      "claim_limit": "Small error in one deterministic trajectory is not statistical consistency.",
+      "independent_basis": "Separately formulated EKF recurrence using a finite-difference motion Jacobian.",
+      "evidence": "modules/14-fuse-sensors-with-an-ekf/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/14-fuse-sensors-with-an-ekf/assessment.md",
+      "portfolios": [
+        "A-ESTIMATION"
+      ],
+      "lesson_word_count": 1381,
+      "entrypoint_sha256": "47d3cf45f47bce8c52cc007f34ecf3b00c9f1142b4ae9ab57b577bcfd6ad1117",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 15,
+      "module_id": "15-localize-with-a-particle-filter",
+      "competency_ids": [
+        "STATE-ESTIMATION"
+      ],
+      "mechanism_review": "Source-design independent reference and preserved P01-P24 conversion provenance.",
+      "expected_reasoning": "Bayes weights favor compatible poses, normalization preserves probability mass, and resampling trades weight degeneracy for duplicate hypotheses.",
+      "claim_limit": "A concentrated particle set can converge to a wrong mode.",
+      "independent_basis": "Separately formulated deterministic bootstrap-filter recurrence with cyclic statistics.",
+      "evidence": "modules/15-localize-with-a-particle-filter/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/15-localize-with-a-particle-filter/assessment.md",
+      "portfolios": [
+        "A-ESTIMATION"
+      ],
+      "lesson_word_count": 1327,
+      "entrypoint_sha256": "94007a9304130934fd3b656b2c4056b007381052f7a98134f57c8f5cb91cada2",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 16,
+      "module_id": "16-build-a-small-slam-problem",
+      "competency_ids": [
+        "SLAM-MAPPING"
+      ],
+      "mechanism_review": "Source-design independent reference and preserved P01-P24 conversion provenance.",
+      "expected_reasoning": "Odometry constrains differences; landmark observations couple pose and map variables; one absolute anchor removes the common translation ambiguity.",
+      "claim_limit": "The linear one-dimensional graph does not establish nonlinear planar SLAM.",
+      "independent_basis": "Weighted normal-equation pseudoinverse, independent of the production rectangular least-squares solve.",
+      "evidence": "modules/16-build-a-small-slam-problem/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/16-build-a-small-slam-problem/assessment.md",
+      "portfolios": [
+        "A-SLAM",
+        "A-CAP-MOBILE"
+      ],
+      "lesson_word_count": 1311,
+      "entrypoint_sha256": "04603ad99710d5bcd07474464466e832e6dd5107157c641688f643a880371187",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 17,
+      "module_id": "17-search-a-grid-with-a-star",
+      "competency_ids": [
+        "GLOBAL-MOTION-PLANNING"
+      ],
+      "mechanism_review": "Source-design independent reference and preserved P01-P24 conversion provenance.",
+      "expected_reasoning": "An admissible estimate changes search order without overestimating remaining cost; obstacle occupancy determines feasibility independently.",
+      "claim_limit": "Finite grid resolution can hide passages or inflate obstacles.",
+      "independent_basis": "Independent Dijkstra shortest-path cost and returned-path collision audit.",
+      "evidence": "modules/17-search-a-grid-with-a-star/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/17-search-a-grid-with-a-star/assessment.md",
+      "portfolios": [
+        "A-PLANNING"
+      ],
+      "lesson_word_count": 1315,
+      "entrypoint_sha256": "ff2b2ef38437d7ff7d75721694ae841b3b8728f37690afea78fc8cf1c44d5697",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 18,
+      "module_id": "18-plan-with-random-samples",
+      "competency_ids": [
+        "GLOBAL-MOTION-PLANNING"
+      ],
+      "mechanism_review": "Source-design independent reference and preserved P01-P24 conversion provenance.",
+      "expected_reasoning": "A valid connection must clear the entire segment; a tree path must follow actual parent links back to the start.",
+      "claim_limit": "Finite sampling offers neither guaranteed success nor a universal optimality bound.",
+      "independent_basis": "Separately formulated deterministic RRT recurrence with analytic segment-circle validation.",
+      "evidence": "modules/18-plan-with-random-samples/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/18-plan-with-random-samples/assessment.md",
+      "portfolios": [
+        "A-PLANNING"
+      ],
+      "lesson_word_count": 1315,
+      "entrypoint_sha256": "1227cb3293aeea4bd693a6cd3c38f462dd0aa238c4db1bc803131d75e4b430b1",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 19,
+      "module_id": "19-avoid-moving-obstacles",
+      "competency_ids": [
+        "LOCAL-KINODYNAMIC-PLANNING"
+      ],
+      "mechanism_review": "Source-design independent reference and preserved P01-P24 conversion provenance.",
+      "expected_reasoning": "Evaluate robot and obstacle positions at the same future time and include stopping or waiting as an executed action.",
+      "claim_limit": "A finite candidate set can miss a feasible avoidance maneuver.",
+      "independent_basis": "Independent scalar closest-point-of-approach enumeration over the candidate headings.",
+      "evidence": "modules/19-avoid-moving-obstacles/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/19-avoid-moving-obstacles/assessment.md",
+      "portfolios": [
+        "A-PLANNING",
+        "A-CAP-MOBILE"
+      ],
+      "lesson_word_count": 1316,
+      "entrypoint_sha256": "388ecc5e850e357de34c11edfa8539ec59d9d881afbd97f5de335e7b4ce9ad52",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 20,
+      "module_id": "20-coordinate-actions-with-a-behavior-tree",
+      "competency_ids": [
+        "TASK-AUTONOMY"
+      ],
+      "mechanism_review": "Source-design independent reference and preserved P01-P24 conversion provenance.",
+      "expected_reasoning": "Sequence and fallback nodes propagate running, success and failure differently; trace which children actually execute.",
+      "claim_limit": "A diagram without tick semantics cannot establish recovery behavior.",
+      "independent_basis": "Independent closed-form behavior-tree tick schedule with explicit retry and terminal-state counts.",
+      "evidence": "modules/20-coordinate-actions-with-a-behavior-tree/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/20-coordinate-actions-with-a-behavior-tree/assessment.md",
+      "portfolios": [
+        "A-AUTONOMY"
+      ],
+      "lesson_word_count": 1364,
+      "entrypoint_sha256": "8abb1e5b896d13aa2c2890cf79fe2f918f9cadbc58503bb751fcd38466865a84",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 21,
+      "module_id": "21-execute-a-mission-state-machine",
+      "competency_ids": [
+        "TASK-AUTONOMY"
+      ],
+      "mechanism_review": "Source-design independent reference and preserved P01-P24 conversion provenance.",
+      "expected_reasoning": "State, event and guard jointly determine the next action; a recovery transition must preserve or explicitly reset its evidence.",
+      "claim_limit": "A finite mission model does not enumerate every field failure.",
+      "independent_basis": "Independent table-driven mission transition schedule with watchdog and global-fault guard evaluation.",
+      "evidence": "modules/21-execute-a-mission-state-machine/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/21-execute-a-mission-state-machine/assessment.md",
+      "portfolios": [
+        "A-AUTONOMY"
+      ],
+      "lesson_word_count": 1343,
+      "entrypoint_sha256": "cff003c3adabc27483dcd62ddfdf757fa122b787376708158996d768f0d5ace8",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 22,
+      "module_id": "22-meet-real-time-perception-and-control-deadlines",
+      "competency_ids": [
+        "REALTIME-SAFETY"
+      ],
+      "mechanism_review": "Source-design independent reference and preserved P01-P24 conversion provenance.",
+      "expected_reasoning": "Interference and blocking affect completion time; utilization alone does not prove every job meets its deadline.",
+      "claim_limit": "A simulated schedule is not a real operating-system latency measurement.",
+      "independent_basis": "Independent release-to-release event scheduler plus fixed-point response-time analysis.",
+      "evidence": "modules/22-meet-real-time-perception-and-control-deadlines/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/22-meet-real-time-perception-and-control-deadlines/assessment.md",
+      "portfolios": [
+        "A-SAFETY"
+      ],
+      "lesson_word_count": 1372,
+      "entrypoint_sha256": "4789f8a9e6a149ae2718157db9f37a5adcbd9f44d82b8e6dd4b6adac4971f4db",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 23,
+      "module_id": "23-design-safety-monitors",
+      "competency_ids": [
+        "REALTIME-SAFETY"
+      ],
+      "mechanism_review": "Source-design independent reference and preserved P01-P24 conversion provenance.",
+      "expected_reasoning": "A monitor must observe a relevant fault, decide within its threshold and cause a bounded fallback; inspect the actual state after the alarm.",
+      "claim_limit": "Passing injected faults is not safety certification or complete fault coverage.",
+      "independent_basis": "Independent discrete stopping-envelope recurrence checked against the kinematic stopping limit.",
+      "evidence": "modules/23-design-safety-monitors/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/23-design-safety-monitors/assessment.md",
+      "portfolios": [
+        "A-SAFETY"
+      ],
+      "lesson_word_count": 1314,
+      "entrypoint_sha256": "91a5324970260fa10dfaea95307954c8633f0d027c86cb95833524c80daa15ca",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 24,
+      "module_id": "24-validate-autonomy-in-hil",
+      "competency_ids": [
+        "REALTIME-SAFETY",
+        "SYSTEM-INTEGRATION"
+      ],
+      "mechanism_review": "Source-design independent reference and preserved P01-P24 conversion provenance.",
+      "expected_reasoning": "Source age determines command validity; fail-zero behavior and plant response must be visible after packet loss.",
+      "claim_limit": "Software-only HIL methodology is not physical HIL evidence.",
+      "independent_basis": "Independent discrete virtual-plant, delayed-telemetry, PI-control, and freshness-watchdog recurrence.",
+      "evidence": "modules/24-validate-autonomy-in-hil/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/24-validate-autonomy-in-hil/assessment.md",
+      "portfolios": [
+        "A-SAFETY",
+        "A-CAP-MOBILE",
+        "A-CAP-MANIP"
+      ],
+      "lesson_word_count": 1443,
+      "entrypoint_sha256": "a15ebf673f8cf83b9ae2adf4b6630bc213ff69cce889ffa8d7e51cdbf55d21e0",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 25,
+      "module_id": "25-represent-configuration-spaces-and-holonomic-constraints",
+      "competency_ids": [
+        "RIGID-BODY-GEOMETRY"
+      ],
+      "mechanism_review": "Prior scoped geometry review.",
+      "expected_reasoning": "The constraint Jacobian removes the radial velocity component; instantaneous tangency does not guarantee finite-step collision freedom.",
+      "claim_limit": "The circle example is a configuration-space slice, not general manifold planning.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/25-represent-configuration-spaces-and-holonomic-constraints/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/25-represent-configuration-spaces-and-holonomic-constraints/assessment.md",
+      "portfolios": [
+        "A-GEOMETRY"
+      ],
+      "lesson_word_count": 1177,
+      "entrypoint_sha256": "cb9645bf36f2885a71a033b084686a2194d6560534d062ae91136507979fb869",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 26,
+      "module_id": "26-compose-rotations-and-poses-on-so-3-and-se-3",
+      "competency_ids": [
+        "RIGID-BODY-GEOMETRY"
+      ],
+      "mechanism_review": "Prior scoped geometry review.",
+      "expected_reasoning": "Proper rotations preserve orthogonality and determinant one; translation and rotation composition generally do not commute.",
+      "claim_limit": "A valid SE(3) matrix does not establish a correct sensor-frame convention.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/26-compose-rotations-and-poses-on-so-3-and-se-3/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/26-compose-rotations-and-poses-on-so-3-and-se-3/assessment.md",
+      "portfolios": [
+        "A-GEOMETRY"
+      ],
+      "lesson_word_count": 1135,
+      "entrypoint_sha256": "f4642d475c9a3c35ca28d8c913797bcfe557d1e0b01236e1b30dfb64f12f3047",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 27,
+      "module_id": "27-map-twists-screws-and-wrenches-with-adjoint-transforms",
+      "competency_ids": [
+        "RIGID-BODY-GEOMETRY"
+      ],
+      "mechanism_review": "Prior scoped geometry review.",
+      "expected_reasoning": "Angular and linear velocity transform together with the lever-arm term; the dual wrench map preserves their scalar power product.",
+      "claim_limit": "Omitting translation can remain hidden when force or angular velocity is zero.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/27-map-twists-screws-and-wrenches-with-adjoint-transforms/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/27-map-twists-screws-and-wrenches-with-adjoint-transforms/assessment.md",
+      "portfolios": [
+        "A-GEOMETRY"
+      ],
+      "lesson_word_count": 1190,
+      "entrypoint_sha256": "39d1057983c9eb471554d460ad37571d56e384d178dc00882c172aba5545db3a",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 28,
+      "module_id": "28-build-spatial-jacobians-and-diagnose-singularities",
+      "competency_ids": [
+        "MANIPULATOR-KINEMATICS"
+      ],
+      "mechanism_review": "Prior scoped geometry review.",
+      "expected_reasoning": "Singular values measure local directional mobility; finite perturbations of forward kinematics check derivative signs and link contributions.",
+      "claim_limit": "A nonsingular instantaneous Jacobian does not ensure global reachability.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/28-build-spatial-jacobians-and-diagnose-singularities/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/28-build-spatial-jacobians-and-diagnose-singularities/assessment.md",
+      "portfolios": [
+        "A-KINEMATICS"
+      ],
+      "lesson_word_count": 1205,
+      "entrypoint_sha256": "43cfaa4646f405d1cefd126b5dffd46eb5aee2ddff1e34bca8db7cc578ab77c3",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 29,
+      "module_id": "29-resolve-redundancy-with-null-space-motion",
+      "competency_ids": [
+        "MANIPULATOR-KINEMATICS"
+      ],
+      "mechanism_review": "Prior scoped geometry review.",
+      "expected_reasoning": "The projector should suppress the secondary task-space contribution; damping alters the primary inverse and its residual.",
+      "claim_limit": "Large finite integration steps can invalidate an instantaneous null-space argument.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/29-resolve-redundancy-with-null-space-motion/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/29-resolve-redundancy-with-null-space-motion/assessment.md",
+      "portfolios": [
+        "A-KINEMATICS"
+      ],
+      "lesson_word_count": 1171,
+      "entrypoint_sha256": "80111e66a4751bf928fba0b1cdcdbe035e739ca36a5fb8d8d12fed4e63239bee",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 30,
+      "module_id": "30-map-end-effector-wrenches-to-joint-torques",
+      "competency_ids": [
+        "ROBOT-DYNAMICS"
+      ],
+      "mechanism_review": "Prior scoped dynamics/interaction review.",
+      "expected_reasoning": "Virtual work equates task and joint power, giving a Jacobian-transpose mapping with explicit force and moment units.",
+      "claim_limit": "A static torque map does not include inertia, friction or saturation.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/30-map-end-effector-wrenches-to-joint-torques/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/30-map-end-effector-wrenches-to-joint-torques/assessment.md",
+      "portfolios": [
+        "A-DYNAMICS"
+      ],
+      "lesson_word_count": 1175,
+      "entrypoint_sha256": "50829855736f634e203ed301352c8996453b5cd257aafc4cb68c6368d75841db",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 31,
+      "module_id": "31-derive-manipulator-inertia-coriolis-and-gravity-terms",
+      "competency_ids": [
+        "ROBOT-DYNAMICS"
+      ],
+      "mechanism_review": "Prior scoped dynamics/interaction review.",
+      "expected_reasoning": "Kinetic energy defines inertia; configuration derivatives produce coupling terms, while gravity is the potential gradient.",
+      "claim_limit": "A positive inertia matrix alone does not validate every dynamic term.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/31-derive-manipulator-inertia-coriolis-and-gravity-terms/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/31-derive-manipulator-inertia-coriolis-and-gravity-terms/assessment.md",
+      "portfolios": [
+        "A-DYNAMICS"
+      ],
+      "lesson_word_count": 1182,
+      "entrypoint_sha256": "5e1b46c18dce77541aefd0145292a0b8d2f2a8f26f8829e1c385acef893216a9",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 32,
+      "module_id": "32-compute-inverse-dynamics-and-identify-robot-parameters",
+      "competency_ids": [
+        "ROBOT-DYNAMICS"
+      ],
+      "mechanism_review": "Prior scoped dynamics/interaction review.",
+      "expected_reasoning": "Excitation determines regressor rank; fit residual and parameter error must be checked separately on new motion.",
+      "claim_limit": "Low residual on an unexciting trajectory does not identify unique parameters.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/32-compute-inverse-dynamics-and-identify-robot-parameters/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/32-compute-inverse-dynamics-and-identify-robot-parameters/assessment.md",
+      "portfolios": [
+        "A-DYNAMICS"
+      ],
+      "lesson_word_count": 1193,
+      "entrypoint_sha256": "b17e0be6e5d5446ba0b6ab8d867c0dae25094f437374c1e0fa49bcb556361276",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 33,
+      "module_id": "33-time-scale-multi-joint-trajectories-within-limits",
+      "competency_ids": [
+        "ROBOT-DYNAMICS",
+        "GLOBAL-MOTION-PLANNING"
+      ],
+      "mechanism_review": "Prior scoped dynamics/interaction review.",
+      "expected_reasoning": "Time scaling changes first derivatives inversely with duration and second derivatives inversely with duration squared.",
+      "claim_limit": "A sample-only extrema check may miss between-sample limit violations.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/33-time-scale-multi-joint-trajectories-within-limits/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/33-time-scale-multi-joint-trajectories-within-limits/assessment.md",
+      "portfolios": [
+        "A-DYNAMICS",
+        "A-PLANNING"
+      ],
+      "lesson_word_count": 1175,
+      "entrypoint_sha256": "b361638d6084e8062a218a3a677c0b09b8121bad649d7f327d695fdf89f02f1e",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 34,
+      "module_id": "34-compare-joint-space-and-task-space-tracking",
+      "competency_ids": [
+        "MANIPULATOR-KINEMATICS",
+        "ACTUATION-JOINT-CONTROL"
+      ],
+      "mechanism_review": "Prior scoped dynamics/interaction review.",
+      "expected_reasoning": "Joint errors map through geometry; task commands need a consistent Jacobian and can demand large rates near singularity.",
+      "claim_limit": "A task-space path is not automatically actuator-feasible.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/34-compare-joint-space-and-task-space-tracking/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/34-compare-joint-space-and-task-space-tracking/assessment.md",
+      "portfolios": [
+        "A-KINEMATICS",
+        "A-CONTROL"
+      ],
+      "lesson_word_count": 1223,
+      "entrypoint_sha256": "8fd7a28a18ad2bc351bdcce02365cd80aac7c56fa519f4339f85274ff11e5083",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 35,
+      "module_id": "35-apply-computed-torque-and-gravity-compensation",
+      "competency_ids": [
+        "ROBOT-DYNAMICS",
+        "ACTUATION-JOINT-CONTROL"
+      ],
+      "mechanism_review": "Prior scoped dynamics/interaction review.",
+      "expected_reasoning": "Model cancellation uses inertia, coupling and gravity; feedback corrects residual error only within available effort.",
+      "claim_limit": "Nominal cancellation is not robust to arbitrary model mismatch.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/35-apply-computed-torque-and-gravity-compensation/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/35-apply-computed-torque-and-gravity-compensation/assessment.md",
+      "portfolios": [
+        "A-DYNAMICS",
+        "A-CONTROL"
+      ],
+      "lesson_word_count": 1233,
+      "entrypoint_sha256": "556daba4c9f2d06a2a6910410ddd3aa0f6ee8a20a67c77611b2a2f03cf36a0cb",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 36,
+      "module_id": "36-control-motion-in-operational-space",
+      "competency_ids": [
+        "ROBOT-DYNAMICS",
+        "ACTUATION-JOINT-CONTROL"
+      ],
+      "mechanism_review": "Prior scoped dynamics/interaction review.",
+      "expected_reasoning": "The task inertia depends on both the Jacobian and joint inertia; null directions require explicit treatment rather than an unstable inverse.",
+      "claim_limit": "The bounded example is not whole-body contact planning.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/36-control-motion-in-operational-space/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/36-control-motion-in-operational-space/assessment.md",
+      "portfolios": [
+        "A-DYNAMICS",
+        "A-CONTROL"
+      ],
+      "lesson_word_count": 1251,
+      "entrypoint_sha256": "277d118134d9febbace0ad7e33bbad9f65f7940c0d24dad07fdcef68818b9b76",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 37,
+      "module_id": "37-compare-impedance-and-admittance-control",
+      "competency_ids": [
+        "PHYSICAL-INTERACTION"
+      ],
+      "mechanism_review": "Prior scoped dynamics/interaction review.",
+      "expected_reasoning": "Impedance maps motion error to force; admittance integrates measured force into motion; interface choice changes closed-loop dynamics.",
+      "claim_limit": "Stable behavior in one environment does not guarantee passive interaction.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/37-compare-impedance-and-admittance-control/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/37-compare-impedance-and-admittance-control/assessment.md",
+      "portfolios": [
+        "A-CONTROL",
+        "A-CAP-MANIP"
+      ],
+      "lesson_word_count": 1234,
+      "entrypoint_sha256": "e9656fb0a47453a036ae5b4f1457ebde38cf53383a04b00d5c484253f049187e",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 38,
+      "module_id": "38-regulate-hybrid-motion-and-contact-force",
+      "competency_ids": [
+        "PHYSICAL-INTERACTION"
+      ],
+      "mechanism_review": "Prior scoped dynamics/interaction review.",
+      "expected_reasoning": "Projection must respect the surface frame, and unilateral contact prevents tensile wall force when separation occurs.",
+      "claim_limit": "A fixed planar surface omits changing contact normals and frictional slip.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/38-regulate-hybrid-motion-and-contact-force/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/38-regulate-hybrid-motion-and-contact-force/assessment.md",
+      "portfolios": [
+        "A-CONTROL",
+        "A-CAP-MANIP"
+      ],
+      "lesson_word_count": 1261,
+      "entrypoint_sha256": "71d674e33a58ece21baff8937d5101b2530bf396aec8fde74bd14318e1ff36a1",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 39,
+      "module_id": "39-preserve-passivity-under-saturation-and-delay",
+      "competency_ids": [
+        "PHYSICAL-INTERACTION",
+        "REALTIME-SAFETY"
+      ],
+      "mechanism_review": "Prior scoped dynamics/interaction review.",
+      "expected_reasoning": "Applied work, not requested work, must be charged to the tank; a nonnegative energy record requires actual command limiting.",
+      "claim_limit": "A discrete tank model is not a physical passivity certificate.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/39-preserve-passivity-under-saturation-and-delay/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/39-preserve-passivity-under-saturation-and-delay/assessment.md",
+      "portfolios": [
+        "A-CONTROL",
+        "A-SAFETY",
+        "A-CAP-MANIP"
+      ],
+      "lesson_word_count": 1245,
+      "entrypoint_sha256": "eb23c14c25c83df5302e0aaae64f0284543f576929c59dbedf2e43599d3986df",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 40,
+      "module_id": "40-swing-up-and-balance-an-underactuated-robot",
+      "competency_ids": [
+        "ROBOT-DYNAMICS",
+        "ACTUATION-JOINT-CONTROL"
+      ],
+      "mechanism_review": "Prior scoped dynamics/interaction review.",
+      "expected_reasoning": "The unactuated link receives energy through coupled dynamics; switching depends on angle and rate, not merely elapsed time.",
+      "claim_limit": "A successful nominal swing-up is not a global stabilizing guarantee.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/40-swing-up-and-balance-an-underactuated-robot/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/40-swing-up-and-balance-an-underactuated-robot/assessment.md",
+      "portfolios": [
+        "A-DYNAMICS",
+        "A-CONTROL"
+      ],
+      "lesson_word_count": 1231,
+      "entrypoint_sha256": "270fbc67eeb2cf244474ef1315f5559ed94c13ecc78fcccbefedf693feac8344",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 41,
+      "module_id": "41-project-3d-points-with-a-pinhole-camera",
+      "competency_ids": [
+        "VISION-PERCEPTION"
+      ],
+      "mechanism_review": "Prior scoped dynamics/interaction review.",
+      "expected_reasoning": "Perspective division follows the camera frame; points behind or too near the image plane require explicit handling.",
+      "claim_limit": "A pinhole model excludes lens distortion and rolling shutter.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/41-project-3d-points-with-a-pinhole-camera/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/41-project-3d-points-with-a-pinhole-camera/assessment.md",
+      "portfolios": [
+        "A-PERCEPTION"
+      ],
+      "lesson_word_count": 1346,
+      "entrypoint_sha256": "0c40f6d63eae6adca4b1d18a9dd3db55c2e8d8a23b07e36c062ee6dd138ff530",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 42,
+      "module_id": "42-calibrate-camera-intrinsics-and-lens-distortion",
+      "competency_ids": [
+        "SENSOR-MODELING-CALIBRATION",
+        "VISION-PERCEPTION"
+      ],
+      "mechanism_review": "Prior scoped perception review.",
+      "expected_reasoning": "Intrinsics and distortion must explain multiple board views; pose diversity matters more than repeating one view.",
+      "claim_limit": "Synthetic board calibration does not validate a physical camera.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/42-calibrate-camera-intrinsics-and-lens-distortion/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/42-calibrate-camera-intrinsics-and-lens-distortion/assessment.md",
+      "portfolios": [
+        "A-PERCEPTION"
+      ],
+      "lesson_word_count": 1427,
+      "entrypoint_sha256": "3aeb189bc78d15d4102ce913b520344d8d6e32ef496233e258fcfa72bd32485e",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 43,
+      "module_id": "43-detect-and-describe-repeatable-image-features",
+      "competency_ids": [
+        "VISION-PERCEPTION"
+      ],
+      "mechanism_review": "Prior scoped perception review.",
+      "expected_reasoning": "Local gradient structure determines feature strength; descriptors require consistent sampling and a matching rule.",
+      "claim_limit": "Repeatability on a generated scene is not invariance to every viewpoint.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/43-detect-and-describe-repeatable-image-features/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/43-detect-and-describe-repeatable-image-features/assessment.md",
+      "portfolios": [
+        "A-PERCEPTION"
+      ],
+      "lesson_word_count": 1467,
+      "entrypoint_sha256": "5550c75dd4b220cd69e1239dcc4d78d6d63f80cb170c8a6266b631c5d5ef6d31",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 44,
+      "module_id": "44-reject-outliers-in-visual-correspondences",
+      "competency_ids": [
+        "VISION-PERCEPTION"
+      ],
+      "mechanism_review": "Prior scoped perception review.",
+      "expected_reasoning": "Consensus counts compatible observations; a refit must use the selected inliers rather than all original matches.",
+      "claim_limit": "A high inlier fraction can still support the wrong geometric model.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/44-reject-outliers-in-visual-correspondences/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/44-reject-outliers-in-visual-correspondences/assessment.md",
+      "portfolios": [
+        "A-PERCEPTION"
+      ],
+      "lesson_word_count": 1403,
+      "entrypoint_sha256": "a18590d7cd53c07a5d01ae1d87168d51e4e4d4adbd713bc657840b67e84af462",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 45,
+      "module_id": "45-recover-depth-from-stereo-geometry",
+      "competency_ids": [
+        "VISION-PERCEPTION"
+      ],
+      "mechanism_review": "Prior scoped perception review.",
+      "expected_reasoning": "Triangulation couples baseline, focal scale and disparity; far-range depth becomes sensitive even when pixel residuals stay small.",
+      "claim_limit": "A finite depth estimate does not prove positive depth in both cameras.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/45-recover-depth-from-stereo-geometry/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/45-recover-depth-from-stereo-geometry/assessment.md",
+      "portfolios": [
+        "A-PERCEPTION"
+      ],
+      "lesson_word_count": 1463,
+      "entrypoint_sha256": "360c488f624f1a8d0443b427f841ba83e8acb502ee99d070614b396c2d5cb5b3",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 46,
+      "module_id": "46-estimate-object-pose-from-visual-landmarks",
+      "competency_ids": [
+        "VISION-PERCEPTION",
+        "MANIPULATION"
+      ],
+      "mechanism_review": "Prior scoped perception review.",
+      "expected_reasoning": "Pose changes both rotation and translation of each 3D point; reprojection and cheirality distinguish plausible solutions.",
+      "claim_limit": "Known correspondences and an initialized solver do not solve unrestricted object detection.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/46-estimate-object-pose-from-visual-landmarks/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/46-estimate-object-pose-from-visual-landmarks/assessment.md",
+      "portfolios": [
+        "A-PERCEPTION",
+        "A-MANIPULATION",
+        "A-CAP-MANIP"
+      ],
+      "lesson_word_count": 1524,
+      "entrypoint_sha256": "9404c72f174e6c8af2c0d169331897ae0660ec3d44d6e1608858cafbcc2537db",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 47,
+      "module_id": "47-build-occupancy-grids-from-range-data",
+      "competency_ids": [
+        "RANGE-PERCEPTION",
+        "SLAM-MAPPING"
+      ],
+      "mechanism_review": "Prior scoped perception review.",
+      "expected_reasoning": "Only traversed cells receive free evidence and the endpoint receives occupied evidence; log odds accumulate bounded belief.",
+      "claim_limit": "Repeated correlated scans do not provide independent probability evidence.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/47-build-occupancy-grids-from-range-data/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/47-build-occupancy-grids-from-range-data/assessment.md",
+      "portfolios": [
+        "A-PERCEPTION",
+        "A-SLAM",
+        "A-CAP-MOBILE"
+      ],
+      "lesson_word_count": 1537,
+      "entrypoint_sha256": "0f4dfc49bcb7cfb1c60d52774cfc1ef225476ddfb4de17f56671decdd65c5c90",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 48,
+      "module_id": "48-register-point-clouds-with-icp",
+      "competency_ids": [
+        "RANGE-PERCEPTION",
+        "SLAM-MAPPING"
+      ],
+      "mechanism_review": "Prior scoped perception review.",
+      "expected_reasoning": "ICP alternates correspondences and pose updates; residual reduction depends on initialization and overlap.",
+      "claim_limit": "A small local residual does not prove global registration correctness.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/48-register-point-clouds-with-icp/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/48-register-point-clouds-with-icp/assessment.md",
+      "portfolios": [
+        "A-PERCEPTION",
+        "A-SLAM",
+        "A-CAP-MOBILE"
+      ],
+      "lesson_word_count": 1505,
+      "entrypoint_sha256": "2abcb2de10a97d94f29389a7b73a99d68cb1a48cc6cb45841672494dfd7858df",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 49,
+      "module_id": "49-test-observability-in-multi-rate-sensor-fusion",
+      "competency_ids": [
+        "STATE-ESTIMATION"
+      ],
+      "mechanism_review": "Explicit physical state scales make the information spectrum and covariance trace dimensionless; numerical SI coordinates preserved.",
+      "expected_reasoning": "The stacked whitened measurement rows determine rank; sample rate cannot recover a state absent from every row.",
+      "claim_limit": "A numerical rank threshold is not a universal sensor-design criterion.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/49-test-observability-in-multi-rate-sensor-fusion/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/49-test-observability-in-multi-rate-sensor-fusion/assessment.md",
+      "portfolios": [
+        "A-ESTIMATION"
+      ],
+      "lesson_word_count": 1468,
+      "entrypoint_sha256": "443c038199cf11a521dd15c6948ef3a0a61dc1fbbadee83afa59420761b63d1b",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 50,
+      "module_id": "50-associate-measurements-with-gating-and-robust-losses",
+      "competency_ids": [
+        "STATE-ESTIMATION",
+        "SLAM-MAPPING"
+      ],
+      "mechanism_review": "Actual gated one-to-one association and unmatched alternatives; independent exhaustive assignment enumeration.",
+      "expected_reasoning": "Mahalanobis distance tests compatibility; a Huber influence bound limits an accepted outlier without changing its units.",
+      "claim_limit": "Two labeled candidates do not demonstrate general combinatorial association.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/50-associate-measurements-with-gating-and-robust-losses/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/50-associate-measurements-with-gating-and-robust-losses/assessment.md",
+      "portfolios": [
+        "A-ESTIMATION",
+        "A-SLAM",
+        "A-CAP-MOBILE"
+      ],
+      "lesson_word_count": 1315,
+      "entrypoint_sha256": "a7d3750c5e1e002f34522a7a458b18eef693dd377afce867c88db9b32eecbd5f",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 51,
+      "module_id": "51-solve-nonlinear-factor-graph-slam",
+      "competency_ids": [
+        "SLAM-MAPPING"
+      ],
+      "mechanism_review": "Unknown landmark positions and robot heading jointly estimated; independent complex residual/TRF solution, analytic Jacobian perturbation and SE(2) gauge null-space checks.",
+      "expected_reasoning": "Robot position, heading and landmark coordinates are optimized jointly; relative observations leave three planar gauge freedoms without an anchor.",
+      "claim_limit": "Known correspondences and a single initialized circuit omit loop discovery and global SLAM.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/51-solve-nonlinear-factor-graph-slam/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/51-solve-nonlinear-factor-graph-slam/assessment.md",
+      "portfolios": [
+        "A-SLAM",
+        "A-CAP-MOBILE"
+      ],
+      "lesson_word_count": 1330,
+      "entrypoint_sha256": "30ea544cd395a8e3957ebe42941c2a16c69579c01c0e63aec4a1efd237e3781a",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 52,
+      "module_id": "52-detect-loop-closures-and-reject-false-matches",
+      "competency_ids": [
+        "SLAM-MAPPING"
+      ],
+      "mechanism_review": "Prior scoped perception review.",
+      "expected_reasoning": "A robust loss limits the loop's influence while odometry and the anchor resist deformation; inspect distributed map error.",
+      "claim_limit": "Robust optimization does not make arbitrary false correspondences harmless.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/52-detect-loop-closures-and-reject-false-matches/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/52-detect-loop-closures-and-reject-false-matches/assessment.md",
+      "portfolios": [
+        "A-SLAM",
+        "A-CAP-MOBILE"
+      ],
+      "lesson_word_count": 1564,
+      "entrypoint_sha256": "881ecd40129892ded9d16511a97251cd0bb335a9aab9cb7521f95c4add01fec4",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 53,
+      "module_id": "53-smooth-trajectories-and-audit-map-consistency",
+      "competency_ids": [
+        "STATE-ESTIMATION",
+        "SLAM-MAPPING"
+      ],
+      "mechanism_review": "No initialization-sample holdout leakage; independent full/prefix Gaussian batch QR posterior versus RTS/filter and withheld-only perturbation invariance.",
+      "expected_reasoning": "Future measurements affect past states through the smoothing gain; held-out observations audit errors separately from fitting.",
+      "claim_limit": "One deterministic trajectory cannot establish probabilistic covariance coverage.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/53-smooth-trajectories-and-audit-map-consistency/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/53-smooth-trajectories-and-audit-map-consistency/assessment.md",
+      "portfolios": [
+        "A-ESTIMATION",
+        "A-SLAM",
+        "A-CAP-MOBILE"
+      ],
+      "lesson_word_count": 1356,
+      "entrypoint_sha256": "194fda75ea658266145efa833b136c481e4702713a8f82a7d87b3620e3230fb9",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 54,
+      "module_id": "54-replan-efficiently-with-incremental-graph-search",
+      "competency_ids": [
+        "GLOBAL-MOTION-PLANNING"
+      ],
+      "mechanism_review": "Native model, governing relations, limiting case, named failure and independent replay reviewed.",
+      "expected_reasoning": "Reusable cost-to-come and one-step lookahead values must be made consistent after a map change; compare with a cold search.",
+      "claim_limit": "Weighted heuristics and tie rules affect expansion counts and optimality claims.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/54-replan-efficiently-with-incremental-graph-search/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/54-replan-efficiently-with-incremental-graph-search/assessment.md",
+      "portfolios": [
+        "A-PLANNING"
+      ],
+      "lesson_word_count": 1426,
+      "entrypoint_sha256": "57cc3ec39712eecddca3f38cf5fa6f70622f63a0177c8193130d5854a743e9f3",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 55,
+      "module_id": "55-build-and-query-a-probabilistic-roadmap",
+      "competency_ids": [
+        "GLOBAL-MOTION-PLANNING"
+      ],
+      "mechanism_review": "Native model, governing relations, limiting case, named failure and independent replay reviewed.",
+      "expected_reasoning": "Free nodes need collision-checked connections; connection radius and graph reachability matter independently of sample count.",
+      "claim_limit": "A missing path in a finite roadmap does not prove geometric impossibility.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/55-build-and-query-a-probabilistic-roadmap/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/55-build-and-query-a-probabilistic-roadmap/assessment.md",
+      "portfolios": [
+        "A-PLANNING"
+      ],
+      "lesson_word_count": 1272,
+      "entrypoint_sha256": "7534a0452cc0214fca90adee332ba0e7b4a12fc33a8e8aad516a8322bfb41360",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 56,
+      "module_id": "56-improve-sampled-paths-with-rrt-star",
+      "competency_ids": [
+        "GLOBAL-MOTION-PLANNING"
+      ],
+      "mechanism_review": "Native model, governing relations, limiting case, named failure and independent replay reviewed.",
+      "expected_reasoning": "A better connection changes the entire subtree's accumulated cost; the final path must follow the revised ancestry.",
+      "claim_limit": "A finite deterministic sample sequence is not an asymptotic optimality demonstration.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/56-improve-sampled-paths-with-rrt-star/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/56-improve-sampled-paths-with-rrt-star/assessment.md",
+      "portfolios": [
+        "A-PLANNING"
+      ],
+      "lesson_word_count": 1227,
+      "entrypoint_sha256": "da0af22bc61a930e46f9033610c253e1fae984dfb7b67ba837e6cc8b156709e7",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 57,
+      "module_id": "57-check-collision-geometry-and-smooth-paths",
+      "competency_ids": [
+        "GLOBAL-MOTION-PLANNING"
+      ],
+      "mechanism_review": "Native model, governing relations, limiting case, named failure and independent replay reviewed.",
+      "expected_reasoning": "A shortcut can cross an inflated obstacle even when its endpoints are free; re-evaluate the full segment after smoothing.",
+      "claim_limit": "Circular planar obstacles do not represent arbitrary articulated collision geometry.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/57-check-collision-geometry-and-smooth-paths/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/57-check-collision-geometry-and-smooth-paths/assessment.md",
+      "portfolios": [
+        "A-PLANNING"
+      ],
+      "lesson_word_count": 1174,
+      "entrypoint_sha256": "d2bc753e0aaf08b2c2f91794fc17572c9588961d3c612c88aa374650dd6ec261",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 58,
+      "module_id": "58-optimize-a-trajectory-through-obstacle-constraints",
+      "competency_ids": [
+        "GLOBAL-MOTION-PLANNING"
+      ],
+      "mechanism_review": "Native model, governing relations, limiting case, named failure and independent replay reviewed.",
+      "expected_reasoning": "A smoother path can violate obstacle constraints; inspect every segment and retain fixed endpoints during updates.",
+      "claim_limit": "Local constrained optimization does not prove global path optimality.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/58-optimize-a-trajectory-through-obstacle-constraints/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/58-optimize-a-trajectory-through-obstacle-constraints/assessment.md",
+      "portfolios": [
+        "A-PLANNING"
+      ],
+      "lesson_word_count": 1157,
+      "entrypoint_sha256": "2823b7192da51d0c9f10ea7af78164702943af377d2c5bf28e32bc85f83748f6",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 59,
+      "module_id": "59-plan-dynamically-feasible-kinodynamic-motion",
+      "competency_ids": [
+        "LOCAL-KINODYNAMIC-PLANNING"
+      ],
+      "mechanism_review": "Broken ramp/cruise position and terminal velocity consistent; bounded lattice infeasibility explicit.",
+      "expected_reasoning": "A kinodynamic state includes velocity; reaching the target at nonzero speed is a different goal from terminal rest.",
+      "claim_limit": "A finite lattice can fail to represent a feasible continuous trajectory.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/59-plan-dynamically-feasible-kinodynamic-motion/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/59-plan-dynamically-feasible-kinodynamic-motion/assessment.md",
+      "portfolios": [
+        "A-PLANNING",
+        "A-CAP-MOBILE"
+      ],
+      "lesson_word_count": 1132,
+      "entrypoint_sha256": "2c258b2a83c4793ec85c0a63351e1137f195c8a3d2b0bb93e52afe7ef7c1020c",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 60,
+      "module_id": "60-avoid-dynamic-obstacles-with-local-predictive-control",
+      "competency_ids": [
+        "LOCAL-KINODYNAMIC-PLANNING",
+        "REALTIME-SAFETY"
+      ],
+      "mechanism_review": "Separate sampled and exact interpolated between-sample clearance; independent bounded scalar minimization.",
+      "expected_reasoning": "The selected acceleration is applied to the plant and the horizon is recomputed; a frozen-obstacle prediction uses the wrong future state.",
+      "claim_limit": "Finite sampled predictions do not automatically certify between-sample clearance.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/60-avoid-dynamic-obstacles-with-local-predictive-control/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/60-avoid-dynamic-obstacles-with-local-predictive-control/assessment.md",
+      "portfolios": [
+        "A-PLANNING",
+        "A-SAFETY",
+        "A-CAP-MOBILE"
+      ],
+      "lesson_word_count": 1201,
+      "entrypoint_sha256": "8a11092f6fbe66c1ac0a4623aed992d8910ef237ace391105d39108223ff6ba7",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 61,
+      "module_id": "61-evaluate-grasp-contacts-and-force-closure",
+      "competency_ids": [
+        "PHYSICAL-INTERACTION",
+        "MANIPULATION"
+      ],
+      "mechanism_review": "Native model, governing relations, limiting case, named failure and independent replay reviewed.",
+      "expected_reasoning": "Positive combinations of friction-cone wrenches must span all wrench directions for closure; one feasible load is weaker evidence.",
+      "claim_limit": "Unbounded contact effort is not a grasp with finite actuator limits.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/61-evaluate-grasp-contacts-and-force-closure/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/61-evaluate-grasp-contacts-and-force-closure/assessment.md",
+      "portfolios": [
+        "A-CONTROL",
+        "A-MANIPULATION",
+        "A-CAP-MANIP"
+      ],
+      "lesson_word_count": 1326,
+      "entrypoint_sha256": "2ce74f84bd020e1039c3e6395f7fa7a756ca51a2212f364bfc492c4d712c3b2e",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 62,
+      "module_id": "62-execute-perception-guided-pick-and-place",
+      "competency_ids": [
+        "VISION-PERCEPTION",
+        "MANIPULATION"
+      ],
+      "mechanism_review": "Actual arm dynamics and guarded object transfer; independent point-Jacobian/DOP853 histories and failed-grasp nonattachment.",
+      "expected_reasoning": "Every task transition must follow measured geometric or contact evidence; endpoint reachability alone cannot prove placement.",
+      "claim_limit": "Planar kinematic execution omits full gripper and object-contact dynamics.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/62-execute-perception-guided-pick-and-place/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/62-execute-perception-guided-pick-and-place/assessment.md",
+      "portfolios": [
+        "A-PERCEPTION",
+        "A-MANIPULATION",
+        "A-CAP-MANIP"
+      ],
+      "lesson_word_count": 1288,
+      "entrypoint_sha256": "f173d7fbcf9e3ae0c5b25a4bba16679ae2c2edeff539a2f95c83f2e69e09aff7",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 63,
+      "module_id": "63-coordinate-a-mobile-manipulator",
+      "competency_ids": [
+        "MOBILE-KINEMATICS",
+        "MANIPULATION"
+      ],
+      "mechanism_review": "Native model, governing relations, limiting case, named failure and independent replay reviewed.",
+      "expected_reasoning": "Moving the base changes relative target coordinates and arm conditioning; a weighted objective trades travel against singularity avoidance.",
+      "claim_limit": "A configuration choice does not establish nonholonomic base trajectory feasibility.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/63-coordinate-a-mobile-manipulator/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/63-coordinate-a-mobile-manipulator/assessment.md",
+      "portfolios": [
+        "A-GEOMETRY",
+        "A-MANIPULATION",
+        "A-CAP-MANIP"
+      ],
+      "lesson_word_count": 1294,
+      "entrypoint_sha256": "6b04b9e8b4d4b4bd360a1ff135b62b3e81ff77bfeb27a616ae3f5ef1a41eac08",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 64,
+      "module_id": "64-plan-tasks-and-motions-with-recovery",
+      "competency_ids": [
+        "TASK-AUTONOMY",
+        "MANIPULATION"
+      ],
+      "mechanism_review": "Exhausted symbolic/geometric alternatives terminate as bounded task failure.",
+      "expected_reasoning": "The symbolic plan must use geometric feasibility and retain the actual execution state when selecting an alternative.",
+      "claim_limit": "Exhausting all alternatives must report failure rather than invent success.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/64-plan-tasks-and-motions-with-recovery/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/64-plan-tasks-and-motions-with-recovery/assessment.md",
+      "portfolios": [
+        "A-AUTONOMY",
+        "A-MANIPULATION",
+        "A-CAP-MANIP"
+      ],
+      "lesson_word_count": 1311,
+      "entrypoint_sha256": "0410b30ba11b5a5bd44a0fe3139ba3b55a9dc1810404e5514f3f4bf1d1264796",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 65,
+      "module_id": "65-coordinate-multiple-robots-with-assurance-boundaries",
+      "competency_ids": [
+        "TASK-AUTONOMY",
+        "REALTIME-SAFETY"
+      ],
+      "mechanism_review": "Native model, governing relations, limiting case, named failure and independent replay reviewed.",
+      "expected_reasoning": "Robots can collide by sharing a cell or swapping cells during one step; waits and delayed starts remain part of the schedule.",
+      "claim_limit": "Discrete reservations do not certify continuous physical separation.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/65-coordinate-multiple-robots-with-assurance-boundaries/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/65-coordinate-multiple-robots-with-assurance-boundaries/assessment.md",
+      "portfolios": [
+        "A-AUTONOMY",
+        "A-SAFETY"
+      ],
+      "lesson_word_count": 1258,
+      "entrypoint_sha256": "44e18e33bbbda1bc0eb61a01590886f8068fb1a12720ae55bf44b52b38467466",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 66,
+      "module_id": "66-integrate-robot-models-frames-and-interfaces",
+      "competency_ids": [
+        "SYSTEM-INTEGRATION"
+      ],
+      "mechanism_review": "Native model, governing relations, limiting case, named failure and independent replay reviewed.",
+      "expected_reasoning": "Correct forward kinematics can still consume mis-scaled angles or stale data; check interface validity separately from inverse consistency.",
+      "claim_limit": "Self-inverse transform residuals alone cannot detect every frame mistake.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/66-integrate-robot-models-frames-and-interfaces/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/66-integrate-robot-models-frames-and-interfaces/assessment.md",
+      "portfolios": [
+        "A-CAP-MOBILE",
+        "A-CAP-MANIP"
+      ],
+      "lesson_word_count": 1285,
+      "entrypoint_sha256": "0db8d441bcb3773f28e9a805185b8ba83e0a1a0c889f3aa7a19af85bd2855d9a",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 67,
+      "module_id": "67-replay-diagnose-and-recover-a-timed-robot-system",
+      "competency_ids": [
+        "REALTIME-SAFETY",
+        "SYSTEM-INTEGRATION"
+      ],
+      "mechanism_review": "Clock-rate correction, watchdog hold and measured checkpoint recovery events; explicit censored no-recovery output.",
+      "expected_reasoning": "Source time and arrival time serve different roles; stale rejection, gap detection and fresh-state recovery must be observable.",
+      "claim_limit": "A synthetic replay is not middleware or clock-synchronization qualification.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/67-replay-diagnose-and-recover-a-timed-robot-system/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/67-replay-diagnose-and-recover-a-timed-robot-system/assessment.md",
+      "portfolios": [
+        "A-SAFETY",
+        "A-CAP-MOBILE",
+        "A-CAP-MANIP"
+      ],
+      "lesson_word_count": 1209,
+      "entrypoint_sha256": "b0af9829defd858d757542ffec8eb1ab3566b9c99c7765d1d9ba9c93271aeae8",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 68,
+      "module_id": "68-capstone-navigate-and-replan-with-perception",
+      "competency_ids": [
+        "SLAM-MAPPING",
+        "LOCAL-KINODYNAMIC-PLANNING",
+        "SYSTEM-INTEGRATION"
+      ],
+      "mechanism_review": "Occupancy evidence, estimated state/covariance, route and bounded-acceleration tracking connected; information-form filter, plant recurrence and continuous clearance checks.",
+      "expected_reasoning": "Map and estimator outputs must feed planning and control; assess freshness, swept clearance, goal progress and recovery separately.",
+      "claim_limit": "A bounded deterministic mission does not establish field autonomy or safety certification.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/68-capstone-navigate-and-replan-with-perception/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/68-capstone-navigate-and-replan-with-perception/assessment.md",
+      "portfolios": [
+        "A-SLAM",
+        "A-PLANNING",
+        "A-CAP-MOBILE"
+      ],
+      "lesson_word_count": 1101,
+      "entrypoint_sha256": "aeee0ba145707a9a6b3fb6657e93b41e59ca47f37d659accee2e3da9c2f0109b",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    },
+    {
+      "number": 69,
+      "module_id": "69-capstone-perceive-grasp-and-control-a-two-link-robot",
+      "competency_ids": [
+        "PHYSICAL-INTERACTION",
+        "MANIPULATION",
+        "SYSTEM-INTEGRATION"
+      ],
+      "mechanism_review": "Actual arm/object pickup-transfer-release-retreat; independent full trajectory and support-failure checks. Scalar contact/timing studies remain separate.",
+      "expected_reasoning": "A grasp verdict must depend on executed arm/contact behavior and the object's final state; unrelated successful components do not prove integration.",
+      "claim_limit": "Synthetic planar manipulation is not hardware or general 3D manipulation qualification.",
+      "independent_basis": "Live native reference function; five declared scenarios, retained independently calculated vectors and runtime comparison.",
+      "evidence": "modules/69-capstone-perceive-grasp-and-control-a-two-link-robot/evidence/aggregate-independent.json",
+      "formative_assessment": "modules/69-capstone-perceive-grasp-and-control-a-two-link-robot/assessment.md",
+      "portfolios": [
+        "A-CONTROL",
+        "A-MANIPULATION",
+        "A-CAP-MANIP"
+      ],
+      "lesson_word_count": 1057,
+      "entrypoint_sha256": "348bf54c8e8f448d1af83c4fe6487b6bf54c81d3be18e960356817501bc3513e",
+      "disposition": "authored_and_numerically_reviewed_browser_and_full_gates_pending"
+    }
+  ],
+  "reviewed_mechanism_repairs": {
+    "49": "Explicit physical state scales make the information spectrum and covariance trace dimensionless; numerical SI coordinates preserved.",
+    "50": "Actual gated one-to-one association and unmatched alternatives; independent exhaustive assignment enumeration.",
+    "51": "Unknown landmark positions and robot heading jointly estimated; independent complex residual/TRF solution, analytic Jacobian perturbation and SE(2) gauge null-space checks.",
+    "53": "No initialization-sample holdout leakage; independent full/prefix Gaussian batch QR posterior versus RTS/filter and withheld-only perturbation invariance.",
+    "59": "Broken ramp/cruise position and terminal velocity consistent; bounded lattice infeasibility explicit.",
+    "60": "Separate sampled and exact interpolated between-sample clearance; independent bounded scalar minimization.",
+    "62": "Actual arm dynamics and guarded object transfer; independent point-Jacobian/DOP853 histories and failed-grasp nonattachment.",
+    "64": "Exhausted symbolic/geometric alternatives terminate as bounded task failure.",
+    "67": "Clock-rate correction, watchdog hold and measured checkpoint recovery events; explicit censored no-recovery output.",
+    "68": "Occupancy evidence, estimated state/covariance, route and bounded-acceleration tracking connected; information-form filter, plant recurrence and continuous clearance checks.",
+    "69": "Actual arm/object pickup-transfer-release-retreat; independent full trajectory and support-failure checks. Scalar contact/timing studies remain separate."
+  },
+  "runtime_replay": "robotics-aggregate-replay.json",
+  "http_replay": "robotics-aggregate-http.json",
+  "browser": "pending",
+  "repository_gates": "pending",
+  "learner_validation": "not_run",
+  "docker_delivery": "owner_deferred",
+  "hardware": "not_run",
+  "matlab": "not_run",
+  "production": "not_run"
+}

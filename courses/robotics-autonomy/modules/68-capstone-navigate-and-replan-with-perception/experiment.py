@@ -271,7 +271,12 @@ def _model(p, broken):
         "signature": signature,
         "requirements": req,
         "metrics": [
-            ("mission_success", "Mission success", signature[0], "bool"),
+            (
+                "mission_success",
+                "Ideal-segment component success",
+                signature[0],
+                "bool",
+            ),
             (
                 "minimum_dynamic_separation",
                 "Minimum dynamic separation",
@@ -539,4 +544,37 @@ def run(parameters):
             },
         ]
     )
+    requirements = {
+        "TRACK-GOAL": _requirement(
+            "Actual goal position error", tracked["goal_error_m"], "m", "<=", 0.1
+        ),
+        "TRACK-CLEARANCE": _requirement(
+            "Continuous point-robot clearance",
+            tracked["minimum_clearance_m"],
+            "m",
+            ">=",
+            0.6,
+        ),
+        "TRACK-ESTIMATE": _requirement(
+            "Position estimate RMSE", tracked["position_rmse_m"], "m", "<=", 0.1
+        ),
+        "TRACK-STOP": _requirement(
+            "Actual terminal speed", np.linalg.norm(h[-1, 3:5]), "m/s", "<=", 0.1
+        ),
+    }
+    result["diagnostics"]["execution_requirements"] = requirements
+    result["tables"]["execution_requirements"] = {
+        "columns": ["Requirement", "Quantity", "Value", "Unit", "Rule", "Verdict"],
+        "rows": [
+            {
+                "Requirement": key,
+                "Quantity": r["quantity"],
+                "Value": r["value"],
+                "Unit": r["unit"],
+                "Rule": f"{r['operator']} {r['threshold']}",
+                "Verdict": "pass" if r["passed"] else "fail",
+            }
+            for key, r in requirements.items()
+        ],
+    }
     return result

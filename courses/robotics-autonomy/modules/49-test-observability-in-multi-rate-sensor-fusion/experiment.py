@@ -101,6 +101,10 @@ def _information_rows(
 
 
 def _information_signature(rows: np.ndarray) -> tuple[float, float, float]:
+    # Columns represent theta / [1 m, 1 m/s, 1, 1 m/s^2].
+    # These explicit physical state scales make the matrix dimensionless.
+    scales = np.array([1.0, 1.0, 1.0, 1.0])
+    rows = rows * scales
     information = rows.T @ rows
     singular = np.linalg.svd(information, compute_uv=False)
     tolerance = singular[0] * 1.0e-9

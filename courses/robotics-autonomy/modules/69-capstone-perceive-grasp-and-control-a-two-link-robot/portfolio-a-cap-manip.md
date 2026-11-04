@@ -1,4 +1,4 @@
-# Cumulative portfolio A-CAP-MANIP
+# A-CAP-MANIP integration evidence
 
 Integrate these existing lessons: P08, P24, P37, P38, P39, P46, P61, P62, P63, P64, P66, P67, P69.
 
@@ -19,6 +19,10 @@ Use P63: Compare base travel with arm dexterity for one target. Moving the base 
 ## Integrate and defend the boundary
 
 Use P69: Connect visual pose, arm motion, grasp force and object placement. A grasp verdict must depend on executed arm/contact behavior and the object's final state; unrelated successful components do not prove integration. Connect this result to at least one other listed lesson, identifying the exact quantity, units and assumption transferred across their interface.
+
+## Required integration artifact
+
+Submit a stage ledger linking camera point → transformed target → IK → saturated torque → actual endpoint → grasp verification → attached object → placement → release/retreat. Retain all event times and the object trajectory. Independently verify the gravity/support inequality, one forward-kinematics point and final object error. Sweep visual perturbation and friction separately, identify compensation of a captured offset, and demonstrate both missed-grasp and insufficient-support failures without transfer. Keep P69 scalar contact/tank and timing checks alongside this sequence but explicitly mark them as separate component studies rather than claiming their state drives the jaw or arm. Explain the ideal supported release and omitted contact/slip/3D closure assumptions; no hardware or learner competence is inferred.
 
 ## Four-criterion rubric
 

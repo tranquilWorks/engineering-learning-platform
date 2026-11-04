@@ -232,7 +232,7 @@ def _model(parameters: dict[str, Any], broken: bool) -> dict[str, Any]:
         "signature": signature,
         "requirements": req,
         "metrics": [
-            ("capstone_success", "Capstone success", success, "bool"),
+            ("capstone_success", "Contact component success", success, "bool"),
             ("pickup_position_error", "Pickup position error", pickup_error, "m"),
             ("minimum_passivity_energy", "Minimum tank energy", minimum_tank, "J"),
         ],
@@ -584,4 +584,37 @@ def run(parameters):
             },
         ]
     )
+    requirements = {
+        "EXEC-COMPLETE": _requirement(
+            "Guarded task completed", float(motion["success"]), "bool", ">=", 1
+        ),
+        "EXEC-PLACE": _requirement(
+            "Actual object placement error",
+            motion["placement_error_m"],
+            "m",
+            "<=",
+            0.02,
+        ),
+        "EXEC-TORQUE": _requirement(
+            "Maximum applied torque", motion["max_torque_nm"], "N m", "<=", 25
+        ),
+        "EXEC-RELEASE": _requirement(
+            "Terminal attachment state", h[-1, 11], "bool", "<=", 0
+        ),
+    }
+    result["diagnostics"]["execution_requirements"] = requirements
+    result["tables"]["execution_requirements"] = {
+        "columns": ["Requirement", "Quantity", "Value", "Unit", "Rule", "Verdict"],
+        "rows": [
+            {
+                "Requirement": key,
+                "Quantity": r["quantity"],
+                "Value": r["value"],
+                "Unit": r["unit"],
+                "Rule": f"{r['operator']} {r['threshold']}",
+                "Verdict": "pass" if r["passed"] else "fail",
+            }
+            for key, r in requirements.items()
+        ],
+    }
     return result

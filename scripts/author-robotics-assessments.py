@@ -102,6 +102,9 @@ A complete answer connects a numerical value to the governing relation, distingu
 Competency links: {", ".join(memberships)}. Carry the prediction, two comparisons, failure diagnosis and recovery evidence into the linked cumulative portfolio. No learner completion or score is inferred by the software; this is an authored assessment for a learner or reviewer to perform.
 """
         )
+        previous = folder / "prior-assessment.md"
+        if previous.exists():
+            text += "\n\n# Retained scoped evidence task\n\n" + previous.read_text()
         (folder / "assessment.md").write_text(text)
         module["blocks"] = [
             b for b in module["blocks"] if b.get("source") != "assessment.md"
@@ -126,6 +129,7 @@ Competency links: {", ".join(memberships)}. Carry the prediction, two comparison
                 if not b.get("source", "").startswith("portfolio-a-")
             ]
             path.write_text(yaml.safe_dump(module, sort_keys=False, width=100))
+    portfolio_prompts = json.loads((COURSE / "portfolio-prompts.json").read_text())
     portfolios = []
     for a in curriculum["assessments"]:
         if not a["id"].startswith("A-"):
@@ -157,7 +161,7 @@ Competency links: {", ".join(memberships)}. Carry the prediction, two comparison
             candidates[-1],
         ]
         body = (
-            f"# {title}\n\nIntegrate these existing lessons: "
+            f"# {a['id']} integration evidence\n\nIntegrate these existing lessons: "
             + ", ".join(f"P{n:02d}" for n in numbers)
             + ".\n\nRequired evidence: "
             + a["evidence"]
@@ -171,6 +175,9 @@ Competency links: {", ".join(memberships)}. Carry the prediction, two comparison
         ]
         for label, prompt in zip(labels, selected):
             body += f"## {label}\n\nUse P{prompt['number']:02d}: {prompt['task']} {prompt['expected_reasoning']} Connect this result to at least one other listed lesson, identifying the exact quantity, units and assumption transferred across their interface.\n\n"
+        body += (
+            "## Required integration artifact\n\n" + portfolio_prompts[a["id"]] + "\n\n"
+        )
         body += """## Four-criterion rubric
 
 1. Governing reasoning: equations, units and frame/sign conventions justify a numerical prediction; naming an algorithm alone earns no evidence.

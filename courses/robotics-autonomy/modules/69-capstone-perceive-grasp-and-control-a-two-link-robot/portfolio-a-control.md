@@ -1,4 +1,4 @@
-# Cumulative portfolio A-CONTROL
+# A-CONTROL integration evidence
 
 Integrate these existing lessons: P05, P06, P08, P34, P35, P36, P37, P38, P39, P40, P61, P69.
 
@@ -19,6 +19,10 @@ Use P39: Audit the energy tank when saturation and delayed commands occur. Appli
 ## Integrate and defend the boundary
 
 Use P69: Connect visual pose, arm motion, grasp force and object placement. A grasp verdict must depend on executed arm/contact behavior and the object's final state; unrelated successful components do not prove integration. Connect this result to at least one other listed lesson, identifying the exact quantity, units and assumption transferred across their interface.
+
+## Required integration artifact
+
+Trace a commanded motion through desired acceleration, applied torque, actual joint motion and endpoint error. Show where clipping invalidates ideal computed-torque error dynamics. Compare this with the contact-energy experiment: compute stored elastic energy and account for the tank before interpreting force tracking as stable interaction. In P69 retain both the contact-study outputs and executed manipulation events, explicitly identifying that the tank does not drive the jaw-force ramp. Diagnose one actuator-limited failure and one insufficient-grasp-support failure; they require different repairs. Verify return to baseline after each fault and retain control effort as well as tracking error.
 
 ## Four-criterion rubric
 

@@ -1,4 +1,4 @@
-# Cumulative portfolio A-ESTIMATION
+# A-ESTIMATION integration evidence
 
 Integrate these existing lessons: P10, P13, P14, P15, P49, P50, P53.
 
@@ -19,6 +19,10 @@ Use P49: Predict which state direction becomes unobservable without excitation. 
 ## Integrate and defend the boundary
 
 Use P53: Distinguish a backward smoother from a causal filter with smaller error bars. Future measurements affect past states through the smoothing gain; held-out observations audit errors separately from fitting. Connect this result to at least one other listed lesson, identifying the exact quantity, units and assumption transferred across their interface.
+
+## Required integration artifact
+
+Compare covariance before and after a measurement, its innovation and the gate decision. Then remove excitation and show why increasing sample rate cannot recover a missing observable direction. Declare state normalization before comparing mixed-state information spectra or variance traces. In P53 verify that indices 5, 10, …, 80 are withheld and that sample zero is training data. Perturb only withheld measurements and demonstrate unchanged smoothed states and covariance with changed validation residual. Distinguish deterministic coverage of a chi-square threshold from statistical consistency over independent realizations. Connect a false association to estimator bias even if the filter reports small covariance.
 
 ## Four-criterion rubric
 

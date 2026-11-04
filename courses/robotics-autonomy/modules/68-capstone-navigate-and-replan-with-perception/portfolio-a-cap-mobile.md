@@ -1,4 +1,4 @@
-# Cumulative portfolio A-CAP-MOBILE
+# A-CAP-MOBILE integration evidence
 
 Integrate these existing lessons: P16, P19, P24, P47, P48, P50, P51, P52, P53, P59, P60, P66, P67, P68.
 
@@ -19,6 +19,10 @@ Use P59: Reconstruct position and velocity from every bounded acceleration actio
 ## Integrate and defend the boundary
 
 Use P68: Connect a sensor observation to map, state estimate, route and executed motion. Map and estimator outputs must feed planning and control; assess freshness, swept clearance, goal progress and recovery separately. Connect this result to at least one other listed lesson, identifying the exact quantity, units and assumption transferred across their interface.
+
+## Required integration artifact
+
+Submit a stage ledger linking observation → occupancy odds → route → estimated state/covariance → acceleration command → actual trajectory → freshness hold/resume. Record the numerical quantity and units passed at each arrow. At baseline, identify the occupancy threshold crossing, actual detour, hold interval, resumed motion, final error and continuous clearance. Increase dropout alone and explain covariance growth and braking. Change obstacle speed alone and determine whether it intersects the arrival interval or is inactive in that regime. In broken mode show that arrival can coexist with collision. Compare the original ideal-segment component study with the tracked extension; neither runs P51 full SLAM or models a finite vehicle footprint. Acceptance requires the bounded stage claims, not merely a green goal flag.
 
 ## Four-criterion rubric
 

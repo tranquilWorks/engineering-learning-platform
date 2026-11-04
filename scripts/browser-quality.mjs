@@ -181,6 +181,23 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
             }
           }
 
+          if (course.id === 'robotics-autonomy' && [51,62,68,69].includes(module.number)) {
+            const labels = {51:'Joint pose and map estimation',62:'Executed manipulation',68:'Estimated and tracked navigation',69:'Executed manipulation'};
+            const title = labels[module.number];
+            await page.getByRole('navigation',{name:'Lesson sections'}).getByRole('link',{name:title,exact:true}).click();
+            await expect(page.getByRole('heading',{name:title,exact:true})).toBeInViewport();
+            row.integrated_section = true;
+            const grid = page.locator('.plot-grid-section').nth(1);
+            row.integrated_drawn_plots = await grid.locator('.js-plotly-plot').evaluateAll(nodes => nodes.filter(node => node.querySelector('.scatterlayer .trace path') || node.querySelector('canvas')).length);
+            if (row.integrated_drawn_plots !== 2) throw new Error('Robotics integrated plot missing');
+            const panels = grid.locator('.plot-panel');
+            for (let i=0; i<await panels.count(); i++) {
+              const file = `${out}/robotics-integration-${module.number}-${viewport}-${i}.png`;
+              await panels.nth(i).screenshot({path:file});
+              screenshots.push({path:file,sha256:crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
+            }
+          }
+
           row.controls_portfolios = [];
           if (course.id === 'robotics-autonomy') row.robotics_portfolios = [];
           for (const block of doc.module.blocks.filter(b => b.type === 'markdown' && b.title?.startsWith('Cumulative portfolio '))) {

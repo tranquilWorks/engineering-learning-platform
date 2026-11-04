@@ -28,7 +28,7 @@ $$W=H^TH=\sum_k h_k^TR_k^{-1}h_k.$$
 
 The matrix rank counts independently constrained directions. Its condition number $\kappa(W)=\sigma_{\max}/\sigma_{\min}$ compares the strongest and weakest directions. The normalized variance metric is $\operatorname{tr}(W^{-1})$ only when all four directions are present. If rank is lost, the laboratory reports an explicit large sentinel rather than pretending a pseudoinverse is finite evidence.
 
-Time is seconds, position is metres, velocity is metres per second, acceleration is metres per second squared, and the reported information metrics are normalized by the declared measurement noise. Rows are ordered by their real timestamps. A fast sample is not silently snapped onto the next slow measurement.
+Time is seconds, position is metres, velocity is metres per second, and acceleration is metres per second squared. In addition to measurement whitening, the information calculation uses dimensionless state coordinates θᵢ/sᵢ with explicit physical scales s = [1 m, 1 m/s, 1, 1 m/s²]. Their numerical values are one in the displayed SI convention. Thus the variance trace sums dimensionless coordinate variances; it is not a sum of physical position, velocity and bias variances. Changing physical coordinate scales changes condition and trace while preserving exact rank. Merely whitening measurements would not make a mixed-unit physical covariance trace dimensionless. Rows are ordered by their real timestamps. A fast sample is not silently snapped onto the next slow measurement.
 
 ## Predict before running
 

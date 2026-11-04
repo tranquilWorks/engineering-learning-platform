@@ -91,3 +91,8 @@ No MATLAB Kalman functions, real GNSS, motion capture, SLAM map, browser accessi
 ## Focused check and teach-back
 
 Derive why the last smoothed state equals the last filtered state. Explain how a future innovation changes an earlier state through $C_k$, and why covariance must change through the companion equation. Then compare baseline with broken mode using all three metrics, not plot smoothness alone. End with the boundary: deterministic one-dimensional Python smoothing and audit evidence only; MATLAB runtime, learner/accessibility validation, physical hardware/HIL, certification, release, deployment, and production use remain unperformed.
+
+
+## Holdout provenance correction
+
+Sample zero initializes the filter and is training data. The withheld set is exactly indices 5, 10, …, 80; those measurements never enter a forward update or initial state. The holdout RMSE excludes index zero. This corrects the earlier label that included the initialization sample among withheld fixes. The deterministic residual sequence is a reproducible diagnostic, not independent field data or a statistical calibration study.

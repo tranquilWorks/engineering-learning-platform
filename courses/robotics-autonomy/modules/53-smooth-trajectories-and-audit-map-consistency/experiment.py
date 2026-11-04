@@ -77,7 +77,7 @@ def _filter_and_smooth(
     filtered[0] = np.array([measurements[0], 0.5])
     filtered_covariance[0] = np.diag([measurement_variance, 0.5])
     heldout = np.zeros(count, dtype=bool)
-    heldout[::5] = True
+    heldout[5::5] = True  # Sample zero seeds the filter and is training data.
 
     for index in range(1, count):
         predicted[index] = transition @ filtered[index - 1]

@@ -1,4 +1,4 @@
-# Cumulative portfolio A-SLAM
+# A-SLAM integration evidence
 
 Integrate these existing lessons: P16, P47, P48, P50, P51, P52, P53, P68.
 
@@ -19,6 +19,10 @@ Use P52: Explain why a plausible false loop can deform an entire map. A robust l
 ## Integrate and defend the boundary
 
 Use P68: Connect a sensor observation to map, state estimate, route and executed motion. Map and estimator outputs must feed planning and control; assess freshness, swept clearance, goal progress and recovery separately. Connect this result to at least one other listed lesson, identifying the exact quantity, units and assumption transferred across their interface.
+
+## Required integration artifact
+
+Solve the P51 joint graph and retain both pose headings and estimated landmark coordinates. Remove the gauge prior, construct the three planar rigid-motion directions and show their null residual effect. Align gauges before comparing maps; do not interpret an arbitrary absolute offset as relative-map failure. Link the P50 one-to-one association and P52 loop-closure checks to the factors they would supply, recording where those studies remain separate. Compare the smoothing holdout result with graph fit error. In the mobile capstone identify the actual known-cell occupancy and direct-position filter interfaces; it does not execute the full joint SLAM graph, so its successful route cannot be used as an end-to-end SLAM acceptance test.
 
 ## Four-criterion rubric
 

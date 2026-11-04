@@ -223,3 +223,108 @@ def test_mobile_stage_flow_and_independent_filter(dropout, speed, broken):
             ]
         )
     assert 0 <= min(sampled) - out["minimum_clearance_m"] < 1e-3
+
+
+def test_smoother_holdout_measurements_never_enter_estimate(monkeypatch):
+    model = load(next((COURSE / "modules").glob("53-*/experiment.py")))
+    original = model._simulate
+    baseline = model._filter_and_smooth(0.06, 0.15, False)
+    mask = baseline[-1]
+    assert not mask[0] and mask.sum() == 16
+
+    def altered(process, measurement):
+        t, truth, z = original(process, measurement)
+        z[mask] += 10
+        return t, truth, z
+
+    monkeypatch.setattr(model, "_simulate", altered)
+    changed = model._filter_and_smooth(0.06, 0.15, False)
+    np.testing.assert_array_equal(baseline[3], changed[3])
+    np.testing.assert_array_equal(baseline[4], changed[4])
+    assert np.linalg.eigvalsh(baseline[4]).min() > 0
+
+
+@pytest.mark.parametrize("gate,outlier", [(0.5, 2), (3, 5), (8, 12), (2.37, 7.13)])
+def test_association_matches_independent_enumeration(gate, outlier):
+    from itertools import product
+
+    model = load(next((COURSE / "modules").glob("50-*/experiment.py")))
+    actual = model._associate(gate, outlier)
+    predicted = np.array([0j, 1 + 0.4j])
+    measured = np.array([0.06 - 0.04j, 0.97 + 0.42j, 0.1 * outlier + 0.035j * outlier])
+    delta = measured[:, None] - predicted[None, :]
+    distances = np.hypot(delta.real / 0.1, delta.imag / 0.05)
+
+    def loss(d):
+        return d * d / 2 if d <= 1.5 else 1.5 * d - 1.125
+
+    candidates = []
+    for assignment in product([-1, 0, 1], repeat=3):
+        used = [j for j in assignment if j >= 0]
+        if len(used) != len(set(used)):
+            continue
+        if any(distances[i, j] > gate for i, j in enumerate(assignment) if j >= 0):
+            continue
+        cost = sum(
+            loss(gate) + 1e-9 if j < 0 else loss(distances[i, j]) for i, j in enumerate(assignment)
+        )
+        candidates.append((cost, assignment))
+    best = min(candidates)
+    assert abs(actual["objective"] - best[0]) < 1e-10
+    assert tuple(actual["assignment"]) == best[1]
+    broken = model._associate(gate, outlier, True)["assignment"]
+    assert len(set(broken)) < len(broken)
+
+
+@pytest.mark.parametrize("horizon,speed", [(1, 0.3), (10, 0.7), (7, 0.437)])
+def test_avoidance_continuous_clearance_bounds_samples(horizon, speed):
+    model = load(next((COURSE / "modules").glob("60-*/experiment.py")))
+    out = model.run(
+        {"prediction_horizon_steps": horizon, "obstacle_speed_m_s": speed, "broken_mode": False}
+    )
+    minimum = np.asarray(out["diagnostics"]["continuous_intervals"]["minimum_separation_m"])
+    robot, obstacle, sampled, _ = model._simulate(horizon, speed, False)
+    assert minimum.min() <= sampled.min() + 1e-12
+    # Independent segment-distance minimization by bounded scalar optimization.
+    from scipy.optimize import minimize_scalar
+
+    for i in range(40):
+
+        def distance(t, i=i):
+            return np.linalg.norm(
+                (1 - t) * (robot[i] - obstacle[i]) + t * (robot[i + 1] - obstacle[i + 1])
+            )
+
+        numerical = min(
+            distance(0), distance(1), minimize_scalar(distance, bounds=(0, 1), method="bounded").fun
+        )
+        assert abs(minimum[i] - numerical) < 1e-8
+
+
+@pytest.mark.parametrize(
+    "process,measurement,broken",
+    [(0.06, 0.15, False), (0.5, 1.0, False), (0.137, 0.237, False), (0.06, 0.15, True)],
+)
+def test_smoother_full_posterior_matches_batch_qr(process, measurement, broken):
+    model = load(next((COURSE / "modules").glob("53-*/experiment.py")))
+    _, _, _, mean, covariance, mask = model._filter_and_smooth(process, measurement, broken)
+    _, _, reference, cov, held = load(COURSE / "expansion_reference_cases.py")._smoothing_batch(
+        process, measurement, broken
+    )
+    np.testing.assert_array_equal(mask, held)
+    np.testing.assert_allclose(mean, reference, atol=1e-8, rtol=1e-8)
+    np.testing.assert_allclose(covariance, cov, atol=1e-9, rtol=1e-8)
+
+
+@pytest.mark.parametrize("number", [68, 69])
+def test_capstone_execution_requirements_fail_on_actual_broken_mechanism(number):
+    import yaml
+
+    path = next((COURSE / "modules").glob(f"{number}-*/experiment.py"))
+    model = load(path)
+    params = yaml.safe_load((path.parent / "design.yaml").read_text())["scenarios"]["baseline"]
+    for broken in [False, True]:
+        output = model.run({**params, "broken_mode": broken})
+        requirements = output["diagnostics"]["execution_requirements"]
+        assert all(r["passed"] for r in requirements.values()) is (not broken)
+        assert len(output["tables"]["execution_requirements"]["rows"]) == len(requirements) == 4

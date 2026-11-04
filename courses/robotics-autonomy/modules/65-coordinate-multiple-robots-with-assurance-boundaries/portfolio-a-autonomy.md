@@ -1,4 +1,4 @@
-# Cumulative portfolio A-AUTONOMY
+# A-AUTONOMY integration evidence
 
 Integrate these existing lessons: P20, P21, P64, P65.
 
@@ -19,6 +19,10 @@ Use P64: Demonstrate recovery after a motion edge becomes infeasible. The symbol
 ## Integrate and defend the boundary
 
 Use P65: Check vertex and edge-swap conflicts in a reservation schedule. Robots can collide by sharing a cell or swapping cells during one step; waits and delayed starts remain part of the schedule. Connect this result to at least one other listed lesson, identifying the exact quantity, units and assumption transferred across their interface.
+
+## Required integration artifact
+
+Construct a state/event trace with preconditions, success guards, failure exits and recovery actions. In P64 force the first carry route to fail, show the blacklisted edge and compare the replacement route; then exhaust both alternatives and retain explicit failure with finite elapsed time. Contrast this with P62, where transfer cannot begin before grasp verification. For the multi-agent contract, identify whose state or intent is stale and how a locally valid plan can violate a shared constraint. No restart should erase the causal event that triggered recovery. Provide one counterexample to treating an action label as proof that its physical precondition occurred.
 
 ## Four-criterion rubric
 

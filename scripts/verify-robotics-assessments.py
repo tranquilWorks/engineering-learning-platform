@@ -52,7 +52,7 @@ def replay(base_url=None, refresh=False):
         folder = COURSE / "modules" / lesson["module_id"]
         manifest = yaml.safe_load((folder / "module.yaml").read_text())
         if n <= 24:
-            record = yaml.safe_load((folder / "verification.yaml").read_text())
+            record = json.loads((folder / "verification.yaml").read_text())
             baseline = {c["id"]: c["default"] for c in manifest["controls"]}
             scenarios = {"baseline": baseline}
             for i, sweep in enumerate(record["learning"]["sweeps"][:2], 1):
@@ -115,7 +115,7 @@ def replay(base_url=None, refresh=False):
                     "tolerance": tolerance,
                 }
             )
-            if refresh and n in (59, 67):
+            if refresh and n in (53, 59, 67):
                 # These native mechanisms changed in this batch. Historical source
                 # conversion artifacts remain untouched.
                 for filename, signature in [

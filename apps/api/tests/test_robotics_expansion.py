@@ -249,7 +249,9 @@ def test_robotics_native_plots_retain_domain_quantities_and_units() -> None:
         assert set(result["plots"]) == {"response", "mechanism"} | extra_plots.get(
             item["id"], set()
         )
-        assert len(result["metrics"]) == {"P59": 4, "P62": 5, "P68": 6, "P69": 5}.get(item["id"], 3)
+        assert len(result["metrics"]) == {"P59": 4, "P60": 4, "P62": 5, "P68": 6, "P69": 5}.get(
+            item["id"], 3
+        )
         for plot in result["plots"].values():
             for axis in ("xaxis", "yaxis"):
                 title = plot["layout"][axis]["title"]["text"]

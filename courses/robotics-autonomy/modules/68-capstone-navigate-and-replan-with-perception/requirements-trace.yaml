@@ -25,7 +25,8 @@ requirements:
 - id: R68-DYNAMIC
   prerequisite_modules:
   - P60
-  mechanism: Predict synchronized crossing time and delay execution until separation is at least 0.85 m.
+  mechanism: Predict synchronized crossing time and delay execution until separation is at least 0.85
+    m.
   evidence: minimum_dynamic_separation
   quantity: Continuous minimum moving-obstacle separation
   unit: m
@@ -49,3 +50,25 @@ requirements:
   unit: count
   operator: <=
   threshold: 0
+- id: TRACK-GOAL
+  prerequisite_modules:
+  - P54
+  mechanism: Actual double-integrator position reaches the final waypoint within 0.1 m.
+  evidence: execution_requirements table and complete actual state/event history
+- id: TRACK-CLEARANCE
+  prerequisite_modules:
+  - P60
+  mechanism: Minimize actual quadratic relative trajectory over every integration interval; require 0.6
+    m point clearance.
+  evidence: execution_requirements table and complete actual state/event history
+- id: TRACK-ESTIMATE
+  prerequisite_modules:
+  - P17
+  mechanism: Propagate Kalman mean/covariance and apply direct position updates; position RMSE below 0.1
+    m.
+  evidence: execution_requirements table and complete actual state/event history
+- id: TRACK-STOP
+  prerequisite_modules:
+  - P59
+  mechanism: Actual terminal velocity falls below 0.1 m/s; a zero command alone is insufficient.
+  evidence: execution_requirements table and complete actual state/event history

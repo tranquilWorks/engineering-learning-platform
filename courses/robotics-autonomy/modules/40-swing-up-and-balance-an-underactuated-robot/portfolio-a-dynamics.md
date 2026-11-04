@@ -1,4 +1,4 @@
-# Cumulative portfolio A-DYNAMICS
+# A-DYNAMICS integration evidence
 
 Integrate these existing lessons: P30, P31, P32, P33, P35, P36, P40.
 
@@ -19,6 +19,10 @@ Use P35: Explain the effect of payload mismatch on computed-torque compensation.
 ## Integrate and defend the boundary
 
 Use P40: Explain the energy-shaping and balance-control switching condition. The unactuated link receives energy through coupled dynamics; switching depends on angle and rate, not merely elapsed time. Connect this result to at least one other listed lesson, identifying the exact quantity, units and assumption transferred across their interface.
+
+## Required integration artifact
+
+Choose a two-link configuration and derive potential energy, its gravity gradient and the inertia symmetry test. Compare static holding torque with inverse dynamics at zero velocity and acceleration. Then introduce motion and separate inertia, Coriolis, gravity and dissipation contributions. Transfer the calculated torque into a controlled plant and explain saturation-induced tracking error. Use the identification lesson to distinguish a fitted parameter from an independently excited parameter: provide regressor rank and a withheld prediction. Finally explain which energy coordinates can be influenced in the underactuated system and why a full-actuation cancellation argument does not transfer unchanged.
 
 ## Four-criterion rubric
 

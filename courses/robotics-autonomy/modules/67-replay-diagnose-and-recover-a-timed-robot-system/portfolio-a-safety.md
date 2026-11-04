@@ -1,4 +1,4 @@
-# Cumulative portfolio A-SAFETY
+# A-SAFETY integration evidence
 
 Integrate these existing lessons: P22, P23, P24, P39, P60, P65, P67.
 
@@ -19,6 +19,10 @@ Use P60: Explain why a short prediction horizon changes avoidance decisions. The
 ## Integrate and defend the boundary
 
 Use P67: Measure recovery latency from the actual accepted event sequence. Source time and arrival time serve different roles; stale rejection, gap detection and fresh-state recovery must be observable. Connect this result to at least one other listed lesson, identifying the exact quantity, units and assumption transferred across their interface.
+
+## Required integration artifact
+
+Build a timing ledger separating source stamp, remote stamp, arrival order, data age, watchdog detection, hold and checkpoint resume. Derive P67 recovery duration from the event pair, and identify a censored broken run where recovery was never observed. Compare this with P68: requesting zero velocity does not instantly stop the actual plant. Record residual motion during braking and minimum clearance. Inject a timing fault, show the first monitor that detects it and identify any unmonitored interval. Distinguish bounded fallback in these synthetic models from certification, fault coverage over all hazards, physical stopping distance and real network deadline guarantees.
 
 ## Four-criterion rubric
 

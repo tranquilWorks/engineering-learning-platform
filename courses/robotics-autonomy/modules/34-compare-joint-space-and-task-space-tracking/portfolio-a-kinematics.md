@@ -1,4 +1,4 @@
-# Cumulative portfolio A-KINEMATICS
+# A-KINEMATICS integration evidence
 
 Integrate these existing lessons: P03, P04, P28, P29, P34.
 
@@ -19,6 +19,10 @@ Use P29: Separate desired task velocity from secondary null-space motion. The pr
 ## Integrate and defend the boundary
 
 Use P34: Compare joint-space tracking with task-space error under the same plant. Joint errors map through geometry; task commands need a consistent Jacobian and can demand large rates near singularity. Connect this result to at least one other listed lesson, identifying the exact quantity, units and assumption transferred across their interface.
+
+## Required integration artifact
+
+Use one reachable arm target to compare inverse-kinematics branches, then verify both branches through forward kinematics. Transfer one branch into its Jacobian and compare a small joint perturbation with the predicted Cartesian displacement. Sweep toward a singular configuration and connect the smallest singular value to commanded joint speed. Add a null-space motion and measure the residual task-space motion at finite step size. Report which results are first-order approximations and which are exact geometry. For the coupled mobile/arm example, list the frame and unit of every velocity passed between subsystems.
 
 ## Four-criterion rubric
 

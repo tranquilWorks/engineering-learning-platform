@@ -1,4 +1,4 @@
-# Cumulative portfolio A-PERCEPTION
+# A-PERCEPTION integration evidence
 
 Integrate these existing lessons: P09, P10, P11, P12, P41, P42, P43, P44, P45, P46, P47, P48, P62.
 
@@ -19,6 +19,10 @@ Use P45: Predict depth uncertainty as disparity approaches zero. Triangulation c
 ## Integrate and defend the boundary
 
 Use P62: Trace observation, approach, grasp verification, transfer and release. Every task transition must follow measured geometric or contact evidence; endpoint reachability alone cannot prove placement. Connect this result to at least one other listed lesson, identifying the exact quantity, units and assumption transferred across their interface.
+
+## Required integration artifact
+
+Construct a chain from camera calibration through a projected observation, correspondence, pose estimate and robot-frame grasp target. Carry pixel, normalized-image and metre units explicitly across each interface. Use held-out reprojection to distinguish calibration fit from prediction, then test how an outlier or wrong correspondence propagates into the target. Compare a depth uncertainty result with the capture tolerance in P62 without treating them as the same statistical distribution. For range mapping, distinguish unseen, observed-free and occupied cells; show one consequence of suppressing free-space evidence. A known-association synthetic observation is not evidence of a deployed perception detector.
 
 ## Four-criterion rubric
 
