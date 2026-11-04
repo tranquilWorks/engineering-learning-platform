@@ -278,10 +278,7 @@ def _joint_slam_problem(count, noise, broken):
         return np.array([[np.cos(a), -np.sin(a)], [np.sin(a), np.cos(a)]])
 
     odom = np.array(
-        [
-            np.r_[rot(p[2]).T @ (q[:2] - p[:2]), q[2] - p[2]]
-            for p, q in pairwise(poses)
-        ]
+        [np.r_[rot(p[2]).T @ (q[:2] - p[:2]), q[2] - p[2]] for p, q in pairwise(poses)]
     )
     odom += 0.006 * np.column_stack(
         (
@@ -422,7 +419,7 @@ def run(parameters: dict[str, Any]) -> dict[str, Any]:
         k: v for k, v in joint.items() if k != "jacobian"
     }
     result["plots"]["joint_map"] = _plot(
-        "Joint robot-pose and unknown-landmark estimate",
+        "Joint pose and map",
         "East position (m)",
         "North position (m)",
         [
@@ -449,10 +446,22 @@ def run(parameters: dict[str, Any]) -> dict[str, Any]:
             ),
         ],
     )
+    result["plots"]["joint_map"]["data"][1]["mode"] = "markers"
+    true_map = _trace(
+        "True map",
+        joint["true_landmarks"][:, 0],
+        joint["true_landmarks"][:, 1],
+        "East",
+        "m",
+        "North",
+        "m",
+    )
+    true_map.update(mode="markers", marker={"symbol": "cross", "size": 9})
+    result["plots"]["joint_map"]["data"].append(true_map)
     result["plots"]["joint_convergence"] = _plot(
-        "Joint nonlinear solve convergence",
+        "Joint solve convergence",
         "Iteration (count)",
-        "Weighted squared residual (1)",
+        "Weighted error (1)",
         [
             _trace(
                 "Objective",

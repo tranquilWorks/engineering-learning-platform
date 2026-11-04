@@ -123,3 +123,20 @@ def test_prior_reviewed_assessments_are_preserved_verbatim():
         current = ROOT / relative
         assert current.with_name("prior-assessment.md").read_text() == old
         assert old in current.read_text()
+
+
+def test_existing_manifest_controls_and_blocks_are_preserved():
+    for folder in (COURSE / "modules").iterdir():
+        path = folder / "module.yaml"
+        if not path.exists():
+            continue
+        original = yaml.safe_load(
+            subprocess.check_output(
+                ["git", "show", f"{BASELINE}:{path.relative_to(ROOT)}"], cwd=ROOT, text=True
+            )
+        )
+        current = yaml.safe_load(path.read_text())
+        assert {k: v for k, v in original.items() if k != "blocks"} == {
+            k: v for k, v in current.items() if k != "blocks"
+        }
+        assert all(block in current["blocks"] for block in original["blocks"])

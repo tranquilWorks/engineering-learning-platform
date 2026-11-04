@@ -520,12 +520,12 @@ def run(parameters):
     result["diagnostics"]["manipulation"] = motion
     h = motion["history"]
     result["plots"]["executed_manipulation"] = _plot(
-        "Executed arm and carried-object trajectory",
-        "East position (m)",
-        "North position (m)",
+        "Arm and object trajectory",
+        "Horizontal position (m)",
+        "Height (m)",
         [
-            _trace("Arm endpoint", h[:, 6], h[:, 7], "East", "m", "North", "m"),
-            _trace("Object", h[:, 8], h[:, 9], "East", "m", "North", "m"),
+            _trace("Arm endpoint", h[:, 6], h[:, 7], "Horizontal", "m", "Height", "m"),
+            _trace("Object", h[:, 8], h[:, 9], "Horizontal", "m", "Height", "m"),
         ],
     )
     result["plots"]["execution_phases"] = _plot(
@@ -544,6 +544,18 @@ def run(parameters):
             )
         ],
     )
+    target_trace = _trace(
+        "Drop target",
+        [motion["drop_target"][0]],
+        [motion["drop_target"][1]],
+        "Horizontal",
+        "m",
+        "Height",
+        "m",
+    )
+    target_trace.update(mode="markers", marker={"symbol": "cross", "size": 9})
+    result["plots"]["executed_manipulation"]["data"].append(target_trace)
+    result["plots"]["execution_phases"]["data"][0]["line"] = {"shape": "hv"}
     result.setdefault("tables", {})["execution_events"] = {
         "columns": [
             "Time (s)",

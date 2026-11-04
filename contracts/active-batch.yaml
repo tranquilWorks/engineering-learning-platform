@@ -45,6 +45,9 @@ scope:
   - docs/HANDOFF.md
   - docs/evidence/ELP-ROB-AGGREGATE-QUALITY-01-*
   - playwright.config.ts
+  - apps/api/tests/test_dsp_fidelity_remediation_p53_p64.py
+  - apps/api/tests/test_dsp_fidelity_remediation_p65_p76.py
+  - apps/api/tests/test_dsp_fidelity_remediation_p77_p84.py
   forbidden_paths:
   - courses/*-learning/**
   - courses/dsp-radar/**
@@ -88,6 +91,10 @@ acceptance:
 - 'Owner continuation from accepted Controls: content-only review at DSP authored/software rigor, push
   and merge after evidence. Docker delivery is deferred and must remain not_run until performed; learner,
   MATLAB, hardware and production remain separate.'
+- Update only the active-contract assertions in three historical DSP fidelity test files to recognize
+  this succeeding approved batch; preserve every DSP source-prefix, oracle, numerical and learner-boundary
+  assertion. Historical Robotics conversion manifest/schema remain immutable; validate added referenced
+  assessment files through a separate compatible assessment verification schema.
 validation:
   local:
   - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_robotics_aggregate_quality.py

@@ -3,6 +3,7 @@ from __future__ import annotations
 import ast
 import hashlib
 import importlib.util
+import json
 import re
 import subprocess
 from collections import Counter
@@ -128,8 +129,23 @@ def test_robotics_manifest_and_coverage_are_one_ordered_authored_prefix() -> Non
         assert source["source_folder"] == mapped["source_folder"] == covered["source_folder"]
         assert mapped["target_module_id"] and mapped["verification_record"]
         assert HEX_64.fullmatch(mapped["target_content_digest"])
-        assert mapped["target_content_digest"] == covered["target_content_digest"]
-        assert mapped["verification_sha256"] == _sha256(COURSE_ROOT / mapped["verification_record"])
+        historical_bytes = subprocess.check_output(
+            [
+                "git",
+                "show",
+                "185e966242c889d3f030bab6016139777fcf0f17:"
+                + str((COURSE_ROOT / mapped["verification_record"]).relative_to(ROOT)),
+            ],
+            cwd=ROOT,
+        )
+        historical = json.loads(historical_bytes)
+        assert mapped["target_content_digest"] == historical["target"]["content_digest"]
+        assert mapped["verification_sha256"] == hashlib.sha256(historical_bytes).hexdigest()
+        current = _yaml(COURSE_ROOT / mapped["verification_record"])
+        assert current["target"]["content_digest"] == covered["target_content_digest"]
+        assert {k: v for k, v in current.items() if k != "target"} == {
+            k: v for k, v in historical.items() if k != "target"
+        }
 
 
 def test_robotics_records_are_closed_honest_and_runtime_bounded() -> None:
@@ -138,7 +154,7 @@ def test_robotics_records_are_closed_honest_and_runtime_bounded() -> None:
     assert spec is not None and spec.loader is not None
     helper = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(helper)
-    schema = helper._load_json(COURSE_ROOT / "verification.schema.json")
+    schema = helper._load_json(COURSE_ROOT / "assessment-verification.schema.json")
     forbidden_imports = {"httpx", "pip", "requests", "socket", "subprocess", "urllib"}
     forbidden_calls = {"__import__", "compile", "eval", "exec"}
 
@@ -146,8 +162,24 @@ def test_robotics_records_are_closed_honest_and_runtime_bounded() -> None:
         module_root = COURSE_ROOT / mapped["target_folder"]
         record = _yaml(module_root / "verification.yaml")
         assert helper._schema_errors(record, schema, schema) == []
+        original_schema = helper._load_json(COURSE_ROOT / "verification.schema.json")
+        historical = json.loads(
+            subprocess.check_output(
+                [
+                    "git",
+                    "show",
+                    "185e966242c889d3f030bab6016139777fcf0f17:"
+                    + str((module_root / "verification.yaml").relative_to(ROOT)),
+                ],
+                cwd=ROOT,
+            )
+        )
+        assert helper._schema_errors(historical, original_schema, original_schema) == []
         assert record["item"]["source_inputs"] == SOURCE_MAP["items"][number - 1]["files"]
-        assert record["target"]["content_digest"] == mapped["target_content_digest"]
+        assert (
+            record["target"]["content_digest"]
+            == COVERAGE["items"][number - 1]["target_content_digest"]
+        )
         assert record["matlab_runtime_parity"]["status"] == "not_run"
         if number == 1:
             assert record["item"]["design_basis"] == "implemented_source_design"

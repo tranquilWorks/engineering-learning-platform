@@ -1,3 +1,11 @@
+# Completed authored/software review — 2026-11-04
+
+All nine dimensions are accepted within the documented synthetic scope. The original 69 lessons have distinct checkpoints and thirteen cumulative portfolios; 25 prior tasks remain verbatim. Independent mechanism checks, 345 runtime and 345 HTTP cases, 138 current-content browser views/interactions and 26 portfolio visits passed. Required contract/quick/full gates passed (103/1733/1733 tests respectively), including deterministic execution of all 290 platform modules and frontend typecheck/build.
+
+Current evidence: [review](robotics-aggregate-review.json), [verification summary](robotics-aggregate-verification-summary.json), [current browser bindings](robotics-aggregate-browser-current.json), and [sixteen manually inspected plot captures](robotics-aggregate-visuals/manifest.json). Exact local gate logs, the exploratory failed broad run, and Docker-unavailable output are retained in `robotics-aggregate-logs/`. The historical checkpoints below describe intermediate states and are superseded by this completed review. Docker remains owner-deferred; learner, manual screen-reader, MATLAB, hardware and production validation remain not_run.
+
+---
+
 # Robotics aggregate review — work in progress
 
 Owner 2026-11-04: begin from foundations and qualify Robotics to DSP/Controls authored/software rigor. Content-only continuation includes push/merge after verification; Docker delivery remains deferred. No learner, hardware or production claim.

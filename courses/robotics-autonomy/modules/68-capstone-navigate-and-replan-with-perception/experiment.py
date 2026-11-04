@@ -485,7 +485,7 @@ def run(parameters):
     result["diagnostics"]["tracked_mission"] = tracked
     h = tracked["history"]
     result["plots"]["tracked_path"] = _plot(
-        "Estimated and physically tracked position",
+        "Estimated and actual path",
         "East (m)",
         "North (m)",
         [
@@ -502,8 +502,11 @@ def run(parameters):
             ),
         ],
     )
+    occupied_trace = _trace("Occupied cell", [4.0], [0.0], "East", "m", "North", "m")
+    occupied_trace.update(mode="markers", marker={"symbol": "x", "size": 10})
+    result["plots"]["tracked_path"]["data"].append(occupied_trace)
     result["plots"]["tracked_speed"] = _plot(
-        "Executed speed and communication holds",
+        "Actual tracking speed",
         "Time (s)",
         "Speed (m/s)",
         [
