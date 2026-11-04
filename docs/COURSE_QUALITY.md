@@ -1,3 +1,28 @@
+# Controls/GNC — content accepted at DSP authored/software rigor (2026-11-03)
+
+The owner authorized content-only completion, push and merge, with Docker delivery
+deferred. All nine review dimensions passed. Controls numerical verification,
+curriculum coverage and capstone integration are accepted within the documented
+synthetic scope, matching DSP's authored/software review standard.
+
+The 68 lessons retain 68 individual checkpoints and 22 cumulative portfolios.
+Complete recursive EKF/UKF, quaternion strapdown, 15-state GNSS/INS and
+estimate-driven guidance have detailed derivations, sweeps, limiting cases,
+fault/recovery and independent complete-history references.
+
+Verification: 103 contract tests; 1,670 quick and full tests; 340 retained
+scenarios, 35 component mechanisms and 25 integrated histories; 136 browser
+views and interactions, 44 portfolio views and 23 browser regressions.
+See [exact evidence](course-quality/gnc-recursive-verification-summary.json)
+and [review scope](course-quality/gnc-recursive-review-plan.md).
+
+Docker delivery remains **not_run**, explicitly deferred for this content merge.
+Learner, manual screen-reader, MATLAB, hardware and production validation also
+remain not_run. No runtime delivery or physical qualification is claimed.
+PR63 contains the implementation; companion Control PR633 records the contract.
+
+---
+
 # Revised-course quality position — 2026-10-01
 
 All 288 native engineering lessons and two examples are embedded in Engineering

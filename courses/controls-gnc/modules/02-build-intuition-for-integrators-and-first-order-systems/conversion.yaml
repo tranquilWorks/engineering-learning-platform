@@ -26,17 +26,19 @@ item:
   - path: modules/02-build-intuition-for-integrators-and-first-order-systems/model.m
     sha256: dc2b2f62bfd039133e2c7582b9014cda8f826e6dde89614947208befc19085a6
 target:
-  content_digest: 1466dcbe69fe3bb59f7a13c1a953efea98e39f4227fad4f345823fd7c3cc0dac
+  content_digest: 8a233bb27375637bceab2df2d73ea91c2be1e34ed7d877cda176b352ddf6940d
   files:
-  - path: modules/02-build-intuition-for-integrators-and-first-order-systems/module.yaml
-    sha256: 6057ddfe555d982720a56443249b53e0b4bc8cb0c547bc5aebcb491273bd30bf
-  - path: modules/02-build-intuition-for-integrators-and-first-order-systems/lesson.md
-    sha256: 95b90f81006e9f52467757109bd034563d459740b00c7f3be2f255030024b25c
+  - path: modules/02-build-intuition-for-integrators-and-first-order-systems/assessment.md
+    sha256: d48793086465bed92237dd355a098f01300442a2f7c07ab433fe6a8f8db8de73
   - path: modules/02-build-intuition-for-integrators-and-first-order-systems/experiment.py
     sha256: 047292c55d3dce24f1eb5751d5fd4d1c756e24a4ef0c712c729aba9cf5978750
+  - path: modules/02-build-intuition-for-integrators-and-first-order-systems/lesson.md
+    sha256: 95b90f81006e9f52467757109bd034563d459740b00c7f3be2f255030024b25c
+  - path: modules/02-build-intuition-for-integrators-and-first-order-systems/module.yaml
+    sha256: 376e721c1d35f4a8b053b66967ed487b642e2fa373d3f29e8fe5aaa633ffd1c7
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you build Intuition for Integrators
-    and First-Order Systems?
+  guiding_question: What inputs, observable effects, and failure modes matter when you build Intuition for
+    Integrators and First-Order Systems?
   physical_model: Compare accumulation with exponential memory under the same step input.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
@@ -89,8 +91,8 @@ content:
     - 0.5
     - 1.0
     - 1.5
-    expected_observation: The integrator ramp slope follows input amplitude; the first-order final value does not
-      depend on tau.
+    expected_observation: The integrator ramp slope follows input amplitude; the first-order final value does
+      not depend on tau.
   - control: time_constant_s
     values:
     - 0.5
@@ -99,8 +101,8 @@ content:
     expected_observation: Compare accumulation with exponential memory under the same step input.
   broken_case:
     trigger: Enable broken_mode.
-    failure: The broken case uses forward Euler with dt/tau greater than two, creating a discrete pole outside the
-      unit circle.
+    failure: The broken case uses forward Euler with dt/tau greater than two, creating a discrete pole outside
+      the unit circle.
     recovery: Disable the broken case to use the exact first-order transition.
     expected_observation: The diagnostic signature and plotted mechanism change from the recovered case.
   common_mistakes:
@@ -262,8 +264,8 @@ python_source_equivalence:
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
-    constitute MATLAB runtime parity.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do
+    not constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:

@@ -7,9 +7,9 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- delta_v=b_a t
-- delta_r=.5 b_a t^2
-- f_n=R_nb(f_b-b_hat)+g_n
+- \dot{\delta v}=b_a,\quad \dot{\delta p}=\delta v
+- \delta v(T)=b_aT,\quad \delta p(T)=b_aT^2/2
+- b_{\rm residual}=0.05b_a\quad\text{for the declared nominal correction}
 signature:
 - field: velocity_error
   unit: m/s
@@ -17,11 +17,12 @@ signature:
   unit: m
 - field: corrected_position_error
   unit: m
-teaching_invariant: Under constant uncorrected bias, velocity error grows linearly and position error quadratically
-  with coast time.
+teaching_invariant: The historical component signature is preserved. The additional integrated sequence,
+  equations, assumptions and independent full-history reference are specified in integration.md.
 limiting_cases:
-- At zero duration both errors are zero.
-- Doubling coast time quadruples constant-bias position error.
+- At zero bias both drift paths vanish.
+- For a stationary platform at any fixed attitude, rotating specific force into ENU and adding downward
+  gravity yields zero acceleration when both IMU biases vanish.
 scenarios:
   baseline: &id001
     accelerometer_bias_m_s2: 0.03

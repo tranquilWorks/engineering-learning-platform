@@ -196,7 +196,7 @@ test('repaired bounded plots keep drawn SVG curves after failure and reset', asy
 });
 
 test('existing WebGL lesson draws unchanged curves when WebGL is disabled', async ({ baseURL }) => {
-  const browser = await chromium.launch({ args: ['--disable-webgl'] });
+  const browser = await chromium.launch({ executablePath: process.env.ELP_CHROMIUM_EXECUTABLE, args: ['--disable-webgl'] });
   try {
     const page = await browser.newPage();
     const response = page.waitForResponse(r => r.url().endsWith('/run') && r.request().method() === 'POST');
@@ -325,22 +325,26 @@ test('trajectory feasibility fast path preserves real desktop and mobile fault r
 
 test('Controls sigma-point checkpoint preserves the covariance distinction and actual fault', async ({ page }) => {
   await page.goto('/courses/controls-gnc/modules/55-transform-uncertainty-with-an-unscented-kalman-filter');
-  await expect(page.locator('.module-hero h1')).toContainText('Transform Gaussian Uncertainty with Sigma Points');
-  await expect(page.locator('.js-plotly-plot')).toHaveCount(2);
+  await expect(page.locator('.module-hero h1')).toContainText('Transform Uncertainty and Run a Recursive UKF');
+  await expect(page.locator('.js-plotly-plot')).toHaveCount(4);
   await page.setViewportSize({width:390,height:844});
   const jump=page.getByRole('navigation',{name:'Lesson sections'}).getByRole('link',{name:'Course checkpoint',exact:true});
   await jump.focus(); await page.keyboard.press('Enter');
   await expect(page.getByRole('heading',{name:'Course checkpoint',exact:true})).toBeInViewport();
   await expect(page.getByRole('heading',{name:'P55 evidence task',exact:true})).toBeVisible();
-  await expect(page.locator('.prose').last()).toContainText('central covariance correction');
+  await expect(page.locator('.prose').filter({has:page.getByRole('heading',{name:'P55 evidence task',exact:true})})).toContainText('central covariance correction');
   const toggle=page.locator('.control-panel:visible input[type=checkbox]');
   const response=page.waitForResponse(r=>r.url().endsWith('/run') && r.request().method()==='POST');
   await toggle.check(); const broken=await (await response).json();
   expect(broken.diagnostics.mean).toBeCloseTo(.64,10);
   expect(broken.diagnostics.variance).toBeCloseTo(0,10);
+  expect(broken.diagnostics.recursive_history).toHaveLength(80);
+  expect(broken.diagnostics.recursive_history.every((row: number[]) => row[8] === 0)).toBe(true);
   const recoveredResponse=page.waitForResponse(r=>r.url().endsWith('/run') && r.request().method()==='POST');
   await toggle.uncheck(); const recovered=await (await recoveredResponse).json();
   expect(recovered.diagnostics.variance).toBeCloseTo(.8192,10);
+  expect(recovered.diagnostics.recursive_history.every((row: number[]) => row[8] > 0)).toBe(true);
+  await expect(page.getByRole('heading',{name:'Selected integration evidence',exact:true})).toBeVisible();
   await expect(page.locator('.runtime-error')).toHaveCount(0);
 });
 

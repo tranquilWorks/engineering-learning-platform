@@ -1,66 +1,56 @@
-# Propagate Strapdown Inertial Navigation and IMU Error
+> The component study below is retained. The new **Integrated navigation** section and additional plots extend it to the complete sequence.
 
-**Guiding question:** How does a constant accelerometer bias grow into velocity and position error during strapdown propagation?
+# Propagate One-Axis Inertial Bias Errors
 
-Integrate a declared body-axis bias, compare analytic error growth, and show the effect of a bias correction. This is a Python-first native design derived from the reviewed competency map. It is not presented as a conversion of the pinned MATLAB source and it stays inside deterministic software simulation.
+**Guiding question:** How do prescribed accelerometer bias and its correction accumulate into velocity and position error?
 
-## Why this lesson exists
-
-The numerical result is not the objective by itself. The objective is to connect a design decision to a governing relation, an observable consequence, a failure mechanism, and a recovery check. Record the assumptions before interpreting any curve.
+This Python-first lab executes the bounded mechanism described below. Historical source/conversion records are retained separately.
 
 ## Model and equations
 
-$$\text{delta_v=b_a t}$$
-$$\text{delta_r=.5 b_a t^2}$$
-$$\text{f_n=R_nb(f_b-b_hat)+g_n}$$
+$$\dot{\delta v}=b_a,\quad \dot{\delta p}=\delta v$$
 
-Carry units through the model. A pole or zero is reported in inverse seconds, angular frequency in radians per second, phase in degrees or radians as labeled, and dimensionless ratios as `1`. The experiment evaluates the displayed equations directly; it does not call a black-box synthesis toolbox.
+$$\delta v(T)=b_aT,\quad \delta p(T)=b_aT^2/2$$
 
-## Predict before running
+$$b_{\rm residual}=0.05b_a\quad\text{for the declared nominal correction}$$
 
-Under constant uncorrected bias, velocity error grows linearly and position error quadratically with coast time. State which output should move first and which quantity should remain invariant before changing a control.
+## Worked example
+
+With b=0.03 m/s^2 and T=30 s, velocity error is 0.9 m/s and position error is 13.5 m. A declared residual of 0.0015 m/s^2 leaves 0.675 m; omitting correction leaves 13.5 m. Doubling T doubles velocity and quadruples position error, and the plotted endpoint must match the selected T.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read all three signature metrics.
-2. Inspect the response plot for the external behavior, then the mechanism plot for the governing internal relation.
-3. Check the units and limiting cases before accepting a stability, equivalence, or performance statement.
-4. Save the baseline, change one variable only, and explain the direction of change from the equations.
+Write your prediction before running. Reset, inspect both plots and the internal state/geometry in the numerical evidence, then calculate the worked example independently. Separate reported metrics from the actual history or matrix that produces them.
 
 ## Two one-variable sweeps
 
-1. Hold `coast_duration_s` at `30.0 s` and sweep `accelerometer_bias_m_s2` from `0.0` through `0.03` to `0.2 m/s^2`.
-2. Restore `accelerometer_bias_m_s2` to `0.03 m/s^2` and sweep `coast_duration_s` from `1.0` through `30.0` to `120.0 s`.
+1. From reset defaults, change only `accelerometer_bias_m_s2` to `0.2`. Predict from the displayed relation; record both plots and dimensioned metrics, then restore the baseline.
 
-Do not tune both at once until you can attribute each metric change to one term in the equations. The retained evidence uses one endpoint from each sweep in addition to the baseline.
+2. From reset defaults, change only `coast_duration_s` to `120.0`. Predict from the displayed relation; record both plots and dimensioned metrics, then restore the baseline.
 
 ## Intentionally broken case
 
-Broken mode doubles the applied bias and disables the bias correction. Broken mode is a named counterexample, not an alternative design recommendation.
+Omit the declared 95-percent bias correction while keeping the same sensor bias and coast duration. Compare the same selected inputs. A changed sign or gate must act on the stated equation, not swap in unrelated scenario values.
 
 ## Recovery
 
-Estimate and subtract bias, reapply gravity/frame conventions, and compare propagation to the analytic limiting case. The recovery case restores the exact baseline inputs so the evidence can prove that the failure is reversible rather than merely different.
+Restore correction and compare both paths over the same selected coast interval. Verify recovery matches the original baseline rather than a newly tuned scenario.
 
 ## Limiting cases and invariants
 
-- At zero duration both errors are zero.
-- Doubling coast time quadruples constant-bias position error.
-
-Teaching invariant: Under constant uncorrected bias, velocity error grows linearly and position error quadratically with coast time.
+The numerical paths integrate a one-axis bias model at fixed known attitude and zero true acceleration. There is no attitude/quaternion update, Earth rotation, gravity subtraction or full strapdown mechanization. Bias correction is prescribed, not estimated. Those missing mechanisms remain explicit Flight Dynamics/navigation handoffs.
 
 ## Independent evidence
 
-Expected signatures are produced by `expansion_reference_cases.py`, which imports no production experiment and consumes no production result. Production signatures are retained separately. Each baseline, two sweeps, broken case, and recovery case records fields, units, tolerances, measured error, and the named invariant. Agreement supports only these equations and scenarios; it is not MATLAB execution, broad robust certification, or physical validation.
+`expansion_reference_cases.py` independently evaluates this lesson's signature and full mechanism. References use a polynomial derivative, integrated covariance equation, information-form posterior, SVD geometry, closed-form bias integrals or an implicit nonlinear LOS solution as applicable. They import no production experiment and consume no production result. Five retained cases include baseline, two one-variable sweeps, fault and recovery. Unchanged absolute/relative tolerances remain 1e-8. Additional off-grid, degenerate and mechanism-array checks are required by the aggregate review.
 
 ## Common mistakes
 
-- Reading a plotted shape without checking its sign convention, units, or contour/path definition.
-- Treating a local, frequency-limited, or nominal result as a global guarantee.
-- Changing both design controls and then assigning causality to one of them.
-- Confusing a recovery that looks better with a recovery that restores the baseline invariant.
-- Claiming source equivalence, physical hardware evidence, or learner effectiveness from this software-only lab.
+- Treating a finite placeholder or clipped square root as valid uncertainty.
+- Claiming global or full-system behavior from the bounded model.
+- Comparing a fault at different inputs and attributing the difference solely to the fault.
+- Reading only a pass flag rather than its governing calculation and physical units.
 
 ## Teach-back
 
-Derive one signature quantity from the displayed equations, explain what the broken case violates, and name one result that this lab cannot establish. Then describe how the two sweeps separate sensitivity to `accelerometer_bias_m_s2` from sensitivity to `coast_duration_s`.
+Reproduce the worked calculation, explain each sweep causally, show the measured fault and recovery, and state the model boundary in your own words. The Course checkpoint adds the cumulative evidence link. No learner result is recorded by authoring this material.

@@ -2,9 +2,10 @@ schema_version: 1
 id: 67-capstone-navigate-guide-and-constrain-an-autonomous-survey
 number: 67
 title: 'Capstone: Navigate, Guide, and Constrain an Autonomous Survey'
-summary: Will a 20 s GNSS outage reduce progress, and can holding also reduce maximum path error?
-guiding_question: Can navigation, path guidance, plant limits, and monitoring close an autonomous survey requirement
-  set?
+summary: Compare planar survey guidance with an integrated 3D GNSS/INS-driven corridor mission, outage
+  and braking constraints.
+guiding_question: Can navigation, path guidance, plant limits, and monitoring close an autonomous survey
+  requirement set?
 status: implemented
 tags:
 - controls-gnc
@@ -42,7 +43,8 @@ blocks:
 - type: prediction
   title: Predict before running
   text: Will a 20 s GNSS outage reduce progress, and can holding also reduce maximum path error?
-  reveal: Compare the executed quantities with their physical units and the worked explanation in the lesson.
+  reveal: Compare the executed quantities with their physical units and the worked explanation in the
+    lesson.
 - type: controls
   title: Design controls
 - type: metrics
@@ -54,6 +56,15 @@ blocks:
 - type: table
   title: Computed requirements
   table: requirements
+- type: plot_grid
+  title: Three-dimensional navigation
+  plots:
+  - navigation_error
+  - navigation_attitude
+  - integrated_path
+- type: table
+  title: Fused survey requirements
+  table: navigation_requirements
 - type: callout
   tone: info
   title: Current interpretation
@@ -66,3 +77,27 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Cumulative portfolio A-CONSTRAINTS
+  source: portfolio-a-constraints.md
+- type: markdown
+  title: Cumulative portfolio A-NAVIGATION
+  source: portfolio-a-navigation.md
+- type: markdown
+  title: Cumulative portfolio A-GUIDANCE
+  source: portfolio-a-guidance.md
+- type: markdown
+  title: Cumulative portfolio A-CAP-NAV
+  source: portfolio-a-cap-nav.md
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md
+- type: markdown
+  title: Integrated navigation
+  source: integration.md
+- type: table
+  title: Selected integration evidence
+  table: integration_evidence
+- type: table
+  title: Last navigation correction
+  table: last_correction

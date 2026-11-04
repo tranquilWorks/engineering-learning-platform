@@ -26,17 +26,19 @@ item:
   - path: modules/18-use-feedforward-and-feedback-together/model.m
     sha256: c8ca1dcd305946251b8bb888b8acd79e347c8f995351fef7c54233185cf7f059
 target:
-  content_digest: 7f7291e422b357f83c145c80a5edf3f5580ad09e0204de43c35f69d3b1c3d695
+  content_digest: 803d2ff1fa0a9272c9ed771a7d424f93829bba7e350247504bd77f038321581b
   files:
-  - path: modules/18-use-feedforward-and-feedback-together/module.yaml
-    sha256: 807af52313215e36fd0ee1afe80eb5fdedf487c1fe3d03b16f4e8a1d67203fd8
-  - path: modules/18-use-feedforward-and-feedback-together/lesson.md
-    sha256: 2877ac96b4e3214b4cb9dfd04760f09d59014d40d9d22690072d080486ea06bf
+  - path: modules/18-use-feedforward-and-feedback-together/assessment.md
+    sha256: 6b7cacb2ce7cc9c4e442afcb4d1fc37eb65e2e3250fca20f93292e8ba3460548
   - path: modules/18-use-feedforward-and-feedback-together/experiment.py
     sha256: 2a34706748bc7bae60cffaf1b70076e5ba61f0573d0287c2845557c70c3e8f46
+  - path: modules/18-use-feedforward-and-feedback-together/lesson.md
+    sha256: 2877ac96b4e3214b4cb9dfd04760f09d59014d40d9d22690072d080486ea06bf
+  - path: modules/18-use-feedforward-and-feedback-together/module.yaml
+    sha256: 6a6cef4c57d709acd1c85562fdffe0dcbc9701d9effbd4377dc179a7fcf102c1
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you use Feedforward and Feedback
-    Together?
+  guiding_question: What inputs, observable effects, and failure modes matter when you use Feedforward and
+    Feedback Together?
   physical_model: Separate planned acceleration from feedback correction during trajectory tracking.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
@@ -81,7 +83,7 @@ content:
       unit: s
     - role: y
       label: Acceleration
-      unit: m/s²
+      unit: "m/s\xB2"
     interpretation: feedforward accelerates opposite the modeled demand
   sweeps:
   - control: feedforward_scale
@@ -261,8 +263,8 @@ python_source_equivalence:
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
-    constitute MATLAB runtime parity.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do
+    not constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:

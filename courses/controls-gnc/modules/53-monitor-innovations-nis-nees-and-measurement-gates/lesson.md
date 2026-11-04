@@ -2,65 +2,53 @@
 
 **Guiding question:** How do consistency statistics distinguish expected residuals from outliers and filter overconfidence?
 
-Normalize a deterministic innovation, compare NIS to a gate, and show why accepting a large outlier corrupts consistency. This is a Python-first native design derived from the reviewed competency map. It is not presented as a conversion of the pinned MATLAB source and it stays inside deterministic software simulation.
-
-## Why this lesson exists
-
-The numerical result is not the objective by itself. The objective is to connect a design decision to a governing relation, an observable consequence, a failure mechanism, and a recovery check. Record the assumptions before interpreting any curve.
+This Python-first lab executes the bounded mechanism described below. Historical source/conversion records are retained separately.
 
 ## Model and equations
 
-$$\text{nu=z-H xhat}$$
-$$\text{S=H P H^T+R}$$
-$$\text{NIS=nu^T S^-1 nu}$$
+$$S_k=P_k^-+R,\quad \mathrm{NIS}_k=\nu_k^2/S_k$$
 
-Carry units through the model. A pole or zero is reported in inverse seconds, angular frequency in radians per second, phase in degrees or radians as labeled, and dimensionless ratios as `1`. The experiment evaluates the displayed equations directly; it does not call a black-box synthesis toolbox.
+$$K_k=P_k^-/S_k,\quad \hat x_k^+=\hat x_k^-+K_k\nu_k$$
 
-## Predict before running
+$$\mathrm{NEES}_k=(\hat x_k^+-x_k)^2/P_k^+$$
 
-A measurement is accepted only when its NIS is inside the declared gate; NEES/NIS interpretation requires the corresponding covariance model. State which output should move first and which quantity should remain invariant before changing a control.
+## Worked example
+
+The injected innovation is 4 sqrt(S) at defaults, so its NIS is 16 and its exceedance over 6.63 is 9.37. Nominal gating retains the prior at that step; bypassing it changes the posterior state and covariance. Compare the full paths and posterior NEES rather than treating an accept flag alone as a filter.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read all three signature metrics.
-2. Inspect the response plot for the external behavior, then the mechanism plot for the governing internal relation.
-3. Check the units and limiting cases before accepting a stability, equivalence, or performance statement.
-4. Save the baseline, change one variable only, and explain the direction of change from the equations.
+Write your prediction before running. Reset, inspect both plots and the internal state/geometry in the numerical evidence, then calculate the worked example independently. Separate reported metrics from the actual history or matrix that produces them.
 
 ## Two one-variable sweeps
 
-1. Hold `outlier_sigma` at `4.0 sigma` and sweep `nis_gate` from `1.0` through `6.63` to `15.0 1`.
-2. Restore `nis_gate` to `6.63 1` and sweep `outlier_sigma` from `0.5` through `4.0` to `10.0 sigma`.
+1. From reset defaults, change only `nis_gate` to `15.0`. Predict from the displayed relation; record both plots and dimensioned metrics, then restore the baseline.
 
-Do not tune both at once until you can attribute each metric change to one term in the equations. The retained evidence uses one endpoint from each sweep in addition to the baseline.
+2. From reset defaults, change only `outlier_sigma` to `10.0`. Predict from the displayed relation; record both plots and dimensioned metrics, then restore the baseline.
 
 ## Intentionally broken case
 
-Broken mode accepts the measurement regardless of a gate exceedance. Broken mode is a named counterexample, not an alternative design recommendation.
+Bypass the innovation gate while retaining the identical injected innovation at update 20. Compare the same selected inputs. A changed sign or gate must act on the stated equation, not swap in unrelated scenario values.
 
 ## Recovery
 
-Restore innovation gating, log the rejection, and diagnose the model rather than silently shrinking covariance. The recovery case restores the exact baseline inputs so the evidence can prove that the failure is reversible rather than merely different.
+Restore gating, reset, and verify the original measurement is rejected when its NIS exceeds the selected threshold. Verify recovery matches the original baseline rather than a newly tuned scenario.
 
 ## Limiting cases and invariants
 
-- A zero innovation has NIS zero.
-- For a scalar residual measured in sigma, NIS is its squared magnitude.
-
-Teaching invariant: A measurement is accepted only when its NIS is inside the declared gate; NEES/NIS interpretation requires the corresponding covariance model.
+The truth, process and measurement streams are deterministic illustrations; the samples are neither independent trials nor a chi-square coverage validation. NIS is observable without truth, whereas NEES requires truth. This scalar filter does not establish general consistency or navigation integrity.
 
 ## Independent evidence
 
-Expected signatures are produced by `expansion_reference_cases.py`, which imports no production experiment and consumes no production result. Production signatures are retained separately. Each baseline, two sweeps, broken case, and recovery case records fields, units, tolerances, measured error, and the named invariant. Agreement supports only these equations and scenarios; it is not MATLAB execution, broad robust certification, or physical validation.
+`expansion_reference_cases.py` independently evaluates this lesson's signature and full mechanism. References use a polynomial derivative, integrated covariance equation, information-form posterior, SVD geometry, closed-form bias integrals or an implicit nonlinear LOS solution as applicable. They import no production experiment and consume no production result. Five retained cases include baseline, two one-variable sweeps, fault and recovery. Unchanged absolute/relative tolerances remain 1e-8. Additional off-grid, degenerate and mechanism-array checks are required by the aggregate review.
 
 ## Common mistakes
 
-- Reading a plotted shape without checking its sign convention, units, or contour/path definition.
-- Treating a local, frequency-limited, or nominal result as a global guarantee.
-- Changing both design controls and then assigning causality to one of them.
-- Confusing a recovery that looks better with a recovery that restores the baseline invariant.
-- Claiming source equivalence, physical hardware evidence, or learner effectiveness from this software-only lab.
+- Treating a finite placeholder or clipped square root as valid uncertainty.
+- Claiming global or full-system behavior from the bounded model.
+- Comparing a fault at different inputs and attributing the difference solely to the fault.
+- Reading only a pass flag rather than its governing calculation and physical units.
 
 ## Teach-back
 
-Derive one signature quantity from the displayed equations, explain what the broken case violates, and name one result that this lab cannot establish. Then describe how the two sweeps separate sensitivity to `nis_gate` from sensitivity to `outlier_sigma`.
+Reproduce the worked calculation, explain each sweep causally, show the measured fault and recovery, and state the model boundary in your own words. The Course checkpoint adds the cumulative evidence link. No learner result is recorded by authoring this material.

@@ -248,8 +248,8 @@ def test_active_contract_ledger_and_prior_source_prefix():
     )
     assert raw[185460:].lstrip().startswith(b"# P77-P84: alternate numerical formulations")
     contract = yaml.safe_load((ROOT / "contracts/active-batch.yaml").read_text())
-    assert contract["batch"]["id"] == "ELP-VEHICLE-DRIVELINE-QUALITY-04"
-    assert contract["sources"]["baseline_commit"] == "1a0041bd24de1168c03ff2bf2a656a6061cac0e3"
+    assert contract["batch"]["id"] == "ELP-GNC-AGGREGATE-QUALITY-01"
+    assert contract["sources"]["baseline_commit"] == "abe7c49cea2a649354f20ad19dbe8a2e6c78540a"
     ledger = yaml.safe_load((COURSE / "remediation-map.yaml").read_text())
     assert ledger["derived_counts"]["repaired_in_prior_batches"] == 75
     assert ledger["derived_counts"]["repaired_in_batch"] == 8

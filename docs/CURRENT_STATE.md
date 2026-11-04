@@ -1,3 +1,28 @@
+# Controls/GNC — content accepted at DSP authored/software rigor (2026-11-03)
+
+The owner authorized content-only completion, push and merge, with Docker delivery
+deferred. All nine review dimensions passed. Controls numerical verification,
+curriculum coverage and capstone integration are accepted within the documented
+synthetic scope, matching DSP's authored/software review standard.
+
+The 68 lessons retain 68 individual checkpoints and 22 cumulative portfolios.
+Complete recursive EKF/UKF, quaternion strapdown, 15-state GNSS/INS and
+estimate-driven guidance have detailed derivations, sweeps, limiting cases,
+fault/recovery and independent complete-history references.
+
+Verification: 103 contract tests; 1,670 quick and full tests; 340 retained
+scenarios, 35 component mechanisms and 25 integrated histories; 136 browser
+views and interactions, 44 portfolio views and 23 browser regressions.
+See [exact evidence](course-quality/gnc-recursive-verification-summary.json)
+and [review scope](course-quality/gnc-recursive-review-plan.md).
+
+Docker delivery remains **not_run**, explicitly deferred for this content merge.
+Learner, manual screen-reader, MATLAB, hardware and production validation also
+remain not_run. No runtime delivery or physical qualification is claimed.
+PR63 contains the implementation; companion Control PR633 records the contract.
+
+---
+
 # Revision closeout and review handoff — 2026-10-01
 
 Vehicle P13–P16 now have corrected physical models, dimensioned plots, substantial individual lessons and browser-embedded Course checkpoints. This completes all sixteen findings in the owner-authorized twelve-plus-four Vehicle revision under ELP-VEHICLE-DRIVELINE-QUALITY-04. The exact baseline is target PR59 merge `1a0041bd24de1168c03ff2bf2a656a6061cac0e3`; control contract PR584 merged at `24be9b00abf25b29b861241ef0e3204948ea9078` before activation. The implementation is merged in [PR60](https://github.com/tranquilWorks/engineering-learning-platform/pull/60) at `f58533582a617cf48741aa5349f26f5954e21d95`; [Portfolio Control PR588](https://github.com/tranquilWorks/portfolio-control/pull/588) closes it at `4fa6f144c2b2358308889232468ac88e0b27298a`. Both merge trees match their reviewed commits.

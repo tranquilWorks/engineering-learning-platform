@@ -20,3 +20,38 @@ Injected navigation state plots Position (m) against Time (s). Its series are Es
 The covariance recurrence is independent of the realized innovation for this linear model. State injection uses that innovation; dropping it makes the reported uncertainty inconsistent with the executed estimator.
 
 A complete answer includes the calculation or geometric construction, an observed comparison with units, fault/recovery evidence and the stated limitation. This is a self-assessment; no learner score is stored.
+
+
+---
+
+## P61 course checkpoint
+
+**Predict and calculate.** Trace prior covariance, state-error injection and covariance reset in the actual one-axis filter.
+
+Use `delta=[position error, velocity error, accelerometer bias error]; F=[[1,dt,-dt²/2],[0,1,-dt],[0,0,1]]; Pminus=F P F^T+Q; K=Pminus H^T/(H Pminus H^T+R); nominal+=K innovation; delta_reset=0; Pplus=(I-KH)Pminus(I-KH)^T+K R K^T` with the conventions in the lesson. Work one baseline value by hand before running. The live controls are **GNSS update interval**, **Bias random walk**.
+
+**Collect evidence.** Save the default result, then perform the lesson's two one-variable sweeps separately. Record exact parameters, units, the `response` and `mechanism` plots, and the quantity that discriminates your prediction. Explain what stayed invariant as well as what changed.
+
+**Fault and recovery.** Enable **Enable the intentionally broken case** at the same inputs. Explain which governing term is changed or omitted, show its effect on the actual trajectory, matrix or criterion, then disable it and use **Reset parameters**. Confirm recovery reproduces the baseline rather than merely a more favorable number.
+
+### Expected reasoning
+
+An error estimate must be injected into the nominal state as well as propagated in covariance. A shrinking covariance with an uncorrected nominal error is overconfidence, not successful navigation.
+
+### Model boundary
+
+This one-axis formulation does not implement a complete inertial ESKF.
+
+### Reasoning rubric
+
+1. State the model, units, sign convention and independently worked value.
+2. Explain both sweeps using this lesson's governing relation and recorded evidence.
+3. Diagnose the actual fault mechanism and exact-input recovery.
+4. Defend the stated boundary and link this result to the cumulative portfolio **A-NAVIGATION**.
+
+This is authored self-assessment guidance. No learner completion, score or effectiveness result has been recorded.
+
+
+## Extended integration evidence
+
+Read the **Integrated navigation** section and complete its prediction, two sweeps, numerical reconstruction, fault and recovery tasks. Keep the original component evidence above, then explain how the integrated sequence changes the scope. Record actual histories and units; a screenshot without the recurrence or frame reasoning is insufficient. No learner completion is recorded automatically.

@@ -1,3 +1,5 @@
+> The component study below is retained. The new **Recursive integration** section and additional plots extend it to the complete sequence.
+
 # Transform Gaussian Uncertainty with Sigma Points
 
 The unscented transform propagates selected points through a nonlinear map, then combines the transformed points with specified weights. This lesson executes that component of an unscented Kalman filter; it does not perform recursive state prediction, measurement assimilation or a complete UKF.

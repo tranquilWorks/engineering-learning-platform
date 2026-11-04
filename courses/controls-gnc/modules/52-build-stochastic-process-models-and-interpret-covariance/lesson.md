@@ -2,65 +2,51 @@
 
 **Guiding question:** How do process noise and propagation interval create covariance without implying deterministic state motion?
 
-Propagate a scalar random-walk covariance, test positive semidefiniteness, and separate mean dynamics from uncertainty growth. This is a Python-first native design derived from the reviewed competency map. It is not presented as a conversion of the pinned MATLAB source and it stays inside deterministic software simulation.
-
-## Why this lesson exists
-
-The numerical result is not the objective by itself. The objective is to connect a design decision to a governing relation, an observable consequence, a failure mechanism, and a recovery check. Record the assumptions before interpreting any curve.
+This Python-first lab executes the bounded mechanism described below. Historical source/conversion records are retained separately.
 
 ## Model and equations
 
-$$\text{x_{k+1}=x_k+w_k}$$
-$$\text{Q_d=q*T}$$
-$$\text{P^-=F P F^T+Q_d}$$
+$$\dot P=q,\quad P(0)=1$$
 
-Carry units through the model. A pole or zero is reported in inverse seconds, angular frequency in radians per second, phase in degrees or radians as labeled, and dimensionless ratios as `1`. The experiment evaluates the displayed equations directly; it does not call a black-box synthesis toolbox.
+$$P(T)=1+qT,\quad \sigma(T)=\sqrt{P(T)}$$
 
-## Predict before running
+## Worked example
 
-Nonnegative process noise makes covariance positive semidefinite and increases variance without changing a zero-mean state prediction. State which output should move first and which quantity should remain invariant before changing a control.
+At q=0.2 /s and T=0.5 s, P=1.1 and sigma=sqrt(1.1). The same-input sign fault gives P=0.9. At q=1 /s and T=3 s it gives P=-2, which is impossible as a variance; clipping the square root cannot repair that model.
 
 ## Baseline workflow
 
-1. Run the defaults with broken mode disabled and read all three signature metrics.
-2. Inspect the response plot for the external behavior, then the mechanism plot for the governing internal relation.
-3. Check the units and limiting cases before accepting a stability, equivalence, or performance statement.
-4. Save the baseline, change one variable only, and explain the direction of change from the equations.
+Write your prediction before running. Reset, inspect both plots and the internal state/geometry in the numerical evidence, then calculate the worked example independently. Separate reported metrics from the actual history or matrix that produces them.
 
 ## Two one-variable sweeps
 
-1. Hold `propagation_interval_s` at `0.5 s` and sweep `process_noise_density` from `0.01` through `0.2` to `1.0 1/s`.
-2. Restore `process_noise_density` to `0.2 1/s` and sweep `propagation_interval_s` from `0.05` through `0.5` to `3.0 s`.
+1. From reset defaults, change only `process_noise_density` to `1.0`. Predict from the displayed relation; record both plots and dimensioned metrics, then restore the baseline.
 
-Do not tune both at once until you can attribute each metric change to one term in the equations. The retained evidence uses one endpoint from each sweep in addition to the baseline.
+2. From reset defaults, change only `propagation_interval_s` to `3.0`. Predict from the displayed relation; record both plots and dimensioned metrics, then restore the baseline.
 
 ## Intentionally broken case
 
-Broken mode assigns negative process-noise density, producing a nonphysical covariance decrement. Broken mode is a named counterexample, not an alternative design recommendation.
+Subtract rather than add the selected process-noise variance, without changing either live parameter. Compare the same selected inputs. A changed sign or gate must act on the stated equation, not swap in unrelated scenario values.
 
 ## Recovery
 
-Restore a valid PSD noise model and derive discrete covariance from the declared continuous density and interval. The recovery case restores the exact baseline inputs so the evidence can prove that the failure is reversible rather than merely different.
+Restore the positive process-noise contribution and check the original q,T pair. Verify recovery matches the original baseline rather than a newly tuned scenario.
 
 ## Limiting cases and invariants
 
-- At zero interval no process covariance is accumulated.
-- Standard deviation is the square root of variance, not the variance itself.
-
-Teaching invariant: Nonnegative process noise makes covariance positive semidefinite and increases variance without changing a zero-mean state prediction.
+This is a scalar normalized zero-drift random walk. It does not implement matrix state propagation or a full stochastic trajectory. A negative covariance is invalid. The displayed clipped square root is a formal plotting convention, never a valid zero uncertainty estimate.
 
 ## Independent evidence
 
-Expected signatures are produced by `expansion_reference_cases.py`, which imports no production experiment and consumes no production result. Production signatures are retained separately. Each baseline, two sweeps, broken case, and recovery case records fields, units, tolerances, measured error, and the named invariant. Agreement supports only these equations and scenarios; it is not MATLAB execution, broad robust certification, or physical validation.
+`expansion_reference_cases.py` independently evaluates this lesson's signature and full mechanism. References use a polynomial derivative, integrated covariance equation, information-form posterior, SVD geometry, closed-form bias integrals or an implicit nonlinear LOS solution as applicable. They import no production experiment and consume no production result. Five retained cases include baseline, two one-variable sweeps, fault and recovery. Unchanged absolute/relative tolerances remain 1e-8. Additional off-grid, degenerate and mechanism-array checks are required by the aggregate review.
 
 ## Common mistakes
 
-- Reading a plotted shape without checking its sign convention, units, or contour/path definition.
-- Treating a local, frequency-limited, or nominal result as a global guarantee.
-- Changing both design controls and then assigning causality to one of them.
-- Confusing a recovery that looks better with a recovery that restores the baseline invariant.
-- Claiming source equivalence, physical hardware evidence, or learner effectiveness from this software-only lab.
+- Treating a finite placeholder or clipped square root as valid uncertainty.
+- Claiming global or full-system behavior from the bounded model.
+- Comparing a fault at different inputs and attributing the difference solely to the fault.
+- Reading only a pass flag rather than its governing calculation and physical units.
 
 ## Teach-back
 
-Derive one signature quantity from the displayed equations, explain what the broken case violates, and name one result that this lab cannot establish. Then describe how the two sweeps separate sensitivity to `process_noise_density` from sensitivity to `propagation_interval_s`.
+Reproduce the worked calculation, explain each sweep causally, show the measured fault and recovery, and state the model boundary in your own words. The Course checkpoint adds the cumulative evidence link. No learner result is recorded by authoring this material.

@@ -3,8 +3,8 @@ id: 16-fuse-noisy-sensors-with-a-kalman-filter
 number: 16
 title: Fuse Noisy Sensors with a Kalman Filter
 summary: Fuse noisy position samples with a deterministic constant-velocity Kalman filter.
-guiding_question: What inputs, observable effects, and failure modes matter when you fuse Noisy Sensors
-  with a Kalman Filter?
+guiding_question: What inputs, observable effects, and failure modes matter when you fuse Noisy Sensors with
+  a Kalman Filter?
 status: implemented
 tags:
 - controls-gnc
@@ -27,7 +27,7 @@ controls:
   type: slider
   label: Assumed acceleration noise
   default: 0.08
-  unit: m/s²
+  unit: "m/s\xB2"
   minimum: 0.01
   maximum: 0.5
   step: 0.01
@@ -40,8 +40,7 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Assuming noisier measurements should smooth the estimate but slow its response to real motion
-    changes.
+  text: Assuming noisier measurements should smooth the estimate but slow its response to real motion changes.
   reveal: Disable the broken case; in production, gate innovations before applying the update.
 - type: controls
   title: Source-aligned experiment controls
@@ -63,3 +62,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

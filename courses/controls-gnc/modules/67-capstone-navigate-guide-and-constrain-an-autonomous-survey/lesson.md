@@ -1,3 +1,5 @@
+> The component study below is retained. The new **Integrated navigation** section and additional plots extend it to the complete sequence.
+
 # Navigate and constrain a timed survey
 
 A planar vehicle follows three waypoint legs while a GNSS outage interrupts correction of its inertial estimate. This 30-second simulation demonstrates navigation, line-of-sight guidance and a sampled freshness hold. It is not an aircraft model or proof that the complete survey finishes.

@@ -1,0 +1,53 @@
+{
+  "batch": "ELP-GNC-AGGREGATE-QUALITY-01",
+  "implementation_commit": "504d46bd31a2dfc029b454ba61599537d2efcd32",
+  "implementation_tree": "d80dc73ec8f2bbe91ebfac3c1797dd40eb5eaf99",
+  "frozen_manifest": "gnc-aggregate-frozen-inputs.json",
+  "full": {
+    "command": "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 PYTEST_ADDOPTS='-vv -s -o faulthandler_timeout=60' ./scripts/agent-verify.sh full",
+    "exit_code": 0,
+    "tests_passed": 1638,
+    "warnings": 3,
+    "pytest_seconds": 1023.18,
+    "schema_and_deterministic_catalog": "passed: 6 courses, 290 interactive modules",
+    "frontend_typecheck": "passed",
+    "frontend_build": "passed; existing bundle-size warning",
+    "log_sha256": "bde3e236c4359ad512b9c4c22b3646b89fca22958016dfa9aea7a4ac900f12ce"
+  },
+  "fresh_independent_replay": {
+    "command": "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-gnc-assessments.py",
+    "exit_code": 0,
+    "comparisons": 340,
+    "full_mechanisms": 35,
+    "identity_bindings": 68
+  },
+  "prior_verification": {
+    "contract_tests_passed": 103,
+    "frontend_tests_passed": 13,
+    "browser_tests_passed": 23,
+    "desktop_mobile_pages": 136,
+    "portfolio_views": 44,
+    "final_repaired_plot_views": 16,
+    "historical_quick": {
+      "passed": 1637,
+      "failed": 1,
+      "reason": "Stale DSP P53-P64 active-contract assertion; corrected before final full run.",
+      "targeted_recheck_passed": 4
+    }
+  },
+  "recovery": "Original scratch workspace was pruned during an earlier full run. No success claimed for that interrupted run. Restored committed implementation in a clean checkout and completed the full gate and independent replay with exit 0.",
+  "not_run": [
+    "baked read-only nonroot Docker delivery",
+    "full private Portfolio Control checkout validation",
+    "representative learners",
+    "manual screen reader",
+    "MATLAB",
+    "hardware",
+    "production"
+  ],
+  "open_course_gaps": [
+    "complete recursive nonlinear EKF/UKF predict-update",
+    "full strapdown attitude/gravity mechanization and coupled GNSS/INS"
+  ],
+  "disposition": "Draft; Controls aggregate acceptance remains blocked."
+}

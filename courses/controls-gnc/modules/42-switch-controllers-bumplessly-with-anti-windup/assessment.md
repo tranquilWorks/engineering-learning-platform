@@ -20,3 +20,33 @@ The first plot shows output and reference. The second retains actual z, raw comm
 Only u is clipped; z is controller memory and can be much larger. Inspect recovery-observed and ensure all later samples stay inside the stated band. A censored lower bound cannot be presented as a successful recovery.
 
 A complete answer includes the calculation or recurrence, an observed comparison with units, fault/recovery evidence and the stated limitation. Revisit the lesson if the explanation depends only on a changing headline number. This is a self-assessment; no learner score is stored.
+
+
+---
+
+## P42 course checkpoint
+
+**Predict and calculate.** Predict the command jump when switching from manual to automatic control and explain the recovery criterion.
+
+Use `x[k+1]=x[k]+0.01*(-x[k]+u[k]); u_raw=2*(r-x)+z; u=clip(u_raw,-limit,limit); z[k+1]=z[k]+0.01*(1.2*(r-x)+k_aw*(u-u_raw))` with the conventions in the lesson. Work one baseline value by hand before running. The live controls are **Back-calculation gain**, **Actuator limit**.
+
+**Collect evidence.** Save the default result, then perform the lesson's two one-variable sweeps separately. Record exact parameters, units, the `response` and `mechanism` plots, and the quantity that discriminates your prediction. Explain what stayed invariant as well as what changed.
+
+**Fault and recovery.** Enable **Enable the intentionally broken case** at the same inputs. Explain which governing term is changed or omitted, show its effect on the actual trajectory, matrix or criterion, then disable it and use **Reset parameters**. Confirm recovery reproduces the baseline rather than merely a more favorable number.
+
+### Expected reasoning
+
+Bumpless transfer initializes integral state to match the existing command. Anti-windup then uses the actual saturation discrepancy; a recovery beyond the finite observation window is censored, not an observed success.
+
+### Model boundary
+
+A censored recovery is a lower bound on time, not an exact settling measurement.
+
+### Reasoning rubric
+
+1. State the model, units, sign convention and independently worked value.
+2. Explain both sweeps using this lesson's governing relation and recorded evidence.
+3. Diagnose the actual fault mechanism and exact-input recovery.
+4. Defend the stated boundary and link this result to the cumulative portfolio **A-DIGITAL**.
+
+This is authored self-assessment guidance. No learner completion, score or effectiveness result has been recorded.

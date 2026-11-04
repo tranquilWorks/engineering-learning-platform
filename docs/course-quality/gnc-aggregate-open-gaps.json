@@ -1,0 +1,49 @@
+{
+  "baseline": "abe7c49cea2a649354f20ad19dbe8a2e6c78540a",
+  "status": "authored_synthetic_content_accepted",
+  "reason": "Both algorithm gaps are implemented and independently verified; all nine authored/host rubric dimensions passed. Owner explicitly accepts content-only scope and authorizes merge with baked Docker delivery deferred.",
+  "gaps": [
+    {
+      "id": "GNC-AGG-NONLINEAR-FILTER",
+      "status": "closed_synthetic",
+      "modules": [
+        "P54",
+        "P55",
+        "P56"
+      ],
+      "finding": "P54 executes one scalar EKF measurement update; P55 executes an unscented transform; P56 executes a scalar RTS smoother. These are substantial component studies but do not implement complete recursive nonlinear EKF/UKF predict-update sequences.",
+      "closeout": "Implement and independently verify the missing recursive nonlinear estimation scope, or retain this gap until the owner explicitly accepts a narrower curriculum. Renaming the component lessons is not completion.",
+      "implementation_commit": "c7f0eb51f48323bdd94c668658403ac892d30398",
+      "evidence": [
+        "docs/course-quality/gnc-aggregate-http.json",
+        "docs/course-quality/gnc-recursive-browser-final.json",
+        "apps/api/tests/test_gnc_recursive_navigation.py",
+        "courses/controls-gnc/recursive_navigation_references.py"
+      ],
+      "implementation_scope": "Complete recursive EKF/UKF state and covariance feedback."
+    },
+    {
+      "id": "GNC-AGG-STRAPDOWN-FUSION",
+      "status": "closed_synthetic",
+      "modules": [
+        "P57",
+        "P59",
+        "P60",
+        "P61",
+        "P67"
+      ],
+      "finding": "Frame rotation, one-axis bias propagation, synthetic pseudorange solving, one-axis error-state filtering and planar position aiding do not constitute full strapdown attitude/gravity mechanization or a coupled GNSS/INS estimator.",
+      "closeout": "Implement and independently verify the broader mechanization/fusion outcome, or retain this gap until the owner explicitly accepts a narrower curriculum. The survey capstone cannot claim to reuse absent stages.",
+      "implementation_commit": "c7f0eb51f48323bdd94c668658403ac892d30398",
+      "evidence": [
+        "docs/course-quality/gnc-aggregate-http.json",
+        "docs/course-quality/gnc-recursive-browser-final.json",
+        "apps/api/tests/test_gnc_recursive_navigation.py",
+        "courses/controls-gnc/recursive_navigation_references.py"
+      ],
+      "implementation_scope": "Local ENU quaternion mechanization, gravity, 15-state loosely coupled GNSS/INS injection/reset and estimate-driven survey guidance; bounded synthetic mission segment."
+    }
+  ],
+  "delivery_gate": "not_run; owner-deferred for content-only acceptance and merge; required before claiming baked-container delivery.",
+  "learner_validation": "not_run"
+}

@@ -7,21 +7,26 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- Y=[cos psi,1] [theta,bias]^T
-- I=Y^T R^-1 Y
-- rank(I)=2 requires heading diversity
+- Y_i=[\cos\psi_i,1],\quad I=Y^TY/\sigma^2
+- \mathrm{Cov}(\hat\theta,\hat b)=I^{-1}\quad\text{only if rank}(Y)=2
+- \mathrm{rcond}(I)=s_{\min}(Y)^2/s_{\max}(Y)^2
 signature:
 - field: observability_determinant
   unit: '1'
-- field: information_condition
+- field: information_reciprocal_condition
   unit: '1'
 - field: bias_standard_deviation
   unit: '1'
-teaching_invariant: Heading/bias calibration requires maneuver diversity; repeated geometry cannot separate the
-  two parameters regardless of sample count.
+teaching_invariant: A symmetric span samples both its interior and endpoints; opposite endpoint headings alone
+  need not give distinct cosines. The zero-span case is unidentifiable. Its uncertainty is unavailable, not
+  zero; the finite signature placeholder is accompanied by a rank and availability flag. This normalized two-parameter
+  example is not full inertial alignment.
 limiting_cases:
-- At zero heading span determinant is zero.
-- Reducing measurement noise scales information but cannot repair missing rank.
+- A symmetric span samples both its interior and endpoints; opposite endpoint headings alone need not give
+  distinct cosines. The zero-span case is unidentifiable. Its uncertainty is unavailable, not zero; the finite
+  signature placeholder is accompanied by a rank and availability flag. This normalized two-parameter example
+  is not full inertial alignment.
+- At zero maneuver span the two columns are identical regardless of noise.
 scenarios:
   baseline: &id001
     maneuver_span_deg: 60.0

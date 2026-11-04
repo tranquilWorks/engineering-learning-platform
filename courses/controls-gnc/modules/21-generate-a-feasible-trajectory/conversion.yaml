@@ -26,16 +26,19 @@ item:
   - path: modules/21-generate-a-feasible-trajectory/model.m
     sha256: d2ef8dab467fd61a4121fd6455ef8276119336cd61542b0b9fb9affd33b61b7c
 target:
-  content_digest: e2f44ccfa97d26de39fc9627df54125739e90044cdd91d71daf6e416e7120840
+  content_digest: 95e7c3efccc1ddd3c9e737efe8e3bbccfb90a45a79f25336e29a8143839a4ff3
   files:
-  - path: modules/21-generate-a-feasible-trajectory/module.yaml
-    sha256: 3929ec423c4adbce47feb73f54d17feffc263496168d32cda96e052b96367ced
-  - path: modules/21-generate-a-feasible-trajectory/lesson.md
-    sha256: 7506b381fa837a750a7fd7c1ee7bc1ab1e98aab2f5cde7e3f2c8c75e10dbe43f
+  - path: modules/21-generate-a-feasible-trajectory/assessment.md
+    sha256: 8d53ddcc28fa809fa2b33447df65181b1afc48ff7c52d987508891c79f604718
   - path: modules/21-generate-a-feasible-trajectory/experiment.py
     sha256: e686635913f7befac6545030985eb41a8af9af7717419b247f3498ae3695f0a9
+  - path: modules/21-generate-a-feasible-trajectory/lesson.md
+    sha256: 7506b381fa837a750a7fd7c1ee7bc1ab1e98aab2f5cde7e3f2c8c75e10dbe43f
+  - path: modules/21-generate-a-feasible-trajectory/module.yaml
+    sha256: b64c5962f80b8c675f992e592570eb240e64afaad59862bf02fae37972d41d79
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you generate a Feasible Trajectory?
+  guiding_question: What inputs, observable effects, and failure modes matter when you generate a Feasible
+    Trajectory?
   physical_model: Generate a rest-to-rest quintic and test speed/acceleration feasibility.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
@@ -75,7 +78,7 @@ content:
       unit: m/s
     - role: y
       label: Acceleration
-      unit: m/s²
+      unit: "m/s\xB2"
     interpretation: feasibility follows explicit speed and acceleration limits
   - source_figure: Pinned MATLAB source intent mapped to platform mechanism view
     target_plot_key: mechanism
@@ -89,7 +92,7 @@ content:
       unit: m/s
     - role: y
       label: Acceleration limit
-      unit: m/s²
+      unit: "m/s\xB2"
     interpretation: peak speed or acceleration violates the declared feasibility limits
   sweeps:
   - control: target_position_m
@@ -268,8 +271,8 @@ python_source_equivalence:
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
-    constitute MATLAB runtime parity.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do
+    not constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:

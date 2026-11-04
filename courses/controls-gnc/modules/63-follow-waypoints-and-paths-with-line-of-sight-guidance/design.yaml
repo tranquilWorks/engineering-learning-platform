@@ -7,9 +7,9 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- chi_c=chi_path-atan(e_y/L)
-- e_y_dot approximately -(V/L)e_y
-- kappa_c=2 sin(eta)/L
+- \chi_c=-\arctan(y/L)
+- \dot x=V\cos\chi_c,\quad \dot y=V\sin\chi_c
+- \dot y\simeq -(V/L)y\quad\text{only for }|y|\ll L
 signature:
 - field: cross_track_decay_rate
   unit: 1/s
@@ -17,11 +17,16 @@ signature:
   unit: m
 - field: peak_heading_command
   unit: deg
-teaching_invariant: Positive lookahead produces bounded heading commands and exponential local cross-track convergence
-  for forward speed.
+teaching_invariant: This model follows a single straight path with instantaneous heading tracking. It has no
+  waypoint switching, obstacles or bounded turn-rate dynamics. The exponential solution is a local approximation;
+  nonlinear kinematics generate the displayed path and peak heading. The survey capstone adds separate waypoint,
+  freshness and turn constraints.
 limiting_cases:
-- As cross-track error tends to zero the heading command tends to path heading.
-- Increasing lookahead reduces command aggressiveness and convergence rate.
+- This model follows a single straight path with instantaneous heading tracking. It has no waypoint switching,
+  obstacles or bounded turn-rate dynamics. The exponential solution is a local approximation; nonlinear kinematics
+  generate the displayed path and peak heading. The survey capstone adds separate waypoint, freshness and turn
+  constraints.
+- At zero lateral error the straight path is invariant.
 scenarios:
   baseline: &id001
     lookahead_distance_m: 15.0

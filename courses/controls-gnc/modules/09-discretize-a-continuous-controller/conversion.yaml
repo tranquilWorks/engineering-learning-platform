@@ -26,16 +26,19 @@ item:
   - path: modules/09-discretize-a-continuous-controller/model.m
     sha256: 3eafd5232b4dec38c1ccb34c0224d258630d0f1c0454678d72cdae01903d0803
 target:
-  content_digest: a44a4821128f6c1a70e024f9189868c04cf835d4dc919c29412cee43346ac522
+  content_digest: 9cfdccbf63178dd02929188cdc5a418a2ae4e34c02e777ae4d98ea1086c552c6
   files:
-  - path: modules/09-discretize-a-continuous-controller/module.yaml
-    sha256: ec1d149da164c4fdf70cadfa2da65c941ab05df51ad5d8855d85440fb4e3dc5f
-  - path: modules/09-discretize-a-continuous-controller/lesson.md
-    sha256: 03b64bbdc53199a35fbde205a5eb64d7836fa20e2bfcea738314a2b8e5b9be3f
+  - path: modules/09-discretize-a-continuous-controller/assessment.md
+    sha256: 5140a73e413f15b325dc631aa020b1656d6678294e16028f82ca0e94231a6b17
   - path: modules/09-discretize-a-continuous-controller/experiment.py
     sha256: 2fe4f460dbc8465fab3fc9385ba599353ef387ee5a2f055188d8b5328c8abea7
+  - path: modules/09-discretize-a-continuous-controller/lesson.md
+    sha256: 03b64bbdc53199a35fbde205a5eb64d7836fa20e2bfcea738314a2b8e5b9be3f
+  - path: modules/09-discretize-a-continuous-controller/module.yaml
+    sha256: aa06b5a5dbd28683d2fafefe929e860dc8873ed9cafe23d283146ebc2bb30c45
 content:
-  guiding_question: What inputs, observable effects, and failure modes matter when you discretize a Continuous Controller?
+  guiding_question: What inputs, observable effects, and failure modes matter when you discretize a Continuous
+    Controller?
   physical_model: Compare a sampled PI implementation with its continuous design target.
   signal_flow:
   - Set one source-aligned lever and predict the mechanism.
@@ -83,7 +86,7 @@ content:
       unit: normalized input
     - role: y
       label: Integral state
-      unit: ratio·s
+      unit: "ratio\xB7s"
     interpretation: coarse/delayed integration changes the sampled PI trajectory
   sweeps:
   - control: sample_period_s
@@ -91,7 +94,8 @@ content:
     - 0.02
     - 0.1
     - 0.3
-    expected_observation: A coarser sample period should move the digital response away from the continuous target.
+    expected_observation: A coarser sample period should move the digital response away from the continuous
+      target.
   - control: integral_gain
     values:
     - 1.0
@@ -262,8 +266,8 @@ python_source_equivalence:
     passed: true
 matlab_runtime_parity:
   status: not_run
-  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do not
-    constitute MATLAB runtime parity.
+  reason: No licensed MATLAB runtime was executed. Static source mapping and independent Python agreement do
+    not constitute MATLAB runtime parity.
 claims:
   profile: elp-gnc-item-software-v1
   browser_visual_review:

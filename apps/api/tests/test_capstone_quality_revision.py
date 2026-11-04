@@ -131,7 +131,12 @@ def test_signature_dimensions_scenarios_and_visible_verdicts(course, number):
     manifest = yaml.safe_load((root / "module.yaml").read_text())
     assert design["scenarios"]["baseline"] == defaults(course, number)
     response = result(course, number)
-    assert [m["unit"] for m in response["metrics"]] == [s["unit"] for s in design["signature"]]
+    signature_metrics = response["metrics"]
+    if course == "controls-gnc" and number == 67:
+        assert signature_metrics[-1]["id"] == "navigation_terminal_error"
+        assert signature_metrics[-1]["unit"] == "m"
+        signature_metrics = signature_metrics[:-1]
+    assert [m["unit"] for m in signature_metrics] == [s["unit"] for s in design["signature"]]
     if "requirements" in response["diagnostics"]:
         assert any(b.get("table") == "requirements" for b in manifest["blocks"])
         rows = response["tables"]["requirements"]["rows"]

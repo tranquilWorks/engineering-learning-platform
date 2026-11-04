@@ -7,9 +7,9 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- x_{k+1}=x_k+w_k
-- Q_d=q*T
-- P^-=F P F^T+Q_d
+- \dot P=q,\quad P(0)=1
+- P(T)=1+qT,\quad \sigma(T)=\sqrt{P(T)}
+- P(T)\geq 0\quad\text{is required for a valid covariance}
 signature:
 - field: propagated_variance
   unit: '1'
@@ -17,11 +17,14 @@ signature:
   unit: '1'
 - field: standard_deviation
   unit: '1'
-teaching_invariant: Nonnegative process noise makes covariance positive semidefinite and increases variance without
-  changing a zero-mean state prediction.
+teaching_invariant: This is a scalar normalized zero-drift random walk. It does not implement matrix state
+  propagation or a full stochastic trajectory. A negative covariance is invalid. The displayed clipped square
+  root is a formal plotting convention, never a valid zero uncertainty estimate.
 limiting_cases:
-- At zero interval no process covariance is accumulated.
-- Standard deviation is the square root of variance, not the variance itself.
+- This is a scalar normalized zero-drift random walk. It does not implement matrix state propagation or a full
+  stochastic trajectory. A negative covariance is invalid. The displayed clipped square root is a formal plotting
+  convention, never a valid zero uncertainty estimate.
+- At q=0 the nominal variance remains its initial value.
 scenarios:
   baseline: &id001
     process_noise_density: 0.2

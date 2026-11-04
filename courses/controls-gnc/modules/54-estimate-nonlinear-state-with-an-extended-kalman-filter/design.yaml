@@ -7,9 +7,9 @@ provenance:
   competency_map: ../../competency-map.yaml
   matlab_runtime: not_run
 governing_equations:
-- h(x)=x^2
-- H=2*xhat
-- K=P H/(H^2 P+R)
+- h(x)=x^2,\quad H=2\hat x^-,\quad \nu=z-h(\hat x^-)
+- K=P^-H/(H^2P^-+R),\quad \hat x^+=\hat x^-+K\nu
+- P^+=(1-KH)^2P^-+K^2R
 signature:
 - field: measurement_jacobian
   unit: '1'
@@ -17,11 +17,13 @@ signature:
   unit: '1'
 - field: linearization_residual
   unit: '1'
-teaching_invariant: An EKF update uses the local Jacobian; at xhat=0 the quadratic measurement has zero first-order
-  sensitivity despite nonzero global information.
+teaching_invariant: The historical component signature is preserved. The additional integrated sequence,
+  equations, assumptions and independent full-history reference are specified in integration.md.
 limiting_cases:
-- At xhat=0 the first-order Jacobian is zero.
-- As prior variance tends to zero, the measurement gain tends to zero.
+- This is one scalar measurement update with fixed z=2.25 and R=1 in normalized units, not a complete
+  time-recursive EKF. A squared observation has a global sign ambiguity. A zero Jacobian at the true linearization
+  point is a real first-order information loss, not a software fault.
+- At a zero prior mean the true first-order measurement sensitivity is zero.
 scenarios:
   baseline: &id001
     prior_standard_deviation: 0.5
