@@ -110,3 +110,7 @@ explicit blocker. A host process is not evidence of a baked-container run.
 Neither broad course acceptance nor merge readiness can be inferred from host
 success. Learner and manual screen-reader validation remain not_run, as in DSP's
 separate authored/software disposition.
+
+## Owner content-only acceptance
+
+Owner 2026-11-03: content-only completion at DSP authored/software rigor; Docker delivery is deferred and does not block this content acceptance or the explicitly authorized push and merge. No container, learner, hardware or production pass is inferred. The earlier Docker merge blocker above is superseded for content acceptance; its not_run result remains unchanged.

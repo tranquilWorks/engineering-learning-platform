@@ -1,25 +1,25 @@
-# Controls/GNC — host review complete; Docker acceptance blocked (2026-11-03)
+# Controls/GNC — content accepted at DSP authored/software rigor (2026-11-03)
 
-Complete recursive EKF/UKF, quaternion strapdown, 15-state loosely coupled
-GNSS/INS and fused-estimate-driven survey guidance are implemented, with
-independent full-history references and five detailed integration lessons.
-The original 68 lessons, 68 checkpoints, 22 portfolios, outcomes and source pins remain.
+The owner authorized content-only completion, push and merge, with Docker delivery
+deferred. All nine review dimensions passed. Controls numerical verification,
+curriculum coverage and capstone integration are accepted within the documented
+synthetic scope, matching DSP's authored/software review standard.
 
-Contract: **103 passed**. Quick and recovered full: **1,670 passed each**.
-Schema/catalog, frontend typecheck/build and 13 frontend tests passed.
-Fresh HTTP/runtime checks cover 340 retained scenarios, 35 component mechanisms,
-25 integrated histories and 68 content bindings. Browser evidence covers 136
-views, 136 interactions, 44 portfolios and 23 regressions.
-See [exact verification and reset history](course-quality/gnc-recursive-verification-summary.json)
-and [scope/derivations/review](course-quality/gnc-recursive-review-plan.md).
+The 68 lessons retain 68 individual checkpoints and 22 cumulative portfolios.
+Complete recursive EKF/UKF, quaternion strapdown, 15-state GNSS/INS and
+estimate-driven guidance have detailed derivations, sweeps, limiting cases,
+fault/recovery and independent complete-history references.
 
-The two [algorithm gaps](course-quality/gnc-aggregate-open-gaps.json) are closed
-within the documented synthetic scope. **Overall acceptance remains blocked:**
-this environment cannot run the mandatory baked read-only nonroot Docker gate.
-Host evidence does not replace it. PR63 and companion Control PR633 remain draft.
-The next required action is `./scripts/verify-course-delivery.sh` in a
-Docker-capable environment, then acceptance closeout. Learner, manual screen-reader,
-MATLAB, hardware and production validation remain not_run.
+Verification: 103 contract tests; 1,670 quick and full tests; 340 retained
+scenarios, 35 component mechanisms and 25 integrated histories; 136 browser
+views and interactions, 44 portfolio views and 23 browser regressions.
+See [exact evidence](course-quality/gnc-recursive-verification-summary.json)
+and [review scope](course-quality/gnc-recursive-review-plan.md).
+
+Docker delivery remains **not_run**, explicitly deferred for this content merge.
+Learner, manual screen-reader, MATLAB, hardware and production validation also
+remain not_run. No runtime delivery or physical qualification is claimed.
+PR63 contains the implementation; companion Control PR633 records the contract.
 
 ---
 

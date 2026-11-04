@@ -60,13 +60,13 @@ but they are not independent correctness oracles.
 | Course | Native interactive lessons | Current review position |
 | --- | ---: | --- |
 | DSP/Radar | 84 | Authored/software aggregate review passed: 84 checkpoints, ten cumulative portfolios and 417 independent comparisons; learner validation not_run |
-| Controls/GNC | 68 | Authored/host review complete, including recursive filtering and coupled navigation; aggregate acceptance blocked by unrun baked Docker delivery |
+| Controls/GNC | 68 | Authored/synthetic numerical, curriculum and capstone content accepted at DSP rigor; Docker delivery separately deferred by owner |
 | Robotics/Autonomy | 69 | Zero named findings; 27 scoped repairs complete, including the twenty requested dynamics/perception findings; aggregate reassessment remains open |
 | Vehicle Dynamics | 67 | Zero named findings; P01–P16 and P61–P67 scoped repairs complete; aggregate reassessment remains open |
 
 All 72 named findings are closed within their retained model and evidence boundaries. Implementation and Portfolio Control closeout are merged. All 290 modules passed HTTP checks and all 580 desktop/mobile pages passed in the final image. See [the quality board](COURSE_QUALITY.md) and [human review handoff](HANDOFF.md#human-review-entry-point).
 
-Controls authored/host review is complete (see [verification summary](course-quality/gnc-recursive-verification-summary.json)); aggregate acceptance remains blocked by required baked Docker delivery. Robotics and Vehicle aggregate reassessment remains open. Representative-learner and manual screen-reader validation remain not_run.
+Controls authored/synthetic content is accepted at DSP rigor (see [verification summary](course-quality/gnc-recursive-verification-summary.json)); the owner explicitly deferred Docker delivery for this content-only merge. Robotics and Vehicle aggregate reassessment remains open. Representative-learner and manual screen-reader validation remain not_run.
 
 Nine other pinned repositories remain source-only. MATLAB runtime, measured vehicle/track, hardware, concurrent capacity and production validation are not claimed. No inventory expansion or maturity promotion is included in this closeout.
 

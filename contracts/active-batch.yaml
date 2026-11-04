@@ -89,6 +89,9 @@ acceptance:
   aggregate blocks.
 - Publish exact evidence and reviewable development PR. Merge only after required verification; preserve failures
   and environment blockers without weakening assertions or claiming a completed acceptance gate.
+- 'Owner 2026-11-03: content-only completion at DSP authored/software rigor; Docker delivery is deferred
+  and does not block this content acceptance or the explicitly authorized push and merge. No container,
+  learner, hardware or production pass is inferred.'
 validation:
   local:
   - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_gnc_aggregate_quality.py
@@ -104,7 +107,7 @@ validation:
   - Independent full mechanisms, live assessment bindings, exact unchanged source/course preservation, singular
     and off-grid inputs, capstone stage/requirement evidence.
   required_ci:
-  - Hosted CI nonmandatory under retained owner direction; all named local gates mandatory.
+  - Hosted CI nonmandatory under retained owner direction; named local gates remain required except baked Docker delivery explicitly deferred by the owner for this content-only merge.
 risk:
   class: high
   hazards:
