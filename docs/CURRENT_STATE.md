@@ -1,27 +1,25 @@
-# Controls/GNC completion revision — in review, 2026-11-03
+# Controls/GNC — host review complete; Docker acceptance blocked (2026-11-03)
 
+Complete recursive EKF/UKF, quaternion strapdown, 15-state loosely coupled
+GNSS/INS and fused-estimate-driven survey guidance are implemented, with
+independent full-history references and five detailed integration lessons.
+The original 68 lessons, 68 checkpoints, 22 portfolios, outcomes and source pins remain.
 
-Final clean-checkout verification passed all **1,638 tests**, schema/catalog
-checks, frontend typecheck/build, and 340 independent comparisons with 35 full
-mechanism checks. See [verification summary](course-quality/gnc-aggregate-verification-summary.json).
+Contract: **103 passed**. Quick and recovered full: **1,670 passed each**.
+Schema/catalog, frontend typecheck/build and 13 frontend tests passed.
+Fresh HTTP/runtime checks cover 340 retained scenarios, 35 component mechanisms,
+25 integrated histories and 68 content bindings. Browser evidence covers 136
+views, 136 interactions, 44 portfolios and 23 regressions.
+See [exact verification and reset history](course-quality/gnc-recursive-verification-summary.json)
+and [scope/derivations/review](course-quality/gnc-recursive-review-plan.md).
 
-The isolated Controls revision adds eight mechanism/unit repairs, thirteen
-calculated independent-reference entrypoints, 68 embedded checkpoints and 22
-cumulative portfolios. Host runtime/API/browser evidence is recorded in
-[evidence](evidence/ELP-GNC-AGGREGATE-QUALITY-01-2026-11-03.md) and
-[the review plan](course-quality/gnc-aggregate-review-plan.md).
-
-**Controls is not yet accepted as complete.** Recursive nonlinear-filter and
-full strapdown/coupled GNSS-INS outcomes remain open in
-[the gap register](course-quality/gnc-aggregate-open-gaps.json). The required final
-read-only nonroot baked Docker verification is not run in this environment.
-Component descriptions, authored checkpoints and host evidence do not close
-those gaps. Keep aggregate numerical/curriculum/capstone maturity blocked.
-
-The next implementation work addresses the two registered algorithm/integration
-gaps, preserving independent references and all other courses, followed by final
-repository and baked-container acceptance. Learner, manual accessibility, MATLAB,
-hardware and production validation remain separate.
+The two [algorithm gaps](course-quality/gnc-aggregate-open-gaps.json) are closed
+within the documented synthetic scope. **Overall acceptance remains blocked:**
+this environment cannot run the mandatory baked read-only nonroot Docker gate.
+Host evidence does not replace it. PR63 and companion Control PR633 remain draft.
+The next required action is `./scripts/verify-course-delivery.sh` in a
+Docker-capable environment, then acceptance closeout. Learner, manual screen-reader,
+MATLAB, hardware and production validation remain not_run.
 
 ---
 

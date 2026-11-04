@@ -131,3 +131,31 @@ and is not claimed. All committed implementation and browser evidence survived,
 and verification was repeated in a clean checkout with pinned dependencies.
 
 These results do not close the two course gaps or replace the unrun Docker gate.
+
+## Recursive-estimation/navigation continuation
+
+# Controls/GNC — host review complete; Docker acceptance blocked (2026-11-03)
+
+Complete recursive EKF/UKF, quaternion strapdown, 15-state loosely coupled
+GNSS/INS and fused-estimate-driven survey guidance are implemented, with
+independent full-history references and five detailed integration lessons.
+The original 68 lessons, 68 checkpoints, 22 portfolios, outcomes and source pins remain.
+
+Contract: **103 passed**. Quick and recovered full: **1,670 passed each**.
+Schema/catalog, frontend typecheck/build and 13 frontend tests passed.
+Fresh HTTP/runtime checks cover 340 retained scenarios, 35 component mechanisms,
+25 integrated histories and 68 content bindings. Browser evidence covers 136
+views, 136 interactions, 44 portfolios and 23 regressions.
+See [exact verification and reset history](../course-quality/gnc-recursive-verification-summary.json)
+and [scope/derivations/review](../course-quality/gnc-recursive-review-plan.md).
+
+The two [algorithm gaps](../course-quality/gnc-aggregate-open-gaps.json) are closed
+within the documented synthetic scope. **Overall acceptance remains blocked:**
+this environment cannot run the mandatory baked read-only nonroot Docker gate.
+Host evidence does not replace it. PR63 and companion Control PR633 remain draft.
+The next required action is `./scripts/verify-course-delivery.sh` in a
+Docker-capable environment, then acceptance closeout. Learner, manual screen-reader,
+MATLAB, hardware and production validation remain not_run.
+
+
+The execution environment reset after the quick gate passed and while the full gate was in its final section. The source and browser evidence were already pushed at 456dea92830558d830a8113478566c3e7a497bc1. The full result was unavailable, so it was rerun; no interrupted run is counted as passing. All 262 frozen source hashes match implementation c7f0eb51f48323bdd94c668658403ac892d30398. The recovered audit changes only the stale P59 design payload hash.

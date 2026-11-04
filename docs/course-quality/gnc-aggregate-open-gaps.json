@@ -1,21 +1,47 @@
 {
   "baseline": "abe7c49cea2a649354f20ad19dbe8a2e6c78540a",
   "status": "course_acceptance_blocked",
-  "reason": "Honest component descriptions do not by themselves satisfy the earlier broader course outcomes.",
+  "reason": "Both algorithm gaps are implemented and independently verified within the declared synthetic scope. Repository and host-browser checks passed. Required baked read-only nonroot Docker delivery remains unrun; overall acceptance stays blocked.",
   "gaps": [
     {
       "id": "GNC-AGG-NONLINEAR-FILTER",
-      "status": "open",
-      "modules": ["P54", "P55", "P56"],
+      "status": "closed_synthetic",
+      "modules": [
+        "P54",
+        "P55",
+        "P56"
+      ],
       "finding": "P54 executes one scalar EKF measurement update; P55 executes an unscented transform; P56 executes a scalar RTS smoother. These are substantial component studies but do not implement complete recursive nonlinear EKF/UKF predict-update sequences.",
-      "closeout": "Implement and independently verify the missing recursive nonlinear estimation scope, or retain this gap until the owner explicitly accepts a narrower curriculum. Renaming the component lessons is not completion."
+      "closeout": "Implement and independently verify the missing recursive nonlinear estimation scope, or retain this gap until the owner explicitly accepts a narrower curriculum. Renaming the component lessons is not completion.",
+      "implementation_commit": "c7f0eb51f48323bdd94c668658403ac892d30398",
+      "evidence": [
+        "docs/course-quality/gnc-aggregate-http.json",
+        "docs/course-quality/gnc-recursive-browser-final.json",
+        "apps/api/tests/test_gnc_recursive_navigation.py",
+        "courses/controls-gnc/recursive_navigation_references.py"
+      ],
+      "implementation_scope": "Complete recursive EKF/UKF state and covariance feedback."
     },
     {
       "id": "GNC-AGG-STRAPDOWN-FUSION",
-      "status": "open",
-      "modules": ["P57", "P59", "P60", "P61", "P67"],
+      "status": "closed_synthetic",
+      "modules": [
+        "P57",
+        "P59",
+        "P60",
+        "P61",
+        "P67"
+      ],
       "finding": "Frame rotation, one-axis bias propagation, synthetic pseudorange solving, one-axis error-state filtering and planar position aiding do not constitute full strapdown attitude/gravity mechanization or a coupled GNSS/INS estimator.",
-      "closeout": "Implement and independently verify the broader mechanization/fusion outcome, or retain this gap until the owner explicitly accepts a narrower curriculum. The survey capstone cannot claim to reuse absent stages."
+      "closeout": "Implement and independently verify the broader mechanization/fusion outcome, or retain this gap until the owner explicitly accepts a narrower curriculum. The survey capstone cannot claim to reuse absent stages.",
+      "implementation_commit": "c7f0eb51f48323bdd94c668658403ac892d30398",
+      "evidence": [
+        "docs/course-quality/gnc-aggregate-http.json",
+        "docs/course-quality/gnc-recursive-browser-final.json",
+        "apps/api/tests/test_gnc_recursive_navigation.py",
+        "courses/controls-gnc/recursive_navigation_references.py"
+      ],
+      "implementation_scope": "Local ENU quaternion mechanization, gravity, 15-state loosely coupled GNSS/INS injection/reset and estimate-driven survey guidance; bounded synthetic mission segment."
     }
   ],
   "delivery_gate": "Final read-only nonroot baked Docker browser/HTTP verification remains required separately.",
