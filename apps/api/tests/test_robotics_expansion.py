@@ -240,8 +240,16 @@ def test_robotics_native_plots_retain_domain_quantities_and_units() -> None:
         module_root = COURSE_ROOT / item["folder"]
         module_id = _yaml(module_root / "module.yaml")["id"]
         result = runtime.run("robotics-autonomy", module_id, {}).model_dump(mode="json")
-        assert set(result["plots"]) == {"response", "mechanism"}
-        assert len(result["metrics"]) == 3
+        extra_plots = {
+            "P51": {"joint_map", "joint_convergence"},
+            "P62": {"executed_manipulation", "execution_phases"},
+            "P68": {"tracked_path", "tracked_speed"},
+            "P69": {"executed_manipulation", "execution_phases"},
+        }
+        assert set(result["plots"]) == {"response", "mechanism"} | extra_plots.get(
+            item["id"], set()
+        )
+        assert len(result["metrics"]) == {"P59": 4, "P62": 5, "P68": 6, "P69": 5}.get(item["id"], 3)
         for plot in result["plots"].values():
             for axis in ("xaxis", "yaxis"):
                 title = plot["layout"][axis]["title"]["text"]

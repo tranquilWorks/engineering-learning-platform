@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "item_id": "P21",
+  "origin": "Independent table-driven mission transition schedule with watchdog and global-fault guard evaluation.",
+  "tolerance": {
+    "absolute": 1e-09,
+    "relative": 1e-09
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "target_detect_s": 2,
+        "execute_duration_s": 4,
+        "watchdog_s": 6,
+        "fault_time_s": 5,
+        "broken_mode": false
+      },
+      "signature": [
+        4.0,
+        5.0,
+        0.0,
+        4.0,
+        0.0
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "target_detect_s": 8,
+        "execute_duration_s": 4,
+        "watchdog_s": 6,
+        "fault_time_s": 5,
+        "broken_mode": false
+      },
+      "signature": [
+        4.0,
+        5.0,
+        0.0,
+        2.0,
+        0.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "target_detect_s": 2,
+        "execute_duration_s": 4,
+        "watchdog_s": 6,
+        "fault_time_s": 11,
+        "broken_mode": false
+      },
+      "signature": [
+        5.0,
+        7.0,
+        0.0,
+        4.0,
+        1.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "target_detect_s": 2,
+        "execute_duration_s": 4,
+        "watchdog_s": 6,
+        "fault_time_s": 5,
+        "broken_mode": true
+      },
+      "signature": [
+        5.0,
+        7.0,
+        20.0,
+        4.0,
+        1.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "target_detect_s": 2,
+        "execute_duration_s": 4,
+        "watchdog_s": 6,
+        "fault_time_s": 5,
+        "broken_mode": false
+      },
+      "signature": [
+        4.0,
+        5.0,
+        0.0,
+        4.0,
+        0.0
+      ]
+    }
+  }
+}

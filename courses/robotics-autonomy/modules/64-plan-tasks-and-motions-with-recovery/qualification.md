@@ -1,0 +1,5 @@
+# Exhausted alternatives are an outcome
+
+The planner now returns an explicit failed task when all permitted carry edges have been blacklisted. It does not raise an uncaught exception or continue retrying the same impossible route. “Task success” remains zero, the elapsed time includes attempted transitions and one-second replanning costs, and the plot retains each measured negative corridor margin. This means failure within this bounded graph, not proof that every physical manipulation strategy is impossible.
+
+At predicted width 0.18 m and width error 10 cm, actual width is 0.08 m. The top edge is unavailable from the initial model; the side edge also fails at execution because its requirement is 0.16 m. Check the failed carry margin, replan count and termination. At 0.27 m with the same error, both alternatives can be attempted but neither fits. Restore zero error and verify success. Distinguish predicted feasibility, measured feasibility and search exhaustion in the cumulative portfolio.

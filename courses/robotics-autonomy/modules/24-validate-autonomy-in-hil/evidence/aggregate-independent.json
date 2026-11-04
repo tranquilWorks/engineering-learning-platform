@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "item_id": "P24",
+  "origin": "Independent discrete virtual-plant, delayed-telemetry, PI-control, and freshness-watchdog recurrence.",
+  "tolerance": {
+    "absolute": 1e-09,
+    "relative": 1e-09
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "plant_tau_s": 0.4,
+        "io_latency_ms": 30,
+        "fault_start_s": 2,
+        "fault_duration_s": 1,
+        "watchdog_ms": 120,
+        "broken_mode": false
+      },
+      "signature": [
+        1.0,
+        0.9647988987550892,
+        2.12,
+        0.88,
+        0.9647988987550892,
+        1.0
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "plant_tau_s": 0.4,
+        "io_latency_ms": 100,
+        "fault_start_s": 2,
+        "fault_duration_s": 1,
+        "watchdog_ms": 120,
+        "broken_mode": false
+      },
+      "signature": [
+        1.0,
+        0.9953212485036825,
+        2.12,
+        0.88,
+        0.9709054076824551,
+        1.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "plant_tau_s": 0.4,
+        "io_latency_ms": 30,
+        "fault_start_s": 2,
+        "fault_duration_s": 2,
+        "watchdog_ms": 120,
+        "broken_mode": false
+      },
+      "signature": [
+        1.0,
+        0.9535510034392619,
+        2.12,
+        1.8800000000000001,
+        0.9535510034392619,
+        1.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "plant_tau_s": 0.4,
+        "io_latency_ms": 30,
+        "fault_start_s": 2,
+        "fault_duration_s": 1,
+        "watchdog_ms": 120,
+        "broken_mode": true
+      },
+      "signature": [
+        1.0,
+        0.9660729604736011,
+        6.0,
+        0.0,
+        0.964029029989894,
+        0.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "plant_tau_s": 0.4,
+        "io_latency_ms": 30,
+        "fault_start_s": 2,
+        "fault_duration_s": 1,
+        "watchdog_ms": 120,
+        "broken_mode": false
+      },
+      "signature": [
+        1.0,
+        0.9647988987550892,
+        2.12,
+        0.88,
+        0.9647988987550892,
+        1.0
+      ]
+    }
+  }
+}

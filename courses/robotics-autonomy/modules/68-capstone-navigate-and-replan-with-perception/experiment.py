@@ -342,6 +342,201 @@ def _model(p, broken):
     }
 
 
+def _tracked_mission(dropout, obstacle_speed, broken=False):
+    """Planar point-robot double integrator, linear KF and occupied-cell evidence."""
+    dt = 0.1
+    A = np.eye(4)
+    A[0, 2] = A[1, 3] = dt
+    B = np.vstack((0.5 * dt**2 * np.eye(2), dt * np.eye(2)))
+    H = np.eye(4)[:2]
+    Q = 1e-5 * np.eye(4)
+    R = 0.0025 * np.eye(2)
+    x = np.zeros(4)
+    estimate = x.copy()
+    P = 0.04 * np.eye(4)
+    occupancy = 0.0
+    last = -1.0
+    route = [(i, 0) for i in range(9)]
+    waypoint = 1
+    rows = []
+    updates = []
+    events = []
+    covariances = []
+    minimum = 100.0
+    holding = False
+    goal = np.array([8.0, 0.0])
+    success = False
+    # Exactly 125 candidate range frames define the dropout percentage; their
+    # gap starts at frame seven, matching the earlier component replay.
+    dropped = set(range(7, 7 + round(125 * dropout / 100)))
+    for k in range(800):
+        t = k * dt
+        if k % 2 == 0 and k // 2 not in dropped:
+            z = x[:2] + 0.015 * np.array([np.sin(0.7 * k), np.cos(0.9 * k)])
+            innovation = z - H @ estimate
+            S = H @ P @ H.T + R
+            gain = np.linalg.solve(S, H @ P).T
+            estimate += gain @ innovation
+            residual = np.eye(4) - gain @ H
+            P = residual @ P @ residual.T + gain @ R @ gain.T
+            last = t
+            # A fixed, associated range landmark reports the occupied cell.
+            if not broken and np.linalg.norm(x[:2] - [4, 0]) < 4.1:
+                occupancy = min(6.0, occupancy + np.log(3.0))
+                if len(route) == 9 and occupancy > np.log(0.7 / 0.3):
+                    start = tuple(
+                        np.clip(np.rint(estimate[:2]), [0, 0], [8, 2]).astype(int)
+                    )
+                    route = list(_grid_path(start, {(4, 0)}))
+                    waypoint = 1
+                    events.append([t, "occupied cell accepted; route replanned"])
+            updates.append([t, *z, *innovation])
+        age = t - last
+        hold = (age > 0.400001) and not broken
+        if hold != holding:
+            events.append(
+                [
+                    t,
+                    "brake for stale observation"
+                    if hold
+                    else "fresh observation resumes tracking",
+                ]
+            )
+            holding = hold
+        while (
+            waypoint < len(route) - 1
+            and np.linalg.norm(estimate[:2] - route[waypoint]) < 0.12
+        ):
+            waypoint += 1
+        target = np.array(route[min(waypoint, len(route) - 1)], float)
+        desired = target - estimate[:2]
+        length = np.linalg.norm(desired)
+        if length > 0:
+            desired *= min(0.8, np.sqrt(1.2 * length)) / length
+        moving = np.array([6.0, -2.0 + obstacle_speed * t])
+        # Predict a short horizon before allowing approach to a moving obstacle.
+        if (
+            not broken
+            and np.linalg.norm(
+                estimate[:2] + desired * 0.6 - (moving + [0, obstacle_speed * 0.6])
+            )
+            < 0.9
+        ):
+            hold = True
+        if hold:
+            desired = np.zeros(2)
+        acceleration = np.clip(3 * (desired - estimate[2:]), -1.0, 1.0)
+        # Collision evidence minimizes the exact quadratic relative trajectory
+        # over the interval, not only sampled endpoint distances.
+        for center, velocity in [
+            (np.array([4.0, 0.0]), np.zeros(2)),
+            (moving, np.array([0.0, obstacle_speed])),
+        ]:
+            r = x[:2] - center
+            v = x[2:] - velocity
+            a = 0.5 * acceleration
+            polynomial = [2 * a @ a, 3 * a @ v, v @ v + 2 * a @ r, r @ v]
+            roots = np.roots(np.trim_zeros(polynomial, "f")) if any(polynomial) else []
+            candidates = [0.0, dt] + [
+                float(z.real) for z in roots if abs(z.imag) < 1e-9 and 0 < z.real < dt
+            ]
+            minimum = min(
+                minimum,
+                *(float(np.linalg.norm(r + v * u + a * u * u)) for u in candidates),
+            )
+        rows.append([t, *x, *estimate, occupancy, age, *acceleration, float(hold)])
+        covariances.append(P.copy())
+        if np.linalg.norm(x[:2] - goal) < 0.1 and np.linalg.norm(x[2:]) < 0.1:
+            success = True
+            events.append([t, "goal reached with low speed"])
+            break
+        x = A @ x + B @ acceleration
+        estimate = A @ estimate + B @ acceleration
+        P = A @ P @ A.T + Q
+    history = np.asarray(rows)
+    return {
+        "history": history,
+        "covariances": np.asarray(covariances),
+        "updates": np.asarray(updates),
+        "events": events,
+        "route": np.asarray(route),
+        "goal_reached": success,
+        "minimum_clearance_m": minimum,
+        "position_rmse_m": float(
+            np.sqrt(np.mean(np.sum((history[:, 1:3] - history[:, 5:7]) ** 2, axis=1)))
+        ),
+        "goal_error_m": float(np.linalg.norm(x[:2] - goal)),
+    }
+
+
 def run(parameters):
     broken = bool(parameters["broken_mode"])
-    return _result(_model(parameters, broken), broken)
+    result = _result(_model(parameters, broken), broken)
+    tracked = _tracked_mission(
+        float(parameters["range_dropout_percent"]),
+        float(parameters["dynamic_obstacle_speed_m_s"]),
+        broken,
+    )
+    result["diagnostics"]["tracked_mission"] = tracked
+    h = tracked["history"]
+    result["plots"]["tracked_path"] = _plot(
+        "Estimated and physically tracked position",
+        "East (m)",
+        "North (m)",
+        [
+            _trace("Actual robot", h[:, 1], h[:, 2], "East", "m", "North", "m"),
+            _trace("Estimated robot", h[:, 5], h[:, 6], "East", "m", "North", "m"),
+            _trace(
+                "Planned waypoints",
+                tracked["route"][:, 0],
+                tracked["route"][:, 1],
+                "East",
+                "m",
+                "North",
+                "m",
+            ),
+        ],
+    )
+    result["plots"]["tracked_speed"] = _plot(
+        "Executed speed and communication holds",
+        "Time (s)",
+        "Speed (m/s)",
+        [
+            _trace(
+                "Actual speed",
+                h[:, 0],
+                np.linalg.norm(h[:, 3:5], axis=1),
+                "Time",
+                "s",
+                "Speed",
+                "m/s",
+            )
+        ],
+    )
+    result["tables"]["tracking_events"] = {
+        "columns": ["Time (s)", "Event"],
+        "rows": [{"Time (s)": t, "Event": e} for t, e in tracked["events"]],
+    }
+    result["metrics"].extend(
+        [
+            {
+                "id": "tracked_goal_error",
+                "label": "Tracked goal error",
+                "value": tracked["goal_error_m"],
+                "unit": "m",
+            },
+            {
+                "id": "tracked_clearance",
+                "label": "Continuous tracked clearance",
+                "value": tracked["minimum_clearance_m"],
+                "unit": "m",
+            },
+            {
+                "id": "estimate_rmse",
+                "label": "Position estimate RMSE",
+                "value": tracked["position_rmse_m"],
+                "unit": "m",
+            },
+        ]
+    )
+    return result
