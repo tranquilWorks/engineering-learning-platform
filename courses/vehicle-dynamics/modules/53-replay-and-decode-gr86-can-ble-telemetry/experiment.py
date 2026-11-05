@@ -30,7 +30,18 @@ def _trace(name: str, x: Any, y: Any, x_quantity: str, x_unit: str, y_quantity: 
 
 
 def _plot(title: str, x_title: str, y_title: str, traces: list[dict[str, Any]]) -> dict[str, Any]:
-    return {"data": traces, "layout": {"title": {"text": title, "x": 0.02}, "xaxis": {"title": {"text": x_title}}, "yaxis": {"title": {"text": y_title}}, "legend": {"orientation": "h"}, "margin": {"l": 72, "r": 36, "t": 62, "b": 62}, "hovermode": "closest", "uirevision": "keep-view"}, "config": {"responsive": True, "displaylogo": False}}
+    result = {"data": traces, "layout": {"title": {"text": title, "x": 0.02}, "xaxis": {"title": {"text": x_title}}, "yaxis": {"title": {"text": y_title}}, "legend": {"orientation": "h"}, "margin": {"l": 72, "r": 36, "t": 62, "b": 62}, "hovermode": "closest", "uirevision": "keep-view"}, "config": {"responsive": True, "displaylogo": False}}
+    # Course-owned layout: keep engineering labels readable in narrow plot panels.
+    from textwrap import fill
+    layout = result["layout"]
+    layout["title"] = {"text": fill(title, width=30).replace("\n", "<br>"), "x": 0.02, "font": {"size": 14}}
+    layout["legend"] = {"orientation": "h"}
+    layout.setdefault("margin", {"l": 72, "r": 36, "t": 62, "b": 110})
+    for axis in ("xaxis", "yaxis"):
+        layout[axis]["automargin"] = True
+        if isinstance(layout[axis].get("title"), dict):
+            layout[axis]["title"]["standoff"] = 12
+    return result
 
 
 def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:

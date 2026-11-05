@@ -9,6 +9,7 @@ Use the governing relations below and state the frame, sign convention and units
 - `M_roll=m a_y h`
 - `Delta F_z,f t_f+Delta F_z,r t_r=M_roll`
 - `M_elastic=M_roll-M_geometric`
+- `Fz_inner=W/2-T; Fz_outer=W/2+T; T*track=M; four-contact domain |T|<=W/2`
 
 ## Controlled comparison
 

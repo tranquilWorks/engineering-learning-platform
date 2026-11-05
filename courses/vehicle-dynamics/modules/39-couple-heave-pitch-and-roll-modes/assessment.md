@@ -9,6 +9,8 @@ Use the governing relations below and state the frame, sign convention and units
 - `K=sum_i k_i q_i q_i^T`
 - `K phi=lambda M phi`
 - `f_n=sqrt(lambda)/(2 pi)`
+- `modal_energy_fraction_j=M_jj phi_j^2/(phi^T M phi); sum_j fraction_j=1`
+- `A=M^(-1/2) K M^(-1/2); relative_residual=norm(Aq-omega^2 q)/norm(Aq)`
 
 ## Controlled comparison
 

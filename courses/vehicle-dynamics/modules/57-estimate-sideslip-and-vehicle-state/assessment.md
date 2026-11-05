@@ -9,6 +9,7 @@ Use the governing relations below and state the frame, sign convention and units
 - `x_predict[k+1]=x_hat[k]+Delta_t(A x_hat[k]+B delta[k])`
 - `innovation[k+1]=z[k+1]-x_predict[k+1]`
 - `x_hat[k+1]=x_predict[k+1]+K innovation[k+1]`
+- `Pminus=F P F^T+Q; Pplus=(I-L)Pminus(I-L)^T+L R L^T in declared normalized coordinates`
 
 ## Controlled comparison
 

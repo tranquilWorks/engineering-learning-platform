@@ -9,6 +9,7 @@ Use the governing relations below and state the frame, sign convention and units
 - `kappa(X)=sigma_max(X)/sigma_min(X)`
 - `r=y-X theta_hat`
 - `Cov(theta_hat)=sigma_force^2 pinv(X^T X)`
+- `X=U S V^T; Cov(theta|iid noise)=sigma^2 V S^(-2) V^T`
 
 ## Controlled comparison
 

@@ -89,7 +89,7 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
           });
           return failures;
         }));
-        if ((course.id === 'controls-gnc' && [37,44,52,53,54,55,58,59,61,63,67].includes(module.number)) || isVehicleDriveline(course,module) || isVehicleFoundations(course,module) || (course.id === 'robotics-autonomy' && ((module.number >= 30 && module.number <= 48) || module.number === 52))) {
+        if ((course.id === 'controls-gnc' && [37,44,52,53,54,55,58,59,61,63,67].includes(module.number)) || course.id === 'vehicle-dynamics' || (course.id === 'robotics-autonomy' && ((module.number >= 30 && module.number <= 48) || module.number === 52))) {
           row.plot_text_layout_errors = await page.locator('.js-plotly-plot').evaluateAll(nodes => nodes.flatMap((node, index) => {
             const failures = [], bounds = node.querySelector('svg.main-svg').getBoundingClientRect();
             const outside = (r, b) => r.left < b.left - 2 || r.right > b.right + 2 || r.top < b.top - 2 || r.bottom > b.bottom + 2;
@@ -196,6 +196,16 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
               await panels.nth(i).screenshot({path:file});
               screenshots.push({path:file,sha256:crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
             }
+          }
+
+          if (course.id === 'vehicle-dynamics' && [26,33,34,35,36,37,38,39,47,52,53,57,59,66,67].includes(module.number)) {
+            const panels = page.locator('.plot-panel');
+            for (let i=0; i<await panels.count(); i++) {
+              const file = `${out}/vehicle-mechanism-${module.number}-${viewport}-${i}.png`;
+              await panels.nth(i).screenshot({path:file});
+              screenshots.push({path:file,sha256:crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
+            }
+            row.mechanism_capture = true;
           }
 
           row.controls_portfolios = [];

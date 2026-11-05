@@ -81,8 +81,10 @@ def test_forbidden_sources_other_courses_and_runtime_preserved():
                 ["git", "show", f"{BASELINE}:{relative}/{name}"], cwd=ROOT
             )
             assert before == (folder / name).read_bytes()
-        before = subprocess.check_output(["git","show",f"{BASELINE}:{relative}/verification.yaml"],cwd=ROOT)
-        assert before == (folder/"verification.yaml").read_bytes()
+        before = subprocess.check_output(
+            ["git", "show", f"{BASELINE}:{relative}/verification.yaml"], cwd=ROOT
+        )
+        assert before == (folder / "verification.yaml").read_bytes()
 
 
 def test_retained_replay_has_five_cases_per_actual_lesson():

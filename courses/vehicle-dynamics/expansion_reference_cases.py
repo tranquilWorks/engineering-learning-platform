@@ -1832,3 +1832,42 @@ def origin(number: int) -> dict[str, Any]:
 
 def reference_signature(number: int, parameters: dict[str, Any]) -> list[float]:
     return [float(value) for value in _DISPATCH[number](dict(parameters))]
+
+
+def dynamic_history37(parameters):
+    """Independent lateral-velocity integration; no production state or time input."""
+    from scipy.integrate import solve_ivp
+
+    steer = float(parameters['steer_deg']) * np.pi / 180
+    friction = float(parameters['friction_mu'])
+    broken = bool(parameters['broken_mode'])
+    limits = friction * 1450 * 9.81 * np.array([1.5, 1.2]) / 2.7
+
+    def derivative(_time, state):
+        lateral, yaw = state
+        requests = np.array([70000*(steer-(lateral+1.2*yaw)/28), 75000*(-lateral+1.5*yaw)/28])
+        forces = requests if broken else limits*np.tanh(requests/limits)
+        return [(sum(forces)-1450*28*yaw)/1450, (1.2*forces[0]-1.5*forces[1])/2400]
+
+    time = np.arange(601)*.005
+    solution = solve_ivp(derivative, [0,3], [0,0], t_eval=time, method='DOP853', rtol=1e-11, atol=1e-12)
+    states = solution.y.T / np.array([28,1])
+    outside = np.flatnonzero((abs(states[:,0])>.35) | (abs(states[:,1])>1.5))
+    stop = int(outside[0]) if len(outside) else len(time)
+    return {'time':time[:stop], 'states':states[:stop], 'trajectory_valid':not len(outside)}
+
+
+def covariance_history57(parameters):
+    """Independent finite sum of past process and measurement-noise contributions."""
+    gain, noise = float(parameters['observer_gain']), float(parameters['measurement_noise'])
+    transition=np.eye(3)+.02*np.array([[-1.1,-.35,.2],[.8,-1.6,.1],[0,0,-.25]])
+    correction=np.diag([gain,.75*gain,.45*gain])
+    complement=np.eye(3)-correction
+    closed=complement@transition
+    added=complement@np.diag([2e-5,4e-5,1e-5])@complement.T + noise**2*(correction@correction.T)
+    power=np.eye(3); accumulated=np.zeros((3,3)); history=[]
+    for _ in range(301):
+        history.append(power@(.25*np.eye(3))@power.T+accumulated)
+        accumulated=accumulated+power@added@power.T
+        power=power@closed
+    return np.array(history)

@@ -55,9 +55,14 @@ def replay(base_url=None, refresh=False):
         if n <= 24:
             record = json.loads((folder / "verification.yaml").read_text())
             scenarios = {r["name"]: r["inputs"] for r in record["scenarios"]}
-            tolerance = {"absolute": float(record["reference"]["tolerance_abs"]), "relative": float(record["reference"].get("tolerance_rel", 0))}
-            primary,secondary=[c["id"] for c in manifest["controls"][:2]]
-            reference = lambda p,n=n,primary=primary,secondary=secondary: source.evaluate(f"P{n:02d}", p[primary], p[secondary], p["broken_mode"])
+            tolerance = {
+                "absolute": float(record["reference"]["tolerance_abs"]),
+                "relative": float(record["reference"].get("tolerance_rel", 0)),
+            }
+            primary, secondary = [c["id"] for c in manifest["controls"][:2]]
+            reference = lambda p, n=n, primary=primary, secondary=secondary: (
+                source.evaluate(f"P{n:02d}", p[primary], p[secondary], p["broken_mode"])
+            )
             origin = record["reference"]
         else:
             design = yaml.safe_load((folder / "design.yaml").read_text())
@@ -96,14 +101,52 @@ def replay(base_url=None, refresh=False):
                     "vehicle-dynamics", lesson["module_id"], parameters
                 ).model_dump(mode="json")
             if n <= 16:
-                full = (source.vehicle_foundations_reference if n<=12 else source.vehicle_driveline_reference)(n, parameters[primary], parameters[secondary], parameters["broken_mode"])
+                full = (
+                    source.vehicle_foundations_reference
+                    if n <= 12
+                    else source.vehicle_driveline_reference
+                )(
+                    n,
+                    parameters[primary],
+                    parameters[secondary],
+                    parameters["broken_mode"],
+                )
                 for group in ("physical", "response"):
                     for field, expected_field in full[group].items():
                         got = actual["diagnostics"][group][field]
-                        if isinstance(expected_field,list) and expected_field and isinstance(expected_field[0],str):
-                            assert got==expected_field
+                        if (
+                            isinstance(expected_field, list)
+                            and expected_field
+                            and isinstance(expected_field[0], str)
+                        ):
+                            assert got == expected_field
                         else:
-                            np.testing.assert_allclose(got, expected_field,atol=1e-10,rtol=1e-10)
+                            np.testing.assert_allclose(
+                                got, expected_field, atol=1e-10, rtol=1e-10
+                            )
+            if n == 37:
+                expected_history = native.dynamic_history37(parameters)
+                actual_history = actual["diagnostics"]["dynamic_study"]
+                np.testing.assert_allclose(
+                    actual_history["time"], expected_history["time"], atol=1e-12
+                )
+                np.testing.assert_allclose(
+                    actual_history["states"],
+                    expected_history["states"],
+                    atol=2e-8,
+                    rtol=2e-7,
+                )
+                assert (
+                    actual_history["trajectory_valid"]
+                    == expected_history["trajectory_valid"]
+                )
+            if n == 57:
+                np.testing.assert_allclose(
+                    actual["diagnostics"]["conditional_covariance"],
+                    native.covariance_history57(parameters),
+                    atol=1e-14,
+                    rtol=1e-11,
+                )
             error, scaled = compare(
                 actual["diagnostics"]["signature"], expected, tolerance
             )
@@ -125,7 +168,7 @@ def replay(base_url=None, refresh=False):
                     ("actual-production.json", actual["diagnostics"]["signature"]),
                 ]:
                     p = folder / "evidence" / filename
-                    historical = p.with_name("pre-aggregate-"+p.name)
+                    historical = p.with_name("pre-aggregate-" + p.name)
                     if not historical.exists():
                         historical.write_bytes(p.read_bytes())
                     data = json.loads(p.read_text())

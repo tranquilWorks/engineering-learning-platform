@@ -12,7 +12,7 @@ COURSE = ROOT / "courses/vehicle-dynamics"
 def write_manifest(path, module):
     # Previously reviewed source manifests are JSON; scoped verifiers consume JSON.
     if path.read_text().lstrip().startswith("{"):
-        path.write_text(json.dumps(module, indent=2)+"\n")
+        path.write_text(json.dumps(module, indent=2) + "\n")
     else:
         path.write_text(yaml.safe_dump(module, sort_keys=False, width=100))
 
@@ -29,13 +29,27 @@ def main():
         record = yaml.safe_load(
             (folder / ("verification.yaml" if n <= 24 else "design.yaml")).read_text()
         )
-        equations = [record["governing_relation"]] if n <= 24 else record["governing_equations"]
-        scenarios = {r["name"]: r["inputs"] for r in record["scenarios"]} if n <= 24 else record["scenarios"]
+        equations = (
+            [record["governing_relation"]] if n <= 24 else record["governing_equations"]
+        )
+        scenarios = (
+            {r["name"]: r["inputs"] for r in record["scenarios"]}
+            if n <= 24
+            else record["scenarios"]
+        )
         baseline = scenarios["baseline"]
         lines = []
         for scenario in ["sweep_1", "sweep_2"]:
-            differences = [f"`{k}`: {baseline[k]} → {v}" for k,v in scenarios[scenario].items() if baseline[k] != v]
-            lines.append("- " + "; ".join(differences) + ". Hold the other controls at baseline; predict and explain the change before executing.")
+            differences = [
+                f"`{k}`: {baseline[k]} → {v}"
+                for k, v in scenarios[scenario].items()
+                if baseline[k] != v
+            ]
+            lines.append(
+                "- "
+                + "; ".join(differences)
+                + ". Hold the other controls at baseline; predict and explain the change before executing."
+            )
         memberships = [
             c["id"]
             for c in curriculum["competencies"]
@@ -96,13 +110,23 @@ Competency links: {", ".join(memberships)}. Carry the prediction, two comparison
 """
         )
         previous = folder / "prior-assessment.md"
-        if (folder/"assessment.md").exists() and not previous.exists() and not (COURSE/"assessment-map.json").exists():
-            previous.write_bytes((folder/"assessment.md").read_bytes())
+        if (
+            (folder / "assessment.md").exists()
+            and not previous.exists()
+            and not (COURSE / "assessment-map.json").exists()
+        ):
+            previous.write_bytes((folder / "assessment.md").read_bytes())
         if previous.exists():
             text += "\n\n# Retained scoped evidence task\n\n" + previous.read_text()
         (folder / "assessment.md").write_text(text)
-        if not any(b.get("source")=="assessment.md" for b in module["blocks"]):
-            module["blocks"].append({"type":"markdown", "title":"Course checkpoint", "source":"assessment.md"})
+        if not any(b.get("source") == "assessment.md" for b in module["blocks"]):
+            module["blocks"].append(
+                {
+                    "type": "markdown",
+                    "title": "Course checkpoint",
+                    "source": "assessment.md",
+                }
+            )
         write_manifest(path, module)
     # Rebuild only generated portfolio bindings, removing obsolete anchors.
     for folder in (COURSE / "modules").iterdir():
@@ -192,10 +216,20 @@ Retain inputs, selected outputs and your explanation as a cumulative artifact. N
                 "learner_result": "not_recorded",
             }
         )
-    curriculum["assessments"] = [a for a in curriculum["assessments"] if not a["id"].startswith("VD-F")]
-    curriculum["assessments"] += [{"id": r["id"], "type":"formative", "competency_ids":r["competency_ids"], "evidence":r["task"]} for r in lessons]
+    curriculum["assessments"] = [
+        a for a in curriculum["assessments"] if not a["id"].startswith("VD-F")
+    ]
+    curriculum["assessments"] += [
+        {
+            "id": r["id"],
+            "type": "formative",
+            "competency_ids": r["competency_ids"],
+            "evidence": r["task"],
+        }
+        for r in lessons
+    ]
     # Keep the original JSON representation consumed by existing curriculum gates.
-    (COURSE/"competency-map.yaml").write_text(json.dumps(curriculum, indent=2)+"\n")
+    (COURSE / "competency-map.yaml").write_text(json.dumps(curriculum, indent=2) + "\n")
     registry = {
         "schema_version": 1,
         "course_id": "vehicle-dynamics",

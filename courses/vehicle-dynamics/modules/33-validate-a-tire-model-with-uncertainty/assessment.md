@@ -10,6 +10,7 @@ Use the governing relations below and state the frame, sign convention and units
 - `r_i=y_i-theta_hat*x_i`
 - `z_i=r_i/sigma`
 - `coverage=mean(|z_i|<=1.96)`
+- `Var(theta_hat)=sigma^2/sum(x_train^2); Var(y_new)=sigma^2+x_new^2 Var(theta_hat)`
 
 ## Controlled comparison
 
