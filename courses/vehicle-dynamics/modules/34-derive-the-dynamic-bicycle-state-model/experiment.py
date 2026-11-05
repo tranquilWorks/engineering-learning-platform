@@ -183,4 +183,10 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
 def run(parameters: dict[str, Any]) -> dict[str, Any]:
     values = _parameters(parameters)
     broken = bool(parameters.get("broken_mode", False))
-    return _result(_model(values, broken), broken)
+    result = _result(_model(values, broken), broken)
+    plot = result["plots"]["response"]
+    plot["data"][1]["yaxis"] = "y2"
+    plot["layout"]["yaxis"]["title"]["text"] = "Sideslip (deg)"
+    plot["layout"]["yaxis2"] = {"title": {"text": "Yaw rate (deg/s)"}, "overlaying": "y", "side": "right"}
+    plot["layout"]["margin"]["r"] = 76
+    return result

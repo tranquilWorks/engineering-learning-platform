@@ -151,4 +151,14 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
 def run(parameters: dict[str, Any]) -> dict[str, Any]:
     values = _parameters(parameters)
     broken = bool(parameters.get("broken_mode", False))
-    return _result(_model(values, broken), broken)
+    result = _result(_model(values, broken), broken)
+    friction = result["plots"]["mechanism"]["data"].pop()
+    friction["x"] = friction["x"]*8000.0
+    friction["meta"].update(x_quantity="Normal load", x_unit="N")
+    result["plots"]["response"]["data"].append(friction)
+    plot = result["plots"]["response"]
+    plot["data"][1]["yaxis"] = "y2"
+    plot["layout"]["yaxis"]["title"]["text"] = "Peak force (N)"
+    plot["layout"]["yaxis2"] = {"title": {"text": "Effective friction (1)"}, "overlaying": "y", "side": "right"}
+    plot["layout"]["margin"]["r"] = 76
+    return result

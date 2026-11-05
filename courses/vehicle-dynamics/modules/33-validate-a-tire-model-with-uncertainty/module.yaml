@@ -2,8 +2,10 @@ schema_version: 1
 id: 33-validate-a-tire-model-with-uncertainty
 number: 33
 title: Validate a Tire Model with Uncertainty
-summary: Fit on deterministic synthetic training data and judge held-out bias, RMSE, normalized residuals, and interval coverage.
-guiding_question: When does a small residual become statistically inconsistent with the uncertainty claimed by a tire model?
+summary: Fit on deterministic synthetic training data and judge held-out bias, RMSE, normalized residuals,
+  and interval coverage.
+guiding_question: When does a small residual become statistically inconsistent with the uncertainty claimed
+  by a tire model?
 status: implemented
 tags:
 - vehicle-dynamics
@@ -27,7 +29,7 @@ controls:
   type: slider
   label: Held-out validation fraction
   default: 0.35
-  unit: "1"
+  unit: '1'
   minimum: 0.2
   maximum: 0.6
   step: 0.05
@@ -40,8 +42,10 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Model fitting uses training rows only, and held-out residual coverage is interpreted against the same declared observation uncertainty.
-  reveal: Restore the train/validation boundary, use the declared positive sigma unchanged, and recompute held-out bias, RMSE, normalized residuals, and coverage.
+  text: Model fitting uses training rows only, and held-out residual coverage is interpreted against the
+    same declared observation uncertainty.
+  reveal: Restore the train/validation boundary, use the declared positive sigma unchanged, and recompute
+    held-out bias, RMSE, normalized residuals, and coverage.
 - type: controls
   title: Tire model controls
 - type: metrics
@@ -62,3 +66,12 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md
+- type: markdown
+  title: Cumulative portfolio A-TIRE-LONG
+  source: portfolio-a-tire-long.md
+- type: markdown
+  title: Cumulative portfolio A-TIRE-LAT
+  source: portfolio-a-tire-lat.md

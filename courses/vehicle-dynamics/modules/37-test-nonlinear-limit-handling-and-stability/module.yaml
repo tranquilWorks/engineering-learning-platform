@@ -2,8 +2,10 @@ schema_version: 1
 id: 37-test-nonlinear-limit-handling-and-stability
 number: 37
 title: Test Nonlinear Limit Handling and Stability
-summary: Couple bounded nonlinear axle forces to yaw moment, utilization, and local stability instead of extending linear force indefinitely.
-guiding_question: Can a locally restoring yaw response still be invalid because one axle has exceeded tire capacity?
+summary: Couple bounded nonlinear axle forces to yaw moment, utilization, and local stability instead
+  of extending linear force indefinitely.
+guiding_question: Can a locally restoring yaw response still be invalid because one axle has exceeded
+  tire capacity?
 status: implemented
 tags:
 - vehicle-dynamics
@@ -29,7 +31,7 @@ controls:
   type: slider
   label: Tire-road friction coefficient
   default: 1.15
-  unit: "1"
+  unit: '1'
   minimum: 0.7
   maximum: 1.5
   step: 0.05
@@ -42,8 +44,10 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: A limit-handling verdict requires both a restoring yaw-moment slope and axle utilizations no greater than the declared friction boundary.
-  reveal: Restore the bounded nonlinear force law and recompute utilization and local yaw-moment slope together.
+  text: A limit-handling verdict requires both a restoring yaw-moment slope and axle utilizations no greater
+    than the declared friction boundary.
+  reveal: Restore the bounded nonlinear force law and recompute utilization and local yaw-moment slope
+    together.
 - type: controls
   title: Chassis model controls
 - type: metrics
@@ -64,3 +68,14 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Full-state stability and executed response
+  source: integration.md
+- type: plot_grid
+  title: Nonlinear dynamics evidence
+  plots:
+  - state_history
+  - dynamic_utilization
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

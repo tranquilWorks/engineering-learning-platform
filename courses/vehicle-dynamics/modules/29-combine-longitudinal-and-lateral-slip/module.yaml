@@ -2,7 +2,8 @@ schema_version: 1
 id: 29-combine-longitudinal-and-lateral-slip
 number: 29
 title: Combine Longitudinal and Lateral Slip
-summary: Project simultaneous longitudinal and lateral tire demands onto a friction-circle constraint and inspect the remaining margin.
+summary: Project simultaneous longitudinal and lateral tire demands onto a friction-circle constraint
+  and inspect the remaining margin.
 guiding_question: Why can two individually valid pure-slip forces become impossible when requested together?
 status: implemented
 tags:
@@ -19,7 +20,7 @@ controls:
   type: slider
   label: Longitudinal slip ratio
   default: 0.12
-  unit: "1"
+  unit: '1'
   minimum: -0.3
   maximum: 0.3
   step: 0.01
@@ -40,8 +41,10 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: The delivered combined-force vector never exceeds unit friction utilization when both pure-slip demands share one contact patch.
-  reveal: Compute the joint utilization before delivery, apply one common radial scale factor, and verify nonpositive constraint residual.
+  text: The delivered combined-force vector never exceeds unit friction utilization when both pure-slip
+    demands share one contact patch.
+  reveal: Compute the joint utilization before delivery, apply one common radial scale factor, and verify
+    nonpositive constraint residual.
 - type: controls
   title: Tire model controls
 - type: metrics
@@ -62,3 +65,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

@@ -133,9 +133,10 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
     return {
         "signature": signature,
         "metrics": [
+            ("target_reached", "100 km/h reached within horizon", np.max(speed)>=27.78, "1"),
             ("equivalent_mass", "Reflected inertia mass", signature[0], "kg"),
             ("initial_acceleration", "Initial launch acceleration", signature[1], "m/s^2"),
-            ("target_time", "Time to 100 km/h", signature[2], "s"),
+            ("target_time", "Time to 100 km/h (horizon if not reached)", signature[2], "s"),
             ("energy_residual", "Launch energy residual", signature[4], "J"),
         ],
         "plots": {

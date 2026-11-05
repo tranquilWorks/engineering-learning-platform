@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "item_id": "P13",
+  "origin": {
+    "path": "../../reference_cases.py",
+    "origin": "Shaft-power and traction-limited work formulation, inverted to delivered force and torque",
+    "imports_production": false,
+    "consumes_production_output": false,
+    "tolerance_abs": "1e-10",
+    "fields": [
+      "engine_speed_rpm",
+      "requested_wheel_force_n",
+      "applied_wheel_force_n",
+      "traction_limit_n",
+      "wheel_power_w",
+      "power_residual_w",
+      "invalid"
+    ],
+    "tolerance_rel": "1e-10"
+  },
+  "tolerance": {
+    "absolute": 1e-10,
+    "relative": 1e-10
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "engine_torque_n_m": 250.0,
+        "gear_ratio": 3.0,
+        "broken_mode": false
+      },
+      "signature": [
+        7457.545904877381,
+        8785.714285714286,
+        8785.714285714286,
+        12949.2,
+        175714.2857142857,
+        0.0,
+        0.0
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "engine_torque_n_m": 80.0,
+        "gear_ratio": 3.0,
+        "broken_mode": false
+      },
+      "signature": [
+        7457.545904877381,
+        2811.4285714285716,
+        2811.4285714285716,
+        12949.2,
+        56228.57142857143,
+        0.0,
+        0.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "engine_torque_n_m": 250.0,
+        "gear_ratio": 4.2,
+        "broken_mode": false
+      },
+      "signature": [
+        10440.564266828334,
+        12300.0,
+        12300.0,
+        12949.2,
+        246000.0,
+        0.0,
+        0.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "engine_torque_n_m": 250.0,
+        "gear_ratio": 3.0,
+        "broken_mode": true
+      },
+      "signature": [
+        7457.545904877381,
+        9761.904761904761,
+        9761.904761904761,
+        12949.2,
+        195238.09523809524,
+        19523.809523809527,
+        1.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "engine_torque_n_m": 250.0,
+        "gear_ratio": 3.0,
+        "broken_mode": false
+      },
+      "signature": [
+        7457.545904877381,
+        8785.714285714286,
+        8785.714285714286,
+        12949.2,
+        175714.2857142857,
+        0.0,
+        0.0
+      ]
+    }
+  }
+}

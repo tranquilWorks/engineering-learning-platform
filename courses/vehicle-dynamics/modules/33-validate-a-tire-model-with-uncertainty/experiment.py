@@ -123,13 +123,18 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
     maximum_normalized = float(np.max(np.abs(normalized)))
     signature = [fitted_scale, bias, rmse, coverage, maximum_normalized]
     indices = np.arange(train_count, count)
+    parameter_variance = assumed_sigma**2 / np.dot(fit_basis, fit_basis)
+    predictive_sigma = np.sqrt(assumed_sigma**2 + validation_basis**2*parameter_variance)
+    conditional_band = 1.96*predictive_sigma/assumed_sigma
     return {
         "signature": signature,
         "metrics": [
             ("scale", "Fitted force scale", fitted_scale, "1"),
             ("bias", "Held-out residual bias", bias, "N"),
             ("rmse", "Held-out residual RMSE", rmse, "N"),
-            ("coverage", "Prediction-interval coverage", coverage, "1"),
+            ("coverage", "Residual-only 1.96-sigma containment", coverage, "1"),
+            ("parameter_sigma", "Conditional scale standard uncertainty", np.sqrt(parameter_variance), "1"),
+            ("predictive_containment", "Conditional prediction-band containment", np.mean(abs(residual)<=1.96*predictive_sigma), "1"),
         ],
         "plots": {
             "response": _plot("Held-out force prediction", "Force basis (N)", "Observed force (N)", [
@@ -137,12 +142,14 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
                 _trace("Model prediction", validation_basis, fitted_scale * validation_basis, "Force basis", "N", "Predicted force", "N"),
             ]),
             "mechanism": _plot("Normalized validation residuals", "Validation row (1)", "Normalized residual (1)", [
+                _trace("Conditional predictive upper", indices, conditional_band, "Validation row", "1", "Normalized residual", "1"),
+                _trace("Conditional predictive lower", indices, -conditional_band, "Validation row", "1", "Normalized residual", "1"),
                 _trace("Normalized residual", indices, normalized, "Validation row", "1", "Normalized residual", "1", mode="markers"),
-                _trace("Upper 95 percent bound", indices, np.full_like(indices, 1.96, dtype=float), "Validation row", "1", "Normalized residual", "1"),
-                _trace("Lower 95 percent bound", indices, np.full_like(indices, -1.96, dtype=float), "Validation row", "1", "Normalized residual", "1"),
+                _trace("Residual-only +1.96 sigma", indices, np.full_like(indices, 1.96, dtype=float), "Validation row", "1", "Normalized residual", "1"),
+                _trace("Residual-only -1.96 sigma", indices, np.full_like(indices, -1.96, dtype=float), "Validation row", "1", "Normalized residual", "1"),
             ]),
         },
-        "observation": "Held-out residuals need both a magnitude metric and a declared uncertainty scale; leakage or underreported sigma distorts coverage.",
+        "observation": "Held-out residuals need both a magnitude metric and a declared uncertainty scale; leakage or underreported sigma distorts containment. The additional predictive band includes fitted-scale uncertainty under an independent Gaussian-noise assumption; the deterministic correlated fixture does not establish empirical 95 percent coverage.",
     }
 
 

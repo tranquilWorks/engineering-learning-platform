@@ -80,10 +80,10 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
     signature = [float(limit), float(engine_decoded[-1]), float(np.mean(wheel_decoded)), float(parity_failures), float(provenance_ok), decode_rmse]
     return {
         "signature": signature,
-        "metrics": [("records", "Replayed records", limit, "record"), ("engine_speed", "Last decoded engine speed", signature[1], "rpm"), ("wheel_speed", "Mean decoded wheel speed", signature[2], "km/h"), ("parity_failures", "CAN/BLE parity failures", parity_failures, "record"), ("provenance", "Synthetic fixture provenance verified", signature[4], "1"), ("decode_rmse", "Engineering-value decode RMSE", decode_rmse, "engineering unit")],
+        "metrics": [("records", "Replayed records", limit, "record"), ("engine_speed", "Last decoded engine speed", signature[1], "rpm"), ("wheel_speed", "Mean decoded wheel speed", signature[2], "km/h"), ("parity_failures", "CAN/BLE parity failures", parity_failures, "record"), ("provenance", "Synthetic fixture provenance verified", signature[4], "1"), ("decode_rmse", "Scaled decode RMS (1 rpm, 1 km/h scales)", decode_rmse, "1")],
         "plots": {
-            "response": _plot("Decoded telemetry", "Record sequence (1)", "Engineering value (mixed)", [_trace("Engine speed", engine_sequence, engine_decoded, "Record sequence", "1", "Engine speed", "rpm"), _trace("Mean wheel speed", wheel_sequence, wheel_decoded, "Record sequence", "1", "Wheel speed", "km/h")]),
-            "mechanism": _plot("Decode reference comparison", "Decoded sample (1)", "Engineering value (mixed)", [_trace("Decoded engine", np.arange(len(engine_decoded)), engine_decoded, "Decoded sample", "1", "Engine speed", "rpm"), _trace("Expected engine", np.arange(len(engine_expected)), engine_expected, "Decoded sample", "1", "Engine speed", "rpm")]),
+            "response": _plot("Decoded telemetry", "Record sequence (1)", "Engine speed (rpm)", [_trace("Engine speed", engine_sequence, engine_decoded, "Record sequence", "1", "Engine speed", "rpm"), _trace("Mean wheel speed", wheel_sequence, wheel_decoded, "Record sequence", "1", "Wheel speed", "km/h")]),
+            "mechanism": _plot("Decode reference comparison", "Decoded sample (1)", "Engine speed (rpm)", [_trace("Decoded engine", np.arange(len(engine_decoded)), engine_decoded, "Decoded sample", "1", "Engine speed", "rpm"), _trace("Expected engine", np.arange(len(engine_expected)), engine_expected, "Decoded sample", "1", "Engine speed", "rpm")]),
         },
         "observation": "Transport framing and engineering-value decoding are separate invariants: identical payload bytes do not prove that byte order and scale were interpreted correctly.",
     }
@@ -92,4 +92,10 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
 def run(parameters: dict[str, Any]) -> dict[str, Any]:
     values = _parameters(parameters)
     broken = bool(parameters.get("broken_mode", False))
-    return _result(_model(values, broken), broken)
+    result = _result(_model(values, broken), broken)
+    plot = result["plots"]["response"]
+    plot["data"][1]["yaxis"] = "y2"
+    plot["layout"]["yaxis"]["title"]["text"] = "Engine speed (rpm)"
+    plot["layout"]["yaxis2"] = {"title": {"text": "Wheel speed (km/h)"}, "overlaying": "y", "side": "right"}
+    plot["layout"]["margin"]["r"] = 76
+    return result

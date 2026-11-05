@@ -127,15 +127,14 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
         used_stiffness = np.diag(np.diag(used_stiffness))
     values, modes = _solve_modes(mass_matrix, used_stiffness)
     frequencies = np.sqrt(values) / (2.0 * np.pi)
-    residuals = []
-    for index, value in enumerate(values):
-        vector = modes[:, index]
-        residuals.append(
-            np.linalg.norm(physical_stiffness.dot(vector) - value * mass_matrix.dot(vector))
-            / max(np.linalg.norm(physical_stiffness.dot(vector)), 1.0)
-        )
-    off_diagonal = physical_stiffness - np.diag(np.diag(physical_stiffness))
-    coupling = np.linalg.norm(off_diagonal) / np.linalg.norm(np.diag(np.diag(physical_stiffness)))
+    inverse_sqrt = np.diag(1.0 / np.sqrt(np.diag(mass_matrix)))
+    physical_operator = inverse_sqrt @ physical_stiffness @ inverse_sqrt
+    normalized_modes = np.sqrt(np.diag(mass_matrix))[:, None] * modes
+    residuals = [np.linalg.norm(physical_operator @ normalized_modes[:, i] - value * normalized_modes[:, i])
+                 / np.linalg.norm(physical_operator @ normalized_modes[:, i])
+                 for i, value in enumerate(values)]
+    diagonal = np.diag(np.diag(physical_operator))
+    coupling = np.linalg.norm(physical_operator-diagonal) / np.linalg.norm(diagonal)
     signature = [
         float(frequencies[0]),
         float(frequencies[1]),
@@ -144,7 +143,7 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
         float(max(residuals)),
     ]
     labels = np.arange(1, 4)
-    participation = np.abs(modes / np.max(np.abs(modes), axis=0))
+    participation = normalized_modes**2 / np.sum(normalized_modes**2, axis=0)
     return {
         "signature": signature,
         "metrics": [
@@ -163,13 +162,13 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
                 ],
             ),
             "mechanism": _plot(
-                "Mass-normalized modal participation",
+                "Modal kinetic-energy fractions",
                 "Mode index (1)",
-                "Normalized participation (1)",
+                "Kinetic-energy fraction (1)",
                 [
-                    _trace("Heave", labels, participation[0], "Mode index", "1", "Normalized participation", "1", mode="markers"),
-                    _trace("Pitch", labels, participation[1], "Mode index", "1", "Normalized participation", "1", mode="markers"),
-                    _trace("Roll", labels, participation[2], "Mode index", "1", "Normalized participation", "1", mode="markers"),
+                    _trace("Heave", labels, participation[0], "Mode index", "1", "Kinetic-energy fraction", "1", mode="markers"),
+                    _trace("Pitch", labels, participation[1], "Mode index", "1", "Kinetic-energy fraction", "1", mode="markers"),
+                    _trace("Roll", labels, participation[2], "Mode index", "1", "Kinetic-energy fraction", "1", mode="markers"),
                 ],
             ),
         },

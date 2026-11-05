@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "item_id": "P38",
+  "signature_fields": [
+    {
+      "field": "front_lateral_load_transfer",
+      "unit": "N"
+    },
+    {
+      "field": "rear_lateral_load_transfer",
+      "unit": "N"
+    },
+    {
+      "field": "geometric_roll_moment_fraction",
+      "unit": "1"
+    },
+    {
+      "field": "roll_moment_closure_residual",
+      "unit": "N*m"
+    },
+    {
+      "field": "front_pair_capacity_loss",
+      "unit": "N"
+    }
+  ],
+  "origin": {
+    "kind": "independent-analytic-and-numerical-python",
+    "item_id": "P38",
+    "independent": true,
+    "imports_production_entrypoint": false,
+    "derived_from_production_output": false,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "lateral_accel_g": 1,
+        "front_roll_stiffness_fraction": 0.58,
+        "broken_mode": false
+      },
+      "signature": [
+        2657.4832903225806,
+        2142.2489542483663,
+        0.1688034188034188,
+        0.0,
+        67.71615408396792
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "lateral_accel_g": 1.4,
+        "front_roll_stiffness_fraction": 0.58,
+        "broken_mode": false
+      },
+      "signature": [
+        3720.476606451613,
+        2999.148535947713,
+        0.1688034188034188,
+        1.8189894035458565e-12,
+        136.07056923440905
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "lateral_accel_g": 1,
+        "front_roll_stiffness_fraction": 0.7,
+        "broken_mode": false
+      },
+      "signature": [
+        3133.4687096774196,
+        1660.041503267974,
+        0.1688034188034188,
+        9.094947017729282e-13,
+        95.08010855061457
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "lateral_accel_g": 1,
+        "front_roll_stiffness_fraction": 0.58,
+        "broken_mode": true
+      },
+      "signature": [
+        3124.6994838709675,
+        2485.0005228758173,
+        0.1688034188034188,
+        1248.5950000000003,
+        94.52978718829945
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "lateral_accel_g": 1,
+        "front_roll_stiffness_fraction": 0.58,
+        "broken_mode": false
+      },
+      "signature": [
+        2657.4832903225806,
+        2142.2489542483663,
+        0.1688034188034188,
+        0.0,
+        67.71615408396792
+      ]
+    }
+  }
+}

@@ -143,7 +143,7 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
             ("usable_acceleration", "Usable acceleration", signature[2], "m/s^2"),
             ("lap_energy", "Lap energy", signature[3], "MJ"),
             ("stint_laps", "Predicted stint", signature[4], "lap"),
-            ("coupling_residual", "Coupling residual", signature[5], "1"),
+            ("coupling_residual", "Scaled coupling residual (1 m/s², 1 lap)", signature[5], "1"),
         ],
         "plots": {
             "response": _plot(
@@ -204,4 +204,10 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
 def run(parameters: dict[str, Any]) -> dict[str, Any]:
     values = _parameters(parameters)
     broken = bool(parameters.get("broken_mode", False))
-    return _result(_model(values, broken), broken)
+    result = _result(_model(values, broken), broken)
+    plot = result["plots"]["mechanism"]
+    plot["data"][1]["yaxis"] = "y2"
+    plot["layout"]["yaxis"]["title"]["text"] = "Predicted laps (lap)"
+    plot["layout"]["yaxis2"] = {"title": {"text": "Per-lap energy (MJ)"}, "overlaying": "y", "side": "right"}
+    plot["layout"]["margin"]["r"] = 76
+    return result

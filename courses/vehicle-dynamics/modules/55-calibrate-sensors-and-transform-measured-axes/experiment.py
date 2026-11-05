@@ -58,7 +58,7 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
     biases = np.linspace(-3.0, 3.0, 61); yaw = [_state(float(value), p["mounting_yaw_deg"], broken)[2] for value in biases]
     return {
         "signature": signature,
-        "metrics": [("body_ax", "Body longitudinal acceleration", signature[0], "m/s^2"), ("body_ay", "Body lateral acceleration", signature[1], "m/s^2"), ("yaw_rate", "Calibrated yaw rate", signature[2], "deg/s"), ("norm_closure", "Rotation norm closure", signature[3], "m/s^2"), ("calibration_residual", "Calibration residual", signature[4], "mixed")],
+        "metrics": [("body_ax", "Body longitudinal acceleration", signature[0], "m/s^2"), ("body_ay", "Body lateral acceleration", signature[1], "m/s^2"), ("yaw_rate", "Calibrated yaw rate", signature[2], "deg/s"), ("norm_closure", "Rotation norm closure", signature[3], "m/s^2"), ("calibration_residual", "Scaled calibration residual (1 m/s², 1 deg/s)", signature[4], "1")],
         "plots": {"response": _plot("Mounting-angle calibration", "Mounting yaw (deg)", "Body acceleration (m/s^2)", [_trace("Longitudinal", angles, ax, "Mounting yaw", "deg", "Body acceleration", "m/s^2"), _trace("Lateral", angles, ay, "Mounting yaw", "deg", "Body acceleration", "m/s^2")]), "mechanism": _plot("Yaw-bias removal", "Declared yaw bias (deg/s)", "Calibrated yaw rate (deg/s)", [_trace("Calibrated yaw rate", biases, yaw, "Declared yaw bias", "deg/s", "Calibrated yaw rate", "deg/s")])},
         "observation": "Calibration removes bias and scale in sensor coordinates before a norm-preserving rotation maps the measurement into forward-left body axes.",
     }

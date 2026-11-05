@@ -146,7 +146,7 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
           row.checkpoint_in_viewport = true;
           row.checkpoint = true;
         }
-        if (['controls-gnc','robotics-autonomy'].includes(course.id)) {
+        if (['controls-gnc','robotics-autonomy','vehicle-dynamics'].includes(course.id)) {
           const jump = page.getByRole('navigation', {name:'Lesson sections'}).getByRole('link', {name:'Course checkpoint', exact:true});
           await jump.click();
           const heading = page.getByRole('heading', {name:'Course checkpoint', exact:true});
@@ -200,6 +200,7 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
 
           row.controls_portfolios = [];
           if (course.id === 'robotics-autonomy') row.robotics_portfolios = [];
+          if (course.id === 'vehicle-dynamics') row.vehicle_portfolios = [];
           for (const block of doc.module.blocks.filter(b => b.type === 'markdown' && b.title?.startsWith('Cumulative portfolio '))) {
             const nav = page.getByRole('navigation', {name:'Lesson sections'}).getByRole('link', {name:block.title,exact:true});
             await nav.click();
@@ -209,6 +210,7 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
             if (!body.includes('Four-criterion rubric') || !body.includes('Diagnose and recover')) throw new Error('Missing cumulative tasks/rubric');
             row.controls_portfolios.push(block.title);
             if (course.id === 'robotics-autonomy') row.robotics_portfolios.push(block.title);
+            if (course.id === 'vehicle-dynamics') row.vehicle_portfolios.push(block.title);
           }
         }
         row.status = 'passed';
@@ -217,7 +219,7 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
           await page.screenshot({ path: file });
           screenshots.push({ path: file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex') });
         }
-        if (['controls-gnc','robotics-autonomy'].includes(course.id) || module === course.modules[0] || isRevised(course, module) || isCumulative(course, module)) {
+        if (['controls-gnc','robotics-autonomy','vehicle-dynamics'].includes(course.id) || module === course.modules[0] || isRevised(course, module) || isCumulative(course, module)) {
           const controls = page.locator('.control-panel:visible');
           const before = await page.locator('.metric').allTextContents();
           const choice = controls.locator('select').first();

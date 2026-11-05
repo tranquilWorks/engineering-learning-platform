@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "item_id": "P18",
+  "origin": {
+    "path": "../../reference_cases.py",
+    "origin": "separately formulated scalar analytic or bounded numerical oracle",
+    "imports_production": false,
+    "consumes_production_output": false,
+    "tolerance_abs": "1e-10",
+    "fields": [
+      "final_position_error_m",
+      "final_velocity_error_m_s",
+      "position_rmse_m",
+      "mean_abs_innovation_m",
+      "final_gps_residual_m",
+      "maximum_time_skew_s",
+      "samples",
+      "invalid"
+    ]
+  },
+  "tolerance": {
+    "absolute": 1e-10,
+    "relative": 0.0
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "gps_weight": 0.25,
+        "imu_bias_m_s2": 0.05,
+        "broken_mode": false
+      },
+      "signature": [
+        0.6201947425112557,
+        0.5,
+        0.3541118428277931,
+        0.5038959368888305,
+        0.2260027832799807,
+        0.0,
+        21.0,
+        0.0
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "gps_weight": 0,
+        "imu_bias_m_s2": 0.05,
+        "broken_mode": false
+      },
+      "signature": [
+        2.4999999999999964,
+        0.5,
+        1.159415711324746,
+        1.0981387929473856,
+        2.1058080407687214,
+        0.0,
+        21.0,
+        0.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "gps_weight": 0.25,
+        "imu_bias_m_s2": 0.3,
+        "broken_mode": false
+      },
+      "signature": [
+        3.7160258503461776,
+        2.9999999999999973,
+        1.9338950795190657,
+        2.3022934453937216,
+        3.3218338911149026,
+        0.0,
+        21.0,
+        0.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "gps_weight": 0.25,
+        "imu_bias_m_s2": 0.05,
+        "broken_mode": true
+      },
+      "signature": [
+        -2.8285203168613435,
+        0.5,
+        1.4763325174511701,
+        1.0657040633722696,
+        -3.2227122760926186,
+        1.0,
+        21.0,
+        1.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "gps_weight": 0.25,
+        "imu_bias_m_s2": 0.05,
+        "broken_mode": false
+      },
+      "signature": [
+        0.6201947425112557,
+        0.5,
+        0.3541118428277931,
+        0.5038959368888305,
+        0.2260027832799807,
+        0.0,
+        21.0,
+        0.0
+      ]
+    }
+  }
+}

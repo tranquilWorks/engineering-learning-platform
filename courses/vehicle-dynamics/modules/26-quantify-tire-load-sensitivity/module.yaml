@@ -2,8 +2,10 @@ schema_version: 1
 id: 26-quantify-tire-load-sensitivity
 number: 26
 title: Quantify Tire Load Sensitivity
-summary: Use a sublinear peak-force law to distinguish friction coefficient from force capacity and expose load-transfer loss.
-guiding_question: Why can the total tire capacity fall when axle load is redistributed but its total stays fixed?
+summary: Use a sublinear peak-force law to distinguish friction coefficient from force capacity and expose
+  load-transfer loss.
+guiding_question: Why can the total tire capacity fall when axle load is redistributed but its total stays
+  fixed?
 status: implemented
 tags:
 - vehicle-dynamics
@@ -27,7 +29,7 @@ controls:
   type: slider
   label: Load-sensitivity exponent
   default: 0.88
-  unit: "1"
+  unit: '1'
   minimum: 0.7
   maximum: 1
   step: 0.01
@@ -40,8 +42,10 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: For an exponent below one, peak force grows with normal load while effective friction falls, and unequal load sharing reduces paired capacity.
-  reveal: Restore the reviewed exponent, compare equal and split pairs at identical total load, and verify the documented power-law scaling ratio.
+  text: For an exponent below one, peak force grows with normal load while effective friction falls, and
+    unequal load sharing reduces paired capacity.
+  reveal: Restore the reviewed exponent, compare equal and split pairs at identical total load, and verify
+    the documented power-law scaling ratio.
 - type: controls
   title: Tire model controls
 - type: metrics
@@ -62,3 +66,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

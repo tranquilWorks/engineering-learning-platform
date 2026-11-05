@@ -97,8 +97,11 @@ def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
 
 def _capacity_loss(axle_load: float, transfer: float) -> float:
     exponent, reference_load, reference_mu = 0.86, 3500.0, 1.25
-    left = max(1.0, axle_load / 2.0 - transfer / 2.0)
-    right = axle_load / 2.0 + transfer / 2.0
+    # transfer is the amount moved, not the outer-minus-inner difference.
+    # Beyond lift-off this is only a capped contact-capacity bound, not a trim.
+    moved = min(abs(transfer), axle_load / 2.0)
+    left = axle_load / 2.0 - moved
+    right = axle_load / 2.0 + moved
     force = lambda load: reference_mu * reference_load * (load / reference_load) ** exponent
     return float(2.0 * force(axle_load / 2.0) - force(left) - force(right))
 
@@ -138,6 +141,8 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
             ("rear_transfer", "Rear lateral load transfer", rear_transfer, "N"),
             ("geometric_fraction", "Geometric roll-moment fraction", geometric_fraction, "1"),
             ("closure", "Roll-moment closure residual", closure, "N*m"),
+            ("contact_excess", "Transfer demand beyond two-wheel contact", max(0.0, front_transfer-front_axle_load/2, rear_transfer-(mass*gravity-front_axle_load)/2), "N"),
+            ("capacity_loss", "Front capacity loss (capped at lift-off)", capacity_loss, "N"),
         ],
         "plots": {
             "response": _plot(
@@ -158,7 +163,7 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
                 ],
             ),
         },
-        "observation": "Geometric and elastic paths must reconstruct the same total roll moment before tire-load sensitivity is applied.",
+        "observation": "Geometric and elastic paths must reconstruct the same total roll moment before tire-load sensitivity is applied. Tire loads are W/2 +/- T; nonzero contact excess marks an invalid four-contact equilibrium, with capacity capped at lift-off.",
     }
 
 

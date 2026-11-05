@@ -129,7 +129,10 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
         "signature": signature,
         "metrics": [
             ("gradient", "Understeer gradient", signature[0], "deg/g"),
-            ("characteristic_speed", "Characteristic speed", signature[1], "m/s"),
+            ("characteristic_speed", "Characteristic speed (0 = unavailable)", signature[1], "m/s"),
+            ("characteristic_available", "Positive-gradient characteristic speed available", gradient>1e-12, "1"),
+            ("critical_speed", "Oversteer critical speed (0 = unavailable)", np.sqrt(-gravity*wheelbase/gradient) if gradient < -1e-12 else 0.0, "m/s"),
+            ("critical_available", "Negative-gradient critical speed available", gradient < -1e-12, "1"),
             ("steer", "Steer at 0.7 g", signature[2], "deg"),
             ("relation_residual", "Steer-law residual", signature[4], "deg"),
         ],
@@ -148,7 +151,7 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
                 "Understeer gradient (deg/g)",
                 "Characteristic speed (m/s)",
                 [
-                    _trace("Current setup", [signature[0]], [signature[1]], "Understeer gradient", "deg/g", "Characteristic speed", "m/s", mode="markers"),
+                    _trace("Current setup", [signature[0]] if gradient>1e-12 else [], [signature[1]] if gradient>1e-12 else [], "Understeer gradient", "deg/g", "Characteristic speed", "m/s", mode="markers"),
                 ],
             ),
         },

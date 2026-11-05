@@ -112,6 +112,7 @@ def _response(speed: float, frequency_hz: float, broken: bool) -> tuple[np.ndarr
     declared_omega = 2.0 * np.pi * frequency_hz
     used_omega = frequency_hz if broken else declared_omega
     state = np.linalg.solve(1j * used_omega * np.eye(2) - matrix, input_vector)
+    # Normalize beta/steer and (1 s)*yaw/steer before forming the rate norm.
     residual = np.linalg.norm(
         (1j * declared_omega * np.eye(2) - matrix).dot(state) - input_vector
     )
@@ -145,7 +146,7 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
             ("yaw_gain", "Yaw-rate gain", signature[0], "1/s"),
             ("beta_gain", "Sideslip gain", signature[1], "1"),
             ("yaw_phase", "Yaw phase", signature[2], "deg"),
-            ("equation_residual", "Complex-equation residual", signature[4], "1/s"),
+            ("equation_residual", "Scaled complex-equation residual (1 s yaw scale)", signature[4], "1/s"),
         ],
         "plots": {
             "response": _plot(
@@ -173,4 +174,10 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
 def run(parameters: dict[str, Any]) -> dict[str, Any]:
     values = _parameters(parameters)
     broken = bool(parameters.get("broken_mode", False))
-    return _result(_model(values, broken), broken)
+    result = _result(_model(values, broken), broken)
+    plot = result["plots"]["response"]
+    plot["data"][1]["yaxis"] = "y2"
+    plot["layout"]["yaxis"]["title"]["text"] = "Yaw-rate gain (1/s)"
+    plot["layout"]["yaxis2"] = {"title": {"text": "Sideslip gain (1)"}, "overlaying": "y", "side": "right"}
+    plot["layout"]["margin"]["r"] = 76
+    return result

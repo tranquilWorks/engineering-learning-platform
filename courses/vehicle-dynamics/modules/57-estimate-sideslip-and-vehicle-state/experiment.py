@@ -34,6 +34,21 @@ def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
     return {"metrics": [{"id": key, "label": label, "value": float(value), "unit": unit, "emphasis": "primary" if index == 0 else "normal"} for index, (key, label, value, unit) in enumerate(model["metrics"])], "plots": model["plots"], "explanations": {"observation": model["observation"], "broken": BROKEN_TEXT, "recovery": RECOVERY_TEXT}, "diagnostics": {"item_number": ITEM_NUMBER, "broken_active": bool(broken), "signature": [float(value) for value in model["signature"]]}}
 
 
+def _covariance_history(gain, noise, samples=301):
+    # Coordinates: beta/(1 rad), yaw/(1 rad/s), bias/(1 rad).
+    transition = np.eye(3)+.02*np.array([[-1.10,-.35,.20],[.80,-1.60,.10],[0,0,-.25]])
+    update = np.diag([gain,.75*gain,.45*gain])
+    complement = np.eye(3)-update
+    process = np.diag([2e-5,4e-5,1e-5])
+    observation = noise**2*np.eye(3)
+    history = [np.eye(3)*.25]
+    for _ in range(samples-1):
+        predicted = transition @ history[-1] @ transition.T + process
+        posterior = complement @ predicted @ complement.T + update @ observation @ update.T
+        history.append((posterior+posterior.T)/2)
+    return np.array(history)
+
+
 def _estimate(gain: float, noise: float, broken: bool) -> tuple[list[float], np.ndarray, np.ndarray, np.ndarray]:
     step, samples = 0.02, 301
     time = np.arange(samples, dtype=float) * step
@@ -48,15 +63,13 @@ def _estimate(gain: float, noise: float, broken: bool) -> tuple[list[float], np.
     if broken:
         measured[:, 0] *= -1.0
     estimate = np.zeros_like(truth)
-    covariance = np.eye(3) * 0.25
+    covariance = _covariance_history(gain, noise)[-1]
     innovations = np.zeros_like(truth)
     used_gain = np.diag((gain, 0.75 * gain, 0.45 * gain))
-    process = np.diag((2.0e-5, 4.0e-5, 1.0e-5))
     for index in range(1, samples):
         predicted = estimate[index - 1] + step * (matrix.dot(estimate[index - 1]) + vector * steering[index - 1])
         innovations[index] = measured[index] - predicted
         estimate[index] = predicted + used_gain.dot(innovations[index])
-        covariance = (np.eye(3) - used_gain).dot(covariance + process)
     error = estimate - truth
     signature = [float(np.rad2deg(estimate[-1, 0])), float(np.rad2deg(estimate[-1, 1])), float(np.rad2deg(estimate[-1, 2])), float(np.rad2deg(np.sqrt(np.mean(error[:, 0] ** 2)))), float(np.rad2deg(np.sqrt(np.mean(error[:, 1] ** 2)))), float(np.trace(covariance)), float(np.sqrt(np.mean(innovations**2)))]
     return signature, time, truth, estimate
@@ -66,7 +79,7 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
     signature, time, truth, estimate = _estimate(p["observer_gain"], p["measurement_noise"], broken)
     return {
         "signature": signature,
-        "metrics": [("sideslip", "Final estimated sideslip", signature[0], "deg"), ("yaw_rate", "Final estimated yaw rate", signature[1], "deg/s"), ("steering_bias", "Estimated steering bias state", signature[2], "deg"), ("sideslip_rmse", "Sideslip RMSE", signature[3], "deg"), ("yaw_rmse", "Yaw-rate RMSE", signature[4], "deg/s"), ("covariance_trace", "Final covariance trace", signature[5], "rad^2"), ("innovation_rms", "Innovation RMS", signature[6], "rad")],
+        "metrics": [("sideslip", "Final estimated sideslip", signature[0], "deg"), ("yaw_rate", "Final estimated yaw rate", signature[1], "deg/s"), ("steering_bias", "Estimated steering bias state", signature[2], "deg"), ("sideslip_rmse", "Sideslip RMSE", signature[3], "deg"), ("yaw_rmse", "Yaw-rate RMSE", signature[4], "deg/s"), ("covariance_trace", "Conditional scaled covariance trace", signature[5], "1"), ("innovation_rms", "Scaled innovation RMS", signature[6], "1")],
         "plots": {"response": _plot("Observed vehicle state", "Elapsed time (s)", "Sideslip angle (deg)", [_trace("Truth", time, np.rad2deg(truth[:, 0]), "Elapsed time", "s", "Sideslip angle", "deg"), _trace("Estimate", time, np.rad2deg(estimate[:, 0]), "Elapsed time", "s", "Sideslip angle", "deg")]), "mechanism": _plot("Yaw-state estimate", "Elapsed time (s)", "Yaw rate (deg/s)", [_trace("Truth", time, np.rad2deg(truth[:, 1]), "Elapsed time", "s", "Yaw rate", "deg/s"), _trace("Estimate", time, np.rad2deg(estimate[:, 1]), "Elapsed time", "s", "Yaw rate", "deg/s")])},
         "observation": "A stable estimator is not sufficient: measurement signs, state order, update timing, and uncertainty must match the physical state definition.",
     }
@@ -75,4 +88,6 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
 def run(parameters: dict[str, Any]) -> dict[str, Any]:
     values = _parameters(parameters)
     broken = bool(parameters.get("broken_mode", False))
-    return _result(_model(values, broken), broken)
+    result = _result(_model(values, broken), broken)
+    result["diagnostics"]["conditional_covariance"] = _covariance_history(values["observer_gain"], values["measurement_noise"])
+    return result

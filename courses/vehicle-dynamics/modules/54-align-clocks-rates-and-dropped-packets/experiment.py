@@ -49,7 +49,7 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
     signature = [1000.0 * aligned_offset, float(np.count_nonzero(~keep)), float(reference_time.size), 1000.0 * max_gap, rmse, 1000.0 * time_residual]
     return {
         "signature": signature,
-        "metrics": [("offset", "Recovered clock offset", signature[0], "ms"), ("drops", "Detected dropped samples", signature[1], "sample"), ("aligned", "Aligned sample count", signature[2], "sample"), ("maximum_gap", "Maximum observed gap", signature[3], "ms"), ("rmse", "Alignment RMSE", rmse, "1"), ("time_residual", "Clock residual", signature[5], "ms")],
+        "metrics": [("offset", "Applied known clock offset", signature[0], "ms"), ("drops", "Detected dropped samples", signature[1], "sample"), ("aligned", "Aligned sample count", signature[2], "sample"), ("maximum_gap", "Maximum observed gap", signature[3], "ms"), ("rmse", "Alignment RMSE", rmse, "1"), ("time_residual", "Clock residual", signature[5], "ms")],
         "plots": {"response": _plot("Clock-aligned signal", "Reference time (s)", "Signal amplitude (1)", [_trace("Truth", reference_time, truth, "Reference time", "s", "Signal amplitude", "1"), _trace("Reconstructed", reference_time, reconstructed, "Reference time", "s", "Signal amplitude", "1")]), "mechanism": _plot("Source sample timing", "Sample index (1)", "Timestamp (s)", [_trace("Observed source time", np.arange(observed_time.size), observed_time, "Sample index", "1", "Timestamp", "s"), _trace("Aligned time", np.arange(aligned_time.size), aligned_time, "Sample index", "1", "Timestamp", "s")])},
         "observation": "Rate conversion is trustworthy only after clocks share an epoch and every interpolation spans a declared, bounded gap.",
     }

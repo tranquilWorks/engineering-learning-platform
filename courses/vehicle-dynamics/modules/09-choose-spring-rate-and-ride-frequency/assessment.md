@@ -1,3 +1,39 @@
+# P09 course checkpoint
+
+## Predict and derive
+
+Use virtual work and spring energy to derive the squared motion-ratio law.
+
+Use the governing relations below and state the frame, sign convention and units before substituting numbers. Derive a baseline or limiting prediction and identify which plotted quantity could disprove it.
+
+- `Unit-displacement virtual work`
+
+## Controlled comparison
+
+- `spring_rate_n_m`: 35000.0 → 15000.0. Hold the other controls at baseline; predict and explain the change before executing.
+- `motion_ratio`: 0.9 → 1.1. Hold the other controls at baseline; predict and explain the change before executing.
+
+Record the parameter values, prediction and observed change for each comparison. If a quantity does not change, explain whether it is an invariant, an inactive parameter in this regime, or evidence of a defect.
+
+## Diagnose and recover
+
+Enable the named failure with the numeric controls unchanged. Identify the first violated assumption from the actual trace or event evidence, rather than only the mode label. Restore healthy mode and verify deterministic return to the same baseline. Keep the failing trace beside the recovered trace.
+
+## Expected reasoning
+
+With motion ratio defined as spring travel divided by wheel travel, spring displacement is r*z. Energy is k_s*(r*z)²/2, so wheel rate is k_s*r². At r=0.9 and k_s=35000 N/m, wheel rate is 28350 N/m. Using r instead of r² violates energy equivalence even if units still look correct. Explicitly distinguish this convention from the reciprocal convention used in some suspension references.
+
+A complete answer connects a numerical value to the governing relation, distinguishes the controlled comparisons, and explains the fault and recovery through an observable mechanism. An unexplained success metric is insufficient evidence.
+
+## Limits and handoff
+
+Constant motion ratio excludes travel-dependent geometry, installation preload and nonlinear bump stops.
+
+Competency links: VD-RIDE-SUSPENSION. Carry the prediction, two comparisons, failure diagnosis and recovery evidence into the linked cumulative portfolio. No learner completion or score is inferred by the software; this is an authored assessment for a learner or reviewer to perform.
+
+
+# Retained scoped evidence task
+
 ## P09 evidence task
 
 At fixed k_s = 35000 N/m, compare r = 0.6, 0.9 and 1.0. Derive wheel rate from displacement and force mapping, then calculate static compression and frequency ratios. Explain why r = 1 is an inadequate diagnostic for the single-factor fault.
