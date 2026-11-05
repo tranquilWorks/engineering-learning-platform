@@ -1,3 +1,39 @@
+# P16 course checkpoint
+
+## Predict and derive
+
+Derive speed scaling for aerodynamic force and power, then distribute downforce between axles.
+
+Use the governing relations below and state the frame, sign convention and units before substituting numbers. Derive a baseline or limiting prediction and identify which plotted quantity could disprove it.
+
+- `Rational coefficient-area scaling and complementary axle-load accounting`
+
+## Controlled comparison
+
+- `speed_m_s`: 40.0 → 10.0. Hold the other controls at baseline; predict and explain the change before executing.
+- `wing_angle_deg`: 8.0 → 18.0. Hold the other controls at baseline; predict and explain the change before executing.
+
+Record the parameter values, prediction and observed change for each comparison. If a quantity does not change, explain whether it is an invariant, an inactive parameter in this regime, or evidence of a defect.
+
+## Diagnose and recover
+
+Enable the named failure with the numeric controls unchanged. Identify the first violated assumption from the actual trace or event evidence, rather than only the mode label. Restore healthy mode and verify deterministic return to the same baseline. Keep the failing trace beside the recovered trace.
+
+## Expected reasoning
+
+At fixed coefficients, force is proportional to v² and drag power to v³. Doubling speed therefore gives four times drag but eight times drag power. Front and rear downforce must sum to the total, and their lever arms determine pitch moment. More downforce can improve grip while consuming power through drag; neither an axle split nor a favorable sign creates free energy.
+
+A complete answer connects a numerical value to the governing relation, distinguishes the controlled comparisons, and explains the fault and recovery through an observable mechanism. An unexplained success metric is insufficient evidence.
+
+## Limits and handoff
+
+The coefficient map is synthetic and excludes stall, pitch dynamics, wind and measured aerodynamic validation.
+
+Competency links: VD-AERO-ENERGY. Carry the prediction, two comparisons, failure diagnosis and recovery evidence into the linked cumulative portfolio. No learner completion or score is inferred by the software; this is an authored assessment for a learner or reviewer to perform.
+
+
+# Retained scoped evidence task
+
 # P16 evidence task
 
 ## Reconstruct the default operating point

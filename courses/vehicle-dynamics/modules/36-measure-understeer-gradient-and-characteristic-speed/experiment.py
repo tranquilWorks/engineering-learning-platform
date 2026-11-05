@@ -54,7 +54,7 @@ def _plot(
     y_title: str,
     traces: list[dict[str, Any]],
 ) -> dict[str, Any]:
-    return {
+    result = {
         "data": traces,
         "layout": {
             "title": {"text": title, "x": 0.02},
@@ -67,6 +67,17 @@ def _plot(
         },
         "config": {"responsive": True, "displaylogo": False},
     }
+    # Course-owned layout: keep engineering labels readable in narrow plot panels.
+    from textwrap import fill
+    layout = result["layout"]
+    layout["title"] = {"text": fill(title, width=30).replace("\n", "<br>"), "x": 0.02, "font": {"size": 14}}
+    layout["legend"] = {"orientation": "h"}
+    layout.setdefault("margin", {"l": 72, "r": 36, "t": 62, "b": 110})
+    for axis in ("xaxis", "yaxis"):
+        layout[axis]["automargin"] = True
+        if isinstance(layout[axis].get("title"), dict):
+            layout[axis]["title"]["standoff"] = 12
+    return result
 
 
 def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
@@ -129,7 +140,10 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
         "signature": signature,
         "metrics": [
             ("gradient", "Understeer gradient", signature[0], "deg/g"),
-            ("characteristic_speed", "Characteristic speed", signature[1], "m/s"),
+            ("characteristic_speed", "Characteristic speed (0 = unavailable)", signature[1], "m/s"),
+            ("characteristic_available", "Positive-gradient characteristic speed available", gradient>1e-12, "1"),
+            ("critical_speed", "Oversteer critical speed (0 = unavailable)", np.sqrt(-gravity*wheelbase/gradient) if gradient < -1e-12 else 0.0, "m/s"),
+            ("critical_available", "Negative-gradient critical speed available", gradient < -1e-12, "1"),
             ("steer", "Steer at 0.7 g", signature[2], "deg"),
             ("relation_residual", "Steer-law residual", signature[4], "deg"),
         ],
@@ -148,7 +162,7 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
                 "Understeer gradient (deg/g)",
                 "Characteristic speed (m/s)",
                 [
-                    _trace("Current setup", [signature[0]], [signature[1]], "Understeer gradient", "deg/g", "Characteristic speed", "m/s", mode="markers"),
+                    _trace("Current setup", [signature[0]] if gradient>1e-12 else [], [signature[1]] if gradient>1e-12 else [], "Understeer gradient", "deg/g", "Characteristic speed", "m/s", mode="markers"),
                 ],
             ),
         },

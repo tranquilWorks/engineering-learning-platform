@@ -25,7 +25,18 @@ def _trace(name: str, x: Any, y: Any, xq: str, xu: str, yq: str, yu: str) -> dic
 
 
 def _plot(title: str, xt: str, yt: str, traces: list[dict[str, Any]]) -> dict[str, Any]:
-    return {"data": traces, "layout": {"title": {"text": title, "x": 0.02}, "xaxis": {"title": {"text": xt}}, "yaxis": {"title": {"text": yt}}, "legend": {"orientation": "h"}, "margin": {"l": 72, "r": 36, "t": 62, "b": 62}, "hovermode": "closest", "uirevision": "keep-view"}, "config": {"responsive": True, "displaylogo": False}}
+    result = {"data": traces, "layout": {"title": {"text": title, "x": 0.02}, "xaxis": {"title": {"text": xt}}, "yaxis": {"title": {"text": yt}}, "legend": {"orientation": "h"}, "margin": {"l": 72, "r": 36, "t": 62, "b": 62}, "hovermode": "closest", "uirevision": "keep-view"}, "config": {"responsive": True, "displaylogo": False}}
+    # Course-owned layout: keep engineering labels readable in narrow plot panels.
+    from textwrap import fill
+    layout = result["layout"]
+    layout["title"] = {"text": fill(title, width=30).replace("\n", "<br>"), "x": 0.02, "font": {"size": 14}}
+    layout["legend"] = {"orientation": "h"}
+    layout.setdefault("margin", {"l": 72, "r": 36, "t": 62, "b": 110})
+    for axis in ("xaxis", "yaxis"):
+        layout[axis]["automargin"] = True
+        if isinstance(layout[axis].get("title"), dict):
+            layout[axis]["title"]["standoff"] = 12
+    return result
 
 
 def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
@@ -49,7 +60,7 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
     signature = [1000.0 * aligned_offset, float(np.count_nonzero(~keep)), float(reference_time.size), 1000.0 * max_gap, rmse, 1000.0 * time_residual]
     return {
         "signature": signature,
-        "metrics": [("offset", "Recovered clock offset", signature[0], "ms"), ("drops", "Detected dropped samples", signature[1], "sample"), ("aligned", "Aligned sample count", signature[2], "sample"), ("maximum_gap", "Maximum observed gap", signature[3], "ms"), ("rmse", "Alignment RMSE", rmse, "1"), ("time_residual", "Clock residual", signature[5], "ms")],
+        "metrics": [("offset", "Applied known clock offset", signature[0], "ms"), ("drops", "Detected dropped samples", signature[1], "sample"), ("aligned", "Aligned sample count", signature[2], "sample"), ("maximum_gap", "Maximum observed gap", signature[3], "ms"), ("rmse", "Alignment RMSE", rmse, "1"), ("time_residual", "Clock residual", signature[5], "ms")],
         "plots": {"response": _plot("Clock-aligned signal", "Reference time (s)", "Signal amplitude (1)", [_trace("Truth", reference_time, truth, "Reference time", "s", "Signal amplitude", "1"), _trace("Reconstructed", reference_time, reconstructed, "Reference time", "s", "Signal amplitude", "1")]), "mechanism": _plot("Source sample timing", "Sample index (1)", "Timestamp (s)", [_trace("Observed source time", np.arange(observed_time.size), observed_time, "Sample index", "1", "Timestamp", "s"), _trace("Aligned time", np.arange(aligned_time.size), aligned_time, "Sample index", "1", "Timestamp", "s")])},
         "observation": "Rate conversion is trustworthy only after clocks share an epoch and every interpolation spans a declared, bounded gap.",
     }

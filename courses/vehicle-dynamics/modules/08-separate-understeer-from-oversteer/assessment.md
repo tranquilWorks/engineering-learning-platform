@@ -1,3 +1,39 @@
+# P08 course checkpoint
+
+## Predict and derive
+
+Classify understeer, neutral steer and oversteer before interpreting a characteristic or critical speed.
+
+Use the governing relations below and state the frame, sign convention and units before substituting numbers. Derive a baseline or limiting prediction and identify which plotted quantity could disprove it.
+
+- `Static axle weights divided by stiffness; critical boundary and stable mask`
+
+## Controlled comparison
+
+- `front_cornering_stiffness_n_rad`: 90000.0 → 45000.0. Hold the other controls at baseline; predict and explain the change before executing.
+- `rear_cornering_stiffness_n_rad`: 100000.0 → 140000.0. Hold the other controls at baseline; predict and explain the change before executing.
+
+Record the parameter values, prediction and observed change for each comparison. If a quantity does not change, explain whether it is an invariant, an inactive parameter in this regime, or evidence of a defect.
+
+## Diagnose and recover
+
+Enable the named failure with the numeric controls unchanged. Identify the first violated assumption from the actual trace or event evidence, rather than only the mode label. Restore healthy mode and verify deterministic return to the same baseline. Keep the failing trace beside the recovered trace.
+
+## Expected reasoning
+
+For K=Wf/Cf-Wr/Cr, steer demand is L/R+K*a_y/g. Positive K gives characteristic speed sqrt(g*L/K); negative K gives a distinct critical speed sqrt(-g*L/K). Neutral steer has neither finite speed. Near K=0 the relevant speed diverges; a zero placeholder means unavailable, not stationary instability. Vary front and rear stiffness separately to establish their opposite contributions.
+
+A complete answer connects a numerical value to the governing relation, distinguishes the controlled comparisons, and explains the fault and recovery through an observable mechanism. An unexplained success metric is insufficient evidence.
+
+## Limits and handoff
+
+The critical-speed singularity belongs to the linear steady model and is not a safe-speed recommendation.
+
+Competency links: VD-HANDLING-LINEAR. Carry the prediction, two comparisons, failure diagnosis and recovery evidence into the linked cumulative portfolio. No learner completion or score is inferred by the software; this is an authored assessment for a learner or reviewer to perform.
+
+
+# Retained scoped evidence task
+
 ## P08 evidence task
 
 Use the sliders to select understeer and oversteer pairs, then derive a neutral pair algebraically within the allowed stiffness ranges. The slider steps do not generally reach exact neutral steer: report that boundary as a calculated case rather than claiming you selected it. For each case, report K, critical-speed availability and the steering trend with speed. At a fixed non-neutral pair compare nominal and omission at 25 m/s, then explain why the fault is invisible at neutral.

@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "item_id": "P15",
+  "origin": {
+    "path": "../../reference_cases.py",
+    "origin": "Kinetic-energy/work stop solution and fractional stopping-time energy trajectory",
+    "imports_production": false,
+    "consumes_production_output": false,
+    "tolerance_abs": "1e-10",
+    "fields": [
+      "applied_brake_force_n",
+      "deceleration_m_s2",
+      "stopping_distance_m",
+      "stop_time_s",
+      "kinetic_energy_j",
+      "rotor_delta_t_c",
+      "front_load_n",
+      "rear_load_n",
+      "invalid"
+    ],
+    "tolerance_rel": "1e-10"
+  },
+  "tolerance": {
+    "absolute": 1e-10,
+    "relative": 1e-10
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "initial_speed_m_s": 30.0,
+        "requested_brake_force_n": 10000.0,
+        "broken_mode": false
+      },
+      "signature": [
+        10000.0,
+        7.575757575757576,
+        59.4,
+        3.96,
+        594000.0,
+        39.20031055900621,
+        8808.601291828794,
+        4140.598708171206,
+        0.0
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "initial_speed_m_s": 5.0,
+        "requested_brake_force_n": 10000.0,
+        "broken_mode": false
+      },
+      "signature": [
+        10000.0,
+        7.575757575757577,
+        1.65,
+        0.6599999999999999,
+        16500.0,
+        1.0888975155279503,
+        8808.601291828794,
+        4140.598708171206,
+        0.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "initial_speed_m_s": 30.0,
+        "requested_brake_force_n": 18000.0,
+        "broken_mode": false
+      },
+      "signature": [
+        13596.660000000002,
+        10.3005,
+        43.6871996505024,
+        2.91247997670016,
+        594000.0,
+        39.20031055900621,
+        9508.34059143969,
+        3440.8594085603104,
+        0.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "initial_speed_m_s": 30.0,
+        "requested_brake_force_n": 10000.0,
+        "broken_mode": true
+      },
+      "signature": [
+        10000.0,
+        7.575757575757576,
+        59.4,
+        3.96,
+        594000.0,
+        46.11801242236025,
+        8808.601291828794,
+        4140.598708171206,
+        1.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "initial_speed_m_s": 30.0,
+        "requested_brake_force_n": 10000.0,
+        "broken_mode": false
+      },
+      "signature": [
+        10000.0,
+        7.575757575757576,
+        59.4,
+        3.96,
+        594000.0,
+        39.20031055900621,
+        8808.601291828794,
+        4140.598708171206,
+        0.0
+      ]
+    }
+  }
+}

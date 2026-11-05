@@ -1,3 +1,39 @@
+# P14 course checkpoint
+
+## Predict and derive
+
+Decide whether a wheel-force crossover occurs before the engine reaches redline.
+
+Use the governing relations below and state the frame, sign convention and units before substituting numbers. Derive a baseline or limiting prediction and identify which plotted quantity could disprove it.
+
+- `Expanded torque polynomial with an independent closed-form crossing root and shifted-RPM evaluation`
+
+## Controlled comparison
+
+- `current_gear_ratio`: 2.188 → 1.4. Hold the other controls at baseline; predict and explain the change before executing.
+- `next_gear_ratio`: 1.541 → 2.187. Hold the other controls at baseline; predict and explain the change before executing.
+
+Record the parameter values, prediction and observed change for each comparison. If a quantity does not change, explain whether it is an invariant, an inactive parameter in this regime, or evidence of a defect.
+
+## Diagnose and recover
+
+Enable the named failure with the numeric controls unchanged. Identify the first violated assumption from the actual trace or event evidence, rather than only the mode label. Restore healthy mode and verify deterministic return to the same baseline. Keep the failing trace beside the recovered trace.
+
+## Expected reasoning
+
+Compare the current and next gear at the same road speed, which means different engine speeds. Solve force equality only inside both gears' valid engine bands. If no crossing occurs before redline, report a redline-limited shift rather than inventing an intersection. A higher-ratio gear is not always faster because its torque-map point and speed range change. Check the selected event against both force and rpm traces.
+
+A complete answer connects a numerical value to the governing relation, distinguishes the controlled comparisons, and explains the fault and recovery through an observable mechanism. An unexplained success metric is insufficient evidence.
+
+## Limits and handoff
+
+An instantaneous crossover analysis excludes shift interruption and driver or actuator latency; P47 adds a bounded interruption model.
+
+Competency links: VD-POWERTRAIN. Carry the prediction, two comparisons, failure diagnosis and recovery evidence into the linked cumulative portfolio. No learner completion or score is inferred by the software; this is an authored assessment for a learner or reviewer to perform.
+
+
+# Retained scoped evidence task
+
 # P14 evidence task
 
 ## Predict before comparing curves

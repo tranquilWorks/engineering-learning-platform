@@ -1,3 +1,39 @@
+# P04 course checkpoint
+
+## Predict and derive
+
+Predict whether a requested force vector is admissible, then derive the projected vector.
+
+Use the governing relations below and state the frame, sign convention and units before substituting numbers. Derive a baseline or limiting prediction and identify which plotted quantity could disprove it.
+
+- `Polar angle and norm projection`
+
+## Controlled comparison
+
+- `longitudinal_force_n`: 2800.0 → -6500.0. Hold the other controls at baseline; predict and explain the change before executing.
+- `lateral_force_n`: 3500.0 → 6500.0. Hold the other controls at baseline; predict and explain the change before executing.
+
+Record the parameter values, prediction and observed change for each comparison. If a quantity does not change, explain whether it is an invariant, an inactive parameter in this regime, or evidence of a defect.
+
+## Diagnose and recover
+
+Enable the named failure with the numeric controls unchanged. Identify the first violated assumption from the actual trace or event evidence, rather than only the mode label. Restore healthy mode and verify deterministic return to the same baseline. Keep the failing trace beside the recovered trace.
+
+## Expected reasoning
+
+Compare sqrt(Fx²+Fy²) with mu*Fz. Outside the circle, multiply both components by mu*Fz divided by the requested norm. For a request (3,4) in normalized force units and a capacity of 2, the delivered vector is (1.2,1.6); its direction is retained and its norm is 2. Clipping each component independently produces a square and can still exceed the circle.
+
+A complete answer connects a numerical value to the governing relation, distinguishes the controlled comparisons, and explains the fault and recovery through an observable mechanism. An unexplained success metric is insufficient evidence.
+
+## Limits and handoff
+
+A circular isotropic bound is a teaching approximation; it is not a calibrated combined-slip tire surface.
+
+Competency links: VD-FORCE-BALANCE. Carry the prediction, two comparisons, failure diagnosis and recovery evidence into the linked cumulative portfolio. No learner completion or score is inferred by the software; this is an authored assessment for a learner or reviewer to perform.
+
+
+# Retained scoped evidence task
+
 ## P04 evidence task
 
 Compare requests (2800, 3500), (1000, 1000), and (0, 0) N. For each, predict scale and whether the fault will be visible. For the overloaded request, verify the applied magnitude and component ratio. Explain why rectangular clipping would fail.

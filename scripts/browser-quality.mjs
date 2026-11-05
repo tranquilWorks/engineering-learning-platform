@@ -16,6 +16,7 @@ const saveReport = () => {
 };
 const selected = process.env.ELP_BROWSER_COURSE;
 const selectedModule = process.env.ELP_BROWSER_MODULE;
+const selectedVehicleNumbers = process.env.ELP_VEHICLE_NUMBERS?.split(",").map(Number);
 const gncRepairs = process.env.ELP_BROWSER_GNC_REPAIRS === '1';
 const gncRepairNumbers = [37,44,52,53,54,55,58,59,61,63,67];
 const vehicleDrivelineBatch = process.env.ELP_BROWSER_VEHICLE_DRIVELINE_BATCH === '1';
@@ -52,7 +53,7 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
     page.setDefaultTimeout(30000);
     let errors = [];
     page.on('pageerror', e => errors.push(e.message));
-    for (const module of course.modules.filter(m => (!selectedModule || m.id === selectedModule) && (!gncRepairs || (course.id === 'controls-gnc' && gncRepairNumbers.includes(m.number))) && (!vehicleDrivelineBatch || isVehicleDriveline(course,m)) && (!vehicleFoundationsBatch || isVehicleFoundations(course,m)) && (!roboticsPerceptionBatch || roboticsPerceptionSelection[course.id]?.includes(m.number)) && (!roboticsDynamicsBatch || roboticsDynamicsSelection[course.id]?.includes(m.number)) && (!navigationBatch || navigationSelection[course.id]?.includes(m.number)))) {
+    for (const module of course.modules.filter(m => (!selectedModule || m.id === selectedModule) && (!selectedVehicleNumbers || (course.id === "vehicle-dynamics" && selectedVehicleNumbers.includes(m.number))) && (!gncRepairs || (course.id === 'controls-gnc' && gncRepairNumbers.includes(m.number))) && (!vehicleDrivelineBatch || isVehicleDriveline(course,m)) && (!vehicleFoundationsBatch || isVehicleFoundations(course,m)) && (!roboticsPerceptionBatch || roboticsPerceptionSelection[course.id]?.includes(m.number)) && (!roboticsDynamicsBatch || roboticsDynamicsSelection[course.id]?.includes(m.number)) && (!navigationBatch || navigationSelection[course.id]?.includes(m.number)))) {
       errors = [];
       const row = { course: course.id, module: module.id, viewport, status: 'failed' };
       try {
@@ -89,7 +90,7 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
           });
           return failures;
         }));
-        if ((course.id === 'controls-gnc' && [37,44,52,53,54,55,58,59,61,63,67].includes(module.number)) || isVehicleDriveline(course,module) || isVehicleFoundations(course,module) || (course.id === 'robotics-autonomy' && ((module.number >= 30 && module.number <= 48) || module.number === 52))) {
+        if ((course.id === 'controls-gnc' && [37,44,52,53,54,55,58,59,61,63,67].includes(module.number)) || course.id === 'vehicle-dynamics' || (course.id === 'robotics-autonomy' && ((module.number >= 30 && module.number <= 48) || module.number === 52))) {
           row.plot_text_layout_errors = await page.locator('.js-plotly-plot').evaluateAll(nodes => nodes.flatMap((node, index) => {
             const failures = [], bounds = node.querySelector('svg.main-svg').getBoundingClientRect();
             const outside = (r, b) => r.left < b.left - 2 || r.right > b.right + 2 || r.top < b.top - 2 || r.bottom > b.bottom + 2;
@@ -146,7 +147,7 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
           row.checkpoint_in_viewport = true;
           row.checkpoint = true;
         }
-        if (['controls-gnc','robotics-autonomy'].includes(course.id)) {
+        if (['controls-gnc','robotics-autonomy','vehicle-dynamics'].includes(course.id)) {
           const jump = page.getByRole('navigation', {name:'Lesson sections'}).getByRole('link', {name:'Course checkpoint', exact:true});
           await jump.click();
           const heading = page.getByRole('heading', {name:'Course checkpoint', exact:true});
@@ -198,8 +199,19 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
             }
           }
 
+          if (course.id === 'vehicle-dynamics' && [17,18,19,20,21,22,23,24,26,33,34,35,36,37,38,39,47,52,53,57,59,66,67].includes(module.number)) {
+            const panels = page.locator('.plot-panel');
+            for (let i=0; i<await panels.count(); i++) {
+              const file = `${out}/vehicle-mechanism-${module.number}-${viewport}-${i}.png`;
+              await panels.nth(i).screenshot({path:file});
+              screenshots.push({path:file,sha256:crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
+            }
+            row.mechanism_capture = true;
+          }
+
           row.controls_portfolios = [];
           if (course.id === 'robotics-autonomy') row.robotics_portfolios = [];
+          if (course.id === 'vehicle-dynamics') row.vehicle_portfolios = [];
           for (const block of doc.module.blocks.filter(b => b.type === 'markdown' && b.title?.startsWith('Cumulative portfolio '))) {
             const nav = page.getByRole('navigation', {name:'Lesson sections'}).getByRole('link', {name:block.title,exact:true});
             await nav.click();
@@ -209,6 +221,7 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
             if (!body.includes('Four-criterion rubric') || !body.includes('Diagnose and recover')) throw new Error('Missing cumulative tasks/rubric');
             row.controls_portfolios.push(block.title);
             if (course.id === 'robotics-autonomy') row.robotics_portfolios.push(block.title);
+            if (course.id === 'vehicle-dynamics') row.vehicle_portfolios.push(block.title);
           }
         }
         row.status = 'passed';
@@ -217,7 +230,7 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
           await page.screenshot({ path: file });
           screenshots.push({ path: file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex') });
         }
-        if (['controls-gnc','robotics-autonomy'].includes(course.id) || module === course.modules[0] || isRevised(course, module) || isCumulative(course, module)) {
+        if (['controls-gnc','robotics-autonomy','vehicle-dynamics'].includes(course.id) || module === course.modules[0] || isRevised(course, module) || isCumulative(course, module)) {
           const controls = page.locator('.control-panel:visible');
           const before = await page.locator('.metric').allTextContents();
           const choice = controls.locator('select').first();
@@ -232,7 +245,7 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
             await page.locator('.compute-status:visible').first().filter({ hasText: 'Experiment synchronized' }).waitFor();
             await page.waitForTimeout(100); return payload;
           };
-          if (await slider.count()) { await waitRun(async () => { await slider.focus(); await slider.press('ArrowRight'); }); act.control_changed = true; }
+          if (await slider.count()) { await waitRun(async () => { await slider.focus(); const atMaximum = await slider.evaluate(el => Number(el.value) >= Number(el.max)); await slider.press(atMaximum ? 'ArrowLeft' : 'ArrowRight'); }); act.control_changed = true; }
           else if (await choice.count()) { const options = await choice.locator('option').evaluateAll(x => x.map(o => o.value)); await waitRun(() => choice.selectOption(options.find(v => v !== doc.default_parameters[doc.module.controls.find(c => c.type === 'select').id]))); act.control_changed = true; }
           else if (await segmented.count()) { await waitRun(() => segmented.click()); act.control_changed = true; }
           if (await toggle.count()) {

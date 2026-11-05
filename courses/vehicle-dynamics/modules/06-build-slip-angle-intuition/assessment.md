@@ -1,3 +1,39 @@
+# P06 course checkpoint
+
+## Predict and derive
+
+Translate slip angle into radians and derive the small-angle lateral-force prediction.
+
+Use the governing relations below and state the frame, sign convention and units before substituting numbers. Derive a baseline or limiting prediction and identify which plotted quantity could disprove it.
+
+- `Logistic evaluation with opposite slip convention and degree conversion`
+
+## Controlled comparison
+
+- `slip_angle_deg`: 4.0 → -14.0. Hold the other controls at baseline; predict and explain the change before executing.
+- `normal_load_n`: 3600.0 → 6000.0. Hold the other controls at baseline; predict and explain the change before executing.
+
+Record the parameter values, prediction and observed change for each comparison. If a quantity does not change, explain whether it is an invariant, an inactive parameter in this regime, or evidence of a defect.
+
+## Diagnose and recover
+
+Enable the named failure with the numeric controls unchanged. Identify the first violated assumption from the actual trace or event evidence, rather than only the mode label. Restore healthy mode and verify deterministic return to the same baseline. Keep the failing trace beside the recovered trace.
+
+## Expected reasoning
+
+Four degrees is 0.0698132 rad. A stiffness stated in N/rad must multiply that number, not 4. The force sign follows the lesson's explicitly declared slip convention; it should reverse under an angle sign reversal. Compare the linear tangent with the saturation boundary as normal load changes. A factor of about 57.3 is a unit defect, not evidence for a different tire stiffness.
+
+A complete answer connects a numerical value to the governing relation, distinguishes the controlled comparisons, and explains the fault and recovery through an observable mechanism. An unexplained success metric is insufficient evidence.
+
+## Limits and handoff
+
+Symmetric synthetic tire behavior omits hysteresis, transient camber and measured parameter uncertainty.
+
+Competency links: VD-TIRE-LAT. Carry the prediction, two comparisons, failure diagnosis and recovery evidence into the linked cumulative portfolio. No learner completion or score is inferred by the software; this is an authored assessment for a learner or reviewer to perform.
+
+
+# Retained scoped evidence task
+
 ## P06 evidence task
 
 Compare +4° and −4° at 3600 N and estimate the slope near zero. State α in radians, force sign and capacity. Explain why the faulty model can pass magnitude and symmetry checks while remaining wrong, and translate this lesson's α into P07's convention.

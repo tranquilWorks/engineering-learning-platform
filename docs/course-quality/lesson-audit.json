@@ -19905,7 +19905,7 @@
       "number": 1,
       "title": "Constant-Curvature Paths and Tire-Grip Demand",
       "path": "courses/vehicle-dynamics/modules/01-turn-steering-and-speed-into-a-vehicle-path",
-      "payload_sha256": "ac5823e38cddf0ba703536518ac34d2024405b41d68e3f553637ba03d56e373e",
+      "payload_sha256": "b49764d28a9d2336de9498cea70ebc4938d98713b8821644a217eb18d48c2ae2",
       "checks": {
         "concept": {
           "state": "present",
@@ -19960,6 +19960,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/01-turn-steering-and-speed-into-a-vehicle-path/actual.json",
             "courses/vehicle-dynamics/modules/01-turn-steering-and-speed-into-a-vehicle-path/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/01-turn-steering-and-speed-into-a-vehicle-path/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/01-turn-steering-and-speed-into-a-vehicle-path/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/01-turn-steering-and-speed-into-a-vehicle-path/expected.json",
             "courses/vehicle-dynamics/modules/01-turn-steering-and-speed-into-a-vehicle-path/verification.yaml"
@@ -19971,7 +19972,14 @@
       },
       "semantic_review": "scoped_model_reviewed",
       "scoped_review": "Constant-Curvature Paths and Tire-Grip Demand. Trigonometric curvature and independent sinc/half-angle path integration. Full physical state/response arrays and governing identities checked at 1e-10 absolute/relative tolerance. Authored Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and plot-layout checks passed. Kinematics is a demanded path; grip feasibility is a separate check. Aggregate course review remains separate.",
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F01",
+        "competency": "VD-MOTION-FRAMES",
+        "cumulative": "A-MOTION-FORCES, A-STATE",
+        "case_count": 5,
+        "scope_limit": "This kinematic path is demanded geometry; exceeding mu*g does not simulate tire saturation or a realizable maneuver.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -19981,7 +19989,7 @@
       "number": 2,
       "title": "Balance Traction, Road Loads and Acceleration",
       "path": "courses/vehicle-dynamics/modules/02-relate-acceleration-to-tire-force",
-      "payload_sha256": "3f63fc6c62b569a1407f623870bb2c07dbc4b08ac24f96a300e9b6acf07fafaa",
+      "payload_sha256": "788d3e41f739e1ba1b4cfd48a7c9e4b85eef663414c195b53072c194d21ffbfd",
       "checks": {
         "concept": {
           "state": "present",
@@ -20036,6 +20044,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/02-relate-acceleration-to-tire-force/actual.json",
             "courses/vehicle-dynamics/modules/02-relate-acceleration-to-tire-force/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/02-relate-acceleration-to-tire-force/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/02-relate-acceleration-to-tire-force/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/02-relate-acceleration-to-tire-force/expected.json",
             "courses/vehicle-dynamics/modules/02-relate-acceleration-to-tire-force/verification.yaml"
@@ -20047,7 +20056,14 @@
       },
       "semantic_review": "scoped_model_reviewed",
       "scoped_review": "Balance Traction, Road Loads and Acceleration. Signed force vector sum and Newton balance. Full physical state/response arrays and governing identities checked at 1e-10 absolute/relative tolerance. Authored Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and plot-layout checks passed. This is instantaneous force balance at the selected speed, not a start/stop simulation. Aggregate course review remains separate.",
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F02",
+        "competency": "VD-MOTION-FRAMES, VD-FORCE-BALANCE",
+        "cumulative": "A-MOTION-FORCES, A-STATE",
+        "case_count": 5,
+        "scope_limit": "Constant coefficients and a lumped mass do not identify a real coastdown curve or model wheel slip.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -20057,7 +20073,7 @@
       "number": 3,
       "title": "Balance Longitudinal Load Transfer",
       "path": "courses/vehicle-dynamics/modules/03-see-longitudinal-weight-transfer",
-      "payload_sha256": "5d42803d5a18f4197415a09e6ce5832cd9b961cbc525e3bc6f7c02178434316d",
+      "payload_sha256": "a254f672b934db46ec765b3595fe6f69824e5b48dd0079f3f990d55091ca5a84",
       "checks": {
         "concept": {
           "state": "present",
@@ -20112,6 +20128,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/03-see-longitudinal-weight-transfer/actual.json",
             "courses/vehicle-dynamics/modules/03-see-longitudinal-weight-transfer/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/03-see-longitudinal-weight-transfer/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/03-see-longitudinal-weight-transfer/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/03-see-longitudinal-weight-transfer/expected.json",
             "courses/vehicle-dynamics/modules/03-see-longitudinal-weight-transfer/verification.yaml"
@@ -20123,7 +20140,14 @@
       },
       "semantic_review": "scoped_model_reviewed",
       "scoped_review": "Balance Longitudinal Load Transfer. Two-by-two reaction and moment balance. Full physical state/response arrays and governing identities checked at 1e-10 absolute/relative tolerance. Authored Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and plot-layout checks passed. Negative predicted normal load means the assumed two-contact equilibrium is infeasible. Aggregate course review remains separate.",
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F03",
+        "competency": "VD-MOTION-FRAMES, VD-FORCE-BALANCE",
+        "cumulative": "A-MOTION-FORCES, A-STATE",
+        "case_count": 5,
+        "scope_limit": "Quasi-static load transfer omits suspension pitch transients and ceases to represent two-axle contact after a negative axle load.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -20133,7 +20157,7 @@
       "number": 4,
       "title": "Project a Force Request onto the Friction Circle",
       "path": "courses/vehicle-dynamics/modules/04-use-the-friction-circle",
-      "payload_sha256": "91e01369b9e46cfb4b19f97b21aa3ace6d43af6a460db2927b2ddfe35e1966e8",
+      "payload_sha256": "e5375ae655cfc1343b3c5d794a3f08e782bf983e284966d257f9124dd2a296f0",
       "checks": {
         "concept": {
           "state": "present",
@@ -20188,6 +20212,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/04-use-the-friction-circle/actual.json",
             "courses/vehicle-dynamics/modules/04-use-the-friction-circle/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/04-use-the-friction-circle/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/04-use-the-friction-circle/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/04-use-the-friction-circle/expected.json",
             "courses/vehicle-dynamics/modules/04-use-the-friction-circle/verification.yaml"
@@ -20199,7 +20224,14 @@
       },
       "semantic_review": "scoped_model_reviewed",
       "scoped_review": "Project a Force Request onto the Friction Circle. Polar angle and norm projection. Full physical state/response arrays and governing identities checked at 1e-10 absolute/relative tolerance. Authored Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and plot-layout checks passed. Requested and applied utilization are different quantities. Aggregate course review remains separate.",
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F04",
+        "competency": "VD-FORCE-BALANCE",
+        "cumulative": "A-MOTION-FORCES",
+        "case_count": 5,
+        "scope_limit": "A circular isotropic bound is a teaching approximation; it is not a calibrated combined-slip tire surface.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -20209,7 +20241,7 @@
       "number": 5,
       "title": "Relate Signed Slip Ratio to Tire Force",
       "path": "courses/vehicle-dynamics/modules/05-build-slip-ratio-intuition",
-      "payload_sha256": "bb99f000db51acba935985c5bf0ed4164ba6cbba00e9baf6402e8368701aea02",
+      "payload_sha256": "a187e5f112c37050ffc15fd8ae5aa706796f9061dc4ea6a7cdd48721a00d5b68",
       "checks": {
         "concept": {
           "state": "present",
@@ -20264,6 +20296,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/05-build-slip-ratio-intuition/actual.json",
             "courses/vehicle-dynamics/modules/05-build-slip-ratio-intuition/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/05-build-slip-ratio-intuition/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/05-build-slip-ratio-intuition/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/05-build-slip-ratio-intuition/expected.json",
             "courses/vehicle-dynamics/modules/05-build-slip-ratio-intuition/verification.yaml"
@@ -20275,7 +20308,14 @@
       },
       "semantic_review": "scoped_model_reviewed",
       "scoped_review": "Relate Signed Slip Ratio to Tire Force. Logistic evaluation of signed tire saturation. Full physical state/response arrays and governing identities checked at 1e-10 absolute/relative tolerance. Authored Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and plot-layout checks passed. Positive slip denotes driving; this memoryless law excludes relaxation and thermal state. Aggregate course review remains separate.",
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F05",
+        "competency": "VD-TIRE-LONG",
+        "cumulative": "A-TIRE-LONG, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "The model does not resolve contact-patch dynamics, low-speed slip singularities or a measured road surface.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -20285,7 +20325,7 @@
       "number": 6,
       "title": "Relate Slip-Angle Convention to Lateral Force",
       "path": "courses/vehicle-dynamics/modules/06-build-slip-angle-intuition",
-      "payload_sha256": "e1fa75012d445d180ff62acaabdde0787c47857015959075cbad40d6a44e4461",
+      "payload_sha256": "b8cbd66a43c8e539c7614fb5646300f3292f6bdd5cfc38b717e6a0176d57fcdb",
       "checks": {
         "concept": {
           "state": "present",
@@ -20340,6 +20380,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/06-build-slip-angle-intuition/actual.json",
             "courses/vehicle-dynamics/modules/06-build-slip-angle-intuition/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/06-build-slip-angle-intuition/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/06-build-slip-angle-intuition/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/06-build-slip-angle-intuition/expected.json",
             "courses/vehicle-dynamics/modules/06-build-slip-angle-intuition/verification.yaml"
@@ -20351,7 +20392,14 @@
       },
       "semantic_review": "scoped_model_reviewed",
       "scoped_review": "Relate Slip-Angle Convention to Lateral Force. Logistic evaluation with opposite slip convention and degree conversion. Full physical state/response arrays and governing identities checked at 1e-10 absolute/relative tolerance. Authored Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and plot-layout checks passed. Here slip is velocity direction minus wheel direction, so restoring force has the opposite sign. Aggregate course review remains separate.",
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F06",
+        "competency": "VD-TIRE-LAT",
+        "cumulative": "A-TIRE-LAT, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "Symmetric synthetic tire behavior omits hysteresis, transient camber and measured parameter uncertainty.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -20361,7 +20409,7 @@
       "number": 7,
       "title": "Solve and Check Steady Bicycle Equilibrium",
       "path": "courses/vehicle-dynamics/modules/07-use-the-bicycle-model",
-      "payload_sha256": "65df5761e074103980e573ec58dd2b3ec42be5712c1d2486c28471f91fb48071",
+      "payload_sha256": "59f37a3232bd8a329299533a208e843245b7164398eeba61eb7be47d2a1d2c16",
       "checks": {
         "concept": {
           "state": "present",
@@ -20416,6 +20464,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/07-use-the-bicycle-model/actual.json",
             "courses/vehicle-dynamics/modules/07-use-the-bicycle-model/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/07-use-the-bicycle-model/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/07-use-the-bicycle-model/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/07-use-the-bicycle-model/expected.json",
             "courses/vehicle-dynamics/modules/07-use-the-bicycle-model/verification.yaml"
@@ -20427,7 +20476,14 @@
       },
       "semantic_review": "scoped_model_reviewed",
       "scoped_review": "Solve and Check Steady Bicycle Equilibrium. Force/moment shares before tire compatibility; factorized historical fault matrix. Full physical state/response arrays and governing identities checked at 1e-10 absolute/relative tolerance. Authored Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and plot-layout checks passed. Force and moment residuals test equations; small-angle validity separately tests the approximation. Aggregate course review remains separate.",
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F07",
+        "competency": "VD-HANDLING-LINEAR",
+        "cumulative": "A-HANDLING",
+        "case_count": 5,
+        "scope_limit": "Small angles, linear tires and constant speed bound this equilibrium; a mathematically finite solution can still exceed tire capacity.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -20437,7 +20493,7 @@
       "number": 8,
       "title": "Interpret Understeer and Critical-Speed Boundaries",
       "path": "courses/vehicle-dynamics/modules/08-separate-understeer-from-oversteer",
-      "payload_sha256": "5365d16295a6b8c09e5c20f3f2e2af6512d6bbad0423780002244111c73b5008",
+      "payload_sha256": "bf635112d0ee27fd0a45095f459122ec74282dd7e2ad1c1b8c2b9f912977d9c4",
       "checks": {
         "concept": {
           "state": "present",
@@ -20492,6 +20548,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/08-separate-understeer-from-oversteer/actual.json",
             "courses/vehicle-dynamics/modules/08-separate-understeer-from-oversteer/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/08-separate-understeer-from-oversteer/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/08-separate-understeer-from-oversteer/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/08-separate-understeer-from-oversteer/expected.json",
             "courses/vehicle-dynamics/modules/08-separate-understeer-from-oversteer/verification.yaml"
@@ -20503,7 +20560,14 @@
       },
       "semantic_review": "scoped_model_reviewed",
       "scoped_review": "Interpret Understeer and Critical-Speed Boundaries. Static axle weights divided by stiffness; critical boundary and stable mask. Full physical state/response arrays and governing identities checked at 1e-10 absolute/relative tolerance. Authored Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and plot-layout checks passed. A formal steady branch at or above oversteer critical speed is not a stable operating point. Aggregate course review remains separate.",
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F08",
+        "competency": "VD-HANDLING-LINEAR",
+        "cumulative": "A-HANDLING",
+        "case_count": 5,
+        "scope_limit": "The critical-speed singularity belongs to the linear steady model and is not a safe-speed recommendation.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -20513,7 +20577,7 @@
       "number": 9,
       "title": "Derive Wheel Rate from Suspension Motion Ratio",
       "path": "courses/vehicle-dynamics/modules/09-choose-spring-rate-and-ride-frequency",
-      "payload_sha256": "495bc32510730376c71d06983a8d9147b18b663cdc9d08c39b6e8787db3ecc85",
+      "payload_sha256": "3ef6091715d79addb18200309016ade28f3b00065d877cad32a2f36ebfb845fd",
       "checks": {
         "concept": {
           "state": "present",
@@ -20568,6 +20632,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/09-choose-spring-rate-and-ride-frequency/actual.json",
             "courses/vehicle-dynamics/modules/09-choose-spring-rate-and-ride-frequency/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/09-choose-spring-rate-and-ride-frequency/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/09-choose-spring-rate-and-ride-frequency/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/09-choose-spring-rate-and-ride-frequency/expected.json",
             "courses/vehicle-dynamics/modules/09-choose-spring-rate-and-ride-frequency/verification.yaml"
@@ -20579,7 +20644,14 @@
       },
       "semantic_review": "scoped_model_reviewed",
       "scoped_review": "Derive Wheel Rate from Suspension Motion Ratio. Unit-displacement virtual work. Full physical state/response arrays and governing identities checked at 1e-10 absolute/relative tolerance. Authored Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and plot-layout checks passed. Motion ratio is spring displacement divided by wheel displacement. Aggregate course review remains separate.",
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F09",
+        "competency": "VD-RIDE-SUSPENSION",
+        "cumulative": "A-RIDE, A-PERFORMANCE",
+        "case_count": 5,
+        "scope_limit": "Constant motion ratio excludes travel-dependent geometry, installation preload and nonlinear bump stops.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -20589,7 +20661,7 @@
       "number": 10,
       "title": "Observe a Second-Order Suspension Transient",
       "path": "courses/vehicle-dynamics/modules/10-see-damping-change-transient-motion",
-      "payload_sha256": "3c67f91e30d8cdd59467f02bb8e88bbb4f665656b643b137332faf0cd12366a7",
+      "payload_sha256": "4fc38b78b2beb8d173b01972e68878dbd0697914466aba526ad70b1ef305538a",
       "checks": {
         "concept": {
           "state": "present",
@@ -20644,6 +20716,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/10-see-damping-change-transient-motion/actual.json",
             "courses/vehicle-dynamics/modules/10-see-damping-change-transient-motion/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/10-see-damping-change-transient-motion/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/10-see-damping-change-transient-motion/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/10-see-damping-change-transient-motion/expected.json",
             "courses/vehicle-dynamics/modules/10-see-damping-change-transient-motion/verification.yaml"
@@ -20655,7 +20728,14 @@
       },
       "semantic_review": "scoped_model_reviewed",
       "scoped_review": "Observe a Second-Order Suspension Transient. Independent state-transition matrix exponential and eigenvalues. Full physical state/response arrays and governing identities checked at 1e-10 absolute/relative tolerance. Authored Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and plot-layout checks passed. Four pole time constants is a time-scale estimate, not a measured universal settling time. Aggregate course review remains separate.",
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F10",
+        "competency": "VD-RIDE-SUSPENSION",
+        "cumulative": "A-RIDE, A-PERFORMANCE",
+        "case_count": 5,
+        "scope_limit": "A single-degree-of-freedom sprung-mass model cannot establish tire contact or full-car ride comfort.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -20665,7 +20745,7 @@
       "number": 11,
       "title": "Close the Roll-Moment and Axle-Transfer Balance",
       "path": "courses/vehicle-dynamics/modules/11-distribute-roll-stiffness",
-      "payload_sha256": "b14a0b2b633d20eaa0ba53f29463abb6830191beb7f14bbcadb8c99df009307a",
+      "payload_sha256": "ae052e57f1a9711b1935d7514b78c0e7d057887550ecf2d143bd025eacb63228",
       "checks": {
         "concept": {
           "state": "present",
@@ -20720,6 +20800,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/11-distribute-roll-stiffness/actual.json",
             "courses/vehicle-dynamics/modules/11-distribute-roll-stiffness/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/11-distribute-roll-stiffness/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/11-distribute-roll-stiffness/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/11-distribute-roll-stiffness/expected.json",
             "courses/vehicle-dynamics/modules/11-distribute-roll-stiffness/verification.yaml"
@@ -20731,7 +20812,14 @@
       },
       "semantic_review": "scoped_model_reviewed",
       "scoped_review": "Close the Roll-Moment and Axle-Transfer Balance. One-equation roll solve with physical axle moments. Full physical state/response arrays and governing identities checked at 1e-10 absolute/relative tolerance. Authored Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and plot-layout checks passed. Load shift is the force transferred from inner to outer wheel; wheel-load difference is twice that shift. Aggregate course review remains separate.",
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F11",
+        "competency": "VD-RIDE-SUSPENSION",
+        "cumulative": "A-RIDE, A-PERFORMANCE",
+        "case_count": 5,
+        "scope_limit": "Static roll balance omits roll-rate damping, unsprung mass transients and post-lift-off behavior.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -20741,7 +20829,7 @@
       "number": 12,
       "title": "Estimate Camber Thrust and Toe Scrub",
       "path": "courses/vehicle-dynamics/modules/12-explore-camber-and-toe-geometry",
-      "payload_sha256": "513eee6e68e2cbb1a925a2852a5e4634ccb4059d451712d8cb94024dbdaa5299",
+      "payload_sha256": "3a848751f2a4a72efc3384189e2aafe477bd804276b55eaa8ab79480d34b6fb1",
       "checks": {
         "concept": {
           "state": "present",
@@ -20796,6 +20884,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/12-explore-camber-and-toe-geometry/actual.json",
             "courses/vehicle-dynamics/modules/12-explore-camber-and-toe-geometry/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/12-explore-camber-and-toe-geometry/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/12-explore-camber-and-toe-geometry/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/12-explore-camber-and-toe-geometry/expected.json",
             "courses/vehicle-dynamics/modules/12-explore-camber-and-toe-geometry/verification.yaml"
@@ -20807,7 +20896,14 @@
       },
       "semantic_review": "scoped_model_reviewed",
       "scoped_review": "Estimate Camber Thrust and Toe Scrub. Independent sine/cosine toe ratio and dimensional angle conversion. Full physical state/response arrays and governing identities checked at 1e-10 absolute/relative tolerance. Authored Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and plot-layout checks passed. This is an empirical force/power estimate, not suspension-geometry or tire-temperature simulation. Aggregate course review remains separate.",
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F12",
+        "competency": "VD-RIDE-SUSPENSION",
+        "cumulative": "A-RIDE, A-PERFORMANCE",
+        "case_count": 5,
+        "scope_limit": "These local linear alignment relations are not a setup recommendation or a model of tire wear over a stint.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -20817,7 +20913,7 @@
       "number": 13,
       "title": "Account for Gearing, Traction and Delivered Power",
       "path": "courses/vehicle-dynamics/modules/13-map-engine-torque-through-gearing",
-      "payload_sha256": "255c2db0af812e398a289b1f7ff7a7f227ac57ce5c605310d1990a2eab0895f0",
+      "payload_sha256": "7cdfb3da5e87eb17e204ce1dd6637913904f1405de6aa7df642d8625b240c683",
       "checks": {
         "concept": {
           "state": "present",
@@ -20871,6 +20967,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/13-map-engine-torque-through-gearing/actual.json",
             "courses/vehicle-dynamics/modules/13-map-engine-torque-through-gearing/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/13-map-engine-torque-through-gearing/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/13-map-engine-torque-through-gearing/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/13-map-engine-torque-through-gearing/expected.json",
             "courses/vehicle-dynamics/modules/13-map-engine-torque-through-gearing/verification.yaml"
@@ -20882,7 +20979,14 @@
       },
       "semantic_review": "scoped_model_reviewed",
       "scoped_review": "Executed engine-to-wheel gearing, capped applied force and delivered-power balance; independent power-first formulation separates requested-torque curtailment from drivetrain loss. Fixed-speed mapping does not establish engine/redline feasibility or tire-slip dynamics. Five independent full-state/response cases and runtime corners passed at unchanged 1e-10 tolerance. Individual embedded Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and SVG layout checks passed. Aggregate course review remains separate.",
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F13",
+        "competency": "VD-POWERTRAIN",
+        "cumulative": "A-POWERTRAIN, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "This bounded driveline study does not resolve clutch slip, engine transients or tire heating.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -20892,7 +20996,7 @@
       "number": 14,
       "title": "Distinguish a Force Crossover from a Redline Limit",
       "path": "courses/vehicle-dynamics/modules/14-choose-shift-points",
-      "payload_sha256": "7918e76661b2bf1df757600b6d9c648a1f6975a59cb42b832430f98b2ca991c2",
+      "payload_sha256": "20a6a2e14675cef2645f3e1962b368934cc46b88ba5bfcc0227ab2f2823a654c",
       "checks": {
         "concept": {
           "state": "present",
@@ -20947,6 +21051,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/14-choose-shift-points/actual.json",
             "courses/vehicle-dynamics/modules/14-choose-shift-points/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/14-choose-shift-points/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/14-choose-shift-points/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/14-choose-shift-points/expected.json",
             "courses/vehicle-dynamics/modules/14-choose-shift-points/verification.yaml"
@@ -20958,7 +21063,14 @@
       },
       "semantic_review": "scoped_model_reviewed",
       "scoped_review": "Executed post-shift torque lookup and wheel-force comparison with resolved crossover, redline fallback and unavailable invalid-ratio decisions; independent analytic polynomial root. The actual refined controls reach 2.09 to 2.08 and the 7399.34147 RPM crossover. No shift-time or lap-optimality claim. Five independent full-state/response cases and runtime corners passed at unchanged 1e-10 tolerance. Individual embedded Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and SVG layout checks passed. Aggregate course review remains separate.",
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F14",
+        "competency": "VD-POWERTRAIN",
+        "cumulative": "A-POWERTRAIN, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "An instantaneous crossover analysis excludes shift interruption and driver or actuator latency; P47 adds a bounded interruption model.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -20968,7 +21080,7 @@
       "number": 15,
       "title": "Close the Braking Work and Heat Budgets",
       "path": "courses/vehicle-dynamics/modules/15-model-braking-distance-and-heat",
-      "payload_sha256": "8e90db4458d5cf21ce43fa2fad48e1def86d41a477469a581e81929c4248e9fc",
+      "payload_sha256": "bb342a079d141c1abdd4c0a3aac7e1a9e480dd94d6ad20514f156a6457834420",
       "checks": {
         "concept": {
           "state": "present",
@@ -21023,6 +21135,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/15-model-braking-distance-and-heat/actual.json",
             "courses/vehicle-dynamics/modules/15-model-braking-distance-and-heat/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/15-model-braking-distance-and-heat/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/15-model-braking-distance-and-heat/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/15-model-braking-distance-and-heat/expected.json",
             "courses/vehicle-dynamics/modules/15-model-braking-distance-and-heat/verification.yaml"
@@ -21034,7 +21147,14 @@
       },
       "semantic_review": "scoped_model_reviewed",
       "scoped_review": "Executed constant-force capped stopping, longitudinal load transfer and kinetic-energy/work/heat closure; independent energy-first trajectory. Actual double-counted heat fault changes rotor temperature while preserving motion. Cooling, brake bias and transient tire dynamics are excluded. Five independent full-state/response cases and runtime corners passed at unchanged 1e-10 tolerance. Individual embedded Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and SVG layout checks passed. Aggregate course review remains separate.",
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F15",
+        "competency": "VD-BRAKES",
+        "cumulative": "A-BRAKES, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "The lumped heat ledger is not rotor stress, fade qualification or a complete low-speed ABS model.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -21044,7 +21164,7 @@
       "number": 16,
       "title": "Separate Aerodynamic Force, Power and Axle Allocation",
       "path": "courses/vehicle-dynamics/modules/16-balance-drag-and-downforce",
-      "payload_sha256": "d2854197238c1630168d977402d47e45cdc69402d3983461b50002c2ac20df3f",
+      "payload_sha256": "9275b6d3291ca43998e7286c5f5de8f3e9ea92c9bd6cb8997c19684a2556bad6",
       "checks": {
         "concept": {
           "state": "present",
@@ -21099,6 +21219,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/16-balance-drag-and-downforce/actual.json",
             "courses/vehicle-dynamics/modules/16-balance-drag-and-downforce/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/16-balance-drag-and-downforce/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/16-balance-drag-and-downforce/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/16-balance-drag-and-downforce/expected.json",
             "courses/vehicle-dynamics/modules/16-balance-drag-and-downforce/verification.yaml"
@@ -21110,7 +21231,14 @@
       },
       "semantic_review": "scoped_model_reviewed",
       "scoped_review": "Executed drag/downforce coefficients, complementary axle allocation, normal loads and drag power; independent coefficient-area formulation and speed-scaling checks. Negative faulty rear aerodynamic contribution is distinguished from total wheel load; no measured-aero or tire-load-sensitivity claim. Five independent full-state/response cases and runtime corners passed at unchanged 1e-10 tolerance. Individual embedded Course checkpoint and selected baked desktop/mobile control, fault/recovery/reset and SVG layout checks passed. Aggregate course review remains separate.",
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F16",
+        "competency": "VD-AERO-ENERGY",
+        "cumulative": "A-AERO, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "The coefficient map is synthetic and excludes stall, pitch dynamics, wind and measured aerodynamic validation.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -21120,7 +21248,7 @@
       "number": 17,
       "title": "Decode and Plot CAN Signals",
       "path": "courses/vehicle-dynamics/modules/17-decode-and-plot-can-signals",
-      "payload_sha256": "5f0400db0c230cf39bf2c6f8224bed4b66a827638597a4c760a07e8396ae41b0",
+      "payload_sha256": "00488e012208b4b3f5384d49029954e7e5eadf4cda6cd2585d6954260731d8ff",
       "checks": {
         "concept": {
           "state": "present",
@@ -21172,6 +21300,7 @@
           "state": "retained_artifacts_require_semantic_review",
           "paths": [
             "courses/vehicle-dynamics/modules/17-decode-and-plot-can-signals/actual.json",
+            "courses/vehicle-dynamics/modules/17-decode-and-plot-can-signals/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/17-decode-and-plot-can-signals/expected.json",
             "courses/vehicle-dynamics/modules/17-decode-and-plot-can-signals/verification.yaml"
           ]
@@ -21182,7 +21311,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F17",
+        "competency": "VD-TELEMETRY-PROTOCOL",
+        "cumulative": "A-TELEMETRY, A-CAP-TELEMETRY",
+        "case_count": 5,
+        "scope_limit": "This protocol fixture is synthetic and covers a declared identifier and byte layout, not all GR86 firmware or a live bus.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -21192,7 +21328,7 @@
       "number": 18,
       "title": "Fuse GPS and IMU Motion",
       "path": "courses/vehicle-dynamics/modules/18-fuse-gps-and-imu-motion",
-      "payload_sha256": "652e3ee70e03751e51338429a8143f4c73190cf0a0c6f2e310f064e68085293a",
+      "payload_sha256": "8fbdf5dfffdeb9bfe1563bd115d3e7fb6bdec694d471d65820cd68dd6809f7ee",
       "checks": {
         "concept": {
           "state": "present",
@@ -21244,6 +21380,7 @@
           "state": "retained_artifacts_require_semantic_review",
           "paths": [
             "courses/vehicle-dynamics/modules/18-fuse-gps-and-imu-motion/actual.json",
+            "courses/vehicle-dynamics/modules/18-fuse-gps-and-imu-motion/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/18-fuse-gps-and-imu-motion/expected.json",
             "courses/vehicle-dynamics/modules/18-fuse-gps-and-imu-motion/verification.yaml"
           ]
@@ -21254,7 +21391,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F18",
+        "competency": "VD-STATE-RECONSTRUCTION",
+        "cumulative": "A-STATE, A-CAP-TELEMETRY",
+        "case_count": 5,
+        "scope_limit": "This is a fixed-gain position correction, not a Kalman filter, bias observer or stochastic sensor validation.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -21264,7 +21408,7 @@
       "number": 19,
       "title": "Estimate Vehicle State",
       "path": "courses/vehicle-dynamics/modules/19-estimate-vehicle-state",
-      "payload_sha256": "b8266f8403870b222a8ab89d1755dbc85155c208b8a99bb487ec44273a70930f",
+      "payload_sha256": "4c0aad1863ed9b7a5b27953809ad8d5a4f3adc63933175bb7e80ae37fbc2a3cf",
       "checks": {
         "concept": {
           "state": "present",
@@ -21316,6 +21460,7 @@
           "state": "retained_artifacts_require_semantic_review",
           "paths": [
             "courses/vehicle-dynamics/modules/19-estimate-vehicle-state/actual.json",
+            "courses/vehicle-dynamics/modules/19-estimate-vehicle-state/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/19-estimate-vehicle-state/expected.json",
             "courses/vehicle-dynamics/modules/19-estimate-vehicle-state/verification.yaml"
           ]
@@ -21326,7 +21471,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F19",
+        "competency": "VD-STATE-RECONSTRUCTION",
+        "cumulative": "A-STATE, A-CAP-TELEMETRY",
+        "case_count": 5,
+        "scope_limit": "Constant speed and yaw do not constitute state estimation from noisy sensors; no observability or uncertainty claim follows.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -21336,7 +21488,7 @@
       "number": 20,
       "title": "Identify Parameters from a Real Drive",
       "path": "courses/vehicle-dynamics/modules/20-identify-parameters-from-a-real-drive",
-      "payload_sha256": "e18e7b20026c75d107d2a758e4e78b77d19b1d57ccfda783a31e9056356d83db",
+      "payload_sha256": "ddb1e6320edef29ca9a4cf6899ff868e85d3c1beb9d335f77f909e55f198a71d",
       "checks": {
         "concept": {
           "state": "present",
@@ -21388,6 +21540,7 @@
           "state": "retained_artifacts_require_semantic_review",
           "paths": [
             "courses/vehicle-dynamics/modules/20-identify-parameters-from-a-real-drive/actual.json",
+            "courses/vehicle-dynamics/modules/20-identify-parameters-from-a-real-drive/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/20-identify-parameters-from-a-real-drive/expected.json",
             "courses/vehicle-dynamics/modules/20-identify-parameters-from-a-real-drive/verification.yaml"
           ]
@@ -21398,7 +21551,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F20",
+        "competency": "VD-IDENTIFICATION-UNCERTAINTY",
+        "cumulative": "A-ID, A-CAP-TELEMETRY",
+        "case_count": 5,
+        "scope_limit": "Despite the inherited title, this drive is synthetic. Neither fitted coefficients nor residuals establish a real vehicle's road loads.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -21408,7 +21568,7 @@
       "number": 21,
       "title": "Optimize a Racing Line",
       "path": "courses/vehicle-dynamics/modules/21-optimize-a-racing-line",
-      "payload_sha256": "3b7f8feae7034053261e0dbd6c38896b97ba788f694677607a35ccbdc0804145",
+      "payload_sha256": "b5c4a5ceb28cad113c1ef25071c9fe7cde8254ce1915eb474a63c1590f9f0954",
       "checks": {
         "concept": {
           "state": "present",
@@ -21460,6 +21620,7 @@
           "state": "retained_artifacts_require_semantic_review",
           "paths": [
             "courses/vehicle-dynamics/modules/21-optimize-a-racing-line/actual.json",
+            "courses/vehicle-dynamics/modules/21-optimize-a-racing-line/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/21-optimize-a-racing-line/expected.json",
             "courses/vehicle-dynamics/modules/21-optimize-a-racing-line/verification.yaml"
           ]
@@ -21470,7 +21631,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F21",
+        "competency": "VD-PERFORMANCE-OPTIMIZATION",
+        "cumulative": "A-PERFORMANCE, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "The 41-candidate offset search is a bounded geometric proxy, not a dynamically continuous or track-ready racing line.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -21480,7 +21648,7 @@
       "number": 22,
       "title": "Build a Lap-Time Simulator",
       "path": "courses/vehicle-dynamics/modules/22-build-a-lap-time-simulator",
-      "payload_sha256": "fea0d6e14fae6507e80dca97c54a3796f33133bafdd31358a2a07a06551e51e3",
+      "payload_sha256": "b6515bd57a6be1f375f7e9ca5b4dc9972c77f2965da15d152babf3d337c6e751",
       "checks": {
         "concept": {
           "state": "present",
@@ -21532,6 +21700,7 @@
           "state": "retained_artifacts_require_semantic_review",
           "paths": [
             "courses/vehicle-dynamics/modules/22-build-a-lap-time-simulator/actual.json",
+            "courses/vehicle-dynamics/modules/22-build-a-lap-time-simulator/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/22-build-a-lap-time-simulator/expected.json",
             "courses/vehicle-dynamics/modules/22-build-a-lap-time-simulator/verification.yaml"
           ]
@@ -21542,7 +21711,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F22",
+        "competency": "VD-PERFORMANCE-OPTIMIZATION",
+        "cumulative": "A-PERFORMANCE, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "This synthetic circuit and simplified force envelope are not measured lap performance or driver validation.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -21552,7 +21728,7 @@
       "number": 23,
       "title": "Compare Setup Changes Quantitatively",
       "path": "courses/vehicle-dynamics/modules/23-compare-setup-changes-quantitatively",
-      "payload_sha256": "1b1099a1c7532f617a6616bafd947d5141810cea2c14675b3f0ccede0f2a7159",
+      "payload_sha256": "dad372d6bdac0fc456d8b66db0761e4fb154963afe8bc0ac8d407aac672f8734",
       "checks": {
         "concept": {
           "state": "present",
@@ -21604,6 +21780,7 @@
           "state": "retained_artifacts_require_semantic_review",
           "paths": [
             "courses/vehicle-dynamics/modules/23-compare-setup-changes-quantitatively/actual.json",
+            "courses/vehicle-dynamics/modules/23-compare-setup-changes-quantitatively/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/23-compare-setup-changes-quantitatively/expected.json",
             "courses/vehicle-dynamics/modules/23-compare-setup-changes-quantitatively/verification.yaml"
           ]
@@ -21614,7 +21791,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F23",
+        "competency": "VD-PERFORMANCE-OPTIMIZATION",
+        "cumulative": "A-PERFORMANCE, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "Deterministic sensitivities and sector variation are not repeated independent track trials or an empirically calibrated confidence interval.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -21624,7 +21808,7 @@
       "number": 24,
       "title": "Construct a GR86 Digital Twin",
       "path": "courses/vehicle-dynamics/modules/24-construct-a-gr86-digital-twin",
-      "payload_sha256": "a95fa04b2bc88a5d50afd40732cad69c91457114ca66e7b13f54f4fd7527e31b",
+      "payload_sha256": "a703c33ccb9bc8d799108b4b00a993c5f6dcad7cee457877b4e2912bcfb7b4a3",
       "checks": {
         "concept": {
           "state": "present",
@@ -21676,6 +21860,7 @@
           "state": "retained_artifacts_require_semantic_review",
           "paths": [
             "courses/vehicle-dynamics/modules/24-construct-a-gr86-digital-twin/actual.json",
+            "courses/vehicle-dynamics/modules/24-construct-a-gr86-digital-twin/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/24-construct-a-gr86-digital-twin/expected.json",
             "courses/vehicle-dynamics/modules/24-construct-a-gr86-digital-twin/verification.yaml"
           ]
@@ -21686,7 +21871,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F24",
+        "competency": "VD-SYSTEM-INTEGRATION",
+        "cumulative": "A-CAP-TELEMETRY, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "This original integrated teaching model omits calibration and detailed subsystems; the broader executed synthetic integration is P67.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -21696,7 +21888,7 @@
       "number": 25,
       "title": "Measure Motion in Body, Path, and Wheel Frames",
       "path": "courses/vehicle-dynamics/modules/25-measure-motion-in-body-path-and-wheel-frames",
-      "payload_sha256": "d17bf293ee37ab1324316a3ea36801045d20a087b4c38ae2606ddfffb87c7e63",
+      "payload_sha256": "6b70ee1a1255d74dc0988a536591a7c561b6382a68e352a1ae4548637de9ab8a",
       "checks": {
         "concept": {
           "state": "present",
@@ -21754,6 +21946,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/25-measure-motion-in-body-path-and-wheel-frames/design.yaml",
             "courses/vehicle-dynamics/modules/25-measure-motion-in-body-path-and-wheel-frames/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/25-measure-motion-in-body-path-and-wheel-frames/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/25-measure-motion-in-body-path-and-wheel-frames/evidence/expected-independent.json"
           ]
         },
@@ -21763,7 +21956,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F25",
+        "competency": "VD-MOTION-FRAMES, VD-STATE-RECONSTRUCTION",
+        "cumulative": "A-MOTION-FORCES, A-STATE, A-CAP-TELEMETRY",
+        "case_count": 5,
+        "scope_limit": "These are planar rigid-frame transforms with declared headings, not full three-dimensional sensor alignment.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -21773,7 +21973,7 @@
       "number": 26,
       "title": "Quantify Tire Load Sensitivity",
       "path": "courses/vehicle-dynamics/modules/26-quantify-tire-load-sensitivity",
-      "payload_sha256": "49cd0064c2c8e76f7dbf98e0fd8c8c9fa5cf4a9aeffa1c95cf4358d6d9ce89db",
+      "payload_sha256": "4b24c7fbccabc467386f04aad8875b52ee3e0319faa8f86fcb48158648df547f",
       "checks": {
         "concept": {
           "state": "present",
@@ -21831,6 +22031,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/26-quantify-tire-load-sensitivity/design.yaml",
             "courses/vehicle-dynamics/modules/26-quantify-tire-load-sensitivity/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/26-quantify-tire-load-sensitivity/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/26-quantify-tire-load-sensitivity/evidence/expected-independent.json"
           ]
         },
@@ -21840,7 +22041,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F26",
+        "competency": "VD-TIRE-LONG, VD-TIRE-LAT",
+        "cumulative": "A-TIRE-LONG, A-TIRE-LAT, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "The empirical exponent is declared, not fitted to measured tire data; extrapolation to zero contact or extreme loads needs care.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -21850,7 +22058,7 @@
       "number": 27,
       "title": "Fit Longitudinal Force versus Slip Ratio",
       "path": "courses/vehicle-dynamics/modules/27-fit-longitudinal-force-versus-slip-ratio",
-      "payload_sha256": "7ac0d8286f08fd5b080abc43f9f98b826a6b937d0d9c9e79882bdbc6c0957a21",
+      "payload_sha256": "2029fc004a5d75dc2ffc58175316829ae6115ad2b97b821af6083edef5a1031a",
       "checks": {
         "concept": {
           "state": "present",
@@ -21908,6 +22116,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/27-fit-longitudinal-force-versus-slip-ratio/design.yaml",
             "courses/vehicle-dynamics/modules/27-fit-longitudinal-force-versus-slip-ratio/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/27-fit-longitudinal-force-versus-slip-ratio/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/27-fit-longitudinal-force-versus-slip-ratio/evidence/expected-independent.json"
           ]
         },
@@ -21917,7 +22126,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F27",
+        "competency": "VD-TIRE-LONG",
+        "cumulative": "A-TIRE-LONG, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "Piecewise clipping is a synthetic calibration target, not a smooth measured tire fit with parameter covariance.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -21927,7 +22143,7 @@
       "number": 28,
       "title": "Fit Lateral Force versus Slip Angle and Camber",
       "path": "courses/vehicle-dynamics/modules/28-fit-lateral-force-versus-slip-angle-and-camber",
-      "payload_sha256": "48484641d22ba05a17174b46ac2770e3b6c94375dc78c83ff2a46d7a5e78c83c",
+      "payload_sha256": "9ca77655f974dd9b0f502a8aa7e1d62879f48da5faf032e7068dd1611c257609",
       "checks": {
         "concept": {
           "state": "present",
@@ -21985,6 +22201,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/28-fit-lateral-force-versus-slip-angle-and-camber/design.yaml",
             "courses/vehicle-dynamics/modules/28-fit-lateral-force-versus-slip-angle-and-camber/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/28-fit-lateral-force-versus-slip-angle-and-camber/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/28-fit-lateral-force-versus-slip-angle-and-camber/evidence/expected-independent.json"
           ]
         },
@@ -21994,7 +22211,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F28",
+        "competency": "VD-TIRE-LAT",
+        "cumulative": "A-TIRE-LAT, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "This linear superposition omits saturation, combined slip and temperature; low residual alone does not certify a tire.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -22004,7 +22228,7 @@
       "number": 29,
       "title": "Combine Longitudinal and Lateral Slip",
       "path": "courses/vehicle-dynamics/modules/29-combine-longitudinal-and-lateral-slip",
-      "payload_sha256": "aaf21c3de467223ec800ba45340f61ff9a4c53d9d0abec125028df7554b80178",
+      "payload_sha256": "9f1c3ff33637332823bdf8b7fa980ee7516f590b6830df3b5189e29489d41cdd",
       "checks": {
         "concept": {
           "state": "present",
@@ -22062,6 +22286,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/29-combine-longitudinal-and-lateral-slip/design.yaml",
             "courses/vehicle-dynamics/modules/29-combine-longitudinal-and-lateral-slip/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/29-combine-longitudinal-and-lateral-slip/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/29-combine-longitudinal-and-lateral-slip/evidence/expected-independent.json"
           ]
         },
@@ -22071,7 +22296,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F29",
+        "competency": "VD-TIRE-LONG, VD-TIRE-LAT, VD-HANDLING-NONLINEAR",
+        "cumulative": "A-TIRE-LONG, A-TIRE-LAT, A-HANDLING, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "A friction circle is a bounded allocation model, not a validated friction ellipse or a transient brush model.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -22081,7 +22313,7 @@
       "number": 30,
       "title": "Model Tire Relaxation and Transient Force",
       "path": "courses/vehicle-dynamics/modules/30-model-tire-relaxation-and-transient-force",
-      "payload_sha256": "7ea33a8e444d8737000087b94b193b4e39e3d3321889e718c683ac927fef0bf7",
+      "payload_sha256": "84cda0e1a0e02c8c6bf15dcec652c605ffd1ba585eec2bdcd312a975721d83f6",
       "checks": {
         "concept": {
           "state": "present",
@@ -22139,6 +22371,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/30-model-tire-relaxation-and-transient-force/design.yaml",
             "courses/vehicle-dynamics/modules/30-model-tire-relaxation-and-transient-force/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/30-model-tire-relaxation-and-transient-force/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/30-model-tire-relaxation-and-transient-force/evidence/expected-independent.json"
           ]
         },
@@ -22148,7 +22381,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F30",
+        "competency": "VD-TIRE-LONG, VD-TIRE-LAT",
+        "cumulative": "A-TIRE-LONG, A-TIRE-LAT, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "This first-order relaxation model assumes constant speed and a fixed target force; it does not resolve contact-patch physics.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -22158,7 +22398,7 @@
       "number": 31,
       "title": "Track Tire Temperature, Pressure, and Grip",
       "path": "courses/vehicle-dynamics/modules/31-track-tire-temperature-pressure-and-grip",
-      "payload_sha256": "fbb5c3595a464e9a4a3fe96897749a20111770ab690bd25aedb35765debbe900",
+      "payload_sha256": "09426060ceb8d78a8a256517aa40b3e87ef47971542a4d0c8844df2bd08af398",
       "checks": {
         "concept": {
           "state": "present",
@@ -22216,6 +22456,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/31-track-tire-temperature-pressure-and-grip/design.yaml",
             "courses/vehicle-dynamics/modules/31-track-tire-temperature-pressure-and-grip/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/31-track-tire-temperature-pressure-and-grip/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/31-track-tire-temperature-pressure-and-grip/evidence/expected-independent.json"
           ]
         },
@@ -22225,7 +22466,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F31",
+        "competency": "VD-TIRE-LONG, VD-TIRE-LAT, VD-AERO-ENERGY",
+        "cumulative": "A-TIRE-LONG, A-TIRE-LAT, A-AERO, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "Fixed volume, ideal gas and lumped cooling exclude carcass gradients, leakage, humidity and measured pressure/grip calibration.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -22235,7 +22483,7 @@
       "number": 32,
       "title": "Accumulate Tire Work and Thermal Energy",
       "path": "courses/vehicle-dynamics/modules/32-accumulate-tire-work-and-thermal-energy",
-      "payload_sha256": "792213d429aefb4c7c56ba8783c1bc153b1a76e9710c839cc6278109205c62e6",
+      "payload_sha256": "f3fe00725ab77aaf69fd26c0ce6abbae2c324c1842206d1d7e4d297c167ba69c",
       "checks": {
         "concept": {
           "state": "present",
@@ -22293,6 +22541,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/32-accumulate-tire-work-and-thermal-energy/design.yaml",
             "courses/vehicle-dynamics/modules/32-accumulate-tire-work-and-thermal-energy/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/32-accumulate-tire-work-and-thermal-energy/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/32-accumulate-tire-work-and-thermal-energy/evidence/expected-independent.json"
           ]
         },
@@ -22302,7 +22551,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F32",
+        "competency": "VD-TIRE-LONG, VD-TIRE-LAT, VD-AERO-ENERGY",
+        "cumulative": "A-TIRE-LONG, A-TIRE-LAT, A-AERO, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "Constant forces and lumped heat capacity exclude changing grip, wear and spatial temperature fields.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -22312,11 +22568,11 @@
       "number": 33,
       "title": "Validate a Tire Model with Uncertainty",
       "path": "courses/vehicle-dynamics/modules/33-validate-a-tire-model-with-uncertainty",
-      "payload_sha256": "752f936f7c9a3f893ed215d46a617c4e22dc993a8f20e4d62ae1a9b9b56c305b",
+      "payload_sha256": "19f017e68002c556c099fbba1fc95fc9d469cb3a8ba01558c7dbc18c6bed96d9",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 581,
+          "word_count": 654,
           "headings": [
             "Validate a Tire Model with Uncertainty",
             "Why this lesson exists",
@@ -22330,7 +22586,8 @@
             "Independent evidence",
             "Common mistakes",
             "Formative checks",
-            "Teach-back"
+            "Teach-back",
+            "Detailed model audit"
           ]
         },
         "equations": {
@@ -22370,6 +22627,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/33-validate-a-tire-model-with-uncertainty/design.yaml",
             "courses/vehicle-dynamics/modules/33-validate-a-tire-model-with-uncertainty/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/33-validate-a-tire-model-with-uncertainty/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/33-validate-a-tire-model-with-uncertainty/evidence/expected-independent.json"
           ]
         },
@@ -22379,7 +22637,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F33",
+        "competency": "VD-TIRE-LONG, VD-TIRE-LAT, VD-IDENTIFICATION-UNCERTAINTY",
+        "cumulative": "A-TIRE-LONG, A-TIRE-LAT, A-ID, A-CAP-TELEMETRY, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "The fixture noise is deterministic and correlated. Gaussian conditional formulas do not establish empirical 95 percent coverage, nor include model-form error.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -22389,7 +22654,7 @@
       "number": 34,
       "title": "Derive the Dynamic Bicycle State Model",
       "path": "courses/vehicle-dynamics/modules/34-derive-the-dynamic-bicycle-state-model",
-      "payload_sha256": "b14d6391695a6615418778bbd2af25e42ea4574581a24e2c30fa235c4d113276",
+      "payload_sha256": "23965b94f8db94dcfc583639fdddb9b494846fe199e038b4585730d7d5ad57af",
       "checks": {
         "concept": {
           "state": "present",
@@ -22445,6 +22710,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/34-derive-the-dynamic-bicycle-state-model/design.yaml",
             "courses/vehicle-dynamics/modules/34-derive-the-dynamic-bicycle-state-model/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/34-derive-the-dynamic-bicycle-state-model/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/34-derive-the-dynamic-bicycle-state-model/evidence/expected-independent.json"
           ]
         },
@@ -22454,7 +22720,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F34",
+        "competency": "VD-HANDLING-LINEAR",
+        "cumulative": "A-HANDLING",
+        "case_count": 5,
+        "scope_limit": "This linear constant-speed system omits saturation and actuator/tire dynamics. Pole stability does not establish a large-steer maneuver's feasibility.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -22464,7 +22737,7 @@
       "number": 35,
       "title": "Analyze Yaw and Sideslip Frequency Response",
       "path": "courses/vehicle-dynamics/modules/35-analyze-yaw-and-sideslip-frequency-response",
-      "payload_sha256": "94ceb65470fcb43296b9820b14271821a85cb7693b8c1cbd47f6914b3d900c9e",
+      "payload_sha256": "e0ad1b084121b8ebaa1ef09748eb34a5c2b287c0d10ce2f78a1b258a84ccf6c6",
       "checks": {
         "concept": {
           "state": "present",
@@ -22520,6 +22793,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/35-analyze-yaw-and-sideslip-frequency-response/design.yaml",
             "courses/vehicle-dynamics/modules/35-analyze-yaw-and-sideslip-frequency-response/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/35-analyze-yaw-and-sideslip-frequency-response/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/35-analyze-yaw-and-sideslip-frequency-response/evidence/expected-independent.json"
           ]
         },
@@ -22529,7 +22803,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F35",
+        "competency": "VD-HANDLING-LINEAR",
+        "cumulative": "A-HANDLING",
+        "case_count": 5,
+        "scope_limit": "The frequency response assumes a linear time-invariant small-signal model; it does not include nonlinear limit handling or large-amplitude tire saturation.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -22539,7 +22820,7 @@
       "number": 36,
       "title": "Measure Understeer Gradient and Characteristic Speed",
       "path": "courses/vehicle-dynamics/modules/36-measure-understeer-gradient-and-characteristic-speed",
-      "payload_sha256": "a97ef353112dc7e2eb54178b6372409c4b03be8390c7f95687118d756f574e69",
+      "payload_sha256": "e05e1e6b742fd73c0c84864e9fa80e2b381d1e201d2fdfd20e3d5fe34b6d74a9",
       "checks": {
         "concept": {
           "state": "present",
@@ -22595,6 +22876,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/36-measure-understeer-gradient-and-characteristic-speed/design.yaml",
             "courses/vehicle-dynamics/modules/36-measure-understeer-gradient-and-characteristic-speed/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/36-measure-understeer-gradient-and-characteristic-speed/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/36-measure-understeer-gradient-and-characteristic-speed/evidence/expected-independent.json"
           ]
         },
@@ -22604,7 +22886,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F36",
+        "competency": "VD-HANDLING-LINEAR",
+        "cumulative": "A-HANDLING",
+        "case_count": 5,
+        "scope_limit": "These characteristic quantities belong to the linear model and do not imply tire feasibility, safe operation or global stability.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -22614,7 +22903,7 @@
       "number": 37,
       "title": "Test Nonlinear Limit Handling and Stability",
       "path": "courses/vehicle-dynamics/modules/37-test-nonlinear-limit-handling-and-stability",
-      "payload_sha256": "09bad5597a3be79625d42dd166fc8866ccb3d2442b23bf3e711a553616ca22b9",
+      "payload_sha256": "137a4da44497032e42bb1b94ad5c26e1d6a52bdcf6802a727ba0bd4fc9cde707",
       "checks": {
         "concept": {
           "state": "present",
@@ -22670,6 +22959,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/37-test-nonlinear-limit-handling-and-stability/design.yaml",
             "courses/vehicle-dynamics/modules/37-test-nonlinear-limit-handling-and-stability/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/37-test-nonlinear-limit-handling-and-stability/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/37-test-nonlinear-limit-handling-and-stability/evidence/expected-independent.json"
           ]
         },
@@ -22679,7 +22969,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F37",
+        "competency": "VD-HANDLING-NONLINEAR",
+        "cumulative": "A-HANDLING, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "Stability is local to a valid trim of a constant-speed small-body-angle model. No global recoverability, spin prediction or measured-car qualification follows.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -22689,11 +22986,11 @@
       "number": 38,
       "title": "Partition Lateral Load Transfer",
       "path": "courses/vehicle-dynamics/modules/38-partition-lateral-load-transfer",
-      "payload_sha256": "64700eca11705b40f3e5117130cdd36f4697bdd71ced96322d301e32966a8779",
+      "payload_sha256": "4ad7afaf2c027e77a4c1079f3f56e0f3df3ab8a9497896057f759e3006eb3e6c",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 345,
+          "word_count": 448,
           "headings": [
             "Partition Lateral Load Transfer",
             "Model and equations",
@@ -22705,7 +23002,8 @@
             "Independent evidence",
             "Common mistakes",
             "Formative checks",
-            "Teach-back"
+            "Teach-back",
+            "Detailed model audit"
           ]
         },
         "equations": {
@@ -22745,7 +23043,10 @@
           "paths": [
             "courses/vehicle-dynamics/modules/38-partition-lateral-load-transfer/design.yaml",
             "courses/vehicle-dynamics/modules/38-partition-lateral-load-transfer/evidence/actual-production.json",
-            "courses/vehicle-dynamics/modules/38-partition-lateral-load-transfer/evidence/expected-independent.json"
+            "courses/vehicle-dynamics/modules/38-partition-lateral-load-transfer/evidence/aggregate-independent.json",
+            "courses/vehicle-dynamics/modules/38-partition-lateral-load-transfer/evidence/expected-independent.json",
+            "courses/vehicle-dynamics/modules/38-partition-lateral-load-transfer/evidence/pre-aggregate-actual-production.json",
+            "courses/vehicle-dynamics/modules/38-partition-lateral-load-transfer/evidence/pre-aggregate-expected-independent.json"
           ]
         },
         "competency_alignment": {
@@ -22754,7 +23055,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F38",
+        "competency": "VD-FORCE-BALANCE, VD-HANDLING-NONLINEAR, VD-RIDE-SUSPENSION",
+        "cumulative": "A-MOTION-FORCES, A-HANDLING, A-RIDE, A-PERFORMANCE, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "The model has no post-lift-off roll dynamics or changed contact geometry. A zero moment residual in the demanded ledger cannot override a nonzero contact-excess flag.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -22764,11 +23072,11 @@
       "number": 39,
       "title": "Couple Heave, Pitch, and Roll Modes",
       "path": "courses/vehicle-dynamics/modules/39-couple-heave-pitch-and-roll-modes",
-      "payload_sha256": "d3bb905db99fbfc0f2e27063e9287021d819cea9580449858b5a088b6b834890",
+      "payload_sha256": "03f10841c757d2f79bf3dbe334301b3b8f743a0d9c29bf1072b080d00a96c95b",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 350,
+          "word_count": 441,
           "headings": [
             "Couple Heave, Pitch, and Roll Modes",
             "Model and equations",
@@ -22780,7 +23088,8 @@
             "Independent evidence",
             "Common mistakes",
             "Formative checks",
-            "Teach-back"
+            "Teach-back",
+            "Detailed model audit"
           ]
         },
         "equations": {
@@ -22820,7 +23129,10 @@
           "paths": [
             "courses/vehicle-dynamics/modules/39-couple-heave-pitch-and-roll-modes/design.yaml",
             "courses/vehicle-dynamics/modules/39-couple-heave-pitch-and-roll-modes/evidence/actual-production.json",
-            "courses/vehicle-dynamics/modules/39-couple-heave-pitch-and-roll-modes/evidence/expected-independent.json"
+            "courses/vehicle-dynamics/modules/39-couple-heave-pitch-and-roll-modes/evidence/aggregate-independent.json",
+            "courses/vehicle-dynamics/modules/39-couple-heave-pitch-and-roll-modes/evidence/expected-independent.json",
+            "courses/vehicle-dynamics/modules/39-couple-heave-pitch-and-roll-modes/evidence/pre-aggregate-actual-production.json",
+            "courses/vehicle-dynamics/modules/39-couple-heave-pitch-and-roll-modes/evidence/pre-aggregate-expected-independent.json"
           ]
         },
         "competency_alignment": {
@@ -22829,7 +23141,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F39",
+        "competency": "VD-RIDE-SUSPENSION",
+        "cumulative": "A-RIDE, A-PERFORMANCE",
+        "case_count": 5,
+        "scope_limit": "Three linear rigid-body modes exclude unsprung wheel hop, nonlinear dampers, frequency-dependent bushings and measured modal correlation.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -22839,7 +23158,7 @@
       "number": 40,
       "title": "Predict Road-Input Ride Transmissibility",
       "path": "courses/vehicle-dynamics/modules/40-predict-road-input-ride-transmissibility",
-      "payload_sha256": "cfac7d90bc68549a640163c76fa2c3ca44ec3293faa5c60999b806d81c8f138b",
+      "payload_sha256": "35d74b5183d7fc06eb44c85189b8629bdef881d79bdf8af1e66935bfe11193d3",
       "checks": {
         "concept": {
           "state": "present",
@@ -22895,6 +23214,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/40-predict-road-input-ride-transmissibility/design.yaml",
             "courses/vehicle-dynamics/modules/40-predict-road-input-ride-transmissibility/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/40-predict-road-input-ride-transmissibility/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/40-predict-road-input-ride-transmissibility/evidence/expected-independent.json"
           ]
         },
@@ -22904,7 +23224,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F40",
+        "competency": "VD-RIDE-SUSPENSION",
+        "cumulative": "A-RIDE, A-PERFORMANCE",
+        "case_count": 5,
+        "scope_limit": "This sprung-mass SDOF model excludes wheel-hop dynamics and tire contact; it does not establish a ride-comfort standard.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -22914,7 +23241,7 @@
       "number": 41,
       "title": "Shape Digressive Damper Force-Velocity Response",
       "path": "courses/vehicle-dynamics/modules/41-shape-digressive-damper-force-velocity-response",
-      "payload_sha256": "0c92afe99e90b34e8e74d780c817aee66793dde21ef5f70b426fdfdf49c2b028",
+      "payload_sha256": "aa694519e8060a856e6c482e7aaf01255eee4236aa1d4f4d571ab69ba6f992eb",
       "checks": {
         "concept": {
           "state": "present",
@@ -22970,6 +23297,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/41-shape-digressive-damper-force-velocity-response/design.yaml",
             "courses/vehicle-dynamics/modules/41-shape-digressive-damper-force-velocity-response/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/41-shape-digressive-damper-force-velocity-response/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/41-shape-digressive-damper-force-velocity-response/evidence/expected-independent.json"
           ]
         },
@@ -22979,7 +23307,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F41",
+        "competency": "VD-RIDE-SUSPENSION",
+        "cumulative": "A-RIDE, A-PERFORMANCE",
+        "case_count": 5,
+        "scope_limit": "The smooth memoryless law omits hysteresis, temperature, gas force, cavitation and measured compression/rebound asymmetry.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -22989,7 +23324,7 @@
       "number": 42,
       "title": "Trace Suspension Kinematics and Compliance",
       "path": "courses/vehicle-dynamics/modules/42-trace-suspension-kinematics-and-compliance",
-      "payload_sha256": "3a7c7191f2ea9c7cad0bf483230a3cdeea7b46c091d891d2088e925984f32738",
+      "payload_sha256": "083bca73a7c1b2f434e2ae3a2bef7a5a3b27b53eab1b29d173cbe579b522e297",
       "checks": {
         "concept": {
           "state": "present",
@@ -23045,6 +23380,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/42-trace-suspension-kinematics-and-compliance/design.yaml",
             "courses/vehicle-dynamics/modules/42-trace-suspension-kinematics-and-compliance/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/42-trace-suspension-kinematics-and-compliance/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/42-trace-suspension-kinematics-and-compliance/evidence/expected-independent.json"
           ]
         },
@@ -23054,7 +23390,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F42",
+        "competency": "VD-RIDE-SUSPENSION",
+        "cumulative": "A-RIDE, A-PERFORMANCE",
+        "case_count": 5,
+        "scope_limit": "These local affine kinematics/compliance maps are synthetic and do not solve a linkage or validate structural deflection.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -23064,7 +23407,7 @@
       "number": 43,
       "title": "Evaluate Anti-Dive and Anti-Squat Geometry",
       "path": "courses/vehicle-dynamics/modules/43-evaluate-anti-dive-and-anti-squat-geometry",
-      "payload_sha256": "81ded2f40dc40f40b12ff5401b82679af37ee89ba961fb959ce6f30415df09ea",
+      "payload_sha256": "24554cea7cb21952f31424e5406233cae72c21e9ed3677a9e78944ec6494cafe",
       "checks": {
         "concept": {
           "state": "present",
@@ -23120,6 +23463,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/43-evaluate-anti-dive-and-anti-squat-geometry/design.yaml",
             "courses/vehicle-dynamics/modules/43-evaluate-anti-dive-and-anti-squat-geometry/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/43-evaluate-anti-dive-and-anti-squat-geometry/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/43-evaluate-anti-dive-and-anti-squat-geometry/evidence/expected-independent.json"
           ]
         },
@@ -23129,7 +23473,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F43",
+        "competency": "VD-RIDE-SUSPENSION",
+        "cumulative": "A-RIDE, A-PERFORMANCE",
+        "case_count": 5,
+        "scope_limit": "These side-view force-line approximations omit suspension motion, force migration and transient pitch; anti percentage is not a braking-capacity gain.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -23139,7 +23490,7 @@
       "number": 44,
       "title": "Convert Engine Torque into a Traction Envelope",
       "path": "courses/vehicle-dynamics/modules/44-convert-engine-torque-into-a-traction-envelope",
-      "payload_sha256": "fe033686efe0e00d227219699be966ab43ae78a7e09d228f472eb1fbf8cafad0",
+      "payload_sha256": "8786189eb3e921367a3f1105b1f30afae224e2d5f57a9d71427a205d26b1a862",
       "checks": {
         "concept": {
           "state": "present",
@@ -23195,6 +23546,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/44-convert-engine-torque-into-a-traction-envelope/design.yaml",
             "courses/vehicle-dynamics/modules/44-convert-engine-torque-into-a-traction-envelope/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/44-convert-engine-torque-into-a-traction-envelope/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/44-convert-engine-torque-into-a-traction-envelope/evidence/expected-independent.json"
           ]
         },
@@ -23204,7 +23556,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F44",
+        "competency": "VD-POWERTRAIN",
+        "cumulative": "A-POWERTRAIN, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "The fixed driven-axle load omits longitudinal transfer and differential effects. It is not a complete launch simulation.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -23214,7 +23573,7 @@
       "number": 45,
       "title": "Model Rotating Inertia and Launch Dynamics",
       "path": "courses/vehicle-dynamics/modules/45-model-rotating-inertia-and-launch-dynamics",
-      "payload_sha256": "ea8e6cfc88e3fcf6a73b0dda3e37af5b2e878a60472fdede6634a6149eaa3dec",
+      "payload_sha256": "e8334d2e8b1028e37b41dc127ca763c0c1755c11c1ec6d6cb371c7f087fd1aab",
       "checks": {
         "concept": {
           "state": "present",
@@ -23270,6 +23629,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/45-model-rotating-inertia-and-launch-dynamics/design.yaml",
             "courses/vehicle-dynamics/modules/45-model-rotating-inertia-and-launch-dynamics/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/45-model-rotating-inertia-and-launch-dynamics/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/45-model-rotating-inertia-and-launch-dynamics/evidence/expected-independent.json"
           ]
         },
@@ -23279,7 +23639,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F45",
+        "competency": "VD-POWERTRAIN",
+        "cumulative": "A-POWERTRAIN, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "Constant torque, fixed gear and a lumped reflected mass omit engine-speed limits, clutch dynamics and gear changes.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -23289,7 +23656,7 @@
       "number": 46,
       "title": "Compare Open and Limited-Slip Differentials",
       "path": "courses/vehicle-dynamics/modules/46-compare-open-and-limited-slip-differentials",
-      "payload_sha256": "52fd85580681e5b810910b46f33805a48fc3f11f78c354c3d16b852c904ad4bb",
+      "payload_sha256": "a9f11e3fb4c80fafaf79196f8530b0f5108b442ea694301a2b488588ad46f439",
       "checks": {
         "concept": {
           "state": "present",
@@ -23345,6 +23712,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/46-compare-open-and-limited-slip-differentials/design.yaml",
             "courses/vehicle-dynamics/modules/46-compare-open-and-limited-slip-differentials/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/46-compare-open-and-limited-slip-differentials/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/46-compare-open-and-limited-slip-differentials/evidence/expected-independent.json"
           ]
         },
@@ -23354,7 +23722,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F46",
+        "competency": "VD-POWERTRAIN",
+        "cumulative": "A-POWERTRAIN, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "This quasi-static allocation has no preload, speed-sensitive locking, axle compliance or wheel-speed dynamics.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -23364,11 +23739,11 @@
       "number": 47,
       "title": "Optimize Gear Ratios and Shift Strategy",
       "path": "courses/vehicle-dynamics/modules/47-optimize-gear-ratios-and-shift-strategy",
-      "payload_sha256": "adebc35812d7f51cb50addeb18e61763cc36de94cc3d43698ac4694511a6006f",
+      "payload_sha256": "92e987723d04deaa9421de85a6c3437a588cc50128bacf44e818f6f4174d9264",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 278,
+          "word_count": 375,
           "headings": [
             "Optimize Gear Ratios and Shift Strategy",
             "Model and equations",
@@ -23380,7 +23755,8 @@
             "Independent evidence",
             "Common mistakes",
             "Formative checks",
-            "Teach-back"
+            "Teach-back",
+            "Detailed model audit"
           ]
         },
         "equations": {
@@ -23420,7 +23796,10 @@
           "paths": [
             "courses/vehicle-dynamics/modules/47-optimize-gear-ratios-and-shift-strategy/design.yaml",
             "courses/vehicle-dynamics/modules/47-optimize-gear-ratios-and-shift-strategy/evidence/actual-production.json",
-            "courses/vehicle-dynamics/modules/47-optimize-gear-ratios-and-shift-strategy/evidence/expected-independent.json"
+            "courses/vehicle-dynamics/modules/47-optimize-gear-ratios-and-shift-strategy/evidence/aggregate-independent.json",
+            "courses/vehicle-dynamics/modules/47-optimize-gear-ratios-and-shift-strategy/evidence/expected-independent.json",
+            "courses/vehicle-dynamics/modules/47-optimize-gear-ratios-and-shift-strategy/evidence/pre-aggregate-actual-production.json",
+            "courses/vehicle-dynamics/modules/47-optimize-gear-ratios-and-shift-strategy/evidence/pre-aggregate-expected-independent.json"
           ]
         },
         "competency_alignment": {
@@ -23429,7 +23808,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F47",
+        "competency": "VD-POWERTRAIN",
+        "cumulative": "A-POWERTRAIN, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "This greedy force-based strategy is not a globally optimal shift schedule, and the simulation starts at 5 m/s. A horizon target-time value is censored unless the reached flag is true.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -23439,7 +23825,7 @@
       "number": 48,
       "title": "Allocate Brake Bias with Dynamic Load Transfer",
       "path": "courses/vehicle-dynamics/modules/48-allocate-brake-bias-with-dynamic-load-transfer",
-      "payload_sha256": "6352dd9f301ca1de66087d827d6685461a1a769909654568a9b5a17bdfb7b077",
+      "payload_sha256": "b3cb1c26c1067a4e1ebbb58434494828f0396013c682672c0f12ec7cfa6b7dd9",
       "checks": {
         "concept": {
           "state": "present",
@@ -23495,6 +23881,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/48-allocate-brake-bias-with-dynamic-load-transfer/design.yaml",
             "courses/vehicle-dynamics/modules/48-allocate-brake-bias-with-dynamic-load-transfer/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/48-allocate-brake-bias-with-dynamic-load-transfer/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/48-allocate-brake-bias-with-dynamic-load-transfer/evidence/expected-independent.json"
           ]
         },
@@ -23504,7 +23891,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F48",
+        "competency": "VD-FORCE-BALANCE, VD-BRAKES",
+        "cumulative": "A-MOTION-FORCES, A-BRAKES, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "Do not treat the conditional allocation as a full braking equilibrium or ABS controller. Re-solving load transfer with achieved acceleration would be a separate coupled model.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -23514,7 +23908,7 @@
       "number": 49,
       "title": "Simulate ABS Slip Control and Wheel Lockup",
       "path": "courses/vehicle-dynamics/modules/49-simulate-abs-slip-control-and-wheel-lockup",
-      "payload_sha256": "5bc8aa52cdf0b1d4373644caee66fda8738b348d8b51e7a7b0adcdb258bc53a9",
+      "payload_sha256": "b83bab2fec9b6b4ce079d636afe6d32812371ffed0f59873a533e395c8c705bf",
       "checks": {
         "concept": {
           "state": "present",
@@ -23570,6 +23964,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/49-simulate-abs-slip-control-and-wheel-lockup/design.yaml",
             "courses/vehicle-dynamics/modules/49-simulate-abs-slip-control-and-wheel-lockup/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/49-simulate-abs-slip-control-and-wheel-lockup/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/49-simulate-abs-slip-control-and-wheel-lockup/evidence/expected-independent.json"
           ]
         },
@@ -23579,7 +23974,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F49",
+        "competency": "VD-BRAKES",
+        "cumulative": "A-BRAKES, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "The 0.1 m/s floor and four-second horizon preclude interpreting accumulated distance as an exact physical stopping distance. Above-2-m/s diagnostics are distinct from low-speed behavior.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -23589,7 +23991,7 @@
       "number": 50,
       "title": "Predict Brake Temperature, Fade, and Cooling",
       "path": "courses/vehicle-dynamics/modules/50-predict-brake-temperature-fade-and-cooling",
-      "payload_sha256": "4665bfc4449d631859138a7135aa84266e7bf3fa9bcee0ddeeeb0307a94464da",
+      "payload_sha256": "043707f1220985cc070174ebc2f0a655a4250a8f19d9ae0b96013fb1be8e9e5e",
       "checks": {
         "concept": {
           "state": "present",
@@ -23645,6 +24047,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/50-predict-brake-temperature-fade-and-cooling/design.yaml",
             "courses/vehicle-dynamics/modules/50-predict-brake-temperature-fade-and-cooling/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/50-predict-brake-temperature-fade-and-cooling/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/50-predict-brake-temperature-fade-and-cooling/evidence/expected-independent.json"
           ]
         },
@@ -23654,7 +24057,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F50",
+        "competency": "VD-BRAKES, VD-AERO-ENERGY",
+        "cumulative": "A-BRAKES, A-AERO, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "The empirical fade law is evaluated from temperature but does not feed back into the stop energy or distance. This is a thermal study, not coupled brake-performance qualification.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -23664,7 +24074,7 @@
       "number": 51,
       "title": "Map Aero Balance and Ride-Height Sensitivity",
       "path": "courses/vehicle-dynamics/modules/51-map-aero-balance-and-ride-height-sensitivity",
-      "payload_sha256": "25130501ce8efcfa68e10a67020bb5f1746f898b17db58f69d8870e9d32c93bc",
+      "payload_sha256": "bd1d8e8df79b6e88f3a6daffa1ed825eec0c74715b2f9a979d13cd97ec4e576e",
       "checks": {
         "concept": {
           "state": "present",
@@ -23720,6 +24130,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/51-map-aero-balance-and-ride-height-sensitivity/design.yaml",
             "courses/vehicle-dynamics/modules/51-map-aero-balance-and-ride-height-sensitivity/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/51-map-aero-balance-and-ride-height-sensitivity/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/51-map-aero-balance-and-ride-height-sensitivity/evidence/expected-independent.json"
           ]
         },
@@ -23729,7 +24140,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F51",
+        "competency": "VD-AERO-ENERGY",
+        "cumulative": "A-AERO, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "The affine ride-height map has no stall, ground-contact, pitch or wind dynamics and is not measured aerodynamics.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -23739,7 +24157,7 @@
       "number": 52,
       "title": "Couple Downforce, Drag, Tires, and Stint Limits",
       "path": "courses/vehicle-dynamics/modules/52-couple-downforce-drag-tires-and-stint-limits",
-      "payload_sha256": "d4eb71709b917d9954d9bf2b03ba9ead9ff65d31e902f550161f3670ce293115",
+      "payload_sha256": "2af1bbc76766cab50e86cfde63117b982a2e5e6905939be03ec75e60ff4873c6",
       "checks": {
         "concept": {
           "state": "present",
@@ -23795,6 +24213,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/52-couple-downforce-drag-tires-and-stint-limits/design.yaml",
             "courses/vehicle-dynamics/modules/52-couple-downforce-drag-tires-and-stint-limits/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/52-couple-downforce-drag-tires-and-stint-limits/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/52-couple-downforce-drag-tires-and-stint-limits/evidence/expected-independent.json"
           ]
         },
@@ -23804,7 +24223,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F52",
+        "competency": "VD-AERO-ENERGY, VD-SYSTEM-INTEGRATION",
+        "cumulative": "A-AERO, A-CAP-TELEMETRY, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "The thermal-lap expression is an empirical teaching proxy, not an integrated temperature model. P50 and P67 provide different, explicitly bounded thermal ledgers.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -23814,7 +24240,7 @@
       "number": 53,
       "title": "Replay and Decode GR86 CAN/BLE Telemetry",
       "path": "courses/vehicle-dynamics/modules/53-replay-and-decode-gr86-can-ble-telemetry",
-      "payload_sha256": "904727a9099f93be0bdd2dd4f16bc9591f5b30a6caf769657e150acc84041742",
+      "payload_sha256": "59a02fa6ac8a4440e71dfb0cda6cea0cc4a086a44bb7527043daf36e76896d63",
       "checks": {
         "concept": {
           "state": "present",
@@ -23870,6 +24296,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/53-replay-and-decode-gr86-can-ble-telemetry/design.yaml",
             "courses/vehicle-dynamics/modules/53-replay-and-decode-gr86-can-ble-telemetry/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/53-replay-and-decode-gr86-can-ble-telemetry/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/53-replay-and-decode-gr86-can-ble-telemetry/evidence/expected-independent.json"
           ]
         },
@@ -23879,7 +24306,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F53",
+        "competency": "VD-TELEMETRY-PROTOCOL",
+        "cumulative": "A-TELEMETRY, A-CAP-TELEMETRY",
+        "case_count": 5,
+        "scope_limit": "The fixture explicitly declares synthetic provenance. Correct replay does not establish live GR86 bus access, measured behavior or coverage of every identifier.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -23889,7 +24323,7 @@
       "number": 54,
       "title": "Align Clocks, Rates, and Dropped Packets",
       "path": "courses/vehicle-dynamics/modules/54-align-clocks-rates-and-dropped-packets",
-      "payload_sha256": "0dab184185b3f50d66b294ddaa71409458a4c10e496d7605b235335bb48ca141",
+      "payload_sha256": "a50f606664fc7b18980c64f8165ad2c1f8b5aaf24fb4591d759ec21f66f2db35",
       "checks": {
         "concept": {
           "state": "present",
@@ -23945,6 +24379,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/54-align-clocks-rates-and-dropped-packets/design.yaml",
             "courses/vehicle-dynamics/modules/54-align-clocks-rates-and-dropped-packets/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/54-align-clocks-rates-and-dropped-packets/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/54-align-clocks-rates-and-dropped-packets/evidence/expected-independent.json"
           ]
         },
@@ -23954,7 +24389,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F54",
+        "competency": "VD-TELEMETRY-PROTOCOL",
+        "cumulative": "A-TELEMETRY, A-CAP-TELEMETRY",
+        "case_count": 5,
+        "scope_limit": "There is no clock drift estimation, latency distribution or anti-alias filtering here. P66 adds explicit synchronization markers for an affine clock fit.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -23964,7 +24406,7 @@
       "number": 55,
       "title": "Calibrate Sensors and Transform Measured Axes",
       "path": "courses/vehicle-dynamics/modules/55-calibrate-sensors-and-transform-measured-axes",
-      "payload_sha256": "8aa352b8e29936fb6b048f3a624a65014e37f22bc29b5d7d8f72b5ae90a82c4b",
+      "payload_sha256": "527aeef1cfd1883a3491704158e46f569b1896df5448ddfb5fb2fd59ccb1098a",
       "checks": {
         "concept": {
           "state": "present",
@@ -24020,6 +24462,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/55-calibrate-sensors-and-transform-measured-axes/design.yaml",
             "courses/vehicle-dynamics/modules/55-calibrate-sensors-and-transform-measured-axes/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/55-calibrate-sensors-and-transform-measured-axes/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/55-calibrate-sensors-and-transform-measured-axes/evidence/expected-independent.json"
           ]
         },
@@ -24029,7 +24472,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F55",
+        "competency": "VD-MOTION-FRAMES, VD-STATE-RECONSTRUCTION",
+        "cumulative": "A-MOTION-FORCES, A-STATE, A-CAP-TELEMETRY",
+        "case_count": 5,
+        "scope_limit": "Known synthetic calibration constants are applied, not identified from a real calibration campaign; uncertainty and three-dimensional gravity alignment are omitted.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -24039,7 +24489,7 @@
       "number": 56,
       "title": "Reconstruct a Driven Trajectory",
       "path": "courses/vehicle-dynamics/modules/56-reconstruct-a-driven-trajectory",
-      "payload_sha256": "a8a2fee7f986391645dfdd12b9554c2ca1031063a97770e165ae60300522df4c",
+      "payload_sha256": "4d751116cd3ca659c9d2e143cf8eaddf6a30c288df5a5ef65b7ae42a9fedd1d6",
       "checks": {
         "concept": {
           "state": "present",
@@ -24095,6 +24545,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/56-reconstruct-a-driven-trajectory/design.yaml",
             "courses/vehicle-dynamics/modules/56-reconstruct-a-driven-trajectory/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/56-reconstruct-a-driven-trajectory/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/56-reconstruct-a-driven-trajectory/evidence/expected-independent.json"
           ]
         },
@@ -24104,7 +24555,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F56",
+        "competency": "VD-STATE-RECONSTRUCTION",
+        "cumulative": "A-STATE, A-CAP-TELEMETRY",
+        "case_count": 5,
+        "scope_limit": "This fixed-gain synthetic reconstruction is not a Kalman estimate or a calibrated GPS/IMU uncertainty model; deterministic perturbations are not measured GPS noise.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -24114,11 +24572,11 @@
       "number": 57,
       "title": "Estimate Sideslip and Vehicle State",
       "path": "courses/vehicle-dynamics/modules/57-estimate-sideslip-and-vehicle-state",
-      "payload_sha256": "49245b1326410c96c83d334992ce47f17cb90eba04488ff50c137fa20615dbb8",
+      "payload_sha256": "014b7a53f59cece84b8ca64d3caa6fe886a99942f705c2036f74bf789a274c63",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 295,
+          "word_count": 420,
           "headings": [
             "Estimate Sideslip and Vehicle State",
             "Model and equations",
@@ -24130,7 +24588,8 @@
             "Independent evidence",
             "Common mistakes",
             "Formative checks",
-            "Teach-back"
+            "Teach-back",
+            "Detailed model audit"
           ]
         },
         "equations": {
@@ -24170,7 +24629,10 @@
           "paths": [
             "courses/vehicle-dynamics/modules/57-estimate-sideslip-and-vehicle-state/design.yaml",
             "courses/vehicle-dynamics/modules/57-estimate-sideslip-and-vehicle-state/evidence/actual-production.json",
-            "courses/vehicle-dynamics/modules/57-estimate-sideslip-and-vehicle-state/evidence/expected-independent.json"
+            "courses/vehicle-dynamics/modules/57-estimate-sideslip-and-vehicle-state/evidence/aggregate-independent.json",
+            "courses/vehicle-dynamics/modules/57-estimate-sideslip-and-vehicle-state/evidence/expected-independent.json",
+            "courses/vehicle-dynamics/modules/57-estimate-sideslip-and-vehicle-state/evidence/pre-aggregate-actual-production.json",
+            "courses/vehicle-dynamics/modules/57-estimate-sideslip-and-vehicle-state/evidence/pre-aggregate-expected-independent.json"
           ]
         },
         "competency_alignment": {
@@ -24179,7 +24641,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F57",
+        "competency": "VD-STATE-RECONSTRUCTION",
+        "cumulative": "A-STATE, A-CAP-TELEMETRY",
+        "case_count": 5,
+        "scope_limit": "L is a user-selected fixed gain, not an optimal Kalman gain. The correlated deterministic fixture does not satisfy the independent-noise assumptions of the conditional covariance, and the sign fault adds unmodeled bias.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -24189,7 +24658,7 @@
       "number": 58,
       "title": "Identify Vehicle Parameters with Validation Splits",
       "path": "courses/vehicle-dynamics/modules/58-identify-vehicle-parameters-with-validation-splits",
-      "payload_sha256": "7a4f6b9283f8a0eca16463fa02ba88b5176da88687c57538aaad8335b81e62d8",
+      "payload_sha256": "957620ba702a0a9759e0e1fd71f0e592f550814ae52b1da04947fdb7602e49df",
       "checks": {
         "concept": {
           "state": "present",
@@ -24245,6 +24714,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/58-identify-vehicle-parameters-with-validation-splits/design.yaml",
             "courses/vehicle-dynamics/modules/58-identify-vehicle-parameters-with-validation-splits/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/58-identify-vehicle-parameters-with-validation-splits/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/58-identify-vehicle-parameters-with-validation-splits/evidence/expected-independent.json"
           ]
         },
@@ -24254,7 +24724,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F58",
+        "competency": "VD-IDENTIFICATION-UNCERTAINTY",
+        "cumulative": "A-ID, A-CAP-TELEMETRY",
+        "case_count": 5,
+        "scope_limit": "A chronological synthetic split is stronger than in-sample fit but does not establish generalization across real tires, roads or operating regimes.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -24264,11 +24741,11 @@
       "number": 59,
       "title": "Quantify Identifiability, Residuals, and Uncertainty",
       "path": "courses/vehicle-dynamics/modules/59-quantify-identifiability-residuals-and-uncertainty",
-      "payload_sha256": "247ea5dd15381ecb9233daa032193e2947ff48f4700fe41f6a431bd1412ceced",
+      "payload_sha256": "9e1935a319be9eb6a70624b62b44a2e93efbb0fa3a2a4e7fd226d41e9114119a",
       "checks": {
         "concept": {
           "state": "present",
-          "word_count": 294,
+          "word_count": 382,
           "headings": [
             "Quantify Identifiability, Residuals, and Uncertainty",
             "Model and equations",
@@ -24280,7 +24757,8 @@
             "Independent evidence",
             "Common mistakes",
             "Formative checks",
-            "Teach-back"
+            "Teach-back",
+            "Detailed model audit"
           ]
         },
         "equations": {
@@ -24320,7 +24798,10 @@
           "paths": [
             "courses/vehicle-dynamics/modules/59-quantify-identifiability-residuals-and-uncertainty/design.yaml",
             "courses/vehicle-dynamics/modules/59-quantify-identifiability-residuals-and-uncertainty/evidence/actual-production.json",
-            "courses/vehicle-dynamics/modules/59-quantify-identifiability-residuals-and-uncertainty/evidence/expected-independent.json"
+            "courses/vehicle-dynamics/modules/59-quantify-identifiability-residuals-and-uncertainty/evidence/aggregate-independent.json",
+            "courses/vehicle-dynamics/modules/59-quantify-identifiability-residuals-and-uncertainty/evidence/expected-independent.json",
+            "courses/vehicle-dynamics/modules/59-quantify-identifiability-residuals-and-uncertainty/evidence/pre-aggregate-actual-production.json",
+            "courses/vehicle-dynamics/modules/59-quantify-identifiability-residuals-and-uncertainty/evidence/pre-aggregate-expected-independent.json"
           ]
         },
         "competency_alignment": {
@@ -24329,7 +24810,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F59",
+        "competency": "VD-IDENTIFICATION-UNCERTAINTY",
+        "cumulative": "A-ID, A-CAP-TELEMETRY",
+        "case_count": 5,
+        "scope_limit": "Full rank and narrow conditional intervals do not remove model-form error, noise correlation or inadequate real-world excitation.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -24339,7 +24827,7 @@
       "number": 60,
       "title": "Diagnose and Recover Corrupt Telemetry",
       "path": "courses/vehicle-dynamics/modules/60-diagnose-and-recover-corrupt-telemetry",
-      "payload_sha256": "e1c9338c2e81bc24a82868054ddb0a023091251ee0b6fcd3c3fe2c8cbf24e4fc",
+      "payload_sha256": "42193a17c461f1944de51a71efb52cef02c71a466689efcade1bb02c8c435431",
       "checks": {
         "concept": {
           "state": "present",
@@ -24395,6 +24883,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/60-diagnose-and-recover-corrupt-telemetry/design.yaml",
             "courses/vehicle-dynamics/modules/60-diagnose-and-recover-corrupt-telemetry/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/60-diagnose-and-recover-corrupt-telemetry/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/60-diagnose-and-recover-corrupt-telemetry/evidence/expected-independent.json"
           ]
         },
@@ -24404,7 +24893,14 @@
       },
       "semantic_review": "not_recertified_by_structural_audit",
       "scoped_review": null,
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F60",
+        "competency": "VD-TELEMETRY-PROTOCOL, VD-IDENTIFICATION-UNCERTAINTY, VD-SYSTEM-INTEGRATION",
+        "cumulative": "A-TELEMETRY, A-ID, A-CAP-TELEMETRY, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "Known nominal lengths and a deterministic fault plan make this an auditable protocol exercise, not a general live-stream intrusion detector or proof of lossless recovery.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -24414,7 +24910,7 @@
       "number": 61,
       "title": "Build Track Geometry and Curvature",
       "path": "courses/vehicle-dynamics/modules/61-build-track-geometry-and-curvature",
-      "payload_sha256": "6191a1c1bf3cdbc7cc40af1f20cde10731c9cd50112bffe032468da5abea6362",
+      "payload_sha256": "dc198c388718f2b167d900ebc48f4752da32d33dafa839188470ce742c3effe1",
       "checks": {
         "concept": {
           "state": "present",
@@ -24470,6 +24966,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/61-build-track-geometry-and-curvature/design.yaml",
             "courses/vehicle-dynamics/modules/61-build-track-geometry-and-curvature/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/61-build-track-geometry-and-curvature/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/61-build-track-geometry-and-curvature/evidence/expected-independent.json"
           ]
         },
@@ -24479,7 +24976,14 @@
       },
       "semantic_review": "scoped_model_reviewed",
       "scoped_review": "Corrected dimensional signatures and sample-mean interpretation; independent ellipse geometry plus circle, scaling and sampling checks.",
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F61",
+        "competency": "VD-PERFORMANCE-OPTIMIZATION",
+        "cumulative": "A-PERFORMANCE, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "This flat analytic track omits survey uncertainty, banking, elevation, width and obstacles.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -24489,7 +24993,7 @@
       "number": 62,
       "title": "Construct a Speed-Dependent G-G-V Envelope",
       "path": "courses/vehicle-dynamics/modules/62-construct-a-speed-dependent-g-g-v-envelope",
-      "payload_sha256": "47636e4d031a352ba7517d4345d009828a98ab754b55cb460dac38a462af81e1",
+      "payload_sha256": "678ae69a5b73bebbf38c951d9aa245edb1e134d0e9d4650e0b146086e93aa9f3",
       "checks": {
         "concept": {
           "state": "present",
@@ -24545,6 +25049,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/62-construct-a-speed-dependent-g-g-v-envelope/design.yaml",
             "courses/vehicle-dynamics/modules/62-construct-a-speed-dependent-g-g-v-envelope/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/62-construct-a-speed-dependent-g-g-v-envelope/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/62-construct-a-speed-dependent-g-g-v-envelope/evidence/expected-independent.json"
           ]
         },
@@ -24554,7 +25059,14 @@
       },
       "semantic_review": "scoped_model_reviewed",
       "scoped_review": "Corrected signature order and units; executed drag-shifted, power-clipped force envelope and actual demand; independent force-balance and zero-speed checks.",
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F62",
+        "competency": "VD-PERFORMANCE-OPTIMIZATION",
+        "cumulative": "A-PERFORMANCE, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "The envelope uses a simplified aggregate tire bound and fixed aero coefficients; it is not a transient maneuver or a calibrated four-wheel model.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -24564,7 +25076,7 @@
       "number": 63,
       "title": "Optimize a Racing Line under Coupled Constraints",
       "path": "courses/vehicle-dynamics/modules/63-optimize-a-racing-line-under-coupled-constraints",
-      "payload_sha256": "67f3763e6d99c5471d183d08598a7708417819b4e1c736c63dab928ce7086ab6",
+      "payload_sha256": "91889604d83d2cc4f7e1b4ec33a5ee82243590902ef9581d3d98cdbe097e5c58",
       "checks": {
         "concept": {
           "state": "present",
@@ -24620,6 +25132,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/63-optimize-a-racing-line-under-coupled-constraints/design.yaml",
             "courses/vehicle-dynamics/modules/63-optimize-a-racing-line-under-coupled-constraints/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/63-optimize-a-racing-line-under-coupled-constraints/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/63-optimize-a-racing-line-under-coupled-constraints/evidence/expected-independent.json"
           ]
         },
@@ -24629,7 +25142,14 @@
       },
       "semantic_review": "scoped_model_reviewed",
       "scoped_review": "Executed closed-ellipse offset geometry and local distance/speed integration with a dimensional penalty; independent quadrature and circle/corridor checks.",
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F63",
+        "competency": "VD-PERFORMANCE-OPTIMIZATION",
+        "cumulative": "A-PERFORMANCE, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "Track smoothness, vehicle width, linked transient steering and obstacle constraints are outside this constant-offset study.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -24639,7 +25159,7 @@
       "number": 64,
       "title": "Run a Forward-Backward Lap-Time Simulation",
       "path": "courses/vehicle-dynamics/modules/64-run-a-forward-backward-lap-time-simulation",
-      "payload_sha256": "ecb7a959127c60e82df4aec5a5d41b79991d6f46e8b41f2b30024531fa540139",
+      "payload_sha256": "1b971e47c0616f24f230250dbdc8c11620df116d2ddfb2c22ab5184ba7cace38",
       "checks": {
         "concept": {
           "state": "present",
@@ -24695,6 +25215,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/64-run-a-forward-backward-lap-time-simulation/design.yaml",
             "courses/vehicle-dynamics/modules/64-run-a-forward-backward-lap-time-simulation/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/64-run-a-forward-backward-lap-time-simulation/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/64-run-a-forward-backward-lap-time-simulation/evidence/expected-independent.json"
           ]
         },
@@ -24704,7 +25225,14 @@
       },
       "semantic_review": "scoped_model_reviewed",
       "scoped_review": "Executed cyclic force reachability and an energy budget that changes speed, with brake-work temperature; independent Jacobi/piecewise-energy solution and seam/refinement checks.",
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F64",
+        "competency": "VD-PERFORMANCE-OPTIMIZATION",
+        "cumulative": "A-PERFORMANCE, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "The discrete synthetic lap uses prescribed force reserves and a lumped adiabatic brake temperature, not a validated optimal-control or fade-coupled model.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -24714,7 +25242,7 @@
       "number": 65,
       "title": "Compare Setups with Designed Experiments",
       "path": "courses/vehicle-dynamics/modules/65-compare-setups-with-designed-experiments",
-      "payload_sha256": "c7f616e7eed20e6af5da50b7edb9a61b64d96736fbce00f48264f7670449cb69",
+      "payload_sha256": "2fe6701a79aee2b08a835152d3ea937ff6d3f124336bab6fbf924d7c22a85493",
       "checks": {
         "concept": {
           "state": "present",
@@ -24770,6 +25298,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/65-compare-setups-with-designed-experiments/design.yaml",
             "courses/vehicle-dynamics/modules/65-compare-setups-with-designed-experiments/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/65-compare-setups-with-designed-experiments/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/65-compare-setups-with-designed-experiments/evidence/expected-independent.json"
           ]
         },
@@ -24779,7 +25308,14 @@
       },
       "semantic_review": "scoped_model_reviewed",
       "scoped_review": "Corrected dimensions and unused-point validation in an explicitly synthetic factorial; independent contrast solution and rank/disjointness checks.",
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F65",
+        "competency": "VD-PERFORMANCE-OPTIMIZATION",
+        "cumulative": "A-PERFORMANCE, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "The response surface is a declared synthetic law; it is not a causal conclusion from randomized real track tests.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -24789,7 +25325,7 @@
       "number": 66,
       "title": "Capstone: Validate a Vehicle Model from Telemetry",
       "path": "courses/vehicle-dynamics/modules/66-capstone-validate-a-vehicle-model-from-telemetry",
-      "payload_sha256": "dd7abb192c81c03a4a61bf033824bc38edc71ab89f3f0ea6c63d9354d6e6340f",
+      "payload_sha256": "fc664a3eaf30b3a4a5215076fcbe47be4269362eb10df284a19defdd8ad181d7",
       "checks": {
         "concept": {
           "state": "present",
@@ -24846,6 +25382,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/66-capstone-validate-a-vehicle-model-from-telemetry/design.yaml",
             "courses/vehicle-dynamics/modules/66-capstone-validate-a-vehicle-model-from-telemetry/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/66-capstone-validate-a-vehicle-model-from-telemetry/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/66-capstone-validate-a-vehicle-model-from-telemetry/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/66-capstone-validate-a-vehicle-model-from-telemetry/requirements-trace.yaml"
           ]
@@ -24856,7 +25393,14 @@
       },
       "semantic_review": "scoped_model_reviewed",
       "scoped_review": "Executed synthetic CAN/BLE provenance, timing, calibration, reconstruction, chronological fitting and fault recovery; independent raw-byte/scalar reference and split/covariance checks.",
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F66",
+        "competency": "VD-IDENTIFICATION-UNCERTAINTY, VD-SYSTEM-INTEGRATION",
+        "cumulative": "A-ID, A-CAP-TELEMETRY",
+        "case_count": 5,
+        "scope_limit": "Redundant CAN bytes enable the declared BLE recovery; missing both sources would not be recoverable by this mechanism. No measured vehicle, manual screen-reader, learner or hardware acceptance is implied.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     },
@@ -24866,7 +25410,7 @@
       "number": 67,
       "title": "Capstone: Calibrate and Predict with a GR86 Digital Twin",
       "path": "courses/vehicle-dynamics/modules/67-capstone-calibrate-and-predict-with-a-gr86-digital-twin",
-      "payload_sha256": "2c3068ab6980df98b59a423481dd2114f7fa1624160816aed7ebb280f6a11d2b",
+      "payload_sha256": "1050bee796ab35be08874f2e99251812bf75ddd86bd7a5ec537f67452106fb5d",
       "checks": {
         "concept": {
           "state": "present",
@@ -24923,6 +25467,7 @@
           "paths": [
             "courses/vehicle-dynamics/modules/67-capstone-calibrate-and-predict-with-a-gr86-digital-twin/design.yaml",
             "courses/vehicle-dynamics/modules/67-capstone-calibrate-and-predict-with-a-gr86-digital-twin/evidence/actual-production.json",
+            "courses/vehicle-dynamics/modules/67-capstone-calibrate-and-predict-with-a-gr86-digital-twin/evidence/aggregate-independent.json",
             "courses/vehicle-dynamics/modules/67-capstone-calibrate-and-predict-with-a-gr86-digital-twin/evidence/expected-independent.json",
             "courses/vehicle-dynamics/modules/67-capstone-calibrate-and-predict-with-a-gr86-digital-twin/requirements-trace.yaml"
           ]
@@ -24933,7 +25478,14 @@
       },
       "semantic_review": "scoped_model_reviewed",
       "scoped_review": "Executed an explicitly illustrative tire/load/gear/brake/aero/track/line/lap chain and friction scenarios; independent scalar solver and load/force/refinement checks.",
-      "assessment_review": null,
+      "assessment_review": {
+        "checkpoint": "VD-F67",
+        "competency": "VD-PERFORMANCE-OPTIMIZATION, VD-SYSTEM-INTEGRATION",
+        "cumulative": "A-PERFORMANCE, A-CAP-DIGITAL",
+        "case_count": 5,
+        "scope_limit": "Nine constant-offset paths and a 96-segment lap are a bounded discrete design search. The endpoint envelope is not a confidence interval; brake temperature is adiabatic without fade feedback, and no real GR86 performance or safety claim follows.",
+        "learner_result": "not_recorded"
+      },
       "known_issue": null,
       "manual_learner_validation": "not_run"
     }

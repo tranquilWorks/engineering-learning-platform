@@ -25,7 +25,18 @@ def _trace(name: str, x: Any, y: Any, xq: str, xu: str, yq: str, yu: str) -> dic
 
 
 def _plot(title: str, xt: str, yt: str, traces: list[dict[str, Any]]) -> dict[str, Any]:
-    return {"data": traces, "layout": {"title": {"text": title, "x": 0.02}, "xaxis": {"title": {"text": xt}}, "yaxis": {"title": {"text": yt}}, "legend": {"orientation": "h"}, "margin": {"l": 72, "r": 36, "t": 62, "b": 62}, "hovermode": "closest", "uirevision": "keep-view"}, "config": {"responsive": True, "displaylogo": False}}
+    result = {"data": traces, "layout": {"title": {"text": title, "x": 0.02}, "xaxis": {"title": {"text": xt}}, "yaxis": {"title": {"text": yt}}, "legend": {"orientation": "h"}, "margin": {"l": 72, "r": 36, "t": 62, "b": 62}, "hovermode": "closest", "uirevision": "keep-view"}, "config": {"responsive": True, "displaylogo": False}}
+    # Course-owned layout: keep engineering labels readable in narrow plot panels.
+    from textwrap import fill
+    layout = result["layout"]
+    layout["title"] = {"text": fill(title, width=30).replace("\n", "<br>"), "x": 0.02, "font": {"size": 14}}
+    layout["legend"] = {"orientation": "h"}
+    layout.setdefault("margin", {"l": 72, "r": 36, "t": 62, "b": 110})
+    for axis in ("xaxis", "yaxis"):
+        layout[axis]["automargin"] = True
+        if isinstance(layout[axis].get("title"), dict):
+            layout[axis]["title"]["standoff"] = 12
+    return result
 
 
 def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
@@ -58,7 +69,7 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
     biases = np.linspace(-3.0, 3.0, 61); yaw = [_state(float(value), p["mounting_yaw_deg"], broken)[2] for value in biases]
     return {
         "signature": signature,
-        "metrics": [("body_ax", "Body longitudinal acceleration", signature[0], "m/s^2"), ("body_ay", "Body lateral acceleration", signature[1], "m/s^2"), ("yaw_rate", "Calibrated yaw rate", signature[2], "deg/s"), ("norm_closure", "Rotation norm closure", signature[3], "m/s^2"), ("calibration_residual", "Calibration residual", signature[4], "mixed")],
+        "metrics": [("body_ax", "Body longitudinal acceleration", signature[0], "m/s^2"), ("body_ay", "Body lateral acceleration", signature[1], "m/s^2"), ("yaw_rate", "Calibrated yaw rate", signature[2], "deg/s"), ("norm_closure", "Rotation norm closure", signature[3], "m/s^2"), ("calibration_residual", "Scaled calibration residual (1 m/s², 1 deg/s)", signature[4], "1")],
         "plots": {"response": _plot("Mounting-angle calibration", "Mounting yaw (deg)", "Body acceleration (m/s^2)", [_trace("Longitudinal", angles, ax, "Mounting yaw", "deg", "Body acceleration", "m/s^2"), _trace("Lateral", angles, ay, "Mounting yaw", "deg", "Body acceleration", "m/s^2")]), "mechanism": _plot("Yaw-bias removal", "Declared yaw bias (deg/s)", "Calibrated yaw rate (deg/s)", [_trace("Calibrated yaw rate", biases, yaw, "Declared yaw bias", "deg/s", "Calibrated yaw rate", "deg/s")])},
         "observation": "Calibration removes bias and scale in sensor coordinates before a norm-preserving rotation maps the measurement into forward-left body axes.",
     }

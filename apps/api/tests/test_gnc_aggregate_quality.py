@@ -154,6 +154,11 @@ def test_no_source_model_other_course_or_generic_runtime_mutation():
         # test pins every other course, including all Controls bytes, to PR63.
         assert active["sources"]["baseline_commit"] == "185e966242c889d3f030bab6016139777fcf0f17"
         paths.remove("courses/robotics-autonomy")
+    if active["batch"]["id"] == "ELP-VEHICLE-AGGREGATE-QUALITY-01":
+        assert active["sources"]["baseline_commit"] == "9c27f567399cf2fcb9728fb104b2d573fcac5652"
+        paths.remove("courses/robotics-autonomy")
+        paths.remove("courses/vehicle-dynamics")
+        # Exact successor preservation is covered against the accepted Robotics merge.
     assert not subprocess.check_output(["git", "diff", BASELINE, "--", *paths], cwd=ROOT)
     for number in range(1, 25):
         for name in (

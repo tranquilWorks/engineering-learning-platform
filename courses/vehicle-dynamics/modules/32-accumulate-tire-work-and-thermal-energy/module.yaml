@@ -2,8 +2,10 @@ schema_version: 1
 id: 32-accumulate-tire-work-and-thermal-energy
 number: 32
 title: Accumulate Tire Work and Thermal Energy
-summary: Integrate longitudinal and lateral slip power into tire work, stored heat, rejected heat, and an energy-balance residual.
-guiding_question: Where does contact-patch slip work go, and how can an energy ledger reveal a missing loss path?
+summary: Integrate longitudinal and lateral slip power into tire work, stored heat, rejected heat, and
+  an energy-balance residual.
+guiding_question: Where does contact-patch slip work go, and how can an energy ledger reveal a missing
+  loss path?
 status: implemented
 tags:
 - vehicle-dynamics
@@ -19,7 +21,7 @@ controls:
   type: slider
   label: Longitudinal slip ratio
   default: 0.08
-  unit: "1"
+  unit: '1'
   minimum: 0
   maximum: 0.2
   step: 0.01
@@ -40,8 +42,10 @@ blocks:
   source: lesson.md
 - type: prediction
   title: Predict before running
-  text: Cumulative nonnegative slip work must equal stored thermal energy plus rejected heat over the same bounded interval.
-  reveal: Restore heat rejection inside the same integration loop and verify work equals stored energy plus accumulated loss.
+  text: Cumulative nonnegative slip work must equal stored thermal energy plus rejected heat over the
+    same bounded interval.
+  reveal: Restore heat rejection inside the same integration loop and verify work equals stored energy
+    plus accumulated loss.
 - type: controls
   title: Tire model controls
 - type: metrics
@@ -62,3 +66,6 @@ blocks:
   tone: success
   title: Recovery
   source: recovery
+- type: markdown
+  title: Course checkpoint
+  source: assessment.md

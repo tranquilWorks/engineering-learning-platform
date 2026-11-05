@@ -27,7 +27,18 @@ def _trace(name: str, x: Any, y: Any, xq: str, xu: str, yq: str, yu: str) -> dic
 
 
 def _plot(title: str, xt: str, yt: str, traces: list[dict[str, Any]]) -> dict[str, Any]:
-    return {"data": traces, "layout": {"title": {"text": title, "x": 0.02}, "xaxis": {"title": {"text": xt}}, "yaxis": {"title": {"text": yt}}, "legend": {"orientation": "h"}, "margin": {"l": 72, "r": 36, "t": 62, "b": 62}, "hovermode": "closest", "uirevision": "keep-view"}, "config": {"responsive": True, "displaylogo": False}}
+    result = {"data": traces, "layout": {"title": {"text": title, "x": 0.02}, "xaxis": {"title": {"text": xt}}, "yaxis": {"title": {"text": yt}}, "legend": {"orientation": "h"}, "margin": {"l": 72, "r": 36, "t": 62, "b": 62}, "hovermode": "closest", "uirevision": "keep-view"}, "config": {"responsive": True, "displaylogo": False}}
+    # Course-owned layout: keep engineering labels readable in narrow plot panels.
+    from textwrap import fill
+    layout = result["layout"]
+    layout["title"] = {"text": fill(title, width=30).replace("\n", "<br>"), "x": 0.02, "font": {"size": 14}}
+    layout["legend"] = {"orientation": "h"}
+    layout.setdefault("margin", {"l": 72, "r": 36, "t": 62, "b": 110})
+    for axis in ("xaxis", "yaxis"):
+        layout[axis]["automargin"] = True
+        if isinstance(layout[axis].get("title"), dict):
+            layout[axis]["title"]["standoff"] = 12
+    return result
 
 
 def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
@@ -47,10 +58,12 @@ def _analyze(excitation: float, sigma: float, broken: bool) -> tuple[list[float]
     residual_rms = float(np.sqrt(np.mean(residual**2)))
     lag_correlation = float(np.corrcoef(residual[:-1], residual[1:])[0, 1])
     used_sigma = 0.10 * sigma if broken else sigma
-    covariance = used_sigma**2 * (np.linalg.inv(matrix.T.dot(matrix)) if broken else np.linalg.pinv(matrix.T.dot(matrix)))
+    _, singular, vt = np.linalg.svd(matrix, full_matrices=False)
+    inverse_information = (vt.T / singular**2) @ vt
+    covariance = used_sigma**2 * (np.linalg.inv(matrix.T @ matrix) if broken else inverse_information)
     standard = np.sqrt(np.diag(covariance))
     coverage = float(np.mean(np.abs(estimate - truth) <= 1.96 * standard))
-    physical_covariance = sigma**2 * np.linalg.pinv(matrix.T.dot(matrix))
+    physical_covariance = sigma**2 * inverse_information
     covariance_residual = float(np.linalg.norm(covariance - physical_covariance))
     signature = [float(singular[0] / singular[-1]), float(singular[-1]), residual_rms, lag_correlation, float(np.mean(standard)), coverage, covariance_residual]
     return signature, singular, residual, standard
@@ -60,7 +73,7 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
     signature, singular, residual, standard = _analyze(p["excitation_level"], p["noise_sigma_n"], broken)
     return {
         "signature": signature,
-        "metrics": [("condition", "Design condition number", signature[0], "1"), ("minimum_singular", "Minimum singular value", signature[1], "rad"), ("residual_rms", "Residual RMS", signature[2], "N"), ("lag_correlation", "Residual lag-one correlation", signature[3], "1"), ("standard_uncertainty", "Mean parameter standard uncertainty", signature[4], "N/rad"), ("coverage", "Nominal interval coverage", signature[5], "fraction"), ("covariance_residual", "Covariance ledger residual", signature[6], "(N/rad)^2")],
+        "metrics": [("condition", "Design condition number", signature[0], "1"), ("minimum_singular", "Minimum singular value", signature[1], "rad"), ("residual_rms", "Residual RMS", signature[2], "N"), ("lag_correlation", "Residual lag-one correlation", signature[3], "1"), ("standard_uncertainty", "Mean parameter standard uncertainty", signature[4], "N/rad"), ("coverage", "Two-parameter truth containment (conditional)", signature[5], "fraction"), ("covariance_residual", "Covariance ledger residual", signature[6], "(N/rad)^2")],
         "plots": {"response": _plot("Residual audit", "Sample index (1)", "Force residual (N)", [_trace("Residual", np.arange(residual.size), residual, "Sample index", "1", "Force residual", "N")]), "mechanism": _plot("Identifiability and uncertainty", "Parameter index (1)", "Scaled diagnostic (1)", [_trace("Singular value", np.arange(singular.size), singular / singular[0], "Parameter index", "1", "Scaled diagnostic", "1"), _trace("Standard uncertainty", np.arange(standard.size), standard / np.max(standard), "Parameter index", "1", "Scaled diagnostic", "1")])},
         "observation": "Small residuals do not guarantee identifiable parameters; excitation, singular values, residual structure, and covariance scale must be audited together.",
     }

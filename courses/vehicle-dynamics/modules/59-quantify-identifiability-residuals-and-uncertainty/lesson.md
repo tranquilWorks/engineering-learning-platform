@@ -12,7 +12,7 @@ Singular values describe parameter separation, residuals test model structure, a
 
 ## Baseline workflow
 
-Build the two-column design matrix, solve by least squares, inspect condition number and smallest singular value, compute residual RMS and lag-one correlation, then propagate force variance into parameter intervals and coverage.
+Build the two-column design matrix, solve by least squares, inspect condition number and smallest singular value, compute residual RMS and lag-one correlation, then propagate force variance into parameter intervals and truth containment.
 
 ## Two one-variable sweeps
 
@@ -20,7 +20,7 @@ Reduce only maneuver excitation, then increase only force-noise sigma. Excitatio
 
 ## Intentionally broken case
 
-Use an unscaled normal-equation inverse and declare one tenth of the actual observation sigma. The fit is unchanged while intervals narrow, coverage falls, and the covariance ledger no longer closes.
+Use an unscaled normal-equation inverse and declare one tenth of the actual observation sigma. The fit is unchanged while intervals narrow, truth containment falls, and the covariance ledger no longer closes.
 
 ## Recovery
 
@@ -34,7 +34,7 @@ Use an SVD-based least-squares solve, expose singular values, retain residual co
 
 ## Independent evidence
 
-An independent design, fit, residual, pseudoinverse, and coverage calculation reproduces every signature.
+An independent design, fit, residual, QR covariance, and containment calculation reproduces every signature.
 
 ## Common mistakes
 
@@ -45,8 +45,13 @@ An independent design, fit, residual, pseudoinverse, and coverage calculation re
 ## Formative checks
 
 1. Which diagnostic reveals nearly dependent regressors?
-2. Why can the point estimate stay fixed while coverage changes?
+2. Why can the point estimate stay fixed while truth containment changes?
 
 ## Teach-back
 
-Explain singular values, residual structure, covariance scaling, coverage, understated-noise failure, and recovery.
+Explain singular values, residual structure, covariance scaling, truth containment, understated-noise failure, and recovery.
+
+
+## Detailed model audit
+
+Production computes conditional covariance from the SVD X=U*S*V transpose as sigma²*V*S^(-2)*V transpose. The independent reference uses QR triangular solves. Both avoid forming normal equations for the healthy branch; the intentionally broken branch retains the normal-equation inverse and understates sigma. The displayed containment statistic checks just two known synthetic coefficients against their conditional 1.96-standard-error intervals. It is not an empirical coverage probability. Residual lag correlation explicitly challenges the independent-noise assumption behind those intervals; a narrow band cannot override that limitation.

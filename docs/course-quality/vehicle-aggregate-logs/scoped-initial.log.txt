@@ -1,0 +1,40 @@
+.......F.F.............................................................. [ 75%]
+.......................                                                  [100%]
+=================================== FAILURES ===================================
+________ test_vehicle_native_reference_has_no_production_execution_path ________
+
+    def test_vehicle_native_reference_has_no_production_execution_path() -> None:
+        path = COURSE_ROOT / "expansion_reference_cases.py"
+        tree = ast.parse(path.read_text())
+        # Shared raw fixture/provenance only; production imports remain forbidden.
+        allowed_imports = {"typing", "numpy", "__future__", "json", "pathlib", "hashlib"}
+        forbidden_calls = {"eval", "exec", "compile", "__import__", "run", "import_module"}
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                assert all(alias.name.split(".")[0] in allowed_imports for alias in node.names)
+            if isinstance(node, ast.ImportFrom):
+>               assert (node.module or "").split(".")[0] in allowed_imports
+E               AssertionError: assert 'scipy' in {'__future__', 'hashlib', 'json', 'numpy', 'pathlib', 'typing'}
+
+apps/api/tests/test_vehicle_dynamics_expansion.py:212: AssertionError
+________ test_vehicle_native_plots_use_quantity_specific_axes_and_units ________
+
+    def test_vehicle_native_plots_use_quantity_specific_axes_and_units() -> None:
+        runtime = ExperimentRuntime(CourseCatalog([ROOT / "courses"]))
+        for item in NATIVE:
+            root = COURSE_ROOT / item["folder"]
+            module_id = _yaml(root / "module.yaml")["id"]
+            result = runtime.run("vehicle-dynamics", module_id, {}).model_dump(mode="json")
+>           assert set(result["plots"]) == {"response", "mechanism"}
+E           AssertionError: assert {'dynamic_uti...tate_history'} == {'mechanism', 'response'}
+E             
+E             Extra items in the left set:
+E             'dynamic_utilization'
+E             'state_history'
+E             Use -v to get more diff
+
+apps/api/tests/test_vehicle_dynamics_expansion.py:264: AssertionError
+=========================== short test summary info ============================
+FAILED apps/api/tests/test_vehicle_dynamics_expansion.py::test_vehicle_native_reference_has_no_production_execution_path
+FAILED apps/api/tests/test_vehicle_dynamics_expansion.py::test_vehicle_native_plots_use_quantity_specific_axes_and_units
+2 failed, 93 passed in 261.89s (0:04:21)

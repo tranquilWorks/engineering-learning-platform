@@ -74,7 +74,7 @@ def run(parameters: dict[str, Any]) -> dict[str, Any]:
     secondary_values = [-30.0, 8.0, 30.0]
     failed = _integrate(primary, secondary, True)[0]
     recovered = _integrate(20.0, 8.0, False)[0]
-    return {
+    return _present_result({
         "metrics": [
             {"id": "heading", "label": "Final heading", "value": signature[2], "unit": "deg", "emphasis": "primary"},
             {"id": "radius", "label": "Turn radius", "value": signature[4], "unit": "m"},
@@ -99,4 +99,31 @@ def run(parameters: dict[str, Any]) -> dict[str, Any]:
             "recovery": "Convert yaw rate to radians per second exactly once before midpoint integration in the global frame.",
         },
         "diagnostics": {"item_id": "P19", "signature": signature, "fields": FIELDS, "broken_active": broken, "bounded_points": len(xs)},
-    }
+    })
+
+
+def _present_result(result):
+    """Present unchanged calculations with readable, dimensionless comparison axes."""
+    from textwrap import fill
+    for plot in result["plots"].values():
+        layout = plot["layout"]
+        title = layout.get("title", {}).get("text", "")
+        layout["title"] = {"text": fill(title, width=30).replace("\n", "<br>"), "font": {"size": 14}, "x": 0.02}
+        layout["legend"] = {"orientation": "h"}
+        layout["margin"] = {"l": 72, "r": 36, "t": 80, "b": 110}
+        for axis in ("xaxis", "yaxis"):
+            layout[axis]["automargin"] = True
+    comparison = result["plots"]["broken_recovery"]
+    fields = comparison["data"][0]["x"]
+    baseline = comparison["data"][1]["y"]
+    scales = [max(1.0, abs(value)) for value in baseline]
+    for trace in comparison["data"]:
+        raw = trace["y"]
+        trace["x"] = [f"D{i+1}" for i in range(len(fields))]
+        trace["y"] = [value / scale for value, scale in zip(raw, scales, strict=True)]
+        trace["customdata"] = [f"{field}: {value:.5g}; scale {scale:.5g} in the field's unit" for field, value, scale in zip(fields, raw, scales, strict=True)]
+        trace["hovertemplate"] = "%{customdata}<br>Normalized value: %{y:.5g}<extra>%{fullData.name}</extra>"
+    comparison["layout"]["title"] = {"text": "Per-field normalized<br>fault and recovery", "font": {"size": 14}, "x": 0.02}
+    comparison["layout"]["xaxis"]["title"] = "Diagnostic index (see key)"
+    comparison["layout"]["yaxis"]["title"] = "Normalized value (1)"
+    return result

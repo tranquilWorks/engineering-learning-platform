@@ -50,3 +50,8 @@ The five retained scenarios are recomputed by the course-owned independent analy
 ## Teach-back
 
 Explain how you would prove a reported mode belongs to the full chassis model rather than a diagonal approximation. Include the relevant units, coordinate convention, validity boundary, named broken behavior, and exact recovery check.
+
+
+## Detailed model audit
+
+A modal displacement vector mixes heave in metres with pitch/roll in radians. Comparing its raw component magnitudes is dimensionally meaningless. For diagonal M, use kinetic-energy fractions M_jj*phi_j²/(phi transpose M phi); these dimensionless fractions sum to one in each mode. Form residuals in mass-weighted coordinates with D=M^(-1/2), A=D*K*D and q=M^(1/2)*phi. The relative residual is norm(A*q-omega²*q)/norm(A*q). The coupling diagnostic likewise compares off-diagonal and diagonal parts of A, whose entries share units 1/s². Frequencies come from the generalized eigenproblem, while the independently assembled energy fractions provide a separate physical interpretation.

@@ -50,3 +50,8 @@ A separately formulated fixed-step search recomputes all five scenarios without 
 ## Teach-back
 
 Explain the candidate search, engine band, units, forward-positive convention, broken redline behavior, and delayed-shift recovery.
+
+
+## Detailed model audit
+
+Torque interruption removes drive force, not road resistance. The repaired time update therefore permits negative acceleration during a shift. At 20 m/s, rolling plus quadratic drag is 332 N and deceleration is 332/1450=0.22897 m/s². The simulation starts at 5 m/s, despite the historical internal zero-to-hundred identifier. If 27.78 m/s is never reached within 40 s, the target-time metric reports the horizon and its separate reached flag is false. The finite gear search greedily selects the greatest currently valid wheel force; it is not a globally optimized schedule with anticipation, hysteresis or clutch dynamics.

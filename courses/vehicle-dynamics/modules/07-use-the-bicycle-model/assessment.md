@@ -1,3 +1,39 @@
+# P07 course checkpoint
+
+## Predict and derive
+
+Solve both steady bicycle equations and test the solution against independent force and yaw-moment balances.
+
+Use the governing relations below and state the frame, sign convention and units before substituting numbers. Derive a baseline or limiting prediction and identify which plotted quantity could disprove it.
+
+- `Force/moment shares before tire compatibility; factorized historical fault matrix`
+
+## Controlled comparison
+
+- `steering_deg`: 3.0 → -8.0. Hold the other controls at baseline; predict and explain the change before executing.
+- `speed_mps`: 18.0 → 40.0. Hold the other controls at baseline; predict and explain the change before executing.
+
+Record the parameter values, prediction and observed change for each comparison. If a quantity does not change, explain whether it is an invariant, an inactive parameter in this regime, or evidence of a defect.
+
+## Diagnose and recover
+
+Enable the named failure with the numeric controls unchanged. Identify the first violated assumption from the actual trace or event evidence, rather than only the mode label. Restore healthy mode and verify deterministic return to the same baseline. Keep the failing trace beside the recovered trace.
+
+## Expected reasoning
+
+Steady sideslip rate is zero, but lateral acceleration is v*r, not zero. Thus Fyf+Fyr=m*v*r while a*Fyf-b*Fyr=0. The second equation requires Fyf/Fyr=b/a. A yaw solution alone cannot validate the first equation. Compare a zero-steer limit and a speed sweep, retaining the sign convention and the determinant or conditioning of the two-equation solve.
+
+A complete answer connects a numerical value to the governing relation, distinguishes the controlled comparisons, and explains the fault and recovery through an observable mechanism. An unexplained success metric is insufficient evidence.
+
+## Limits and handoff
+
+Small angles, linear tires and constant speed bound this equilibrium; a mathematically finite solution can still exceed tire capacity.
+
+Competency links: VD-HANDLING-LINEAR. Carry the prediction, two comparisons, failure diagnosis and recovery evidence into the linked cumulative portfolio. No learner completion or score is inferred by the software; this is an authored assessment for a learner or reviewer to perform.
+
+
+# Retained scoped evidence task
+
 ## P07 evidence task
 
 At the defaults calculate both tire forces from the displayed slips and verify the force and yaw-moment residuals. Repeat with the matrix fault active, keeping inputs fixed. Then increase steering and explain how an equilibrium-correct answer can still fall outside the small-angle approximation.

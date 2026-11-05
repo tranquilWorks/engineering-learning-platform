@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "item_id": "P57",
+  "signature_fields": [
+    {
+      "field": "final_sideslip",
+      "unit": "deg"
+    },
+    {
+      "field": "final_yaw_rate",
+      "unit": "deg/s"
+    },
+    {
+      "field": "estimated_steering_bias_state",
+      "unit": "deg"
+    },
+    {
+      "field": "sideslip_rmse",
+      "unit": "deg"
+    },
+    {
+      "field": "yaw_rate_rmse",
+      "unit": "deg/s"
+    },
+    {
+      "field": "covariance_trace",
+      "unit": "rad^2"
+    },
+    {
+      "field": "innovation_rms",
+      "unit": "rad"
+    }
+  ],
+  "origin": {
+    "kind": "production-experiment",
+    "independent": false,
+    "imports_production_entrypoint": true,
+    "derived_from_production_output": true,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "observer_gain": 0.35,
+        "measurement_noise": 0.08,
+        "broken_mode": false
+      },
+      "signature": [
+        -2.0245167904842227,
+        0.10924899507666676,
+        1.6667515338560943,
+        3.147907852517722,
+        3.054448643451983,
+        0.00020301587301587316,
+        0.009614445355862788
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "observer_gain": 0.65,
+        "measurement_noise": 0.08,
+        "broken_mode": false
+      },
+      "signature": [
+        -2.1425332541921733,
+        0.2137794335148756,
+        1.6433311574473215,
+        3.2822133937597178,
+        3.197769525613507,
+        7.700854700854701e-05,
+        0.005885627908398225
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "observer_gain": 0.35,
+        "measurement_noise": 0.15,
+        "broken_mode": false
+      },
+      "signature": [
+        -2.806977313080364,
+        2.5607480875419384,
+        3.264346328741106,
+        5.902327223470729,
+        5.727091206472468,
+        0.00020301587301587316,
+        0.01802708504224273
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "observer_gain": 0.35,
+        "measurement_noise": 0.08,
+        "broken_mode": true
+      },
+      "signature": [
+        1.8706931859213052,
+        0.24334103489584885,
+        1.6667515338560943,
+        3.160553071515295,
+        2.8836930979690045,
+        0.00020301587301587316,
+        0.010131887864178853
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "observer_gain": 0.35,
+        "measurement_noise": 0.08,
+        "broken_mode": false
+      },
+      "signature": [
+        -2.0245167904842227,
+        0.10924899507666676,
+        1.6667515338560943,
+        3.147907852517722,
+        3.054448643451983,
+        0.00020301587301587316,
+        0.009614445355862788
+      ]
+    }
+  }
+}

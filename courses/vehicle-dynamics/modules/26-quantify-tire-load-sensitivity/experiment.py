@@ -54,7 +54,7 @@ def _plot(
     y_title: str,
     traces: list[dict[str, Any]],
 ) -> dict[str, Any]:
-    return {
+    result = {
         "data": traces,
         "layout": {
             "title": {"text": title, "x": 0.02},
@@ -67,6 +67,17 @@ def _plot(
         },
         "config": {"responsive": True, "displaylogo": False},
     }
+    # Course-owned layout: keep engineering labels readable in narrow plot panels.
+    from textwrap import fill
+    layout = result["layout"]
+    layout["title"] = {"text": fill(title, width=30).replace("\n", "<br>"), "x": 0.02, "font": {"size": 14}}
+    layout["legend"] = {"orientation": "h"}
+    layout.setdefault("margin", {"l": 72, "r": 36, "t": 62, "b": 110})
+    for axis in ("xaxis", "yaxis"):
+        layout[axis]["automargin"] = True
+        if isinstance(layout[axis].get("title"), dict):
+            layout[axis]["title"]["standoff"] = 12
+    return result
 
 
 def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
@@ -151,4 +162,14 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
 def run(parameters: dict[str, Any]) -> dict[str, Any]:
     values = _parameters(parameters)
     broken = bool(parameters.get("broken_mode", False))
-    return _result(_model(values, broken), broken)
+    result = _result(_model(values, broken), broken)
+    friction = result["plots"]["mechanism"]["data"].pop()
+    friction["x"] = friction["x"]*8000.0
+    friction["meta"].update(x_quantity="Normal load", x_unit="N")
+    result["plots"]["response"]["data"].append(friction)
+    plot = result["plots"]["response"]
+    plot["data"][1]["yaxis"] = "y2"
+    plot["layout"]["yaxis"]["title"]["text"] = "Peak force (N)"
+    plot["layout"]["yaxis2"] = {"title": {"text": "Effective friction (1)"}, "overlaying": "y", "side": "right"}
+    plot["layout"]["margin"]["r"] = 76
+    return result

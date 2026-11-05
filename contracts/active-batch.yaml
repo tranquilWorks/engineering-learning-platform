@@ -1,34 +1,33 @@
 schema_version: 1
 batch:
-  id: ELP-ROB-AGGREGATE-QUALITY-01
-  title: Complete Robotics content qualification at DSP and Controls rigor
-  goal: Audit all 69 existing Robotics lessons from foundations through both capstones; repair missing
-    mechanisms and independent evidence, complete individual and cumulative assessment, and qualify authored/synthetic
-    content.
+  id: ELP-VEHICLE-AGGREGATE-QUALITY-01
+  title: Qualify Vehicle Dynamics and Motorsport Engineering to DSP, Controls and Robotics rigor
+  goal: Review all 67 existing lessons, repair mechanism and evidence gaps, author individual and cumulative
+    assessments, and qualify both integrated capstones within the synthetic software scope.
 sources:
   product: products/engineering-learning-platform/product.yaml
   requirements:
-  - 'Owner 2026-11-04: do the same with Robotics, starting from the beginning, flesh out and qualify to
-    the extent of DSP and Controls.'
-  - 'Owner continuation: content-only qualification, push and merge; Docker delivery deferred, no physical/learner
-    validation inferred.'
+  - 'Owner 2026-11-05: do the same rigor on the last remaining learning course so all are at the same
+    completion.'
+  - 'Retained owner direction: content-only qualification, push and merge after required verification;
+    Docker delivery deferred.'
   milestone: products/engineering-learning-platform/roadmap.yaml#ELP-M3
-  baseline_commit: 185e966242c889d3f030bab6016139777fcf0f17
-  baseline_tree: ef26d1b2806b7433cfcd98059c069786f0e145fe
+  baseline_commit: 9c27f567399cf2fcb9728fb104b2d573fcac5652
+  baseline_tree: dc9fc2dd005ae11c7a26bd9a9504f0046544f199
   control_plane_repository: tranquilWorks/portfolio-control
-  control_plane_baseline: f274f505a4bb6c99d7fd20ce7eb11e3f9b9697de
-  control_plane_path: products/engineering-learning-platform/batches/ELP-ROB-AGGREGATE-QUALITY-01.yaml
+  control_plane_baseline: 43c36a957b44e764b90e14b5adb4ecf1ea0f21ac
+  control_plane_path: products/engineering-learning-platform/batches/ELP-VEHICLE-AGGREGATE-QUALITY-01.yaml
   target_repository: tranquilWorks/engineering-learning-platform
-  predecessor_pr: 63
+  predecessor_pr: 64
 dependencies:
-- ELP-GNC-AGGREGATE-QUALITY-01
+- ELP-ROB-AGGREGATE-QUALITY-01
 scope:
   allowed_paths:
-  - courses/robotics-autonomy/**
-  - apps/api/tests/test_robotics*.py
+  - courses/vehicle-dynamics/**
+  - apps/api/tests/test_vehicle*.py
   - apps/api/tests/test_*quality*.py
   - apps/api/tests/test_course_caliber_status.py
-  - scripts/*robotics*
+  - scripts/*vehicle*
   - scripts/audit_course_quality.py
   - scripts/browser-quality.mjs
   - scripts/verify-course-delivery.sh
@@ -43,62 +42,60 @@ scope:
   - docs/course-quality/**
   - docs/CURRENT_STATE.md
   - docs/HANDOFF.md
-  - docs/evidence/ELP-ROB-AGGREGATE-QUALITY-01-*
+  - docs/evidence/ELP-VEHICLE-AGGREGATE-QUALITY-01-*
   - playwright.config.ts
   - apps/api/tests/test_dsp_fidelity_remediation_p53_p64.py
   - apps/api/tests/test_dsp_fidelity_remediation_p65_p76.py
   - apps/api/tests/test_dsp_fidelity_remediation_p77_p84.py
+  - apps/api/tests/test_robotics_aggregate_quality.py
+  - apps/api/tests/test_gnc_aggregate_quality.py
   forbidden_paths:
   - courses/*-learning/**
   - courses/dsp-radar/**
   - courses/controls-gnc/**
-  - courses/vehicle-dynamics/**
+  - courses/robotics-autonomy/**
   - courses/demo-radar/**
   - courses/platform-showcase/**
-  - courses/robotics-autonomy/course.yaml
-  - courses/robotics-autonomy/source-map.yaml
-  - courses/robotics-autonomy/fidelity-map.yaml
-  - courses/robotics-autonomy/conversion-manifest.yaml
+  - courses/vehicle-dynamics/course.yaml
+  - courses/vehicle-dynamics/source-map.yaml
+  - courses/vehicle-dynamics/fidelity-map.yaml
+  - courses/vehicle-dynamics/conversion-manifest.yaml
   - .gitmodules
   - apps/api/src/**
   - apps/web/src/components/**
   - packages/**
   - .github/**
 acceptance:
-- Owner authorizes this scoped continuation and content-only merge. Publish the matching Control contract,
-  preserve all other course bytes and source pins. No arbitrary inventory expansion.
-- Audit all 69 numerical mechanisms and independent evidence. Replace native signature lookup fixtures
-  with independently formulated references. Repair any claimed mechanisms found to be absent or inconsistent,
-  retaining runtime limits/control identities and documenting changed native numerical evidence separately
-  from historical conversions.
-- Provide 69 individually authored browser-embedded formative assessments with actual controls, two sweeps,
-  equations/units, worked reasoning, fault/recovery and limits. Preserve existing checkpoints and extend
-  missing scopes without erasing prior reviewed prose.
-- Bind all actual native identities, competencies, acyclic prerequisites, cumulative portfolios and two
-  capstones. Capstone integration claims must describe executed models, not broader absent algorithms.
-  No authentic full SLAM/manipulation or physical HIL claim from simplified capstones.
-- Freshly replay five independently originated scenarios for every lesson, retaining unchanged tolerances
-  and original oracle provenance; verify physical invariants, selected full arrays, off-grid and degenerate
-  cases. Reconcile referenced markdown content identities via actual catalog.
-- Exercise all Robotics lessons and checkpoints through real desktop/mobile browser and HTTP entry points,
-  control/fault/recovery/reset and drawn plots. Run required contract/quick/full gates sequentially and
-  distinguish host verification from baked read-only nonroot Docker delivery.
-- Promote only evidence-supported software numerical/curriculum/capstone stages. Keep learner, manual
-  screen-reader, MATLAB, hardware, production and concurrent capacity not run. Preserve DSP and Controls
-  dispositions and Vehicle aggregate blocks.
-- Publish exact evidence and reviewable development PR. Merge only after required verification; preserve
-  failures and environment blockers without weakening assertions or claiming a completed acceptance gate.
-- 'Owner continuation from accepted Controls: content-only review at DSP authored/software rigor, push
-  and merge after evidence. Docker delivery is deferred and must remain not_run until performed; learner,
-  MATLAB, hardware and production remain separate.'
-- Update only the active-contract assertions in three historical DSP fidelity test files to recognize
-  this succeeding approved batch; preserve every DSP source-prefix, oracle, numerical and learner-boundary
-  assertion. Historical Robotics conversion manifest/schema remain immutable; validate added referenced
-  assessment files through a separate compatible assessment verification schema.
+- Complete the owner-authorized content-only continuation, publish a matching Control contract, preserve
+  other course payloads and source pins, and merge after verification. No inventory expansion.
+- Audit all 67 lessons and their governing equations, units, numerical mechanisms, independent reference
+  origins, limiting cases and named faults; repair substantive gaps with explicit scope and without weakening
+  tolerances.
+- Author 67 distinct browser-embedded formative checkpoints and the 14 existing competency-derived portfolios.
+  Include actual controls, two sweeps, worked predictions, failure/recovery and limits. Preserve all previously
+  reviewed assessment prose and control/block identities.
+- Independently replay five cases per lesson through runtime and real HTTP; check full histories and invariants
+  for repaired mechanisms, off-grid/corner cases, held-out data separation and bounded failures. Preserve
+  historical conversion artifacts and distinguish updated current identities.
+- Exercise all 134 desktop/mobile lesson views, controls, fault/reset/recovery, assessments and cumulative
+  portfolios. Inspect capstone plots and math, retain actual hashes and failed attempts, and run required
+  contract/quick/full gates sequentially on frozen lesson inputs.
+- Promote only evidence-supported Vehicle numerical/curriculum/capstone stages after all nine review dimensions
+  pass; retain DSP, Controls and Robotics acceptance and all learner-validation boundaries.
+- Preserve immutable source course, source-map, conversion manifest and original verification schema.
+  A compatible separate assessment schema and target-only current verification bindings may be added.
+  Prior golden vectors remain historical; changed native outputs receive explicitly identified refreshed
+  independent evidence.
+- Historical aggregate preservation tests and the three named DSP fidelity files may recognize this exact
+  successor batch/baseline; all other-course byte, numerical, oracle and source-prefix assertions remain
+  enforced.
+- Content-only scope retains owner-deferred Docker delivery and nonmandatory hosted CI. No learner, manual
+  screen-reader, MATLAB, measured vehicle, hardware, track-safety or production acceptance follows from
+  synthetic host evidence.
 validation:
   local:
-  - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_robotics_aggregate_quality.py
-  - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-robotics-assessments.py
+  - PYTHONPATH=apps/api/src .venv/bin/python -m pytest -q apps/api/tests/test_vehicle_aggregate_quality.py
+  - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-vehicle-assessments.py
   - npm run test:web
   - npm run test:browser
   - ./scripts/agent-verify.sh contract
@@ -106,7 +103,7 @@ validation:
   - ./scripts/agent-verify.sh full
   - ./scripts/verify-course-delivery.sh
   - git diff --check
-  - ./scripts/verify-robotics-host.sh
+  - ./scripts/verify-vehicle-host.sh
   focused_tests_to_add:
   - Independent full mechanisms, live assessment bindings, exact unchanged source/course preservation,
     singular and off-grid inputs, capstone stage/requirement evidence.
@@ -120,15 +117,16 @@ risk:
   - Misleading dimensions, unavailable/singular values or empirical-model claims.
   - Host storage/resource contention disrupting long verification.
   stop_conditions:
-  - Need generic runtime/schema/source pin or other course changes.
-  - Cannot establish credible numerical/browser evidence.
-  - Need physical hardware, learner data or production access.
+  - Need source pin, generic runtime/schema, other course payload or workflow changes.
+  - Cannot establish credible independent numerical or actual browser evidence.
+  - Need measured vehicle data, hardware, learner or production access.
 rollback:
-  strategy: Revert isolated Robotics revision to PR63; no schema or learner-data migration.
+  strategy: Revert the isolated Vehicle aggregate revision to PR64; no learner-data migration or source
+    pin changes.
 evidence:
   output:
-  - docs/evidence/ELP-ROB-AGGREGATE-QUALITY-01-2026-11-04.md
-  - docs/course-quality/robotics-aggregate-review.json
-  - courses/robotics-autonomy/assessment-map.json
+  - docs/evidence/ELP-VEHICLE-AGGREGATE-QUALITY-01-2026-11-05.md
+  - docs/course-quality/vehicle-aggregate-review.json
+  - courses/vehicle-dynamics/assessment-map.json
   claim_boundary: Authored curriculum and independently verified synthetic software; no Docker, learner,
     MATLAB, hardware or production claim from host evidence.
