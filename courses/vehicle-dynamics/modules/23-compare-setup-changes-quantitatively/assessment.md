@@ -30,3 +30,7 @@ A complete answer connects a numerical value to the governing relation, distingu
 Deterministic sensitivities and sector variation are not repeated independent track trials or an empirically calibrated confidence interval.
 
 Competency links: VD-PERFORMANCE-OPTIMIZATION. Carry the prediction, two comparisons, failure diagnosis and recovery evidence into the linked cumulative portfolio. No learner completion or score is inferred by the software; this is an authored assessment for a learner or reviewer to perform.
+
+### Reading the fault/recovery comparison
+
+Each bar uses its own field scale: the larger of the absolute recovered value and one in that field’s declared unit. Thus the plotted ratios are dimensionless; their heights do not compare physical importance across unlike quantities. Hover shows the raw value and scale. The diagnostic key is D1: `baseline_lap_s`, D2: `candidate_lap_s`, D3: `paired_delta_s`, D4: `aero_main_effect_s`, D5: `tire_main_effect_s`, D6: `interaction_effect_s`, D7: `paired_standard_error_s`, D8: `decision_margin_s`, D9: `worthwhile`.

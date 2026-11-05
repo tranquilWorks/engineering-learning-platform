@@ -30,3 +30,7 @@ A complete answer connects a numerical value to the governing relation, distingu
 This original integrated teaching model omits calibration and detailed subsystems; the broader executed synthetic integration is P67.
 
 Competency links: VD-SYSTEM-INTEGRATION. Carry the prediction, two comparisons, failure diagnosis and recovery evidence into the linked cumulative portfolio. No learner completion or score is inferred by the software; this is an authored assessment for a learner or reviewer to perform.
+
+### Reading the fault/recovery comparison
+
+Each bar uses its own field scale: the larger of the absolute recovered value and one in that field’s declared unit. Thus the plotted ratios are dimensionless; their heights do not compare physical importance across unlike quantities. Hover shows the raw value and scale. The diagnostic key is D1: `speed_rmse_m_s`, D2: `position_rmse_m`, D3: `yaw_rate_rmse_rad_s`, D4: `final_speed_m_s`, D5: `path_distance_m`, D6: `lap_time_proxy_s`, D7: `requirements_passed`, D8: `maximum_yaw_residual_rad_s`.

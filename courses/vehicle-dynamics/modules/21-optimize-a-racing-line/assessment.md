@@ -30,3 +30,7 @@ A complete answer connects a numerical value to the governing relation, distingu
 The 41-candidate offset search is a bounded geometric proxy, not a dynamically continuous or track-ready racing line.
 
 Competency links: VD-PERFORMANCE-OPTIMIZATION. Carry the prediction, two comparisons, failure diagnosis and recovery evidence into the linked cumulative portfolio. No learner completion or score is inferred by the software; this is an authored assessment for a learner or reviewer to perform.
+
+### Reading the fault/recovery comparison
+
+Each bar uses its own field scale: the larger of the absolute recovered value and one in that field’s declared unit. Thus the plotted ratios are dimensionless; their heights do not compare physical importance across unlike quantities. Hover shows the raw value and scale. The diagnostic key is D1: `best_offset_m`, D2: `effective_radius_m`, D3: `corner_path_length_m`, D4: `grip_speed_limit_m_s`, D5: `lap_time_proxy_s`, D6: `gain_from_center_s`, D7: `constraint_margin_m`, D8: `evaluated_candidates`.

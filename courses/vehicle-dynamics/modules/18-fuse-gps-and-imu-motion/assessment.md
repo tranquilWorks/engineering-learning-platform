@@ -30,3 +30,7 @@ A complete answer connects a numerical value to the governing relation, distingu
 This is a fixed-gain position correction, not a Kalman filter, bias observer or stochastic sensor validation.
 
 Competency links: VD-STATE-RECONSTRUCTION. Carry the prediction, two comparisons, failure diagnosis and recovery evidence into the linked cumulative portfolio. No learner completion or score is inferred by the software; this is an authored assessment for a learner or reviewer to perform.
+
+### Reading the fault/recovery comparison
+
+Each bar uses its own field scale: the larger of the absolute recovered value and one in that field’s declared unit. Thus the plotted ratios are dimensionless; their heights do not compare physical importance across unlike quantities. Hover shows the raw value and scale. The diagnostic key is D1: `final_position_error_m`, D2: `final_velocity_error_m_s`, D3: `position_rmse_m`, D4: `mean_abs_innovation_m`, D5: `final_gps_residual_m`, D6: `maximum_time_skew_s`, D7: `samples`.

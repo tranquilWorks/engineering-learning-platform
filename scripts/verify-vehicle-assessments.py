@@ -158,6 +158,7 @@ def replay(base_url=None, refresh=False):
                     "maximum_absolute_error": error,
                     "maximum_scaled_relative_error": scaled,
                     "tolerance": tolerance,
+                    "full_history_compared": n in (37, 57),
                 }
             )
             if refresh and n in (38, 39, 47, 57, 59):

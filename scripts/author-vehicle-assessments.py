@@ -1,5 +1,6 @@
 """Bind individually authored prompts to actual controls and curriculum identities."""
 
+import ast
 import json
 from pathlib import Path
 
@@ -118,6 +119,21 @@ Competency links: {", ".join(memberships)}. Carry the prediction, two comparison
             previous.write_bytes((folder / "assessment.md").read_bytes())
         if previous.exists():
             text += "\n\n# Retained scoped evidence task\n\n" + previous.read_text()
+        if 17 <= n <= 24:
+            tree = ast.parse((folder / "experiment.py").read_text())
+            fields = next(
+                ast.literal_eval(node.value)
+                for node in tree.body
+                if isinstance(node, ast.Assign)
+                and any(
+                    isinstance(t, ast.Name) and t.id == "FIELDS" for t in node.targets
+                )
+            )[:-1]
+            text += (
+                "\n### Reading the fault/recovery comparison\n\nEach bar uses its own field scale: the larger of the absolute recovered value and one in that field’s declared unit. Thus the plotted ratios are dimensionless; their heights do not compare physical importance across unlike quantities. Hover shows the raw value and scale. The diagnostic key is "
+                + ", ".join(f"D{i + 1}: `{field}`" for i, field in enumerate(fields))
+                + ".\n"
+            )
         (folder / "assessment.md").write_text(text)
         if not any(b.get("source") == "assessment.md" for b in module["blocks"]):
             module["blocks"].append(

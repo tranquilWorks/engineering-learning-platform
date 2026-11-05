@@ -30,3 +30,7 @@ A complete answer connects a numerical value to the governing relation, distingu
 This synthetic circuit and simplified force envelope are not measured lap performance or driver validation.
 
 Competency links: VD-PERFORMANCE-OPTIMIZATION. Carry the prediction, two comparisons, failure diagnosis and recovery evidence into the linked cumulative portfolio. No learner completion or score is inferred by the software; this is an authored assessment for a learner or reviewer to perform.
+
+### Reading the fault/recovery comparison
+
+Each bar uses its own field scale: the larger of the absolute recovered value and one in that field’s declared unit. Thus the plotted ratios are dimensionless; their heights do not compare physical importance across unlike quantities. Hover shows the raw value and scale. The diagnostic key is D1: `lap_time_s`, D2: `peak_speed_m_s`, D3: `corner_entry_speed_m_s`, D4: `maximum_braking_violation_m2_s2`, D5: `active_grip_limits`, D6: `minimum_speed_m_s`, D7: `segments`.

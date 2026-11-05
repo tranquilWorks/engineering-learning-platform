@@ -30,3 +30,7 @@ A complete answer connects a numerical value to the governing relation, distingu
 Despite the inherited title, this drive is synthetic. Neither fitted coefficients nor residuals establish a real vehicle's road loads.
 
 Competency links: VD-IDENTIFICATION-UNCERTAINTY. Carry the prediction, two comparisons, failure diagnosis and recovery evidence into the linked cumulative portfolio. No learner completion or score is inferred by the software; this is an authored assessment for a learner or reviewer to perform.
+
+### Reading the fault/recovery comparison
+
+Each bar uses its own field scale: the larger of the absolute recovered value and one in that field’s declared unit. Thus the plotted ratios are dimensionless; their heights do not compare physical importance across unlike quantities. Hover shows the raw value and scale. The diagnostic key is D1: `rolling_resistance_n`, D2: `drag_area_m2`, D3: `training_rmse_n`, D4: `validation_rmse_n`, D5: `speed_squared_span_m2_s2`, D6: `excitation_ratio`, D7: `drag_area_standard_error_m2`.

@@ -16,6 +16,7 @@ const saveReport = () => {
 };
 const selected = process.env.ELP_BROWSER_COURSE;
 const selectedModule = process.env.ELP_BROWSER_MODULE;
+const selectedVehicleNumbers = process.env.ELP_VEHICLE_NUMBERS?.split(",").map(Number);
 const gncRepairs = process.env.ELP_BROWSER_GNC_REPAIRS === '1';
 const gncRepairNumbers = [37,44,52,53,54,55,58,59,61,63,67];
 const vehicleDrivelineBatch = process.env.ELP_BROWSER_VEHICLE_DRIVELINE_BATCH === '1';
@@ -52,7 +53,7 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
     page.setDefaultTimeout(30000);
     let errors = [];
     page.on('pageerror', e => errors.push(e.message));
-    for (const module of course.modules.filter(m => (!selectedModule || m.id === selectedModule) && (!gncRepairs || (course.id === 'controls-gnc' && gncRepairNumbers.includes(m.number))) && (!vehicleDrivelineBatch || isVehicleDriveline(course,m)) && (!vehicleFoundationsBatch || isVehicleFoundations(course,m)) && (!roboticsPerceptionBatch || roboticsPerceptionSelection[course.id]?.includes(m.number)) && (!roboticsDynamicsBatch || roboticsDynamicsSelection[course.id]?.includes(m.number)) && (!navigationBatch || navigationSelection[course.id]?.includes(m.number)))) {
+    for (const module of course.modules.filter(m => (!selectedModule || m.id === selectedModule) && (!selectedVehicleNumbers || (course.id === "vehicle-dynamics" && selectedVehicleNumbers.includes(m.number))) && (!gncRepairs || (course.id === 'controls-gnc' && gncRepairNumbers.includes(m.number))) && (!vehicleDrivelineBatch || isVehicleDriveline(course,m)) && (!vehicleFoundationsBatch || isVehicleFoundations(course,m)) && (!roboticsPerceptionBatch || roboticsPerceptionSelection[course.id]?.includes(m.number)) && (!roboticsDynamicsBatch || roboticsDynamicsSelection[course.id]?.includes(m.number)) && (!navigationBatch || navigationSelection[course.id]?.includes(m.number)))) {
       errors = [];
       const row = { course: course.id, module: module.id, viewport, status: 'failed' };
       try {
@@ -198,7 +199,7 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
             }
           }
 
-          if (course.id === 'vehicle-dynamics' && [26,33,34,35,36,37,38,39,47,52,53,57,59,66,67].includes(module.number)) {
+          if (course.id === 'vehicle-dynamics' && [17,18,19,20,21,22,23,24,26,33,34,35,36,37,38,39,47,52,53,57,59,66,67].includes(module.number)) {
             const panels = page.locator('.plot-panel');
             for (let i=0; i<await panels.count(); i++) {
               const file = `${out}/vehicle-mechanism-${module.number}-${viewport}-${i}.png`;
@@ -244,7 +245,7 @@ for (const [viewport, size] of Object.entries({ desktop: { width: 1440, height: 
             await page.locator('.compute-status:visible').first().filter({ hasText: 'Experiment synchronized' }).waitFor();
             await page.waitForTimeout(100); return payload;
           };
-          if (await slider.count()) { await waitRun(async () => { await slider.focus(); await slider.press('ArrowRight'); }); act.control_changed = true; }
+          if (await slider.count()) { await waitRun(async () => { await slider.focus(); const atMaximum = await slider.evaluate(el => Number(el.value) >= Number(el.max)); await slider.press(atMaximum ? 'ArrowLeft' : 'ArrowRight'); }); act.control_changed = true; }
           else if (await choice.count()) { const options = await choice.locator('option').evaluateAll(x => x.map(o => o.value)); await waitRun(() => choice.selectOption(options.find(v => v !== doc.default_parameters[doc.module.controls.find(c => c.type === 'select').id]))); act.control_changed = true; }
           else if (await segmented.count()) { await waitRun(() => segmented.click()); act.control_changed = true; }
           if (await toggle.count()) {

@@ -30,3 +30,7 @@ A complete answer connects a numerical value to the governing relation, distingu
 This protocol fixture is synthetic and covers a declared identifier and byte layout, not all GR86 firmware or a live bus.
 
 Competency links: VD-TELEMETRY-PROTOCOL. Carry the prediction, two comparisons, failure diagnosis and recovery evidence into the linked cumulative portfolio. No learner completion or score is inferred by the software; this is an authored assessment for a learner or reviewer to perform.
+
+### Reading the fault/recovery comparison
+
+Each bar uses its own field scale: the larger of the absolute recovered value and one in that field’s declared unit. Thus the plotted ratios are dimensionless; their heights do not compare physical importance across unlike quantities. Hover shows the raw value and scale. The diagnostic key is D1: `wheel_speed_kmh`, D2: `wheel_speed_m_s`, D3: `round_trip_count_error`, D4: `frame_age_ms`, D5: `freshness_limit_ms`, D6: `can_identifier_decimal`, D7: `dlc_bytes`, D8: `trace_points`.

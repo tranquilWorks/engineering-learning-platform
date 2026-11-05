@@ -30,3 +30,7 @@ A complete answer connects a numerical value to the governing relation, distingu
 Constant speed and yaw do not constitute state estimation from noisy sensors; no observability or uncertainty claim follows.
 
 Competency links: VD-STATE-RECONSTRUCTION. Carry the prediction, two comparisons, failure diagnosis and recovery evidence into the linked cumulative portfolio. No learner completion or score is inferred by the software; this is an authored assessment for a learner or reviewer to perform.
+
+### Reading the fault/recovery comparison
+
+Each bar uses its own field scale: the larger of the absolute recovered value and one in that field’s declared unit. Thus the plotted ratios are dimensionless; their heights do not compare physical importance across unlike quantities. Hover shows the raw value and scale. The diagnostic key is D1: `final_x_m`, D2: `final_y_m`, D3: `final_heading_deg`, D4: `curvature_1_m`, D5: `turn_radius_m`, D6: `lateral_acceleration_m_s2`, D7: `path_distance_m`.

@@ -1,0 +1,235 @@
+........................................................................ [  4%]
+................................................F
+=================================== FAILURES ===================================
+_ test_p01_analytic_limits_use_phasor_identities_not_production_outputs[overrides1] _
+
+self = <elp_api.runtime.ExperimentRuntime object at 0x7f2e9cb59a30>
+course_id = 'dsp-radar'
+module_id = '14-compare-periodogram-and-welch-psd-estimates', parameters = {}
+expected_content_digest = None
+
+    def run(
+        self,
+        course_id: str,
+        module_id: str,
+        parameters: dict[str, Any],
+        expected_content_digest: str | None = None,
+    ) -> RunResult:
+        course, record = self.catalog.module_record(course_id, module_id)
+        manifest = record.manifest
+        if (
+            expected_content_digest is not None
+            and expected_content_digest != record.revision.content_digest
+        ):
+            raise RuntimeContractError(
+                "module content revision is stale; reload the module document"
+            )
+        try:
+            record.assert_unchanged()
+        except CatalogError as exc:
+            raise RuntimeContractError(str(exc)) from exc
+        merged = self._validated_parameters(manifest, parameters)
+        if manifest.runtime.kind == "static":
+            return RunResult(
+                parameters=merged,
+                course_revision=course.revision,
+                module_revision=record.revision,
+                platform_revision=platform_revision("static"),
+            )
+        assert manifest.runtime.entrypoint is not None
+        function = self._load_callable(record, manifest.runtime.entrypoint)
+        timeout = manifest.runtime.timeout_seconds or self.default_timeout
+        executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="elp-experiment")
+        future = executor.submit(function, merged)
+        try:
+>           raw = future.result(timeout=timeout)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+apps/api/src/elp_api/runtime.py:173: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = None, timeout = 3.0
+
+    def result(self, timeout=None):
+        """Return the result of the call that the future represents.
+    
+        Args:
+            timeout: The number of seconds to wait for the result if the future
+                isn't done. If None, then there is no limit on the wait time.
+    
+        Returns:
+            The result of the call that the future represents.
+    
+        Raises:
+            CancelledError: If the future was cancelled.
+            TimeoutError: If the future didn't finish executing before the given
+                timeout.
+            Exception: If the call raised then that exception will be raised.
+        """
+        try:
+            with self._condition:
+                if self._state in [CANCELLED, CANCELLED_AND_NOTIFIED]:
+                    raise CancelledError()
+                elif self._state == FINISHED:
+                    return self.__get_result()
+    
+                self._condition.wait(timeout)
+    
+                if self._state in [CANCELLED, CANCELLED_AND_NOTIFIED]:
+                    raise CancelledError()
+                elif self._state == FINISHED:
+                    return self.__get_result()
+                else:
+>                   raise TimeoutError()
+E                   TimeoutError
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/concurrent/futures/_base.py:458: TimeoutError
+
+The above exception was the direct cause of the following exception:
+
+self = <elp_api.catalog.CourseCatalog object at 0x7f2e9ddece60>
+
+    def _validate_output_references(self) -> None:
+        from .runtime import ExperimentRuntime, RuntimeErrorBase
+    
+        runtime = ExperimentRuntime(self)
+        for course in self._courses.values():
+            for module in course.modules:
+                references = [
+                    block
+                    for block in module.manifest.blocks
+                    if block.type in {"plot", "plot_grid", "table"}
+                    or (block.type == "callout" and block.source is not None)
+                ]
+                identity = f"{course.manifest.id}/{module.manifest.id}"
+                if module.manifest.runtime.kind == "static":
+                    if references:
+                        raise CatalogError(
+                            f"{identity}: static module cannot reference runtime outputs"
+                        )
+                    continue
+                try:
+>                   runtime.run(course.manifest.id, module.manifest.id, {})
+
+apps/api/src/elp_api/catalog.py:389: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <elp_api.runtime.ExperimentRuntime object at 0x7f2e9cb59a30>
+course_id = 'dsp-radar'
+module_id = '14-compare-periodogram-and-welch-psd-estimates', parameters = {}
+expected_content_digest = None
+
+    def run(
+        self,
+        course_id: str,
+        module_id: str,
+        parameters: dict[str, Any],
+        expected_content_digest: str | None = None,
+    ) -> RunResult:
+        course, record = self.catalog.module_record(course_id, module_id)
+        manifest = record.manifest
+        if (
+            expected_content_digest is not None
+            and expected_content_digest != record.revision.content_digest
+        ):
+            raise RuntimeContractError(
+                "module content revision is stale; reload the module document"
+            )
+        try:
+            record.assert_unchanged()
+        except CatalogError as exc:
+            raise RuntimeContractError(str(exc)) from exc
+        merged = self._validated_parameters(manifest, parameters)
+        if manifest.runtime.kind == "static":
+            return RunResult(
+                parameters=merged,
+                course_revision=course.revision,
+                module_revision=record.revision,
+                platform_revision=platform_revision("static"),
+            )
+        assert manifest.runtime.entrypoint is not None
+        function = self._load_callable(record, manifest.runtime.entrypoint)
+        timeout = manifest.runtime.timeout_seconds or self.default_timeout
+        executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="elp-experiment")
+        future = executor.submit(function, merged)
+        try:
+            raw = future.result(timeout=timeout)
+        except FutureTimeout as exc:
+            future.cancel()
+            executor.shutdown(wait=False, cancel_futures=True)
+>           raise RuntimeTimeout(f"experiment exceeded {timeout:.2f} seconds") from exc
+E           elp_api.runtime.RuntimeTimeout: experiment exceeded 3.00 seconds
+
+apps/api/src/elp_api/runtime.py:177: RuntimeTimeout
+
+The above exception was the direct cause of the following exception:
+
+overrides = {'frequency_hz': -5.0}
+
+    @pytest.mark.parametrize(
+        "overrides",
+        [
+            {},
+            {"frequency_hz": -5.0},
+            {"phase_rad": math.pi / 2, "amplitude": 1.7},
+            {"alias_mode": True},
+            {"frequency_hz": 0.0},
+        ],
+    )
+    def test_p01_analytic_limits_use_phasor_identities_not_production_outputs(overrides):
+>       catalog = CourseCatalog([ROOT / "courses"])
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+apps/api/tests/test_dsp_aggregate_quality.py:218: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+apps/api/src/elp_api/catalog.py:207: in __init__
+    self.reload()
+apps/api/src/elp_api/catalog.py:364: in reload
+    self._validate_output_references()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <elp_api.catalog.CourseCatalog object at 0x7f2e9ddece60>
+
+    def _validate_output_references(self) -> None:
+        from .runtime import ExperimentRuntime, RuntimeErrorBase
+    
+        runtime = ExperimentRuntime(self)
+        for course in self._courses.values():
+            for module in course.modules:
+                references = [
+                    block
+                    for block in module.manifest.blocks
+                    if block.type in {"plot", "plot_grid", "table"}
+                    or (block.type == "callout" and block.source is not None)
+                ]
+                identity = f"{course.manifest.id}/{module.manifest.id}"
+                if module.manifest.runtime.kind == "static":
+                    if references:
+                        raise CatalogError(
+                            f"{identity}: static module cannot reference runtime outputs"
+                        )
+                    continue
+                try:
+                    runtime.run(course.manifest.id, module.manifest.id, {})
+                except RuntimeErrorBase as exc:
+>                   raise CatalogError(
+                        f"{identity}: default runtime validation failed: {exc}"
+                    ) from exc
+E                   elp_api.catalog.CatalogError: dsp-radar/14-compare-periodogram-and-welch-psd-estimates: default runtime validation failed: experiment exceeded 3.00 seconds
+
+apps/api/src/elp_api/catalog.py:391: CatalogError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /workspace/scratch/3db4a2e2c21b/engineering-learning-platform/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_api.py::test_health_and_vertical_slice
+tests/test_api.py::test_stale_revision_and_inline_result_size_fail_closed
+  /workspace/scratch/3db4a2e2c21b/engineering-learning-platform/.venv/lib/python3.12/site-packages/fastapi/routing.py:152: FastAPIDeprecationWarning: ORJSONResponse is deprecated, FastAPI now serializes data directly to JSON bytes via Pydantic when a return type or response model is set, which is faster and doesn't need a custom response class. Read more in the FastAPI docs: https://fastapi.tiangolo.com/advanced/custom-response/#orjson-or-response-model and https://fastapi.tiangolo.com/tutorial/response-model/
+    response = await f(request)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED apps/api/tests/test_dsp_aggregate_quality.py::test_p01_analytic_limits_use_phasor_identities_not_production_outputs[overrides1]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 120 passed, 3 warnings in 209.76s (0:03:29)
