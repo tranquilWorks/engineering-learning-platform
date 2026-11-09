@@ -55,14 +55,14 @@ import the production entrypoint, derive values from production output, or
 perturb production output. Those artifacts may be useful regression fixtures,
 but they are not independent correctness oracles.
 
-## Current disposition (2026-11-04)
+## Current disposition (2026-11-09)
 
 | Course | Native interactive lessons | Current review position |
 | --- | ---: | --- |
 | DSP/Radar | 84 | Authored/software aggregate review passed: 84 checkpoints, ten cumulative portfolios and 417 independent comparisons; learner validation not_run |
 | Controls/GNC | 68 | Authored/synthetic numerical, curriculum and capstone content accepted at DSP rigor; Docker delivery separately deferred by owner |
 | Robotics/Autonomy | 69 | Authored/synthetic numerical, curriculum and capstone review passed: 69 checkpoints, 13 portfolios, 345 independent cases and 138 current-content browser views; Docker delivery deferred |
-| Vehicle Dynamics | 67 | Zero named findings; P01–P16 and P61–P67 scoped repairs complete; aggregate reassessment remains open |
+| Vehicle Dynamics | 67 | Authored/synthetic numerical, curriculum and capstone review passed: 67 checkpoints, 14 portfolios, 335 independent cases and 134 current-content browser views; Docker delivery deferred |
 
 The earlier 72-finding closeout is merged; its retained image evidence covers 290 HTTP modules and 580 desktop/mobile pages. That historical image does not include the later Controls or Robotics aggregate revisions. Both aggregate revisions retain their own host evidence and explicit Docker deferral. See [the quality board](COURSE_QUALITY.md) and [human review handoff](HANDOFF.md#human-review-entry-point).
 

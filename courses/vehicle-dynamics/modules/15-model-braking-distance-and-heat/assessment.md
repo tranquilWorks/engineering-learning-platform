@@ -1,3 +1,39 @@
+# P15 course checkpoint
+
+## Predict and derive
+
+Close kinetic energy, stopping work and absorbed brake heat as separate quantities.
+
+Use the governing relations below and state the frame, sign convention and units before substituting numbers. Derive a baseline or limiting prediction and identify which plotted quantity could disprove it.
+
+- `Kinetic-energy/work stop solution and fractional stopping-time energy trajectory`
+
+## Controlled comparison
+
+- `initial_speed_m_s`: 30.0 → 5.0. Hold the other controls at baseline; predict and explain the change before executing.
+- `requested_brake_force_n`: 10000.0 → 18000.0. Hold the other controls at baseline; predict and explain the change before executing.
+
+Record the parameter values, prediction and observed change for each comparison. If a quantity does not change, explain whether it is an invariant, an inactive parameter in this regime, or evidence of a defect.
+
+## Diagnose and recover
+
+Enable the named failure with the numeric controls unchanged. Identify the first violated assumption from the actual trace or event evidence, rather than only the mode label. Restore healthy mode and verify deterministic return to the same baseline. Keep the failing trace beside the recovered trace.
+
+## Expected reasoning
+
+Initial kinetic energy is m*v0²/2, so doubling initial speed quadruples energy. Integrate the actual resisting force over stopping distance and account for road losses before allocating brake heat. Peak temperature depends on the stated heat capacity and absorption fraction. Tire-limited braking can change force and distance while the same initial kinetic energy still has to leave the vehicle.
+
+A complete answer connects a numerical value to the governing relation, distinguishes the controlled comparisons, and explains the fault and recovery through an observable mechanism. An unexplained success metric is insufficient evidence.
+
+## Limits and handoff
+
+The lumped heat ledger is not rotor stress, fade qualification or a complete low-speed ABS model.
+
+Competency links: VD-BRAKES. Carry the prediction, two comparisons, failure diagnosis and recovery evidence into the linked cumulative portfolio. No learner completion or score is inferred by the software; this is an authored assessment for a learner or reviewer to perform.
+
+
+# Retained scoped evidence task
+
 # P15 evidence task
 
 ## Predict the two budgets

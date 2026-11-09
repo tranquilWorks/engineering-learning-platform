@@ -282,6 +282,7 @@ def test_active_contract_ledger_and_prior_source_prefix():
     assert raw[154384:].lstrip().startswith(b"# P65-P76 independent references.")
     contract = yaml.safe_load((ROOT / "contracts/active-batch.yaml").read_text())
     approved_successors = {
+        "ELP-VEHICLE-AGGREGATE-QUALITY-01": "9c27f567399cf2fcb9728fb104b2d573fcac5652",
         "ELP-GNC-AGGREGATE-QUALITY-01": "abe7c49cea2a649354f20ad19dbe8a2e6c78540a",
         "ELP-ROB-AGGREGATE-QUALITY-01": "185e966242c889d3f030bab6016139777fcf0f17",
     }

@@ -1,0 +1,404 @@
+[
+  {
+    "number": 1,
+    "task": "Derive curvature from steering-wheel angle and predict separately what doubles when speed doubles.",
+    "expected_reasoning": "Wheel angle is steering-wheel angle divided by 13, then converted to radians. Curvature is tan(delta)/L. At fixed steering, radius is unchanged, yaw rate v*kappa doubles and lateral demand v\u00b2*kappa quadruples when speed doubles. A zero-steer limit must approach a straight path continuously. Bypassing the ratio can preserve a smooth trajectory while violating the declared input convention; inspect curvature and grip demand, not smoothness.",
+    "claim_limit": "This kinematic path is demanded geometry; exceeding mu*g does not simulate tire saturation or a realizable maneuver."
+  },
+  {
+    "number": 2,
+    "task": "Reconstruct the signed force ledger before computing longitudinal acceleration.",
+    "expected_reasoning": "Apply m*a=tractive force minus drag, rolling resistance and the declared grade term. Each term is newtons; dividing only the final signed sum by kilograms gives m/s\u00b2. Doubling speed multiplies quadratic drag by four, not two. A request smaller than resistance implies deceleration, not negative mass or a force-unit conversion. Compare the physical ledger with the broken result and identify the first omitted or mis-signed term.",
+    "claim_limit": "Constant coefficients and a lumped mass do not identify a real coastdown curve or model wheel slip."
+  },
+  {
+    "number": 3,
+    "task": "Derive axle loads from vertical force and pitch moment equilibrium; explain which axle gains load under acceleration.",
+    "expected_reasoning": "The amount transferred is T=m*a*h/L, with front decreasing and rear increasing for forward acceleration. Hence front+rear=mg and the moment produced by the moved load is T*L=m*a*h. Doubling height doubles T without changing total weight. A transfer quantity is not the difference between the two axle loads, which also contains static weight distribution. Audit both equations before accepting a plausible percentage.",
+    "claim_limit": "Quasi-static load transfer omits suspension pitch transients and ceases to represent two-axle contact after a negative axle load."
+  },
+  {
+    "number": 4,
+    "task": "Predict whether a requested force vector is admissible, then derive the projected vector.",
+    "expected_reasoning": "Compare sqrt(Fx\u00b2+Fy\u00b2) with mu*Fz. Outside the circle, multiply both components by mu*Fz divided by the requested norm. For a request (3,4) in normalized force units and a capacity of 2, the delivered vector is (1.2,1.6); its direction is retained and its norm is 2. Clipping each component independently produces a square and can still exceed the circle.",
+    "claim_limit": "A circular isotropic bound is a teaching approximation; it is not a calibrated combined-slip tire surface."
+  },
+  {
+    "number": 5,
+    "task": "Explain the sign and local slope of longitudinal tire force and distinguish stiffness from peak force.",
+    "expected_reasoning": "A signed slip input must produce an odd force response in this symmetric model: reversing slip reverses force. Near zero, differentiate the declared law to obtain stiffness; at larger slip compare force with mu*Fz. Increasing load can raise capacity without changing the interpretation of slip as a dimensionless ratio. Use a negative-slip prediction to expose a sign or percent-versus-fraction error that a positive baseline could hide.",
+    "claim_limit": "The model does not resolve contact-patch dynamics, low-speed slip singularities or a measured road surface."
+  },
+  {
+    "number": 6,
+    "task": "Translate slip angle into radians and derive the small-angle lateral-force prediction.",
+    "expected_reasoning": "Four degrees is 0.0698132 rad. A stiffness stated in N/rad must multiply that number, not 4. The force sign follows the lesson's explicitly declared slip convention; it should reverse under an angle sign reversal. Compare the linear tangent with the saturation boundary as normal load changes. A factor of about 57.3 is a unit defect, not evidence for a different tire stiffness.",
+    "claim_limit": "Symmetric synthetic tire behavior omits hysteresis, transient camber and measured parameter uncertainty."
+  },
+  {
+    "number": 7,
+    "task": "Solve both steady bicycle equations and test the solution against independent force and yaw-moment balances.",
+    "expected_reasoning": "Steady sideslip rate is zero, but lateral acceleration is v*r, not zero. Thus Fyf+Fyr=m*v*r while a*Fyf-b*Fyr=0. The second equation requires Fyf/Fyr=b/a. A yaw solution alone cannot validate the first equation. Compare a zero-steer limit and a speed sweep, retaining the sign convention and the determinant or conditioning of the two-equation solve.",
+    "claim_limit": "Small angles, linear tires and constant speed bound this equilibrium; a mathematically finite solution can still exceed tire capacity."
+  },
+  {
+    "number": 8,
+    "task": "Classify understeer, neutral steer and oversteer before interpreting a characteristic or critical speed.",
+    "expected_reasoning": "For K=Wf/Cf-Wr/Cr, steer demand is L/R+K*a_y/g. Positive K gives characteristic speed sqrt(g*L/K); negative K gives a distinct critical speed sqrt(-g*L/K). Neutral steer has neither finite speed. Near K=0 the relevant speed diverges; a zero placeholder means unavailable, not stationary instability. Vary front and rear stiffness separately to establish their opposite contributions.",
+    "claim_limit": "The critical-speed singularity belongs to the linear steady model and is not a safe-speed recommendation."
+  },
+  {
+    "number": 9,
+    "task": "Use virtual work and spring energy to derive the squared motion-ratio law.",
+    "expected_reasoning": "With motion ratio defined as spring travel divided by wheel travel, spring displacement is r*z. Energy is k_s*(r*z)\u00b2/2, so wheel rate is k_s*r\u00b2. At r=0.9 and k_s=35000 N/m, wheel rate is 28350 N/m. Using r instead of r\u00b2 violates energy equivalence even if units still look correct. Explicitly distinguish this convention from the reciprocal convention used in some suspension references.",
+    "claim_limit": "Constant motion ratio excludes travel-dependent geometry, installation preload and nonlinear bump stops."
+  },
+  {
+    "number": 10,
+    "task": "Predict damping regime, natural frequency and the transient's long-time value before reading the response.",
+    "expected_reasoning": "For m*z''+c*z'+k*z=input, omega_n=sqrt(k/m) and zeta=c/(2*sqrt(k*m)). Increasing c changes damping and decay, not the undamped natural frequency. At critical damping the repeated-root solution remains finite; it is not obtained by dividing by zero in an underdamped formula. Check initial conditions, the declared forcing and the static limit alongside overshoot.",
+    "claim_limit": "A single-degree-of-freedom sprung-mass model cannot establish tire contact or full-car ride comfort."
+  },
+  {
+    "number": 11,
+    "task": "Close roll moment and determine how stiffness distribution changes axle transfer without changing the total demand.",
+    "expected_reasoning": "Front and rear elastic moments divide according to their stiffness fractions. If front stiffness rises with rear fixed, its share increases; that does not create extra total roll moment. Convert each moment into the amount moved across that axle using its own track. Sum transferred-load times track and compare with the demanded roll moment. Keep geometric and elastic paths separate to avoid counting the same moment twice.",
+    "claim_limit": "Static roll balance omits roll-rate damping, unsprung mass transients and post-lift-off behavior."
+  },
+  {
+    "number": 12,
+    "task": "Separate camber-induced lateral force from the energy lost through toe scrub.",
+    "expected_reasoning": "Camber thrust follows the signed camber angle in the linear approximation. Scrub power is dissipative and should remain nonnegative when toe reverses: the relevant force and lateral sliding velocity reverse together. Convert degrees once and retain the per-wheel versus axle convention. A sign-preserving force prediction and an even power prediction provide different tests of the same alignment change.",
+    "claim_limit": "These local linear alignment relations are not a setup recommendation or a model of tire wear over a stint."
+  },
+  {
+    "number": 13,
+    "task": "Trace engine torque through gearing to wheel force and distinguish available from delivered power.",
+    "expected_reasoning": "At wheel radius r, available force is engine torque times gear and final-drive ratios times efficiency divided by r. Wheel power equals delivered force times road speed; if tire capacity clips force, available engine power is not all delivered as translational power. Increasing ratio raises wheel force but reduces road speed at a fixed engine speed. Retain both mechanical conversion and traction constraints in the ledger.",
+    "claim_limit": "This bounded driveline study does not resolve clutch slip, engine transients or tire heating."
+  },
+  {
+    "number": 14,
+    "task": "Decide whether a wheel-force crossover occurs before the engine reaches redline.",
+    "expected_reasoning": "Compare the current and next gear at the same road speed, which means different engine speeds. Solve force equality only inside both gears' valid engine bands. If no crossing occurs before redline, report a redline-limited shift rather than inventing an intersection. A higher-ratio gear is not always faster because its torque-map point and speed range change. Check the selected event against both force and rpm traces.",
+    "claim_limit": "An instantaneous crossover analysis excludes shift interruption and driver or actuator latency; P47 adds a bounded interruption model."
+  },
+  {
+    "number": 15,
+    "task": "Close kinetic energy, stopping work and absorbed brake heat as separate quantities.",
+    "expected_reasoning": "Initial kinetic energy is m*v0\u00b2/2, so doubling initial speed quadruples energy. Integrate the actual resisting force over stopping distance and account for road losses before allocating brake heat. Peak temperature depends on the stated heat capacity and absorption fraction. Tire-limited braking can change force and distance while the same initial kinetic energy still has to leave the vehicle.",
+    "claim_limit": "The lumped heat ledger is not rotor stress, fade qualification or a complete low-speed ABS model."
+  },
+  {
+    "number": 16,
+    "task": "Derive speed scaling for aerodynamic force and power, then distribute downforce between axles.",
+    "expected_reasoning": "At fixed coefficients, force is proportional to v\u00b2 and drag power to v\u00b3. Doubling speed therefore gives four times drag but eight times drag power. Front and rear downforce must sum to the total, and their lever arms determine pitch moment. More downforce can improve grip while consuming power through drag; neither an axle split nor a favorable sign creates free energy.",
+    "claim_limit": "The coefficient map is synthetic and excludes stall, pitch dynamics, wind and measured aerodynamic validation."
+  },
+  {
+    "number": 17,
+    "task": "Decode the wheel-speed payload by hand and decide whether a correctly decoded frame is fresh enough to use.",
+    "expected_reasoning": "A raw count of 4608 equals hexadecimal 0x1200. Big-endian decoding followed by division by 128 gives 36 km/h, or 10 m/s. Reversing the bytes gives 18 counts and only 0.140625 km/h. Byte identity, engineering-value correctness and freshness are separate checks. A frame older than 100 ms is rejected even if its speed looks plausible; do not silently carry it forward as current evidence.",
+    "claim_limit": "This protocol fixture is synthetic and covers a declared identifier and byte layout, not all GR86 firmware or a live bus."
+  },
+  {
+    "number": 18,
+    "task": "Explain exactly which state a GPS position correction changes and which IMU error continues to accumulate.",
+    "expected_reasoning": "At a 0.5 s sample interval, an acceleration bias of 0.05 m/s\u00b2 adds 0.025 m/s of velocity error each prediction step. The complementary correction pulls position toward GPS, but does not directly repair the integrated velocity bias. Raising GPS weight can reduce position drift while increasing sensitivity to GPS error or delay. Diagnose a delayed observation by its timestamp and residual, not just the final position.",
+    "claim_limit": "This is a fixed-gain position correction, not a Kalman filter, bias observer or stochastic sensor validation."
+  },
+  {
+    "number": 19,
+    "task": "Derive the constant-turn radius and independently predict the endpoint from speed and yaw rate.",
+    "expected_reasoning": "Convert 8 deg/s to 0.139626 rad/s; at 20 m/s the turn radius is about 143.24 m. Midpoint heading integration approximates the circular path. As yaw rate tends to zero, endpoint displacement tends to speed times duration and physical radius tends to infinity. A zero radius sentinel in the historical signature means the straight-line branch, not a zero-radius turn.",
+    "claim_limit": "Constant speed and yaw do not constitute state estimation from noisy sensors; no observability or uncertainty claim follows."
+  },
+  {
+    "number": 20,
+    "task": "Explain why speed diversity is needed to identify both rolling resistance and quadratic drag.",
+    "expected_reasoning": "Regress resistance against a constant column and v\u00b2. If every speed is the same, those columns are dependent: many intercept/drag pairs fit the data. Separate estimation samples from held-out samples before solving. A rank-deficient branch returning a zero coefficient or standard-error placeholder has not established exact knowledge. Report rank and excitation alongside residuals, and predict why a wider speed span improves parameter separation.",
+    "claim_limit": "Despite the inherited title, this drive is synthetic. Neither fitted coefficients nor residuals establish a real vehicle's road loads."
+  },
+  {
+    "number": 21,
+    "task": "Compare the shorter path with the wider, faster path and audit every candidate's track margin.",
+    "expected_reasoning": "At zero offset, the corner contribution is (pi/2)*45/sqrt(mu*g*45). The model also adds a fixed 200/45 s straight. A nonzero offset changes both radius and the 0.08*d\u00b2 distance penalty. Evaluate time rather than curvature alone, and require width minus absolute offset to remain nonnegative. A candidate one metre outside the track is invalid regardless of its time advantage.",
+    "claim_limit": "The 41-candidate offset search is a bounded geometric proxy, not a dynamically continuous or track-ready racing line."
+  },
+  {
+    "number": 22,
+    "task": "Reconstruct the forward acceleration and backward braking constraints on a periodic lap.",
+    "expected_reasoning": "Squared-speed propagation gives v_next\u00b2-v\u00b2=2*a*ds. A corner speed ceiling alone is insufficient: the car must brake early enough to reach it and accelerate out subject to its force bound. Check the closing segment as well as interior segments. Increasing acceleration capability need not improve a lap dominated by corner grip or braking. Explain the active constraint at the slowest and fastest segments.",
+    "claim_limit": "This synthetic circuit and simplified force envelope are not measured lap performance or driver validation."
+  },
+  {
+    "number": 23,
+    "task": "Preserve sector pairing and separate aero, tire and interaction effects in a setup comparison.",
+    "expected_reasoning": "The four baseline sectors sum to 116 s. Candidate-minus-baseline deltas must be paired by sector and sum to the lap delta. The declared aero, tire and interaction contributions must close that same delta. A shuffled sector pairing can leave a total unchanged while corrupting variability and explanation. Distinguish the 0.20 s decision threshold from uncertainty or a statistical significance claim.",
+    "claim_limit": "Deterministic sensitivities and sector variation are not repeated independent track trials or an empirically calibrated confidence interval."
+  },
+  {
+    "number": 24,
+    "task": "Trace the original digital-twin interface from drive force through motion to requirement residuals.",
+    "expected_reasoning": "Force divided by mass produces acceleration; time integration produces speed; wheel steering in radians produces yaw demand; friction bounds lateral acceleration. Missing degree conversion can be roughly a factor of 57.3 before saturation masks the error. Check speed, yaw and position residual requirements separately, then restore the exact nominal inputs. A requirement count must be reconstructed from its underlying residuals.",
+    "claim_limit": "This original integrated teaching model omits calibration and detailed subsystems; the broader executed synthetic integration is P67."
+  },
+  {
+    "number": 25,
+    "task": "Compare path, body and wheel velocity components while proving norm preservation and checking direction.",
+    "expected_reasoning": "A planar rotation preserves vx\u00b2+vy\u00b2 because R transpose times R is identity. Rotating a 10 m/s inertial x-vector into a frame turned 90 degrees gives approximately (0,-10) m/s under R(-psi). Norm preservation alone cannot expose using a degree value as radians: the wrong angle still makes an orthogonal matrix. Compare the actual expected components and inverse transform, not only the norm residual.",
+    "claim_limit": "These are planar rigid-frame transforms with declared headings, not full three-dimensional sensor alignment."
+  },
+  {
+    "number": 26,
+    "task": "Use concavity to predict the loss from unequal tire loading at fixed total normal load.",
+    "expected_reasoning": "Peak force is 1.25*3500*(Fz/3500)^n. With n=0.88, doubling Fz multiplies peak force by 2^0.88, about 1.84, so effective friction decreases. For equal tires carrying W/2 each, concavity gives f(W/2-T)+f(W/2+T) no greater than 2*f(W/2). The exponent-one broken mode removes that penalty. Read effective friction on its own axis and compare capacity losses in newtons.",
+    "claim_limit": "The empirical exponent is declared, not fitted to measured tire data; extrapolation to zero contact or extreme loads needs care."
+  },
+  {
+    "number": 27,
+    "task": "Identify longitudinal stiffness and peak friction from different regimes and reserve unused slip samples for validation.",
+    "expected_reasoning": "The low-slip slope identifies stiffness while saturated observations identify mu*Fz. A peak alone cannot identify the initial slope. Slip 0.10 is a ratio, not the numeric percent 10; confusing them changes the inferred scale by 100. Fit on the designated observations, then calculate unused-point residuals without refitting. Explain why a dataset entirely inside the linear region cannot independently identify a saturation peak.",
+    "claim_limit": "Piecewise clipping is a synthetic calibration target, not a smooth measured tire fit with parameter covariance."
+  },
+  {
+    "number": 28,
+    "task": "Show why slip-angle and camber excitation must be distinguishable to estimate two stiffnesses.",
+    "expected_reasoning": "The design matrix has columns alpha and gamma, both in radians, and force is C_alpha*alpha+C_gamma*gamma. If gamma is proportional to alpha, the columns lose rank and only a combination of stiffnesses is identifiable. One degree is pi/180 rad, so a 70000 N/rad coefficient predicts about 1221.73 N per degree in the uncapped linear region. Check held-out predictions and units for both coefficients.",
+    "claim_limit": "This linear superposition omits saturation, combined slip and temperature; low residual alone does not certify a tire."
+  },
+  {
+    "number": 29,
+    "task": "Derive the combined-slip projection and show why the two pure-slip maxima cannot generally coexist.",
+    "expected_reasoning": "Compute the unconstrained longitudinal and lateral forces first. If their norm exceeds mu*Fz, apply one common scale factor so their ratio is preserved. For equal requested components each at capacity, utilization is sqrt(2); correct projection reduces each to capacity/sqrt(2). The broken independent-channel result can look individually plausible while exceeding the shared contact budget. Compare both force components and the combined utilization.",
+    "claim_limit": "A friction circle is a bounded allocation model, not a validated friction ellipse or a transient brush model."
+  },
+  {
+    "number": 30,
+    "task": "Predict the tire force at one relaxation length and distinguish spatial from temporal response.",
+    "expected_reasoning": "The time constant is tau=lambda/v. At lambda=0.45 m and v=20 m/s, tau=0.0225 s. After traveling one relaxation length, a first-order step response reaches 1-exp(-1), about 63.2 percent of its final force. Doubling speed halves the time constant but leaves the distance constant unchanged. Treating lambda as seconds makes the result incorrectly insensitive to speed.",
+    "claim_limit": "This first-order relaxation model assumes constant speed and a fixed target force; it does not resolve contact-patch physics."
+  },
+  {
+    "number": 31,
+    "task": "Close tire heat balance and apply the gas law using absolute temperature and pressure.",
+    "expected_reasoning": "With C=15000 J/K and h=35 W/K, thermal time constant is C/h, about 428.57 s. A 900 W constant heat input approaches a 25.71 K temperature rise. Pressure scales with kelvin temperature, so 210 kPa at 293.15 K becomes 210*(T_C+273.15)/293.15 kPa. Celsius ratios can produce nonsense even if the plotted temperature is plausible. Separate the synthetic grip-temperature law from the thermodynamic ledger.",
+    "claim_limit": "Fixed volume, ideal gas and lumped cooling exclude carcass gradients, leakage, humidity and measured pressure/grip calibration."
+  },
+  {
+    "number": 32,
+    "task": "Derive dissipated slip power and close accumulated work against stored heat plus cooling.",
+    "expected_reasoning": "Longitudinal slip work rate is the magnitude of Fx*v*kappa; lateral slip work rate uses Fy*v*tan(alpha). Each is newtons times metres per second, hence watts. Integrate those rates over time and compare with C*(T-T0) plus rejected heat. Removing cooling from the temperature update while continuing to report it in the ledger double-counts energy removal. A nonnegative power trace alone cannot prove thermal closure.",
+    "claim_limit": "Constant forces and lumped heat capacity exclude changing grip, wear and spatial temperature fields."
+  },
+  {
+    "number": 33,
+    "task": "Distinguish residual containment from a conditional prediction interval and prove that validation rows were not fitted.",
+    "expected_reasoning": "In the one-parameter model y=theta*x+noise, theta_hat=sum(x*y)/sum(x\u00b2) on the training prefix only. With declared independent noise sigma, Var(theta_hat)=sigma\u00b2/sum(x_train\u00b2), and prediction variance at a held-out x is sigma\u00b2+x\u00b2*Var(theta_hat). The second term widens the predictive band beyond a residual-only 1.96*sigma threshold. Doubling sigma doubles interval widths. Record both containment fractions and the split; fitting validation rows and shrinking sigma changes two distinct assumptions.",
+    "claim_limit": "The fixture noise is deterministic and correlated. Gaussian conditional formulas do not establish empirical 95 percent coverage, nor include model-form error."
+  },
+  {
+    "number": 34,
+    "task": "Derive the two-state bicycle matrix from axle forces and verify its steady state by physical balances.",
+    "expected_reasoning": "Use beta_dot=(Fyf+Fyr)/(m*v)-r and r_dot=(a*Fyf-b*Fyr)/Iz. The -r term is essential even when tire forces are linear. At steady turn, zero state derivatives still require nonzero m*v*r lateral force. Changing the rear stiffness sign can produce unstable poles while a linear solver still returns numbers. Compare eigenvalues, the independently reconstructed force balance and the separately labeled sideslip and yaw-rate axes.",
+    "claim_limit": "This linear constant-speed system omits saturation and actuator/tire dynamics. Pole stability does not establish a large-steer maneuver's feasibility."
+  },
+  {
+    "number": 35,
+    "task": "Recover the zero-frequency limit and explain the Hz-to-rad/s factor in the complex response.",
+    "expected_reasoning": "Solve (j*omega*I-A)H=B with omega=2*pi*f. At f=0 this becomes H=-A inverse B, the steady gain. At 1 Hz, omega is 6.283185 rad/s, not 1 rad/s; confusing them shifts both magnitude and phase. Yaw-rate gain has units 1/s and sideslip gain is dimensionless, so they use separate axes. The complex residual uses beta/steer and a one-second-scaled yaw/steer coordinate before taking its norm.",
+    "claim_limit": "The frequency response assumes a linear time-invariant small-signal model; it does not include nonlinear limit handling or large-amplitude tire saturation."
+  },
+  {
+    "number": 36,
+    "task": "Classify the sign of the understeer gradient and test its singular boundary without treating a sentinel as a speed.",
+    "expected_reasoning": "For the declared axle loads, K=Wf/Cf-Wr/Cr. Increasing front stiffness reduces K; increasing rear stiffness raises K. When K is positive, characteristic speed is sqrt(g*L/K); when negative, the separate linear critical speed is sqrt(-g*L/K). At neutral steer neither is finite. The plot omits an unavailable characteristic-speed point and the metric exposes applicability. Near neutrality, large speed sensitivity reflects the denominator, not a reliable operating limit.",
+    "claim_limit": "These characteristic quantities belong to the linear model and do not imply tire feasibility, safe operation or global stability."
+  },
+  {
+    "number": 37,
+    "task": "Explain why a restoring static moment slope is insufficient, then test trim, both poles and an executed transient.",
+    "expected_reasoning": "A static moment slice holds yaw rate at an imposed value; it does not enforce beta_dot=0. A valid trim must simultaneously satisfy total lateral force=m*v*r and zero yaw moment. At r=0.2 rad/s and v=28 m/s, required total force is 8120 N, divided 4511.11 N front and 3608.89 N rear by moment balance. Evaluate the nonlinear effective slopes and both Jacobian eigenvalues only after checking trim validity. Compare the actual three-second trajectory and force utilization with the component slice; a domain cutoff is incomplete evidence, not recovery.",
+    "claim_limit": "Stability is local to a valid trim of a constant-speed small-body-angle model. No global recoverability, spin prediction or measured-car qualification follows."
+  },
+  {
+    "number": 38,
+    "task": "Derive wheel loads from the transferred amount and detect when a four-contact equilibrium becomes impossible.",
+    "expected_reasoning": "If T is the load moved, inner load is W/2-T and outer load W/2+T; their difference is 2T. Multiplying that difference by half-track gives T*track, the roll moment. Using +/-T/2 halves the moment and underestimates the load-sensitive capacity loss. First subtract geometric moment from total before distributing the elastic remainder. A negative requested inner load marks lift-off: the displayed capped capacity is only a bound and cannot close the original four-contact equilibrium.",
+    "claim_limit": "The model has no post-lift-off roll dynamics or changed contact geometry. A zero moment residual in the demanded ledger cannot override a nonzero contact-excess flag."
+  },
+  {
+    "number": 39,
+    "task": "Derive chassis modes from corner spring energy and interpret modal participation without mixing metres and radians.",
+    "expected_reasoning": "Corner displacement is z+x*theta+y*phi, so its energy contributes k*b*b transpose to stiffness with b=[1,x,y]. Solve K*phi=omega\u00b2*M*phi. A raw heave displacement cannot be compared directly with a pitch angle. Instead, modal kinetic-energy fractions are M_jj*phi_j\u00b2 divided by phi transpose M phi and sum to one. The residual and coupling use mass-weighted coordinates so force and moment units are not mixed. Deleting off-diagonal stiffness changes physical eigen residuals even if all frequencies remain positive.",
+    "claim_limit": "Three linear rigid-body modes exclude unsprung wheel hop, nonlinear dampers, frequency-dependent bushings and measured modal correlation."
+  },
+  {
+    "number": 40,
+    "task": "Translate a spatial road wavelength into excitation frequency and derive absolute body transmissibility.",
+    "expected_reasoning": "Road frequency is f=v/lambda and omega=2*pi*f. At 22 m/s over an 8 m wavelength, f=2.75 Hz and omega is about 17.2788 rad/s. For base excitation, H=(k+j*c*omega)/(k-m*omega\u00b2+j*c*omega); omitting the numerator's damper term changes the physical forcing. Body acceleration amplitude is omega\u00b2*abs(H)*road amplitude. Very slow excitation gives displacement ratio near one, not zero.",
+    "claim_limit": "This sprung-mass SDOF model excludes wheel-hop dynamics and tire contact; it does not establish a ride-comfort standard."
+  },
+  {
+    "number": 41,
+    "task": "Differentiate the digressive damper curve at zero and at large speed, and verify passivity over a cycle.",
+    "expected_reasoning": "The force is c_high*v+(7000-c_high)*v/(1+abs(v)/v_knee). Its initial slope is 7000 N s/m while the large-speed incremental slope approaches c_high. Force is odd and F*v is nonnegative for the allowed positive coefficients. Integrating power over the stated two-second velocity cycle gives dissipated energy in joules. Converting m/s to mm/s inside a coefficient already stated per m/s creates a thousand-fold velocity error.",
+    "claim_limit": "The smooth memoryless law omits hysteresis, temperature, gas force, cavitation and measured compression/rebound asymmetry."
+  },
+  {
+    "number": 42,
+    "task": "Separate geometric travel effects from force-induced compliance and carry units through wheel-rate conversion.",
+    "expected_reasoning": "At 25 mm and 3000 N, camber is -1-0.035*25-0.00004*3000=-1.995 deg. Toe is 0.10+0.004*25+0.00006*3000=0.38 deg. Motion ratio is 0.86, so wheel rate is 45000*0.86\u00b2=33282 N/m. The coefficients multiplying travel are per millimetre; dividing travel by 1000 without changing them corrupts geometry while leaving compliance unchanged. Use the two sweeps to separate those causes.",
+    "claim_limit": "These local affine kinematics/compliance maps are synthetic and do not solve a linkage or validate structural deflection."
+  },
+  {
+    "number": 43,
+    "task": "Show that anti geometry changes the path carrying pitch transfer rather than the total transfer itself.",
+    "expected_reasoning": "Total longitudinal transfer is m*a*h/L. The declared anti-dive fraction is 0.70*tan(angle)*L/h, while anti-squat omits the 0.70 brake-distribution factor. Geometric and spring-supported contributions must sum to total transfer even when a fraction exceeds one and the spring contribution changes sign. At 5 degrees, use tan(5*pi/180), not tan(5). Explain why changing height affects both the total demand and the anti percentage.",
+    "claim_limit": "These side-view force-line approximations omit suspension motion, force migration and transient pitch; anti percentage is not a braking-capacity gain."
+  },
+  {
+    "number": 44,
+    "task": "Calculate wheel force and road speed at one engine operating point, then identify the active traction constraint.",
+    "expected_reasoning": "At 5000 rpm the declared torque map gives 218.5 N m. With gear 3.2, final drive 4.1, efficiency 0.92 and radius 0.31 m, available wheel force is about 8507.69 N. Driven-tire capacity is 1.15*1450*9.81*0.45, about 7361.18 N, so delivered force is capped. Raising gearing can increase available force without increasing delivered force in this regime. Check utilization and rpm-to-speed conversion together.",
+    "claim_limit": "The fixed driven-axle load omits longitudinal transfer and differential effects. It is not a complete launch simulation."
+  },
+  {
+    "number": 45,
+    "task": "Derive reflected inertia from kinetic energy and distinguish a censored target time from a completed launch.",
+    "expected_reasoning": "If engine-side angular speed is G*v/r, its kinetic energy is J*(G*v/r)\u00b2/2, giving equivalent mass J*(G/r)\u00b2. Wheel inertias contribute separately as sum(Jw/r\u00b2). The squared ratio is essential: inverse gearing can make acceleration look unrealistically high. Compare drive work, road-loss work and total translational-plus-rotating energy; the finite Euler step leaves a discretization residual. If speed never reaches 27.78 m/s, the horizon value is censored and the reached flag is false.",
+    "claim_limit": "Constant torque, fixed gear and a lumped reflected mass omit engine-speed limits, clutch dynamics and gear changes."
+  },
+  {
+    "number": 46,
+    "task": "Compare open and biased differential force allocation under separate wheel capacities and one total demand.",
+    "expected_reasoning": "With 3200 N per wheel and left mu=0.35, the left capacity is 1120 N. The open differential supplies at most 2240 N total. A bias ratio of four requests 4480 N on the right, but right capacity is only 1.15*3200=3680 N; the capped total is therefore 4800 N. Unlimited multiplication would exceed the high-grip contact. Check both wheel constraints and total demand rather than assuming the bias ratio is always achieved.",
+    "claim_limit": "This quasi-static allocation has no preload, speed-sensitive locking, axle compliance or wheel-speed dynamics."
+  },
+  {
+    "number": 47,
+    "task": "Explain gear selection at a shared road speed and account for resistance during torque interruption.",
+    "expected_reasoning": "For each gear compute rpm=v*G*final_drive*60/(2*pi*r), reject rpm outside 1500\u20137000, and compare valid wheel forces. A shift sets drive force to zero for the declared delay, but rolling and aerodynamic resistance still decelerate the car. At 20 m/s the declared resistance is 180+0.38*400=332 N, giving -0.22897 m/s\u00b2 for 1450 kg during interruption. Compare the full speed history and redline excess, not just the target time.",
+    "claim_limit": "This greedy force-based strategy is not a globally optimal shift schedule, and the simulation starts at 5 m/s. A horizon target-time value is censored unless the reached flag is true."
+  },
+  {
+    "number": 48,
+    "task": "Calculate the requested-deceleration axle loads and explain why a clipped result is only a conditional allocation.",
+    "expected_reasoning": "Front load is static front weight plus m*a*h/L; rear loses the same amount. Ideal force fraction equals front dynamic load divided by mg if both axles share the same friction coefficient. Clipping front and rear brake requests separately can produce an achieved deceleration below the requested one. The displayed loads were computed from the request, so this one-pass study is not a self-consistent solution using the lower achieved acceleration. Diagnose the broken static-load allocation with axle utilization.",
+    "claim_limit": "Do not treat the conditional allocation as a full braking equilibrium or ABS controller. Re-solving load transfer with achieved acceleration would be a separate coupled model."
+  },
+  {
+    "number": 49,
+    "task": "Derive brake torque from slip-rate control and identify the low-speed boundary of the simulation.",
+    "expected_reasoning": "With slip=1-r*omega/v, differentiate using wheel torque balance J*omega_dot=r*Fx-Tb and vehicle deceleration -Fx/m. The controller chooses torque to drive slip toward its target, subject to the requested-torque ceiling. Here target_slip also locates the synthetic tire-force peak, so sweeping it changes plant and controller together; it is not an independent target-optimization experiment. The wheel-speed projection at zero introduces a reaction not captured by the free wheel equation.",
+    "claim_limit": "The 0.1 m/s floor and four-second horizon preclude interpreting accumulated distance as an exact physical stopping distance. Above-2-m/s diagnostics are distinct from low-speed behavior."
+  },
+  {
+    "number": 50,
+    "task": "Close each repeated-stop heat increment and derive the cooling recurrence before discussing fade.",
+    "expected_reasoning": "A 450 kJ stop deposits 0.75*450=337.5 kJ into a 45000 J/K lump, raising it by 7.5 K before cooling. Between stops, excess temperature decays toward ambient with time constant C/h. Sum absorbed heat, stored heat and rejected heat over all six stops. The fade factor follows peak temperature; final cooled temperature can hide that peak. The broken mode reports rejected heat without removing it from storage, so its energy ledger cannot close.",
+    "claim_limit": "The empirical fade law is evaluated from temperature but does not feed back into the stop energy or distance. This is a thermal study, not coupled brake-performance qualification."
+  },
+  {
+    "number": 51,
+    "task": "Predict how ride height shifts aero balance while speed changes all force magnitudes.",
+    "expected_reasoning": "At 80 mm, front coefficient is 0.58 and rear 0.72, so front balance is 0.58/1.30, about 44.62 percent. Dynamic pressure times area scales both with v\u00b2. The pitch moment is rear force*1.5-front force*1.2; balance percentage alone does not determine its sign without lever arms. A millimetre value used as metres can yield absurd coefficients even though the v\u00b2 scaling remains intact.",
+    "claim_limit": "The affine ride-height map has no stall, ground-contact, pitch or wind dynamics and is not measured aerodynamics."
+  },
+  {
+    "number": 52,
+    "task": "Identify whether grip, power, energy or the declared thermal proxy limits the operating point.",
+    "expected_reasoning": "Tractive force is min(tire capacity,210000/v); acceleration subtracts drag before dividing by mass. At fixed speed, more energy increases energy-limited laps until the thermal-lap proxy becomes active. Downforce raises normal load once, with a sublinear load exponent; counting it twice inflates capacity. Per-lap energy includes 3.60 MJ plus drag times 4200 m. Acceleration and lap-count errors are scaled by 1 m/s\u00b2 and 1 lap before combining into a dimensionless diagnostic.",
+    "claim_limit": "The thermal-lap expression is an empirical teaching proxy, not an integrated temperature model. P50 and P67 provide different, explicitly bounded thermal ledgers."
+  },
+  {
+    "number": 53,
+    "task": "Verify transport identity separately from engineering-value decoding and keep unlike channels on separate axes.",
+    "expected_reasoning": "The BLE payload starts with the CAN identifier encoded little-endian, followed by the original data bytes. The engine-speed field inside those bytes is big-endian with its own rpm/count scale; transport and signal byte orders need not match. Byte-for-byte parity can therefore pass while a signal decoder is wrong. Engine residuals are divided by 1 rpm and wheel-speed residuals by 1 km/h before their dimensionless RMS is combined.",
+    "claim_limit": "The fixture explicitly declares synthetic provenance. Correct replay does not establish live GR86 bus access, measured behavior or coverage of every identifier."
+  },
+  {
+    "number": 54,
+    "task": "Apply the known clock offset before interpolation and quantify the gaps created by drops.",
+    "expected_reasoning": "Source time equals reference time plus the declared offset. At 12 ms, subtract 0.012 s before resampling; this example applies a known offset rather than estimating it from data. The base period is 20 ms and an isolated missing interior sample creates a 40 ms interpolation span. Record maximum gap and interpolation error separately. Endpoint extension by the interpolator is not a new measurement.",
+    "claim_limit": "There is no clock drift estimation, latency distribution or anti-alias filtering here. P66 adds explicit synchronization markers for an affine clock fit."
+  },
+  {
+    "number": 55,
+    "task": "Invert sensor bias and scale before rotating to body axes, and explain why norm closure alone is insufficient.",
+    "expected_reasoning": "The forward sensor model scales R(-angle)*truth and then adds sensor bias. Inversion must subtract bias and divide channelwise by scale before applying R(angle). With the declared truth, corrected body acceleration returns (1.20,4.50) m/s\u00b2 and corrected yaw returns 12 deg/s. A wrong rotation angle still preserves norm, so compare direction and truth residual too. Mixed acceleration and yaw errors use declared 1 m/s\u00b2 and 1 deg/s scales.",
+    "claim_limit": "Known synthetic calibration constants are applied, not identified from a real calibration campaign; uncertainty and three-dimensional gravity alignment are omitted."
+  },
+  {
+    "number": 56,
+    "task": "Trace heading integration and explain the sample-time factor in position correction.",
+    "expected_reasoning": "Yaw rate in degrees/s is converted to radians/s before multiplying by 0.05 s. Position prediction uses the previous heading and speed. The correction is gps_blend*dt*(GPS-prediction), so gps_blend acts as a rate in 1/s and its per-sample weight at 0.12 is 0.006. Changing the sample rate without retaining dt would change the observer. Separate integrated speed path length from the length of the GPS-corrected position curve.",
+    "claim_limit": "This fixed-gain synthetic reconstruction is not a Kalman estimate or a calibrated GPS/IMU uncertainty model; deterministic perturbations are not measured GPS noise."
+  },
+  {
+    "number": 57,
+    "task": "Derive fixed-gain covariance propagation and distinguish a conditional uncertainty calculation from empirical error.",
+    "expected_reasoning": "In normalized coordinates [beta/(1 rad),r/(1 rad/s),bias/(1 rad)], prediction is Pminus=F*P*F transpose+Q. For fixed gain L and direct measurements, posterior is (I-L)*Pminus*(I-L) transpose+L*R*L transpose. Both plant propagation and measurement noise are necessary; shrinking P only by I-L is not a covariance update. Increasing noise must increase the conditional posterior even if the chosen gain is unchanged. Compare state histories and actual truth error separately.",
+    "claim_limit": "L is a user-selected fixed gain, not an optimal Kalman gain. The correlated deterministic fixture does not satisfy the independent-noise assumptions of the conditional covariance, and the sign fault adds unmodeled bias."
+  },
+  {
+    "number": 58,
+    "task": "Prove that later observations cannot change a fit computed only from the training prefix.",
+    "expected_reasoning": "With 80 samples and training fraction 0.65, the first 52 rows estimate two stiffnesses and 28 rows remain unused until validation. Solve the two-column least-squares problem on that prefix and retain its parameter vector before examining later residuals. Perturb only held-out force observations: training coefficients and training error must remain unchanged while validation error may change. The broken mode leaks all rows into fitting and substitutes training error for validation error.",
+    "claim_limit": "A chronological synthetic split is stronger than in-sample fit but does not establish generalization across real tires, roads or operating regimes."
+  },
+  {
+    "number": 59,
+    "task": "Audit singular values, residual correlation and conditional uncertainty before interpreting parameter accuracy.",
+    "expected_reasoning": "Scaling every excitation by c scales singular values by c and parameter standard deviations by 1/c at fixed force-noise sigma; the condition number need not change. Compute covariance through the SVD of X, not an inverse of X transpose X that squares conditioning. The displayed truth-containment fraction counts only two known synthetic coefficients, so it can be 0, 0.5 or 1; it is not repeated-trial 95 percent coverage. Correlated residuals challenge the independent-noise covariance assumption.",
+    "claim_limit": "Full rank and narrow conditional intervals do not remove model-form error, noise correlation or inadequate real-world excitation."
+  },
+  {
+    "number": 60,
+    "task": "Classify missing, duplicate, inverted and malformed records before deciding what can actually be recovered.",
+    "expected_reasoning": "Dropping sequence 37 and truncating 89 create two unusable expected records in the full fixture; a duplicate at 52 and inversion at 71/72 are different faults. Deduplicate and sort only valid records, and enforce the declared reordering window. Recovery means a valid ordered subset, not inventing the missing payloads. Compare record identities and payload lengths with the nominal fixture, then replay the same diagnosis after reset.",
+    "claim_limit": "Known nominal lengths and a deterministic fault plan make this an auditable protocol exercise, not a general live-stream intrusion detector or proof of lossless recovery."
+  },
+  {
+    "number": 61,
+    "task": "Check ellipse curvature analytically and distinguish chord-length convergence from exact arc length.",
+    "expected_reasoning": "For a=60 m and b=36 m, curvature at theta=0 is a/b\u00b2=0.0462963 1/m; at pi/2 it is b/a\u00b2=0.01 1/m. Curvature integrated around a closed convex curve tends to 2*pi, while polygonal chord length approaches the smooth perimeter as sampling increases. Retain the closure gap and refinement error. A partial 1.8*pi traversal cannot claim full-lap closure merely because its points lie on the ellipse.",
+    "claim_limit": "This flat analytic track omits survey uncertainty, banking, elevation, width and obstacles."
+  },
+  {
+    "number": 62,
+    "task": "Construct the feasible acceleration envelope from tire-force and engine-power constraints at the same speed.",
+    "expected_reasoning": "Total force capacity is mu*(mg+downforce). For a requested direction, compute Fx and Fy, then cap positive Fx by P/v while preserving the already-declared lateral component. The resulting point must satisfy the shared tire norm and power limit. At v=45 m/s a 210 kW power ceiling corresponds to 4666.67 N before drag. Subtract drag only when converting force to acceleration, and distinguish propulsion from braking.",
+    "claim_limit": "The envelope uses a simplified aggregate tire bound and fixed aero coefficients; it is not a transient maneuver or a calibrated four-wheel model."
+  },
+  {
+    "number": 63,
+    "task": "Derive offset-curve curvature and audit both geometric feasibility and the optimization objective.",
+    "expected_reasoning": "For constant offset d, ds_offset=(1-d*kappa)*ds and kappa_offset=kappa/(1-d*kappa). The same denominator changes both length and curvature, so adjusting only one is inconsistent. Require positive offset Jacobian and the declared width bound. Compare time with time+penalty*d\u00b2; the penalty has units s/m\u00b2. A finite scalar search over offsets is not a general spatially varying racing-line optimizer.",
+    "claim_limit": "Track smoothness, vehicle width, linked transient steering and obstacle constraints are outside this constant-offset study."
+  },
+  {
+    "number": 64,
+    "task": "Close every periodic segment's force and energy ledger, including the final segment back to the first.",
+    "expected_reasoning": "Segment force is m*(v_next\u00b2-v\u00b2)/(2*ds)+drag+rolling resistance. Check traction, power, braking and lateral reserve at each segment. Available energy must at least cover rolling resistance times track length; below that floor the model must report infeasibility rather than a zero-speed successful lap. Distinguish propulsive work from brake heat and count downforce only where actually modeled. A uniform squared-speed scaling can enforce an energy budget but still needs the force bounds rechecked.",
+    "claim_limit": "The discrete synthetic lap uses prescribed force reserves and a lumped adiabatic brake temperature, not a validated optimal-control or fade-coupled model."
+  },
+  {
+    "number": 65,
+    "task": "Recover factorial main and interaction effects and test genuinely unused setup combinations.",
+    "expected_reasoning": "For T=90-2*a*x1-3*t*x2-1.2*a*t*x1*x2, changing coded x1 from -1 to +1 changes the averaged response by -4*a seconds. The difference-in-differences is -4.8*a*t seconds. Omitting the interaction can fit some comparisons while failing others. Fit on the four corners, then evaluate the separate unused points without refitting. Distinguish fitted coefficients from time-reduction effects with their factor-of-two and factor-of-four conventions.",
+    "claim_limit": "The response surface is a declared synthetic law; it is not a causal conclusion from randomized real track tests."
+  },
+  {
+    "number": 66,
+    "task": "Trace a telemetry requirement from exact bytes through synchronization, calibration, reconstruction and untouched validation.",
+    "expected_reasoning": "Establish CAN/BLE payload identity before decoding, then fit clock rate/offset from the three explicit synchronization pairs. Apply the separate speed gain/bias calibration and yaw-bias correction before trajectory reconstruction. The force channel is synthetic 1450*a+0.45*v\u00b2+2*sin(0.9*i), not a claim about the fixture's IMU channel. Freeze the chronological fitting prefix before computing held-out residuals. For every passing requirement, identify its actual residual or event evidence and reproduce the injected fault and deterministic recovery.",
+    "claim_limit": "Redundant CAN bytes enable the declared BLE recovery; missing both sources would not be recoverable by this mechanism. No measured vehicle, manual screen-reader, learner or hardware acceptance is implied."
+  },
+  {
+    "number": 67,
+    "task": "Defend the digital twin's complete interface ledger and explain what its uncertainty envelope does and does not mean.",
+    "expected_reasoning": "Fit stiffness and friction from separate synthetic linear/saturated samples and check the unused tire samples. Trace calibrated forces through individual wheel loads, gear selection, cyclic acceleration/braking and lap time. The 0.8 lateral and 0.6 longitudinal reserve fractions satisfy 0.8\u00b2+0.6\u00b2=1; neither reserve is independently available in full. Check minimum wheel load, load sum, power, brake and combined-grip bounds on every segment. Execute both friction endpoints to obtain a scenario envelope, and reject the double-downforce fault from the physical load ledger.",
+    "claim_limit": "Nine constant-offset paths and a 96-segment lap are a bounded discrete design search. The endpoint envelope is not a confidence interval; brake temperature is adiabatic without fade feedback, and no real GR86 performance or safety claim follows."
+  }
+]

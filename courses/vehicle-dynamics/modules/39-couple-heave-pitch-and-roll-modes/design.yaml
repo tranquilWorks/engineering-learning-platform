@@ -10,21 +10,25 @@ governing_equations:
 - K=sum_i k_i q_i q_i^T
 - K phi=lambda M phi
 - f_n=sqrt(lambda)/(2 pi)
+- modal_energy_fraction_j=M_jj phi_j^2/(phi^T M phi); sum_j fraction_j=1
+- A=M^(-1/2) K M^(-1/2); relative_residual=norm(Aq-omega^2 q)/norm(Aq)
 signature:
 - field: first_natural_frequency
-  unit: "Hz"
+  unit: Hz
 - field: second_natural_frequency
-  unit: "Hz"
+  unit: Hz
 - field: third_natural_frequency
-  unit: "Hz"
+  unit: Hz
 - field: stiffness_coupling_ratio
-  unit: "1"
+  unit: '1'
 - field: maximum_eigen_residual
-  unit: "1"
-teaching_invariant: Every reported coupled mode must satisfy the full physical generalized eigen-equation, including the off-diagonal terms created by corner geometry and rate asymmetry.
+  unit: '1'
+teaching_invariant: Every reported coupled mode must satisfy the full physical generalized eigen-equation,
+  including the off-diagonal terms created by corner geometry and rate asymmetry.
 limiting_cases:
 - With perfectly symmetric front and rear corner pairs, roll decouples from heave and pitch.
-- If all corner rates scale together, frequencies scale with the square root of that factor while mode shapes are retained.
+- If all corner rates scale together, frequencies scale with the square root of that factor while mode
+  shapes are retained.
 scenarios:
   baseline:
     front_spring_rate_n_m: 42000
@@ -54,4 +58,6 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software and synthetic parameters only; no source or MATLAB equivalence, measured damper, suspension, rig, track, or vehicle result, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic Python software and synthetic parameters only; no source or MATLAB equivalence,
+  measured damper, suspension, rig, track, or vehicle result, learner, browser/accessibility, physical
+  HIL/hardware, certification, release, deployment, or production claim.

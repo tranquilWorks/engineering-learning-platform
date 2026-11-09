@@ -1,3 +1,39 @@
+# P13 course checkpoint
+
+## Predict and derive
+
+Trace engine torque through gearing to wheel force and distinguish available from delivered power.
+
+Use the governing relations below and state the frame, sign convention and units before substituting numbers. Derive a baseline or limiting prediction and identify which plotted quantity could disprove it.
+
+- `Shaft-power and traction-limited work formulation, inverted to delivered force and torque`
+
+## Controlled comparison
+
+- `engine_torque_n_m`: 250.0 → 80.0. Hold the other controls at baseline; predict and explain the change before executing.
+- `gear_ratio`: 3.0 → 4.2. Hold the other controls at baseline; predict and explain the change before executing.
+
+Record the parameter values, prediction and observed change for each comparison. If a quantity does not change, explain whether it is an invariant, an inactive parameter in this regime, or evidence of a defect.
+
+## Diagnose and recover
+
+Enable the named failure with the numeric controls unchanged. Identify the first violated assumption from the actual trace or event evidence, rather than only the mode label. Restore healthy mode and verify deterministic return to the same baseline. Keep the failing trace beside the recovered trace.
+
+## Expected reasoning
+
+At wheel radius r, available force is engine torque times gear and final-drive ratios times efficiency divided by r. Wheel power equals delivered force times road speed; if tire capacity clips force, available engine power is not all delivered as translational power. Increasing ratio raises wheel force but reduces road speed at a fixed engine speed. Retain both mechanical conversion and traction constraints in the ledger.
+
+A complete answer connects a numerical value to the governing relation, distinguishes the controlled comparisons, and explains the fault and recovery through an observable mechanism. An unexplained success metric is insufficient evidence.
+
+## Limits and handoff
+
+This bounded driveline study does not resolve clutch slip, engine transients or tire heating.
+
+Competency links: VD-POWERTRAIN. Carry the prediction, two comparisons, failure diagnosis and recovery evidence into the linked cumulative portfolio. No learner completion or score is inferred by the software; this is an authored assessment for a learner or reviewer to perform.
+
+
+# Retained scoped evidence task
+
 # P13 evidence task
 
 ## Prediction and baseline calculation

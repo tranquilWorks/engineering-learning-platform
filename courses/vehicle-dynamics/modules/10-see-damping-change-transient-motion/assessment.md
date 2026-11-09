@@ -1,3 +1,39 @@
+# P10 course checkpoint
+
+## Predict and derive
+
+Predict damping regime, natural frequency and the transient's long-time value before reading the response.
+
+Use the governing relations below and state the frame, sign convention and units before substituting numbers. Derive a baseline or limiting prediction and identify which plotted quantity could disprove it.
+
+- `Independent state-transition matrix exponential and eigenvalues`
+
+## Controlled comparison
+
+- `damping_n_s_m`: 3200.0 → 400.0. Hold the other controls at baseline; predict and explain the change before executing.
+- `spring_rate_n_m`: 35000.0 → 70000.0. Hold the other controls at baseline; predict and explain the change before executing.
+
+Record the parameter values, prediction and observed change for each comparison. If a quantity does not change, explain whether it is an invariant, an inactive parameter in this regime, or evidence of a defect.
+
+## Diagnose and recover
+
+Enable the named failure with the numeric controls unchanged. Identify the first violated assumption from the actual trace or event evidence, rather than only the mode label. Restore healthy mode and verify deterministic return to the same baseline. Keep the failing trace beside the recovered trace.
+
+## Expected reasoning
+
+For m*z''+c*z'+k*z=input, omega_n=sqrt(k/m) and zeta=c/(2*sqrt(k*m)). Increasing c changes damping and decay, not the undamped natural frequency. At critical damping the repeated-root solution remains finite; it is not obtained by dividing by zero in an underdamped formula. Check initial conditions, the declared forcing and the static limit alongside overshoot.
+
+A complete answer connects a numerical value to the governing relation, distinguishes the controlled comparisons, and explains the fault and recovery through an observable mechanism. An unexplained success metric is insufficient evidence.
+
+## Limits and handoff
+
+A single-degree-of-freedom sprung-mass model cannot establish tire contact or full-car ride comfort.
+
+Competency links: VD-RIDE-SUSPENSION. Carry the prediction, two comparisons, failure diagnosis and recovery evidence into the linked cumulative portfolio. No learner completion or score is inferred by the software; this is an authored assessment for a learner or reviewer to perform.
+
+
+# Retained scoped evidence task
+
 ## P10 evidence task
 
 At k = 35000 N/m compare the default c = 3200 with accessible slider settings just below and above the calculated critical value 6480.74 N·s/m, and with 8000 N·s/m. The stepped slider cannot select that exact critical value: classify the selected settings from ζ and describe the exact repeated-pole case algebraically. Explain the curve shapes. Activate negative damping at each selected setting and use the sign of dE/dt to justify instability. State what the displayed four-time-constant metric does and does not establish.

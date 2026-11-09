@@ -11,18 +11,20 @@ governing_equations:
 - r_i=y_i-theta_hat*x_i
 - z_i=r_i/sigma
 - coverage=mean(|z_i|<=1.96)
+- Var(theta_hat)=sigma^2/sum(x_train^2); Var(y_new)=sigma^2+x_new^2 Var(theta_hat)
 signature:
 - field: fitted_force_scale
-  unit: "1"
+  unit: '1'
 - field: validation_bias
   unit: N
 - field: validation_rmse
   unit: N
-- field: prediction_interval_coverage
-  unit: "1"
+- field: residual_only_containment
+  unit: '1'
 - field: maximum_normalized_residual
-  unit: "1"
-teaching_invariant: Model fitting uses training rows only, and held-out residual coverage is interpreted against the same declared observation uncertainty.
+  unit: '1'
+teaching_invariant: Model fitting uses training rows only, and held-out residual coverage is interpreted
+  against the same declared observation uncertainty.
 limiting_cases:
 - With zero residual every held-out point is covered by any positive interval.
 - As declared uncertainty shrinks, normalized residual magnitude grows for unchanged observations.
@@ -55,4 +57,6 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software and synthetic observations only; no source or MATLAB equivalence, measured tire or vehicle, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic Python software and synthetic observations only; no source or MATLAB equivalence,
+  measured tire or vehicle, learner, browser/accessibility, physical HIL/hardware, certification, release,
+  deployment, or production claim.

@@ -149,7 +149,8 @@ def test_reviewed_course_dispositions_keep_inventory_separate_from_maturity() ->
             assert dimension["finding"].strip()
         assert review["maturity"]["curriculum_covered"]["status"] == (
             "passed"
-            if review["course_id"] in {"dsp-radar", "controls-gnc", "robotics-autonomy"}
+            if review["course_id"]
+            in {"dsp-radar", "controls-gnc", "robotics-autonomy", "vehicle-dynamics"}
             else "blocked"
         )
         for stage in review["maturity"].values():
@@ -176,12 +177,12 @@ def test_follow_up_ownership_and_current_maturity_are_exact() -> None:
     assert reviews["robotics-autonomy"]["maturity"]["learner_validated"]["status"] == ("not_run")
 
 
-def test_vehicle_dynamics_next_performance_batch_hold_is_explicit_and_complete() -> None:
+def test_vehicle_aggregate_acceptance_retains_learner_boundary() -> None:
     holds = _status()["holds"]
     assert holds == []
     review = _review_by_id(_status())["vehicle-dynamics"]
-    assert review["maturity"]["curriculum_covered"]["status"] == "blocked"
-    assert review["maturity"]["capstone_integrated"]["status"] == "blocked"
+    assert review["maturity"]["curriculum_covered"]["status"] == "passed"
+    assert review["maturity"]["capstone_integrated"]["status"] == "passed"
     assert review["maturity"]["learner_validated"]["status"] == "not_run"
 
 

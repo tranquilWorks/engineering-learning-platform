@@ -1,3 +1,39 @@
+# P02 course checkpoint
+
+## Predict and derive
+
+Reconstruct the signed force ledger before computing longitudinal acceleration.
+
+Use the governing relations below and state the frame, sign convention and units before substituting numbers. Derive a baseline or limiting prediction and identify which plotted quantity could disprove it.
+
+- `Signed force vector sum and Newton balance`
+
+## Controlled comparison
+
+- `tractive_force_n`: 4200.0 → 0.0. Hold the other controls at baseline; predict and explain the change before executing.
+- `speed_mps`: 20.0 → 55.0. Hold the other controls at baseline; predict and explain the change before executing.
+
+Record the parameter values, prediction and observed change for each comparison. If a quantity does not change, explain whether it is an invariant, an inactive parameter in this regime, or evidence of a defect.
+
+## Diagnose and recover
+
+Enable the named failure with the numeric controls unchanged. Identify the first violated assumption from the actual trace or event evidence, rather than only the mode label. Restore healthy mode and verify deterministic return to the same baseline. Keep the failing trace beside the recovered trace.
+
+## Expected reasoning
+
+Apply m*a=tractive force minus drag, rolling resistance and the declared grade term. Each term is newtons; dividing only the final signed sum by kilograms gives m/s². Doubling speed multiplies quadratic drag by four, not two. A request smaller than resistance implies deceleration, not negative mass or a force-unit conversion. Compare the physical ledger with the broken result and identify the first omitted or mis-signed term.
+
+A complete answer connects a numerical value to the governing relation, distinguishes the controlled comparisons, and explains the fault and recovery through an observable mechanism. An unexplained success metric is insufficient evidence.
+
+## Limits and handoff
+
+Constant coefficients and a lumped mass do not identify a real coastdown curve or model wheel slip.
+
+Competency links: VD-MOTION-FRAMES, VD-FORCE-BALANCE. Carry the prediction, two comparisons, failure diagnosis and recovery evidence into the linked cumulative portfolio. No learner completion or score is inferred by the software; this is an authored assessment for a learner or reviewer to perform.
+
+
+# Retained scoped evidence task
+
 ## P02 evidence task
 
 At 20 m/s, calculate the traction request for zero acceleration. Compare the nominal and road-load-omission results at that request. Repeat the force accounting at 40 m/s, keeping the request fixed. Explain the sign of acceleration in each case and the limitation of the zero-speed endpoint.

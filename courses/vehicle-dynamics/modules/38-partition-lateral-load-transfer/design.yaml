@@ -10,18 +10,20 @@ governing_equations:
 - M_roll=m a_y h
 - Delta F_z,f t_f+Delta F_z,r t_r=M_roll
 - M_elastic=M_roll-M_geometric
+- Fz_inner=W/2-T; Fz_outer=W/2+T; T*track=M; four-contact domain |T|<=W/2
 signature:
 - field: front_lateral_load_transfer
-  unit: "N"
+  unit: N
 - field: rear_lateral_load_transfer
-  unit: "N"
+  unit: N
 - field: geometric_roll_moment_fraction
-  unit: "1"
+  unit: '1'
 - field: roll_moment_closure_residual
-  unit: "N*m"
+  unit: N*m
 - field: front_pair_capacity_loss
-  unit: "N"
-teaching_invariant: Front and rear geometric plus elastic transfer must reconstruct exactly one total roll moment before tire load sensitivity is evaluated.
+  unit: N
+teaching_invariant: Front and rear geometric plus elastic transfer must reconstruct exactly one total
+  roll moment before tire load sensitivity is evaluated.
 limiting_cases:
 - At zero lateral acceleration every transfer contribution and capacity loss tends to zero.
 - With all elastic stiffness assigned to one axle, geometric transfer still remains at both axles.
@@ -54,4 +56,6 @@ independent_reference:
 tolerance:
   absolute: 1.0e-08
   relative: 1.0e-08
-claim_boundary: Deterministic Python software and synthetic parameters only; no source or MATLAB equivalence, measured damper, suspension, rig, track, or vehicle result, learner, browser/accessibility, physical HIL/hardware, certification, release, deployment, or production claim.
+claim_boundary: Deterministic Python software and synthetic parameters only; no source or MATLAB equivalence,
+  measured damper, suspension, rig, track, or vehicle result, learner, browser/accessibility, physical
+  HIL/hardware, certification, release, deployment, or production claim.

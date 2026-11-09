@@ -72,6 +72,11 @@ def test_forbidden_sources_other_courses_and_runtime_preserved():
         f"courses/robotics-autonomy/{p}"
         for p in ["course.yaml", "source-map.yaml", "fidelity-map.yaml", "conversion-manifest.yaml"]
     ]
+    active = yaml.safe_load((ROOT/"contracts/active-batch.yaml").read_text())
+    if active["batch"]["id"] == "ELP-VEHICLE-AGGREGATE-QUALITY-01":
+        assert active["sources"]["baseline_commit"] == "9c27f567399cf2fcb9728fb104b2d573fcac5652"
+        paths.remove("courses/vehicle-dynamics")
+        # The Vehicle successor pins all Robotics bytes to this accepted merge.
     assert not subprocess.check_output(["git", "diff", BASELINE, "--", *paths], cwd=ROOT)
     for n in range(1, 25):
         folder = next((COURSE / "modules").glob(f"{n:02d}-*"))

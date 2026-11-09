@@ -209,7 +209,12 @@ def test_vehicle_native_reference_has_no_production_execution_path() -> None:
         if isinstance(node, ast.Import):
             assert all(alias.name.split(".")[0] in allowed_imports for alias in node.names)
         if isinstance(node, ast.ImportFrom):
-            assert (node.module or "").split(".")[0] in allowed_imports
+            if node.module == "scipy.integrate":
+                assert {a.name for a in node.names} == {"solve_ivp"}
+            elif node.module == "scipy.linalg":
+                assert {a.name for a in node.names} == {"eigh"}
+            else:
+                assert (node.module or "").split(".")[0] in allowed_imports
         if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
             assert node.func.id not in forbidden_calls
     doc = ast.get_docstring(tree, clean=True) or ""
@@ -261,7 +266,10 @@ def test_vehicle_native_plots_use_quantity_specific_axes_and_units() -> None:
         root = COURSE_ROOT / item["folder"]
         module_id = _yaml(root / "module.yaml")["id"]
         result = runtime.run("vehicle-dynamics", module_id, {}).model_dump(mode="json")
-        assert set(result["plots"]) == {"response", "mechanism"}
+        expected_plots = {"response", "mechanism"}
+        if item["id"] == "P37":
+            expected_plots |= {"state_history", "dynamic_utilization"}
+        assert set(result["plots"]) == expected_plots
         for plot in result["plots"].values():
             for axis in ("xaxis", "yaxis"):
                 title = plot["layout"][axis]["title"]["text"]

@@ -47,7 +47,7 @@ def _trace(
 
 
 def _plot(title: str, x_title: str, y_title: str, traces: list[dict[str, Any]]) -> dict[str, Any]:
-    return {
+    result = {
         "data": traces,
         "layout": {
             "title": {"text": title, "x": 0.02},
@@ -60,6 +60,17 @@ def _plot(title: str, x_title: str, y_title: str, traces: list[dict[str, Any]]) 
         },
         "config": {"responsive": True, "displaylogo": False},
     }
+    # Course-owned layout: keep engineering labels readable in narrow plot panels.
+    from textwrap import fill
+    layout = result["layout"]
+    layout["title"] = {"text": fill(title, width=30).replace("\n", "<br>"), "x": 0.02, "font": {"size": 14}}
+    layout["legend"] = {"orientation": "h"}
+    layout.setdefault("margin", {"l": 72, "r": 36, "t": 62, "b": 110})
+    for axis in ("xaxis", "yaxis"):
+        layout[axis]["automargin"] = True
+        if isinstance(layout[axis].get("title"), dict):
+            layout[axis]["title"]["standoff"] = 12
+    return result
 
 
 def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
@@ -143,7 +154,7 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
             ("usable_acceleration", "Usable acceleration", signature[2], "m/s^2"),
             ("lap_energy", "Lap energy", signature[3], "MJ"),
             ("stint_laps", "Predicted stint", signature[4], "lap"),
-            ("coupling_residual", "Coupling residual", signature[5], "1"),
+            ("coupling_residual", "Scaled coupling residual (1 m/s², 1 lap)", signature[5], "1"),
         ],
         "plots": {
             "response": _plot(
@@ -204,4 +215,10 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
 def run(parameters: dict[str, Any]) -> dict[str, Any]:
     values = _parameters(parameters)
     broken = bool(parameters.get("broken_mode", False))
-    return _result(_model(values, broken), broken)
+    result = _result(_model(values, broken), broken)
+    plot = result["plots"]["mechanism"]
+    plot["data"][1]["yaxis"] = "y2"
+    plot["layout"]["yaxis"]["title"]["text"] = "Predicted laps (lap)"
+    plot["layout"]["yaxis2"] = {"title": {"text": "Per-lap energy (MJ)"}, "overlaying": "y", "side": "right"}
+    plot["layout"]["margin"]["r"] = 76
+    return result

@@ -20,9 +20,11 @@ commands:
     apps/api/tests/test_navigation_geometry_quality.py scripts/verify-robotics-dynamics-quality.py apps/api/tests/test_robotics_dynamics_quality.py
     scripts/verify-robotics-perception-quality.py apps/api/tests/test_robotics_perception_quality.py scripts/verify-vehicle-foundations-quality.py
     apps/api/tests/test_vehicle_foundations_quality.py scripts/verify-vehicle-driveline-quality.py apps/api/tests/test_vehicle_driveline_quality.py
+  - .venv/bin/ruff check scripts/author-vehicle-assessments.py scripts/verify-vehicle-assessments.py scripts/verify-vehicle-browser-bindings.py
+    apps/api/tests/test_vehicle_aggregate_quality.py apps/api/tests/test_vehicle_aggregate_mechanisms.py
   scope:
   - git diff --check
-  - git diff --name-only 185e966242c889d3f030bab6016139777fcf0f17
+  - git diff --name-only 9c27f567399cf2fcb9728fb104b2d573fcac5652
   dsp-fidelity-p77-p84:
   - ELP_DSP_SOURCE_ROOT=courses/dsp-radar-learning PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=apps/api/src python3
     -B -m pytest -q apps/api/tests/test_dsp_fidelity_remediation.py apps/api/tests/test_dsp_fidelity_remediation_p11_p20.py
@@ -80,6 +82,13 @@ commands:
     -m pytest -q apps/api/tests/test_robotics_aggregate_quality.py apps/api/tests/test_robotics_aggregate_mechanisms.py
   - ./scripts/verify-robotics-host.sh
   - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-robotics-browser-bindings.py
-evidence_boundary: Robotics aggregate authored/synthetic content and actual host verification. Docker
-  delivery is explicitly owner-deferred for this content-only merge; no learner, manual screen-reader,
-  MATLAB, hardware or production acceptance.
+  vehicle-aggregate-quality:
+  - OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONPATH=apps/api/src .venv/bin/python
+    scripts/verify-vehicle-assessments.py
+  - OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONPATH=apps/api/src .venv/bin/python
+    -m pytest -q apps/api/tests/test_vehicle_aggregate_quality.py apps/api/tests/test_vehicle_aggregate_mechanisms.py
+  - ./scripts/verify-vehicle-host.sh
+  - PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-vehicle-browser-bindings.py
+evidence_boundary: Vehicle aggregate authored/synthetic content and actual host verification. Docker delivery
+  remains explicitly owner-deferred for this content-only merge; no learner, manual screen-reader, MATLAB,
+  measured vehicle, hardware, track-safety or production acceptance.

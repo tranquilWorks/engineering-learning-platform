@@ -2,7 +2,7 @@
 
 **Guiding question:** When does a small residual become statistically inconsistent with the uncertainty claimed by a tire model?
 
-Fit on deterministic synthetic training data and judge held-out bias, RMSE, normalized residuals, and interval coverage. This is a competency-derived Python-first native design. It is not a source conversion, MATLAB-runtime comparison, rig test, track test, or measured-vehicle result.
+Fit on deterministic synthetic training data and judge held-out bias, RMSE, normalized residuals, and conditional interval containment. This is a competency-derived Python-first native design. It is not a source conversion, MATLAB-runtime comparison, rig test, track test, or measured-vehicle result.
 
 ## Why this lesson exists
 
@@ -13,7 +13,7 @@ The 24 source-bound lessons establish the surface workflow. This depth lesson re
 - `theta_hat=argmin sum_train(y-theta*x)^2`
 - `r_i=y_i-theta_hat*x_i`
 - `z_i=r_i/sigma`
-- `coverage=mean(|z_i|<=1.96)`
+- `residual_containment=mean(|z_i|<=1.96)`
 
 All angles cross a labeled degree-to-radian boundary before trigonometric use. Longitudinal force is positive forward, lateral force follows the lesson's displayed convention, normal load is positive into the contact patch, and dissipated energy is nonnegative.
 
@@ -73,3 +73,8 @@ Expected signatures come from `expansion_reference_cases.py`, which imports no p
 ## Teach-back
 
 Derive one signature quantity from the displayed equations, explain exactly which invariant the broken case violates, and distinguish the model's software evidence from a measured tire validation claim.
+
+
+## Detailed model audit
+
+The historical signature retains residual-only containment: the fraction of held-out residuals inside +/-1.96 times the declared observation sigma. The additional plotted predictive band propagates fitted-scale variance sigma²/sum(x_train²), giving predictive variance sigma²+x_validation²*Var(scale). This is conditional on independent Gaussian observation noise and a correct model. The actual deterministic, correlated fixture does not establish repeated-trial 95 percent coverage. Training leakage and understated sigma are distinct faults and must be diagnosed separately.

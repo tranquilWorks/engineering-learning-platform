@@ -244,6 +244,12 @@ def test_software_assessment_acceptance_does_not_promote_other_curricula_or_lear
             if course["course_id"] == "robotics-autonomy":
                 robotics = read(ROOT / "docs/course-quality/robotics-aggregate-review.json")
                 accepted = robotics["status"] == "passed"
+            if course["course_id"] == "vehicle-dynamics":
+                active = read(ROOT / "contracts/active-batch.yaml")
+                assert active["batch"]["id"] == "ELP-VEHICLE-AGGREGATE-QUALITY-01"
+                assert active["sources"]["baseline_commit"] == "9c27f567399cf2fcb9728fb104b2d573fcac5652"
+                vehicle_path = ROOT / "docs/course-quality/vehicle-aggregate-review.json"
+                accepted = vehicle_path.exists() and read(vehicle_path)["status"] == "passed"
             expected = "passed" if accepted else "blocked"
             assert all(
                 course["maturity"][stage]["status"] == expected

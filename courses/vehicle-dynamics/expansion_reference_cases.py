@@ -410,8 +410,11 @@ def _p38(p: dict[str, Any]) -> list[float]:
     rear_transfer = geometric_rear / rear_track + (1.0 - distribution) * elastic / rear_track
     closure = abs(front_transfer * front_track + rear_transfer * rear_track - total_moment)
     front_axle_load = mass * gravity * b / (a + b)
-    left = max(1.0, front_axle_load / 2.0 - front_transfer / 2.0)
-    right = front_axle_load / 2.0 + front_transfer / 2.0
+    # Solve the vertical-force and roll-moment equations directly.
+    demanded = np.linalg.solve([[1.0, 1.0], [-front_track/2, front_track/2]],
+                               [front_axle_load, front_transfer*front_track])
+    left = max(0.0, float(demanded[0]))
+    right = front_axle_load-left
     force = lambda load: 1.25 * 3500.0 * (load / 3500.0) ** 0.86
     loss = 2.0 * force(front_axle_load / 2.0) - force(left) - force(right)
     return [
@@ -448,20 +451,17 @@ def _p39(p: dict[str, Any]) -> list[float]:
         if bool(p["broken_mode"])
         else physical_stiffness
     )
-    inverse_sqrt = np.diag(np.reciprocal(np.sqrt(np.diag(mass_matrix))))
-    symmetric = inverse_sqrt.dot(used_stiffness).dot(inverse_sqrt)
-    eigenvalues, normalized_modes = np.linalg.eigh(symmetric)
-    modes = inverse_sqrt.dot(normalized_modes)
+    from scipy.linalg import eigh
+    eigenvalues, modes = eigh(used_stiffness, mass_matrix)
     frequencies = np.sqrt(eigenvalues) / (2.0 * np.pi)
+    weights = 1.0 / np.diag(mass_matrix)
     residuals = []
-    for index in range(3):
-        left = physical_stiffness.dot(modes[:, index])
-        right = eigenvalues[index] * mass_matrix.dot(modes[:, index])
-        residuals.append(np.linalg.norm(left - right) / max(np.linalg.norm(left), 1.0))
-    off_diagonal = physical_stiffness - np.diag(np.diag(physical_stiffness))
-    coupling = np.linalg.norm(off_diagonal) / np.linalg.norm(
-        np.diag(np.diag(physical_stiffness))
-    )
+    for i in range(3):
+        force = physical_stiffness @ modes[:, i]
+        imbalance = force - eigenvalues[i] * (mass_matrix @ modes[:, i])
+        residuals.append(np.sqrt(np.dot(weights, imbalance**2) / np.dot(weights, force**2)))
+    metric = physical_stiffness**2 * np.outer(weights, weights)
+    coupling = np.sqrt((metric.sum()-np.trace(metric))/np.trace(metric))
     reference_residual = (
         float(round(max(residuals), 12)) if bool(p["broken_mode"]) else 0.0
     )
@@ -721,7 +721,7 @@ def _p47(p: dict[str, Any]) -> list[float]:
             force = 0.0
             interruption = max(0.0, interruption - step)
         resistance = 180.0 + 0.38 * speed[index - 1] ** 2
-        acceleration = max(0.0, (force - resistance) / 1450.0)
+        acceleration = (force - resistance) / 1450.0
         peak_acceleration = max(peak_acceleration, acceleration)
         speed[index] = speed[index - 1] + acceleration * step
         if speed[index] >= 27.78 and finish_time == time[-1]:
@@ -1119,13 +1119,22 @@ def _p57(p: dict[str, Any]) -> list[float]:
     if bool(p["broken_mode"]):
         measured[:, 0] *= -1.0
     estimate, innovation = np.zeros_like(truth), np.zeros_like(truth)
-    covariance = np.eye(3) * 0.25
     used_gain = np.diag((gain, 0.75 * gain, 0.45 * gain))
     for index in range(1, samples):
         predicted = estimate[index - 1] + step * (matrix.dot(estimate[index - 1]) + vector * steering[index - 1])
         innovation[index] = measured[index] - predicted
         estimate[index] = predicted + used_gain.dot(innovation[index])
-        covariance = (np.eye(3) - used_gain).dot(covariance + np.diag((2.0e-5, 4.0e-5, 1.0e-5)))
+    # Independent closed finite covariance sum, not the posterior recurrence.
+    transition = np.eye(3)+step*matrix
+    complement = np.eye(3)-used_gain
+    closed_loop = complement @ transition
+    added = complement @ np.diag([2e-5,4e-5,1e-5]) @ complement.T + noise**2*(used_gain @ used_gain.T)
+    power = np.eye(3)
+    covariance = np.zeros((3,3))
+    for _ in range(samples-1):
+        covariance += power @ added @ power.T
+        power = power @ closed_loop
+    covariance += power @ (np.eye(3)*.25) @ power.T
     error = estimate - truth
     return [
         float(np.rad2deg(estimate[-1, 0])),
@@ -1162,9 +1171,13 @@ def _p59(p: dict[str, Any]) -> list[float]:
     estimate, _, _, singular = np.linalg.lstsq(matrix, observed, rcond=None)
     residual = observed - matrix.dot(estimate)
     used_sigma = 0.10 * sigma if bool(p["broken_mode"]) else sigma
-    covariance = used_sigma**2 * (np.linalg.inv(matrix.T.dot(matrix)) if bool(p["broken_mode"]) else np.linalg.pinv(matrix.T.dot(matrix)))
+    # QR triangular solves avoid squaring the design condition number.
+    _, triangular = np.linalg.qr(matrix, mode="reduced")
+    inverse = np.linalg.solve(triangular, np.eye(2))
+    information_inverse = inverse @ inverse.T
+    covariance = used_sigma**2 * (np.linalg.inv(matrix.T @ matrix) if bool(p["broken_mode"]) else information_inverse)
     standard = np.sqrt(np.diag(covariance))
-    physical_covariance = sigma**2 * np.linalg.pinv(matrix.T.dot(matrix))
+    physical_covariance = sigma**2 * information_inverse
     return [float(singular[0] / singular[-1]), float(singular[-1]), float(np.sqrt(np.mean(residual**2))), float(np.corrcoef(residual[:-1], residual[1:])[0, 1]), float(np.mean(standard)), float(np.mean(np.abs(estimate - truth) <= 1.96 * standard)), float(np.linalg.norm(covariance - physical_covariance))]
 
 
@@ -1819,3 +1832,42 @@ def origin(number: int) -> dict[str, Any]:
 
 def reference_signature(number: int, parameters: dict[str, Any]) -> list[float]:
     return [float(value) for value in _DISPATCH[number](dict(parameters))]
+
+
+def dynamic_history37(parameters):
+    """Independent lateral-velocity integration; no production state or time input."""
+    from scipy.integrate import solve_ivp
+
+    steer = float(parameters['steer_deg']) * np.pi / 180
+    friction = float(parameters['friction_mu'])
+    broken = bool(parameters['broken_mode'])
+    limits = friction * 1450 * 9.81 * np.array([1.5, 1.2]) / 2.7
+
+    def derivative(_time, state):
+        lateral, yaw = state
+        requests = np.array([70000*(steer-(lateral+1.2*yaw)/28), 75000*(-lateral+1.5*yaw)/28])
+        forces = requests if broken else limits*np.tanh(requests/limits)
+        return [(sum(forces)-1450*28*yaw)/1450, (1.2*forces[0]-1.5*forces[1])/2400]
+
+    time = np.arange(601)*.005
+    solution = solve_ivp(derivative, [0,3], [0,0], t_eval=time, method='DOP853', rtol=1e-11, atol=1e-12)
+    states = solution.y.T / np.array([28,1])
+    outside = np.flatnonzero((abs(states[:,0])>.35) | (abs(states[:,1])>1.5))
+    stop = int(outside[0]) if len(outside) else len(time)
+    return {'time':time[:stop], 'states':states[:stop], 'trajectory_valid':not len(outside)}
+
+
+def covariance_history57(parameters):
+    """Independent finite sum of past process and measurement-noise contributions."""
+    gain, noise = float(parameters['observer_gain']), float(parameters['measurement_noise'])
+    transition=np.eye(3)+.02*np.array([[-1.1,-.35,.2],[.8,-1.6,.1],[0,0,-.25]])
+    correction=np.diag([gain,.75*gain,.45*gain])
+    complement=np.eye(3)-correction
+    closed=complement@transition
+    added=complement@np.diag([2e-5,4e-5,1e-5])@complement.T + noise**2*(correction@correction.T)
+    power=np.eye(3); accumulated=np.zeros((3,3)); history=[]
+    for _ in range(301):
+        history.append(power@(.25*np.eye(3))@power.T+accumulated)
+        accumulated=accumulated+power@added@power.T
+        power=power@closed
+    return np.array(history)

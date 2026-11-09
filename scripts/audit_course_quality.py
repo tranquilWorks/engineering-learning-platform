@@ -260,11 +260,11 @@ KNOWN = {}
 def audit():
     rows = []
     checkpoints = {}
-    for course_id in ("dsp-radar", "controls-gnc", "robotics-autonomy"):
+    for course_id in ("dsp-radar", "controls-gnc", "robotics-autonomy", "vehicle-dynamics"):
         registry_path = ROOT / "courses" / course_id / "assessment-map.json"
         if registry_path.exists():
             registry = json.loads(registry_path.read_text())
-            if course_id == "robotics-autonomy":
+            if course_id in ("robotics-autonomy", "vehicle-dynamics"):
                 for row in registry["lessons"]:
                     row["competency_id"] = ", ".join(row["competency_ids"])
                     row["domain_id"] = ", ".join(p["id"] for p in registry["portfolios"] if row["module_id"] in p["module_ids"])

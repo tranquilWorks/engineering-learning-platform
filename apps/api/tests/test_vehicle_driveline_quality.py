@@ -99,7 +99,21 @@ def test_exact_scope_controls_source_pins_and_historical_coverage():
             ["git", "show", f"{HISTORICAL_HEAD}:{path}"], cwd=ROOT
         ) == original(path), path
     before = json.loads(original("courses/vehicle-dynamics/coverage.yaml"))
-    after = json.loads((COURSE / "coverage.yaml").read_text())
+    # This assertion concerns the completed driveline revision, not later
+    # assessment additions that legitimately change current content identities.
+    after = json.loads(
+        subprocess.check_output(
+            ["git", "show", f"{HISTORICAL_HEAD}:courses/vehicle-dynamics/coverage.yaml"], cwd=ROOT
+        )
+    )
+    current = json.loads((COURSE / "coverage.yaml").read_text())
+    assert {k: v for k, v in current.items() if k != "items"} == {
+        k: v for k, v in after.items() if k != "items"
+    }
+    for reviewed, live in zip(after["items"], current["items"], strict=True):
+        assert {k: v for k, v in reviewed.items() if k != "target_content_digest"} == {
+            k: v for k, v in live.items() if k != "target_content_digest"
+        }
     for n, (a, b) in enumerate(zip(before["items"], after["items"], strict=True), 1):
         if 13 <= n <= 16:
             a.pop("target_content_digest")
@@ -117,8 +131,12 @@ def test_exact_scope_controls_source_pins_and_historical_coverage():
                 assert a["step"] == 0.05 and b["step"] == 0.001
                 a["step"] = 0.001
             assert a == b
-    catalog = CourseCatalog([ROOT / "courses"]).summaries()
-    assert len(catalog) == 6 and sum(len(c.modules) for c in catalog) == 290
+    catalog = CourseCatalog([ROOT / "courses"])
+    for item in current["items"]:
+        _, module = catalog.module_record("vehicle-dynamics", item["target_module_id"])
+        assert item["target_content_digest"] == module.revision.content_digest
+    summaries = catalog.summaries()
+    assert len(summaries) == 6 and sum(len(c.modules) for c in summaries) == 290
 
 
 def test_all_unselected_reference_definitions_and_outputs_preserved(tmp_path):

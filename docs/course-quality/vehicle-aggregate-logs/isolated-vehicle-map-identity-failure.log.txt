@@ -1,0 +1,25 @@
+........................................................................ [ 38%]
+...........................................................F............ [ 76%]
+.............................................                            [100%]
+=================================== FAILURES ===================================
+________ test_reviewed_map_identity_schema_graph_batches_and_capstones _________
+
+    def test_reviewed_map_identity_schema_graph_batches_and_capstones() -> None:
+        mapping = _load(COURSE_ROOT / "competency-map.yaml")
+        schema = json.loads((COURSE_ROOT / "competency-map.schema.json").read_text(encoding="utf-8"))
+        helper_path = ROOT / "apps/api/tests/test_dsp_conversion_framework.py"
+        spec = importlib.util.spec_from_file_location("vehicle_schema_helper", helper_path)
+        assert spec is not None and spec.loader is not None
+        helper = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(helper)
+        assert helper._schema_errors(mapping, schema, schema) == []
+>       assert _sha256(COURSE_ROOT / "competency-map.yaml") == MAP_SHA256
+E       AssertionError: assert '6b40af36aeca...8349b26b3f5e0' == '87dae868d7e3...d73b9c56bde6d'
+E
+E         - 87dae868d7e3a0181062a4fd42ff316513b0f6f35c053cb56b5d73b9c56bde6d
+E         + 6b40af36aecaebdcb5276fd28103ec20c31c8d7cc0ac91a61ad8349b26b3f5e0
+
+apps/api/tests/test_vehicle_dynamics_framework.py:122: AssertionError
+=========================== short test summary info ============================
+FAILED apps/api/tests/test_vehicle_dynamics_framework.py::test_reviewed_map_identity_schema_graph_batches_and_capstones
+1 failed, 188 passed in 187.58s (0:03:07)

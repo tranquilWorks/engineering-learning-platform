@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "item_id": "P22",
+  "origin": {
+    "path": "../../reference_cases.py",
+    "origin": "separately formulated scalar analytic or bounded numerical oracle",
+    "imports_production": false,
+    "consumes_production_output": false,
+    "tolerance_abs": "1e-10",
+    "fields": [
+      "lap_time_s",
+      "peak_speed_m_s",
+      "corner_entry_speed_m_s",
+      "maximum_braking_violation_m2_s2",
+      "active_grip_limits",
+      "minimum_speed_m_s",
+      "segments",
+      "invalid"
+    ]
+  },
+  "tolerance": {
+    "absolute": 1e-10,
+    "relative": 0.0
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "friction_coefficient": 1.05,
+        "acceleration_limit_m_s2": 3.5,
+        "broken_mode": false
+      },
+      "signature": [
+        16.05768530963744,
+        24.378269011560274,
+        24.378269011560274,
+        0.0,
+        5.0,
+        14.353048456686825,
+        12.0,
+        0.0
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "friction_coefficient": 0.7,
+        "acceleration_limit_m_s2": 3.5,
+        "broken_mode": false
+      },
+      "signature": [
+        18.101592286084042,
+        23.921747427811372,
+        22.27554713132766,
+        0.0,
+        6.0,
+        11.719214990774766,
+        12.0,
+        0.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "friction_coefficient": 1.05,
+        "acceleration_limit_m_s2": 6,
+        "broken_mode": false
+      },
+      "signature": [
+        15.178483974530636,
+        28.54864269978522,
+        24.378269011560274,
+        0.0,
+        6.0,
+        14.353048456686825,
+        12.0,
+        0.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "friction_coefficient": 1.05,
+        "acceleration_limit_m_s2": 3.5,
+        "broken_mode": true
+      },
+      "signature": [
+        15.624561427303686,
+        27.457239482511714,
+        27.457239482511714,
+        159.60000000000014,
+        5.0,
+        14.353048456686825,
+        12.0,
+        1.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "friction_coefficient": 1.05,
+        "acceleration_limit_m_s2": 3.5,
+        "broken_mode": false
+      },
+      "signature": [
+        16.05768530963744,
+        24.378269011560274,
+        24.378269011560274,
+        0.0,
+        5.0,
+        14.353048456686825,
+        12.0,
+        0.0
+      ]
+    }
+  }
+}

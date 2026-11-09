@@ -1,0 +1,186 @@
+........................................................................ [  4%]
+........................................................................ [  8%]
+........................................................................ [ 12%]
+........................................................................ [ 16%]
+.....................F
+=================================== FAILURES ===================================
+_____ test_dsp_item_deterministic_runtime_sweeps_and_failure_recovery[P52] _____
+
+self = <elp_api.runtime.ExperimentRuntime object at 0x7fa1cbf1fe30>
+course_id = 'dsp-radar', module_id = '52-validate-cfar-pfa-by-monte-carlo'
+parameters = {'training_count': 24}, expected_content_digest = None
+
+    def run(
+        self,
+        course_id: str,
+        module_id: str,
+        parameters: dict[str, Any],
+        expected_content_digest: str | None = None,
+    ) -> RunResult:
+        course, record = self.catalog.module_record(course_id, module_id)
+        manifest = record.manifest
+        if (
+            expected_content_digest is not None
+            and expected_content_digest != record.revision.content_digest
+        ):
+            raise RuntimeContractError(
+                "module content revision is stale; reload the module document"
+            )
+        try:
+            record.assert_unchanged()
+        except CatalogError as exc:
+            raise RuntimeContractError(str(exc)) from exc
+        merged = self._validated_parameters(manifest, parameters)
+        if manifest.runtime.kind == "static":
+            return RunResult(
+                parameters=merged,
+                course_revision=course.revision,
+                module_revision=record.revision,
+                platform_revision=platform_revision("static"),
+            )
+        assert manifest.runtime.entrypoint is not None
+        function = self._load_callable(record, manifest.runtime.entrypoint)
+        timeout = manifest.runtime.timeout_seconds or self.default_timeout
+        executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="elp-experiment")
+        future = executor.submit(function, merged)
+        try:
+>           raw = future.result(timeout=timeout)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+apps/api/src/elp_api/runtime.py:173: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = None, timeout = 3.0
+
+    def result(self, timeout=None):
+        """Return the result of the call that the future represents.
+    
+        Args:
+            timeout: The number of seconds to wait for the result if the future
+                isn't done. If None, then there is no limit on the wait time.
+    
+        Returns:
+            The result of the call that the future represents.
+    
+        Raises:
+            CancelledError: If the future was cancelled.
+            TimeoutError: If the future didn't finish executing before the given
+                timeout.
+            Exception: If the call raised then that exception will be raised.
+        """
+        try:
+            with self._condition:
+                if self._state in [CANCELLED, CANCELLED_AND_NOTIFIED]:
+                    raise CancelledError()
+                elif self._state == FINISHED:
+                    return self.__get_result()
+    
+                self._condition.wait(timeout)
+    
+                if self._state in [CANCELLED, CANCELLED_AND_NOTIFIED]:
+                    raise CancelledError()
+                elif self._state == FINISHED:
+                    return self.__get_result()
+                else:
+>                   raise TimeoutError()
+E                   TimeoutError
+
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/concurrent/futures/_base.py:458: TimeoutError
+
+The above exception was the direct cause of the following exception:
+
+item = {'id': 'P52', 'number': 52, 'source_folder': 'modules/52-validate-cfar-pfa-by-monte-carlo', 'target_module_id': '52-validate-cfar-pfa-by-monte-carlo', ...}
+catalog = <elp_api.catalog.CourseCatalog object at 0x7fa1cbb6f9b0>
+runtime = <elp_api.runtime.ExperimentRuntime object at 0x7fa1cbf1fe30>
+
+    @pytest.mark.parametrize("item", SELECTED, ids=lambda item: item["id"])
+    def test_dsp_item_deterministic_runtime_sweeps_and_failure_recovery(
+        item: dict[str, Any], catalog: CourseCatalog, runtime: ExperimentRuntime
+    ) -> None:
+        module_root = COURSE_ROOT / item["target_folder"]
+        record = _yaml(module_root / "conversion.yaml")
+        _, module = catalog.module_record("dsp-radar", item["target_module_id"])
+    
+        first = runtime.run("dsp-radar", item["target_module_id"], {}).model_dump(mode="json")
+        second = runtime.run("dsp-radar", item["target_module_id"], {}).model_dump(mode="json")
+        assert _canonical(first) == _canonical(second)
+        assert first["plots"]
+        assert first["metrics"]
+        assert first["explanations"].get("broken")
+        assert first["explanations"].get("recovery")
+    
+        controls = {control.id: control for control in module.manifest.controls}
+        for sweep in record["content"]["sweeps"][:2]:
+            control = controls[sweep["control"]]
+            values = sweep["values"]
+            low = runtime.run(
+                "dsp-radar", item["target_module_id"], {control.id: values[0]}
+            ).model_dump(mode="json")
+>           high = runtime.run(
+                "dsp-radar", item["target_module_id"], {control.id: values[-1]}
+            ).model_dump(mode="json")
+
+apps/api/tests/test_dsp_course.py:137: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <elp_api.runtime.ExperimentRuntime object at 0x7fa1cbf1fe30>
+course_id = 'dsp-radar', module_id = '52-validate-cfar-pfa-by-monte-carlo'
+parameters = {'training_count': 24}, expected_content_digest = None
+
+    def run(
+        self,
+        course_id: str,
+        module_id: str,
+        parameters: dict[str, Any],
+        expected_content_digest: str | None = None,
+    ) -> RunResult:
+        course, record = self.catalog.module_record(course_id, module_id)
+        manifest = record.manifest
+        if (
+            expected_content_digest is not None
+            and expected_content_digest != record.revision.content_digest
+        ):
+            raise RuntimeContractError(
+                "module content revision is stale; reload the module document"
+            )
+        try:
+            record.assert_unchanged()
+        except CatalogError as exc:
+            raise RuntimeContractError(str(exc)) from exc
+        merged = self._validated_parameters(manifest, parameters)
+        if manifest.runtime.kind == "static":
+            return RunResult(
+                parameters=merged,
+                course_revision=course.revision,
+                module_revision=record.revision,
+                platform_revision=platform_revision("static"),
+            )
+        assert manifest.runtime.entrypoint is not None
+        function = self._load_callable(record, manifest.runtime.entrypoint)
+        timeout = manifest.runtime.timeout_seconds or self.default_timeout
+        executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="elp-experiment")
+        future = executor.submit(function, merged)
+        try:
+            raw = future.result(timeout=timeout)
+        except FutureTimeout as exc:
+            future.cancel()
+            executor.shutdown(wait=False, cancel_futures=True)
+>           raise RuntimeTimeout(f"experiment exceeded {timeout:.2f} seconds") from exc
+E           elp_api.runtime.RuntimeTimeout: experiment exceeded 3.00 seconds
+
+apps/api/src/elp_api/runtime.py:177: RuntimeTimeout
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /workspace/scratch/3db4a2e2c21b/engineering-learning-platform/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_api.py::test_health_and_vertical_slice
+tests/test_api.py::test_stale_revision_and_inline_result_size_fail_closed
+  /workspace/scratch/3db4a2e2c21b/engineering-learning-platform/.venv/lib/python3.12/site-packages/fastapi/routing.py:152: FastAPIDeprecationWarning: ORJSONResponse is deprecated, FastAPI now serializes data directly to JSON bytes via Pydantic when a return type or response model is set, which is faster and doesn't need a custom response class. Read more in the FastAPI docs: https://fastapi.tiangolo.com/advanced/custom-response/#orjson-or-response-model and https://fastapi.tiangolo.com/tutorial/response-model/
+    response = await f(request)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED apps/api/tests/test_dsp_course.py::test_dsp_item_deterministic_runtime_sweeps_and_failure_recovery[P52]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 309 passed, 3 warnings in 405.81s (0:06:45)

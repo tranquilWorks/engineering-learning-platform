@@ -1,3 +1,31 @@
+# Vehicle Dynamics/Motorsport — authored and synthetic software review accepted (2026-11-09)
+
+The remaining engineering course now meets the same authored/software review standard as DSP, Controls and Robotics. All 67 existing lessons have individual checkpoints and all 14 competency-derived portfolios have specific integration tasks. The 16 previously reviewed assessment tasks remain verbatim. All nine review dimensions pass; learner validation remains `not_run` for all four courses.
+
+The review corrects the lateral load-transfer factor, mass-weighted modal interpretation, nonlinear limit-handling dynamics, conditional uncertainty propagation and shift resistance. Full nonlinear state histories, covariance histories and both integrated capstone ledgers have independent checks. Plots use readable titles and dimensioned or explicitly normalized comparisons. Source pins, historical conversion artifacts and all other course payloads remain unchanged.
+
+Verification: 103 contract tests, 1795 quick tests and 1795 full tests; 189 Vehicle tests, including the previously passing 62 focused tests and 57 mechanism checks; 335 independent runtime comparisons and 335 real HTTP comparisons, including ten full-history comparisons in each; 134 current-content desktop/mobile views and interactions, 28 portfolio visits, 13 web tests, 23 browser regressions and 21 post-acceptance consistency tests. See the [review](course-quality/vehicle-aggregate-review.json), [exact verification](course-quality/vehicle-aggregate-verification-summary.json) and [closeout](evidence/ELP-VEHICLE-AGGREGATE-QUALITY-01-2026-11-09.md).
+
+Implementation: [PR65](https://github.com/tranquilWorks/engineering-learning-platform/pull/65). Matching contract: [Control PR636](https://github.com/tranquilWorks/portfolio-control/pull/636). Docker delivery remains explicitly owner-deferred; hosted CI is nonmandatory under the retained direction. No learner, manual screen-reader, MATLAB, measured vehicle, track, hardware or production acceptance is inferred.
+
+Earlier dated notes below describe historical states; the current disposition is `course-caliber-status.yaml`.
+
+---
+
+# Vehicle Dynamics/Motorsport — content revised; broad verification blocked (2026-11-05)
+
+The final remaining engineering course has 67 distinct checkpoints and 14 cumulative portfolios, preserving all 16 prior scoped assessment tasks. The review repairs load transfer, nonlinear stability, modal units, shift resistance and conditional covariance; actual desktop/mobile inspection also corrected clipped plot labels. Independent checks cover complete nonlinear state/covariance histories and both capstone ledgers.
+
+Passing evidence: 335 runtime comparisons, 335 real HTTP comparisons, 134 current-content desktop/mobile views and interactions, 28 portfolio visits, 62 focused Vehicle tests, 13 web tests and23 browser regressions. Each runtime/HTTP replay includes ten complete-history comparisons. See [current evidence](course-quality/vehicle-aggregate-verification-summary.json), [review plan](course-quality/vehicle-aggregate-review-plan.md) and [actual captures](course-quality/vehicle-aggregate-visuals/manifest.json).
+
+Required broad verification remains blocked by three-second timeouts in unchanged DSP and Robotics lessons. An earlier contract run passed 103 tests; later attempts still failed, and the quiet quick run reached309 passes before DSP P52 timed out. Single-CPU affinity passed the targeted P52 test but did not resolve the subsequent contract failure. No timeout, sample count, tolerance, other-course payload or generic runtime was changed. Automatic approval review rejected a NumPy environment change as outside the content-only scope; installed NumPy remains 2.5.4.
+
+[Target PR65](https://github.com/tranquilWorks/engineering-learning-platform/pull/65) and [Control PR636](https://github.com/tranquilWorks/portfolio-control/pull/636) remain drafts. Vehicle aggregate maturity is not promoted and neither PR is merged. Docker remains owner-deferred. Learner, manual screen-reader, MATLAB, measured vehicle, hardware and production validation remain not_run.
+
+The next step is an approved verification-environment remedy, followed by complete contract/quick/full gates, guarded acceptance reconciliation and the already-authorized merges. Earlier dated notes below retain their historical states.
+
+---
+
 # Robotics/Autonomy — authored/software aggregate accepted (2026-11-04)
 
 All 69 existing Robotics lessons now have distinct formative checkpoints and 13 cumulative portfolios; 25 prior evidence tasks are preserved verbatim. The review closes all nine course-caliber dimensions within the documented synthetic scope. Joint pose/map SLAM, actual one-to-one association, holdout-safe smoothing, bounded planning failure, measured timing recovery, tracked mobile navigation and guarded object placement have independently checked mechanisms.

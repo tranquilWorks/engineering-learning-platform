@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "item_id": "P47",
+  "signature_fields": [
+    {
+      "field": "zero_to_100_time",
+      "unit": "s"
+    },
+    {
+      "field": "first_shift_speed",
+      "unit": "km/h"
+    },
+    {
+      "field": "second_shift_speed",
+      "unit": "km/h"
+    },
+    {
+      "field": "peak_acceleration",
+      "unit": "m/s^2"
+    },
+    {
+      "field": "redline_excess",
+      "unit": "rpm"
+    }
+  ],
+  "origin": {
+    "kind": "independent-analytic-and-numerical-python",
+    "item_id": "P47",
+    "independent": true,
+    "imports_production_entrypoint": false,
+    "derived_from_production_output": false,
+    "perturbs_production_output": false
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "final_drive_ratio": 4.1,
+        "shift_delay_s": 0.25,
+        "broken_mode": false
+      },
+      "signature": [
+        5.98,
+        55.533471217552496,
+        90.76920570954479,
+        6.496473092873433,
+        1.167705856959401
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "final_drive_ratio": 4.6,
+        "shift_delay_s": 0.25,
+        "broken_mode": false
+      },
+      "signature": [
+        5.83,
+        49.476533879407064,
+        80.85168909092232,
+        7.312135054073467,
+        1.5666535963437127
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "final_drive_ratio": 4.1,
+        "shift_delay_s": 0.5,
+        "broken_mode": false
+      },
+      "signature": [
+        6.48,
+        55.533471217552496,
+        90.76920570954479,
+        6.496473092873433,
+        1.167705856959401
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "final_drive_ratio": 4.1,
+        "shift_delay_s": 0.25,
+        "broken_mode": true
+      },
+      "signature": [
+        4.05,
+        0.0,
+        0.0,
+        6.496473092873433,
+        52549.522724505354
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "final_drive_ratio": 4.1,
+        "shift_delay_s": 0.25,
+        "broken_mode": false
+      },
+      "signature": [
+        5.98,
+        55.533471217552496,
+        90.76920570954479,
+        6.496473092873433,
+        1.167705856959401
+      ]
+    }
+  }
+}

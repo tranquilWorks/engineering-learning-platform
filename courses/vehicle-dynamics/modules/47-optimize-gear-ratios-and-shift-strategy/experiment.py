@@ -49,7 +49,7 @@ def _trace(
 
 
 def _plot(title: str, x_title: str, y_title: str, traces: list[dict[str, Any]]) -> dict[str, Any]:
-    return {
+    result = {
         "data": traces,
         "layout": {
             "title": {"text": title, "x": 0.02},
@@ -62,6 +62,17 @@ def _plot(title: str, x_title: str, y_title: str, traces: list[dict[str, Any]]) 
         },
         "config": {"responsive": True, "displaylogo": False},
     }
+    # Course-owned layout: keep engineering labels readable in narrow plot panels.
+    from textwrap import fill
+    layout = result["layout"]
+    layout["title"] = {"text": fill(title, width=30).replace("\n", "<br>"), "x": 0.02, "font": {"size": 14}}
+    layout["legend"] = {"orientation": "h"}
+    layout.setdefault("margin", {"l": 72, "r": 36, "t": 62, "b": 110})
+    for axis in ("xaxis", "yaxis"):
+        layout[axis]["automargin"] = True
+        if isinstance(layout[axis].get("title"), dict):
+            layout[axis]["title"]["standoff"] = 12
+    return result
 
 
 def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
@@ -121,6 +132,7 @@ def _simulate(final_drive: float, delay: float, broken: bool) -> tuple[list[floa
     speed[0] = 5.0
     gear_trace = np.zeros(samples)
     selected, _, _ = _gear_state(speed[0], final_drive, broken)
+    gear_trace[0] = selected+1
     interruption = 0.0
     shift_speeds: list[float] = []
     peak_acceleration = 0.0
@@ -137,9 +149,9 @@ def _simulate(final_drive: float, delay: float, broken: bool) -> tuple[list[floa
             force = 0.0
             interruption = max(0.0, interruption - step)
         resistance = 180.0 + 0.38 * speed[index - 1] ** 2
-        acceleration = max(0.0, (force - resistance) / 1450.0)
+        acceleration = (force - resistance) / 1450.0
         peak_acceleration = max(peak_acceleration, acceleration)
-        speed[index] = speed[index - 1] + acceleration * step
+        speed[index] = max(0.0, speed[index - 1] + acceleration * step)
         gear_trace[index] = selected + 1
         if speed[index] >= 27.78 and finish_time == time[-1]:
             finish_time = time[index]
@@ -156,7 +168,8 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
     return {
         "signature": signature,
         "metrics": [
-            ("zero_to_hundred", "Time to 100 km/h", signature[0], "s"),
+            ("target_reached", "100 km/h reached within horizon", np.max(speed)>=27.78, "1"),
+            ("zero_to_hundred", "Time to 100 km/h (horizon if not reached)", signature[0], "s"),
             ("first_shift", "First shift speed", signature[1], "km/h"),
             ("second_shift", "Second shift speed", signature[2], "km/h"),
             ("strategy_residual", "Redline residual", signature[4], "rpm"),

@@ -42,7 +42,7 @@ def test_browser_projection_keeps_confirmed_limitations_attached_to_lesson():
         r["scoped_review"] for r in audit["lessons"]
     ]
     assert sum(bool(r["scoped_review"]) for r in projection) == 72
-    assert sum(bool(r["assessment_review"]) for r in projection) == 221
+    assert sum(bool(r["assessment_review"]) for r in projection) == 288
     assert [r["assessment_review"] for r in projection] == [
         r["assessment_review"] for r in audit["lessons"]
     ]

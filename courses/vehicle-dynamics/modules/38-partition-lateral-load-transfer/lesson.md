@@ -50,3 +50,8 @@ The five retained scenarios are recomputed by the course-owned independent analy
 ## Teach-back
 
 Explain where the geometric term goes when the elastic remainder is formed. Include the relevant units, sign convention, validity boundary, named broken behavior, and exact recovery check.
+
+
+## Detailed model audit
+
+The transfer variable T is the amount of normal load moved from the inner to the outer wheel. Therefore Fz_inner=W/2-T and Fz_outer=W/2+T. Their force difference is 2T; acting through half-track it produces T*track. This convention closes vertical force and roll moment simultaneously. If the demanded T exceeds W/2, a four-contact quasi-static equilibrium no longer exists. The contact-excess metric marks that boundary, and the tire-capacity calculation is capped at zero inner load with the full axle weight on the outer tire. That capped capacity is only a contact-boundary estimate; it does not restore the invalid roll equilibrium or predict rollover.

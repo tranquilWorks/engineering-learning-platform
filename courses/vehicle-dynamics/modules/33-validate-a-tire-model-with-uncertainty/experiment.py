@@ -54,7 +54,7 @@ def _plot(
     y_title: str,
     traces: list[dict[str, Any]],
 ) -> dict[str, Any]:
-    return {
+    result = {
         "data": traces,
         "layout": {
             "title": {"text": title, "x": 0.02},
@@ -67,6 +67,17 @@ def _plot(
         },
         "config": {"responsive": True, "displaylogo": False},
     }
+    # Course-owned layout: keep engineering labels readable in narrow plot panels.
+    from textwrap import fill
+    layout = result["layout"]
+    layout["title"] = {"text": fill(title, width=30).replace("\n", "<br>"), "x": 0.02, "font": {"size": 14}}
+    layout["legend"] = {"orientation": "h"}
+    layout.setdefault("margin", {"l": 72, "r": 36, "t": 62, "b": 110})
+    for axis in ("xaxis", "yaxis"):
+        layout[axis]["automargin"] = True
+        if isinstance(layout[axis].get("title"), dict):
+            layout[axis]["title"]["standoff"] = 12
+    return result
 
 
 def _result(model: dict[str, Any], broken: bool) -> dict[str, Any]:
@@ -123,13 +134,18 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
     maximum_normalized = float(np.max(np.abs(normalized)))
     signature = [fitted_scale, bias, rmse, coverage, maximum_normalized]
     indices = np.arange(train_count, count)
+    parameter_variance = assumed_sigma**2 / np.dot(fit_basis, fit_basis)
+    predictive_sigma = np.sqrt(assumed_sigma**2 + validation_basis**2*parameter_variance)
+    conditional_band = 1.96*predictive_sigma/assumed_sigma
     return {
         "signature": signature,
         "metrics": [
             ("scale", "Fitted force scale", fitted_scale, "1"),
             ("bias", "Held-out residual bias", bias, "N"),
             ("rmse", "Held-out residual RMSE", rmse, "N"),
-            ("coverage", "Prediction-interval coverage", coverage, "1"),
+            ("coverage", "Residual-only 1.96-sigma containment", coverage, "1"),
+            ("parameter_sigma", "Conditional scale standard uncertainty", np.sqrt(parameter_variance), "1"),
+            ("predictive_containment", "Conditional prediction-band containment", np.mean(abs(residual)<=1.96*predictive_sigma), "1"),
         ],
         "plots": {
             "response": _plot("Held-out force prediction", "Force basis (N)", "Observed force (N)", [
@@ -137,16 +153,28 @@ def _model(p: dict[str, float], broken: bool) -> dict[str, Any]:
                 _trace("Model prediction", validation_basis, fitted_scale * validation_basis, "Force basis", "N", "Predicted force", "N"),
             ]),
             "mechanism": _plot("Normalized validation residuals", "Validation row (1)", "Normalized residual (1)", [
+                _trace("Conditional predictive upper", indices, conditional_band, "Validation row", "1", "Normalized residual", "1"),
+                _trace("Conditional predictive lower", indices, -conditional_band, "Validation row", "1", "Normalized residual", "1"),
                 _trace("Normalized residual", indices, normalized, "Validation row", "1", "Normalized residual", "1", mode="markers"),
-                _trace("Upper 95 percent bound", indices, np.full_like(indices, 1.96, dtype=float), "Validation row", "1", "Normalized residual", "1"),
-                _trace("Lower 95 percent bound", indices, np.full_like(indices, -1.96, dtype=float), "Validation row", "1", "Normalized residual", "1"),
+                _trace("Residual-only +1.96 sigma", indices, np.full_like(indices, 1.96, dtype=float), "Validation row", "1", "Normalized residual", "1"),
+                _trace("Residual-only -1.96 sigma", indices, np.full_like(indices, -1.96, dtype=float), "Validation row", "1", "Normalized residual", "1"),
             ]),
         },
-        "observation": "Held-out residuals need both a magnitude metric and a declared uncertainty scale; leakage or underreported sigma distorts coverage.",
+        "observation": "Held-out residuals need both a magnitude metric and a declared uncertainty scale; leakage or underreported sigma distorts containment. The additional predictive band includes fitted-scale uncertainty under an independent Gaussian-noise assumption; the deterministic correlated fixture does not establish empirical 95 percent coverage.",
     }
 
 
 def run(parameters: dict[str, Any]) -> dict[str, Any]:
     values = _parameters(parameters)
     broken = bool(parameters.get("broken_mode", False))
-    return _result(_model(values, broken), broken)
+    result = _result(_model(values, broken), broken)
+    plot = result["plots"]["mechanism"]
+    for index, group, color in [(0, "Predictive band", "#56b4e9"), (1, "Predictive band", "#56b4e9"), (3, "Residual-only band", "#e69f00"), (4, "Residual-only band", "#e69f00")]:
+        trace = plot["data"][index]
+        trace["legendgroup"] = group
+        trace["line"] = {"color": color, "dash": "solid" if index < 2 else "dash"}
+        trace["showlegend"] = index in (0, 3)
+        if index in (0, 3):
+            trace["name"] = group
+    plot["layout"]["xaxis"]["title"]["standoff"] = 14
+    return result

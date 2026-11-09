@@ -6,6 +6,7 @@ elp_delivery_course="${ELP_DELIVERY_COURSE:-robotics-autonomy}"
 case "$elp_delivery_course" in
   robotics-autonomy) elp_delivery_prefix=robotics ;;
   controls-gnc) elp_delivery_prefix=gnc ;;
+  vehicle-dynamics) elp_delivery_prefix=vehicle ;;
   *) echo "Unsupported delivery course: $elp_delivery_course" >&2; exit 2 ;;
 esac
 export ELP_CONTAINER_NAME="${ELP_CONTAINER_NAME:-elp-$elp_delivery_prefix-quality}"

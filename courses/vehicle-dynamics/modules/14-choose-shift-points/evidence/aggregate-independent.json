@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "item_id": "P14",
+  "origin": {
+    "path": "../../reference_cases.py",
+    "origin": "Expanded torque polynomial with an independent closed-form crossing root and shifted-RPM evaluation",
+    "imports_production": false,
+    "consumes_production_output": false,
+    "tolerance_abs": "1e-10",
+    "fields": [
+      "shift_rpm",
+      "shift_speed_m_s",
+      "current_force_n",
+      "next_force_n",
+      "post_shift_rpm",
+      "force_gap_n",
+      "invalid"
+    ],
+    "tolerance_rel": "1e-10"
+  },
+  "tolerance": {
+    "absolute": 1e-10,
+    "relative": 1e-10
+  },
+  "cases": {
+    "baseline": {
+      "parameters": {
+        "current_gear_ratio": 2.188,
+        "next_gear_ratio": 1.541,
+        "broken_mode": false
+      },
+      "signature": [
+        7400.0,
+        27.210700181023643,
+        5393.7575771428565,
+        4417.8116687211605,
+        5211.791590493601,
+        -975.945908421696,
+        0.0
+      ]
+    },
+    "sweep_1": {
+      "parameters": {
+        "current_gear_ratio": 1.4,
+        "next_gear_ratio": 1.541,
+        "broken_mode": false
+      },
+      "signature": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "sweep_2": {
+      "parameters": {
+        "current_gear_ratio": 2.188,
+        "next_gear_ratio": 2.187,
+        "broken_mode": false
+      },
+      "signature": [
+        7383.339718151049,
+        27.149438298007002,
+        5406.012990127091,
+        5406.012990127089,
+        7379.965248444398,
+        -1.8189894035458565e-12,
+        0.0
+      ]
+    },
+    "broken": {
+      "parameters": {
+        "current_gear_ratio": 2.188,
+        "next_gear_ratio": 1.541,
+        "broken_mode": true
+      },
+      "signature": [
+        7400.0,
+        27.210700181023643,
+        5393.7575771428565,
+        3798.8027542857135,
+        5211.791590493601,
+        -1594.954822857143,
+        1.0
+      ]
+    },
+    "recovery": {
+      "parameters": {
+        "current_gear_ratio": 2.188,
+        "next_gear_ratio": 1.541,
+        "broken_mode": false
+      },
+      "signature": [
+        7400.0,
+        27.210700181023643,
+        5393.7575771428565,
+        4417.8116687211605,
+        5211.791590493601,
+        -975.945908421696,
+        0.0
+      ]
+    }
+  }
+}

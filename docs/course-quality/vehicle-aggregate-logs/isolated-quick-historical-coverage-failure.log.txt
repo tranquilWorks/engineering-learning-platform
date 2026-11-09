@@ -1,0 +1,103 @@
+........................................................................ [  4%]
+........................................................................ [  8%]
+........................................................................ [ 12%]
+........................................................................ [ 16%]
+........................................................................ [ 20%]
+........................................................................ [ 24%]
+........................................................................ [ 28%]
+........................................................................ [ 32%]
+........................................................................ [ 36%]
+........................................................................ [ 40%]
+........................................................................ [ 44%]
+........................................................................ [ 48%]
+........................................................................ [ 52%]
+........................................................................ [ 56%]
+........................................................................ [ 60%]
+........................................................................ [ 64%]
+........................................................................ [ 68%]
+........................................................................ [ 72%]
+........................................................................ [ 76%]
+........................................................................ [ 80%]
+........................................................................ [ 84%]
+........................................................................ [ 88%]
+........................................................................ [ 92%]
+............F
+=================================== FAILURES ===================================
+________ test_exact_scope_controls_source_pins_and_historical_coverage _________
+
+    def test_exact_scope_controls_source_pins_and_historical_coverage():
+        contract = yaml.safe_load(
+            subprocess.check_output(
+                ["git", "show", f"{HISTORICAL_HEAD}:contracts/active-batch.yaml"], cwd=ROOT
+            )
+        )
+        assert contract["batch"]["id"] == "ELP-VEHICLE-DRIVELINE-QUALITY-04"
+        assert contract["sources"]["baseline_commit"] == BASELINE
+        assert (
+            subprocess.check_output(
+                ["git", "rev-parse", BASELINE + "^{tree}"], cwd=ROOT, text=True
+            ).strip()
+            == contract["sources"]["baseline_tree"]
+        )
+        allowed = [f"courses/vehicle-dynamics/modules/{n}-*/**" for n in range(13, 17)] + [
+            "courses/vehicle-dynamics/reference_cases.py",
+            "courses/vehicle-dynamics/coverage.yaml",
+        ]
+        changed = subprocess.check_output(
+            ["git", "diff", "--name-only", BASELINE, HISTORICAL_HEAD, "--", "courses", ".gitmodules"],
+            cwd=ROOT,
+            text=True,
+        ).splitlines()
+        assert all(any(fnmatch.fnmatch(p, rule) for rule in allowed) for p in changed)
+        tracked = subprocess.check_output(
+            [
+                "git",
+                "ls-tree",
+                "-r",
+                "--format=%(objectmode) %(path)",
+                BASELINE,
+                "--",
+                "courses",
+                ".gitmodules",
+            ],
+            cwd=ROOT,
+            text=True,
+        ).splitlines()
+        for row in tracked:
+            mode, path = row.split(" ", 1)
+            if mode == "160000" or any(fnmatch.fnmatch(path, rule) for rule in allowed):
+                continue
+            assert (ROOT / path).is_file(), path
+            assert subprocess.check_output(
+                ["git", "show", f"{HISTORICAL_HEAD}:{path}"], cwd=ROOT
+            ) == original(path), path
+        before = json.loads(original("courses/vehicle-dynamics/coverage.yaml"))
+        after = json.loads((COURSE / "coverage.yaml").read_text())
+        for n, (a, b) in enumerate(zip(before["items"], after["items"], strict=True), 1):
+            if 13 <= n <= 16:
+                a.pop("target_content_digest")
+                b.pop("target_content_digest")
+>           assert a == b
+E           AssertionError: assert {'id': 'P01',...le-path', ...} == {'id': 'P01',...le-path', ...}
+E
+E             Omitting 14 identical items, use -vv to show
+E             Differing items:
+E             {'target_content_digest': '772f434c4f2ff0f7f998ed3104d7a7d755ecd3e8fb1bdb9b425069075f56d7cf'} != {'target_content_digest': '1389b69a8c03ee9c19eb8a48b3dfc7ffeba5795880722340c496c2ce3c8f43fe'}
+E             Use -v to get more diff
+
+apps/api/tests/test_vehicle_driveline_quality.py:107: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /workspace/scratch/3db4a2e2c21b/vehicle-verification-20261109/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_api.py::test_health_and_vertical_slice
+tests/test_api.py::test_stale_revision_and_inline_result_size_fail_closed
+  /workspace/scratch/3db4a2e2c21b/vehicle-verification-20261109/.venv/lib/python3.12/site-packages/fastapi/routing.py:152: FastAPIDeprecationWarning: ORJSONResponse is deprecated, FastAPI now serializes data directly to JSON bytes via Pydantic when a return type or response model is set, which is faster and doesn't need a custom response class. Read more in the FastAPI docs: https://fastapi.tiangolo.com/advanced/custom-response/#orjson-or-response-model and https://fastapi.tiangolo.com/tutorial/response-model/
+    response = await f(request)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED apps/api/tests/test_vehicle_driveline_quality.py::test_exact_scope_controls_source_pins_and_historical_coverage
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 1668 passed, 3 warnings in 1046.31s (0:17:26)

@@ -69,7 +69,7 @@ def run(parameters: dict[str, Any]) -> dict[str, Any]:
     recovered = _simulate(1.05, 3.5, False)[0]
     response = _plot("constrained speed", distances, speeds, "distance (m)", "speed (m/s)")
     response["data"].append({"type": "scatter", "mode": "lines", "name": "curvature speed limit", "x": distances, "y": limits})
-    return {
+    return _present_result({
         "metrics": [
             {"id": "lap", "label": "Lap time", "value": signature[0], "unit": "s", "emphasis": "primary"},
             {"id": "entry", "label": "Corner-entry speed", "value": signature[2], "unit": "m/s"},
@@ -94,4 +94,31 @@ def run(parameters: dict[str, Any]) -> dict[str, Any]:
             "recovery": "Restore the six m/s² backward braking pass before integrating time over the 12 bounded segments.",
         },
         "diagnostics": {"item_id": "P22", "signature": signature, "fields": FIELDS, "broken_active": broken, "bounded_points": len(speeds)},
-    }
+    })
+
+
+def _present_result(result):
+    """Present unchanged calculations with readable, dimensionless comparison axes."""
+    from textwrap import fill
+    for plot in result["plots"].values():
+        layout = plot["layout"]
+        title = layout.get("title", {}).get("text", "")
+        layout["title"] = {"text": fill(title, width=30).replace("\n", "<br>"), "font": {"size": 14}, "x": 0.02}
+        layout["legend"] = {"orientation": "h"}
+        layout["margin"] = {"l": 72, "r": 36, "t": 80, "b": 110}
+        for axis in ("xaxis", "yaxis"):
+            layout[axis]["automargin"] = True
+    comparison = result["plots"]["broken_recovery"]
+    fields = comparison["data"][0]["x"]
+    baseline = comparison["data"][1]["y"]
+    scales = [max(1.0, abs(value)) for value in baseline]
+    for trace in comparison["data"]:
+        raw = trace["y"]
+        trace["x"] = [f"D{i+1}" for i in range(len(fields))]
+        trace["y"] = [value / scale for value, scale in zip(raw, scales, strict=True)]
+        trace["customdata"] = [f"{field}: {value:.5g}; scale {scale:.5g} in the field's unit" for field, value, scale in zip(fields, raw, scales, strict=True)]
+        trace["hovertemplate"] = "%{customdata}<br>Normalized value: %{y:.5g}<extra>%{fullData.name}</extra>"
+    comparison["layout"]["title"] = {"text": "Per-field normalized<br>fault and recovery", "font": {"size": 14}, "x": 0.02}
+    comparison["layout"]["xaxis"]["title"] = "Diagnostic index (see key)"
+    comparison["layout"]["yaxis"]["title"] = "Normalized value (1)"
+    return result
