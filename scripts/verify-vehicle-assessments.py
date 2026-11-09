@@ -66,6 +66,16 @@ def replay(base_url=None, refresh=False):
             origin = record["reference"]
         else:
             design = yaml.safe_load((folder / "design.yaml").read_text())
+            for evidence_name in (
+                "expected-independent.json",
+                "actual-production.json",
+            ):
+                evidence = json.loads((folder / "evidence" / evidence_name).read_text())
+                assert evidence["signature_fields"] == design["signature"], (
+                    n,
+                    evidence_name,
+                    "stale evidence field names or units",
+                )
             scenarios = design["scenarios"]
             tolerance = design["tolerance"]
             reference = lambda p, n=n: native.reference_signature(n, p)
@@ -179,7 +189,25 @@ def replay(base_url=None, refresh=False):
             retained_path.parent.mkdir(exist_ok=True)
             retained_path.write_text(json.dumps(retained, indent=2) + "\n")
         else:
-            assert json.loads(retained_path.read_text()) == retained
+            saved = json.loads(retained_path.read_text())
+            # LAPACK/NumPy versions may differ by a few ULPs. Preserve exact
+            # provenance, parameters, case identities and declared tolerances;
+            # allow only floating-point roundoff in recomputed reference values.
+            assert saved.keys() == retained.keys()
+            for key in retained.keys() - {"cases"}:
+                assert saved[key] == retained[key], (n, key)
+            assert saved["cases"].keys() == retained["cases"].keys()
+            for case, expected_case in retained["cases"].items():
+                saved_case = saved["cases"][case]
+                assert saved_case.keys() == expected_case.keys()
+                assert saved_case["parameters"] == expected_case["parameters"]
+                np.testing.assert_allclose(
+                    saved_case["signature"],
+                    expected_case["signature"],
+                    rtol=32 * np.finfo(float).eps,
+                    atol=32 * np.finfo(float).eps,
+                    err_msg=f"P{n:02d} {case}: retained independent reference drift",
+                )
         assert len(scenarios) == 5
         assert (folder / "assessment.md").is_file()
         assert set(lesson["plot_keys"]) == {

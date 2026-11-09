@@ -1,0 +1,27 @@
+Isolated verification, 2026-11-09
+Separate checkout: vehicle-verification-20261109 at base commit 4678e348244b7a7cc763de7c928e19dc6a4bb878 plus the exact changed-input hashes in vehicle-aggregate-verification-inputs.json.
+Separate Python virtual environment: NumPy 2.3.5; full installed versions in isolated-environment-20261109.log.txt. The original environment was not modified.
+
+Environment:
+export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONPATH=apps/api/src
+
+Commands run serially:
+.venv/bin/python -m pytest -q apps/api/tests/test_vehicle*.py
+.venv/bin/python scripts/verify-vehicle-assessments.py
+PYTEST_ADDOPTS=--maxfail=1 ./scripts/agent-verify.sh contract
+PYTEST_ADDOPTS=--maxfail=1 ./scripts/agent-verify.sh quick
+PYTEST_ADDOPTS=--maxfail=1 ./scripts/agent-verify.sh full
+
+Each command has a complete retained output log; process exit codes are checked separately before acceptance. The --maxfail option only stops a failing run early and does not skip passing tests. No runtime, sample count or model tolerance overrides are used.
+
+Browser runtime restoration (isolated cache only):
+PLAYWRIGHT_BROWSERS_PATH="$PWD/.state/playwright-browsers" npm_config_cache="$PWD/.state/npm-cache" npx --yes --package=playwright@1.56.1 playwright install chromium --only-shell
+Verified executable version: Chromium 141.0.7390.37. Node v24.22.1.
+
+Built-site entry-point verification:
+export ELP_CHROMIUM_EXECUTABLE="$PWD/.state/playwright-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell"
+export ELP_BROWSER_URL=http://127.0.0.1:8899 ELP_VEHICLE_NUMBERS=33,57,59
+export ELP_BROWSER_REPORT=docs/course-quality/vehicle-aggregate-browser-polished-zz-isolated.json
+export ELP_BROWSER_SCREENSHOT_DIR=.state/vehicle-isolated-captures
+./scripts/verify-vehicle-host.sh
+PYTHONPATH=apps/api/src .venv/bin/python scripts/verify-vehicle-browser-bindings.py

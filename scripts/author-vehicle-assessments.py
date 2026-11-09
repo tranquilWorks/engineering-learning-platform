@@ -244,6 +244,17 @@ Retain inputs, selected outputs and your explanation as a cumulative artifact. N
         }
         for r in lessons
     ]
+    for competency in curriculum["competencies"]:
+        competency["assessment_ids"] = [
+            identifier
+            for identifier in competency["assessment_ids"]
+            if not identifier.startswith("VD-F")
+        ] + [
+            assessment["id"]
+            for assessment in curriculum["assessments"]
+            if assessment["id"].startswith("VD-F")
+            and competency["id"] in assessment["competency_ids"]
+        ]
     # Keep the original JSON representation consumed by existing curriculum gates.
     (COURSE / "competency-map.yaml").write_text(json.dumps(curriculum, indent=2) + "\n")
     registry = {

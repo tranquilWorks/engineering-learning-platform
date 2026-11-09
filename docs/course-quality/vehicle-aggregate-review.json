@@ -1,8 +1,8 @@
 {
   "batch": "ELP-VEHICLE-AGGREGATE-QUALITY-01",
   "baseline": "9c27f567399cf2fcb9728fb104b2d573fcac5652",
-  "status": "in_progress",
-  "acceptance_blocker": "Required broad contract/quick/full gates do not yet all pass. Vehicle maturity is not promoted.",
+  "status": "passed",
+  "scope": "67 existing Vehicle Dynamics lessons; no source/submodule/inventory changes",
   "lessons": [
     {
       "number": 1,
@@ -19,7 +19,23 @@
         "primary_sweep",
         "secondary_sweep"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Wheel angle is steering-wheel angle divided by 13, then converted to radians. Curvature is tan(delta)/L. At fixed steering, radius is unchanged, yaw rate v*kappa doubles and lateral demand v\u00b2*kappa quadruples when speed doubles. A zero-steer limit must approach a straight path continuously. Bypassing the ratio can preserve a smooth trajectory while violating the declared input convention; inspect curvature and grip demand, not smoothness.",
+      "independent_basis": {
+        "path": "../../reference_cases.py",
+        "origin": "Trigonometric curvature and independent sinc/half-angle path integration",
+        "imports_production": false,
+        "consumes_production_output": false,
+        "tolerance_abs": "1e-10",
+        "fields": "ordered signature with per-field units; complete independently calculated physical state and response arrays",
+        "tolerance_rel": "1e-10"
+      },
+      "evidence": "modules/01-turn-steering-and-speed-into-a-vehicle-path/evidence/aggregate-independent.json",
+      "lesson_word_count": 1666,
+      "entrypoint_sha256": "3f285e9b1762ef2bd9d793edaec3eb2372ba7af9a207c71628a2a72341d1e482",
+      "content_digest": "1389b69a8c03ee9c19eb8a48b3dfc7ffeba5795880722340c496c2ce3c8f43fe",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 2,
@@ -37,7 +53,23 @@
         "primary_sweep",
         "secondary_sweep"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Apply m*a=tractive force minus drag, rolling resistance and the declared grade term. Each term is newtons; dividing only the final signed sum by kilograms gives m/s\u00b2. Doubling speed multiplies quadratic drag by four, not two. A request smaller than resistance implies deceleration, not negative mass or a force-unit conversion. Compare the physical ledger with the broken result and identify the first omitted or mis-signed term.",
+      "independent_basis": {
+        "path": "../../reference_cases.py",
+        "origin": "Signed force vector sum and Newton balance",
+        "imports_production": false,
+        "consumes_production_output": false,
+        "tolerance_abs": "1e-10",
+        "fields": "ordered signature with per-field units; complete independently calculated physical state and response arrays",
+        "tolerance_rel": "1e-10"
+      },
+      "evidence": "modules/02-relate-acceleration-to-tire-force/evidence/aggregate-independent.json",
+      "lesson_word_count": 1603,
+      "entrypoint_sha256": "dd1aad239fc0ac6ca0735b65e31d6c8be39d7808762111536f128e3b6d8dd9b9",
+      "content_digest": "b312ddb86d56c440ea858a200436ba61a6d1e6962ceb97899dcf7e149cf93c10",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 3,
@@ -55,7 +87,23 @@
         "primary_sweep",
         "secondary_sweep"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "The amount transferred is T=m*a*h/L, with front decreasing and rear increasing for forward acceleration. Hence front+rear=mg and the moment produced by the moved load is T*L=m*a*h. Doubling height doubles T without changing total weight. A transfer quantity is not the difference between the two axle loads, which also contains static weight distribution. Audit both equations before accepting a plausible percentage.",
+      "independent_basis": {
+        "path": "../../reference_cases.py",
+        "origin": "Two-by-two reaction and moment balance",
+        "imports_production": false,
+        "consumes_production_output": false,
+        "tolerance_abs": "1e-10",
+        "fields": "ordered signature with per-field units; complete independently calculated physical state and response arrays",
+        "tolerance_rel": "1e-10"
+      },
+      "evidence": "modules/03-see-longitudinal-weight-transfer/evidence/aggregate-independent.json",
+      "lesson_word_count": 1570,
+      "entrypoint_sha256": "5f808ee126b1f4d9156694be1dd8781f4db35a8c8b01a03f3b6b85620bb93074",
+      "content_digest": "a1d8ebd021e1c1f671d48b20cf0d6b3e024925b2c647ca25e19d7177276f576c",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 4,
@@ -72,7 +120,23 @@
         "primary_sweep",
         "secondary_sweep"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Compare sqrt(Fx\u00b2+Fy\u00b2) with mu*Fz. Outside the circle, multiply both components by mu*Fz divided by the requested norm. For a request (3,4) in normalized force units and a capacity of 2, the delivered vector is (1.2,1.6); its direction is retained and its norm is 2. Clipping each component independently produces a square and can still exceed the circle.",
+      "independent_basis": {
+        "path": "../../reference_cases.py",
+        "origin": "Polar angle and norm projection",
+        "imports_production": false,
+        "consumes_production_output": false,
+        "tolerance_abs": "1e-10",
+        "fields": "ordered signature with per-field units; complete independently calculated physical state and response arrays",
+        "tolerance_rel": "1e-10"
+      },
+      "evidence": "modules/04-use-the-friction-circle/evidence/aggregate-independent.json",
+      "lesson_word_count": 1530,
+      "entrypoint_sha256": "845499bc4ee450fc1a165b83eb65fffaf4eb2557c7ff146055b8db0b09161cad",
+      "content_digest": "697bb34ce011adcadb26080622bcfaa299f90b354f3ac2da6fe671a86535d0bf",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 5,
@@ -89,7 +153,23 @@
         "primary_sweep",
         "secondary_sweep"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "A signed slip input must produce an odd force response in this symmetric model: reversing slip reverses force. Near zero, differentiate the declared law to obtain stiffness; at larger slip compare force with mu*Fz. Increasing load can raise capacity without changing the interpretation of slip as a dimensionless ratio. Use a negative-slip prediction to expose a sign or percent-versus-fraction error that a positive baseline could hide.",
+      "independent_basis": {
+        "path": "../../reference_cases.py",
+        "origin": "Logistic evaluation of signed tire saturation",
+        "imports_production": false,
+        "consumes_production_output": false,
+        "tolerance_abs": "1e-10",
+        "fields": "ordered signature with per-field units; complete independently calculated physical state and response arrays",
+        "tolerance_rel": "1e-10"
+      },
+      "evidence": "modules/05-build-slip-ratio-intuition/evidence/aggregate-independent.json",
+      "lesson_word_count": 1542,
+      "entrypoint_sha256": "93f8b6e5447873bd60a3e364c5e0e732d0ff80062e75a22a06f192f2181ddb73",
+      "content_digest": "591747472f970b076cc2266f9efc34cc93c702c5c3d033c8ba5cd8a87a9ebf15",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 6,
@@ -106,7 +186,23 @@
         "primary_sweep",
         "secondary_sweep"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Four degrees is 0.0698132 rad. A stiffness stated in N/rad must multiply that number, not 4. The force sign follows the lesson's explicitly declared slip convention; it should reverse under an angle sign reversal. Compare the linear tangent with the saturation boundary as normal load changes. A factor of about 57.3 is a unit defect, not evidence for a different tire stiffness.",
+      "independent_basis": {
+        "path": "../../reference_cases.py",
+        "origin": "Logistic evaluation with opposite slip convention and degree conversion",
+        "imports_production": false,
+        "consumes_production_output": false,
+        "tolerance_abs": "1e-10",
+        "fields": "ordered signature with per-field units; complete independently calculated physical state and response arrays",
+        "tolerance_rel": "1e-10"
+      },
+      "evidence": "modules/06-build-slip-angle-intuition/evidence/aggregate-independent.json",
+      "lesson_word_count": 1507,
+      "entrypoint_sha256": "371d9b7ed17515f463cd3cecb8db60108e112b78614812eb49e3e52ee78370ac",
+      "content_digest": "d6764bcdae480d796dbd914403924c6e22f550b925172bd9fa7768ea6b9fb53b",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 7,
@@ -123,7 +219,23 @@
         "primary_sweep",
         "secondary_sweep"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Steady sideslip rate is zero, but lateral acceleration is v*r, not zero. Thus Fyf+Fyr=m*v*r while a*Fyf-b*Fyr=0. The second equation requires Fyf/Fyr=b/a. A yaw solution alone cannot validate the first equation. Compare a zero-steer limit and a speed sweep, retaining the sign convention and the determinant or conditioning of the two-equation solve.",
+      "independent_basis": {
+        "path": "../../reference_cases.py",
+        "origin": "Force/moment shares before tire compatibility; factorized historical fault matrix",
+        "imports_production": false,
+        "consumes_production_output": false,
+        "tolerance_abs": "1e-10",
+        "fields": "ordered signature with per-field units; complete independently calculated physical state and response arrays",
+        "tolerance_rel": "1e-10"
+      },
+      "evidence": "modules/07-use-the-bicycle-model/evidence/aggregate-independent.json",
+      "lesson_word_count": 1648,
+      "entrypoint_sha256": "e46475eb219007e529441c13a40a118296ba6407b56befc9e109bce98beea30b",
+      "content_digest": "3bbfc28ad4a6836a8eb8b73d30d8a5e1544ea619849f4c327b07ed9e706eac1e",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 8,
@@ -140,7 +252,23 @@
         "primary_sweep",
         "secondary_sweep"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "For K=Wf/Cf-Wr/Cr, steer demand is L/R+K*a_y/g. Positive K gives characteristic speed sqrt(g*L/K); negative K gives a distinct critical speed sqrt(-g*L/K). Neutral steer has neither finite speed. Near K=0 the relevant speed diverges; a zero placeholder means unavailable, not stationary instability. Vary front and rear stiffness separately to establish their opposite contributions.",
+      "independent_basis": {
+        "path": "../../reference_cases.py",
+        "origin": "Static axle weights divided by stiffness; critical boundary and stable mask",
+        "imports_production": false,
+        "consumes_production_output": false,
+        "tolerance_abs": "1e-10",
+        "fields": "ordered signature with per-field units; complete independently calculated physical state and response arrays",
+        "tolerance_rel": "1e-10"
+      },
+      "evidence": "modules/08-separate-understeer-from-oversteer/evidence/aggregate-independent.json",
+      "lesson_word_count": 1678,
+      "entrypoint_sha256": "6dffc973add90bee722d953e70bc3a21745ec027590371237a9b1115a2c4f112",
+      "content_digest": "2181d125d2e09962b33b68d573635b9cfa3966065da400a0ef4545da0fe48280",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 9,
@@ -157,7 +285,23 @@
         "primary_sweep",
         "secondary_sweep"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "With motion ratio defined as spring travel divided by wheel travel, spring displacement is r*z. Energy is k_s*(r*z)\u00b2/2, so wheel rate is k_s*r\u00b2. At r=0.9 and k_s=35000 N/m, wheel rate is 28350 N/m. Using r instead of r\u00b2 violates energy equivalence even if units still look correct. Explicitly distinguish this convention from the reciprocal convention used in some suspension references.",
+      "independent_basis": {
+        "path": "../../reference_cases.py",
+        "origin": "Unit-displacement virtual work",
+        "imports_production": false,
+        "consumes_production_output": false,
+        "tolerance_abs": "1e-10",
+        "fields": "ordered signature with per-field units; complete independently calculated physical state and response arrays",
+        "tolerance_rel": "1e-10"
+      },
+      "evidence": "modules/09-choose-spring-rate-and-ride-frequency/evidence/aggregate-independent.json",
+      "lesson_word_count": 1536,
+      "entrypoint_sha256": "ee8fdc393e4bee907ec696833ede985a40bae1239848accf2b907f132744578a",
+      "content_digest": "8eec0159ff52560d9541a6671af4e7f54018320f8c26fe351e9ef1e9a9f964ab",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 10,
@@ -174,7 +318,23 @@
         "primary_sweep",
         "secondary_sweep"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "For m*z''+c*z'+k*z=input, omega_n=sqrt(k/m) and zeta=c/(2*sqrt(k*m)). Increasing c changes damping and decay, not the undamped natural frequency. At critical damping the repeated-root solution remains finite; it is not obtained by dividing by zero in an underdamped formula. Check initial conditions, the declared forcing and the static limit alongside overshoot.",
+      "independent_basis": {
+        "path": "../../reference_cases.py",
+        "origin": "Independent state-transition matrix exponential and eigenvalues",
+        "imports_production": false,
+        "consumes_production_output": false,
+        "tolerance_abs": "1e-10",
+        "fields": "ordered signature with per-field units; complete independently calculated physical state and response arrays",
+        "tolerance_rel": "1e-10"
+      },
+      "evidence": "modules/10-see-damping-change-transient-motion/evidence/aggregate-independent.json",
+      "lesson_word_count": 1701,
+      "entrypoint_sha256": "d3fb5194b4756a9e69ce8c2ee3ad2263e3f0fa318edfdbcd3400357a0061672c",
+      "content_digest": "eb84874507984f628358597cc6300812f7c59791f140bc71caf702961444e328",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 11,
@@ -191,7 +351,23 @@
         "primary_sweep",
         "secondary_sweep"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Front and rear elastic moments divide according to their stiffness fractions. If front stiffness rises with rear fixed, its share increases; that does not create extra total roll moment. Convert each moment into the amount moved across that axle using its own track. Sum transferred-load times track and compare with the demanded roll moment. Keep geometric and elastic paths separate to avoid counting the same moment twice.",
+      "independent_basis": {
+        "path": "../../reference_cases.py",
+        "origin": "One-equation roll solve with physical axle moments",
+        "imports_production": false,
+        "consumes_production_output": false,
+        "tolerance_abs": "1e-10",
+        "fields": "ordered signature with per-field units; complete independently calculated physical state and response arrays",
+        "tolerance_rel": "1e-10"
+      },
+      "evidence": "modules/11-distribute-roll-stiffness/evidence/aggregate-independent.json",
+      "lesson_word_count": 1565,
+      "entrypoint_sha256": "de28f890c1e3f252b6677bc4487eff2ab6eed6aa161d91b8f50dd81587a03e7f",
+      "content_digest": "ea1c08cc73bd9d4a657a77f96b566da32328e50e40b9daf6613f3d458e9cfcb0",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 12,
@@ -208,7 +384,23 @@
         "primary_sweep",
         "secondary_sweep"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Camber thrust follows the signed camber angle in the linear approximation. Scrub power is dissipative and should remain nonnegative when toe reverses: the relevant force and lateral sliding velocity reverse together. Convert degrees once and retain the per-wheel versus axle convention. A sign-preserving force prediction and an even power prediction provide different tests of the same alignment change.",
+      "independent_basis": {
+        "path": "../../reference_cases.py",
+        "origin": "Independent sine/cosine toe ratio and dimensional angle conversion",
+        "imports_production": false,
+        "consumes_production_output": false,
+        "tolerance_abs": "1e-10",
+        "fields": "ordered signature with per-field units; complete independently calculated physical state and response arrays",
+        "tolerance_rel": "1e-10"
+      },
+      "evidence": "modules/12-explore-camber-and-toe-geometry/evidence/aggregate-independent.json",
+      "lesson_word_count": 1569,
+      "entrypoint_sha256": "a79d06046f99fa54124b1312f006600854d2250b58e1a81e35699879c05e148d",
+      "content_digest": "f20c8ed90dbbac258a63d86c7200f6f4781045c565640b40994cf39a64b699e0",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 13,
@@ -225,7 +417,31 @@
         "primary_sweep",
         "secondary_sweep"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "At wheel radius r, available force is engine torque times gear and final-drive ratios times efficiency divided by r. Wheel power equals delivered force times road speed; if tire capacity clips force, available engine power is not all delivered as translational power. Increasing ratio raises wheel force but reduces road speed at a fixed engine speed. Retain both mechanical conversion and traction constraints in the ledger.",
+      "independent_basis": {
+        "path": "../../reference_cases.py",
+        "origin": "Shaft-power and traction-limited work formulation, inverted to delivered force and torque",
+        "imports_production": false,
+        "consumes_production_output": false,
+        "tolerance_abs": "1e-10",
+        "fields": [
+          "engine_speed_rpm",
+          "requested_wheel_force_n",
+          "applied_wheel_force_n",
+          "traction_limit_n",
+          "wheel_power_w",
+          "power_residual_w",
+          "invalid"
+        ],
+        "tolerance_rel": "1e-10"
+      },
+      "evidence": "modules/13-map-engine-torque-through-gearing/evidence/aggregate-independent.json",
+      "lesson_word_count": 1732,
+      "entrypoint_sha256": "bb8f12c369544554f3591b98a06109bd06505881cbd6888cb657d9f5adcd0f69",
+      "content_digest": "2fd764d00be14d714237e1e8de25c25e4edab39d7f1fdcd38154bcc5e1cd96c9",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 14,
@@ -242,7 +458,31 @@
         "primary_sweep",
         "secondary_sweep"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Compare the current and next gear at the same road speed, which means different engine speeds. Solve force equality only inside both gears' valid engine bands. If no crossing occurs before redline, report a redline-limited shift rather than inventing an intersection. A higher-ratio gear is not always faster because its torque-map point and speed range change. Check the selected event against both force and rpm traces.",
+      "independent_basis": {
+        "path": "../../reference_cases.py",
+        "origin": "Expanded torque polynomial with an independent closed-form crossing root and shifted-RPM evaluation",
+        "imports_production": false,
+        "consumes_production_output": false,
+        "tolerance_abs": "1e-10",
+        "fields": [
+          "shift_rpm",
+          "shift_speed_m_s",
+          "current_force_n",
+          "next_force_n",
+          "post_shift_rpm",
+          "force_gap_n",
+          "invalid"
+        ],
+        "tolerance_rel": "1e-10"
+      },
+      "evidence": "modules/14-choose-shift-points/evidence/aggregate-independent.json",
+      "lesson_word_count": 1646,
+      "entrypoint_sha256": "0a2a3ad48afe83ad35aecb5ddb97a22cdc9e18ffdcafe77418ee8487674c4e14",
+      "content_digest": "efe7ff9fc3852d2e557750c118852b604e328bfcbf7fda536bf35436a84c40a0",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 15,
@@ -259,7 +499,33 @@
         "primary_sweep",
         "secondary_sweep"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Initial kinetic energy is m*v0\u00b2/2, so doubling initial speed quadruples energy. Integrate the actual resisting force over stopping distance and account for road losses before allocating brake heat. Peak temperature depends on the stated heat capacity and absorption fraction. Tire-limited braking can change force and distance while the same initial kinetic energy still has to leave the vehicle.",
+      "independent_basis": {
+        "path": "../../reference_cases.py",
+        "origin": "Kinetic-energy/work stop solution and fractional stopping-time energy trajectory",
+        "imports_production": false,
+        "consumes_production_output": false,
+        "tolerance_abs": "1e-10",
+        "fields": [
+          "applied_brake_force_n",
+          "deceleration_m_s2",
+          "stopping_distance_m",
+          "stop_time_s",
+          "kinetic_energy_j",
+          "rotor_delta_t_c",
+          "front_load_n",
+          "rear_load_n",
+          "invalid"
+        ],
+        "tolerance_rel": "1e-10"
+      },
+      "evidence": "modules/15-model-braking-distance-and-heat/evidence/aggregate-independent.json",
+      "lesson_word_count": 1740,
+      "entrypoint_sha256": "efbea0001007ff857ad89428ac36bea2f9b1820d585ce53384b71c6a254843de",
+      "content_digest": "1e6f6c617b8a5354637cdf4d3b73fade9e292a168fef45008c0bbf78649835f1",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 16,
@@ -276,7 +542,31 @@
         "primary_sweep",
         "secondary_sweep"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "At fixed coefficients, force is proportional to v\u00b2 and drag power to v\u00b3. Doubling speed therefore gives four times drag but eight times drag power. Front and rear downforce must sum to the total, and their lever arms determine pitch moment. More downforce can improve grip while consuming power through drag; neither an axle split nor a favorable sign creates free energy.",
+      "independent_basis": {
+        "path": "../../reference_cases.py",
+        "origin": "Rational coefficient-area scaling and complementary axle-load accounting",
+        "imports_production": false,
+        "consumes_production_output": false,
+        "tolerance_abs": "1e-10",
+        "fields": [
+          "dynamic_pressure_pa",
+          "drag_n",
+          "downforce_n",
+          "tire_capacity_n",
+          "drag_power_w",
+          "front_aero_share",
+          "invalid"
+        ],
+        "tolerance_rel": "1e-10"
+      },
+      "evidence": "modules/16-balance-drag-and-downforce/evidence/aggregate-independent.json",
+      "lesson_word_count": 1734,
+      "entrypoint_sha256": "88d44fdc3a9e34a9081fe245c853575307e171d8b447761a944e323c66d1ef30",
+      "content_digest": "a3fde84a95875ba67a91bc26e0c2e3a829313da8f49669f5d4002235da638923",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 17,
@@ -293,7 +583,32 @@
         "primary_sweep",
         "secondary_sweep"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "A raw count of 4608 equals hexadecimal 0x1200. Big-endian decoding followed by division by 128 gives 36 km/h, or 10 m/s. Reversing the bytes gives 18 counts and only 0.140625 km/h. Byte identity, engineering-value correctness and freshness are separate checks. A frame older than 100 ms is rejected even if its speed looks plausible; do not silently carry it forward as current evidence.",
+      "independent_basis": {
+        "path": "../../reference_cases.py",
+        "origin": "separately formulated scalar analytic or bounded numerical oracle",
+        "imports_production": false,
+        "consumes_production_output": false,
+        "tolerance_abs": "1e-10",
+        "fields": [
+          "wheel_speed_kmh",
+          "wheel_speed_m_s",
+          "round_trip_count_error",
+          "frame_age_ms",
+          "freshness_limit_ms",
+          "can_identifier_decimal",
+          "dlc_bytes",
+          "trace_points",
+          "invalid"
+        ]
+      },
+      "evidence": "modules/17-decode-and-plot-can-signals/evidence/aggregate-independent.json",
+      "lesson_word_count": 983,
+      "entrypoint_sha256": "ad635ddb6684f53d41a29f3fe810d0ed5f6060891d21ce1fb4b77581db8fa8d3",
+      "content_digest": "f1c7be84f9c91deb953420fc4a8ad67f78bfd8116e27da078c11a9b635391098",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 18,
@@ -310,7 +625,31 @@
         "primary_sweep",
         "secondary_sweep"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "At a 0.5 s sample interval, an acceleration bias of 0.05 m/s\u00b2 adds 0.025 m/s of velocity error each prediction step. The complementary correction pulls position toward GPS, but does not directly repair the integrated velocity bias. Raising GPS weight can reduce position drift while increasing sensitivity to GPS error or delay. Diagnose a delayed observation by its timestamp and residual, not just the final position.",
+      "independent_basis": {
+        "path": "../../reference_cases.py",
+        "origin": "separately formulated scalar analytic or bounded numerical oracle",
+        "imports_production": false,
+        "consumes_production_output": false,
+        "tolerance_abs": "1e-10",
+        "fields": [
+          "final_position_error_m",
+          "final_velocity_error_m_s",
+          "position_rmse_m",
+          "mean_abs_innovation_m",
+          "final_gps_residual_m",
+          "maximum_time_skew_s",
+          "samples",
+          "invalid"
+        ]
+      },
+      "evidence": "modules/18-fuse-gps-and-imu-motion/evidence/aggregate-independent.json",
+      "lesson_word_count": 962,
+      "entrypoint_sha256": "cfaac53e1a335d14e536098ceb059be7003c2ba8c2a96b13f939139fcbd4edfd",
+      "content_digest": "0c1c5d5766af5d39e8f1e1606947c7717e8e271a905d135bc29a81174ec22968",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 19,
@@ -327,7 +666,31 @@
         "primary_sweep",
         "secondary_sweep"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Convert 8 deg/s to 0.139626 rad/s; at 20 m/s the turn radius is about 143.24 m. Midpoint heading integration approximates the circular path. As yaw rate tends to zero, endpoint displacement tends to speed times duration and physical radius tends to infinity. A zero radius sentinel in the historical signature means the straight-line branch, not a zero-radius turn.",
+      "independent_basis": {
+        "path": "../../reference_cases.py",
+        "origin": "separately formulated scalar analytic or bounded numerical oracle",
+        "imports_production": false,
+        "consumes_production_output": false,
+        "tolerance_abs": "1e-10",
+        "fields": [
+          "final_x_m",
+          "final_y_m",
+          "final_heading_deg",
+          "curvature_1_m",
+          "turn_radius_m",
+          "lateral_acceleration_m_s2",
+          "path_distance_m",
+          "invalid"
+        ]
+      },
+      "evidence": "modules/19-estimate-vehicle-state/evidence/aggregate-independent.json",
+      "lesson_word_count": 954,
+      "entrypoint_sha256": "e67e9463d9e1836a47d052f6872f039afc83dd5da39f138240c41840d6564003",
+      "content_digest": "692bc7a3caa3cecab65f3356c24e283009200286d49f56cfc6d4251364e81b6e",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 20,
@@ -344,7 +707,31 @@
         "primary_sweep",
         "secondary_sweep"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Regress resistance against a constant column and v\u00b2. If every speed is the same, those columns are dependent: many intercept/drag pairs fit the data. Separate estimation samples from held-out samples before solving. A rank-deficient branch returning a zero coefficient or standard-error placeholder has not established exact knowledge. Report rank and excitation alongside residuals, and predict why a wider speed span improves parameter separation.",
+      "independent_basis": {
+        "path": "../../reference_cases.py",
+        "origin": "separately formulated scalar analytic or bounded numerical oracle",
+        "imports_production": false,
+        "consumes_production_output": false,
+        "tolerance_abs": "1e-10",
+        "fields": [
+          "rolling_resistance_n",
+          "drag_area_m2",
+          "training_rmse_n",
+          "validation_rmse_n",
+          "speed_squared_span_m2_s2",
+          "excitation_ratio",
+          "drag_area_standard_error_m2",
+          "invalid"
+        ]
+      },
+      "evidence": "modules/20-identify-parameters-from-a-real-drive/evidence/aggregate-independent.json",
+      "lesson_word_count": 953,
+      "entrypoint_sha256": "dab632f9f3d83288e32ebdfa1a089d22115a87f9d9e8b5ea8c54d5d0cf6c7c0a",
+      "content_digest": "162e588d7015cb1743cc6ec6024d98aa1663502644fab178ee1effe36848d6c8",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 21,
@@ -361,7 +748,32 @@
         "primary_sweep",
         "secondary_sweep"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "At zero offset, the corner contribution is (pi/2)*45/sqrt(mu*g*45). The model also adds a fixed 200/45 s straight. A nonzero offset changes both radius and the 0.08*d\u00b2 distance penalty. Evaluate time rather than curvature alone, and require width minus absolute offset to remain nonnegative. A candidate one metre outside the track is invalid regardless of its time advantage.",
+      "independent_basis": {
+        "path": "../../reference_cases.py",
+        "origin": "separately formulated scalar analytic or bounded numerical oracle",
+        "imports_production": false,
+        "consumes_production_output": false,
+        "tolerance_abs": "1e-10",
+        "fields": [
+          "best_offset_m",
+          "effective_radius_m",
+          "corner_path_length_m",
+          "grip_speed_limit_m_s",
+          "lap_time_proxy_s",
+          "gain_from_center_s",
+          "constraint_margin_m",
+          "evaluated_candidates",
+          "invalid"
+        ]
+      },
+      "evidence": "modules/21-optimize-a-racing-line/evidence/aggregate-independent.json",
+      "lesson_word_count": 926,
+      "entrypoint_sha256": "b71832e1bb62e14291dbf58270bf01b4df0f5b11569c1b229dda5fe7fbdd7e32",
+      "content_digest": "747cb7af3a971eff03ab0969d758cda430ba7384d4d44b62d9166cb97e8ccc21",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 22,
@@ -378,7 +790,31 @@
         "primary_sweep",
         "secondary_sweep"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Squared-speed propagation gives v_next\u00b2-v\u00b2=2*a*ds. A corner speed ceiling alone is insufficient: the car must brake early enough to reach it and accelerate out subject to its force bound. Check the closing segment as well as interior segments. Increasing acceleration capability need not improve a lap dominated by corner grip or braking. Explain the active constraint at the slowest and fastest segments.",
+      "independent_basis": {
+        "path": "../../reference_cases.py",
+        "origin": "separately formulated scalar analytic or bounded numerical oracle",
+        "imports_production": false,
+        "consumes_production_output": false,
+        "tolerance_abs": "1e-10",
+        "fields": [
+          "lap_time_s",
+          "peak_speed_m_s",
+          "corner_entry_speed_m_s",
+          "maximum_braking_violation_m2_s2",
+          "active_grip_limits",
+          "minimum_speed_m_s",
+          "segments",
+          "invalid"
+        ]
+      },
+      "evidence": "modules/22-build-a-lap-time-simulator/evidence/aggregate-independent.json",
+      "lesson_word_count": 910,
+      "entrypoint_sha256": "713c61ccde7a4bcaa7f1820c7795da6f0bf276ff14a9795f58e047bf0b592be8",
+      "content_digest": "015aa5ad9bdc30ad64f954bf3dfeec0c4161507e2c6b35f47f8293a5d16ca0a0",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 23,
@@ -395,7 +831,33 @@
         "primary_sweep",
         "secondary_sweep"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "The four baseline sectors sum to 116 s. Candidate-minus-baseline deltas must be paired by sector and sum to the lap delta. The declared aero, tire and interaction contributions must close that same delta. A shuffled sector pairing can leave a total unchanged while corrupting variability and explanation. Distinguish the 0.20 s decision threshold from uncertainty or a statistical significance claim.",
+      "independent_basis": {
+        "path": "../../reference_cases.py",
+        "origin": "separately formulated scalar analytic or bounded numerical oracle",
+        "imports_production": false,
+        "consumes_production_output": false,
+        "tolerance_abs": "1e-10",
+        "fields": [
+          "baseline_lap_s",
+          "candidate_lap_s",
+          "paired_delta_s",
+          "aero_main_effect_s",
+          "tire_main_effect_s",
+          "interaction_effect_s",
+          "paired_standard_error_s",
+          "decision_margin_s",
+          "worthwhile",
+          "invalid"
+        ]
+      },
+      "evidence": "modules/23-compare-setup-changes-quantitatively/evidence/aggregate-independent.json",
+      "lesson_word_count": 930,
+      "entrypoint_sha256": "72884f4b9d86e5631e869d48293b1d30b9acda243cb34010e340424491e359c8",
+      "content_digest": "461d85c0bb19ce40f67392745de99857b4827591375f8fe9b793a77484820765",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 24,
@@ -412,7 +874,32 @@
         "primary_sweep",
         "secondary_sweep"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Force divided by mass produces acceleration; time integration produces speed; wheel steering in radians produces yaw demand; friction bounds lateral acceleration. Missing degree conversion can be roughly a factor of 57.3 before saturation masks the error. Check speed, yaw and position residual requirements separately, then restore the exact nominal inputs. A requirement count must be reconstructed from its underlying residuals.",
+      "independent_basis": {
+        "path": "../../reference_cases.py",
+        "origin": "separately formulated scalar analytic or bounded numerical oracle",
+        "imports_production": false,
+        "consumes_production_output": false,
+        "tolerance_abs": "1e-10",
+        "fields": [
+          "speed_rmse_m_s",
+          "position_rmse_m",
+          "yaw_rate_rmse_rad_s",
+          "final_speed_m_s",
+          "path_distance_m",
+          "lap_time_proxy_s",
+          "requirements_passed",
+          "maximum_yaw_residual_rad_s",
+          "invalid"
+        ]
+      },
+      "evidence": "modules/24-construct-a-gr86-digital-twin/evidence/aggregate-independent.json",
+      "lesson_word_count": 976,
+      "entrypoint_sha256": "06e6f8228a27098d815240fa6d619c83b808ab749a0dc003e9745f527e0a741d",
+      "content_digest": "d403704ff94f6c1e6dff99523b95275f998860b1ff8a8e025d235a4525a2eb69",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 25,
@@ -430,7 +917,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "A planar rotation preserves vx\u00b2+vy\u00b2 because R transpose times R is identity. Rotating a 10 m/s inertial x-vector into a frame turned 90 degrees gives approximately (0,-10) m/s under R(-psi). Norm preservation alone cannot expose using a degree value as radians: the wrong angle still makes an orthogonal matrix. Compare the actual expected components and inverse transform, not only the norm residual.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P25",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/25-measure-motion-in-body-path-and-wheel-frames/evidence/aggregate-independent.json",
+      "lesson_word_count": 950,
+      "entrypoint_sha256": "58fad77a25869c6c8f478768030e80daadcf69b98194bca8af0848845ee1f9da",
+      "content_digest": "104cc0cc1f9a7d993507115dc1bcad5997f1775e203be0caba5443c1c03511f8",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 26,
@@ -448,7 +950,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Peak force is 1.25*3500*(Fz/3500)^n. With n=0.88, doubling Fz multiplies peak force by 2^0.88, about 1.84, so effective friction decreases. For equal tires carrying W/2 each, concavity gives f(W/2-T)+f(W/2+T) no greater than 2*f(W/2). The exponent-one broken mode removes that penalty. Read effective friction on its own axis and compare capacity losses in newtons.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P26",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/26-quantify-tire-load-sensitivity/evidence/aggregate-independent.json",
+      "lesson_word_count": 928,
+      "entrypoint_sha256": "788cb35989897e36c80de9e1391bbaf4a25a5b6811ccaea17bd03a9c4c8a691c",
+      "content_digest": "354f9a88164cec7d70120295acfbf1abb0e385ef5508600da65852a9e37ec6e1",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 27,
@@ -465,7 +982,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "The low-slip slope identifies stiffness while saturated observations identify mu*Fz. A peak alone cannot identify the initial slope. Slip 0.10 is a ratio, not the numeric percent 10; confusing them changes the inferred scale by 100. Fit on the designated observations, then calculate unused-point residuals without refitting. Explain why a dataset entirely inside the linear region cannot independently identify a saturation peak.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P27",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/27-fit-longitudinal-force-versus-slip-ratio/evidence/aggregate-independent.json",
+      "lesson_word_count": 926,
+      "entrypoint_sha256": "144fd3014de1380f1b3250e98a93d2a339ac6dfc4457c48327dfed304686cc92",
+      "content_digest": "49abc2cfb88a5790b94b05fe2e25bf2539474ceafb51713471115cfd7918ed04",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 28,
@@ -482,7 +1014,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "The design matrix has columns alpha and gamma, both in radians, and force is C_alpha*alpha+C_gamma*gamma. If gamma is proportional to alpha, the columns lose rank and only a combination of stiffnesses is identifiable. One degree is pi/180 rad, so a 70000 N/rad coefficient predicts about 1221.73 N per degree in the uncapped linear region. Check held-out predictions and units for both coefficients.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P28",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/28-fit-lateral-force-versus-slip-angle-and-camber/evidence/aggregate-independent.json",
+      "lesson_word_count": 916,
+      "entrypoint_sha256": "26ad8e41422ed9a721f978d96a07ec8052672e112df8dcf8fcd5d7080a5a4f18",
+      "content_digest": "c360bef2758c77c78da8bddb314e190f94e7a1511d7bf191f0f543c0c8b8aa49",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 29,
@@ -501,7 +1048,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Compute the unconstrained longitudinal and lateral forces first. If their norm exceeds mu*Fz, apply one common scale factor so their ratio is preserved. For equal requested components each at capacity, utilization is sqrt(2); correct projection reduces each to capacity/sqrt(2). The broken independent-channel result can look individually plausible while exceeding the shared contact budget. Compare both force components and the combined utilization.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P29",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/29-combine-longitudinal-and-lateral-slip/evidence/aggregate-independent.json",
+      "lesson_word_count": 915,
+      "entrypoint_sha256": "68823ad37556d8a625e9276f551548a3e57446973eed4ac3ce9a1ea52881eb18",
+      "content_digest": "596d4e567c43fec89e234e1b881ad69c6715c91d64bdaa213050250a9efecb43",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 30,
@@ -519,7 +1081,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "The time constant is tau=lambda/v. At lambda=0.45 m and v=20 m/s, tau=0.0225 s. After traveling one relaxation length, a first-order step response reaches 1-exp(-1), about 63.2 percent of its final force. Doubling speed halves the time constant but leaves the distance constant unchanged. Treating lambda as seconds makes the result incorrectly insensitive to speed.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P30",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/30-model-tire-relaxation-and-transient-force/evidence/aggregate-independent.json",
+      "lesson_word_count": 927,
+      "entrypoint_sha256": "b1f8bc45b6c86ae0bc5deadf4c201c26163e423e81c4155f2c721ed0c446a75f",
+      "content_digest": "7848977f925fd58f1791485e7d4d5e5a60d7615b524b4ca696341aeb48e54766",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 31,
@@ -538,7 +1115,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "With C=15000 J/K and h=35 W/K, thermal time constant is C/h, about 428.57 s. A 900 W constant heat input approaches a 25.71 K temperature rise. Pressure scales with kelvin temperature, so 210 kPa at 293.15 K becomes 210*(T_C+273.15)/293.15 kPa. Celsius ratios can produce nonsense even if the plotted temperature is plausible. Separate the synthetic grip-temperature law from the thermodynamic ledger.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P31",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/31-track-tire-temperature-pressure-and-grip/evidence/aggregate-independent.json",
+      "lesson_word_count": 905,
+      "entrypoint_sha256": "e33ee69ad61195fa587ba39501d7920e09950438ae3029690fd7dabc9a1f5767",
+      "content_digest": "5e8a044c76091b76973bfff21cc81bb47c2a1ba0619693bc82688dfef9fad5d3",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 32,
@@ -557,7 +1149,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Longitudinal slip work rate is the magnitude of Fx*v*kappa; lateral slip work rate uses Fy*v*tan(alpha). Each is newtons times metres per second, hence watts. Integrate those rates over time and compare with C*(T-T0) plus rejected heat. Removing cooling from the temperature update while continuing to report it in the ledger double-counts energy removal. A nonnegative power trace alone cannot prove thermal closure.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P32",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/32-accumulate-tire-work-and-thermal-energy/evidence/aggregate-independent.json",
+      "lesson_word_count": 921,
+      "entrypoint_sha256": "666b3fb9041d0556d93e402af6b3a332047aa866e9273d8bc48c8f32e4b45d5f",
+      "content_digest": "21fb0dfa402e08693e254f7d873a524444300b1fa3419cc37927b0122ca624e5",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 33,
@@ -576,7 +1183,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "In the one-parameter model y=theta*x+noise, theta_hat=sum(x*y)/sum(x\u00b2) on the training prefix only. With declared independent noise sigma, Var(theta_hat)=sigma\u00b2/sum(x_train\u00b2), and prediction variance at a held-out x is sigma\u00b2+x\u00b2*Var(theta_hat). The second term widens the predictive band beyond a residual-only 1.96*sigma threshold. Doubling sigma doubles interval widths. Record both containment fractions and the split; fitting validation rows and shrinking sigma changes two distinct assumptions.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P33",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/33-validate-a-tire-model-with-uncertainty/evidence/aggregate-independent.json",
+      "lesson_word_count": 2294,
+      "entrypoint_sha256": "494db5eda57a160413fcb6be615075b7a2f267c4655bfb95cc9da320f788baff",
+      "content_digest": "987ff1bab9c18d3300b51ef0be866d43cd5d8e35f39809d8b5214a582a1411c3",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 34,
@@ -593,7 +1215,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Use beta_dot=(Fyf+Fyr)/(m*v)-r and r_dot=(a*Fyf-b*Fyr)/Iz. The -r term is essential even when tire forces are linear. At steady turn, zero state derivatives still require nonzero m*v*r lateral force. Changing the rear stiffness sign can produce unstable poles while a linear solver still returns numbers. Compare eigenvalues, the independently reconstructed force balance and the separately labeled sideslip and yaw-rate axes.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P34",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/34-derive-the-dynamic-bicycle-state-model/evidence/aggregate-independent.json",
+      "lesson_word_count": 708,
+      "entrypoint_sha256": "90e235269ba136f738605bcb6e1f06b17db0e6e5c3d8a2f8acaea164ec0d4624",
+      "content_digest": "69fbea79ca2c0d559e3a740099df69bba9b80f31e8ec9f09a184b31f444343ee",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 35,
@@ -610,7 +1247,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Solve (j*omega*I-A)H=B with omega=2*pi*f. At f=0 this becomes H=-A inverse B, the steady gain. At 1 Hz, omega is 6.283185 rad/s, not 1 rad/s; confusing them shifts both magnitude and phase. Yaw-rate gain has units 1/s and sideslip gain is dimensionless, so they use separate axes. The complex residual uses beta/steer and a one-second-scaled yaw/steer coordinate before taking its norm.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P35",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/35-analyze-yaw-and-sideslip-frequency-response/evidence/aggregate-independent.json",
+      "lesson_word_count": 699,
+      "entrypoint_sha256": "c3af6d30f90067b54d299b039f8c88105325952327257892958f7a13420b7144",
+      "content_digest": "3f5c9d0898ec76ecc65458453c31a43fac3653510818c3117d20a3b173c64ddc",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 36,
@@ -627,7 +1279,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "For the declared axle loads, K=Wf/Cf-Wr/Cr. Increasing front stiffness reduces K; increasing rear stiffness raises K. When K is positive, characteristic speed is sqrt(g*L/K); when negative, the separate linear critical speed is sqrt(-g*L/K). At neutral steer neither is finite. The plot omits an unavailable characteristic-speed point and the metric exposes applicability. Near neutrality, large speed sensitivity reflects the denominator, not a reliable operating limit.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P36",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/36-measure-understeer-gradient-and-characteristic-speed/evidence/aggregate-independent.json",
+      "lesson_word_count": 699,
+      "entrypoint_sha256": "d196560989054a1582094ac2a61ccf78a9faf676aeab740a32d035e5cbd9220d",
+      "content_digest": "7b9c6e1ba6638a784e0d3e60deec43d85fc58a0ca6f6a74187bfd56d928b9ef3",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 37,
@@ -646,7 +1313,22 @@
         "state_history",
         "dynamic_utilization"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "A static moment slice holds yaw rate at an imposed value; it does not enforce beta_dot=0. A valid trim must simultaneously satisfy total lateral force=m*v*r and zero yaw moment. At r=0.2 rad/s and v=28 m/s, required total force is 8120 N, divided 4511.11 N front and 3608.89 N rear by moment balance. Evaluate the nonlinear effective slopes and both Jacobian eigenvalues only after checking trim validity. Compare the actual three-second trajectory and force utilization with the component slice; a domain cutoff is incomplete evidence, not recovery.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P37",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/37-test-nonlinear-limit-handling-and-stability/evidence/aggregate-independent.json",
+      "lesson_word_count": 1326,
+      "entrypoint_sha256": "07c518894fffe897ceff2347d8c97822525dde259bc337d4422f37285034ab9f",
+      "content_digest": "3187c04eac4e7c9981827db9266b5dae95d200954bc149fdf7ba8b4151689e2f",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 38,
@@ -665,7 +1347,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "If T is the load moved, inner load is W/2-T and outer load W/2+T; their difference is 2T. Multiplying that difference by half-track gives T*track, the roll moment. Using +/-T/2 halves the moment and underestimates the load-sensitive capacity loss. First subtract geometric moment from total before distributing the elastic remainder. A negative requested inner load marks lift-off: the displayed capped capacity is only a bound and cannot close the original four-contact equilibrium.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P38",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/38-partition-lateral-load-transfer/evidence/aggregate-independent.json",
+      "lesson_word_count": 1472,
+      "entrypoint_sha256": "e72a3f303571c1cd4acea065fc69212b376ac785f8f1b563a7f420e468063d69",
+      "content_digest": "f52f7b8a5bcd90248f760ee8213d33ac52386c86b0d3240bb66d4dd127de9afa",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 39,
@@ -682,7 +1379,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Corner displacement is z+x*theta+y*phi, so its energy contributes k*b*b transpose to stiffness with b=[1,x,y]. Solve K*phi=omega\u00b2*M*phi. A raw heave displacement cannot be compared directly with a pitch angle. Instead, modal kinetic-energy fractions are M_jj*phi_j\u00b2 divided by phi transpose M phi and sum to one. The residual and coupling use mass-weighted coordinates so force and moment units are not mixed. Deleting off-diagonal stiffness changes physical eigen residuals even if all frequencies remain positive.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P39",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/39-couple-heave-pitch-and-roll-modes/evidence/aggregate-independent.json",
+      "lesson_word_count": 811,
+      "entrypoint_sha256": "7cf227914164f2914d0ee53003b7728551b73aefdfb44c562b588d112f47b3d2",
+      "content_digest": "87f878a2eaa1ef5abecb1a7e97f62517403595fc5351bf035cf41a12a9280845",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 40,
@@ -699,7 +1411,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Road frequency is f=v/lambda and omega=2*pi*f. At 22 m/s over an 8 m wavelength, f=2.75 Hz and omega is about 17.2788 rad/s. For base excitation, H=(k+j*c*omega)/(k-m*omega\u00b2+j*c*omega); omitting the numerator's damper term changes the physical forcing. Body acceleration amplitude is omega\u00b2*abs(H)*road amplitude. Very slow excitation gives displacement ratio near one, not zero.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P40",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/40-predict-road-input-ride-transmissibility/evidence/aggregate-independent.json",
+      "lesson_word_count": 686,
+      "entrypoint_sha256": "0b605b92ba013e588ae868fd9b3fc9769b2ab6d57bafbf655b6d187a9600dd42",
+      "content_digest": "c2bf5e29c737d52be41a7df28e46e6748d195171d7ab81b7fb745b99429c26aa",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 41,
@@ -716,7 +1443,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "The force is c_high*v+(7000-c_high)*v/(1+abs(v)/v_knee). Its initial slope is 7000 N s/m while the large-speed incremental slope approaches c_high. Force is odd and F*v is nonnegative for the allowed positive coefficients. Integrating power over the stated two-second velocity cycle gives dissipated energy in joules. Converting m/s to mm/s inside a coefficient already stated per m/s creates a thousand-fold velocity error.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P41",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/41-shape-digressive-damper-force-velocity-response/evidence/aggregate-independent.json",
+      "lesson_word_count": 701,
+      "entrypoint_sha256": "5d131744d9a1fc4decbb91b54af9caa31b07c9ebcb981a4816df6ce2ba3f0c7a",
+      "content_digest": "882e7851e2aeb4d6a56613280dc3a9d478a411084e37b9d2543b0995d1a96820",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 42,
@@ -733,7 +1475,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "At 25 mm and 3000 N, camber is -1-0.035*25-0.00004*3000=-1.995 deg. Toe is 0.10+0.004*25+0.00006*3000=0.38 deg. Motion ratio is 0.86, so wheel rate is 45000*0.86\u00b2=33282 N/m. The coefficients multiplying travel are per millimetre; dividing travel by 1000 without changing them corrupts geometry while leaving compliance unchanged. Use the two sweeps to separate those causes.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P42",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/42-trace-suspension-kinematics-and-compliance/evidence/aggregate-independent.json",
+      "lesson_word_count": 687,
+      "entrypoint_sha256": "3375676425137a761b152baa4224517863294a52a7489772f53ca9f1cb159b9f",
+      "content_digest": "112e351168f8ec8128785fd63dc6578105cb81324204eeb0ca59398bce0e0f83",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 43,
@@ -750,7 +1507,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Total longitudinal transfer is m*a*h/L. The declared anti-dive fraction is 0.70*tan(angle)*L/h, while anti-squat omits the 0.70 brake-distribution factor. Geometric and spring-supported contributions must sum to total transfer even when a fraction exceeds one and the spring contribution changes sign. At 5 degrees, use tan(5*pi/180), not tan(5). Explain why changing height affects both the total demand and the anti percentage.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P43",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/43-evaluate-anti-dive-and-anti-squat-geometry/evidence/aggregate-independent.json",
+      "lesson_word_count": 1327,
+      "entrypoint_sha256": "01df5124b0c2bc8d88902a3da2e33689f1a48a5bd9beed073e7b0f7d121346e5",
+      "content_digest": "05bf90187d7d47a699341a6491811f711b1176ae1bc4a150bdc1e7fa87e5e7d0",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 44,
@@ -767,7 +1539,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "At 5000 rpm the declared torque map gives 218.5 N m. With gear 3.2, final drive 4.1, efficiency 0.92 and radius 0.31 m, available wheel force is about 8507.69 N. Driven-tire capacity is 1.15*1450*9.81*0.45, about 7361.18 N, so delivered force is capped. Raising gearing can increase available force without increasing delivered force in this regime. Check utilization and rpm-to-speed conversion together.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P44",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/44-convert-engine-torque-into-a-traction-envelope/evidence/aggregate-independent.json",
+      "lesson_word_count": 640,
+      "entrypoint_sha256": "c368d69c70368f7faa9cfd9aea88cc3a072d7bcaa51472478315514f5edb8836",
+      "content_digest": "0f384d2864f28b262e126af9c00a4ac7735e43cbc68d56465d2db8877c9dc716",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 45,
@@ -784,7 +1571,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "If engine-side angular speed is G*v/r, its kinetic energy is J*(G*v/r)\u00b2/2, giving equivalent mass J*(G/r)\u00b2. Wheel inertias contribute separately as sum(Jw/r\u00b2). The squared ratio is essential: inverse gearing can make acceleration look unrealistically high. Compare drive work, road-loss work and total translational-plus-rotating energy; the finite Euler step leaves a discretization residual. If speed never reaches 27.78 m/s, the horizon value is censored and the reached flag is false.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P45",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/45-model-rotating-inertia-and-launch-dynamics/evidence/aggregate-independent.json",
+      "lesson_word_count": 624,
+      "entrypoint_sha256": "7aebe971cf683c7f4df181087ee60e53fc150a87b66c5fcb542ea22a4b4d04b2",
+      "content_digest": "90713fc97b857573aea894674e6ce21846f0b5646929d232d2e1673f472bc3d9",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 46,
@@ -801,7 +1603,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "With 3200 N per wheel and left mu=0.35, the left capacity is 1120 N. The open differential supplies at most 2240 N total. A bias ratio of four requests 4480 N on the right, but right capacity is only 1.15*3200=3680 N; the capped total is therefore 4800 N. Unlimited multiplication would exceed the high-grip contact. Check both wheel constraints and total demand rather than assuming the bias ratio is always achieved.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P46",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/46-compare-open-and-limited-slip-differentials/evidence/aggregate-independent.json",
+      "lesson_word_count": 618,
+      "entrypoint_sha256": "21be5d576410a4124bc1225a18b6493519b436840558d630d7261419392679f7",
+      "content_digest": "619eb3aad85ba8857dd993110eca486dfdc1e2420d9db0023372594254ba9a62",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 47,
@@ -818,7 +1635,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "For each gear compute rpm=v*G*final_drive*60/(2*pi*r), reject rpm outside 1500\u20137000, and compare valid wheel forces. A shift sets drive force to zero for the declared delay, but rolling and aerodynamic resistance still decelerate the car. At 20 m/s the declared resistance is 180+0.38*400=332 N, giving -0.22897 m/s\u00b2 for 1450 kg during interruption. Compare the full speed history and redline excess, not just the target time.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P47",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/47-optimize-gear-ratios-and-shift-strategy/evidence/aggregate-independent.json",
+      "lesson_word_count": 1405,
+      "entrypoint_sha256": "22d27edd3ef9ced9e191335190e07dc0e5c2267169031d6ecbb9697156ae9bfd",
+      "content_digest": "b7c75a3186893ea746d4a9f1e3411316d702fa2ee3a786c04aebef381d5a388b",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 48,
@@ -836,7 +1668,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Front load is static front weight plus m*a*h/L; rear loses the same amount. Ideal force fraction equals front dynamic load divided by mg if both axles share the same friction coefficient. Clipping front and rear brake requests separately can produce an achieved deceleration below the requested one. The displayed loads were computed from the request, so this one-pass study is not a self-consistent solution using the lower achieved acceleration. Diagnose the broken static-load allocation with axle utilization.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P48",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/48-allocate-brake-bias-with-dynamic-load-transfer/evidence/aggregate-independent.json",
+      "lesson_word_count": 646,
+      "entrypoint_sha256": "3b33cbbb330ca005507655b5d035a02dd3bd74827703574bb75f13ec9fe84fd4",
+      "content_digest": "758985ec33160ca0c86289f8c473cefec082f1573cf3edf20b58fae2e82d875e",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 49,
@@ -853,7 +1700,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "With slip=1-r*omega/v, differentiate using wheel torque balance J*omega_dot=r*Fx-Tb and vehicle deceleration -Fx/m. The controller chooses torque to drive slip toward its target, subject to the requested-torque ceiling. Here target_slip also locates the synthetic tire-force peak, so sweeping it changes plant and controller together; it is not an independent target-optimization experiment. The wheel-speed projection at zero introduces a reaction not captured by the free wheel equation.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P49",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/49-simulate-abs-slip-control-and-wheel-lockup/evidence/aggregate-independent.json",
+      "lesson_word_count": 651,
+      "entrypoint_sha256": "cb0fb5ee220bf67d467d2f0255064b12994bcef5a2e92e85d4824a5c5fb6eb6f",
+      "content_digest": "f161e288bfd5dc454cd9e3f8d88540101c3dd124826652e0b6f3660488700711",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 50,
@@ -871,7 +1733,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "A 450 kJ stop deposits 0.75*450=337.5 kJ into a 45000 J/K lump, raising it by 7.5 K before cooling. Between stops, excess temperature decays toward ambient with time constant C/h. Sum absorbed heat, stored heat and rejected heat over all six stops. The fade factor follows peak temperature; final cooled temperature can hide that peak. The broken mode reports rejected heat without removing it from storage, so its energy ledger cannot close.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P50",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/50-predict-brake-temperature-fade-and-cooling/evidence/aggregate-independent.json",
+      "lesson_word_count": 1296,
+      "entrypoint_sha256": "7f86ee147c6e3293108012f2db9726bc5d7ae4063add429fc3cc563c6dceabeb",
+      "content_digest": "df27f083b1b1d3f8cdf88f026c01a4cccbfb00a637184be837c1bf17231fa4d3",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 51,
@@ -888,7 +1765,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "At 80 mm, front coefficient is 0.58 and rear 0.72, so front balance is 0.58/1.30, about 44.62 percent. Dynamic pressure times area scales both with v\u00b2. The pitch moment is rear force*1.5-front force*1.2; balance percentage alone does not determine its sign without lever arms. A millimetre value used as metres can yield absurd coefficients even though the v\u00b2 scaling remains intact.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P51",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/51-map-aero-balance-and-ride-height-sensitivity/evidence/aggregate-independent.json",
+      "lesson_word_count": 622,
+      "entrypoint_sha256": "413d2ec577f53c717f5766e0869498c16809050f200deea11abd2805e633c1fa",
+      "content_digest": "6d9b484fd81795fc2d77b1533053d02ea000630d76554fa34b08f94f94b9dcce",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 52,
@@ -906,7 +1798,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Tractive force is min(tire capacity,210000/v); acceleration subtracts drag before dividing by mass. At fixed speed, more energy increases energy-limited laps until the thermal-lap proxy becomes active. Downforce raises normal load once, with a sublinear load exponent; counting it twice inflates capacity. Per-lap energy includes 3.60 MJ plus drag times 4200 m. Acceleration and lap-count errors are scaled by 1 m/s\u00b2 and 1 lap before combining into a dimensionless diagnostic.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P52",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/52-couple-downforce-drag-tires-and-stint-limits/evidence/aggregate-independent.json",
+      "lesson_word_count": 1268,
+      "entrypoint_sha256": "66ff68a7d01632511bc88eec0d80a66cbe5852403c60f8b5fa7788ae0afc48e2",
+      "content_digest": "8d16d434c06f9a449cf6570f2ab3da95be66b203c1278f200012c7af878decde",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 53,
@@ -923,7 +1830,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "The BLE payload starts with the CAN identifier encoded little-endian, followed by the original data bytes. The engine-speed field inside those bytes is big-endian with its own rpm/count scale; transport and signal byte orders need not match. Byte-for-byte parity can therefore pass while a signal decoder is wrong. Engine residuals are divided by 1 rpm and wheel-speed residuals by 1 km/h before their dimensionless RMS is combined.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P53",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/53-replay-and-decode-gr86-can-ble-telemetry/evidence/aggregate-independent.json",
+      "lesson_word_count": 662,
+      "entrypoint_sha256": "755c34a02ca836f898b915392fe49f40ae459d55ccbb8447ea024af97d2e595f",
+      "content_digest": "5e56edc1c65d1ab0b2ed1da822caf4c4631c0477a894762cdaa4fb9e3e82e479",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 54,
@@ -940,7 +1862,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Source time equals reference time plus the declared offset. At 12 ms, subtract 0.012 s before resampling; this example applies a known offset rather than estimating it from data. The base period is 20 ms and an isolated missing interior sample creates a 40 ms interpolation span. Record maximum gap and interpolation error separately. Endpoint extension by the interpolator is not a new measurement.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P54",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/54-align-clocks-rates-and-dropped-packets/evidence/aggregate-independent.json",
+      "lesson_word_count": 655,
+      "entrypoint_sha256": "40ba44064253bb6afc5911549acadf0a6e8851283f17beb63a84b2e34dd611af",
+      "content_digest": "c6a8e4eb067cacaafcffe0242af51d028de23346a0fdf9d57e3567480c978280",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 55,
@@ -958,7 +1895,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "The forward sensor model scales R(-angle)*truth and then adds sensor bias. Inversion must subtract bias and divide channelwise by scale before applying R(angle). With the declared truth, corrected body acceleration returns (1.20,4.50) m/s\u00b2 and corrected yaw returns 12 deg/s. A wrong rotation angle still preserves norm, so compare direction and truth residual too. Mixed acceleration and yaw errors use declared 1 m/s\u00b2 and 1 deg/s scales.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P55",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/55-calibrate-sensors-and-transform-measured-axes/evidence/aggregate-independent.json",
+      "lesson_word_count": 1309,
+      "entrypoint_sha256": "e89ce05718693c4aa6931d64b8c2adbf9d223e994d557adfbeef9f0dab1c2e6e",
+      "content_digest": "88edb94e9851b75cdeccb176d01b3e9f9f05d16cc12a16de78dbc1cf12b631f6",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 56,
@@ -975,7 +1927,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Yaw rate in degrees/s is converted to radians/s before multiplying by 0.05 s. Position prediction uses the previous heading and speed. The correction is gps_blend*dt*(GPS-prediction), so gps_blend acts as a rate in 1/s and its per-sample weight at 0.12 is 0.006. Changing the sample rate without retaining dt would change the observer. Separate integrated speed path length from the length of the GPS-corrected position curve.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P56",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/56-reconstruct-a-driven-trajectory/evidence/aggregate-independent.json",
+      "lesson_word_count": 645,
+      "entrypoint_sha256": "dd2a35ab5ad431ef00bb8d74d3be05d2546ecfbf842e666bdaafed18a4441c18",
+      "content_digest": "bb517784116650a23b897b8ecc10d8ea2c5ea1f8dd2d6fed005663f86c5f662f",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 57,
@@ -992,7 +1959,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "In normalized coordinates [beta/(1 rad),r/(1 rad/s),bias/(1 rad)], prediction is Pminus=F*P*F transpose+Q. For fixed gain L and direct measurements, posterior is (I-L)*Pminus*(I-L) transpose+L*R*L transpose. Both plant propagation and measurement noise are necessary; shrinking P only by I-L is not a covariance update. Increasing noise must increase the conditional posterior even if the chosen gain is unchanged. Compare state histories and actual truth error separately.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P57",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/57-estimate-sideslip-and-vehicle-state/evidence/aggregate-independent.json",
+      "lesson_word_count": 1444,
+      "entrypoint_sha256": "d92ef91a39aa4813255f39dfcd318cc63d334c863b4dfd0edc14ccb1638155cd",
+      "content_digest": "1f561d2ba08b16b21b6eeccd693578dcb24d6e8f6106d840612facf56efcf48f",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 58,
@@ -1009,7 +1991,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "With 80 samples and training fraction 0.65, the first 52 rows estimate two stiffnesses and 28 rows remain unused until validation. Solve the two-column least-squares problem on that prefix and retain its parameter vector before examining later residuals. Perturb only held-out force observations: training coefficients and training error must remain unchanged while validation error may change. The broken mode leaks all rows into fitting and substitutes training error for validation error.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P58",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/58-identify-vehicle-parameters-with-validation-splits/evidence/aggregate-independent.json",
+      "lesson_word_count": 652,
+      "entrypoint_sha256": "fa1f038682525db1b795cd78458b45d3c760d98eff26de4da093d6c6fcf98c82",
+      "content_digest": "fea69b6c581b869606be378909683bfae2d18482d41a229adcaa49ca2ebfe8f1",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 59,
@@ -1026,7 +2023,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Scaling every excitation by c scales singular values by c and parameter standard deviations by 1/c at fixed force-noise sigma; the condition number need not change. Compute covariance through the SVD of X, not an inverse of X transpose X that squares conditioning. The displayed truth-containment fraction counts only two known synthetic coefficients, so it can be 0, 0.5 or 1; it is not repeated-trial 95 percent coverage. Correlated residuals challenge the independent-noise covariance assumption.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P59",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/59-quantify-identifiability-residuals-and-uncertainty/evidence/aggregate-independent.json",
+      "lesson_word_count": 744,
+      "entrypoint_sha256": "fae1b870735c24531dffdd28a87ff42e872fc5d49602d24ad6e6a9bac717918b",
+      "content_digest": "1036976ba2efb44c651e6861bd535760bbe0b8790b914ab8cf09eaddd986d608",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 60,
@@ -1045,7 +2057,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Dropping sequence 37 and truncating 89 create two unusable expected records in the full fixture; a duplicate at 52 and inversion at 71/72 are different faults. Deduplicate and sort only valid records, and enforce the declared reordering window. Recovery means a valid ordered subset, not inventing the missing payloads. Compare record identities and payload lengths with the nominal fixture, then replay the same diagnosis after reset.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P60",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/60-diagnose-and-recover-corrupt-telemetry/evidence/aggregate-independent.json",
+      "lesson_word_count": 1357,
+      "entrypoint_sha256": "b4762a66e79caaf63bc61b4958439c6a0c50f2d5ca6a4e737bfc39012561ad6a",
+      "content_digest": "8831e9f83f2c14d06a0a3c8dea5c9126aad3510c529cd691c2c4c02721a5bc3c",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 61,
@@ -1062,7 +2089,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "For a=60 m and b=36 m, curvature at theta=0 is a/b\u00b2=0.0462963 1/m; at pi/2 it is b/a\u00b2=0.01 1/m. Curvature integrated around a closed convex curve tends to 2*pi, while polygonal chord length approaches the smooth perimeter as sampling increases. Retain the closure gap and refinement error. A partial 1.8*pi traversal cannot claim full-lap closure merely because its points lie on the ellipse.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P61",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/61-build-track-geometry-and-curvature/evidence/aggregate-independent.json",
+      "lesson_word_count": 965,
+      "entrypoint_sha256": "69c9665989ba57557fbd99005b5dfd1feb27fc6960bc7fc833dd990a7221357c",
+      "content_digest": "420ff114941aeecce9ca9ae4b0f568f068a4139e51ab20c8f159cdbf0a7af07d",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 62,
@@ -1079,7 +2121,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Total force capacity is mu*(mg+downforce). For a requested direction, compute Fx and Fy, then cap positive Fx by P/v while preserving the already-declared lateral component. The resulting point must satisfy the shared tire norm and power limit. At v=45 m/s a 210 kW power ceiling corresponds to 4666.67 N before drag. Subtract drag only when converting force to acceleration, and distinguish propulsion from braking.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P62",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/62-construct-a-speed-dependent-g-g-v-envelope/evidence/aggregate-independent.json",
+      "lesson_word_count": 965,
+      "entrypoint_sha256": "88eb37e511c55c2f8db665883e00e050da6a43a7ad913cb75ba63742755e0a50",
+      "content_digest": "32ec6b9e32fe2eb41cb0a6224419a3753de0b0a3f5a5d2ba7e0d23de7694b80b",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 63,
@@ -1096,7 +2153,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "For constant offset d, ds_offset=(1-d*kappa)*ds and kappa_offset=kappa/(1-d*kappa). The same denominator changes both length and curvature, so adjusting only one is inconsistent. Require positive offset Jacobian and the declared width bound. Compare time with time+penalty*d\u00b2; the penalty has units s/m\u00b2. A finite scalar search over offsets is not a general spatially varying racing-line optimizer.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P63",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/63-optimize-a-racing-line-under-coupled-constraints/evidence/aggregate-independent.json",
+      "lesson_word_count": 963,
+      "entrypoint_sha256": "f788cee26a2ba724fdb4c0ee13f1d94c3d10938db0ee970d1019c94317be762f",
+      "content_digest": "37e74474a47b323bbd381528ff8f99e9bfcb3c19c7362c6c427dd92304115487",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 64,
@@ -1113,7 +2185,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Segment force is m*(v_next\u00b2-v\u00b2)/(2*ds)+drag+rolling resistance. Check traction, power, braking and lateral reserve at each segment. Available energy must at least cover rolling resistance times track length; below that floor the model must report infeasibility rather than a zero-speed successful lap. Distinguish propulsive work from brake heat and count downforce only where actually modeled. A uniform squared-speed scaling can enforce an energy budget but still needs the force bounds rechecked.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P64",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/64-run-a-forward-backward-lap-time-simulation/evidence/aggregate-independent.json",
+      "lesson_word_count": 1104,
+      "entrypoint_sha256": "e29fe671ba1f20b438bb3e86b7407c6237d75749c5ce4ecaddbe45eec291750f",
+      "content_digest": "7be5c9cb2775675638e9ea35445d65bb71beddf7c20d91e9ad827b414a865dfa",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 65,
@@ -1130,7 +2217,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "For T=90-2*a*x1-3*t*x2-1.2*a*t*x1*x2, changing coded x1 from -1 to +1 changes the averaged response by -4*a seconds. The difference-in-differences is -4.8*a*t seconds. Omitting the interaction can fit some comparisons while failing others. Fit on the four corners, then evaluate the separate unused points without refitting. Distinguish fitted coefficients from time-reduction effects with their factor-of-two and factor-of-four conventions.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P65",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/65-compare-setups-with-designed-experiments/evidence/aggregate-independent.json",
+      "lesson_word_count": 978,
+      "entrypoint_sha256": "f2ad02fd9dd6b8e82e7527638b1114ef0f86f1f6623814fb3add6961ac3a72d8",
+      "content_digest": "b320f79d9a6aa3bda144acff510ee25911a0ab31892a7933752a009e5885295d",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 66,
@@ -1148,7 +2250,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Establish CAN/BLE payload identity before decoding, then fit clock rate/offset from the three explicit synchronization pairs. Apply the separate speed gain/bias calibration and yaw-bias correction before trajectory reconstruction. The force channel is synthetic 1450*a+0.45*v\u00b2+2*sin(0.9*i), not a claim about the fixture's IMU channel. Freeze the chronological fitting prefix before computing held-out residuals. For every passing requirement, identify its actual residual or event evidence and reproduce the injected fault and deterministic recovery.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P66",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/66-capstone-validate-a-vehicle-model-from-telemetry/evidence/aggregate-independent.json",
+      "lesson_word_count": 2536,
+      "entrypoint_sha256": "0400496ca8402d1e5b5975846f92f4ea6287577f327a0b36a9f91f2aa922497f",
+      "content_digest": "48ed8dd513ce1d0388a77e12330f32555495feced9031bb7fa6264d9ee149080",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     },
     {
       "number": 67,
@@ -1166,7 +2283,22 @@
         "response",
         "mechanism"
       ],
-      "learner_result": "not_recorded"
+      "learner_result": "not_recorded",
+      "mechanism_review": "Fit stiffness and friction from separate synthetic linear/saturated samples and check the unused tire samples. Trace calibrated forces through individual wheel loads, gear selection, cyclic acceleration/braking and lap time. The 0.8 lateral and 0.6 longitudinal reserve fractions satisfy 0.8\u00b2+0.6\u00b2=1; neither reserve is independently available in full. Check minimum wheel load, load sum, power, brake and combined-grip bounds on every segment. Execute both friction endpoints to obtain a scenario envelope, and reject the double-downforce fault from the physical load ledger.",
+      "independent_basis": {
+        "kind": "independent-analytic-and-numerical-python",
+        "item_id": "P67",
+        "independent": true,
+        "imports_production_entrypoint": false,
+        "derived_from_production_output": false,
+        "perturbs_production_output": false
+      },
+      "evidence": "modules/67-capstone-calibrate-and-predict-with-a-gr86-digital-twin/evidence/aggregate-independent.json",
+      "lesson_word_count": 2728,
+      "entrypoint_sha256": "72d785faf1ba017f51372afc3641c4944f75adde5b2b705b3d6cf459ffbead83",
+      "content_digest": "d96bbacc0e324a8bbf8ca42dba733a9223462153c9eea5ed849f09e45545f41a",
+      "browser_views": 2,
+      "disposition": "accepted_authored_synthetic_software"
     }
   ],
   "portfolios": [
@@ -1516,8 +2648,47 @@
       "learner_result": "not_recorded"
     }
   ],
-  "verified_scope": "67 authored checkpoints;14 individually specified portfolios;335runtime/335HTTP independent comparisons;134current browser views/interactions;62focused Vehicle tests.",
-  "review_plan": "vehicle-aggregate-review-plan.md",
+  "rubric": {
+    "foundations_prerequisites": {
+      "status": "passed",
+      "finding": "The existing 67-module prerequisite graph remains closed and acyclic, with 24 source-bound identities and 43 competency-derived native lessons. Source pins and inventory are unchanged."
+    },
+    "breadth_sequencing": {
+      "status": "passed",
+      "finding": "All 67 lessons have individual checkpoints and the 14 existing competency portfolios have specific integration artifacts; all 16 earlier scoped evidence tasks are retained verbatim."
+    },
+    "derivation_physical_meaning": {
+      "status": "passed",
+      "finding": "Worked reasoning covers units, signs, frames, force/moment/energy balance, contact applicability, modal energy fractions and conditional uncertainty. P37 distinguishes a static moment slice from full-state local stability and an executed bounded transient."
+    },
+    "unique_executable_fidelity": {
+      "status": "passed",
+      "finding": "Distinct tire, chassis, driveline, brake, aero, telemetry, estimation and performance mechanisms are preserved. Load-transfer capacity, normalized modal diagnostics, fixed-gain covariance and shift resistance were causally repaired; synthetic component and coupled-capstone claims are separated."
+    },
+    "sweeps_limits_failure_recovery": {
+      "status": "passed",
+      "finding": "335 independently originated runtime cases and 335 real HTTP cases cover baseline, two isolated sweeps, named fault and recovery. 134 current-content browser interactions and 57 focused checks include off-grid/corner, contact, unavailable-speed and domain-cutoff cases."
+    },
+    "independent_evidence": {
+      "status": "passed",
+      "finding": "Analytic/source-design and live native references preserve scientific budgets. Generalized eigenvectors, lateral-velocity adaptive integration, finite covariance sums, QR identification, raw-byte trajectory reconstruction and every-segment lap ledgers independently check repaired computations and integrations. Full P37/P57 histories are compared through runtime and HTTP."
+    },
+    "formative_cumulative_assessment": {
+      "status": "passed",
+      "finding": "67 distinct browser-embedded checkpoints, 16 retained earlier tasks and 14 competency-derived portfolios are bound to actual lesson identities. All 28 desktop/mobile portfolio visits pass; authored tasks do not infer learner completion."
+    },
+    "capstones": {
+      "status": "passed",
+      "finding": "P66 executes redundant synthetic protocol recovery, synchronization, calibration, trajectory and untouched chronological model validation. P67 executes tire calibration, wheel loads, gears, cyclic acceleration/braking, path search, lap prediction and friction-endpoint scenarios with computed requirements. Thermal, discretization and synthetic-data limits remain explicit."
+    },
+    "exclusions_cross_course_handoffs": {
+      "status": "passed",
+      "finding": "Other course payloads and all source pins are preserved. Fixed-gain, constant-speed, small-angle, conditional-noise, finite-grid, empirical thermal and adiabatic-brake limits are stated. No learner, manual screen-reader, MATLAB, measured vehicle, track, hardware or production acceptance follows; Docker remains owner-deferred."
+    }
+  },
   "verification_summary": "vehicle-aggregate-verification-summary.json",
-  "claim_boundary": "Authored curriculum and synthetic software only. No aggregate acceptance, merge, learner or physical qualification is claimed."
+  "source_reference_sha256": "0243c670cb7ece7806280ce200101c124d62a5950c8cb713a5e29665eb0e4b84",
+  "native_reference_sha256": "a692c4b41231f2edea3354295bf822393c91d4094c7d324e2789fc3b0ab97282",
+  "learner_validation": "not_run",
+  "container_validation": "owner_deferred"
 }

@@ -119,7 +119,27 @@ def test_reviewed_map_identity_schema_graph_batches_and_capstones() -> None:
     helper = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(helper)
     assert helper._schema_errors(mapping, schema, schema) == []
-    assert _sha256(COURSE_ROOT / "competency-map.yaml") == MAP_SHA256
+    approved_raw = _git(
+        "show",
+        "9c27f567399cf2fcb9728fb104b2d573fcac5652:courses/vehicle-dynamics/competency-map.yaml",
+    ).stdout
+    assert hashlib.sha256(approved_raw.encode()).hexdigest() == MAP_SHA256
+    approved = yaml.safe_load(approved_raw)
+    active = _load(ROOT / "contracts/active-batch.yaml")
+    assert active["batch"]["id"] == "ELP-VEHICLE-AGGREGATE-QUALITY-01"
+    assert active["sources"]["baseline_commit"] == "9c27f567399cf2fcb9728fb104b2d573fcac5652"
+    # Only the authorized 67 formative records and their reciprocal links may
+    # extend the exact approved matrix; modules, prerequisites and portfolios stay fixed.
+    stripped = json.loads(json.dumps(mapping))
+    stripped["assessments"] = [a for a in stripped["assessments"] if not a["id"].startswith("VD-F")]
+    for competency in stripped["competencies"]:
+        competency["assessment_ids"] = [
+            a for a in competency["assessment_ids"] if not a.startswith("VD-F")
+        ]
+    assert stripped == approved
+    assert {a["id"] for a in mapping["assessments"] if a["id"].startswith("VD-F")} == {
+        f"VD-F{number:02d}" for number in range(1, 68)
+    }
 
     modules = mapping["modules"]
     module_by_id = {item["id"]: item for item in modules}
@@ -128,7 +148,7 @@ def test_reviewed_map_identity_schema_graph_batches_and_capstones() -> None:
     assert [item["id"] for item in modules] == [f"P{number:02d}" for number in range(1, 68)]
     assert mapping["count_derivation"]["planned_module_count"] == len(modules) == 67
     assert len(competency_by_id) == 15
-    assert len(assessment_ids) == 14
+    assert len(assessment_ids) == len(mapping["assessments"]) == 81
 
     for module in modules:
         number = int(module["id"][1:])
@@ -142,6 +162,10 @@ def test_reviewed_map_identity_schema_graph_batches_and_capstones() -> None:
         assert set(competency["assessment_ids"]) <= assessment_ids
         for module_id in competency["module_ids"]:
             assert competency["id"] in module_by_id[module_id]["competency_ids"]
+
+    for assessment in mapping["assessments"]:
+        for competency_id in assessment["competency_ids"]:
+            assert assessment["id"] in competency_by_id[competency_id]["assessment_ids"]
 
     flattened = [module_id for batch in mapping["batch_plan"] for module_id in batch["module_ids"]]
     assert Counter(flattened) == Counter(module_by_id.keys())

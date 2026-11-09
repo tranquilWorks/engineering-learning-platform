@@ -30,6 +30,10 @@ def test_all_actual_lessons_have_unique_bound_assessments(catalog):
     for n, row in enumerate(registry["lessons"], 1):
         assert row["number"] == n and row["id"] == f"VD-F{n:02d}"
         assert row["id"] in assessments
+        assert assessments[row["id"]]["competency_ids"] == row["competency_ids"]
+        for competency_id in row["competency_ids"]:
+            competency = next(c for c in mapping["competencies"] if c["id"] == competency_id)
+            assert row["id"] in competency["assessment_ids"]
         _, record = catalog.module_record("vehicle-dynamics", row["module_id"])
         manifest = yaml.safe_load((record.path / "module.yaml").read_text())
         assert row["plot_keys"] == [
